@@ -12,38 +12,7 @@ random.seed(0xbadc0f33)
 
 from test_all import options
 import enb.codec as codec
-
-
-class TrivialLosslessCodec(codec.LosslessCodec):
-    """Trivial is_lossless codec (simply copy and read the file)
-    """
-
-    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        """Compress original_path into compress_path using param_dict as params.
-        :return a CompressionResults instance
-        """
-        shutil.copyfile(original_path, compressed_path)
-
-    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-        """Decompress compressed_path into reconstructed_path using param_dict
-        as params (if needed).
-        :return a DecompressionResults instance
-        """
-        shutil.copyfile(compressed_path, reconstructed_path)
-
-
-class TrivialCpWrapper(codec.WrapperCodec, codec.LosslessCodec):
-    """Trivial codec wrapper for /bin/cp
-    """
-
-    def __init__(self):
-        super().__init__(compressor_path="cp", decompressor_path="cp")
-
-    def get_compression_params(self, original_path, compressed_path, original_file_info: codec.FileInfo):
-        return f"'{original_path}' '{compressed_path}'"
-
-    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info: codec.FileInfo):
-        return f"'{compressed_path}' '{reconstructed_path}'"
+import enb.codec_implementations.trivial_codecs
 
 
 class TestAllCodecs(unittest.TestCase):
@@ -53,7 +22,8 @@ class TestAllCodecs(unittest.TestCase):
     def test_trivial_lossless(self):
         """Test the trivial raw-output codec.
         """
-        for cls in [TrivialLosslessCodec, TrivialCpWrapper]:
+        for cls in [enb.codec_implementations.trivial_codecs.TrivialLosslessCodec,
+                    enb.codec_implementations.trivial_codecs.TrivialCpWrapper]:
             test_one_codec(cls())
 
     def test_all_lossless(self):

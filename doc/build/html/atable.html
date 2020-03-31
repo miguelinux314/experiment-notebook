@@ -32,8 +32,151 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="atable">
-<h1>ATable<a class="headerlink" href="#atable" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-enb.atable">
+<span id="atable"></span><h1>ATable<a class="headerlink" href="#module-enb.atable" title="Permalink to this headline">¶</a></h1>
+<p>Automatic tables with implicit column definition.</p>
+<ul>
+<li><p>Tables are created by specifying the index columns (one or more),
+and optionally a path to a file where precomputed values are stored.</p></li>
+<li><p>Table columns are defined via the &#64;YourATableSubclass.column_function
+decorator. Decorated functions implicitly define the table, since they
+are called to fill the corresponding cells for each index.</p></li>
+<li><p>The ATable.get_df method can be invoked to obtain the df for any given set of indices</p></li>
+<li><p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Subclass</span><span class="p">(</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
+    <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">Subclass</span><span class="p">(</span><span class="n">Subclass</span><span class="p">):</span>
+    <span class="nd">@Subclass</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="s2">&quot;index_length&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_index_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">series</span><span class="p">):</span>
+        <span class="n">series</span><span class="p">[</span><span class="s2">&quot;index_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+<span class="n">sc</span> <span class="o">=</span> <span class="n">Subclass</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="o">*</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Should return:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                   <span class="n">index</span> <span class="n">index_length</span>
+<span class="n">__atable_index</span>
+<span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,)</span>                           <span class="mi">0</span>
+<span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,)</span>             <span class="n">a</span>            <span class="mi">1</span>
+<span class="p">(</span><span class="s1">&#39;aa&#39;</span><span class="p">,)</span>           <span class="n">aa</span>            <span class="mi">2</span>
+<span class="p">(</span><span class="s1">&#39;aaa&#39;</span><span class="p">,)</span>         <span class="n">aaa</span>            <span class="mi">3</span>
+<span class="p">(</span><span class="s1">&#39;aaaa&#39;</span><span class="p">,)</span>       <span class="n">aaaa</span>            <span class="mi">4</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>See ScalarDistributionAnalyzer for automatic reports using ATable</p></li>
+</ul>
+</li>
+</ul>
+<dl class="class">
+<dt id="enb.atable.ATable">
+<em class="property">class </em><code class="sig-prename descclassname">enb.atable.</code><code class="sig-name descname">ATable</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">csv_support_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatic table, that allows decorating functions to fill dependent variable
+columns</p>
+<dl class="method">
+<dt id="enb.atable.ATable.add_column_function">
+<em class="property">static </em><code class="sig-name descname">add_column_function</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">column_properties</em>, <em class="sig-param">fun</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.add_column_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static implementation of &#64;column_function. Subclasses may call
+this method directly when overwriting &#64;column_function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.atable.ATable.column_function">
+<em class="property">classmethod </em><code class="sig-name descname">column_function</code><span class="sig-paren">(</span><em class="sig-param">column_properties</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.column_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for functions that produce values for column_name when
+given the current index and current column values.</p>
+<p>Decorated functions are expected to have signature (atable, index, series),
+where atable is an ATable instance,
+index is a tuple of index values (corresponding to self.index),
+and series is a dict-like instance to be filled in by f.</p>
+<p>Columns are sorted by the order in which they are defined, i.e., when
+a function is decorated for the corresponding column.
+Redefinitions are not allowed.</p>
+<p>A variable _column is added to the decorated function’s scope, e.g.,
+to assign values to the intended column of the series object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column_properties</strong> – <p>one of the following options:</p>
+<ul class="simple">
+<li><p>a string with the column’s name to be used in the table</p></li>
+<li><p>a list of strings of length at least one, defining len(column_properties) columns</p></li>
+<li><p>a ColumnProperties instance, or a list thereof, defining 1 and len(column_properties) column, respectively</p></li>
+</ul>
+<p>All columns defined this way must be set in the series instance received by the decorated function</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.atable.ATable.get_df">
+<code class="sig-name descname">get_df</code><span class="sig-paren">(</span><em class="sig-param">target_indices</em>, <em class="sig-param">target_columns=None</em>, <em class="sig-param">fill=True</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">parallel_row_processing=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a pandas DataFrame containing all given indices and defined columns.
+If fill is True, missing values will be computed.
+If fill and overwrite are True, all values will be computed, regardless of
+whether they are previously present in the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_indices</strong> – list of indices that are to be contained in the table</p></li>
+<li><p><strong>target_columns</strong> – if not None, it must be a list of column names that
+are to be obtained for the specified indices. If not None, only those
+columns are computed.</p></li>
+<li><p><strong>fill</strong> – values are computed for the selected indices only if fill is True</p></li>
+<li><p><strong>overwrite</strong> – values selected for filling are computed even if they are present
+in permanent storage. Otherwise, existing values are skipped from the computation.</p></li>
+<li><p><strong>parallel_row_processing</strong> – if True, processing of rows is performed in a parallel,
+possibly distributed fashion. Otherwise, they are processed serially using the invoking thread.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a DataFrame instance containing the requested data</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>CorrupedTableError, ColumnFailedError, when an error is encountered
+processing the data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.atable.ATable.indices">
+<em class="property">property </em><code class="sig-name descname">indices</code><a class="headerlink" href="#enb.atable.ATable.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>If self.index is a string, it returns a list with that column name.
+If self.index is a list, it returns self.index.
+Useful to iterate homogeneously regardless of whether single or multiple indices are used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.atable.ATable.indices_and_columns">
+<em class="property">property </em><code class="sig-name descname">indices_and_columns</code><a class="headerlink" href="#enb.atable.ATable.indices_and_columns" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of all defined columns, i.e., those for which
+a function has been defined</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.atable.ATable.normalize_column_properties">
+<em class="property">static </em><code class="sig-name descname">normalize_column_properties</code><span class="sig-paren">(</span><em class="sig-param">column_properties</em>, <em class="sig-param">fun</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.normalize_column_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method to transform the arguments of add_column_function into
+a nonempty list of valid ColumnProperties instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_properties</strong> – the column_properties parameter to add_column_function()</p></li>
+<li><p><strong>fun</strong> – the function being decorated</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

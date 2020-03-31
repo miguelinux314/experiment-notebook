@@ -85,14 +85,15 @@ class WritableDirAction(ExistingDirAction):
         assert os.access(target_dir, os.W_OK), f"Cannot write into directory {target_dir}"
 
 
-class ExistingOrCreableDirAction(ExistingDirAction):
+class WritableOrCreableDirAction(ExistingDirAction):
     """ArgumentParser action that verifies that argument is either an existing dir
     or a path where a new folder can be created
     """
 
     @classmethod
     def assert_valid_value(cls, target_dir):
-        """Assert that target_dir is a readable dir
+        """Assert that target_dir is a writable dir, or its parent exists
+        and is writable.
         """
         try:
             ReadableDirAction.assert_valid_value(target_dir)
@@ -108,7 +109,7 @@ _options = None
 def get_options(allow_required=False):
     """Get a Namespace obtained from parsing command line arguments.
 
-    :param allow_required: If allow_required is False, it is guaranteed that no
+    :param allow_required: if allow_required is False, it is guaranteed that no
       required argument is used in the parser, so that options can be obtained
       without any arguments (e.g., for tests). Set this parameter to True
       when creating CLIs.
@@ -157,19 +158,26 @@ def get_options(allow_required=False):
     dir_options = parser.add_argument_group("Data dirs")
     # Data dir
     default_base_dataset_dir = os.path.join(calling_dir, "datasets")
-    dir_options.add_argument("--base_dataset_dir", "-d", help=f"Base dir for dataset folders.",
+    dir_options.add_argument("--base_dataset_dir", "-d", help="Base dir for dataset folders.",
                              default=default_base_dataset_dir if os.path.isdir(default_base_dataset_dir) else None,
-                             required=allow_required and not ReadableDirAction.check_valid_dir(
+                             required=allow_required and not ReadableDirAction.check_valid_value(
                                  default_base_dataset_dir),
                              action=ReadableDirAction)
+
+    # Persistence dir
+    default_persistence_dir = os.path.join(calling_dir, "persistence")
+    dir_options.add_argument("--persistence_dir", "-p",
+                             default=default_persistence_dir,
+                             action=WritableOrCreableDirAction,
+                             help="Directory where persistence files are to be stored.")
 
     # Versioned data dir
     default_version_dataset_dir = os.path.join(calling_dir, "versioned_datasets")
     dir_options.add_argument("--base_version_dataset_dir", "-vd",
-                             action=ExistingOrCreableDirAction,
+                             action=WritableOrCreableDirAction,
                              default=default_version_dataset_dir,
                              required=allow_required and False,
-                             # required=not ExistingOrCreableDirAction.check_valid_dir(default_version_dataset_dir),
+                             # required=not WritableOrCreableDirAction.check_valid_value(default_version_dataset_dir),
                              help=f"Base dir for versioned folders.")
 
     # Temp dir
@@ -182,7 +190,7 @@ def get_options(allow_required=False):
     else:
         default_tmp_dir = None
     dir_options.add_argument("-t", "--base_tmp_dir",
-                             required=allow_required and not WritableDirAction.check_valid_dir(default_tmp_dir),
+                             required=allow_required and not WritableDirAction.check_valid_value(default_tmp_dir),
                              action=WritableDirAction,
                              default=default_tmp_dir, help=f"Temporary dir.")
 

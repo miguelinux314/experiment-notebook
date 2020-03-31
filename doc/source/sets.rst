@@ -2,4 +2,4 @@ Sets
 ====
 
 .. automodule:: enb.sets
-    :members: FilePropertiesTable
+    :members: get_all_test_files,FilePropertiesTable,FileVersionTable
