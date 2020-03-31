@@ -18,7 +18,6 @@ from enb import atable
 from enb.atable import indices_to_internal_loc
 from enb import sets
 from enb import codec
-from enb import config
 from enb.config import get_options
 
 options = get_options()

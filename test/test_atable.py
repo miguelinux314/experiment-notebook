@@ -3,7 +3,6 @@
 
 import unittest
 
-import test_all
 import enb.atable as atable
 
 

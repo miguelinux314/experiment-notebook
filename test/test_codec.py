@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 """Test the codec.py module
 """
-import sys
 import unittest
 import os
 import filecmp
-import argparse
 import shutil
 import random
 

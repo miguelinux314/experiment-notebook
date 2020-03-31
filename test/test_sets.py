@@ -7,13 +7,11 @@ __date__ = "05/10/2019"
 
 import unittest
 import tempfile
-import argparse
 import glob
 import os
 import numpy as np
 import shutil
 
-from test_all import options
 import enb.sets as sets
 
 target_indices = [sets.get_canonical_path(f) for f in glob.glob("**/*.py", recursive=True)
