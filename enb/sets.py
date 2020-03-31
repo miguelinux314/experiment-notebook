@@ -14,11 +14,11 @@ __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "18/09/2019"
 
 import os
+import glob
 import hashlib
 import math
 import collections
 import numpy as np
-import re
 import ray
 
 from enb import atable
@@ -34,6 +34,19 @@ hash_algorithm = "sha256"
 
 # -------------------------- End configurable part
 
+def get_all_test_files(ext="raw"):
+    """Get a list of all set files contained in the data dir.
+
+    :param ext: if not None, only files with that extension (without dot)
+      are returned by this method.
+    """
+    assert os.path.isdir(options.base_dataset_dir), \
+        f"Nonexistent dataset dir {options.base_dataset_dir}"
+    return sorted(glob.glob(os.path.join(options.base_dataset_dir,
+                                         "**", f"*.{ext}" if ext else "*"),
+                            recursive=True), key=lambda p: os.path.getsize(p))
+
+
 def get_canonical_path(file_path):
     """:return: the canonical path to be stored in the database.
     """
@@ -45,11 +58,6 @@ def get_canonical_path(file_path):
         assert file_path.startswith(dataset_prefix)
         file_path = file_path.replace(dataset_prefix, "")
     return file_path
-
-
-def get_valid_filename(s):
-    s = str(s).strip().replace(' ', '_')
-    return re.sub(r'(?u)[^-\w.]', '', s)
 
 
 def entropy(data):
@@ -178,20 +186,20 @@ class FilePropertiesTable(FilePropertiesTable):
 
 
 class FileVersionTable(FilePropertiesTable):
-    pass
-
-
-class FileVersionTable(FileVersionTable):
     """Table to gather FilePropertiesTable information from a
     version of the original files.
 
     IMPORTANT: FileVersionTable is intended to be defined as parent class
-      _before_ the table class to be versioned, e.g.:
+    _before_ the table class to be versioned, e.g.:
 
+    ::
           class MyVersion(FileVersionTable, FilePropertiesTable):
             pass
     """
+    pass
 
+
+class FileVersionTable(FileVersionTable):
     def __init__(self, original_base_dir, version_base_dir,
                  original_properties_table, version_name,
                  csv_support_path=None):
@@ -213,6 +221,7 @@ class FileVersionTable(FileVersionTable):
 
     def version(self, input_path, output_path, file_info):
         """Create a version of input_path and save it into output_path.
+
         :param input_path: path to the file to be versioned
         :param output_path: path where the version should be saved
         :param file_info: metainformation available using super().get_df

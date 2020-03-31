@@ -60,7 +60,6 @@ class BasicComparer(Comparer):
         compression_ratio: float = None
         compression_time_seconds: float = None
         decompression_time_seconds: float = None
-        original_size_bytes: int = None
         bytes_per_sample: int = None
         compressed_size_bytes: int = None
         compression_efficiency_1byte_entropy: float = None
@@ -90,7 +89,6 @@ class BasicComparer(Comparer):
         return self.ComparisonResults(
             codec_name=compression_results.codec_name,
             codec_param_dict=dict(compression_results.codec_param_dict),
-            original_size_bytes=os.path.getsize(compression_results.original_path),
             bytes_per_sample=bytes_per_sample,
             compressed_size_bytes=os.path.getsize(compression_results.compressed_path),
             compression_time_seconds=compression_results.compression_time_seconds,
@@ -116,24 +114,41 @@ class CompressionExperiment(BasicComparer, CompressionExperiment):
         "codec_param_dict",  # not needed since codec.AbstractCodec shows these by default
     ]
 
-    def __init__(self, target_file_paths, codecs,
+    def __init__(self, codecs,
+                 target_file_paths=None,
                  csv_experiment_path=None,
                  csv_dataset_path=None,
                  dataset_table: sets.FilePropertiesTable = None,
                  overwrite_file_properties=False,
-                 parallel_fileinfo_calculation=True):
+                 parallel_dataset_property_processing=None):
         """
-        :param target_file_paths: list of paths to the files to be used as input for compression
         :param codecs: list of AbstractCodec instances
-        :param csv_experiment_path: path to the experiment csv support file
-        :param csv_dataset_path: path to the data set csv support file
-        :param dataset_table: FilePropertiesTable or subclass instance to be used to obtain
-          dataset file metainformation, and/or gather it from csv_dataset_path
+        :param target_file_paths: list of paths to the files to be used as input for compression.
+          If it is None, this list is obtained automatically from the configured
+          base dataset dir.
+        :param csv_experiment_path: if not None, path to the CSV file giving persistence
+          support to this experiment.
+          If None, it is automatically determined within options.persistence_dir.
+        :param csv_dataset_path: if not None, path to the CSV file given persistence
+          support to the dataset file properties.
+          If None, it is automatically determined within options.persistence_dir.
+        :param dataset_table: if not None, it must be a FilePropertiesTable instance or
+          subclass instance that can be used to obtain dataset file metainformation,
+          and/or gather it from csv_dataset_path. If None, a new FilePropertiesTable
+          instance is created and used for this purpose.
         :param overwrite_file_properties: if True, file properties are recomputed before starting
           the experiment. Useful for temporary and/or random datasets. Note that overwrite
           control for the experiment results themselves is controlled in the call
           to get_df
+        :param parallel_row_processing: if not None, it determines whether file properties
+          are to be obtained in parallel. If None, it is given by not options.sequential.
         """
+        target_file_paths = target_file_paths if target_file_paths is not None \
+            else sets.get_all_test_files()
+
+        if csv_dataset_path is None:
+            os.makedirs(options.persistence_dir, exist_ok=True)
+            csv_dataset_path = os.path.join(options.persistence_dir, "dataset_properties_persistence.csv")
         self.dataset_table = dataset_table if dataset_table is not None \
             else sets.FilePropertiesTable(csv_support_path=csv_dataset_path)
 
@@ -141,12 +156,22 @@ class CompressionExperiment(BasicComparer, CompressionExperiment):
 
         assert len(self.dataset_table.indices) == 1, f"FileInfo tables are expected to have a single index"
 
-        self.dataset_table_df = self.dataset_table.get_df(target_indices=target_file_paths,
-                                                          parallel_row_processing=parallel_fileinfo_calculation,
-                                                          overwrite=overwrite_file_properties)
+        if options.verbose:
+            print(f"Obtaining properties [{type(self.dataset_table).__name__}] "
+                  f"of {len(target_file_paths)} files...")
+        self.dataset_table_df = self.dataset_table.get_df(
+            target_indices=target_file_paths,
+            parallel_row_processing=(parallel_dataset_property_processing
+                                     if parallel_dataset_property_processing is not None
+                                     else not options.sequential),
+            overwrite=overwrite_file_properties)
         self.target_file_paths = target_file_paths
         self.codecs_by_name = collections.OrderedDict({
             codec_.name: codec_ for codec_ in codecs})
+
+        if csv_experiment_path is None:
+            os.makedirs(options.persistence_dir, exist_ok=True)
+            csv_experiment_path = os.path.join(options.persistence_dir, "experiment_persistence.csv")
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_table.indices + [codec_name_column])
 

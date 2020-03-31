@@ -88,7 +88,7 @@ class ColumnFailedError(CorruptedTableError):
     """Raised when a function failed to fill a column
     """
 
-    def __init__(self, atable, index, column, msg=None, ex=None):
+    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None):
         """
         :param atable: atable instance that originated the problem
         :param row: row where the problem happened

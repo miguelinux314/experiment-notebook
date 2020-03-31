@@ -137,10 +137,4 @@ class InputBitStream:
         pass
 
 
-if __name__ == '__main__':
-    import hktm
-
-    all_test_files = hktm.get_all_test_files()
-
-
 
