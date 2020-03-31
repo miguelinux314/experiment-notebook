@@ -12,7 +12,7 @@ from test_all import options
 import random
 random.seed(0xbadc0f33)
 
-from codec_implementations import bitstream
+from enb.codec_implementations import bitstream
 
 
 class TestBitstream(unittest.TestCase):

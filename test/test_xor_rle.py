@@ -8,10 +8,10 @@ import filecmp
 import unittest
 import shutil
 import glob
-from test_all import options
-from codec_implementations import codec_xor_rle
+
 
 from test_all import options
+from enb.codec_implementations import codec_xor_rle
 import test_codec
 
 

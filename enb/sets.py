@@ -35,11 +35,16 @@ hash_algorithm = "sha256"
 # -------------------------- End configurable part
 
 def get_canonical_path(file_path):
-    """:return: the canonical path to be stored in the database, relative to base_dir
+    """:return: the canonical path to be stored in the database.
     """
-    print("TODO: Remove base dir from the database")
-
-    return os.path.abspath(file_path)
+    if options.verbose > 1:
+        print("TODO: Verify that the base path is not introduced in the DB")
+    file_path = os.path.abspath(file_path)
+    if options.base_dataset_dir is not None:
+        dataset_prefix = os.path.abspath(options.base_dataset_dir)
+        assert file_path.startswith(dataset_prefix)
+        file_path = file_path.replace(dataset_prefix, "")
+    return file_path
 
 
 def get_valid_filename(s):
@@ -90,7 +95,8 @@ class FilePropertiesTable(FilePropertiesTable):
         :param series: dictionary of previously computed values for this file_path (to speed up derived values)
         """
         hasher = hashlib.new(hash_algorithm)
-        hasher.update(open(file_path, "rb").read())
+        with open(file_path, "rb") as f:
+            hasher.update(f.read())
         series[_column_name] = hasher.hexdigest()
 
     @FilePropertiesTable.column_function("size_bytes", label="File size (bytes)")

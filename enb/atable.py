@@ -495,7 +495,8 @@ class ATable(metaclass=MetaTable):
                 if options.verbose > 1:
                     print(f"No csv support path provided, using empty one.")
             elif options.verbose:
-                print(f"{self.csv_support_path} could not be loaded - creating an empty one")
+                print(f"ATable supporting file {self.csv_support_path} could not be loaded "
+                      f"- creating an empty one")
             loaded_df = pd.DataFrame(columns=self.indices_and_columns)
 
         # Add private index column if necessary

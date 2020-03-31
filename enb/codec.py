@@ -282,7 +282,7 @@ class WrapperCodec(AbstractCodec):
 
 
 def get_lossless_codec_classes():
-    from codec_implementations import all_lossless_codec_classes
+    from enb.codec_implementations import all_lossless_codec_classes
     return all_lossless_codec_classes
 
 
