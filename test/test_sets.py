@@ -14,7 +14,7 @@ import numpy as np
 import shutil
 
 from test_all import options
-import sets
+import enb.sets as sets
 
 target_indices = [sets.get_canonical_path(f) for f in glob.glob("**/*.py", recursive=True)
                   if os.path.isfile(f) and os.path.getsize(f)]

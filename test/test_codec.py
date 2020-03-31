@@ -13,9 +13,7 @@ import random
 random.seed(0xbadc0f33)
 
 from test_all import options
-import codec
-import codec_implementations
-from codec_implementations import codec_pocket
+import enb.codec as codec
 
 
 class TrivialLosslessCodec(codec.LosslessCodec):
@@ -64,10 +62,7 @@ class TestAllCodecs(unittest.TestCase):
         """Test all lossless codecs
         """
         for cls in codec.get_lossless_codec_classes():
-            if cls.__name__ == codec_pocket.PocketPlusCWE_Aug2019.__name__:
-                c = cls(window=1)
-            else:
-                c = cls()
+            c = cls()
             test_one_codec(c)
 
 

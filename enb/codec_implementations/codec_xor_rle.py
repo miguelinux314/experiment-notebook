@@ -13,10 +13,10 @@ import math
 import re
 import contextlib
 
-import codec
-from codec import FileInfo
-from codec_implementations import hktm
-from codec_implementations import bitstream
+import enb.codec as codec
+from enb.codec import FileInfo
+from enb.codec_implementations import hktm
+from enb.codec_implementations import bitstream
 
 class Trivial_XOR_Codec(codec.LosslessCodec):
     """Trivial copy-only codec to test {Input,Output}BitStream
@@ -314,8 +314,8 @@ class XOR_RLE_HuffmanTable(XOR_HKTM_VLC, codec.LosslessCodec):
                 assert current_node.child_0 is None and current_node.child_1 is None
         huffman_root.process_into_v2w_dict(v2wn_dict=value_to_word_nbits)
 
-        with contextlib.redirect_stdout(
-                open(os.path.join(os.path.dirname(__file__), "huffman_tree.txt"), "w")):
+        with open(os.path.join(os.path.dirname(__file__), "huffman_tree.txt"), "w") as tree_file, \
+                contextlib.redirect_stdout(tree_file):
             huffman_root.show()
             for v, (word, nbits) in sorted(value_to_word_nbits.items()):
                 print(f"{v-1}: {bin(word)} ({nbits} bits)")

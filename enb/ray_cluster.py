@@ -13,11 +13,19 @@ from enb.config import get_options
 options = get_options()
 
 
-def init_ray():
-    if not ray.is_initialized():
-        if os.path.exists(os.path.expanduser("~/cluster_head.txt")):
-            print("Joining cluster...")
-            ray.init(address=open(os.path.expanduser("~/cluster_head.txt"), "r").read())
+def init_ray(force=False):
+    """Initialize the ray cluster. If a ray configuration file is given
+    in the options (must contain IP:port in the first line), then
+    this method attempts joining the cluster. Otherwise, a new (local) cluster is
+    crated.
+    """
+    if not ray.is_initialized() or force:
+        if os.path.exists(options.ray_config_file):
+            address_line = open(options.ray_config_file, "r").readline().strip()
+            if options.verbose:
+                print(f"Joining cluster [config: {address_line}]...")
+            ray.init(address=address_line)
         else:
-            print("Making new cluster...")
+            if options.verbose:
+                print("Making new cluster...")
             ray.init()

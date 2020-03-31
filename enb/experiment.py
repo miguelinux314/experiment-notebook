@@ -110,7 +110,7 @@ class CompressionExperiment(atable.ATable):
 
 
 class CompressionExperiment(BasicComparer, CompressionExperiment):
-    base_tmp_dir = config.options.base_tmp_dir
+    base_tmp_dir = options.base_tmp_dir
     os.makedirs(base_tmp_dir, exist_ok=True)
 
     ignored_columns = [

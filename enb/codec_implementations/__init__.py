@@ -1,7 +1,7 @@
 import pkgutil as _pkgutil
 import importlib
 
-import codec
+import enb.codec as codec
 
 # Dynamically updated by inspection of modules found
 __all__ = []
