@@ -6,8 +6,6 @@ __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 
 import os
 import unittest
-import tempfile
-from test_all import options
 
 import random
 random.seed(0xbadc0f33)
