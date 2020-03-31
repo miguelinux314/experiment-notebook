@@ -171,6 +171,8 @@ class MetaTable(type):
     different from other classes' column_to_properties. This way,
     @column_function and all subclasses can access and update
     the dict separately for each class (as logically intended).
+
+    .. note: Table clases should inherit from ATable, not MetaTable
     """
 
     def __new__(cls, name, bases, dct):
@@ -490,12 +492,13 @@ class ATable(metaclass=MetaTable):
             for column, properties in self.column_to_properties.items():
                 if properties.has_dict_values:
                     loaded_df[column] = loaded_df[column].apply(parse_dict_string)
-        except (FileNotFoundError, ValueError):
+        except (FileNotFoundError, ValueError) as ex:
             if self.csv_support_path is None:
                 if options.verbose > 1:
                     print(f"No csv support path provided, using empty one.")
             elif options.verbose:
-                print(f"ATable supporting file {self.csv_support_path} could not be loaded "
+                print(f"ATable supporting file {self.csv_support_path} could not be loaded " +
+                      (f"({ex.__class__.__name__}) " if options.verbose > 1 else '') +
                       f"- creating an empty one")
             loaded_df = pd.DataFrame(columns=self.indices_and_columns)
 
@@ -513,13 +516,13 @@ class ATable(metaclass=MetaTable):
 def parse_dict_string(cell_value, key_type=float, value_type=float):
     """Parse a cell value for a string describing a dictionary.
     Some checks are performed based on ATable cell contents, i.e., 
-      - if a dict is found it is returned directly
-      - a Nan (empty cell) is also returned directly
-      - otherwise a string starting by '{' and ending by '}' with 'key:value' pairs
+      * if a dict is found it is returned directly
+      * a Nan (empty cell) is also returned directly
+      * otherwise a string starting by '{' and ending by '}' with 'key:value' pairs
         separated by ',' (and possibly spaces) is returned
     :param key_type: if not None, the key is substituted by a instantiation
       of that type with the key as argument
-  :param value_type: if not None, the value is substituted by a instantiation
+    :param value_type: if not None, the value is substituted by a instantiation
       of that type with the value as argument
     """
     if isinstance(cell_value, dict):
@@ -533,9 +536,9 @@ def parse_dict_string(cell_value, key_type=float, value_type=float):
         raise TypeError(f"Trying to parse a dict string '{cell_value}', "
                         f"wrong type {type(cell_value)} found instead. "
                         f"Double check the has_dict_values column property.") from ex
-    cell_value = cell_value[1:-1]
+    cell_value = cell_value[1:-1].strip()
     column_dict = dict()
-    for pair in cell_value.split(","):
+    for pair in (cell_value.split(",") if cell_value else []):
         a, b = [s.strip() for s in pair.split(":")]
         if key_type is not None:
             a = key_type(a)

@@ -16,6 +16,8 @@ import recordclass
 class FileInfo(recordclass.RecordClass):
     """Base class that defines the minimal fields to be included as the metainfo
     parameter in codecs' compress() and decompress() methods.
+
+    :note: rows from sets.ImagePropertiesTAble contain at least these fields
     """
     # file_path: path to the file
     # original_size_bytes: number of bytes in the original file
