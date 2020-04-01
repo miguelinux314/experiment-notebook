@@ -1,7 +1,6 @@
 import pkgutil as _pkgutil
-import importlib
 
-import enb.codec as codec
+import enb.icompression
 
 # Dynamically updated by inspection of modules found
 __all__ = []
@@ -20,9 +19,9 @@ for loader, module_name, is_pkg in _pkgutil.walk_packages(__path__):
         cls = getattr(_module, _element)
         if not type(cls) == type:
             continue
-        if issubclass(cls, codec.AbstractCodec):
+        if issubclass(cls, enb.icompression.AbstractCodec):
             all_codec_classes.append(cls)
-        if issubclass(cls, codec.LosslessCodec):
+        if issubclass(cls, enb.icompression.LosslessCodec):
             all_lossless_codec_classes.append(cls)
-        if issubclass(cls, codec.LossyCodec):
+        if issubclass(cls, enb.icompression.LossyCodec):
             all_lossy_codec_classes.append(cls)

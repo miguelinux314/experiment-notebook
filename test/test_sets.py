@@ -12,6 +12,7 @@ import os
 import numpy as np
 import shutil
 
+import test_all
 import enb.sets as sets
 
 target_indices = [sets.get_canonical_path(f) for f in glob.glob("**/*.py", recursive=True)
@@ -21,6 +22,8 @@ target_indices = [sets.get_canonical_path(f) for f in glob.glob("**/*.py", recur
 class TestSets(unittest.TestCase):
 
     def test_file_properties(self):
+        """Test that file properties are correctly obtained and retrieved.
+        """
         for parallel in [True, False]:
             # dataset_df = get_result_df()
             tmp_fid, tmp_path = tempfile.mkstemp(suffix=".csv")
@@ -34,8 +37,8 @@ class TestSets(unittest.TestCase):
 
                 assert np.all(empty_property_table[[
                     c for c in empty_property_table.columns
-                    if c not in dataset_properties_table.indices]].applymap(
-                    lambda x: x is None)), empty_property_table
+                    if c not in dataset_properties_table.indices]].applymap(lambda x: x is None)), \
+                    empty_property_table
 
                 # Run the actual loading sequence
                 dataset_properties_df = dataset_properties_table.get_df(
@@ -61,6 +64,8 @@ class TestSets(unittest.TestCase):
                     os.remove(tmp_path)
 
     def test_trivial_version_table(self):
+        """Test versioning with a table that simply copies the original file.
+        """
 
         tmp_dir = tempfile.mkdtemp()
         try:

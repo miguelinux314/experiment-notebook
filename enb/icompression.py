@@ -1,32 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Base classes to define codecs with an homogeneous interface
+"""Image compression experiment module
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "19/09/2019"
+__date__ = "01/04/2020"
 
-import os
-import shutil
-import functools
+import filecmp
 import hashlib
-import subprocess
+import os
+import tempfile
+import time
+import collections
 import recordclass
+import subprocess
+import functools
+import shutil
 
+import enb
+from enb import atable
+from enb import experiment
+from enb.atable import indices_to_internal_loc
+from enb.isets import ImagePropertiesTable
+from enb.config import get_options
 
-class FileInfo(recordclass.RecordClass):
-    """Base class that defines the minimal fields to be included as the metainfo
-    parameter in codecs' compress() and decompress() methods.
-
-    :note: rows from sets.ImagePropertiesTAble contain at least these fields
-    """
-    # file_path: path to the file
-    # original_size_bytes: number of bytes in the original file
-    file_path: str = None
-    original_size_bytes: int = None
-
-    @staticmethod
-    def from_path(path):
-        return FileInfo(file_path=path, original_size_bytes=os.path.getsize(path))
+options = get_options()
 
 
 class CompressionResults(recordclass.RecordClass):
@@ -116,25 +113,25 @@ class AbstractCodec:
         """
         return self.name
 
-    def compress(self, original_path: str, compressed_path: str, original_file_info: FileInfo = None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         """Compress original_path into compress_path using param_dict as params.
         :param original_path: path to the original file to be compressed
         :param compressed_path: path to the compressed file to be created
-        :param original_file_info: FileInfo-like instance corresponding to original_path,
-          or None
+        :param original_file_info: a dict-like object describing original_path's properties
+          (e.g., geometry), or None
         :return: (optional) a CompressionResults instance, or None
           (see compression_results_from_paths)
         """
         raise NotImplementedError()
 
-    def decompress(self, compressed_path, reconstructed_path, original_file_info: FileInfo = None):
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         """Decompress compressed_path into reconstructed_path using param_dict
         as params (if needed).
         :param compressed_path: path to the input compressed file
         :param reconstructed_path: path to the output reconstructed file
-        :param original_file_info: FileInfo-like instance corresponding to original_path,
-          or None. Should only be used in special cases, but codecs should include all
-          needed side information.
+        :param original_file_info: a dict-like object describing original_path's properties
+          (e.g., geometry), or None. Should only be actually used in special cases,
+          since codecs are expected to store all needed metainformation in the compressed file.
         :return: (optional) a DecompressionResults instance, or None
           (see decompression_results_from_paths)
         """
@@ -211,21 +208,28 @@ class WrapperCodec(AbstractCodec):
             self.decompressor_path = shutil.which(decompressor_path)
             assert os.path.exists(self.decompressor_path), f"{decompressor_path} isnot available"
 
-    def get_compression_params(self, original_path, compressed_path, original_file_info: FileInfo):
+    def get_compression_params(self, original_path, compressed_path, original_file_info):
         """Return a string (shell style) with the parameters
         to be passed to the compressor.
-        Same parameter semantics as AbstractCodec.compress().
+
+        Same parameter semantics as :meth:`AbstractCodec.compress`.
+
+        :param original_file_info: a dict-like object describing original_path's properties
+          (e.g., geometry), or None
         """
         raise NotImplementedError()
 
-    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info: FileInfo):
+    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         """Return a string (shell style) with the parameters
         to be passed to the decompressor.
-        Same parameter semantics as AbstractCodec.decompress().
+        Same parameter semantics as :meth:`AbstractCodec.decompress()`.
+
+        :param original_file_info: a dict-like object describing original_path's properties
+          (e.g., geometry), or None
         """
         raise NotImplementedError()
 
-    def compress(self, original_path: str, compressed_path: str, original_file_info: FileInfo = None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         compression_params = self.get_compression_params(
             original_path=original_path,
             compressed_path=compressed_path,
@@ -239,7 +243,7 @@ class WrapperCodec(AbstractCodec):
                 status=status,
                 output=output)
 
-    def decompress(self, compressed_path, reconstructed_path, original_file_info: FileInfo = None):
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         decompression_params = self.get_decompression_params(
             compressed_path=compressed_path,
             reconstructed_path=reconstructed_path,
@@ -283,21 +287,135 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
-def get_lossless_codec_classes():
-    from enb.codec_implementations import all_lossless_codec_classes
-    return all_lossless_codec_classes
+class LosslessCompressionExperiment(experiment.Experiment):
+    def __init__(self, codecs,
+                 dataset_paths=None,
+                 csv_experiment_path=None,
+                 csv_dataset_path=None,
+                 dataset_info_table: enb.isets.ImagePropertiesTable = None,
+                 overwrite_file_properties=False,
+                 parallel_dataset_property_processing=None):
+        """
+        :param codecs: list of :py:class:`AbstractCodec` instances. Note that
+          codecs are compatible with the interface of :py:class:`ExperimentTask`.
+        :param dataset_paths: list of paths to the files to be used as input for compression.
+          If it is None, this list is obtained automatically from the configured
+          base dataset dir.
+        :param csv_experiment_path: if not None, path to the CSV file giving persistence
+          support to this experiment.
+          If None, it is automatically determined within options.persistence_dir.
+        :param csv_dataset_path: if not None, path to the CSV file given persistence
+          support to the dataset file properties.
+          If None, it is automatically determined within options.persistence_dir.
+        :param dataset_info_table: if not None, it must be a ImagePropertiesTable instance or
+          subclass instance that can be used to obtain dataset file metainformation,
+          and/or gather it from csv_dataset_path. If None, a new ImagePropertiesTable
+          instance is created and used for this purpose.
+        :param overwrite_file_properties: if True, file properties are recomputed before starting
+          the experiment. Useful for temporary and/or random datasets. Note that overwrite
+          control for the experiment results themselves is controlled in the call
+          to get_df
+        :param parallel_row_processing: if not None, it determines whether file properties
+          are to be obtained in parallel. If None, it is given by not options.sequential.
+        """
+        table_class = type(dataset_info_table) if dataset_info_table is not None \
+            else enb.isets.ImagePropertiesTable
+        csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
+            else os.path.join(options.persistence_dir, f"{table_class.__name__}_persistence.csv")
+        imageinfo_table = dataset_info_table if dataset_info_table is not None \
+            else table_class(csv_support_path=csv_dataset_path)
+
+        csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
+            else f"{dataset_info_table.__class__.__name__}_persistence.csv"
+        super().__init__(tasks=codecs,
+                         dataset_paths=dataset_paths,
+                         csv_experiment_path=csv_experiment_path,
+                         csv_dataset_path=csv_dataset_path,
+                         dataset_info_table=imageinfo_table,
+                         overwrite_file_properties=overwrite_file_properties,
+                         parallel_dataset_property_processing=parallel_dataset_property_processing)
+
+    @property
+    def codecs(self):
+        """:return: an iterable of defined codecs
+        """
+        return self.tasks_by_name.values()
+
+    @codecs.setter
+    def codecs(self, new_codecs):
+        self.tasks_by_name = collections.OrderedDict({
+            codec.name: codec for codec in new_codecs})
+
+    @property
+    def codecs_by_name(self):
+        """Alias for :py:attr:`tasks_by_name`
+        """
+        return self.tasks_by_name
 
 
-def get_lossy_codec_classes():
-    from codec_implementations import all_lossy_codec_classes
-    return all_lossy_codec_classes
+class LosslessCompressionExperiment(LosslessCompressionExperiment):
 
+    @LosslessCompressionExperiment.column_function([
+        atable.ColumnProperties(name="compression_ratio", label="Compression ratio", plot_min=0),
+        atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
+                                label="Compression efficiency (1B entropy)", plot_min=0),
+        atable.ColumnProperties(name="lossless_reconstruction", label="Lossless?"),
+        atable.ColumnProperties(name="compression_time_seconds", label="Compression time (s)", plot_min=0),
+        atable.ColumnProperties(name="decompression_time_seconds", label="Decompression time (s)", plot_min=0),
+        atable.ColumnProperties(name="compressed_size_bytes", label="Compressed size (bytes)", plot_min=0),
+        atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256")
+    ])
+    def set_comparison_results(self, index, series):
+        """Perform a compression-decompression cycle and store the comparison results
+        """
+        original_file_path, codec_name = index
+        image_info_series = self.dataset_table_df.loc[indices_to_internal_loc(original_file_path)]
+        codec = self.codecs_by_name[codec_name]
+        with tempfile.NamedTemporaryFile(mode="w", dir=options.base_tmp_dir) \
+                as compressed_file, \
+                tempfile.NamedTemporaryFile(mode="w", dir=options.base_tmp_dir) \
+                        as reconstructed_file:
+            if options.verbose > 1:
+                print(f"[E]xecuting compression {codec.name} on {index}")
+            time_before = time.process_time()
+            cr = codec.compress(original_path=original_file_path,
+                                compressed_path=compressed_file.name,
+                                original_file_info=image_info_series)
+            process_compression_time = time.process_time() - time_before
+            if cr is None:
+                if options.verbose > 1:
+                    print(f"[E]xecuting decompression {codec.name} on {index}")
+                cr = codec.compression_results_from_paths(
+                    original_path=original_file_path, compressed_path=compressed_file.name)
 
-if __name__ == '__main__':
-    print("Available lossless codecs:")
-    print("\n".join(f"\t- {c.__name__}" for c in get_lossless_codec_classes())
-          if get_lossless_codec_classes() else "\t(none)")
-    print()
-    print("Available lossy codecs:")
-    print("\n".join(f"\t- {c.__name__}" for c in get_lossy_codec_classes())
-          if get_lossy_codec_classes() else "\t(none)")
+            time_before = time.process_time()
+            dr = codec.decompress(compressed_path=compressed_file.name,
+                                  reconstructed_path=reconstructed_file.name,
+                                  original_file_info=image_info_series)
+            process_decompression_time = time.process_time() - time_before
+            if dr is None:
+                dr = codec.decompression_results_from_paths(
+                    compressed_path=compressed_file.name,
+                    reconstructed_path=reconstructed_file.name)
+
+            assert cr.compressed_path == dr.compressed_path
+            assert image_info_series["bytes_per_sample"] * image_info_series["samples"] \
+                   == os.path.getsize(cr.original_path)
+            compression_bps = 8 * os.path.getsize(dr.compressed_path) / (image_info_series["samples"])
+            compression_efficiency_1byte_entropy = (image_info_series["entropy_1B_bps"] * image_info_series[
+                "bytes_per_sample"]) / compression_bps
+            hasher = hashlib.sha256()
+            hasher.update(open(cr.compressed_path, "rb").read())
+            compressed_file_sha256 = hasher.hexdigest()
+
+            series["lossless_reconstruction"] = filecmp.cmp(cr.original_path, dr.reconstructed_path)
+            series["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
+            series["compressed_size_bytes"] = os.path.getsize(cr.compressed_path)
+            series["compression_time_seconds"] = cr.compression_time_seconds \
+                if cr.compression_time_seconds is not None \
+                else process_compression_time
+            series["decompression_time_seconds"] = dr.decompression_time_seconds \
+                if dr.decompression_time_seconds is not None \
+                else process_decompression_time
+            series["compression_ratio"] = os.path.getsize(cr.original_path) / os.path.getsize(cr.compressed_path)
+            series["compressed_file_sha256"] = compressed_file_sha256

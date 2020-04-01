@@ -89,7 +89,8 @@
 <li><a class="reference internal" href="#module-enb.config">enb.config module</a></li>
 <li><a class="reference internal" href="#module-enb.context">enb.context module</a></li>
 <li><a class="reference internal" href="#module-enb.experiment">enb.experiment module</a></li>
-<li><a class="reference internal" href="#module-enb.imagesets">enb.imagesets module</a></li>
+<li><a class="reference internal" href="#module-enb.icompression">enb.icompression module</a></li>
+<li><a class="reference internal" href="#module-enb.isets">enb.isets module</a></li>
 <li><a class="reference internal" href="#module-enb.plotdata">enb.plotdata module</a></li>
 <li><a class="reference internal" href="#module-enb.ray_cluster">enb.ray_cluster module</a></li>
 <li><a class="reference internal" href="#module-enb.sets">enb.sets module</a></li>
@@ -941,23 +942,6 @@ samples counted in this instance (i.e., conditioned to the current context).</p>
 <span id="enb-experiment-module"></span><h2>enb.experiment module<a class="headerlink" href="#module-enb.experiment" title="Permalink to this headline">¶</a></h2>
 <p>Tools to run compression experiments</p>
 <dl class="class">
-<dt id="enb.experiment.CompressionExperiment">
-<em class="property">class </em><code class="sig-prename descclassname">enb.experiment.</code><code class="sig-name descname">CompressionExperiment</code><span class="sig-paren">(</span><em class="sig-param">codecs</em>, <em class="sig-param">dataset_paths=None</em>, <em class="sig-param">csv_experiment_path=None</em>, <em class="sig-param">csv_dataset_path=None</em>, <em class="sig-param">dataset_info_table: enb.imagesets.ImagePropertiesTable = None</em>, <em class="sig-param">overwrite_file_properties=False</em>, <em class="sig-param">parallel_dataset_property_processing=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.experiment.CompressionExperiment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.experiment.CompressionExperiment" title="enb.experiment.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.CompressionExperiment</span></code></a></p>
-<dl class="attribute">
-<dt id="enb.experiment.CompressionExperiment.column_to_properties">
-<code class="sig-name descname">column_to_properties</code><em class="property"> = {'compressed_file_sha256': ColumnProperties(name=compressed_file_sha256, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compressed file's SHA256, semilog_x=False, semilog_y=False, has_dict_values=False), 'compressed_size_bytes': ColumnProperties(name=compressed_size_bytes, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compressed size (bytes), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'compression_efficiency_1byte_entropy': ColumnProperties(name=compression_efficiency_1byte_entropy, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression efficiency (1B entropy), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'compression_ratio': ColumnProperties(name=compression_ratio, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression ratio, plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'compression_time_seconds': ColumnProperties(name=compression_time_seconds, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression time (s), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'decompression_time_seconds': ColumnProperties(name=decompression_time_seconds, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Decompression time (s), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'lossless_reconstruction': ColumnProperties(name=lossless_reconstruction, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Lossless?, semilog_x=False, semilog_y=False, has_dict_values=False), 'param_dict': ColumnProperties(name=param_dict, fun=&lt;function Experiment.set_param_dict&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'task_label': ColumnProperties(name=task_label, fun=&lt;function Experiment.set_task_name&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'task_name': ColumnProperties(name=task_name, fun=&lt;function Experiment.set_task_name&gt;, semilog_x=False, semilog_y=False, has_dict_values=False)}</em><a class="headerlink" href="#enb.experiment.CompressionExperiment.column_to_properties" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="enb.experiment.CompressionExperiment.set_comparison_results">
-<code class="sig-name descname">set_comparison_results</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.experiment.CompressionExperiment.set_comparison_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a compression-decompression cycle and store the comparison results</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="enb.experiment.Experiment">
 <em class="property">class </em><code class="sig-prename descclassname">enb.experiment.</code><code class="sig-name descname">Experiment</code><span class="sig-paren">(</span><em class="sig-param">tasks</em>, <em class="sig-param">dataset_paths=None</em>, <em class="sig-param">csv_experiment_path=None</em>, <em class="sig-param">csv_dataset_path=None</em>, <em class="sig-param">dataset_info_table: enb.sets.FilePropertiesTable = None</em>, <em class="sig-param">overwrite_file_properties=False</em>, <em class="sig-param">parallel_dataset_property_processing=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.experiment.Experiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a></p>
@@ -1001,78 +985,99 @@ It is not intended to be displayed as much as to be used as an index.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-enb.imagesets">
-<span id="enb-imagesets-module"></span><h2>enb.imagesets module<a class="headerlink" href="#module-enb.imagesets" title="Permalink to this headline">¶</a></h2>
-<p>Classes describing sets of images</p>
+<div class="section" id="module-enb.icompression">
+<span id="enb-icompression-module"></span><h2>enb.icompression module<a class="headerlink" href="#module-enb.icompression" title="Permalink to this headline">¶</a></h2>
+<p>Image compression experiment module</p>
 <dl class="class">
-<dt id="enb.imagesets.ImagePropertiesTable">
-<em class="property">class </em><code class="sig-prename descclassname">enb.imagesets.</code><code class="sig-name descname">ImagePropertiesTable</code><span class="sig-paren">(</span><em class="sig-param">csv_support_path=None</em>, <em class="sig-param">base_dir=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.imagesets.ImagePropertiesTable" title="enb.imagesets.ImagePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.imagesets.ImagePropertiesTable</span></code></a></p>
+<dt id="enb.icompression.LosslessCompressionExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">enb.icompression.</code><code class="sig-name descname">LosslessCompressionExperiment</code><span class="sig-paren">(</span><em class="sig-param">codecs</em>, <em class="sig-param">dataset_paths=None</em>, <em class="sig-param">csv_experiment_path=None</em>, <em class="sig-param">csv_dataset_path=None</em>, <em class="sig-param">dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em class="sig-param">overwrite_file_properties=False</em>, <em class="sig-param">parallel_dataset_property_processing=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LosslessCompressionExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a></p>
 <dl class="attribute">
-<dt id="enb.imagesets.ImagePropertiesTable.column_to_properties">
-<code class="sig-name descname">column_to_properties</code><em class="property"> = {'1B_value_counts': ColumnProperties(name=1B_value_counts, fun=&lt;function ImagePropertiesTable.set_1B_value_counts&gt;, label=1-byte value counts, semilog_x=False, semilog_y=True, has_dict_values=True), 'byte_value_avg': ColumnProperties(name=byte_value_avg, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'byte_value_max': ColumnProperties(name=byte_value_max, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'byte_value_min': ColumnProperties(name=byte_value_min, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'byte_value_std': ColumnProperties(name=byte_value_std, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'bytes_per_sample': ColumnProperties(name=bytes_per_sample, fun=&lt;function ImagePropertiesTable.set_bytes_per_sample&gt;, label=Bytes per sample, plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'entropy_1B_bps': ColumnProperties(name=entropy_1B_bps, fun=&lt;function ImagePropertiesTable.set_file_entropy&gt;, label=Entropy (bps, 1-byte samples), plot_min=0, plot_max=8, semilog_x=False, semilog_y=False, has_dict_values=False), 'histogram_fullness_1byte': ColumnProperties(name=histogram_fullness_1byte, fun=&lt;function ImagePropertiesTable.set_histogram_fullness_1byte&gt;, label=Histogram usage fraction (1 byte), plot_min=0, plot_max=1, semilog_x=False, semilog_y=False, has_dict_values=False), 'histogram_fullness_2bytes': ColumnProperties(name=histogram_fullness_2bytes, fun=&lt;function ImagePropertiesTable.set_histogram_fullness_2bytes&gt;, label=Histogram usage fraction (2 bytes), plot_min=0, plot_max=1, semilog_x=False, semilog_y=False, has_dict_values=False), 'histogram_fullness_4bytes': ColumnProperties(name=histogram_fullness_4bytes, fun=&lt;function ImagePropertiesTable.set_histogram_fullness_4bytes&gt;, label=Histogram usage fraction (4 bytes), plot_min=0, plot_max=1, semilog_x=False, semilog_y=False, has_dict_values=False), 'samples': ColumnProperties(name=samples, fun=&lt;function ImagePropertiesTable.set_samples&gt;, label=Sample count, plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'sha256': ColumnProperties(name=sha256, fun=&lt;function FilePropertiesTable.set_hash_digest&gt;, label=sha256 hex digest, semilog_x=False, semilog_y=False, has_dict_values=False), 'signed': ColumnProperties(name=signed, fun=&lt;function ImagePropertiesTable.set_signed&gt;, label=Signed samples, semilog_x=False, semilog_y=False, has_dict_values=False), 'size_bytes': ColumnProperties(name=size_bytes, fun=&lt;function FilePropertiesTable.set_file_size&gt;, label=File size (bytes), semilog_x=False, semilog_y=False, has_dict_values=False)}</em><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.icompression.LosslessCompressionExperiment.column_to_properties">
+<code class="sig-name descname">column_to_properties</code><em class="property"> = {'compressed_file_sha256': ColumnProperties(name=compressed_file_sha256, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Compressed file's SHA256, semilog_x=False, semilog_y=False, has_dict_values=False), 'compressed_size_bytes': ColumnProperties(name=compressed_size_bytes, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Compressed size (bytes), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'compression_efficiency_1byte_entropy': ColumnProperties(name=compression_efficiency_1byte_entropy, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Compression efficiency (1B entropy), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'compression_ratio': ColumnProperties(name=compression_ratio, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Compression ratio, plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'compression_time_seconds': ColumnProperties(name=compression_time_seconds, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Compression time (s), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'decompression_time_seconds': ColumnProperties(name=decompression_time_seconds, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Decompression time (s), plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'lossless_reconstruction': ColumnProperties(name=lossless_reconstruction, fun=&lt;function LosslessCompressionExperiment.set_comparison_results&gt;, label=Lossless?, semilog_x=False, semilog_y=False, has_dict_values=False), 'param_dict': ColumnProperties(name=param_dict, fun=&lt;function Experiment.set_param_dict&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'task_label': ColumnProperties(name=task_label, fun=&lt;function Experiment.set_task_name&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'task_name': ColumnProperties(name=task_name, fun=&lt;function Experiment.set_task_name&gt;, semilog_x=False, semilog_y=False, has_dict_values=False)}</em><a class="headerlink" href="#enb.icompression.LosslessCompressionExperiment.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_1B_value_counts">
-<code class="sig-name descname">set_1B_value_counts</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_1B_value_counts" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.icompression.LosslessCompressionExperiment.set_comparison_results">
+<code class="sig-name descname">set_comparison_results</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LosslessCompressionExperiment.set_comparison_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a compression-decompression cycle and store the comparison results</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-enb.isets">
+<span id="enb-isets-module"></span><h2>enb.isets module<a class="headerlink" href="#module-enb.isets" title="Permalink to this headline">¶</a></h2>
+<p>Image sets information tables</p>
+<dl class="class">
+<dt id="enb.isets.ImagePropertiesTable">
+<em class="property">class </em><code class="sig-prename descclassname">enb.isets.</code><code class="sig-name descname">ImagePropertiesTable</code><span class="sig-paren">(</span><em class="sig-param">csv_support_path=None</em>, <em class="sig-param">base_dir=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.isets.ImagePropertiesTable" title="enb.isets.ImagePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.ImagePropertiesTable</span></code></a></p>
+<dl class="attribute">
+<dt id="enb.isets.ImagePropertiesTable.column_to_properties">
+<code class="sig-name descname">column_to_properties</code><em class="property"> = {'1B_value_counts': ColumnProperties(name=1B_value_counts, fun=&lt;function ImagePropertiesTable.set_1B_value_counts&gt;, label=1-byte value counts, semilog_x=False, semilog_y=True, has_dict_values=True), 'byte_value_avg': ColumnProperties(name=byte_value_avg, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'byte_value_max': ColumnProperties(name=byte_value_max, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'byte_value_min': ColumnProperties(name=byte_value_min, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'byte_value_std': ColumnProperties(name=byte_value_std, fun=&lt;function ImagePropertiesTable.set_byte_value_extrema&gt;, semilog_x=False, semilog_y=False, has_dict_values=False), 'bytes_per_sample': ColumnProperties(name=bytes_per_sample, fun=&lt;function ImagePropertiesTable.set_bytes_per_sample&gt;, label=Bytes per sample, plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'entropy_1B_bps': ColumnProperties(name=entropy_1B_bps, fun=&lt;function ImagePropertiesTable.set_file_entropy&gt;, label=Entropy (bps, 1-byte samples), plot_min=0, plot_max=8, semilog_x=False, semilog_y=False, has_dict_values=False), 'histogram_fullness_1byte': ColumnProperties(name=histogram_fullness_1byte, fun=&lt;function ImagePropertiesTable.set_histogram_fullness_1byte&gt;, label=Histogram usage fraction (1 byte), plot_min=0, plot_max=1, semilog_x=False, semilog_y=False, has_dict_values=False), 'histogram_fullness_2bytes': ColumnProperties(name=histogram_fullness_2bytes, fun=&lt;function ImagePropertiesTable.set_histogram_fullness_2bytes&gt;, label=Histogram usage fraction (2 bytes), plot_min=0, plot_max=1, semilog_x=False, semilog_y=False, has_dict_values=False), 'histogram_fullness_4bytes': ColumnProperties(name=histogram_fullness_4bytes, fun=&lt;function ImagePropertiesTable.set_histogram_fullness_4bytes&gt;, label=Histogram usage fraction (4 bytes), plot_min=0, plot_max=1, semilog_x=False, semilog_y=False, has_dict_values=False), 'samples': ColumnProperties(name=samples, fun=&lt;function ImagePropertiesTable.set_samples&gt;, label=Sample count, plot_min=0, semilog_x=False, semilog_y=False, has_dict_values=False), 'sha256': ColumnProperties(name=sha256, fun=&lt;function FilePropertiesTable.set_hash_digest&gt;, label=sha256 hex digest, semilog_x=False, semilog_y=False, has_dict_values=False), 'signed': ColumnProperties(name=signed, fun=&lt;function ImagePropertiesTable.set_signed&gt;, label=Signed samples, semilog_x=False, semilog_y=False, has_dict_values=False), 'size_bytes': ColumnProperties(name=size_bytes, fun=&lt;function FilePropertiesTable.set_file_size&gt;, label=File size (bytes), semilog_x=False, semilog_y=False, has_dict_values=False)}</em><a class="headerlink" href="#enb.isets.ImagePropertiesTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enb.isets.ImagePropertiesTable.set_1B_value_counts">
+<code class="sig-name descname">set_1B_value_counts</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_1B_value_counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate a dict with the counts for each (unsigned) byte value
 found in file_path</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_byte_value_extrema">
-<code class="sig-name descname">set_byte_value_extrema</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_byte_value_extrema" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_byte_value_extrema">
+<code class="sig-name descname">set_byte_value_extrema</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_byte_value_extrema" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_bytes_per_sample">
-<code class="sig-name descname">set_bytes_per_sample</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_bytes_per_sample" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_bytes_per_sample">
+<code class="sig-name descname">set_bytes_per_sample</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_bytes_per_sample" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_file_entropy">
-<code class="sig-name descname">set_file_entropy</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_file_entropy" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_file_entropy">
+<code class="sig-name descname">set_file_entropy</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_file_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the zero-order entropy of the data in file_path (1-byte samples are assumed)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_histogram_fullness_1byte">
-<code class="sig-name descname">set_histogram_fullness_1byte</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_histogram_fullness_1byte" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_histogram_fullness_1byte">
+<code class="sig-name descname">set_histogram_fullness_1byte</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_histogram_fullness_1byte" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the fraction of the histogram (of all possible values that can
 be represented) is actually present in file_path, considering unsigned  1-byte samples.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_histogram_fullness_2bytes">
-<code class="sig-name descname">set_histogram_fullness_2bytes</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_histogram_fullness_2bytes" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_histogram_fullness_2bytes">
+<code class="sig-name descname">set_histogram_fullness_2bytes</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_histogram_fullness_2bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the fraction of the histogram (of all possible values that can
 be represented) is actually present in file_path, considering unsigned 2-byte samples.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_histogram_fullness_4bytes">
-<code class="sig-name descname">set_histogram_fullness_4bytes</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_histogram_fullness_4bytes" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_histogram_fullness_4bytes">
+<code class="sig-name descname">set_histogram_fullness_4bytes</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_histogram_fullness_4bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the fraction of the histogram (of all possible values that can
 be represented) is actually present in file_path, considering 4-byte samples.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_samples">
-<code class="sig-name descname">set_samples</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_samples" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_samples">
+<code class="sig-name descname">set_samples</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the number of samples in the image</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="enb.imagesets.ImagePropertiesTable.set_signed">
-<code class="sig-name descname">set_signed</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.ImagePropertiesTable.set_signed" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.ImagePropertiesTable.set_signed">
+<code class="sig-name descname">set_signed</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">series</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.ImagePropertiesTable.set_signed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
-<dt id="enb.imagesets.entropy">
-<code class="sig-prename descclassname">enb.imagesets.</code><code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.imagesets.entropy" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.isets.entropy">
+<code class="sig-prename descclassname">enb.isets.</code><code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the zero-order entropy of the provided data</p>
 </dd></dl>
 
@@ -1299,7 +1304,7 @@ the cluster. Otherwise, a new (local) cluster is created.</p>
 <p>The FilePropertiesTable class contains the minimal information about the file
 as well as basic statistical measurements.</p>
 <p>Subclasses of this table can be created adding extra columns.</p>
-<p>The experiment.CompressionExperiment class takes an instance of FilePropertiesTable
+<p>The experiment.LosslessCompressionExperiment class takes an instance of FilePropertiesTable
 to know what files the experiment should be run on.</p>
 <dl class="class">
 <dt id="enb.sets.FilePropertiesTable">

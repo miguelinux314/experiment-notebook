@@ -120,7 +120,7 @@ def get_options(allow_required=False):
     if _options is not None:
         return _options
 
-    calling_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
+    calling_script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
@@ -150,14 +150,14 @@ def get_options(allow_required=False):
                                    nargs="+",
                                    type=str)
 
-    default_ray_config_file = os.path.join(calling_dir, "ray_cluster_head.txt")
+    default_ray_config_file = os.path.join(calling_script_dir, "ray_cluster_head.txt")
     execution_options.add_argument("-r", "--ray_config_file", action=ReadableFileAction,
                                    default=default_ray_config_file,
                                    help="Ray server configuration path (must contain IP:port in its first line)")
 
     dir_options = parser.add_argument_group("Data dirs")
     # Data dir
-    default_base_dataset_dir = os.path.join(calling_dir, "datasets")
+    default_base_dataset_dir = os.path.join(calling_script_dir, "datasets")
     dir_options.add_argument("--base_dataset_dir", "-d", help="Base dir for dataset folders.",
                              default=default_base_dataset_dir if os.path.isdir(default_base_dataset_dir) else None,
                              required=allow_required and not ReadableDirAction.check_valid_value(
@@ -165,14 +165,14 @@ def get_options(allow_required=False):
                              action=ReadableDirAction)
 
     # Persistence dir
-    default_persistence_dir = os.path.join(calling_dir, "persistence")
+    default_persistence_dir = os.path.join(calling_script_dir, f"{sys.argv[0]}_persistence")
     dir_options.add_argument("--persistence_dir", "-p",
                              default=default_persistence_dir,
                              action=WritableOrCreableDirAction,
                              help="Directory where persistence files are to be stored.")
 
     # Versioned data dir
-    default_version_dataset_dir = os.path.join(calling_dir, "versioned_datasets")
+    default_version_dataset_dir = os.path.join(calling_script_dir, "versioned_datasets")
     dir_options.add_argument("--base_version_dataset_dir", "-vd",
                              action=WritableOrCreableDirAction,
                              default=default_version_dataset_dir,
@@ -195,7 +195,7 @@ def get_options(allow_required=False):
                              default=default_tmp_dir, help=f"Temporary dir.")
 
     # Base dir for external binaries (e.g., codecs or other tools)
-    default_external_binary_dir = os.path.join(calling_dir, "bin")
+    default_external_binary_dir = os.path.join(calling_script_dir, "bin")
     default_external_binary_dir = default_external_binary_dir if os.path.isdir(default_external_binary_dir) else None
     dir_options.add_argument("--bin", "--external_bin_base_dir", help="External binary base dir.",
                              action=ReadableDirAction, default=default_external_binary_dir,

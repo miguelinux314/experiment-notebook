@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Classes describing sets of images
+"""Image sets information tables
 """
-import collections
 import math
+import numpy as np
+import collections
+
+from enb import atable
+from enb import sets
+
 
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "31/03/2020"
+__date__ = "01/04/2020"
 
-import numpy as np
-import enb.atable as atable
-import enb.sets as sets
-
+def entropy(data):
+    """Compute the zero-order entropy of the provided data
+    """
+    counter = collections.Counter(np.array(data, copy=False).flatten())
+    total_sum = sum(counter.values())
+    probabilities = (count / total_sum for value, count in counter.items())
+    return -sum(p * math.log2(p) for p in probabilities)
 
 class ImagePropertiesTable(sets.FilePropertiesTable):
-    """Properties table for images
+    """Properties table for images. Allows automatic handling of tags in
+    filenames, e.g., ZxYxX_u16be.
     """
     pass
 
@@ -110,12 +119,3 @@ class ImagePropertiesTable(ImagePropertiesTable):
         series[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint32)).size / (2 ** 32)
         assert 0 <= series[_column_name] <= 1
-
-
-def entropy(data):
-    """Compute the zero-order entropy of the provided data
-    """
-    counter = collections.Counter(np.array(data, copy=False).flatten())
-    total_sum = sum(counter.values())
-    probabilities = (count / total_sum for value, count in counter.items())
-    return -sum(p * math.log2(p) for p in probabilities)
