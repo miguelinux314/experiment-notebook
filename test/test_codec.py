@@ -11,7 +11,7 @@ import random
 random.seed(0xbadc0f33)
 
 from test_all import options
-import enb.codec as codec
+import enb.icompression as icompression
 import enb.codec_implementations.trivial_codecs
 
 
@@ -25,13 +25,6 @@ class TestAllCodecs(unittest.TestCase):
         for cls in [enb.codec_implementations.trivial_codecs.TrivialLosslessCodec,
                     enb.codec_implementations.trivial_codecs.TrivialCpWrapper]:
             test_one_codec(cls())
-
-    def test_all_lossless(self):
-        """Test all lossless codecs
-        """
-        for cls in codec.get_lossless_codec_classes():
-            c = cls()
-            test_one_codec(c)
 
 
 def test_one_codec(codec_instance):

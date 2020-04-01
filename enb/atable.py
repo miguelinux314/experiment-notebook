@@ -515,11 +515,13 @@ class ATable(metaclass=MetaTable):
 
 def parse_dict_string(cell_value, key_type=float, value_type=float):
     """Parse a cell value for a string describing a dictionary.
-    Some checks are performed based on ATable cell contents, i.e., 
+    Some checks are performed based on ATable cell contents, i.e.,
+
       * if a dict is found it is returned directly
       * a Nan (empty cell) is also returned directly
       * otherwise a string starting by '{' and ending by '}' with 'key:value' pairs
         separated by ',' (and possibly spaces) is returned
+
     :param key_type: if not None, the key is substituted by a instantiation
       of that type with the key as argument
     :param value_type: if not None, the value is substituted by a instantiation

@@ -59,10 +59,18 @@ enb.experiment module
    :undoc-members:
    :show-inheritance:
 
-enb.imagesets module
---------------------
+enb.icompression module
+-----------------------
 
-.. automodule:: enb.imagesets
+.. automodule:: enb.icompression
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.isets module
+----------------
+
+.. automodule:: enb.isets
    :members:
    :undoc-members:
    :show-inheritance:
