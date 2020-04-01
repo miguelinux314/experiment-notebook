@@ -494,8 +494,8 @@ class ATable(metaclass=MetaTable):
                     loaded_df[column] = loaded_df[column].apply(parse_dict_string)
         except (FileNotFoundError, ValueError) as ex:
             if self.csv_support_path is None:
-                if options.verbose > 1:
-                    print(f"No csv support path provided, using empty one.")
+                if options.verbose > 2:
+                    print(f"[I]nfo: no csv persistence support.")
             elif options.verbose:
                 print(f"ATable supporting file {self.csv_support_path} could not be loaded " +
                       (f"({ex.__class__.__name__}) " if options.verbose > 1 else '') +
