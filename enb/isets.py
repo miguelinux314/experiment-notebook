@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 """Image sets information tables
 """
+
+import os
 import math
 import numpy as np
+import re
 import collections
 
 from enb import atable
 from enb import sets
 
-
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "01/04/2020"
+
 
 def entropy(data):
     """Compute the zero-order entropy of the provided data
@@ -20,6 +23,7 @@ def entropy(data):
     total_sum = sum(counter.values())
     probabilities = (count / total_sum for value, count in counter.items())
     return -sum(p * math.log2(p) for p in probabilities)
+
 
 class ImagePropertiesTable(sets.FilePropertiesTable):
     """Properties table for images. Allows automatic handling of tags in
@@ -55,6 +59,29 @@ class ImagePropertiesTable(ImagePropertiesTable):
         """
         assert series["size_bytes"] % series["bytes_per_sample"] == 0
         series[_column_name] = series["size_bytes"] // series["bytes_per_sample"]
+
+    @ImagePropertiesTable.column_function([
+        atable.ColumnProperties(name="width", label="Width", plot_min=1),
+        atable.ColumnProperties(name="height", label="Height", plot_min=1),
+        atable.ColumnProperties(name="component_count", label="Components", plot_min=1),
+    ])
+    def set_image_geometry(self, file_path, series):
+        """Obtain the image's geometry (width, height and number of components)
+        based on the filename tags (and possibly its size)
+        """
+        match = re.search(r"(\d+)x(\d+)x(\d+)", file_path)
+        if match:
+            component_count, height, width = (int(match.group(i)) for i in range(1, 3 + 1))
+            if any(dim < 1 for dim in (width, height, component_count)):
+                raise ValueError(f"Invalid dimension tag in {file_path}")
+            series["width"], series["height"], series["component_count"] = \
+                width, height, component_count
+            assert os.path.getsize(file_path) == width * height * component_count * series["bytes_per_sample"]
+            assert series["samples"] == width*height*component_count
+            return
+
+        raise ValueError("Cannot determine image geometry "
+                         f"from file name {os.path.basename(file_path)}")
 
     @ImagePropertiesTable.column_function(
         atable.ColumnProperties(name="1B_value_counts",
