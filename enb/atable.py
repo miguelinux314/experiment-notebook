@@ -57,6 +57,7 @@ import datetime
 import ray
 
 from enb.config import get_options
+from enb import config
 
 options = get_options()
 
@@ -629,6 +630,7 @@ def process_row(atable, index, column_fun_tuples, row, overwrite, fill, options)
                              options=options)
 
 
+@config.propagates_options
 def process_row_local(atable, index, column_fun_tuples, row, overwrite, fill, options):
     """Run as described in process_row, but as a local function.
     """
