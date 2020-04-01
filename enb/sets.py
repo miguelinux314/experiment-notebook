@@ -19,6 +19,7 @@ import hashlib
 import ray
 
 from enb import atable
+from enb import config
 from enb.config import get_options
 
 options = get_options()
@@ -40,7 +41,9 @@ def get_all_test_files(ext="raw"):
     assert os.path.isdir(options.base_dataset_dir), \
         f"Nonexistent dataset dir {options.base_dataset_dir}"
     return sorted(
-        (get_canonical_path(p) for p in glob.glob(os.path.join(options.base_dataset_dir, "**", f"*.{ext}" if ext else "*"), recursive=True)
+        (get_canonical_path(p) for p in glob.glob(
+            os.path.join(options.base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
+            recursive=True)
          if os.path.isfile(p)),
         key=lambda p: os.path.getsize(p))
 
@@ -55,10 +58,14 @@ def get_canonical_path(file_path):
     #     file_path = file_path.replace(dataset_prefix, "")
     return file_path
 
+
 class UnkownPropertiesException(BaseException):
     pass
 
+
 class FilePropertiesTable(atable.ATable):
+    """Table describing basic file properties (see decorated methods below).
+    """
     version_name = "original"
     hash_field_name = f"{hash_algorithm}"
     base_dir = None
@@ -66,11 +73,6 @@ class FilePropertiesTable(atable.ATable):
     def __init__(self, csv_support_path=None, base_dir=None):
         super().__init__(index="file_path", csv_support_path=csv_support_path)
         self.base_dir = base_dir
-
-
-class FilePropertiesTable(FilePropertiesTable):
-    """Table describing basic file properties (see decorated methods below).
-    """
 
     def get_relative_path(self, file_path):
         """Get the relative path. Overwritten to handle the versioned path.
@@ -81,6 +83,17 @@ class FilePropertiesTable(FilePropertiesTable):
         assert file_path[0] == "/"
         file_path = file_path[1:]
         return file_path
+
+
+class FilePropertiesTable(FilePropertiesTable):
+    @FilePropertiesTable.column_function("corpus", label="Corpus name")
+    def set_corpus(self, file_path, series):
+        file_dir = os.path.dirname(os.path.abspath(os.path.realpath(file_path)))
+        base_dir = os.path.abspath(os.path.realpath(options.base_dataset_dir))
+        file_dir = file_dir.replace(base_dir, "")
+        while file_dir and file_dir[0] == os.sep:
+            file_dir = file_dir[1:]
+        series[_column_name] = file_dir
 
     @FilePropertiesTable.column_function("size_bytes", label="File size (bytes)")
     def set_file_size(self, file_path, series):
@@ -102,6 +115,7 @@ class FilePropertiesTable(FilePropertiesTable):
         with open(file_path, "rb") as f:
             hasher.update(f.read())
         series[_column_name] = hasher.hexdigest()
+
 
 class FileVersionTable(FilePropertiesTable):
     """Table to gather FilePropertiesTable information from a
@@ -195,9 +209,8 @@ class FileVersionTable(FileVersionTable):
             ray.get(versioning_result_ids)
         else:
             for original_path, version_path in zip(target_indices, version_indices):
-                version_one_path_local(version_fun=self.version, input_path=original_path,
-                                       output_path=version_path, overwrite=overwrite,
-                                       original_info_df=original_df, options=options)
+                version_one_path_local(version_fun=self.version, input_path=original_path, output_path=version_path,
+                                       overwrite=overwrite, original_info_df=original_df, options=options)
 
         # Invoke df of the next parent that is not a FileVersionTable (an ATable subclass)
         filtered_bases = tuple(cls for cls in self.__class__.__bases__ if cls is not FileVersionTable)
@@ -208,16 +221,14 @@ class FileVersionTable(FileVersionTable):
 
 
 @ray.remote
-def version_one_path(version_fun, input_path, output_path, overwrite, options, original_info_df):
+def version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, options):
     """Run the versioning of one path
     """
-    return version_one_path_local(version_fun=version_fun, input_path=input_path,
-                                  output_path=output_path, overwrite=overwrite,
-                                  options=options, original_info_df=original_info_df)
+    return version_one_path_local(version_fun=version_fun, input_path=input_path, output_path=output_path,
+                                  overwrite=overwrite, original_info_df=original_info_df, options=options)
 
-
-def version_one_path_local(version_fun, input_path, output_path, overwrite, options,
-                           original_info_df):
+@config.propagates_options
+def version_one_path_local(version_fun, input_path, output_path, overwrite, original_info_df, options):
     """Version input_path into output_path using version_fun
     :param version_fun: function with signature like FileVersionTable.version
     :param input_path: path of the file to be versioned

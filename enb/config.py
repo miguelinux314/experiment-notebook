@@ -9,6 +9,7 @@ import sys
 import os
 import tempfile
 import argparse
+import functools
 
 
 class ValidationAction(argparse.Action):
@@ -106,18 +107,22 @@ class WritableOrCreableDirAction(ExistingDirAction):
 _options = None
 
 
-def get_options(allow_required=False):
+def get_options(from_main=False):
     """Get a Namespace obtained from parsing command line arguments.
 
-    :param allow_required: if allow_required is False, it is guaranteed that no
+    :param from_main: if from_main is False, it is guaranteed that no
       required argument is used in the parser, so that options can be obtained
       without any arguments (e.g., for tests). Set this parameter to True
-      when creating CLIs.
+      when creating CLIs. Note that from_main=True options must be parsed
+      before any other module tries to access them.
 
     :return: a Namespace obtained from parsing command line arguments.
     """
     global _options
     if _options is not None:
+        if from_main:
+            raise ValueError("Trying to obtain options from_main=True, but _options "
+                             "was already present")
         return _options
 
     calling_script_dir = os.path.realpath(os.path.dirname(sys.argv[0]))
@@ -160,13 +165,13 @@ def get_options(allow_required=False):
     default_base_dataset_dir = os.path.join(calling_script_dir, "datasets")
     dir_options.add_argument("--base_dataset_dir", "-d", help="Base dir for dataset folders.",
                              default=default_base_dataset_dir if os.path.isdir(default_base_dataset_dir) else None,
-                             required=allow_required and not ReadableDirAction.check_valid_value(
+                             required=from_main and not ReadableDirAction.check_valid_value(
                                  default_base_dataset_dir),
                              action=ReadableDirAction)
 
     # Persistence dir
     default_persistence_dir = os.path.join(calling_script_dir, f"{sys.argv[0]}_persistence")
-    dir_options.add_argument("--persistence_dir", "-p",
+    dir_options.add_argument("--persistence_dir",
                              default=default_persistence_dir,
                              action=WritableOrCreableDirAction,
                              help="Directory where persistence files are to be stored.")
@@ -176,7 +181,7 @@ def get_options(allow_required=False):
     dir_options.add_argument("--base_version_dataset_dir", "-vd",
                              action=WritableOrCreableDirAction,
                              default=default_version_dataset_dir,
-                             required=allow_required and False,
+                             required=from_main and False,
                              # required=not WritableOrCreableDirAction.check_valid_value(default_version_dataset_dir),
                              help=f"Base dir for versioned folders.")
 
@@ -190,33 +195,57 @@ def get_options(allow_required=False):
     else:
         default_tmp_dir = None
     dir_options.add_argument("-t", "--base_tmp_dir",
-                             required=allow_required and not WritableDirAction.check_valid_value(default_tmp_dir),
+                             required=from_main and not WritableDirAction.check_valid_value(default_tmp_dir),
                              action=WritableDirAction,
                              default=default_tmp_dir, help=f"Temporary dir.")
 
     # Base dir for external binaries (e.g., codecs or other tools)
     default_external_binary_dir = os.path.join(calling_script_dir, "bin")
-    default_external_binary_dir = default_external_binary_dir if os.path.isdir(default_external_binary_dir) else None
+    default_external_binary_dir = default_external_binary_dir \
+        if ReadableDirAction.check_valid_value(default_external_binary_dir) else None
     dir_options.add_argument("--bin", "--external_bin_base_dir", help="External binary base dir.",
                              action=ReadableDirAction, default=default_external_binary_dir,
-                             required=allow_required and False)
+                             required=from_main and default_external_binary_dir is None)
+
+    # Output plots dir
+    default_output_plots_dir = os.path.join(calling_script_dir, "plots")
+    default_output_plots_dir = default_output_plots_dir \
+        if WritableOrCreableDirAction.check_valid_value(default_output_plots_dir) else None
+    dir_options.add_argument("--plot_dir", help="Directory to store produced plots.",
+                             action=WritableOrCreableDirAction, default=default_output_plots_dir,
+                             required=from_main and default_output_plots_dir is None)
+
+    # Output analysis dir
+    default_analysis_dir = os.path.join(calling_script_dir, "analysis")
+    default_analysis_dir = default_analysis_dir \
+        if WritableOrCreableDirAction.check_valid_value(default_analysis_dir) else None
+    dir_options.add_argument("--analysis_dir", help="Directry to store analysis results.",
+                             action=WritableOrCreableDirAction, default=default_analysis_dir,
+                             required=from_main and default_analysis_dir is None)
 
     _options = parser.parse_known_args()[0]
+
     return _options
 
-# # Output dir where CSV files are to be output
-# output_csv_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-#                               "output_csv")
-# os.makedirs(output_csv_dir, exist_ok=True)
-#
-# # Path to the CSV file were all results are stored
-# dataset_properties_csv_path = os.path.join(output_csv_dir, "dataset_properties.csv")
-# # Experiment results csv
-# output_experiment_csv_path = os.path.join(output_csv_dir, "experiment_results.csv")
-# # Experiment + file information csv
-# output_combined_experiment_csv_path = os.path.join(output_csv_dir, "experiment_and_file_info.csv")
-#
-# # Output dir for plots
-# output_plot_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-#                                "output_plots")
-# os.makedirs(output_plot_dir, exist_ok=True)
+
+def set_options(new_options):
+    """Replace the current
+    """
+    global _options
+    _options = _options if _options is not None else argparse.Namespace()
+    _options.__dict__.clear()
+    _options.__dict__.update(new_options.__dict__)
+
+
+def propagates_options(f):
+    """Decorator for local (as opposed to ray.remote) functions so that they
+    propagate options properly to child workers.
+    The decorated function must accept an "options" argument.
+    """
+
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        set_options(kwargs["options"])
+        return f(*args, **kwargs)
+
+    return wrapper

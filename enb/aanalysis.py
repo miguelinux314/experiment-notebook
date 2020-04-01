@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Automatic analysis and report of of pandas dataframes using pyplot
+"""Automatic analysis and report of of pandas :class:`pandas.DataFrames`
+(e.g., produced by :class:`enb.experiment.Experiment` instances)
+using pyplot
 """
 
 import os
@@ -9,48 +11,38 @@ import math
 import collections
 import matplotlib
 from matplotlib.ticker import (AutoMinorLocator, MaxNLocator, LogLocator)
+
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import ray
 
-from enb.config import options
 from enb.atable import parse_dict_string
 from enb import plotdata
+from enb import config
+from enb.config import get_options
+
+options = get_options()
+
 
 @ray.remote
-def render_plds_by_group(pds_by_group_name, output_plot_path,
-                         column_properties, horizontal_margin, global_x_label,
-                         y_min=None, y_max=None,
-                         y_labels_by_group_name=None,
-                         color_by_group_name=None,
-                         config_options=None,
-                         global_y_label="Relative frequency",
-                         semilog_hist_min=1e-10):
+def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
+                         y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
+                         global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None):
     """Ray wrapper for render_plds_by_group_local"""
-    return render_plds_by_group_local(pds_by_group_name=pds_by_group_name,
-                                      output_plot_path=output_plot_path,
-                                      column_properties=column_properties,
-                                      horizontal_margin=horizontal_margin,
-                                      global_x_label=global_x_label,
-                                      y_min=y_min, y_max=y_max,
+    return render_plds_by_group_local(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
+                                      column_properties=column_properties, global_x_label=global_x_label,
+                                      horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
                                       y_labels_by_group_name=y_labels_by_group_name,
-                                      color_by_group_name=color_by_group_name,
-                                      config_options=config_options,
-                                      global_y_label=global_y_label,
-                                      semilog_hist_min=semilog_hist_min)
+                                      color_by_group_name=color_by_group_name, global_y_label=global_y_label,
+                                      semilog_hist_min=semilog_hist_min, options=options)
 
-
-def render_plds_by_group_local(pds_by_group_name, output_plot_path,
-                               column_properties, global_x_label,
-                               horizontal_margin,
-                               y_min=None, y_max=None,
-                               y_labels_by_group_name=None,
-                               color_by_group_name=None,
-                               config_options=None,
-                               global_y_label="Relative frequency",
-                               semilog_hist_min=1e-10):
+@config.propagates_options
+def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_properties, global_x_label,
+                               horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
+                               color_by_group_name=None, global_y_label="Relative frequency", semilog_hist_min=1e-10,
+                               options=None):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -67,17 +59,18 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path,
       indexed with the same keys as pds_by_group_name
     :param color_by_group_name: if not None, a dictionary of pyplot colors for the groups,
       indexed with the same keys as pds_by_group_name
-    :param config_options: additional runtime configuration options (see config.py)
+    :param options: additional runtime configuration options (see config.py)
     """
-    if config_options and config_options.verbose > 1:
+    if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
 
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
 
-    config_options = options if config_options is None else config_options
-    sorted_group_names = sorted(pds_by_group_name.keys(), key=lambda s: s.strip().lower())
+    options = options if options is None else options
+    sorted_group_names = sorted(pds_by_group_name.keys(),
+                                key=lambda s: "" if s == "all" else s.strip().lower())
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
@@ -169,7 +162,7 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path,
 
     plt.savefig(output_plot_path, bbox_inches="tight")
     plt.close()
-    if config_options.verbose:
+    if options.verbose:
         print(f"Saved plot to {output_plot_path}")
 
 
@@ -207,7 +200,8 @@ class ScalarDistributionAnalyzer(Analyzer):
 
         :param output_csv_file: path where the CSV report is stored
         :param output_plot_dir: path where the distribution plots are stored
-        :param target_columns: list of column names for which an analysis is to be performed
+        :param target_columns: list of column names for which an analysis is to be performed.
+          A single string is also accepted (as a single column name).
         :param column_to_properties: if not None, a dict indexed by column name (as given
           in the column parameter of the @column_function decorator), entries being
           an atable.ColumnProperties instance
@@ -215,6 +209,7 @@ class ScalarDistributionAnalyzer(Analyzer):
         :param show_global: if True, distribution for all entries (without grouping) is also shown
         :param version_name: if not None, the version name is prepended to the x axis' label
         """
+        target_columns = [target_columns] if isinstance(target_columns, str) else target_columns
         column_to_properties = collections.defaultdict(None) if column_to_properties is None else column_to_properties
         min_max_by_column = get_scalar_min_max_by_column(
             df=full_df, target_columns=target_columns, column_to_properties=column_to_properties)
@@ -258,6 +253,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                 for column in target_columns})
             lengths_by_group_name["all"] = len(full_df)
         if output_csv_file:
+            os.makedirs(os.path.dirname(output_csv_file), exist_ok=True)
             analysis_df.to_csv(output_csv_file)
 
         expected_return_ids = []
@@ -282,7 +278,7 @@ class ScalarDistributionAnalyzer(Analyzer):
             y_max = 1
             expected_return_ids.append(
                 render_plds_by_group.remote(
-                    config_options=ray.put(options),
+                    options=ray.put(options),
                     pds_by_group_name=ray.put(pds_by_group_name),
                     output_plot_path=ray.put(os.path.join(output_plot_dir,
                                                           f"distribution_{column_name}.pdf")),
@@ -377,43 +373,6 @@ def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
             min_max_by_column[column][1] = \
                 math.ceil(min_max_by_column[column][1])
     return min_max_by_column
-
-
-@ray.remote
-def plot_scalar_column(output_path, column, analysis_df, label_column_to_pd, min_max_by_column,
-                       show_count, histogram_margin):
-    # Plot results
-    y_ticks = []
-    y_labels = []
-
-    fig, ax = plt.subplots()
-    offset = 0
-
-    for i, group_label in enumerate(reversed(analysis_df.index.values)):
-        ptd = label_column_to_pd[(group_label, column)]
-        plt.hlines(offset, *min_max_by_column[column], alpha=0.25)
-        plt.hlines(offset + 1, *min_max_by_column[column], alpha=0.25)
-        plt.errorbar(analysis_df.at[group_label, f"{column}_avg"],
-                     offset + 0.5,
-                     xerr=analysis_df.at[group_label, f"{column}_std"], yerr=0,
-                     fmt="o", capsize=3)
-        ptd.extra_kwargs.update(bottom=float(offset))
-        ptd.alpha = 0.5
-        ptd.render(axes=plt)
-        y_ticks.append(offset + 0.5)
-        if show_count:
-            y_labels.append(f"{group_label} (n = {analysis_df.at[group_label, 'count']})")
-        else:
-            y_labels.append(group_label)
-        offset += 1 + histogram_margin
-    plt.yticks(y_ticks)
-    ax.set_yticklabels(y_labels)
-    plt.xlim(*min_max_by_column[column])
-    if options.verbose:
-        print(f"Saving distribution plot to {output_path}")
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    plt.savefig(output_path, bbox_inches="tight")
-    plt.close()
 
 
 def histogram_overlap_column_to_pds(df, column, column_properties=None, line_alpha=0.2, line_width=0.5):
@@ -521,7 +480,7 @@ class HistogramDistributionAnalyzer(Analyzer):
             y_max = self.hist_max if y_max is None else y_max
             #
             return_ids.append(render_plds_by_group.remote(
-                config_options=ray.put(options),
+                options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group_name),
                 output_plot_path=ray.put(output_plot_path),
                 horizontal_margin=ray.put(histogram_bin_width),
@@ -681,7 +640,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
             #
 
             result_ids.append(render_plds_by_group.remote(
-                config_options=ray.put(options),
+                options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group),
                 output_plot_path=ray.put(output_plot_path),
                 column_properties=ray.put(properties), horizontal_margin=ray.put(0),
@@ -757,7 +716,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 y_min=ray.put(global_y_min - 0.05 * (global_y_max - global_y_min)),
                 y_max=ray.put(global_y_max + 0.05 * (global_y_max - global_y_min)),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
-                config_options=ray.put(options)))
+                options=ray.put(options)))
 
         ray.wait(expected_returns)
 
