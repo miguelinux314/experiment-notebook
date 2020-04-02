@@ -137,7 +137,9 @@ def get_options(from_main=False):
                                    help="Be quick? Retrieve a small subset of all files when requested for all.",
                                    action="count", default=0)
     execution_options.add_argument("-f", "--force",
-                                   help="Force calculation of pre-existing results.",
+                                   help="Force calculation of pre-existing results. "
+                                        "If an error occurs while re-computing "
+                                        "a given index, that index is dropped from the persistent support.",
                                    action="count",
                                    default=0)
     execution_options.add_argument("-s", "--sequential",
@@ -154,6 +156,10 @@ def get_options(from_main=False):
                                    default=None,
                                    nargs="+",
                                    type=str)
+    execution_options.add_argument("--discard_partial_results",
+                                   help="Discard partial results when an error is found running the experiment? "
+                                        "Otherwise, they are output to persistent storage.",
+                                   action="store_true")
 
     default_ray_config_file = os.path.join(calling_script_dir, "ray_cluster_head.txt")
     execution_options.add_argument("-r", "--ray_config_file", action=ReadableFileAction,
@@ -170,7 +176,7 @@ def get_options(from_main=False):
                              action=ReadableDirAction)
 
     # Persistence dir
-    default_persistence_dir = os.path.join(calling_script_dir, f"{sys.argv[0]}_persistence")
+    default_persistence_dir = os.path.join(calling_script_dir, f"persistence_{os.path.basename(sys.argv[0])}")
     dir_options.add_argument("--persistence_dir",
                              default=default_persistence_dir,
                              action=WritableOrCreableDirAction,
@@ -205,7 +211,7 @@ def get_options(from_main=False):
         if ReadableDirAction.check_valid_value(default_external_binary_dir) else None
     dir_options.add_argument("--bin", "--external_bin_base_dir", help="External binary base dir.",
                              action=ReadableDirAction, default=default_external_binary_dir,
-                             required=from_main and default_external_binary_dir is None)
+                             required=False)
 
     # Output plots dir
     default_output_plots_dir = os.path.join(calling_script_dir, "plots")
