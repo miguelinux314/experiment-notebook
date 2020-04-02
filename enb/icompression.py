@@ -427,3 +427,10 @@ class LosslessCompressionExperiment(LosslessCompressionExperiment):
                 else process_decompression_time
             series["compression_ratio"] = os.path.getsize(cr.original_path) / os.path.getsize(cr.compressed_path)
             series["compressed_file_sha256"] = compressed_file_sha256
+
+            if not series["lossless_reconstruction"]:
+                raise CompressionException(
+                    original_path=original_file_path,
+                    file_info=series,
+                    output="Failed to produce lossless compression for "
+                           f"{original_file_path} and {codec.name}")

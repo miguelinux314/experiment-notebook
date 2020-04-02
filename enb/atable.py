@@ -92,7 +92,6 @@ class ColumnFailedError(CorruptedTableError):
     def __init__(self, atable=None, index=None, column=None, msg=None, ex=None):
         """
         :param atable: atable instance that originated the problem
-        :param row: row where the problem happened
         :param column: column where the problem happened
         :param ex: exception that lead to the problem, or None
         :param msg: message describing the problem, or None
@@ -432,42 +431,47 @@ class ATable(metaclass=MetaTable):
                     print(f"{len(ids_ready)} / {len(processed_row_ids)} ready @ {datetime.datetime.now()}. {msg}")
             returned_values = ray.get(processed_row_ids)
 
-        exceptions = [v for v in returned_values if isinstance(v, ColumnFailedError)]
-        if exceptions:
-            if options.verbose:
-                print()
-                print("The following exceptions happened while getting the df:")
-                for ex in exceptions:
-                    print(f"\t- {repr(ex)}")
-            if exceptions[0].ex:
-                raise CorruptedTableError(atable=self) from exceptions[0].ex
-            else:
-                raise CorruptedTableError(atable=self) from exceptions[0]
-
-        # table_df.update(pd.concat(returned_values))
-        # table_df = table_df[:0].append(pd.concat(returned_values))
         unpacked_target_indices = list(indices_to_internal_loc(unpack_index_value(target_index))
                                        for target_index in target_indices)
-        assert len(unpacked_target_indices) == len(returned_values)
+        index_exception_list = []
         for index, row in zip(unpacked_target_indices, returned_values):
-            assert not isinstance(row, ColumnFailedError)
-            table_df.loc[index] = row
-
+            if isinstance(row, Exception):
+                if options.verbose:
+                    print(f"[E]rror processing index {index}: {row}")
+                index_exception_list.append((index, row))
+                try:
+                    table_df = table_df.drop(index)
+                except KeyError as ex:
+                    pass
+            else:
+                table_df.loc[index] = row
         table_df = table_df[[c for c in table_df.columns if c not in self.ignored_columns]]
 
-        if self.csv_support_path:
-            # Save before filtering requested data to avoid overwrite
-            # and store only new values
+        # All data (new or previously loaded) is saved to persistent storage
+        # if (a) all data were successfully obtained or
+        #    (b) the save_partial_results options is enabled
+        if self.csv_support_path and \
+                (not index_exception_list or not options.discard_partial_results):
             table_df.to_csv(self.csv_support_path, index=False)
 
-        # Verify loaded indices are ok
+        # A DataFrame is NOT returned if any error is produced
+        if index_exception_list:
+            raise CorruptedTableError(
+                atable=self, ex=index_exception_list[0][1],
+                msg=f"{len(index_exception_list)} out of"
+                    f" {len(target_indices)} errors happened")
+
+        # Sanity checks before returning the DataFrame with only the requested indices
+        # Verify loaded indices are ok (sanity check)
         check_unique_indices(table_df)
         for ti in target_indices:
             internal_index = indices_to_internal_loc(ti)
             assert internal_index in table_df.index, (internal_index, table_df.loc[internal_index])
         target_internal_indices = [indices_to_internal_loc(ti) for ti in target_indices]
         table_df = table_df.loc[target_internal_indices, self.indices_and_columns]
-        assert len(table_df) == len(target_indices), (len(table_df), len(target_indices))
+        assert len(table_df) == len(target_indices), \
+            "Unexpected table length / requested indices " \
+            f"{(len(table_df), len(target_indices))}"
         return table_df
 
     def _load_saved_df(self):
@@ -560,7 +564,7 @@ def check_unique_indices(df: pd.DataFrame):
     if duplicated_indices.any():
         s = f"Loaded table with the following duplicated indices:\n\t: "
         s += "\n\t:: ".join(str(' , '.join(values))
-                            for values in df[duplicated_indices][self.indices].values)
+                            for values in df[duplicated_indices][df.indices].values)
         raise CorruptedTableError(s)
 
 
@@ -640,8 +644,12 @@ def process_row_local(atable, index, column_fun_tuples, row, overwrite, fill, op
     called_functions = set()
     for column, fun in column_fun_tuples:
         if fun in called_functions:
-            if options.verbose > 1:
+            if options.verbose > 2:
                 print(f"[A]lready called function {fun.__name__} <{atable.__class__.__name__}>")
+            continue
+        if options.columns and column not in options.columns:
+            if options.verbose > 2:
+                print(f"[S]kipping non-selected column {column}")
             continue
 
         if overwrite or column not in row or row[column] is None:
@@ -660,6 +668,7 @@ def process_row_local(atable, index, column_fun_tuples, row, overwrite, fill, op
             print(f"[C]alculating {column} for {index} with <{atable.__class__.__name__}>")
         try:
             result = fun(atable, index, row)
+            called_functions.add(fun)
             if result is not None and options.verbose > 1:
                 print(f"[W]arning: result of {fun.__name__} ignored")
             if row[column] is None:
