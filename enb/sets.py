@@ -59,7 +59,7 @@ def get_canonical_path(file_path):
     return file_path
 
 
-class UnkownPropertiesException(BaseException):
+class UnkownPropertiesException(Exception):
     pass
 
 
@@ -88,11 +88,14 @@ class FilePropertiesTable(atable.ATable):
 class FilePropertiesTable(FilePropertiesTable):
     @FilePropertiesTable.column_function("corpus", label="Corpus name")
     def set_corpus(self, file_path, series):
-        file_dir = os.path.dirname(os.path.abspath(os.path.realpath(file_path)))
-        base_dir = os.path.abspath(os.path.realpath(options.base_dataset_dir))
-        file_dir = file_dir.replace(base_dir, "")
-        while file_dir and file_dir[0] == os.sep:
-            file_dir = file_dir[1:]
+        if options.base_dataset_dir is not None:
+            file_dir = os.path.dirname(os.path.abspath(os.path.realpath(file_path)))
+            base_dir = os.path.abspath(os.path.realpath(options.base_dataset_dir))
+            file_dir = file_dir.replace(base_dir, "")
+            while file_dir and file_dir[0] == os.sep:
+                file_dir = file_dir[1:]
+        else:
+            file_dir = os.path.basename(os.path.dirname(file_path))
         series[_column_name] = file_dir
 
     @FilePropertiesTable.column_function("size_bytes", label="File size (bytes)")

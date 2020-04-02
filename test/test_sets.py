@@ -102,7 +102,10 @@ class TestSets(unittest.TestCase):
                 if column.replace(lsuffix, "") in fpt.indices:
                     continue
                 version_column = column.replace(lsuffix, rsuffix)
-                assert np.all(joint_df[column] == joint_df[version_column]), (column, version_column)
+                if not column.startswith("corpus"):
+                    assert np.all(joint_df[column] == joint_df[version_column]), \
+                        f"Columns {column} and {version_column} differ"
+
         finally:
             shutil.rmtree(tmp_dir)
 

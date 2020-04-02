@@ -62,12 +62,13 @@ class DecompressionResults(recordclass.RecordClass):
     decompression_time_seconds: float = None
 
 
-class CompressionException(BaseException):
+class CompressionException(Exception):
     """Base class for exceptions occurred during a compression instance
     """
 
-    def __init__(self, original_path, compressed_path, file_info, status, output):
-        super().__init__(output)
+    def __init__(self, original_path=None, compressed_path=None, file_info=None,
+                 status=None, output=None):
+        super().__init__(f"status={status}, output={output}")
         self.original_path = original_path
         self.compressed_path = compressed_path
         self.file_info = file_info
@@ -75,12 +76,13 @@ class CompressionException(BaseException):
         self.output = output
 
 
-class DecompressionException(BaseException):
+class DecompressionException(Exception):
     """Base class for exceptions occurred during a decompression instance
     """
 
-    def __init__(self, compressed_path, reconstructed_path, file_info, status, output):
-        super().__init__(output)
+    def __init__(self, compressed_path=None, reconstructed_path=None,
+                 file_info=None, status=None, output=None):
+        super().__init__(f"status={status}, output={output}")
         self.reconstructed_path = reconstructed_path
         self.compressed_path = compressed_path
         self.file_info = file_info
@@ -236,6 +238,9 @@ class WrapperCodec(AbstractCodec):
             original_file_info=original_file_info)
         status, output = subprocess.getstatusoutput(f"{self.compressor_path} {compression_params}")
         if status != 0:
+            if options.verbose:
+                print(f"Error compressing {original_path} with {self.name}. "
+                      f"Status={status}. Output={output}")
             raise CompressionException(
                 original_path=original_path,
                 compressed_path=compressed_path,
@@ -250,6 +255,9 @@ class WrapperCodec(AbstractCodec):
             original_file_info=original_file_info)
         status, output = subprocess.getstatusoutput(f"{self.decompressor_path} {decompression_params}")
         if status != 0:
+            if options.verbose:
+                print(f"Error decompressing {original_path} with {self.name}. "
+                      f"Status={status}. Output={output}")
             raise DecompressionException(
                 compressed_path=compressed_path,
                 reconstructed_path=reconstructed_path,
