@@ -35,7 +35,7 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
 class ImagePropertiesTable(ImagePropertiesTable):
     @ImagePropertiesTable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
     def set_bytes_per_sample(self, file_path, series):
-        if any(s in file_path for s in ("u8be", "u8le")):
+        if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
             series[_column_name] = 1
         elif any(s in file_path for s in ("u16be", "u16le", "s16be", "s16le")):
             series[_column_name] = 2
@@ -50,6 +50,15 @@ class ImagePropertiesTable(ImagePropertiesTable):
             series[_column_name] = False
         elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le")):
             series[_column_name] = True
+        else:
+            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+
+    @ImagePropertiesTable.column_function("big_endian", label="Big endian?")
+    def set_big_endian(self, file_path, series):
+        if any(s in file_path for s in ("u8be", "u16be", "u32be", "s8be", "s16be", "s32be")):
+            series[_column_name] = True
+        elif any(s in file_path for s in ("u8le", "u16le", "u32le", "s8le", "s16le", "s32le")):
+            series[_column_name] = False
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
