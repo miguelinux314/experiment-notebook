@@ -232,9 +232,10 @@ def set_options(new_options):
     """Replace the current
     """
     global _options
-    _options = _options if _options is not None else argparse.Namespace()
-    _options.__dict__.clear()
-    _options.__dict__.update(new_options.__dict__)
+    if _options is not new_options:
+        _options = _options if _options is not None else argparse.Namespace()
+        for k, v in new_options.__dict__.items():
+            _options.__setattr__(k, v)
 
 
 def propagates_options(f):

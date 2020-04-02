@@ -62,7 +62,7 @@ from enb import config
 options = get_options()
 
 
-class CorruptedTableError(BaseException):
+class CorruptedTableError(Exception):
     """Raised when a table is Corrupted, e.g., when loading a
     CSV with missing indices
     """

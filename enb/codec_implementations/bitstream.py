@@ -89,10 +89,10 @@ class OutputBitStream:
         if self.file is not None:
             self.close()
 
-class EmptyStreamError(BaseException):
+class EmptyStreamError(Exception):
     pass
 
-class CorruptedStreamError(BaseException):
+class CorruptedStreamError(Exception):
     pass
 
 class InputBitStream:
