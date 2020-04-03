@@ -38,6 +38,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                                       color_by_group_name=color_by_group_name, global_y_label=global_y_label,
                                       semilog_hist_min=semilog_hist_min, options=options)
 
+
 @config.propagates_options
 def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_properties, global_x_label,
                                horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
