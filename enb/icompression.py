@@ -295,7 +295,7 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
-class LosslessCompressionExperiment(experiment.Experiment):
+class CompressionExperiment(experiment.Experiment):
     def __init__(self, codecs,
                  dataset_paths=None,
                  csv_experiment_path=None,
@@ -361,9 +361,9 @@ class LosslessCompressionExperiment(experiment.Experiment):
         return self.tasks_by_name
 
 
-class LosslessCompressionExperiment(LosslessCompressionExperiment):
+class CompressionExperiment(CompressionExperiment):
 
-    @LosslessCompressionExperiment.column_function([
+    @CompressionExperiment.column_function([
         atable.ColumnProperties(name="compression_ratio", label="Compression ratio", plot_min=0),
         atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
                                 label="Compression efficiency (1B entropy)", plot_min=0),
@@ -373,13 +373,13 @@ class LosslessCompressionExperiment(LosslessCompressionExperiment):
         atable.ColumnProperties(name="compressed_size_bytes", label="Compressed size (bytes)", plot_min=0),
         atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256")
     ])
-    def set_comparison_results(self, index, file_info):
+    def set_comparison_results(self, index, series):
         """Perform a compression-decompression cycle and store the comparison results
         """
         original_file_path, codec_name = index
         if not os.path.isfile(original_file_path):
             raise CompressionException(original_path=original_file_path, compressed_path=None,
-                                       file_info=file_info, output=f"File not found: {original_file_path}")
+                                       file_info=series, output=f"File not found: {original_file_path}")
 
         image_info_series = self.dataset_table_df.loc[indices_to_internal_loc(original_file_path)]
         codec = self.codecs_by_name[codec_name]
@@ -395,7 +395,7 @@ class LosslessCompressionExperiment(LosslessCompressionExperiment):
             if not os.path.isfile(compressed_file.name) or os.path.getsize(compressed_file.name) == 0:
                 raise CompressionException(
                     original_path=original_file_path, compressed_path=compressed_file.name,
-                    file_info=file_info,
+                    file_info=series,
                     output=f"Compression didn't produce a file (or it was empty) {original_file_path}")
 
             process_compression_time = time.process_time() - time_before
@@ -412,7 +412,7 @@ class LosslessCompressionExperiment(LosslessCompressionExperiment):
             if not os.path.isfile(reconstructed_file.name) or os.path.getsize(compressed_file.name) == 0:
                 raise CompressionException(
                     original_path=original_file_path, compressed_path=compressed_file.name,
-                    file_info=file_info,
+                    file_info=series,
                     output=f"Decompression didn't produce a file (or it was empty) {original_file_path}")
             process_decompression_time = time.process_time() - time_before
             if dr is None:
@@ -430,21 +430,28 @@ class LosslessCompressionExperiment(LosslessCompressionExperiment):
             hasher.update(open(cr.compressed_path, "rb").read())
             compressed_file_sha256 = hasher.hexdigest()
 
-            file_info["lossless_reconstruction"] = filecmp.cmp(cr.original_path, dr.reconstructed_path)
-            file_info["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
-            file_info["compressed_size_bytes"] = os.path.getsize(cr.compressed_path)
-            file_info["compression_time_seconds"] = cr.compression_time_seconds \
+            series["lossless_reconstruction"] = filecmp.cmp(cr.original_path, dr.reconstructed_path)
+            series["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
+            series["compressed_size_bytes"] = os.path.getsize(cr.compressed_path)
+            series["compression_time_seconds"] = cr.compression_time_seconds \
                 if cr.compression_time_seconds is not None \
                 else process_compression_time
-            file_info["decompression_time_seconds"] = dr.decompression_time_seconds \
+            series["decompression_time_seconds"] = dr.decompression_time_seconds \
                 if dr.decompression_time_seconds is not None \
                 else process_decompression_time
-            file_info["compression_ratio"] = os.path.getsize(cr.original_path) / os.path.getsize(cr.compressed_path)
-            file_info["compressed_file_sha256"] = compressed_file_sha256
+            series["compression_ratio"] = os.path.getsize(cr.original_path) / os.path.getsize(cr.compressed_path)
+            series["compressed_file_sha256"] = compressed_file_sha256
 
-            if not file_info["lossless_reconstruction"]:
-                raise CompressionException(
-                    original_path=original_file_path,
-                    file_info=file_info,
-                    output="Failed to produce lossless compression for "
-                           f"{original_file_path} and {codec.name}")
+class LosslessCompressionExperiment(CompressionExperiment):
+    pass
+
+class LosslessCompressionExperiment(LosslessCompressionExperiment):
+    @LosslessCompressionExperiment.redefines_column
+    def set_comparison_results(self, index, series):
+        super().set_comparison_results(index=index, series=series)
+        if not series["lossless_reconstruction"]:
+            raise CompressionException(
+                original_path=original_file_path,
+                file_info=series,
+                output="Failed to produce lossless compression for "
+                       f"{original_file_path} and {codec.name}")

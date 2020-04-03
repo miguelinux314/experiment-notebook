@@ -43,6 +43,8 @@
 
   * See ScalarDistributionAnalyzer for automatic reports using ATable
 """
+from builtins import hasattr
+
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "19/09/2019"
 
@@ -54,6 +56,7 @@ import copy
 import functools
 import time
 import datetime
+import inspect
 import ray
 
 from enb.config import get_options
@@ -191,6 +194,35 @@ class MetaTable(type):
                 # subclasses. That happens after metracreation,
                 # therefore overwrites the following updates
                 subclass.column_to_properties.update(base.column_to_properties)
+
+                # Make sure that subclasses do not re-use a base class column
+                # function name without it being decorated as column function
+                # (unexpected behavior)
+                for column, properties in subclass.column_to_properties.items():
+                    defining_class_name = get_class_that_defined_method(properties.fun).__name__
+                    if defining_class_name != subclass.__name__:
+                        ctp_fun = properties.fun
+                        sc_fun = getattr(subclass, properties.fun.__name__)
+                        if ctp_fun != sc_fun:
+                            if get_class_that_defined_method(ctp_fun) != get_class_that_defined_method(sc_fun):
+                                if hasattr(sc_fun, "_redefines_column"):
+                                    properties = copy.copy(properties)
+                                    properties.fun = sc_fun
+                                    subclass.column_to_properties[column] = properties
+                                else:
+                                    print(f"[W]arning: {defining_class_name}'s subclass {subclass.__name__} "
+                                          f"overwrites method {properties.fun.__name__}, "
+                                          f"but it does not decorate it with @{subclass.__name__}.column_function "
+                                          f"for column {column}. "
+                                          f"The method from class {defining_class_name} will be used to fill "
+                                          f"the table's column {column}. Consider decorating the function "
+                                          f"with the same @{subclass.__name__}.column_function as the base class, "
+                                          f"or simply with @{subclass.__name__}.redefines_column to maintain the same "
+                                          f"difinition")
+                            else:
+                                print(f"[W]arning: Class {subclass.__name__} "
+                                      f"redefines column_function method {properties.fun.__name__}. "
+                                      f"Consider defining it only once.")
             except AttributeError:
                 pass
         return subclass
@@ -253,6 +285,14 @@ class ATable(metaclass=MetaTable):
                                               fun=fun, **kwargs)
 
         return decorator_wrapper
+
+    @classmethod
+    def redefines_column(cls, fun):
+        """Decorator to be applied on overwriting methods that are meant to fill
+        the same columns as the base class' homonymous method.
+        """
+        fun._redefines_column = True
+        return fun
 
     @staticmethod
     def normalize_column_properties(column_properties, fun):
@@ -680,3 +720,20 @@ def process_row_local(atable, index, column_fun_tuples, row, overwrite, fill, op
             return ColumnFailedError(atable=atable, index=index, column=column, ex=ex)
 
     return row
+
+
+def get_class_that_defined_method(meth):
+    """From the great answer at
+    https://stackoverflow.com/questions/3589311/get-defining-class-of-unbound-method-object-in-python-3/25959545#25959545
+    """
+    if inspect.ismethod(meth):
+        for cls in inspect.getmro(meth.__self__.__class__):
+            if cls.__dict__.get(meth.__name__) is meth:
+                return cls
+        meth = meth.__func__  # fallback to __qualname__ parsing
+    if inspect.isfunction(meth):
+        cls = getattr(inspect.getmodule(meth),
+                      meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        if isinstance(cls, type):
+            return cls
+    return getattr(meth, '__objclass__', None)

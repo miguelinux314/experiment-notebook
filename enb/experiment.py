@@ -73,6 +73,7 @@ class Experiment(atable.ATable):
         """
 
     task_name_column = "task_name"
+    task_label_column = "task_label"
 
     def __init__(self, tasks,
                  dataset_paths=None,
@@ -194,8 +195,8 @@ class Experiment(Experiment):
         file_path, task_name = index
         series[_column_name] = self.tasks_by_name[task_name].name
 
-    @Experiment.column_function("task_label")
-    def set_task_name(self, index, series):
+    @Experiment.column_function(Experiment.task_label_column)
+    def set_task_label(self, index, series):
         file_path, task_name = index
         series[_column_name] = self.tasks_by_name[task_name].label
 
