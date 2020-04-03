@@ -15,11 +15,13 @@
 * For example
 
   ::
+        import ray
+        ray.init()
+        from enb import atable
+
 
         class Subclass(atable.ATable):
-            pass
-        class Subclass(Subclass):
-            @Subclass.column_function("index_length")
+            @atable.column_function("index_length")
             def set_index_length(self, index, series):
                 series["index_length"] = len(index)
 
@@ -175,8 +177,9 @@ class MetaTable(type):
     @column_function and all subclasses can access and update
     the dict separately for each class (as logically intended).
 
-    .. note: Table clases should inherit from ATable, not MetaTable
+    Note: Table clases should inherit from ATable, not MetaTable
     """
+    pendingdefs_classname_fun_columnproperties_kwargs = []
 
     def __new__(cls, name, bases, dct):
         assert MetaTable not in bases, f"Use ATable, not MetaTable, for subclassing"
@@ -209,22 +212,28 @@ class MetaTable(type):
                                     properties = copy.copy(properties)
                                     properties.fun = sc_fun
                                     subclass.column_to_properties[column] = properties
+                                    print(f">>>> Redefining {sc_fun}")
                                 else:
                                     print(f"[W]arning: {defining_class_name}'s subclass {subclass.__name__} "
                                           f"overwrites method {properties.fun.__name__}, "
-                                          f"but it does not decorate it with @{subclass.__name__}.column_function "
+                                          f"but it does not decorate it with @atable.column_function "
                                           f"for column {column}. "
                                           f"The method from class {defining_class_name} will be used to fill "
                                           f"the table's column {column}. Consider decorating the function "
-                                          f"with the same @{subclass.__name__}.column_function as the base class, "
-                                          f"or simply with @{subclass.__name__}.redefines_column to maintain the same "
+                                          f"with the same @atable.column_function as the base class, "
+                                          f"or simply with @atable.redefines_column to maintain the same "
                                           f"difinition")
-                            else:
-                                print(f"[W]arning: Class {subclass.__name__} "
-                                      f"redefines column_function method {properties.fun.__name__}. "
-                                      f"Consider defining it only once.")
             except AttributeError:
                 pass
+
+        # Add pending methods (declared as columns before subclass existed)
+        for classname, fun, cp, kwargs in cls.pendingdefs_classname_fun_columnproperties_kwargs:
+            if classname != name:
+                raise SyntaxError(f"Not expected to find a decorated function {fun.__name__}, "
+                                  f"classname={classname} when defining {name}.")
+            ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
+        cls.pendingdefs_classname_fun_columnproperties_kwargs.clear()
+
         return subclass
 
 
@@ -720,6 +729,36 @@ def process_row_local(atable, index, column_fun_tuples, row, overwrite, fill, op
             return ColumnFailedError(atable=atable, index=index, column=column, ex=ex)
 
     return row
+
+
+def column_function(column_properties, **kwargs):
+    """Decorator to allow definition of table columns for
+    still undefined classes.
+
+    Arguments follow the semantics defined in :meth:`ATable.column_function`.
+    """
+
+    def inner_wrapper(f):
+        try:
+            cls_name = f.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
+        except IndexError:
+            raise Exception(f"Are you decorating a non-method function {f.__name__}? Not allowed")
+
+        MetaTable.pendingdefs_classname_fun_columnproperties_kwargs.append(
+            (cls_name, f, column_properties, dict(kwargs))
+        )
+
+        return f
+
+    return inner_wrapper
+
+def redefines_column(f):
+    """Decorator to mark a function as a column_function for all
+    columns associated with functions with the same name as f.
+    """
+    f._redefines_column = True
+    return f
+
 
 
 def get_class_that_defined_method(meth):

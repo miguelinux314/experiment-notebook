@@ -188,19 +188,17 @@ class Experiment(atable.ATable):
         property_dict.update(self.column_to_properties)
         return property_dict
 
-
-class Experiment(Experiment):
-    @Experiment.column_function(Experiment.task_name_column)
+    @atable.column_function(task_name_column)
     def set_task_name(self, index, series):
         file_path, task_name = index
         series[_column_name] = self.tasks_by_name[task_name].name
 
-    @Experiment.column_function(Experiment.task_label_column)
+    @atable.column_function(task_label_column)
     def set_task_label(self, index, series):
         file_path, task_name = index
         series[_column_name] = self.tasks_by_name[task_name].label
 
-    @Experiment.column_function("param_dict")
+    @atable.column_function("param_dict")
     def set_param_dict(self, index, series):
         file_path, task_name = index
         series[_column_name] = self.tasks_by_name[task_name].param_dict
