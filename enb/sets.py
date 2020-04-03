@@ -7,7 +7,7 @@ as well as basic statistical measurements.
 
 Subclasses of this table can be created adding extra columns.
 
-The experiment.LosslessCompressionExperiment class takes an instance of FilePropertiesTable
+The experiment.CompressionExperiment class takes an instance of FilePropertiesTable
 to know what files the experiment should be run on.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
