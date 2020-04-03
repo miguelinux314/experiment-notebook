@@ -15,20 +15,19 @@
 * For example
 
   ::
-        import ray
-        ray.init()
-        from enb import atable
 
+        import ray
+        from enb import atable
 
         class Subclass(atable.ATable):
             @atable.column_function("index_length")
             def set_index_length(self, index, series):
                 series["index_length"] = len(index)
 
+        ray.init()
         sc = Subclass(index="index")
         df = sc.get_df(target_indices=["a"*i for i in range(10)])
         print(df.head())
-
 
   Should return:
 
@@ -197,34 +196,34 @@ class MetaTable(type):
                 # subclasses. That happens after metracreation,
                 # therefore overwrites the following updates
                 subclass.column_to_properties.update(base.column_to_properties)
-
-                # Make sure that subclasses do not re-use a base class column
-                # function name without it being decorated as column function
-                # (unexpected behavior)
-                for column, properties in subclass.column_to_properties.items():
-                    defining_class_name = get_class_that_defined_method(properties.fun).__name__
-                    if defining_class_name != subclass.__name__:
-                        ctp_fun = properties.fun
-                        sc_fun = getattr(subclass, properties.fun.__name__)
-                        if ctp_fun != sc_fun:
-                            if get_class_that_defined_method(ctp_fun) != get_class_that_defined_method(sc_fun):
-                                if hasattr(sc_fun, "_redefines_column"):
-                                    properties = copy.copy(properties)
-                                    properties.fun = sc_fun
-                                    subclass.column_to_properties[column] = properties
-                                    print(f">>>> Redefining {sc_fun}")
-                                else:
-                                    print(f"[W]arning: {defining_class_name}'s subclass {subclass.__name__} "
-                                          f"overwrites method {properties.fun.__name__}, "
-                                          f"but it does not decorate it with @atable.column_function "
-                                          f"for column {column}. "
-                                          f"The method from class {defining_class_name} will be used to fill "
-                                          f"the table's column {column}. Consider decorating the function "
-                                          f"with the same @atable.column_function as the base class, "
-                                          f"or simply with @atable.redefines_column to maintain the same "
-                                          f"difinition")
             except AttributeError:
                 pass
+
+        # Make sure that subclasses do not re-use a base class column
+        # function name without it being decorated as column function
+        # (unexpected behavior)
+        for column, properties in subclass.column_to_properties.items():
+            defining_class_name = get_class_that_defined_method(properties.fun).__name__
+            if defining_class_name != subclass.__name__:
+                ctp_fun = properties.fun
+                sc_fun = getattr(subclass, properties.fun.__name__)
+                if ctp_fun != sc_fun:
+                    if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
+                        if hasattr(sc_fun, "_redefines_column"):
+                            properties = copy.copy(properties)
+                            properties.fun = sc_fun
+                            subclass.column_to_properties[column] = properties
+                        else:
+                            print(f"[W]arning: {defining_class_name}'s subclass {subclass.__name__} "
+                                  f"overwrites method {properties.fun.__name__}, "
+                                  f"but it does not decorate it with @atable.column_function "
+                                  f"for column {column}. "
+                                  f"The method from class {defining_class_name} will be used to fill "
+                                  f"the table's column {column}. Consider decorating the function "
+                                  f"with the same @atable.column_function as the base class, "
+                                  f"or simply with @atable.redefines_column to maintain the same "
+                                  f"difinition")
+
 
         # Add pending methods (declared as columns before subclass existed)
         for classname, fun, cp, kwargs in cls.pendingdefs_classname_fun_columnproperties_kwargs:
@@ -740,7 +739,7 @@ def column_function(column_properties, **kwargs):
 
     def inner_wrapper(f):
         try:
-            cls_name = f.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
+            cls_name = get_defining_class_name(f)
         except IndexError:
             raise Exception(f"Are you decorating a non-method function {f.__name__}? Not allowed")
 
@@ -759,6 +758,8 @@ def redefines_column(f):
     f._redefines_column = True
     return f
 
+def get_defining_class_name(f):
+    return f.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
 
 
 def get_class_that_defined_method(meth):

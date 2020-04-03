@@ -119,23 +119,21 @@ class AbstractCodec:
         """Compress original_path into compress_path using param_dict as params.
         :param original_path: path to the original file to be compressed
         :param compressed_path: path to the compressed file to be created
-        :param original_file_info: a dict-like object describing original_path's properties
-          (e.g., geometry), or None
-        :return: (optional) a CompressionResults instance, or None
-          (see compression_results_from_paths)
+        :param original_file_info: a dict-like object describing original_path's properties (e.g., geometry), or None
+        :return: (optional) a CompressionResults instance, or None (see compression_results_from_paths)
         """
         raise NotImplementedError()
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         """Decompress compressed_path into reconstructed_path using param_dict
         as params (if needed).
+
         :param compressed_path: path to the input compressed file
         :param reconstructed_path: path to the output reconstructed file
         :param original_file_info: a dict-like object describing original_path's properties
           (e.g., geometry), or None. Should only be actually used in special cases,
           since codecs are expected to store all needed metainformation in the compressed file.
-        :return: (optional) a DecompressionResults instance, or None
-          (see decompression_results_from_paths)
+        :return: (optional) a DecompressionResults instance, or None (see decompression_results_from_paths)
         """
         raise NotImplementedError()
 
@@ -440,11 +438,9 @@ class CompressionExperiment(experiment.Experiment):
             series["compressed_file_sha256"] = compressed_file_sha256
 
 
-# print(">>>>>>> redefines_column ---> make it so that it does not require re-definition")
 class LosslessCompressionExperiment(CompressionExperiment):
-    # @atable.redefines_column
+    @atable.redefines_column
     def set_comparison_results(self, index, series):
-        print("Quack Quack")
         super().set_comparison_results(index=index, series=series)
         if not series["lossless_reconstruction"]:
             raise CompressionException(
