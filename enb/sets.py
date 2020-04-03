@@ -129,6 +129,7 @@ class FileVersionTable(FilePropertiesTable):
           class MyVersion(FileVersionTable, FilePropertiesTable):
             pass
     """
+
     def __init__(self, original_base_dir, version_base_dir,
                  original_properties_table, version_name,
                  csv_support_path=None):
@@ -219,10 +220,11 @@ class FileVersionTable(FilePropertiesTable):
 
 @ray.remote
 def version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, options):
-    """Run the versioning of one path
+    """Run the versioning of one path.
     """
     return version_one_path_local(version_fun=version_fun, input_path=input_path, output_path=output_path,
                                   overwrite=overwrite, original_info_df=original_info_df, options=options)
+
 
 @config.propagates_options
 def version_one_path_local(version_fun, input_path, output_path, overwrite, original_info_df, options):
@@ -232,8 +234,8 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
     :param output_path: path where the versioned file is to be stored
     :param overwrite: if True, the version is calculated even if output_path already exists
     :param options: additional runtime options
-    :param original_info_df: DataFrame produced by a FilePropertiesTable instance that contains
-      an entry for atable.indices_to_internal_loc(input_path).
+    :param original_info_df DataFrame produced by a FilePropertiesTable instance that contains
+        an entry for :meth:`atable.indices_to_internal_loc`.
     """
     output_path = get_canonical_path(output_path)
     if os.path.exists(output_path) and not overwrite:

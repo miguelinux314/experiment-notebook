@@ -10,6 +10,7 @@ import unittest
 import random
 random.seed(0xbadc0f33)
 
+import test_all
 from enb.codec_implementations import bitstream
 
 

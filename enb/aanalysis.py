@@ -412,16 +412,14 @@ class HistogramDistributionAnalyzer(Analyzer):
     def analyze_df(self, full_df, target_columns,
                    output_plot_dir, output_csv_file=None, show_global=True,
                    column_to_properties=None, group_by=None, version_name=None):
-        """
-        Analyze a column, where each cell contains a real to real mapping.
+        """Analyze a column, where each cell contains a real to real mapping.
         :param full_df: full df from which the column is to be extracted
         :param target_columns: list of column names containing tensor (mapping) data
         :param output_plot_dir: path of the directory where the plot is to be saved
         :param output_csv_file: path of the csv file where basic analysis results are stored
         :param column_to_properties: dictionary with ColumnProperties entries
         :param group_by: if not None, the name of the column to be used for grouping
-        :param version_name: if not None, a string identifying the file version that
-          produced full_df
+        :param version_name: if not None, a string identifying the file version that produced full_df.
         """
         full_df = pd.DataFrame(full_df)
         column_to_properties = collections.defaultdict(None) if column_to_properties is None else column_to_properties
