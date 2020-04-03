@@ -84,9 +84,7 @@ class FilePropertiesTable(atable.ATable):
         file_path = file_path[1:]
         return file_path
 
-
-class FilePropertiesTable(FilePropertiesTable):
-    @FilePropertiesTable.column_function("corpus", label="Corpus name")
+    @atable.column_function("corpus", label="Corpus name")
     def set_corpus(self, file_path, series):
         if options.base_dataset_dir is not None:
             file_dir = os.path.dirname(os.path.abspath(os.path.realpath(file_path)))
@@ -98,7 +96,7 @@ class FilePropertiesTable(FilePropertiesTable):
             file_dir = os.path.basename(os.path.dirname(file_path))
         series[_column_name] = file_dir
 
-    @FilePropertiesTable.column_function("size_bytes", label="File size (bytes)")
+    @atable.column_function("size_bytes", label="File size (bytes)")
     def set_file_size(self, file_path, series):
         """Store the original file size in series
         :param file_path: path to the file to analyze
@@ -106,9 +104,9 @@ class FilePropertiesTable(FilePropertiesTable):
         """
         series[_column_name] = os.path.getsize(file_path)
 
-    @FilePropertiesTable.column_function(
-        FilePropertiesTable.hash_field_name,
-        label=f"{FilePropertiesTable.hash_field_name} hex digest")
+    @atable.column_function(
+        hash_field_name,
+        label=f"{hash_field_name} hex digest")
     def set_hash_digest(self, file_path, series):
         """Store the hexdigest of file_path's contents, using hash_algorithm as configured.
         :param file_path: path to the file to analyze
@@ -131,10 +129,6 @@ class FileVersionTable(FilePropertiesTable):
           class MyVersion(FileVersionTable, FilePropertiesTable):
             pass
     """
-    pass
-
-
-class FileVersionTable(FileVersionTable):
     def __init__(self, original_base_dir, version_base_dir,
                  original_properties_table, version_name,
                  csv_support_path=None):
@@ -163,10 +157,6 @@ class FileVersionTable(FileVersionTable):
           for input_path
         """
         raise NotImplementedError()
-
-    @FileVersionTable.column_function("original_file_path")
-    def set_original_file_path(self, file_path, series):
-        series[_column_name] = get_canonical_path(file_path.replace(self.version_base_dir, self.original_base_dir))
 
     def get_df(self, target_indices, fill=True, overwrite=False,
                parallel_versioning=True, parallel_row_processing=True,
@@ -221,6 +211,10 @@ class FileVersionTable(FileVersionTable):
         return filtered_type.get_df(
             self, target_indices=version_indices, parallel_row_processing=parallel_row_processing,
             target_columns=target_columns, overwrite=overwrite)
+
+    @atable.column_function("original_file_path")
+    def set_original_file_path(self, file_path, series):
+        series[_column_name] = get_canonical_path(file_path.replace(self.version_base_dir, self.original_base_dir))
 
 
 @ray.remote

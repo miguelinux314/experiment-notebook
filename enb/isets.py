@@ -29,11 +29,8 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
     """Properties table for images. Allows automatic handling of tags in
     filenames, e.g., ZxYxX_u16be.
     """
-    pass
 
-
-class ImagePropertiesTable(ImagePropertiesTable):
-    @ImagePropertiesTable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
+    @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
     def set_bytes_per_sample(self, file_path, series):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
             series[_column_name] = 1
@@ -44,7 +41,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
-    @ImagePropertiesTable.column_function("signed", label="Signed samples")
+    @atable.column_function("signed", label="Signed samples")
     def set_signed(self, file_path, series):
         if any(s in file_path for s in ("u8be", "u16be", "u16le", "u32be", "u32le")):
             series[_column_name] = False
@@ -53,7 +50,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
-    @ImagePropertiesTable.column_function("big_endian", label="Big endian?")
+    @atable.column_function("big_endian", label="Big endian?")
     def set_big_endian(self, file_path, series):
         if any(s in file_path for s in ("u8be", "u16be", "u32be", "s8be", "s16be", "s32be")):
             series[_column_name] = True
@@ -62,14 +59,14 @@ class ImagePropertiesTable(ImagePropertiesTable):
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
-    @ImagePropertiesTable.column_function("samples", label="Sample count", plot_min=0)
+    @atable.column_function("samples", label="Sample count", plot_min=0)
     def set_samples(self, file_path, series):
         """Set the number of samples in the image
         """
         assert series["size_bytes"] % series["bytes_per_sample"] == 0
         series[_column_name] = series["size_bytes"] // series["bytes_per_sample"]
 
-    @ImagePropertiesTable.column_function([
+    @atable.column_function([
         atable.ColumnProperties(name="width", label="Width", plot_min=1),
         atable.ColumnProperties(name="height", label="Height", plot_min=1),
         atable.ColumnProperties(name="component_count", label="Components", plot_min=1),
@@ -92,7 +89,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
         raise ValueError("Cannot determine image geometry "
                          f"from file name {os.path.basename(file_path)}")
 
-    @ImagePropertiesTable.column_function(
+    @atable.column_function(
         atable.ColumnProperties(name="1B_value_counts",
                                 label="1-byte value counts",
                                 semilog_y=True, has_dict_values=True))
@@ -103,7 +100,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
         series[_column_name] = dict(collections.Counter(
             np.fromfile(file_path, dtype="uint8").flatten()))
 
-    @ImagePropertiesTable.column_function(
+    @atable.column_function(
         "entropy_1B_bps", label="Entropy (bps, 1-byte samples)", plot_min=0, plot_max=8)
     def set_file_entropy(self, file_path, series):
         """Return the zero-order entropy of the data in file_path (1-byte samples are assumed)
@@ -114,7 +111,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
         series[_column_name] = - sum(p * math.log2(p) for p in probabilities)
         assert abs(series[_column_name] - entropy(np.fromfile(file_path, dtype="uint8"))) < 1e-12
 
-    @ImagePropertiesTable.column_function(
+    @atable.column_function(
         [f"byte_value_{s}" for s in ["min", "max", "avg", "std"]])
     def set_byte_value_extrema(self, file_path, series):
         contents = np.fromfile(file_path, dtype="uint8")
@@ -123,7 +120,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
         series["byte_value_avg"] = contents.mean()
         series["byte_value_std"] = contents.std()
 
-    @ImagePropertiesTable.column_function(
+    @atable.column_function(
         "histogram_fullness_1byte", label="Histogram usage fraction (1 byte)",
         plot_min=0, plot_max=1)
     def set_histogram_fullness_1byte(self, file_path, series):
@@ -134,7 +131,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
             file_path, dtype=np.uint8)).size / (2 ** 8)
         assert 0 <= series[_column_name] <= 1
 
-    @ImagePropertiesTable.column_function(
+    @atable.column_function(
         "histogram_fullness_2bytes", label="Histogram usage fraction (2 bytes)",
         plot_min=0, plot_max=1)
     def set_histogram_fullness_2bytes(self, file_path, series):
@@ -145,7 +142,7 @@ class ImagePropertiesTable(ImagePropertiesTable):
             file_path, dtype=np.uint16)).size / (2 ** 16)
         assert 0 <= series[_column_name] <= 1
 
-    @ImagePropertiesTable.column_function(
+    @atable.column_function(
         "histogram_fullness_4bytes", label="Histogram usage fraction (4 bytes)",
         plot_min=0, plot_max=1)
     def set_histogram_fullness_4bytes(self, file_path, series):

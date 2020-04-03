@@ -204,7 +204,7 @@ class ScalarDistributionAnalyzer(Analyzer):
         :param target_columns: list of column names for which an analysis is to be performed.
           A single string is also accepted (as a single column name).
         :param column_to_properties: if not None, a dict indexed by column name (as given
-          in the column parameter of the @column_function decorator), entries being
+          in the column parameter of the @atable.column_function decorator), entries being
           an atable.ColumnProperties instance
         :param group_by: if not None, analysis is performed after grouping by that column name
         :param show_global: if True, distribution for all entries (without grouping) is also shown

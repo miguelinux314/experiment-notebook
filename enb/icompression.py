@@ -360,10 +360,7 @@ class CompressionExperiment(experiment.Experiment):
         """
         return self.tasks_by_name
 
-
-class CompressionExperiment(CompressionExperiment):
-
-    @CompressionExperiment.column_function([
+    @atable.column_function([
         atable.ColumnProperties(name="compression_ratio", label="Compression ratio", plot_min=0),
         atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
                                 label="Compression efficiency (1B entropy)", plot_min=0),
@@ -442,12 +439,12 @@ class CompressionExperiment(CompressionExperiment):
             series["compression_ratio"] = os.path.getsize(cr.original_path) / os.path.getsize(cr.compressed_path)
             series["compressed_file_sha256"] = compressed_file_sha256
 
-class LosslessCompressionExperiment(CompressionExperiment):
-    pass
 
-class LosslessCompressionExperiment(LosslessCompressionExperiment):
-    @LosslessCompressionExperiment.redefines_column
+# print(">>>>>>> redefines_column ---> make it so that it does not require re-definition")
+class LosslessCompressionExperiment(CompressionExperiment):
+    # @atable.redefines_column
     def set_comparison_results(self, index, series):
+        print("Quack Quack")
         super().set_comparison_results(index=index, series=series)
         if not series["lossless_reconstruction"]:
             raise CompressionException(
