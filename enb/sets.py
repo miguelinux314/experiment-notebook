@@ -85,7 +85,7 @@ class FilePropertiesTable(atable.ATable):
         return file_path
 
     @atable.column_function("corpus", label="Corpus name")
-    def set_corpus(self, file_path, series):
+    def set_corpus(self, file_path, row):
         if options.base_dataset_dir is not None:
             file_dir = os.path.dirname(os.path.abspath(os.path.realpath(file_path)))
             base_dir = os.path.abspath(os.path.realpath(options.base_dataset_dir))
@@ -94,28 +94,28 @@ class FilePropertiesTable(atable.ATable):
                 file_dir = file_dir[1:]
         else:
             file_dir = os.path.basename(os.path.dirname(file_path))
-        series[_column_name] = file_dir
+        row[_column_name] = file_dir
 
     @atable.column_function("size_bytes", label="File size (bytes)")
-    def set_file_size(self, file_path, series):
-        """Store the original file size in series
+    def set_file_size(self, file_path, row):
+        """Store the original file size in row
         :param file_path: path to the file to analyze
-        :param series: dictionary of previously computed values for this file_path (to speed up derived values)
+        :param row: dictionary of previously computed values for this file_path (to speed up derived values)
         """
-        series[_column_name] = os.path.getsize(file_path)
+        row[_column_name] = os.path.getsize(file_path)
 
     @atable.column_function(
         hash_field_name,
         label=f"{hash_field_name} hex digest")
-    def set_hash_digest(self, file_path, series):
+    def set_hash_digest(self, file_path, row):
         """Store the hexdigest of file_path's contents, using hash_algorithm as configured.
         :param file_path: path to the file to analyze
-        :param series: dictionary of previously computed values for this file_path (to speed up derived values)
+        :param row: dictionary of previously computed values for this file_path (to speed up derived values)
         """
         hasher = hashlib.new(hash_algorithm)
         with open(file_path, "rb") as f:
             hasher.update(f.read())
-        series[_column_name] = hasher.hexdigest()
+        row[_column_name] = hasher.hexdigest()
 
 
 class FileVersionTable(FilePropertiesTable):
@@ -149,12 +149,12 @@ class FileVersionTable(FilePropertiesTable):
         self.version_base_dir = version_base_dir
         self.version_name = version_name
 
-    def version(self, input_path, output_path, file_info):
+    def version(self, input_path, output_path, row):
         """Create a version of input_path and save it into output_path.
 
         :param input_path: path to the file to be versioned
         :param output_path: path where the version should be saved
-        :param file_info: metainformation available using super().get_df
+        :param row: metainformation available using super().get_df
           for input_path
         """
         raise NotImplementedError()
@@ -214,8 +214,8 @@ class FileVersionTable(FilePropertiesTable):
             target_columns=target_columns, overwrite=overwrite)
 
     @atable.column_function("original_file_path")
-    def set_original_file_path(self, file_path, series):
-        series[_column_name] = get_canonical_path(file_path.replace(self.version_base_dir, self.original_base_dir))
+    def set_original_file_path(self, file_path, row):
+        row[_column_name] = get_canonical_path(file_path.replace(self.version_base_dir, self.original_base_dir))
 
 
 @ray.remote
@@ -246,9 +246,9 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
     if options.verbose > 1:
         print(f"[V]ersioning {input_path} -> {output_path} (overwrite={overwrite})")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    file_info = original_info_df.loc[atable.indices_to_internal_loc(input_path)]
+    row = original_info_df.loc[atable.indices_to_internal_loc(input_path)]
     try:
-        version_fun(input_path=input_path, output_path=output_path, file_info=file_info)
+        version_fun(input_path=input_path, output_path=output_path, row=row)
     except Exception as ex:
         try:
             os.remove(output_path)

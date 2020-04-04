@@ -9,8 +9,8 @@ import enb.atable as atable
 
 class Subclass(atable.ATable):
     @atable.column_function("index_length")
-    def set_index_length(self, index, series):
-        series["index_length"] = len(index)
+    def set_index_length(self, index, row):
+        row["index_length"] = len(index)
 
 
 class TestATable(unittest.TestCase):
