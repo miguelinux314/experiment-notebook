@@ -27,9 +27,10 @@ options = get_options()
 
 
 @ray.remote
-def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
-                         y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
-                         global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None):
+@config.propagates_options
+def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
+                             y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
+                             global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None):
     """Ray wrapper for render_plds_by_group_local"""
     return render_plds_by_group_local(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                       column_properties=column_properties, global_x_label=global_x_label,
@@ -39,7 +40,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                                       semilog_hist_min=semilog_hist_min, options=options)
 
 
-@config.propagates_options
 def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_properties, global_x_label,
                                horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
                                color_by_group_name=None, global_y_label="Relative frequency", semilog_hist_min=1e-10,
@@ -278,7 +278,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                          or not column_to_properties[column_name].semilog_y else self.semilog_hist_min
             y_max = 1
             expected_return_ids.append(
-                render_plds_by_group.remote(
+                ray_render_plds_by_group.remote(
                     options=ray.put(options),
                     pds_by_group_name=ray.put(pds_by_group_name),
                     output_plot_path=ray.put(os.path.join(output_plot_dir,
@@ -478,7 +478,7 @@ class HistogramDistributionAnalyzer(Analyzer):
             y_max = column_to_properties[column_name].hist_max if column_name in column_to_properties else None
             y_max = self.hist_max if y_max is None else y_max
             #
-            return_ids.append(render_plds_by_group.remote(
+            return_ids.append(ray_render_plds_by_group.remote(
                 options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group_name),
                 output_plot_path=ray.put(output_plot_path),
@@ -638,7 +638,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
             y_max = self.hist_max if y_max is None else y_max
             #
 
-            result_ids.append(render_plds_by_group.remote(
+            result_ids.append(ray_render_plds_by_group.remote(
                 options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group),
                 output_plot_path=ray.put(output_plot_path),
@@ -707,7 +707,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
             pds_by_group_id = ray.put(pds_by_group)
 
-            expected_returns.append(render_plds_by_group.remote(
+            expected_returns.append(ray_render_plds_by_group.remote(
                 pds_by_group_name=pds_by_group_id,
                 output_plot_path=ray.put(output_plot_path),
                 column_properties=ray.put(column_to_properties[column_x] if column_x in column_to_properties else None),

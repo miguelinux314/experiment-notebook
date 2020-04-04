@@ -224,7 +224,6 @@ class MetaTable(type):
                                   f"or simply with @atable.redefines_column to maintain the same "
                                   f"difinition")
 
-
         # Add pending methods (declared as columns before subclass existed)
         for classname, fun, cp, kwargs in cls.pendingdefs_classname_fun_columnproperties_kwargs:
             if classname != name:
@@ -421,7 +420,7 @@ class ATable(metaclass=MetaTable):
         index_ids = [ray.put(index) for index in target_indices]
         index_columns_id = ray.put(tuple(self.indices))
         all_columns_id = ray.put(self.indices_and_columns)
-        loaded_rows_ids = [get_row_or_default.remote(
+        loaded_rows_ids = [ray_get_row_or_default.remote(
             loaded_df_id, index_id, index_columns_id, all_columns_id)
             for index_id in index_ids]
         assert len(index_ids) == len(target_indices)
@@ -443,8 +442,8 @@ class ATable(metaclass=MetaTable):
             returned_values = []
             for index, row in zip(target_indices, ray.get(loaded_rows_ids)):
                 try:
-                    returned_values.append(process_row_local(
-                        atable=self, index=index, column_fun_tuples=column_fun_tuples,
+                    returned_values.append(self.process_row(
+                        index=index, column_fun_tuples=column_fun_tuples,
                         row=row, overwrite=overwrite, fill=fill, options=options))
                 except ColumnFailedError as ex:
                     returned_values.append(ex)
@@ -454,7 +453,7 @@ class ATable(metaclass=MetaTable):
             overwrite_id = ray.put(overwrite)
             fill_id = ray.put(fill)
             column_fun_tuples_id = ray.put(column_fun_tuples)
-            processed_row_ids = [process_row.remote(
+            processed_row_ids = [ray_process_row.remote(
                 atable=self_id, index=index_id, row=row_id,
                 column_fun_tuples=column_fun_tuples_id,
                 overwrite=overwrite_id, fill=fill_id,
@@ -521,6 +520,52 @@ class ATable(metaclass=MetaTable):
             "Unexpected table length / requested indices " \
             f"{(len(table_df), len(target_indices))}"
         return table_df
+
+    def process_row(self, index, column_fun_tuples, row, overwrite, fill, options):
+        """Run as described in ray_process_row, but as a local function.
+        """
+        if not fill:
+            return row
+
+        called_functions = set()
+        for column, fun in column_fun_tuples:
+            if fun in called_functions:
+                if options.verbose > 2:
+                    print(f"[A]lready called function {fun.__name__} <{self.__class__.__name__}>")
+                continue
+            if options.columns and column not in options.columns:
+                if options.verbose > 2:
+                    print(f"[S]kipping non-selected column {column}")
+                continue
+
+            if overwrite or column not in row or row[column] is None:
+                skip = False
+            else:
+                try:
+                    skip = not math.isnan(float(row[column]))
+                except (ValueError, TypeError):
+                    skip = len(str(row[column])) > 0
+            if skip:
+                if options.verbose > 2:
+                    print(f"[S]kipping existing '{column}' for index={index} <{self.__class__.__name__}>")
+                continue
+
+            if options.verbose > 1:
+                print(f"[C]alculating {column} for {index} with <{self.__class__.__name__}>")
+            try:
+                result = fun(self, index, row)
+                called_functions.add(fun)
+                if result is not None and options.verbose > 1:
+                    print(f"[W]arning: result of {fun.__name__} ignored")
+                if row[column] is None:
+                    raise ValueError(f"The '{fun.__name__}' function  failed to fill "
+                                     f"the associated '{column}' column ({column}:{row[column]})")
+            except Exception as ex:
+                if options.verbose:
+                    print(repr(ex))
+                return ColumnFailedError(atable=self, index=index, column=column, ex=ex)
+
+        return row
 
     def _load_saved_df(self):
         """Load the df stored in permanent support (if any), otherwise an empty dataset,
@@ -638,7 +683,7 @@ def unpack_index_value(input):
 
 
 @ray.remote
-def get_row_or_default(df, index, index_columns, all_columns):
+def ray_get_row_or_default(df, index, index_columns, all_columns):
     """Get an existing row of df, or a newly created row (not added to df)
     containing keys in index_columns set to the values given by index
     (which must match in number of items based on unpack_index_value()
@@ -660,7 +705,8 @@ def get_row_or_default(df, index, index_columns, all_columns):
 
 
 @ray.remote
-def process_row(atable, index, column_fun_tuples, row, overwrite, fill, options):
+@config.propagates_options
+def ray_process_row(atable, index, column_fun_tuples, row, overwrite, fill, options):
     """Process a single row of an ATable instance, filling
     values in row.
 
@@ -676,58 +722,9 @@ def process_row(atable, index, column_fun_tuples, row, overwrite, fill, options)
     :param options: runtime options
     :return: row, after filling its contents
     """
-    return process_row_local(atable=atable, index=index,
-                             column_fun_tuples=column_fun_tuples, row=row,
-                             overwrite=overwrite, fill=fill,
-                             options=options)
-
-
-@config.propagates_options
-def process_row_local(atable, index, column_fun_tuples, row, overwrite, fill, options):
-    """Run as described in process_row, but as a local function.
-    """
-    if not fill:
-        return row
-
-    called_functions = set()
-    for column, fun in column_fun_tuples:
-        if fun in called_functions:
-            if options.verbose > 2:
-                print(f"[A]lready called function {fun.__name__} <{atable.__class__.__name__}>")
-            continue
-        if options.columns and column not in options.columns:
-            if options.verbose > 2:
-                print(f"[S]kipping non-selected column {column}")
-            continue
-
-        if overwrite or column not in row or row[column] is None:
-            skip = False
-        else:
-            try:
-                skip = not math.isnan(float(row[column]))
-            except (ValueError, TypeError):
-                skip = len(str(row[column])) > 0
-        if skip:
-            if options.verbose > 2:
-                print(f"[S]kipping existing '{column}' for index={index} <{atable.__class__.__name__}>")
-            continue
-
-        if options.verbose > 1:
-            print(f"[C]alculating {column} for {index} with <{atable.__class__.__name__}>")
-        try:
-            result = fun(atable, index, row)
-            called_functions.add(fun)
-            if result is not None and options.verbose > 1:
-                print(f"[W]arning: result of {fun.__name__} ignored")
-            if row[column] is None:
-                raise ValueError(f"The '{fun.__name__}' function  failed to fill "
-                                 f"the associated '{column}' column ({column}:{row[column]})")
-        except Exception as ex:
-            if options.verbose:
-                print(repr(ex))
-            return ColumnFailedError(atable=atable, index=index, column=column, ex=ex)
-
-    return row
+    return atable.process_row(index=index, column_fun_tuples=column_fun_tuples,
+                              row=row, overwrite=overwrite, fill=fill,
+                              options=options)
 
 
 def column_function(column_properties, **kwargs):
@@ -751,12 +748,14 @@ def column_function(column_properties, **kwargs):
 
     return inner_wrapper
 
+
 def redefines_column(f):
     """Decorator to mark a function as a column_function for all
     columns associated with functions with the same name as f.
     """
     f._redefines_column = True
     return f
+
 
 def get_defining_class_name(f):
     return f.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]

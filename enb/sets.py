@@ -196,7 +196,7 @@ class FileVersionTable(FilePropertiesTable):
             for original_path, version_path in zip(target_indices, version_indices):
                 input_path_id = ray.put(original_path)
                 output_path_id = ray.put(version_path)
-                versioning_result_ids.append(version_one_path.remote(
+                versioning_result_ids.append(ray_version_one_path.remote(
                     version_fun=version_fun_id, input_path=input_path_id,
                     output_path=output_path_id, overwrite=overwrite_id,
                     original_info_df=original_df_id, options=options_id))
@@ -219,14 +219,14 @@ class FileVersionTable(FilePropertiesTable):
 
 
 @ray.remote
-def version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, options):
+@config.propagates_options
+def ray_version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, options):
     """Run the versioning of one path.
     """
     return version_one_path_local(version_fun=version_fun, input_path=input_path, output_path=output_path,
                                   overwrite=overwrite, original_info_df=original_info_df, options=options)
 
 
-@config.propagates_options
 def version_one_path_local(version_fun, input_path, output_path, overwrite, original_info_df, options):
     """Version input_path into output_path using version_fun
     :param version_fun: function with signature like FileVersionTable.version

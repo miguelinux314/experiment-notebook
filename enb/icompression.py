@@ -28,7 +28,8 @@ options = get_options()
 
 class CompressionResults(recordclass.RecordClass):
     """Base class that defines the minimal fields that are returned by a
-    call to a coder's compress() method.
+    call to a coder's compress() method (or produced by
+    the CompressionExperiment instance)
     """
     # codec_name: codec's reported_name
     # codec_param_dict: dictionary of parameters to the codec
@@ -46,7 +47,8 @@ class CompressionResults(recordclass.RecordClass):
 
 class DecompressionResults(recordclass.RecordClass):
     """Base class that defines the minimal fields that are returned by a
-    call to a coder's decompress() method.
+    call to a coder's decompress() method (or produced by
+    the CompressionExperiment instance)
     """
     # codec_name: codec's reported name
     # codec_param_dict: dictionary of parameters to the codec
