@@ -15,6 +15,7 @@ import recordclass
 import subprocess
 import functools
 import shutil
+import numpy as np
 
 import enb
 from enb import atable
@@ -383,6 +384,14 @@ class CompressionExperiment(experiment.Experiment):
 
             return self._decompression_results
 
+        @property
+        def numpy_dtype(self):
+            """Get the numpy dtype corresponding to the original image's data format
+            """
+            return (">" if self.image_info_row["big_endian"] else "<") \
+                   + ("i" if self.image_info_row["signed"] else "u") \
+                   + str(self.image_info_row["bytes_per_sample"])
+
         def __getitem__(self, item):
             return self.row[item]
 
@@ -528,3 +537,22 @@ class LosslessCompressionExperiment(CompressionExperiment):
                 original_path=index[0], file_info=row,
                 output="Failed to produce lossless compression for "
                        f"{index[0]} and {index[1]}")
+
+class LossyCompressionExperiment(CompressionExperiment):
+    @atable.column_function("mse", label="MSE", plot_min=0)
+    def set_MSE(self, index, row):
+        original_array = np.fromfile(row.compression_results.original_path,
+                                     dtype=row.numpy_dtype)
+        reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
+                                          dtype=row.numpy_dtype)
+        row[_column_name] = np.average((original_array - reconstructed_array) ** 2)
+
+    @atable.column_function("pae", label="PAE", plot_min=0)
+    def set_PAE(self, index, row):
+        original_array = np.fromfile(row.compression_results.original_path,
+                                     dtype=row.numpy_dtype)
+        reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
+                                          dtype=row.numpy_dtype)
+        row[_column_name] = np.max(np.abs(original_array - reconstructed_array))
+        
+
