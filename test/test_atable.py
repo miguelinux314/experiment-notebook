@@ -24,7 +24,8 @@ class TestATable(unittest.TestCase):
             df = sc.get_df(target_indices=["a" * i for i in range(df_length)],
                            parallel_row_processing=parallel)
             assert len(df) == df_length
-            assert (df["index_length"].values == range(df_length)).all()
+            assert (df["index_length"].values == range(df_length)).all(), \
+                (df["index_length"].values)
 
 if __name__ == '__main__':
     unittest.main()
