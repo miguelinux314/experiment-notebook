@@ -80,7 +80,7 @@ class TestSets(unittest.TestCase):
                                      original_properties_table=original_properties_table,
                                      version_base_dir=tmp_dir)
 
-                def version(self, input_path, output_path, file_info):
+                def version(self, input_path, output_path, row):
                     shutil.copy(input_path, output_path)
 
             fpt = sets.FilePropertiesTable()

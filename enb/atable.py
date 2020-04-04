@@ -21,8 +21,8 @@
 
         class Subclass(atable.ATable):
             @atable.column_function("index_length")
-            def set_index_length(self, index, series):
-                series["index_length"] = len(index)
+            def set_index_length(self, index, row):
+                row["index_length"] = len(index)
 
         ray.init()
         sc = Subclass(index="index")
@@ -266,17 +266,17 @@ class ATable(metaclass=MetaTable):
         """Decorator for functions that produce values for column_name when
         given the current index and current column values.
 
-        Decorated functions are expected to have signature (atable, index, series),
+        Decorated functions are expected to have signature (atable, index, row),
         where atable is an ATable instance,
         index is a tuple of index values (corresponding to self.index),
-        and series is a dict-like instance to be filled in by f.
+        and row is a dict-like instance to be filled in by f.
 
         Columns are sorted by the order in which they are defined, i.e., when
         a function is decorated for the corresponding column.
         Redefinitions are not allowed.
 
         A variable _column is added to the decorated function's scope, e.g.,
-        to assign values to the intended column of the series object.
+        to assign values to the intended column of the row object.
 
         :param column_properties: one of the following options:
 
@@ -284,7 +284,7 @@ class ATable(metaclass=MetaTable):
           * a list of strings of length at least one, defining len(column_properties) columns
           * a ColumnProperties instance, or a list thereof, defining 1 and len(column_properties) column, respectively
 
-          All columns defined this way must be set in the series instance received by the decorated function
+          All columns defined this way must be set in the row instance received by the decorated function
         """
 
         def decorator_wrapper(fun):
@@ -444,7 +444,7 @@ class ATable(metaclass=MetaTable):
                 try:
                     returned_values.append(self.process_row(
                         index=index, column_fun_tuples=column_fun_tuples,
-                        row=row, overwrite=overwrite, fill=fill, options=options))
+                        row=row, overwrite=overwrite, fill=fill))
                 except ColumnFailedError as ex:
                     returned_values.append(ex)
         else:
@@ -521,8 +521,22 @@ class ATable(metaclass=MetaTable):
             f"{(len(table_df), len(target_indices))}"
         return table_df
 
-    def process_row(self, index, column_fun_tuples, row, overwrite, fill, options):
-        """Run as described in ray_process_row, but as a local function.
+    def process_row(self, index, column_fun_tuples, row, overwrite, fill):
+        """Process a single row of an ATable instance, filling
+        values in row.
+
+        :param index: index value or values corresponding to the row to
+          be processed
+        :param column_fun_tuples: a list of (column, fun) tuples,
+           where fun is to be invoked to fill column
+        :param row: dict-like object containing loaded information, and
+          where the column keys are to be set
+        :param overwrite: if True, existing values are overwriten with
+          newly computed data
+        :param fill: if False, the row is not processed, it is returned as read instead
+        :param options: runtime options
+
+        :return: row, after filling its contents
         """
         if not fill:
             return row
@@ -707,24 +721,10 @@ def ray_get_row_or_default(df, index, index_columns, all_columns):
 @ray.remote
 @config.propagates_options
 def ray_process_row(atable, index, column_fun_tuples, row, overwrite, fill, options):
-    """Process a single row of an ATable instance, filling
-    values in row.
-
-    :param index: index value or values corresponding to the row to
-      be processed
-    :param column_fun_tuples: a list of (column, fun) tuples,
-       where fun is to be invoked to fill column
-    :param row: dict-like object containing loaded information, and
-      where the column keys are to be set
-    :param overwrite: if True, existing values are overwriten with
-      newly computed data
-    :param fill: if False, the row is not processed, it is returned as read instead
-    :param options: runtime options
-    :return: row, after filling its contents
+    """Ray wrapper for :meth:`ATable.process_row`
     """
     return atable.process_row(index=index, column_fun_tuples=column_fun_tuples,
-                              row=row, overwrite=overwrite, fill=fill,
-                              options=options)
+                              row=row, overwrite=overwrite, fill=fill)
 
 
 def column_function(column_properties, **kwargs):

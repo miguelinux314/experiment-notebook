@@ -54,23 +54,23 @@ class ExperimentTask:
 
 class Experiment(atable.ATable):
     """An Experiment allows seamless execution of one or more tasks upon a
-        corpus of test files. Tasks are identified by a file index and a
-        :py:class:`ExperimentTask`'s (unique) name.
+    corpus of test files. Tasks are identified by a file index and a
+    :py:class:`ExperimentTask`'s (unique) name.
 
-        For each task, any number of table columns can be defined to gather
-        results of interest. This allows easy extension to highly complex and/or
-        specific experiments. See :func:`set_task_name` for an example.
+    For each task, any number of table columns can be defined to gather
+    results of interest. This allows easy extension to highly complex and/or
+    specific experiments. See :func:`set_task_name` for an example.
 
-        Automatic persistence of the obtained results is provided, to allow faster
-        experiment development and result replication.
+    Automatic persistence of the obtained results is provided, to allow faster
+    experiment development and result replication.
 
-        Internally, an Experiment consists of an ATable containing the properties
-        of the test corpus, and is itself another ATable that contains the
-        results of an experiment with as many user-defined columns as needed.
-        When the :meth:`~Experiment.get_df` method is called, a joint DataFrame
-        instance is returned that contains both the experiment results, and the
-        associated metainformation columns for each corpus element.
-        """
+    Internally, an Experiment consists of an ATable containing the properties
+    of the test corpus, and is itself another ATable that contains the
+    results of an experiment with as many user-defined columns as needed.
+    When the :meth:`~Experiment.get_df` method is called, a joint DataFrame
+    instance is returned that contains both the experiment results, and the
+    associated metainformation columns for each corpus element.
+    """
 
     task_name_column = "task_name"
     task_label_column = "task_label"
@@ -189,18 +189,16 @@ class Experiment(atable.ATable):
         return property_dict
 
     @atable.column_function(task_name_column)
-    def set_task_name(self, index, series):
+    def set_task_name(self, index, row):
         file_path, task_name = index
-        series[_column_name] = self.tasks_by_name[task_name].name
+        row[_column_name] = self.tasks_by_name[task_name].name
 
     @atable.column_function(task_label_column)
-    def set_task_label(self, index, series):
+    def set_task_label(self, index, row):
         file_path, task_name = index
-        series[_column_name] = self.tasks_by_name[task_name].label
+        row[_column_name] = self.tasks_by_name[task_name].label
 
     @atable.column_function("param_dict")
-    def set_param_dict(self, index, series):
+    def set_param_dict(self, index, row):
         file_path, task_name = index
-        series[_column_name] = self.tasks_by_name[task_name].param_dict
-
-
+        row[_column_name] = self.tasks_by_name[task_name].param_dict
