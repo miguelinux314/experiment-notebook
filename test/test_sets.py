@@ -15,8 +15,9 @@ import shutil
 import test_all
 import enb.sets as sets
 
-target_indices = [sets.get_canonical_path(f) for f in glob.glob("**/*.py", recursive=True)
+target_indices = [sets.get_canonical_path(f) for f in glob.glob("**/*.py", recursive=False)
                   if os.path.isfile(f) and os.path.getsize(f)]
+
 
 
 class TestSets(unittest.TestCase):

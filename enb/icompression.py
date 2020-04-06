@@ -541,11 +541,13 @@ class LosslessCompressionExperiment(CompressionExperiment):
 class LossyCompressionExperiment(CompressionExperiment):
     @atable.column_function("mse", label="MSE", plot_min=0)
     def set_MSE(self, index, row):
+        
         original_array = np.fromfile(row.compression_results.original_path,
                                      dtype=row.numpy_dtype).astype(np.int64)
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                           dtype=row.numpy_dtype).astype(np.int64)
-        row[_column_name] = np.average((original_array - reconstructed_array) ** 2)
+        row[_column_name] = np.average(((original_array - reconstructed_array) ** 2))
+
 
     @atable.column_function("pae", label="PAE", plot_min=0)
     def set_PAE(self, index, row):
