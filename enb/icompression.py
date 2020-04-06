@@ -401,6 +401,9 @@ class CompressionExperiment(experiment.Experiment):
         def __delitem__(self, key):
             del self.row[key]
 
+        def __contains__(self, item):
+            return item in self.row
+
         def __del__(self):
             if self._compression_results is not None:
                 try:
