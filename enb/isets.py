@@ -75,15 +75,19 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
         """Obtain the image's geometry (width, height and number of components)
         based on the filename tags (and possibly its size)
         """
-        match = re.search(r"(\d+)x(\d+)x(\d+)", file_path)
-        if match:
-            component_count, height, width = (int(match.group(i)) for i in range(1, 3 + 1))
+        matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
+        if matches:
+            match = matches[-1]
+            if len(matches) > 1 and options.verbose:
+                print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
+                      f"Only the last one is considered.")
+            component_count, height, width = (int(match[i]) for i in range(3))
             if any(dim < 1 for dim in (width, height, component_count)):
                 raise ValueError(f"Invalid dimension tag in {file_path}")
             row["width"], row["height"], row["component_count"] = \
                 width, height, component_count
             assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"]
-            assert row["samples"] == width*height*component_count
+            assert row["samples"] == width * height * component_count
             return
 
         raise ValueError("Cannot determine image geometry "
@@ -152,3 +156,52 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint32)).size / (2 ** 32)
         assert 0 <= row[_column_name] <= 1
+
+
+def dump_array_bsq(array, file_or_path, mode="wb"):
+    """Dump an array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
+    i.e., the concatenation of each component (z axis), each component in raster
+    order.
+
+    :param file_or_path: It can be either a file-like object, or a string-like
+    object.
+
+      * If it is a file, contents are writen without altering the file
+      pointer beforehand. In this case, the file is not closed afterwards.
+      * If it is a string-like object, it will be interpreted
+      as a file path, open as determined by the mode parameter.
+
+    :param mode: if file_or_path is a path, the output file is opened in this mode
+    """
+    try:
+        assert not file_or_path.closed, f"Cannot dump to a closed file"
+        open_here = False
+    except AttributeError:
+        file_or_path = open(file_or_path, mode)
+        open_here = True
+
+    width, height, component_count = array.shape
+    for z in range(component_count):
+        array[:, :, z].swapaxes(0, 1).tofile(file_or_path)
+
+    if open_here:
+        file_or_path.close()
+
+
+def iproperties_row_to_numpy_dtype(image_properties_row):
+    """Return a string that identifies the most simple numpy dtype needed
+    to represent an image with properties as defined in
+    image_properties_row
+    """
+    return ((">" if image_properties_row["big_endian"] else "<")
+            if image_properties_row["bytes_per_sample"] > 1 else "") \
+           + ("i" if image_properties_row["signed"] else "u") \
+           + str(image_properties_row["bytes_per_sample"])
+
+
+def iproperties_row_to_sample_type_tag(image_properties_row):
+    """Return a sample type tag as recognized by isets (e.g., u16be)
+    """
+    return ("s" if image_properties_row["signed"] else "u") \
+           + str(8 * image_properties_row["bytes_per_sample"]) \
+           + ("be" if image_properties_row["big_endian"] else "le")
