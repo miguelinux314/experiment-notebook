@@ -93,6 +93,18 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
         raise ValueError("Cannot determine image geometry "
                          f"from file name {os.path.basename(file_path)}")
 
+    @atable.column_function([
+        atable.ColumnProperties(name="sample_min", label="Min sample value"),
+        atable.ColumnProperties(name="sample_max", label="Max sample value")])
+    def set_sample_extrema(self, file_path, row):
+        array = load_array_bsq(file_or_path=file_path, image_properties_row=row).flatten()
+        row["sample_min"], row["sample_max"] = array.min(), array.max()
+
+    @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
+    def set_dynamic_range_bits(self, file_path, row):
+        range_len = row["sample_max"] - row["sample_min"]
+        row[_column_name] = max(1,math.ceil(math.log2(range_len+1)))
+
     @atable.column_function(
         atable.ColumnProperties(name="1B_value_counts",
                                 label="1-byte value counts",
@@ -158,7 +170,19 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
         assert 0 <= row[_column_name] <= 1
 
 
-def dump_array_bsq(array, file_or_path, mode="wb"):
+def load_array_bsq(file_or_path, image_properties_row):
+    """Load a numpy array indexed by [x,y,z] from file_or_path using
+    the geometry information in image_properties_row.
+    """
+
+    return np.fromfile(file_or_path,
+                       dtype=iproperties_row_to_numpy_dtype(image_properties_row)).reshape(
+        (image_properties_row["component_count"],
+         image_properties_row["height"],
+         image_properties_row["width"])).swapaxes(0, 2)
+
+
+def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     """Dump an array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
     i.e., the concatenation of each component (z axis), each component in raster
     order.
@@ -172,6 +196,8 @@ def dump_array_bsq(array, file_or_path, mode="wb"):
       as a file path, open as determined by the mode parameter.
 
     :param mode: if file_or_path is a path, the output file is opened in this mode
+
+    :param dtype: if not None, the array is casted to this type before dumping
     """
     try:
         assert not file_or_path.closed, f"Cannot dump to a closed file"
@@ -180,9 +206,10 @@ def dump_array_bsq(array, file_or_path, mode="wb"):
         file_or_path = open(file_or_path, mode)
         open_here = True
 
-    width, height, component_count = array.shape
-    for z in range(component_count):
-        array[:, :, z].swapaxes(0, 1).tofile(file_or_path)
+    array = array.swapaxes(0, 2)
+    if dtype is not None and array.dtype != dtype:
+        array = array.astype(dtype)
+    array.tofile(file_or_path)
 
     if open_here:
         file_or_path.close()
