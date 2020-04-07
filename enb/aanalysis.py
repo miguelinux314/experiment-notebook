@@ -787,6 +787,9 @@ class TwoColumnLineAnalyzer(Analyzer):
                                       x_label=column_name_x, y_label=column_name_y,
                                       label=family.label, alpha=self.alpha)]
 
+            global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
+            global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
+
             render_plds_by_group(
                 pds_by_group_name=plds_by_family_label,
                 output_plot_path=os.path.join(output_plot_dir, f"plot_line_{column_name_x}_{column_name_y}.pdf"),
@@ -795,7 +798,7 @@ class TwoColumnLineAnalyzer(Analyzer):
                 global_y_label=column_to_properties[column_name_y].label,
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
-                horizontal_margin=0,
+                horizontal_margin=0.05*(global_max_x-global_min_x),
                 combine_groups=True)
                 
 
