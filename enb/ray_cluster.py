@@ -25,11 +25,13 @@ def init_ray(force=False):
     """
     if not ray.is_initialized() or force:
         if os.path.exists(options.ray_config_file):
-            address_line = open(options.ray_config_file, "r").readline().strip()
-            if options.verbose:
-                print(f"Joining cluster [config: {address_line}]...")
-            ray.init(address=address_line)
+            with open(options.ray_config_file, "r") as options_file:
+                address_line = options_file.readline().strip()
+                if options.verbose:
+                    print(f"Joining cluster [config: {address_line}]...")
+                ray.init(address=address_line, num_cpus=options.ray_cpu_limit)
         else:
             if options.verbose:
                 print("Making new cluster...")
-            ray.init()
+
+            ray.init(num_cpus=options.ray_cpu_limit)

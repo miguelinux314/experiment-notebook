@@ -165,6 +165,10 @@ def get_options(from_main=False):
     execution_options.add_argument("-r", "--ray_config_file", action=ReadableFileAction,
                                    default=default_ray_config_file,
                                    help="Ray server configuration path (must contain IP:port in its first line)")
+    execution_options.add_argument("--ray_cpu_limit",
+                                   help="CPU count limit for ray processes",
+                                   type=int,
+                                   default=None)
 
     dir_options = parser.add_argument_group("Data dirs")
     # Data dir
