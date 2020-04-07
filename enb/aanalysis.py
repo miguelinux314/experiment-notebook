@@ -9,6 +9,7 @@ import os
 import itertools
 import math
 import collections
+import sortedcontainers
 import matplotlib
 from matplotlib.ticker import (AutoMinorLocator, MaxNLocator, LogLocator)
 
@@ -31,19 +32,19 @@ options = get_options()
 def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
                              global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None):
-    """Ray wrapper for render_plds_by_group_local"""
-    return render_plds_by_group_local(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
-                                      column_properties=column_properties, global_x_label=global_x_label,
-                                      horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
-                                      y_labels_by_group_name=y_labels_by_group_name,
-                                      color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                      semilog_hist_min=semilog_hist_min, options=options)
+    """Ray wrapper for render_plds_by_group"""
+    return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
+                                column_properties=column_properties, global_x_label=global_x_label,
+                                horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
+                                y_labels_by_group_name=y_labels_by_group_name,
+                                color_by_group_name=color_by_group_name, global_y_label=global_y_label,
+                                semilog_hist_min=semilog_hist_min)
 
 
-def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_properties, global_x_label,
-                               horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
-                               color_by_group_name=None, global_y_label="Relative frequency", semilog_hist_min=1e-10,
-                               options=None):
+def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
+                         horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
+                         color_by_group_name=None, global_y_label="Relative frequency",
+                         combine_groups=False, semilog_hist_min=1e-10):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -60,7 +61,8 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_prope
       indexed with the same keys as pds_by_group_name
     :param color_by_group_name: if not None, a dictionary of pyplot colors for the groups,
       indexed with the same keys as pds_by_group_name
-    :param options: additional runtime configuration options (see config.py)
+    :param combine_groups: if False, each group is plotted in a different row. If True,
+      all groups share the same subplot
     """
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
@@ -69,7 +71,6 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_prope
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
 
-    options = options if options is None else options
     sorted_group_names = sorted(pds_by_group_name.keys(),
                                 key=lambda s: "" if s == "all" else s.strip().lower())
 
@@ -81,14 +82,23 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_prope
             color_by_group_name[group_name] = f"C{i % 10}"
     os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
     fig, group_axis_list = plt.subplots(
-        nrows=len(sorted_group_names), ncols=1, sharex=True, sharey=False)
+        nrows=len(sorted_group_names) if not combine_groups else 1,
+        ncols=1, sharex=True, sharey=combine_groups)
+    if combine_groups:
+        group_axis_list = [group_axis_list]
     if len(sorted_group_names) == 1:
         group_axis_list = [group_axis_list]
 
     semilog_x, semilog_y = False, False
     x_min, x_max = None, None
-    for i, (group_name, group_axes) in enumerate(zip(
-            sorted_group_names, group_axis_list)):
+
+    if combine_groups:
+        assert len(group_axis_list) == 1
+        group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
+    else:
+        group_name_axes = zip(sorted_group_names, group_axis_list)
+
+    for i, (group_name, group_axes) in enumerate(group_name_axes):
         if column_properties:
             x_min = column_properties.plot_min
             x_max = column_properties.plot_max
@@ -129,7 +139,7 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_prope
             group_axes.semilogx()
         if semilog_y:
             group_axes.semilogy()
-            if len(sorted_group_names) <= 2:
+            if combine_groups or len(sorted_group_names) <= 2:
                 numticks = 11
             elif len(sorted_group_names) <= 5:
                 numticks = 6
@@ -142,9 +152,10 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_prope
         else:
             group_axes.get_yaxis().set_major_locator(MaxNLocator(nbins="auto", integer=False))
             group_axes.get_yaxis().set_minor_locator(AutoMinorLocator())
-        group_axes.get_yaxis().set_label_position("right")
-        group_axes.set_ylabel(y_labels_by_group_name[group_name], rotation=0,
-                              ha="left", va="center")
+        if not combine_groups:
+            group_axes.get_yaxis().set_label_position("right")
+            group_axes.set_ylabel(y_labels_by_group_name[group_name], rotation=0,
+                                  ha="left", va="center")
 
     plt.xlabel(global_x_label)
     if column_properties and column_properties.hist_label_dict is not None:
@@ -153,10 +164,10 @@ def render_plds_by_group_local(pds_by_group_name, output_plot_path, column_prope
         plt.xticks(x_tick_values, x_tick_labels)
 
     plt.xlim(x_min - horizontal_margin / 2, x_max + horizontal_margin / 2)
-    if len(sorted_group_names) > 5:
+    if len(sorted_group_names) > 10:
+        plt.subplots_adjust(hspace=0.75)
+    elif len(sorted_group_names) > 5:
         plt.subplots_adjust(hspace=0.3)
-    elif len(sorted_group_names) > 10:
-        plt.subplots_adjust(hspace=0.5)
 
     if global_y_label:
         fig.text(0.0, 0.5, global_y_label, va='center', rotation='vertical')
@@ -720,6 +731,103 @@ class TwoColumnScatterAnalyzer(Analyzer):
         ray.wait(expected_returns)
 
 
+class TwoColumnLineAnalyzer(Analyzer):
+    alpha = 0.5
+
+    def analyze_df(self, full_df, target_columns, output_plot_dir,
+                   output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=False, version_name=None):
+        """
+        :param full_df: full pandas.DataFrame to be analyzed and plotted
+        :param target_columns: an iterable of either two column names or
+          one or more tuple-like objects with two elements also being column names.
+          The first column name gives the one to be used for the x axis,
+          the second column for the y axis.
+        :param output_plot_dir: directory where the produced plots are to
+          be saved
+        :param output_csv_file: if not None, a file path were analysis statistics
+          are saved
+        :param column_to_properties: a dictionary of atable.ColumnProperties
+          indexed by their corresponding column name
+        :param group_by: a list of TaskFamily instances. Note that this behavior
+          differs from that of other Analyzers, which take a column name.
+        :param show_global: if group_by is not None, show_global determines
+          whether the whole dataframe (regardless of the group_by column)
+          is analyzed as well.
+        :param version_name: if not None, the version name is prepended to
+          the X and Y labels of the plot (does not affect computation).
+        """
+        assert target_columns, "Target columns cannot be empty nor None"
+        try:
+            len(target_columns[0]) == 2
+        except TypeError:
+            target_columns = [target_columns]
+
+        assert all(len(t) == 2 for t in target_columns), \
+            "Entries in target columns must be 2-element tuple-like instances. " \
+            f"(found {target_columns})"
+        assert all(t[0] in full_df.columns and t[1] in full_df.columns for t in target_columns), \
+            f"At least one column name in {target_columns} is not defined in " \
+            f"full_df's columns ({target_columns.columns}"
+
+        for column_name_x, column_name_y in target_columns:
+            # Entries are lists of PlottableData instances
+            plds_by_family_label = sortedcontainers.SortedDict()
+            for i, family in enumerate(group_by):
+                family_avg_x_y_values = []
+                for task_name in family.task_names:
+                    rows = full_df[full_df["task_name"] == task_name]
+                    family_avg_x_y_values.append(
+                        (rows[column_name_x].mean(), rows[column_name_y].mean()))
+
+                family_avg_x_y_values = sorted(family_avg_x_y_values)
+                x_values, y_values = zip(*family_avg_x_y_values)
+                plds_by_family_label[family.label] = [
+                    plotdata.LineData(x_values=x_values, y_values=y_values,
+                                      x_label=column_name_x, y_label=column_name_y,
+                                      label=family.label, alpha=self.alpha)]
+
+            render_plds_by_group(
+                pds_by_group_name=plds_by_family_label,
+                output_plot_path=os.path.join(output_plot_dir, f"plot_line_{column_name_x}_{column_name_y}.pdf"),
+                column_properties=column_to_properties[column_name_x],
+                global_x_label=column_to_properties[column_name_x].label,
+                global_y_label=column_to_properties[column_name_y].label,
+                y_min=column_to_properties[column_name_y].plot_min,
+                y_max=column_to_properties[column_name_y].plot_max,
+                horizontal_margin=0,
+                combine_groups=True)
+                
+
+
+class TaskFamily:
+    """Describe a sorted list of task names that identify a family of related
+    results within a DataFrame. Typically, this family will be constructed using
+    task workers (e.g., :class:`icompression.AbstractCodec` instances) that share
+    all configuration values except for a parameter.
+    """
+
+    def __init__(self, label, task_names=None):
+        """
+        :param label: Printable name that identifies the family
+        :param task_names: if not None, it must be a list of task names (strings)
+          that are expected to be found in an ATable's DataFrame when analyzing
+          it.
+        """
+        self.label = label
+        self.task_names = task_names if task_names is not None else []
+
+    def add_task_name(self, task_name):
+        """
+        Add a new task name to the family (it becomes the last element
+        in self.task_names)
+
+        :param task_name: A new new not previously included in the Family
+        """
+        assert task_name not in self.task_names
+        self.task_names.append(task_name)
+
+
 def get_histogram_dicts(df, column):
     """Get a list of dicts, each one representing one histogram stored at row, column
     for al rows in df in the order given by the index.
@@ -737,9 +845,9 @@ def column_name_to_labels(column_name):
     """
     parts = column_name.split("_to_")
     if len(parts) == 2:
-        x_label, y_label = clean(parts[0]), clean(parts[1])
+        x_label, y_label = clean_column_name(parts[0]), clean_column_name(parts[1])
     else:
-        x_label, y_label = clean(column_name), None
+        x_label, y_label = clean_column_name(column_name), None
     return x_label, y_label
 
 
