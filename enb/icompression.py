@@ -15,6 +15,7 @@ import recordclass
 import subprocess
 import functools
 import shutil
+import math
 import numpy as np
 
 import enb
@@ -489,7 +490,6 @@ class CompressionExperiment(experiment.Experiment):
             row=row)
         super().process_row(index=index, column_fun_tuples=column_fun_tuples,
                             row=row_wrapper, overwrite=overwrite, fill=fill)
-
         return row
 
     @atable.column_function([
@@ -515,7 +515,8 @@ class CompressionExperiment(experiment.Experiment):
         compression_efficiency_1byte_entropy = (row.image_info_row["entropy_1B_bps"] * row.image_info_row[
             "bytes_per_sample"]) / compression_bps
         hasher = hashlib.sha256()
-        hasher.update(open(row.compression_results.compressed_path, "rb").read())
+        with open(row.compression_results.compressed_path, "rb") as compressed_file:
+            hasher.update(compressed_file.read())
         compressed_file_sha256 = hasher.hexdigest()
 
         row["lossless_reconstruction"] = filecmp.cmp(row.compression_results.original_path,
@@ -530,6 +531,10 @@ class CompressionExperiment(experiment.Experiment):
             row.compression_results.compressed_path)
         row["compressed_file_sha256"] = compressed_file_sha256
 
+    @atable.column_function("bpppc", label="Compressed data rate (bpppc)", plot_min=0)
+    def set_bpppc(self, index, row):
+        row[_column_name] = 8 * row["compressed_size_bytes"] / row.image_info_row["samples"]
+
 
 class LosslessCompressionExperiment(CompressionExperiment):
     @atable.redefines_column
@@ -541,23 +546,41 @@ class LosslessCompressionExperiment(CompressionExperiment):
                 output="Failed to produce lossless compression for "
                        f"{index[0]} and {index[1]}")
 
+
 class LossyCompressionExperiment(CompressionExperiment):
     @atable.column_function("mse", label="MSE", plot_min=0)
     def set_MSE(self, index, row):
-        
+        """Set the mean squared error of the reconstructed image.
+        """
         original_array = np.fromfile(row.compression_results.original_path,
                                      dtype=row.numpy_dtype).astype(np.int64)
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                           dtype=row.numpy_dtype).astype(np.int64)
         row[_column_name] = np.average(((original_array - reconstructed_array) ** 2))
 
-
     @atable.column_function("pae", label="PAE", plot_min=0)
     def set_PAE(self, index, row):
+        """Set the peak absolute error (maximum absolute pixelwise difference)
+        of the reconstructed image.
+        """
         original_array = np.fromfile(row.compression_results.original_path,
                                      dtype=row.numpy_dtype).astype(np.int64)
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                           dtype=row.numpy_dtype).astype(np.int64)
         row[_column_name] = np.max(np.abs(original_array - reconstructed_array))
-        
 
+    @atable.column_function("psnr_bps", label="PSNR", plot_min=0)
+    def set_PSNR_nominal(self, index, row):
+        """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
+        """
+        max_error = (2 ** (8*row.image_info_row["bytes_per_sample"])) - 1
+        row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
+            if row["mse"] > 0 else float("inf")
+
+    @atable.column_function("psnr_dr", label="PSNR", plot_min=0)
+    def set_PSNR_dynamic_range(self, index, row):
+        """Set the PSNR assuming dynamic range given by dynamic_range_bits.
+        """
+        max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
+        row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
+            if row["mse"] > 0 else float("inf")
