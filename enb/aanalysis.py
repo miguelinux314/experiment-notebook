@@ -179,10 +179,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
 
 class Analyzer:
-    def analyze_df(self, full_df, target_columns,
-                   output_plot_dir, output_csv_file=None,
-                   column_to_properties=None, group_by=None, show_global=True,
-                   version_name=None):
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=True, show_count=True, version_name=None):
         raise NotImplementedError(self)
 
 
@@ -204,12 +202,11 @@ class ScalarDistributionAnalyzer(Analyzer):
 
     semilog_hist_min = 1e-5
 
-    def analyze_df(self, full_df, target_columns,
-                   output_plot_dir, output_csv_file=None,
-                   column_to_properties=None, group_by=None, show_global=True,
-                   version_name=None):
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=True, show_count=True, adjust_height=True, version_name=None):
         """Perform an analysis of target_columns, grouping as specified.
 
+        :param show_count:
         :param output_csv_file: path where the CSV report is stored
         :param output_plot_dir: path where the distribution plots are stored
         :param target_columns: list of column names for which an analysis is to be performed.
@@ -219,6 +216,8 @@ class ScalarDistributionAnalyzer(Analyzer):
           an atable.ColumnProperties instance
         :param group_by: if not None, analysis is performed after grouping by that column name
         :param show_global: if True, distribution for all entries (without grouping) is also shown
+        :param adjust_height: if True, the y-axis scale is set so that the highest bar reaches the
+          top part of the row. If False, only a 100% distribution reaches the top part of the histogram
         :param version_name: if not None, the version name is prepended to the x axis' label
         """
         target_columns = [target_columns] if isinstance(target_columns, str) else target_columns
@@ -287,7 +286,23 @@ class ScalarDistributionAnalyzer(Analyzer):
                                        / self.hist_bin_count)
             y_min = 0 if not column_name in column_to_properties \
                          or not column_to_properties[column_name].semilog_y else self.semilog_hist_min
-            y_max = 1
+
+            if adjust_height:
+                y_max = 0
+                for pds in pds_by_group_name.values():
+                    for pld in pds:
+                        if not isinstance(pld, plotdata.BarData):
+                            continue
+                        y_max = max(y_max, max(pld.y_values))
+                for pds in pds_by_group_name.values():
+                    for pld in pds:
+                        if isinstance(pld, plotdata.ErrorLines):
+                            pld.y_values = [0.5 * (y_max - y_min)]
+            else:
+                y_max = 1
+
+
+
             expected_return_ids.append(
                 ray_render_plds_by_group.remote(
                     options=ray.put(options),
@@ -298,7 +313,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                                               if column_name in column_to_properties else None),
                     horizontal_margin=ray.put(histogram_bin_width),
                     global_x_label=ray.put(x_label),
-                    y_labels_by_group_name=ray.put({group: f"{group} ({length})"
+                    y_labels_by_group_name=ray.put({group: f"{group} ({length})" if show_count else f"{group}"
                                                     for group, length in
                                                     lengths_by_group_name.items()}),
                     y_min=ray.put(y_min), y_max=ray.put(y_max),
@@ -420,16 +435,17 @@ class HistogramDistributionAnalyzer(Analyzer):
 
     color_sequence = ["blue", "orange", "r", "g", "magenta", "yellow"]
 
-    def analyze_df(self, full_df, target_columns,
-                   output_plot_dir, output_csv_file=None, show_global=True,
-                   column_to_properties=None, group_by=None, version_name=None):
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=True, show_count=True, version_name=None):
         """Analyze a column, where each cell contains a real to real mapping.
+        :param show_count:
         :param full_df: full df from which the column is to be extracted
         :param target_columns: list of column names containing tensor (mapping) data
         :param output_plot_dir: path of the directory where the plot is to be saved
         :param output_csv_file: path of the csv file where basic analysis results are stored
         :param column_to_properties: dictionary with ColumnProperties entries
         :param group_by: if not None, the name of the column to be used for grouping
+        :param show_count: determines whether the number of element per group should be shown in the group label
         :param version_name: if not None, a string identifying the file version that produced full_df.
         """
         full_df = pd.DataFrame(full_df)
@@ -472,7 +488,7 @@ class HistogramDistributionAnalyzer(Analyzer):
             # Make plots in parallel
             output_plot_path = os.path.join(output_plot_dir, f"histogram_{column_name}.pdf")
             labels_by_group = {
-                group: f"{group} (n={length})"
+                group: f"{group} (n={length})" if show_global else f"{group}"
                 for group, length in lengths_by_group.items()
             }
             x_label = column_to_properties[column_name].label if column_name in column_to_properties else None
@@ -599,10 +615,8 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
     line_alpha = 0.3
     line_width = 0.5
 
-    def analyze_df(self, full_df, target_columns,
-                   output_plot_dir, output_csv_file=None,
-                   column_to_properties=None, group_by=None, show_global=True,
-                   version_name=None):
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=True, show_count=True, version_name=None):
         result_ids = []
         for column_name in target_columns:
             if column_name in column_to_properties:
@@ -667,11 +681,10 @@ class TwoColumnScatterAnalyzer(Analyzer):
     marker_size = 5
     alpha = 0.5
 
-    def analyze_df(self, full_df, target_columns,
-                   output_plot_dir, output_csv_file=None,
-                   column_to_properties=None, group_by=None, show_global=True,
-                   version_name=None):
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=True, show_count=True, version_name=None):
         """
+        :param show_count:
         :param target_columns: must be a list of tuple-like instances, each with two elements.
           The first element is the name of the column to use for the x axis,
           the second element is the name of the column for the y axis.
@@ -734,10 +747,10 @@ class TwoColumnScatterAnalyzer(Analyzer):
 class TwoColumnLineAnalyzer(Analyzer):
     alpha = 0.5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir,
-                   output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=False, version_name=None):
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+                   group_by=None, show_global=True, show_count=True, version_name=None):
         """
+        :param show_count:
         :param full_df: full pandas.DataFrame to be analyzed and plotted
         :param target_columns: an iterable of either two column names or
           one or more tuple-like objects with two elements also being column names.
