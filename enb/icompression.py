@@ -162,34 +162,25 @@ class AbstractCodec:
             side_info_files=[],
             decompression_time_seconds=None)
 
-    @property
-    def is_lossless(self):
-        """:return True if this codec identifies itself as purely is_lossless.
-
-        """
-        raise NotImplementedError()
-
     def __repr__(self):
         return f"<{self.__class__.__name__}" \
                f"({', '.join(repr(param) + '=' + repr(value) for param, value in self.param_dict.items())})>"
 
 
 class LosslessCodec(AbstractCodec):
-    """A AbstractCodec that identifies itself as purely is_lossless
+    """A AbstractCodec that identifies itself as lossless
     """
-
-    @property
-    def is_lossless(self):
-        return True
+    pass
 
 
 class LossyCodec(AbstractCodec):
-    """A AbstractCodec that identifies itself as purely is_lossless
+    """A AbstractCodec that identifies itself as lossy
     """
+    pass
 
-    @property
-    def is_lossless(self):
-        return False
+
+class NearLosslessCodec(LossyCodec):
+    pass
 
 
 class WrapperCodec(AbstractCodec):
@@ -201,16 +192,16 @@ class WrapperCodec(AbstractCodec):
 
     def __init__(self, compressor_path, decompressor_path, param_dict=None):
         super().__init__(param_dict=param_dict)
-        if os.path.exists(compressor_path):
+        if os.path.isfile(compressor_path) and os.access(compressor_path, os.EX_OK):
             self.compressor_path = compressor_path
         else:
             self.compressor_path = shutil.which(compressor_path)
-            assert os.path.exists(self.compressor_path), f"{compressor_path} isnot available"
-        if os.path.exists(decompressor_path):
+            assert os.path.isfile(self.compressor_path), f"{compressor_path} isnot available"
+        if os.path.exists(decompressor_path) and os.access(decompressor_path, os.EX_OK):
             self.decompressor_path = decompressor_path
         else:
             self.decompressor_path = shutil.which(decompressor_path)
-            assert os.path.exists(self.decompressor_path), f"{decompressor_path} isnot available"
+            assert os.path.isfile(self.decompressor_path), f"{decompressor_path} isnot available"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         """Return a string (shell style) with the parameters
@@ -333,6 +324,7 @@ class CompressionExperiment(experiment.Experiment):
                     self._compression_results = self.codec.compress(original_path=self.file_path,
                                                                     compressed_path=tmp_compressed_path,
                                                                     original_file_info=self.image_info_row)
+
                     if not os.path.isfile(tmp_compressed_path) \
                             or os.path.getsize(tmp_compressed_path) == 0:
                         raise CompressionException(
@@ -365,20 +357,22 @@ class CompressionExperiment(experiment.Experiment):
                         compressed_path=self.compression_results.compressed_path,
                         reconstructed_path=tmp_reconstructed_path,
                         original_file_info=self.image_info_row)
-                    if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
-                            self.compression_results.compressed_path) == 0:
-                        raise CompressionException(
-                            original_path=self.compression_results.file_path,
-                            compressed_path=self.compression_results.compressed_path,
-                            file_info=self.image_info_row,
-                            output=f"Decompression didn't produce a file (or it was empty)"
-                                   f" {self.compression_results.file_path}")
+
                     process_decompression_time = time.process_time() - time_before
                     if self._decompression_results is None:
                         self._decompression_results = self.codec.decompression_results_from_paths(
                             compressed_path=self.compression_results.compressed_path,
                             reconstructed_path=tmp_reconstructed_path)
                         self._decompression_results.decompression_time_seconds = process_decompression_time
+
+                    if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
+                            self._decompression_results.reconstructed_path) == 0:
+                        raise CompressionException(
+                            original_path=self.compression_results.file_path,
+                            compressed_path=self.compression_results.compressed_path,
+                            file_info=self.image_info_row,
+                            output=f"Decompression didn't produce a file (or it was empty)"
+                                   f" {self.compression_results.file_path}")
                 except Exception as ex:
                     os.remove(tmp_reconstructed_path)
                     raise ex
@@ -490,6 +484,7 @@ class CompressionExperiment(experiment.Experiment):
             row=row)
         super().process_row(index=index, column_fun_tuples=column_fun_tuples,
                             row=row_wrapper, overwrite=overwrite, fill=fill)
+
         return row
 
     @atable.column_function([
@@ -554,6 +549,7 @@ class LossyCompressionExperiment(CompressionExperiment):
         """
         original_array = np.fromfile(row.compression_results.original_path,
                                      dtype=row.numpy_dtype).astype(np.int64)
+
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                           dtype=row.numpy_dtype).astype(np.int64)
         row[_column_name] = np.average(((original_array - reconstructed_array) ** 2))
@@ -565,6 +561,7 @@ class LossyCompressionExperiment(CompressionExperiment):
         """
         original_array = np.fromfile(row.compression_results.original_path,
                                      dtype=row.numpy_dtype).astype(np.int64)
+
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                           dtype=row.numpy_dtype).astype(np.int64)
         row[_column_name] = np.max(np.abs(original_array - reconstructed_array))
@@ -573,7 +570,7 @@ class LossyCompressionExperiment(CompressionExperiment):
     def set_PSNR_nominal(self, index, row):
         """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
         """
-        max_error = (2 ** (8*row.image_info_row["bytes_per_sample"])) - 1
+        max_error = (2 ** (8 * row.image_info_row["bytes_per_sample"])) - 1
         row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
             if row["mse"] > 0 else float("inf")
 
