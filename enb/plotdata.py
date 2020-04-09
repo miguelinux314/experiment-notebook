@@ -30,7 +30,7 @@ class PlottableData:
         raise NotImplementedError()
 
     def render_axis_labels(self, axes=None):
-        """Add axis labels in current figure - don't show or save the result
+        """Add axis labels in current figure - don't show or write the result
 
         :param axes: if not None, those axes are used for plotting instead of plt
         """

@@ -213,7 +213,7 @@ def get_options(from_main=False):
     default_external_binary_dir = os.path.join(calling_script_dir, "bin")
     default_external_binary_dir = default_external_binary_dir \
         if ReadableDirAction.check_valid_value(default_external_binary_dir) else None
-    dir_options.add_argument("--bin", "--external_bin_base_dir", help="External binary base dir.",
+    dir_options.add_argument("--external_bin_base_dir", help="External binary base dir.",
                              action=ReadableDirAction, default=default_external_binary_dir,
                              required=False)
 

@@ -674,7 +674,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
 
         ray.get(result_ids)
         if options.verbose > 1:
-            "TODO: fill csv and save to output_csv_file"
+            "TODO: fill csv and write to output_csv_file"
 
 
 class TwoColumnScatterAnalyzer(Analyzer):

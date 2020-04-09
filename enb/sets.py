@@ -150,7 +150,7 @@ class FileVersionTable(FilePropertiesTable):
         self.version_name = version_name
 
     def version(self, input_path, output_path, row):
-        """Create a version of input_path and save it into output_path.
+        """Create a version of input_path and write it into output_path.
 
         :param input_path: path to the file to be versioned
         :param output_path: path where the version should be saved
