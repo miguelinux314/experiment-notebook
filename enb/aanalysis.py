@@ -31,20 +31,23 @@ options = get_options()
 @config.propagates_options
 def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
-                             global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None):
+                             global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None,
+                             group_name_order=None):
     """Ray wrapper for render_plds_by_group"""
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                 column_properties=column_properties, global_x_label=global_x_label,
                                 horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                semilog_hist_min=semilog_hist_min)
+                                semilog_hist_min=semilog_hist_min,
+                                group_name_order=group_name_order)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
                          horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
                          color_by_group_name=None, global_y_label="Relative frequency",
-                         combine_groups=False, semilog_hist_min=1e-10):
+                         combine_groups=False, semilog_hist_min=1e-10,
+                         group_name_order=None):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -63,6 +66,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       indexed with the same keys as pds_by_group_name
     :param combine_groups: if False, each group is plotted in a different row. If True,
       all groups share the same subplot
+    :param group_name_order: if not None, it contains the order in which groups are
+      displayed. If None, alphabetical, case-insensitive order is applied.
     """
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
@@ -71,8 +76,16 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
 
-    sorted_group_names = sorted(pds_by_group_name.keys(),
-                                key=lambda s: "" if s == "all" else s.strip().lower())
+    if group_name_order is None:
+        sorted_group_names = sorted(pds_by_group_name.keys(),
+                                    key=lambda s: "" if s == "all" else s.strip().lower())
+    else:
+        for group_name in group_name_order:
+            assert group_name in pds_by_group_name, \
+                f"The provided list group_name_order contains the group name {group_name}, " \
+                f"which is not cotained in the provided groups ({pds_by_group_name})."
+        sorted_group_names = list(group_name_order)
+
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
@@ -180,7 +193,29 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
 class Analyzer:
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=True, show_count=True, version_name=None):
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False):
+        """
+        Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
+
+        :param adjust_height:
+        :param full_df: full DataFrame instance with data to be plotted and/or analyzed
+        :param target_columns: list of columns to be analyzed. Typically a list of column names, although
+          each subclass may redefine the accepted format (e.g., pairs of column names)
+        :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
+        :param output_csv_file: If not None, path of the csv file where basic analysis results are stored.
+          The contents of the file are subclass-defined.
+        :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
+          in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
+          :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
+          columns.
+        :param group_by: if not None, the name of the column to be used for grouping.
+        :param group_name_order: if not None, and if group_by is not None,
+          it must be the list of group names (values of the group_by) in the order that they are to be displayed.
+          If None, group names are sorted alphabetically (case insensitive).
+        :param show_count: determines whether the number of element per group should be shown in the group label
+        :param version_name: if not None, a string identifying the file version that produced full_df.
+        """
         raise NotImplementedError(self)
 
 
@@ -203,10 +238,11 @@ class ScalarDistributionAnalyzer(Analyzer):
     semilog_hist_min = 1e-5
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=True, show_count=True, adjust_height=True, version_name=None):
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False):
         """Perform an analysis of target_columns, grouping as specified.
 
-        :param show_count:
+        :param adjust_height:
         :param output_csv_file: path where the CSV report is stored
         :param output_plot_dir: path where the distribution plots are stored
         :param target_columns: list of column names for which an analysis is to be performed.
@@ -216,8 +252,6 @@ class ScalarDistributionAnalyzer(Analyzer):
           an atable.ColumnProperties instance
         :param group_by: if not None, analysis is performed after grouping by that column name
         :param show_global: if True, distribution for all entries (without grouping) is also shown
-        :param adjust_height: if True, the y-axis scale is set so that the highest bar reaches the
-          top part of the row. If False, only a 100% distribution reaches the top part of the histogram
         :param version_name: if not None, the version name is prepended to the x axis' label
         """
         target_columns = [target_columns] if isinstance(target_columns, str) else target_columns
@@ -301,8 +335,6 @@ class ScalarDistributionAnalyzer(Analyzer):
             else:
                 y_max = 1
 
-
-
             expected_return_ids.append(
                 ray_render_plds_by_group.remote(
                     options=ray.put(options),
@@ -317,7 +349,8 @@ class ScalarDistributionAnalyzer(Analyzer):
                                                     for group, length in
                                                     lengths_by_group_name.items()}),
                     y_min=ray.put(y_min), y_max=ray.put(y_max),
-                    semilog_hist_min=self.semilog_hist_min))
+                    semilog_hist_min=ray.put(self.semilog_hist_min),
+                    group_name_order=ray.put(group_name_order)))
 
         ray.get(expected_return_ids)
 
@@ -436,15 +469,19 @@ class HistogramDistributionAnalyzer(Analyzer):
     color_sequence = ["blue", "orange", "r", "g", "magenta", "yellow"]
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=True, show_count=True, version_name=None):
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False):
         """Analyze a column, where each cell contains a real to real mapping.
-        :param show_count:
+        :param adjust_height:
         :param full_df: full df from which the column is to be extracted
         :param target_columns: list of column names containing tensor (mapping) data
         :param output_plot_dir: path of the directory where the plot is to be saved
         :param output_csv_file: path of the csv file where basic analysis results are stored
         :param column_to_properties: dictionary with ColumnProperties entries
         :param group_by: if not None, the name of the column to be used for grouping
+        :param group_name_order: if not None, and if group_by is not None,
+          it must be the list of group names (values of the group_by) in the order that they are to be displayed.
+          If None, group names are sorted alphabetically (case insensitive).
         :param show_count: determines whether the number of element per group should be shown in the group label
         :param version_name: if not None, a string identifying the file version that produced full_df.
         """
@@ -515,7 +552,8 @@ class HistogramDistributionAnalyzer(Analyzer):
                 global_y_label=ray.put(y_label),
                 y_min=ray.put(y_min),
                 y_max=ray.put(y_max),
-                y_labels_by_group_name=ray.put(labels_by_group)))
+                y_labels_by_group_name=ray.put(labels_by_group),
+                group_name_order=ray.put(group_name_order)))
 
         if options.verbose > 1:
             print(f"TODO: Save results in CSV at output_csv_file?")
@@ -616,7 +654,8 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
     line_width = 0.5
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=True, show_count=True, version_name=None):
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False):
         result_ids = []
         for column_name in target_columns:
             if column_name in column_to_properties:
@@ -670,7 +709,8 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
                 column_properties=ray.put(properties), horizontal_margin=ray.put(0),
                 global_x_label=ray.put(x_label), y_labels_by_group_name=ray.put(y_labels_by_group_name),
                 global_y_label=ray.put(y_label), color_by_group_name=ray.put(None),
-                y_min=ray.put(y_min), y_max=ray.put(y_max)))
+                y_min=ray.put(y_min), y_max=ray.put(y_max),
+                group_name_order=ray.put(group_name_order)))
 
         ray.get(result_ids)
         if options.verbose > 1:
@@ -682,8 +722,11 @@ class TwoColumnScatterAnalyzer(Analyzer):
     alpha = 0.5
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=True, show_count=True, version_name=None):
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False):
         """
+        :param adjust_height:
+        :param group_name_order:
         :param show_count:
         :param target_columns: must be a list of tuple-like instances, each with two elements.
           The first element is the name of the column to use for the x axis,
@@ -739,7 +782,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 y_min=ray.put(global_y_min - 0.05 * (global_y_max - global_y_min)),
                 y_max=ray.put(global_y_max + 0.05 * (global_y_max - global_y_min)),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
-                options=ray.put(options)))
+                options=ray.put(options), group_name_order=ray.put(group_name_order)))
 
         ray.wait(expected_returns)
 
@@ -748,9 +791,10 @@ class TwoColumnLineAnalyzer(Analyzer):
     alpha = 0.5
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, show_global=True, show_count=True, version_name=None):
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False):
         """
-        :param show_count:
+        :param adjust_height:
         :param full_df: full pandas.DataFrame to be analyzed and plotted
         :param target_columns: an iterable of either two column names or
           one or more tuple-like objects with two elements also being column names.
@@ -767,6 +811,8 @@ class TwoColumnLineAnalyzer(Analyzer):
         :param show_global: if group_by is not None, show_global determines
           whether the whole dataframe (regardless of the group_by column)
           is analyzed as well.
+        :param group_name_order: ignored in this class, since group_by already
+          provides an order.
         :param version_name: if not None, the version name is prepended to
           the X and Y labels of the plot (does not affect computation).
         """
@@ -781,7 +827,7 @@ class TwoColumnLineAnalyzer(Analyzer):
             f"(found {target_columns})"
         assert all(t[0] in full_df.columns and t[1] in full_df.columns for t in target_columns), \
             f"At least one column name in {target_columns} is not defined in " \
-            f"full_df's columns ({target_columns.columns}"
+            f"full_df's columns ({full_df.columns}"
 
         for column_name_x, column_name_y in target_columns:
             # Entries are lists of PlottableData instances
@@ -812,7 +858,7 @@ class TwoColumnLineAnalyzer(Analyzer):
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
                 horizontal_margin=0.05*(global_max_x-global_min_x),
-                combine_groups=True)
+                combine_groups=True, group_name_order=[f.label for f in group_by])
                 
 
 

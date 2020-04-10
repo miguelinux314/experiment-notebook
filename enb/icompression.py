@@ -94,7 +94,7 @@ class DecompressionException(Exception):
         self.output = output
 
 
-class AbstractCodec:
+class AbstractCodec(experiment.ExperimentTask):
     """Base class for all codecs
     """
 
@@ -530,6 +530,14 @@ class CompressionExperiment(experiment.Experiment):
     def set_bpppc(self, index, row):
         row[_column_name] = 8 * row["compressed_size_bytes"] / row.image_info_row["samples"]
 
+    @atable.column_function("compression_ratio_dr", label="Compression ratio", plot_min=0)
+    def set_compression_ratio_dr(self, index, row):
+        """Set the compression ratio calculated based on the dynamic range of the
+        input samples, as opposed to 8*bytes_per_sample.
+        """
+        row[_column_name] = (row.image_info_row["dynamic_range_bits"] * row.image_info_row["samples"]) \
+                            / (8 * row["compressed_size_bytes"])
+
 
 class LosslessCompressionExperiment(CompressionExperiment):
     @atable.redefines_column
@@ -566,7 +574,7 @@ class LossyCompressionExperiment(CompressionExperiment):
                                           dtype=row.numpy_dtype).astype(np.int64)
         row[_column_name] = np.max(np.abs(original_array - reconstructed_array))
 
-    @atable.column_function("psnr_bps", label="PSNR", plot_min=0)
+    @atable.column_function("psnr_bps", label="PSNR (dB)", plot_min=0)
     def set_PSNR_nominal(self, index, row):
         """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
         """
@@ -574,7 +582,7 @@ class LossyCompressionExperiment(CompressionExperiment):
         row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
             if row["mse"] > 0 else float("inf")
 
-    @atable.column_function("psnr_dr", label="PSNR", plot_min=0)
+    @atable.column_function("psnr_dr", label="PSNR (dB)", plot_min=0)
     def set_PSNR_dynamic_range(self, index, row):
         """Set the PSNR assuming dynamic range given by dynamic_range_bits.
         """
