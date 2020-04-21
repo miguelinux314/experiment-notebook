@@ -14,13 +14,16 @@ from matplotlib import pyplot as plt
 
 class PlottableData:
     alpha = 0.75
+    legend_column_count = 1
 
-    def __init__(self, data=None, axis_labels=None, label=None, extra_kwargs=None, alpha=None):
+    def __init__(self, data=None, axis_labels=None, label=None,
+                 extra_kwargs=None, alpha=None, legend_column_count=None):
         self.data = data
         self.axis_labels = axis_labels
         self.label = label
         self.extra_kwargs = extra_kwargs if extra_kwargs is not None else {}
         self.alpha = alpha if alpha is not None else self.alpha
+        self.legend_column_count = legend_column_count if legend_column_count is not None else self.legend_column_count
 
     def render(self, axes=None):
         """Render data in current figure.
@@ -45,7 +48,7 @@ class PlottableData2D(PlottableData):
                  x_label=None, y_label=None,
                  label=None, extra_kwargs=None,
                  remove_duplicates=True,
-                 alpha=None):
+                 alpha=None, legend_column_count=None):
         """
         :param x_values, y_values: values to be plotted (only a reference is kept)
         :param x_label, y_label: axis labels
@@ -60,7 +63,8 @@ class PlottableData2D(PlottableData):
             x_values, y_values = zip(*found_pairs.values())
 
         super().__init__(data=(x_values, y_values), axis_labels=(x_label, y_label),
-                         label=label, extra_kwargs=extra_kwargs, alpha=alpha)
+                         label=label, extra_kwargs=extra_kwargs, alpha=alpha,
+                         legend_column_count=legend_column_count)
         self.x_values = x_values
         self.y_values = y_values
         self.x_label = x_label
@@ -85,7 +89,8 @@ class PlottableData2D(PlottableData):
         return PlottableData2D(x_values=self.x_values,
                                y_values=[s - o for s, o in zip(self.y_values, other.y_values)],
                                x_label=self.x_label,
-                               y_label=f"{self.y_label}{ylabel_affix}")
+                               y_label=f"{self.y_label}{ylabel_affix}",
+                               legend_column_count=self.legend_column_count)
 
     def shift_y(self, constant):
         self.y_values = [y + constant for y in self.y_values]
@@ -105,7 +110,8 @@ class LineData(PlottableData2D):
                   **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None:
-            plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1))
+            plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                       ncol=self.legend_column_count)
 
 
 class ScatterData(PlottableData2D):
@@ -118,7 +124,8 @@ class ScatterData(PlottableData2D):
                      s=self.marker_size, **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None:
-            axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1))
+            axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                        ncol=self.legend_column_count)
 
 
 class BarData(PlottableData2D):
@@ -130,7 +137,8 @@ class BarData(PlottableData2D):
                  **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None:
-            axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1))
+            axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                        ncol=self.legend_column_count)
 
     def shift_y(self, constant):
         try:
@@ -150,7 +158,8 @@ class StepData(PlottableData2D):
                   where=self.where, **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None:
-            plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1))
+            plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                       ncol=self.legend_column_count)
 
 
 class ErrorLines(PlottableData2D):

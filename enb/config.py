@@ -146,10 +146,6 @@ def get_options(from_main=False):
                                    help="Make computations sequentially instead of distributed",
                                    action="store_true",
                                    default=False)
-    execution_options.add_argument("--no_render", "--nr",
-                                   help="Don't actually render data",
-                                   action="store_true",
-                                   default=False)
     execution_options.add_argument("-c", "--columns",
                                    help="List of selected column names for computation. If one or more column names are provided, "
                                         "all others are ignored. Multiple columns can be expressed, separated by spaces.",
@@ -160,6 +156,21 @@ def get_options(from_main=False):
                                    help="Discard partial results when an error is found running the experiment? "
                                         "Otherwise, they are output to persistent storage.",
                                    action="store_true")
+
+    render_options = parser.add_argument_group("Rendering options")
+    render_options.add_argument("--no_render", "--nr",
+                                help="Don't actually render data",
+                                action="store_true",
+                                default=False)
+    render_options.add_argument("--fig_width", help="Figure width. Larger values make text look smaller.",
+                                default=5, type=float)
+    render_options.add_argument("--fig_height", help="Figure height. Larger values make text look smaller.",
+                                default=4, type=float)
+    render_options.add_argument("--global_y_label_pos", help="Relative position of the global Y label. Can be negative",
+                               default=-0.01, type=float)
+    render_options.add_argument("--legend_column_count", help="Number of columns used in plot legends",
+                                default=2, type=int)
+
 
     default_ray_config_file = os.path.join(calling_script_dir, "ray_cluster_head.txt")
     execution_options.add_argument("-r", "--ray_config_file", action=ReadableFileAction,
@@ -233,7 +244,10 @@ def get_options(from_main=False):
                              action=WritableOrCreableDirAction, default=default_analysis_dir,
                              required=from_main and default_analysis_dir is None)
 
-    _options = parser.parse_known_args()[0]
+    if from_main:
+        _options = parser.parse_args()
+    else:
+        _options = parser.parse_known_args()[0]
 
     return _options
 

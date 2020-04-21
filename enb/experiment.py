@@ -106,7 +106,6 @@ class Experiment(atable.ATable):
           This is controlled via the parameters passed to get_df()
         :param parallel_row_processing: if not None, it determines whether file properties
           are to be obtained in parallel. If None, it is given by not options.sequential.
-
         """
         self.tasks = list(tasks)
 

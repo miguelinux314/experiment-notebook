@@ -32,7 +32,8 @@ options = get_options()
 def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
                              global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None,
-                             group_name_order=None):
+                             group_name_order=None, fig_width=None, fig_height=None,
+                             global_y_label_pos=None, legend_column_count=None):
     """Ray wrapper for render_plds_by_group"""
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                 column_properties=column_properties, global_x_label=global_x_label,
@@ -40,14 +41,17 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
                                 semilog_hist_min=semilog_hist_min,
-                                group_name_order=group_name_order)
+                                group_name_order=group_name_order,
+                                fig_width=fig_width, fig_height=fig_height,
+                                global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
                          horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
                          color_by_group_name=None, global_y_label="Relative frequency",
                          combine_groups=False, semilog_hist_min=1e-10,
-                         group_name_order=None):
+                         group_name_order=None,
+                         fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -68,9 +72,17 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       all groups share the same subplot
     :param group_name_order: if not None, it contains the order in which groups are
       displayed. If None, alphabetical, case-insensitive order is applied.
+    :param fig_width, fig_height: Figure size. The larger the figure size,
+      the smaller the text will look.
     """
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
+
+    fig_width = options.fig_width if fig_width is None else fig_width
+    fig_height = options.fig_height if fig_height is None else fig_height
+    global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else  global_y_label_pos
+    legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
+    
 
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
@@ -86,7 +98,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 f"which is not cotained in the provided groups ({pds_by_group_name})."
         sorted_group_names = list(group_name_order)
 
-
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
     if color_by_group_name is None:
@@ -96,7 +107,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
     fig, group_axis_list = plt.subplots(
         nrows=len(sorted_group_names) if not combine_groups else 1,
-        ncols=1, sharex=True, sharey=combine_groups)
+        ncols=1, sharex=True, sharey=combine_groups,
+        figsize=(fig_width, fig_height))
+
     if combine_groups:
         group_axis_list = [group_axis_list]
     if len(sorted_group_names) == 1:
@@ -183,9 +196,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         plt.subplots_adjust(hspace=0.3)
 
     if global_y_label:
-        fig.text(0.0, 0.5, global_y_label, va='center', rotation='vertical')
+        fig.text(global_y_label_pos, 0.5, global_y_label, va='center', rotation='vertical')
 
-    plt.savefig(output_plot_path, bbox_inches="tight")
+    plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
     plt.close()
     if options.verbose:
         print(f"Saved plot to {output_plot_path}")
@@ -844,7 +857,8 @@ class TwoColumnLineAnalyzer(Analyzer):
                 plds_by_family_label[family.label] = [
                     plotdata.LineData(x_values=x_values, y_values=y_values,
                                       x_label=column_name_x, y_label=column_name_y,
-                                      label=family.label, alpha=self.alpha)]
+                                      label=family.label, alpha=self.alpha,
+                                      legend_column_count=options.legend_column_count)]
 
             global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
             global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
@@ -857,9 +871,8 @@ class TwoColumnLineAnalyzer(Analyzer):
                 global_y_label=column_to_properties[column_name_y].label,
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
-                horizontal_margin=0.05*(global_max_x-global_min_x),
+                horizontal_margin=0.05 * (global_max_x - global_min_x),
                 combine_groups=True, group_name_order=[f.label for f in group_by])
-                
 
 
 class TaskFamily:
