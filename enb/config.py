@@ -162,6 +162,10 @@ def get_options(from_main=False):
                                 help="Don't actually render data",
                                 action="store_true",
                                 default=False)
+
+    render_options.add_argument("--no_new_results", help="Don't compute any new data into the table",
+                                action="store_true", default=False)
+
     render_options.add_argument("--fig_width", help="Figure width. Larger values make text look smaller.",
                                 default=5, type=float)
     render_options.add_argument("--fig_height", help="Figure height. Larger values make text look smaller.",
@@ -196,6 +200,15 @@ def get_options(from_main=False):
                              default=default_persistence_dir,
                              action=WritableOrCreableDirAction,
                              help="Directory where persistence files are to be stored.")
+
+    # Reconstructed version dir
+    dir_options.add_argument("--reconstructed_dir",
+                             default=None, action=WritableOrCreableDirAction,
+                             help="Base directory where reconstructed versions are to be stored")
+    dir_options.add_argument("--reconstructed_size",
+                             default=None, type=int,
+                             help="If not None, the size of the central region to be rendered in "
+                                  "each component")
 
     # Versioned data dir
     default_version_dataset_dir = os.path.join(calling_script_dir, "versioned_datasets")
