@@ -17,10 +17,12 @@ import functools
 import shutil
 import math
 import numpy as np
+import imageio
 
 import enb
 from enb import atable
 from enb import experiment
+from enb import isets
 from enb.atable import indices_to_internal_loc
 from enb.isets import ImagePropertiesTable
 from enb.config import get_options
@@ -229,7 +231,8 @@ class WrapperCodec(AbstractCodec):
             original_path=original_path,
             compressed_path=compressed_path,
             original_file_info=original_file_info)
-        status, output = subprocess.getstatusoutput(f"{self.compressor_path} {compression_params}")
+        invocation = f"{self.compressor_path} {compression_params}"
+        status, output = subprocess.getstatusoutput(invocation)
         if status != 0:
             if options.verbose:
                 print(f"Error compressing {original_path} with {self.name}. "
@@ -240,23 +243,29 @@ class WrapperCodec(AbstractCodec):
                 file_info=original_file_info,
                 status=status,
                 output=output)
+        elif options.verbose > 3:
+            print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         decompression_params = self.get_decompression_params(
             compressed_path=compressed_path,
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
-        status, output = subprocess.getstatusoutput(f"{self.decompressor_path} {decompression_params}")
+        invocation = f"{self.decompressor_path} {decompression_params}"
+        status, output = subprocess.getstatusoutput(invocation)
         if status != 0:
             if options.verbose:
                 print(f"Error decompressing {compressed_path} with {self.name}. "
-                      f"Status={status}. Output={output}")
+                      f"Invocation={invocation}; Status={status}; Output={output}")
             raise DecompressionException(
                 compressed_path=compressed_path,
                 reconstructed_path=reconstructed_path,
                 file_info=original_file_info,
                 status=status,
                 output=output)
+        elif options.verbose > 3:
+            print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+        
 
     @staticmethod
     @functools.lru_cache(maxsize=2)
@@ -417,7 +426,8 @@ class CompressionExperiment(experiment.Experiment):
                  csv_dataset_path=None,
                  dataset_info_table: enb.isets.ImagePropertiesTable = None,
                  overwrite_file_properties=False,
-                 parallel_dataset_property_processing=None):
+                 parallel_dataset_property_processing=None,
+                 reconstructed_dir_path=None):
         """
         :param codecs: list of :py:class:`AbstractCodec` instances. Note that
           codecs are compatible with the interface of :py:class:`ExperimentTask`.
@@ -440,6 +450,8 @@ class CompressionExperiment(experiment.Experiment):
           to get_df
         :param parallel_dataset_property_processing: if not None, it determines whether file properties
           are to be obtained in parallel. If None, it is given by not options.sequential.
+        :param reconstructed_dir_path: if not None, a directory where reconstructed images are
+          to be stored.
         """
         table_class = type(dataset_info_table) if dataset_info_table is not None \
             else enb.isets.ImagePropertiesTable
@@ -457,6 +469,7 @@ class CompressionExperiment(experiment.Experiment):
                          dataset_info_table=imageinfo_table,
                          overwrite_file_properties=overwrite_file_properties,
                          parallel_dataset_property_processing=parallel_dataset_property_processing)
+        self.reconstructed_dir_path = reconstructed_dir_path
 
     @property
     def codecs(self):
@@ -478,12 +491,70 @@ class CompressionExperiment(experiment.Experiment):
     def process_row(self, index, column_fun_tuples, row, overwrite, fill):
         file_path, codec_name = index
         codec = self.codecs_by_name[codec_name]
+        image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         row_wrapper = self.RowWrapper(
             file_path=file_path, codec=codec,
-            image_info_row=self.dataset_table_df.loc[indices_to_internal_loc(file_path)],
+            image_info_row=image_info_row,
             row=row)
         super().process_row(index=index, column_fun_tuples=column_fun_tuples,
                             row=row_wrapper, overwrite=overwrite, fill=fill)
+
+        if self.reconstructed_dir_path is not None:
+            output_reconstructed_path = os.path.join(
+                self.reconstructed_dir_path,
+                codec.name,
+                os.path.basename(os.path.dirname(file_path)), os.path.basename(file_path))
+            os.makedirs(os.path.dirname(output_reconstructed_path), exist_ok=True)
+            if not os.path.exists(output_reconstructed_path) or options.force:
+                if options.verbose > 1:
+                    print(f"[C]opying {file_path} into {output_reconstructed_path}")
+                shutil.copy(row_wrapper.decompression_results.reconstructed_path,
+                            output_reconstructed_path)
+            else:
+                if options.verbose > 2:
+                    print(f"[S]kipping reconstruction of {file_path}")
+
+            # cmin = 0 if not image_info_row["signed"] else -(2 ** (image_info_row["dynamic_range_bits"] - 1))
+            # cmax = (2 ** (image_info_row["dynamic_range_bits"]) - 1) if not image_info_row["signed"] \
+            #     else (2 ** (image_info_row["dynamic_range_bits"] - 1) - 1)
+
+            if image_info_row["component_count"] == 3:
+                rendered_path = f"{output_reconstructed_path}.png"
+                if not os.path.exists(rendered_path) or options.force:
+                    array = isets.load_array_bsq(file_or_path=row_wrapper.decompression_results.reconstructed_path,
+                                                 image_properties_row=image_info_row)
+                    if options.reconstructed_size is not None:
+                        width, height, _ = array.shape
+                        array = array[
+                                width//2-options.reconstructed_size//2:width//2+options.reconstructed_size//2,
+                                height//2-options.reconstructed_size//2:height//2+options.reconstructed_size//2,:]
+                    cmin = array.min()
+                    cmax = array.max()
+                    array = np.round((255 * (array - cmin) / (cmax - cmin))).astype("uint8")
+                    if options.verbose > 1:
+                        print(f"[R]endering {rendered_path}")
+                    imageio.imwrite(rendered_path, array.swapaxes(0, 2))
+
+            else:
+                full_array = isets.load_array_bsq(
+                    file_or_path=row_wrapper.decompression_results.reconstructed_path,
+                    image_properties_row=image_info_row)
+                if options.reconstructed_size is not None:
+                    width, height, _ = full_array.shape
+                    full_array = full_array[
+                            width // 2 - options.reconstructed_size // 2:width // 2 + options.reconstructed_size // 2,
+                            height // 2 - options.reconstructed_size // 2:height // 2 + options.reconstructed_size // 2,
+                            :]
+                for i, rendered_path in enumerate(f"{output_reconstructed_path}_component{i}.png"
+                                                  for i in range(image_info_row['component_count'])):
+                    if not os.path.exists(rendered_path) or options.force:
+                        array = full_array[:, :, i].squeeze().swapaxes(0, 1)
+                        cmin = array.min()
+                        cmax = array.max()
+                        array = np.round((255 * (array - cmin) / (cmax - cmin))).astype("uint8")
+                        if options.verbose > 1:
+                            print(f"[R]endering {rendered_path}")
+                        imageio.imwrite(rendered_path, array)
 
         return row
 

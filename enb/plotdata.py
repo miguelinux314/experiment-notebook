@@ -105,9 +105,9 @@ class LineData(PlottableData2D):
 
         :param axes: if not None, those axes are used for plotting instead of plt
         """
-        axes = plt if axes is None else axes
         axes.plot(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
                   **self.extra_kwargs)
+        axes = plt if axes is None else axes
         self.render_axis_labels(axes=axes)
         if self.label is not None:
             plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),

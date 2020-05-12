@@ -413,91 +413,100 @@ class ATable(metaclass=MetaTable):
         :raises: CorrupedTableError, ColumnFailedError, when an error is encountered
           processing the data.
         """
+        if options.verbose > 2:
+            print("Loading data and/or defaults...")
         table_df = self._load_saved_df()
+        if options.verbose > 2:
+            print("... loaded data and/or defaults!")
 
-        # Parallel read of current and/or default (with fields set to None) rows
-        loaded_df_id = ray.put(table_df)
-        index_ids = [ray.put(index) for index in target_indices]
-        index_columns_id = ray.put(tuple(self.indices))
-        all_columns_id = ray.put(self.indices_and_columns)
-        loaded_rows_ids = [ray_get_row_or_default.remote(
-            loaded_df_id, index_id, index_columns_id, all_columns_id)
-            for index_id in index_ids]
-        assert len(index_ids) == len(target_indices)
-        assert len(loaded_rows_ids) == len(target_indices)
+        if not options.no_new_results:
+            # Parallel read of current and/or default (with fields set to None) rows
+            loaded_df_id = ray.put(table_df)
+            index_ids = [ray.put(index) for index in target_indices]
+            index_columns_id = ray.put(tuple(self.indices))
+            all_columns_id = ray.put(self.indices_and_columns)
+            loaded_rows_ids = [ray_get_row_or_default.remote(
+                loaded_df_id, index_id, index_columns_id, all_columns_id)
+                for index_id in index_ids]
+            assert len(index_ids) == len(target_indices)
+            assert len(loaded_rows_ids) == len(target_indices)
 
-        column_fun_tuples = [(column, properties.fun)
-                             for column, properties in self.column_to_properties.items()
-                             if column not in self.ignored_columns]
+            column_fun_tuples = [(column, properties.fun)
+                                 for column, properties in self.column_to_properties.items()
+                                 if column not in self.ignored_columns]
 
-        if target_columns is not None:
-            len_before = len(column_fun_tuples)
-            column_fun_tuples = [t for t in column_fun_tuples if t[0] in target_columns]
-            assert column_fun_tuples, (target_columns, sorted(self.column_to_properties.keys()))
-            if options.verbose:
-                print(f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
-
-        if not parallel_row_processing:
-            # Serial computation, e.g., to favor accurate time measurements
-            returned_values = []
-            for index, row in zip(target_indices, ray.get(loaded_rows_ids)):
-                try:
-                    returned_values.append(self.process_row(
-                        index=index, column_fun_tuples=column_fun_tuples,
-                        row=row, overwrite=overwrite, fill=fill))
-                except ColumnFailedError as ex:
-                    returned_values.append(ex)
-        else:
-            self_id = ray.put(self)
-            options_id = ray.put(options)
-            overwrite_id = ray.put(overwrite)
-            fill_id = ray.put(fill)
-            column_fun_tuples_id = ray.put(column_fun_tuples)
-            processed_row_ids = [ray_process_row.remote(
-                atable=self_id, index=index_id, row=row_id,
-                column_fun_tuples=column_fun_tuples_id,
-                overwrite=overwrite_id, fill=fill_id,
-                options=options_id)
-                for index_id, row_id in zip(index_ids, loaded_rows_ids)]
-            time_before = time.time()
-            while True:
-                ids_ready, _ = ray.wait(processed_row_ids, num_returns=len(processed_row_ids), timeout=60.0)
-                if len(ids_ready) == len(processed_row_ids):
-                    break
-                if any(isinstance(id_ready, Exception) for id_ready in ids_ready):
-                    break
-
+            if target_columns is not None:
+                len_before = len(column_fun_tuples)
+                column_fun_tuples = [t for t in column_fun_tuples if t[0] in target_columns]
+                assert column_fun_tuples, (target_columns, sorted(self.column_to_properties.keys()))
                 if options.verbose:
-                    if ids_ready:
-                        time_per_id = (time.time() - time_before) / len(ids_ready)
-                        eta = (len(processed_row_ids) - len(ids_ready)) * time_per_id
-                        msg = f"ETA: {eta} s"
-                    else:
-                        msg = "No ETA available"
+                    print(f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
 
-                    print(f"{len(ids_ready)} / {len(processed_row_ids)} ready @ {datetime.datetime.now()}. {msg}")
-            returned_values = ray.get(processed_row_ids)
 
-        unpacked_target_indices = list(indices_to_internal_loc(unpack_index_value(target_index))
-                                       for target_index in target_indices)
-        index_exception_list = []
-        for index, row in zip(unpacked_target_indices, returned_values):
-            if isinstance(row, Exception):
-                if options.verbose:
-                    print(f"[E]rror processing index {index}: {row}")
-                index_exception_list.append((index, row))
-                try:
-                    table_df = table_df.drop(index)
-                except KeyError as ex:
-                    pass
+            if not parallel_row_processing:
+                # Serial computation, e.g., to favor accurate time measurements
+                returned_values = []
+                for index, row in zip(target_indices, ray.get(loaded_rows_ids)):
+                    try:
+                        returned_values.append(self.process_row(
+                            index=index, column_fun_tuples=column_fun_tuples,
+                            row=row, overwrite=overwrite, fill=fill))
+                    except ColumnFailedError as ex:
+                        returned_values.append(ex)
             else:
-                table_df.loc[index] = row
+                self_id = ray.put(self)
+                options_id = ray.put(options)
+                overwrite_id = ray.put(overwrite)
+                fill_id = ray.put(fill)
+                column_fun_tuples_id = ray.put(column_fun_tuples)
+                processed_row_ids = [ray_process_row.remote(
+                    atable=self_id, index=index_id, row=row_id,
+                    column_fun_tuples=column_fun_tuples_id,
+                    overwrite=overwrite_id, fill=fill_id,
+                    options=options_id)
+                    for index_id, row_id in zip(index_ids, loaded_rows_ids)]
+                time_before = time.time()
+                while True:
+                    ids_ready, _ = ray.wait(processed_row_ids, num_returns=len(processed_row_ids), timeout=60.0)
+                    if len(ids_ready) == len(processed_row_ids):
+                        break
+                    if any(isinstance(id_ready, Exception) for id_ready in ids_ready):
+                        break
+
+                    if options.verbose:
+                        if ids_ready:
+                            time_per_id = (time.time() - time_before) / len(ids_ready)
+                            eta = (len(processed_row_ids) - len(ids_ready)) * time_per_id
+                            msg = f"ETA: {eta} s"
+                        else:
+                            msg = "No ETA available"
+
+                        print(f"{len(ids_ready)} / {len(processed_row_ids)} ready @ {datetime.datetime.now()}. {msg}")
+                returned_values = ray.get(processed_row_ids)
+
+            unpacked_target_indices = list(indices_to_internal_loc(unpack_index_value(target_index))
+                                           for target_index in target_indices)
+            index_exception_list = []
+            for index, row in zip(unpacked_target_indices, returned_values):
+                if isinstance(row, Exception):
+                    if options.verbose:
+                        print(f"[E]rror processing index {index}: {row}")
+                    index_exception_list.append((index, row))
+                    try:
+                        table_df = table_df.drop(index)
+                    except KeyError as ex:
+                        pass
+                else:
+                    table_df.loc[index] = row
+        else:
+            index_exception_list = []
+
         table_df = table_df[[c for c in table_df.columns if c not in self.ignored_columns]]
 
         # All data (new or previously loaded) is saved to persistent storage
         # if (a) all data were successfully obtained or
         #    (b) the save_partial_results options is enabled
-        if self.csv_support_path and \
+        if not options.no_new_results and self.csv_support_path and \
                 (not index_exception_list or not options.discard_partial_results):
             table_df.to_csv(self.csv_support_path, index=False)
 

@@ -26,6 +26,9 @@ from enb.config import get_options
 
 options = get_options()
 
+marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X"]
+color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
+
 
 @ray.remote
 @config.propagates_options
@@ -80,9 +83,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     fig_width = options.fig_width if fig_width is None else fig_width
     fig_height = options.fig_height if fig_height is None else fig_height
-    global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else  global_y_label_pos
+    global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
     legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
-    
 
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
@@ -103,7 +105,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if color_by_group_name is None:
         color_by_group_name = {}
         for i, group_name in enumerate(sorted_group_names):
-            color_by_group_name[group_name] = f"C{i % 10}"
+            color_by_group_name[group_name] = color_cycle[i % len(color_cycle)]
     os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
     fig, group_axis_list = plt.subplots(
         nrows=len(sorted_group_names) if not combine_groups else 1,
@@ -112,30 +114,32 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     if combine_groups:
         group_axis_list = [group_axis_list]
-    if len(sorted_group_names) == 1:
+    elif len(sorted_group_names) == 1:
         group_axis_list = [group_axis_list]
 
     semilog_x, semilog_y = False, False
-    x_min, x_max = None, None
 
     if combine_groups:
         assert len(group_axis_list) == 1
+        # group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
         group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
     else:
         group_name_axes = zip(sorted_group_names, group_axis_list)
 
-    for i, (group_name, group_axes) in enumerate(group_name_axes):
-        if column_properties:
-            x_min = column_properties.plot_min
-            x_max = column_properties.plot_max
-        if x_min is None:
-            x_min = min(min(pd.x_values) for pd in pds_by_group_name[group_name])
-        if x_max is None:
-            x_max = max(max(pd.x_values) for pd in pds_by_group_name[group_name])
-        if x_max - x_min > 1:
-            x_min = math.floor(x_min)
-            x_max = math.ceil(x_max)
+    global_x_min = float("inf")
+    global_x_max = float("-inf")
+    for pd in (plottable for pds in pds_by_group_name.values() for plottable in pds):
+        pd.legend_column_count = legend_column_count
+        global_x_min = min(global_x_min, min(pd.x_values))
+        global_x_max = max(global_x_max, max(pd.x_values))
+    if global_x_max - global_x_min > 1:
+        global_x_min = math.floor(global_x_min)
+        global_x_max = math.ceil(global_x_max)
+    if column_properties:
+        global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
+        global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
 
+    for i, (group_name, group_axes) in enumerate(group_name_axes):
         group_color = color_by_group_name[group_name]
         for pld in pds_by_group_name[group_name]:
             pld.x_label = None
@@ -189,7 +193,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
         plt.xticks(x_tick_values, x_tick_labels)
 
-    plt.xlim(x_min - horizontal_margin / 2, x_max + horizontal_margin / 2)
+    plt.xlim(global_x_min - horizontal_margin / 2, global_x_max + horizontal_margin / 2)
     if len(sorted_group_names) > 10:
         plt.subplots_adjust(hspace=0.75)
     elif len(sorted_group_names) > 5:
@@ -382,10 +386,14 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                                             range=min_max_by_column[column],
                                             density=False)
     hist_y_values = hist_y_values / len(column_df)
-    assert abs(sum(hist_y_values) - 1) < 1e-10, \
-        f"The forced range for {column} {tuple(min_max_by_column[column])} " \
-        f"misses {100 * (1 - sum(hist_y_values)):.0f}% of the actual values. " \
-        f"Actual range is ({column_df.min(), column_df.max()}."
+
+    if min_max_by_column[column][0] > column_df.min() or min_max_by_column[column][1] < column_df.max():
+        raise Exception(f"The forced range for {column} {tuple(min_max_by_column[column])} "
+                        f"misses {100 * (1 - sum(hist_y_values)):.0f}% of the actual values. "
+                        f"Actual range is ({column_df.min()}, {column_df.max()}).")
+    elif abs(sum(hist_y_values) - 1) > 1e-10:
+        raise Exception("Unfortunately, some values seem to be missing - check for errors!")
+
     hist_y_values = hist_y_values / hist_y_values.sum()
 
     x_label = column if not properties.label else properties.label
@@ -805,7 +813,7 @@ class TwoColumnLineAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False):
+                   adjust_height=False, show_markers=False, marker_size=3):
         """
         :param adjust_height:
         :param full_df: full pandas.DataFrame to be analyzed and plotted
@@ -828,6 +836,9 @@ class TwoColumnLineAnalyzer(Analyzer):
           provides an order.
         :param version_name: if not None, the version name is prepended to
           the X and Y labels of the plot (does not affect computation).
+        :param show_markers: if True, markers are displayed in the Line plot
+        :param marker_size: if show_markers is True, this parameters sets
+          the displayed marker size
         """
         assert target_columns, "Target columns cannot be empty nor None"
         try:
@@ -842,6 +853,8 @@ class TwoColumnLineAnalyzer(Analyzer):
             f"At least one column name in {target_columns} is not defined in " \
             f"full_df's columns ({full_df.columns}"
 
+        data_point_count = None
+
         for column_name_x, column_name_y in target_columns:
             # Entries are lists of PlottableData instances
             plds_by_family_label = sortedcontainers.SortedDict()
@@ -849,16 +862,39 @@ class TwoColumnLineAnalyzer(Analyzer):
                 family_avg_x_y_values = []
                 for task_name in family.task_names:
                     rows = full_df[full_df["task_name"] == task_name]
+                    # Sanity check on the number of rows
+                    if data_point_count is None:
+                        data_point_count = len(rows)
+                    else:
+                        assert data_point_count == len(
+                            rows), f"Previously found {data_point_count} data points per task, " \
+                                   f"but {task_name} in {family} has {len(rows)} data points."
+
                     family_avg_x_y_values.append(
                         (rows[column_name_x].mean(), rows[column_name_y].mean()))
 
                 family_avg_x_y_values = sorted(family_avg_x_y_values)
-                x_values, y_values = zip(*family_avg_x_y_values)
+                try:
+                    x_values, y_values = zip(*family_avg_x_y_values)
+                except ValueError as ex:
+                    print("[watch] (column_name_x, column_name_y) = {}".format((column_name_x, column_name_y)))
+                    print("[watch] family.label = {}".format(family.label))
+                    print("[watch] family.task_names = {}".format(family.task_names))
+                    print("[watch] len(family_avg_x_y_values) = {}".format(len(family_avg_x_y_values)))
+                    print("-" * 50)
+                    for f in group_by:
+                        print("[watch] f = {}".format(f))
+                        print("[watch] f.label = {}".format(f.label))
+                        print("[watch] f.task_names = {}".format(f.task_names))
+
+                    raise ex
                 plds_by_family_label[family.label] = [
                     plotdata.LineData(x_values=x_values, y_values=y_values,
                                       x_label=column_name_x, y_label=column_name_y,
                                       label=family.label, alpha=self.alpha,
-                                      legend_column_count=options.legend_column_count)]
+                                      legend_column_count=options.legend_column_count,
+                                      extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) \
+                                          if show_markers else None)]
 
             global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
             global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
