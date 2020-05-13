@@ -530,10 +530,12 @@ class CompressionExperiment(experiment.Experiment):
                                 height//2-options.reconstructed_size//2:height//2+options.reconstructed_size//2,:]
                     cmin = array.min()
                     cmax = array.max()
-                    array = np.round((255 * (array - cmin) / (cmax - cmin))).astype("uint8")
+                    array = np.round((255 * (array.astype(np.int) - cmin) / (cmax - cmin))).astype("uint8")
                     if options.verbose > 1:
                         print(f"[R]endering {rendered_path}")
-                    imageio.imwrite(rendered_path, array.swapaxes(0, 2))
+                    print("[watch] array.shape = {}".format(array.shape))
+                    
+                    imageio.imwrite(rendered_path, array.swapaxes(0, 1))
 
             else:
                 full_array = isets.load_array_bsq(
