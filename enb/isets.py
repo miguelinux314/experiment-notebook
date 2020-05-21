@@ -24,10 +24,9 @@ def entropy(data):
     probabilities = (count / total_sum for value, count in counter.items())
     return -sum(p * math.log2(p) for p in probabilities)
 
-
-class ImagePropertiesTable(sets.FilePropertiesTable):
-    """Properties table for images. Allows automatic handling of tags in
-    filenames, e.g., ZxYxX_u16be.
+class ImageGeometryTable(sets.FilePropertiesTable):
+    """Basic properties table for images, including geometry.
+    Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
 
     @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
@@ -92,6 +91,11 @@ class ImagePropertiesTable(sets.FilePropertiesTable):
 
         raise ValueError("Cannot determine image geometry "
                          f"from file name {os.path.basename(file_path)}")
+
+class ImagePropertiesTable(ImageGeometryTable):
+    """Properties table for images, with geometry and additional statistical information.
+    Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
+    """
 
     @atable.column_function([
         atable.ColumnProperties(name="sample_min", label="Min sample value"),

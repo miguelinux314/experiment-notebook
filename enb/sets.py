@@ -68,10 +68,11 @@ class FilePropertiesTable(atable.ATable):
     """
     version_name = "original"
     hash_field_name = f"{hash_algorithm}"
+    index_name = "file_path"
     base_dir = None
 
     def __init__(self, csv_support_path=None, base_dir=None):
-        super().__init__(index="file_path", csv_support_path=csv_support_path)
+        super().__init__(index=FilePropertiesTable.index_name, csv_support_path=csv_support_path)
         self.base_dir = base_dir
 
     def get_relative_path(self, file_path):
@@ -104,9 +105,7 @@ class FilePropertiesTable(atable.ATable):
         """
         row[_column_name] = os.path.getsize(file_path)
 
-    @atable.column_function(
-        hash_field_name,
-        label=f"{hash_field_name} hex digest")
+    @atable.column_function(hash_field_name, label=f"{hash_field_name} hex digest")
     def set_hash_digest(self, file_path, row):
         """Store the hexdigest of file_path's contents, using hash_algorithm as configured.
         :param file_path: path to the file to analyze
