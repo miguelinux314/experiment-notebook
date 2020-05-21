@@ -541,10 +541,11 @@ class ATable(metaclass=MetaTable):
         for i in range(len(result_df)):
             row = result_df.iloc[i]
             row_str = "struct(" \
-                      + ", ".join(f"'{c}','{row[c]}'" for c in self.column_to_properties.keys()) \
+                      + f"'{self.index}',{repr(row[self.index])}, " \
+                      + ", ".join(f"'{c}',{repr(row[c])}" for c in self.column_to_properties.keys()) \
                       + ");"
-            struct_str_lines.append("".join(row_str))
-        struct_str_lines.append("]")
+            struct_str_lines.append("".join(row_str.replace("True", "true").replace("False", "false")))
+        struct_str_lines.append("]';")
         return "\n".join(struct_str_lines)
 
     def process_row(self, index, column_fun_tuples, row, overwrite, fill):
