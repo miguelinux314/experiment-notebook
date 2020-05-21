@@ -440,8 +440,8 @@ class ATable(metaclass=MetaTable):
                 column_fun_tuples = [t for t in column_fun_tuples if t[0] in target_columns]
                 assert column_fun_tuples, (target_columns, sorted(self.column_to_properties.keys()))
                 if options.verbose:
-                    print(f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
-
+                    print(
+                        f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
 
             if not parallel_row_processing:
                 # Serial computation, e.g., to favor accurate time measurements
@@ -529,6 +529,23 @@ class ATable(metaclass=MetaTable):
             "Unexpected table length / requested indices " \
             f"{(len(table_df), len(target_indices))}"
         return table_df
+
+    def get_matlab_struct_str(self, target_indices):
+        """Return a string containing MATLAB code that defines a list of structs
+        (one per target index), with the fields being the columns defined
+        for this table.
+        """
+        result_df = self.get_df(target_indices=target_indices)
+        struct_str_lines = []
+        struct_str_lines.append("image_list = [")
+        for i in range(len(result_df)):
+            row = result_df.iloc[i]
+            row_str = "struct(" \
+                      + ", ".join(f"'{c}','{row[c]}'" for c in self.column_to_properties.keys()) \
+                      + ");"
+            struct_str_lines.append("".join(row_str))
+        struct_str_lines.append("]")
+        return "\n".join(struct_str_lines)
 
     def process_row(self, index, column_fun_tuples, row, overwrite, fill):
         """Process a single row of an ATable instance, filling
