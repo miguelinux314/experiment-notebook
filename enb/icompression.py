@@ -533,7 +533,6 @@ class CompressionExperiment(experiment.Experiment):
                     array = np.round((255 * (array.astype(np.int) - cmin) / (cmax - cmin))).astype("uint8")
                     if options.verbose > 1:
                         print(f"[R]endering {rendered_path}")
-                    print("[watch] array.shape = {}".format(array.shape))
                     
                     imageio.imwrite(rendered_path, array.swapaxes(0, 1))
 

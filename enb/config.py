@@ -98,11 +98,17 @@ class WritableOrCreableDirAction(ExistingDirAction):
         """
         try:
             ReadableDirAction.assert_valid_value(target_dir)
-            return
         except AssertionError:
             parent_dir = os.path.dirname(target_dir)
             WritableDirAction.assert_valid_value(parent_dir)
 
+class PositiveIntegerAction(ValidationAction):
+    """Check that value is an integer and greater than zero.
+    """
+    @classmethod
+    def assert_valid_value(cls, value):
+        assert value == int(value)
+        assert value > 0
 
 _options = None
 
@@ -146,12 +152,16 @@ def get_options(from_main=False):
                                    help="Make computations sequentially instead of distributed",
                                    action="store_true",
                                    default=False)
+    execution_options.add_argument("--repetitions", help="Number of repetitions when calculating execution times.",
+                                   action=PositiveIntegerAction, default=1)
     execution_options.add_argument("-c", "--columns",
                                    help="List of selected column names for computation. If one or more column names are provided, "
                                         "all others are ignored. Multiple columns can be expressed, separated by spaces.",
                                    default=None,
                                    nargs="+",
                                    type=str)
+    execution_options.add_argument("--exit_on_error", help="If set, any exception when processing rows aborts the program.",
+                                   action="store_true")
     execution_options.add_argument("--discard_partial_results",
                                    help="Discard partial results when an error is found running the experiment? "
                                         "Otherwise, they are output to persistent storage.",
@@ -211,11 +221,10 @@ def get_options(from_main=False):
                                   "each component")
 
     # Versioned data dir
-    default_version_dataset_dir = os.path.join(calling_script_dir, "versioned_datasets")
     dir_options.add_argument("--base_version_dataset_dir", "-vd",
                              action=WritableOrCreableDirAction,
-                             default=default_version_dataset_dir,
-                             required=from_main and False,
+                             default=None,
+                             required=False,
                              # required=not WritableOrCreableDirAction.check_valid_value(default_version_dataset_dir),
                              help=f"Base dir for versioned folders.")
 

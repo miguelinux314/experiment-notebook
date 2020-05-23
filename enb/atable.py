@@ -211,7 +211,7 @@ class MetaTable(type):
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
                         if hasattr(sc_fun, "_redefines_column"):
                             properties = copy.copy(properties)
-                            properties.fun = sc_fun
+                            properties.fun = ATable.build_column_name_wrapper(fun=sc_fun, column_properties=properties)
                             subclass.column_to_properties[column] = properties
                         else:
                             print(f"[W]arning: {defining_class_name}'s subclass {subclass.__name__} "
@@ -318,7 +318,8 @@ class ATable(metaclass=MetaTable):
             elif isinstance(element, ColumnProperties):
                 cp = copy.copy(element)
                 cp.fun = fun if cp.fun is None else cp.fun
-                assert cp.fun is None or cp.fun is fun, f"{cp.fun}, {fun}"
+                if not hasattr(fun, "_redefines_column"):
+                    assert cp.fun is None or cp.fun is fun, f"{cp.fun}, {fun}"
             else:
                 raise TypeError(type(element))
             return cp
@@ -347,31 +348,34 @@ class ATable(metaclass=MetaTable):
         assert all(cp.fun is None or cp.fun is fun
                    for cp in column_properties), (id(fun), [id(cp.fun) for cp in column_properties])
 
-        @functools.wraps(fun)
-        def fun_wrapper(*args, **kwargs):
-            """Decorated functions get an _column_properties variable in their scope with all
-            normalized column properties. A non None _column_name is injected in the scope if
-            a single column_properties instance is present.
-            """
-            new_globals = dict(_column_properties=column_properties,
-                               _column_name=column_properties[0].name if len(column_properties) == 1 else None)
-
-            if isinstance(fun, functools.partial):
-                g = fun.func.__globals__
-            else:
-                g = fun.__globals__
-            old_globals = dict(g)
-            g.update(new_globals)
-
-            fun(*args, **kwargs)
-
-            g.clear()
-            g.update(old_globals)
+        fun_wrapper = cls.build_column_name_wrapper(fun=fun, column_properties=column_properties)
 
         column_to_properties_dict = cls.column_to_properties
         for cp in column_properties:
             cp.fun = fun_wrapper
             column_to_properties_dict[cp.name] = cp
+
+        return fun_wrapper
+
+    @classmethod
+    def build_column_name_wrapper(cls, fun, column_properties):
+        column_properties = cls.normalize_column_properties(column_properties=column_properties, fun=fun)
+
+        @functools.wraps(fun)
+        def fun_wrapper(*args, **kwargs):
+            if isinstance(fun, functools.partial):
+                globals = fun.func.__globals__
+            else:
+                globals = fun.__globals__
+
+            old_globals = dict(globals)
+            globals.update(_column_name=column_properties[0].name if len(column_properties) == 1 else None,
+                           _column_properties=column_properties)
+            try:
+                return fun(*args, **kwargs)
+            finally:
+                globals.clear()
+                globals.update(old_globals)
 
         return fun_wrapper
 
@@ -592,19 +596,23 @@ class ATable(metaclass=MetaTable):
                 continue
 
             if options.verbose > 1:
-                print(f"[C]alculating {column} for {index} with <{self.__class__.__name__}>")
+                print(f"[C]alculating {column} for {index} with <{self.__class__.__name__}>{{ {fun} }}")
             try:
                 result = fun(self, index, row)
                 called_functions.add(fun)
                 if result is not None and options.verbose > 1:
                     print(f"[W]arning: result of {fun.__name__} ignored")
                 if row[column] is None:
-                    raise ValueError(f"The '{fun.__name__}' function  failed to fill "
+                    raise ValueError(f"Function {fun} failed to fill "
                                      f"the associated '{column}' column ({column}:{row[column]})")
             except Exception as ex:
                 if options.verbose:
                     print(repr(ex))
-                return ColumnFailedError(atable=self, index=index, column=column, ex=ex)
+                ex = ColumnFailedError(atable=self, index=index, column=column, ex=ex)
+                if options.exit_on_error:
+                    raise ex
+                else:
+                    return ex
 
         return row
 

@@ -877,15 +877,15 @@ class TwoColumnLineAnalyzer(Analyzer):
                 try:
                     x_values, y_values = zip(*family_avg_x_y_values)
                 except ValueError as ex:
-                    print("[watch] (column_name_x, column_name_y) = {}".format((column_name_x, column_name_y)))
-                    print("[watch] family.label = {}".format(family.label))
-                    print("[watch] family.task_names = {}".format(family.task_names))
-                    print("[watch] len(family_avg_x_y_values) = {}".format(len(family_avg_x_y_values)))
+                    print("[>>>] (column_name_x, column_name_y) = {}".format((column_name_x, column_name_y)))
+                    print("[>>>] family.label = {}".format(family.label))
+                    print("[>>>] family.task_names = {}".format(family.task_names))
+                    print("[>>>] len(family_avg_x_y_values) = {}".format(len(family_avg_x_y_values)))
                     print("-" * 50)
                     for f in group_by:
-                        print("[watch] f = {}".format(f))
-                        print("[watch] f.label = {}".format(f.label))
-                        print("[watch] f.task_names = {}".format(f.task_names))
+                        print("[>>>] f = {}".format(f))
+                        print("[>>>] f.label = {}".format(f.label))
+                        print("[>>>] f.task_names = {}".format(f.task_names))
 
                     raise ex
                 plds_by_family_label[family.label] = [
