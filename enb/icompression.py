@@ -40,7 +40,7 @@ class CompressionResults(recordclass.RecordClass):
     # original_path: path to the input original file
     # compressed_path: path to the output compressed file# list of file paths containing side information
     # side_info_files: list of file paths with side information
-    # compression_time_seconds: effective compression time in seconds
+    # compression_time_seconds: effective average compression time in seconds
     codec_name: str = None
     codec_param_dict: dict = None
     original_path: str = None
@@ -59,7 +59,7 @@ class DecompressionResults(recordclass.RecordClass):
     # compressed_path: path to the input compressed path
     # reconstructed_path: path to the output reconstructed path
     # side_info_files: list of file paths containing side information
-    # decompression_time_seconds: effective decompression time in seconds
+    # decompression_time_seconds: effective average decompression time in seconds
     codec_name: str = None
     codec_param_dict: dict = None
     compressed_path: str = None
@@ -265,7 +265,6 @@ class WrapperCodec(AbstractCodec):
                 output=output)
         elif options.verbose > 3:
             print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
-        
 
     @staticmethod
     @functools.lru_cache(maxsize=2)
@@ -322,32 +321,44 @@ class CompressionExperiment(experiment.Experiment):
 
         @property
         def compression_results(self):
+            """Perform the actual compression experiment for the selected row.
+            """
             if self._compression_results is None:
                 _, tmp_compressed_path = tempfile.mkstemp(
                     dir=options.base_tmp_dir,
                     prefix=f"compressed_{os.path.basename(self.file_path)}_")
                 try:
-                    if options.verbose > 1:
-                        print(f"[E]xecuting compression {self.codec.name} on {self.file_path}")
-                    time_before = time.process_time()
-                    self._compression_results = self.codec.compress(original_path=self.file_path,
-                                                                    compressed_path=tmp_compressed_path,
-                                                                    original_file_info=self.image_info_row)
+                    measured_times = []
 
-                    if not os.path.isfile(tmp_compressed_path) \
-                            or os.path.getsize(tmp_compressed_path) == 0:
-                        raise CompressionException(
-                            original_path=self.file_path, compressed_path=tmp_compressed_path,
-                            file_info=self.image_info_row,
-                            output=f"Compression didn't produce a file (or it was empty) {self.file_path}")
-
-                    process_compression_time = time.process_time() - time_before
-                    if self._compression_results is None:
+                    for repetition_index in range(options.repetitions):
                         if options.verbose > 1:
-                            print(f"[E]xecuting decompression {self.codec.name} on {self.file_path}")
-                        self._compression_results = self.codec.compression_results_from_paths(
-                            original_path=self.file_path, compressed_path=tmp_compressed_path)
-                        self._compression_results.compression_time_seconds = process_compression_time
+                            print(f"[E]xecuting compression {self.codec.name} on {self.file_path} "
+                                  f"[rep{repetition_index + 1}/{options.repetitions}]")
+                        time_before = time.process_time()
+                        self._compression_results = self.codec.compress(original_path=self.file_path,
+                                                                        compressed_path=tmp_compressed_path,
+                                                                        original_file_info=self.image_info_row)
+
+                        if not os.path.isfile(tmp_compressed_path) \
+                                or os.path.getsize(tmp_compressed_path) == 0:
+                            raise CompressionException(
+                                original_path=self.file_path, compressed_path=tmp_compressed_path,
+                                file_info=self.image_info_row,
+                                output=f"Compression didn't produce a file (or it was empty) {self.file_path}")
+
+                        process_compression_time = time.process_time() - time_before
+                        if self._compression_results is None:
+                            if options.verbose > 1:
+                                print(f"[E]xecuting decompression {self.codec.name} on {self.file_path}")
+                            self._compression_results = self.codec.compression_results_from_paths(
+                                original_path=self.file_path, compressed_path=tmp_compressed_path)
+                            self._compression_results.compression_time_seconds = process_compression_time
+
+                        measured_times.append(self._compression_results.compression_time_seconds)
+                        if repetition_index < options.repetitions - 1:
+                            os.remove(tmp_compressed_path)
+
+                    self._compression_results.compression_time_seconds = sum(measured_times) / len(measured_times)
                 except Exception as ex:
                     os.remove(tmp_compressed_path)
                     raise ex
@@ -356,32 +367,41 @@ class CompressionExperiment(experiment.Experiment):
 
         @property
         def decompression_results(self):
+            """Perform the actual decompression experiment for the selected row.
+            """
             if self._decompression_results is None:
                 _, tmp_reconstructed_path = tempfile.mkstemp(
                     prefix=f"reconstructed_{os.path.basename(self.file_path)}",
                     dir=options.base_tmp_dir)
                 try:
-                    time_before = time.process_time()
-                    self._decompression_results = self.codec.decompress(
-                        compressed_path=self.compression_results.compressed_path,
-                        reconstructed_path=tmp_reconstructed_path,
-                        original_file_info=self.image_info_row)
-
-                    process_decompression_time = time.process_time() - time_before
-                    if self._decompression_results is None:
-                        self._decompression_results = self.codec.decompression_results_from_paths(
+                    measured_times = []
+                    for repetition_index in range(options.repetitions):
+                        time_before = time.process_time()
+                        self._decompression_results = self.codec.decompress(
                             compressed_path=self.compression_results.compressed_path,
-                            reconstructed_path=tmp_reconstructed_path)
-                        self._decompression_results.decompression_time_seconds = process_decompression_time
+                            reconstructed_path=tmp_reconstructed_path,
+                            original_file_info=self.image_info_row)
 
-                    if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
-                            self._decompression_results.reconstructed_path) == 0:
-                        raise CompressionException(
-                            original_path=self.compression_results.file_path,
-                            compressed_path=self.compression_results.compressed_path,
-                            file_info=self.image_info_row,
-                            output=f"Decompression didn't produce a file (or it was empty)"
-                                   f" {self.compression_results.file_path}")
+                        process_decompression_time = time.process_time() - time_before
+                        if self._decompression_results is None:
+                            self._decompression_results = self.codec.decompression_results_from_paths(
+                                compressed_path=self.compression_results.compressed_path,
+                                reconstructed_path=tmp_reconstructed_path)
+                            self._decompression_results.decompression_time_seconds = process_decompression_time
+
+                        if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
+                                self._decompression_results.reconstructed_path) == 0:
+                            raise CompressionException(
+                                original_path=self.compression_results.file_path,
+                                compressed_path=self.compression_results.compressed_path,
+                                file_info=self.image_info_row,
+                                output=f"Decompression didn't produce a file (or it was empty)"
+                                       f" {self.compression_results.file_path}")
+
+                        measured_times.append(self._decompression_results.decompression_time_seconds)
+                        if repetition_index < options.repetitions - 1:
+                            os.remove(tmp_reconstructed_path)
+                    self._decompression_results.decompression_time_seconds = sum(measured_times) / len(measured_times)
                 except Exception as ex:
                     os.remove(tmp_reconstructed_path)
                     raise ex
@@ -496,8 +516,11 @@ class CompressionExperiment(experiment.Experiment):
             file_path=file_path, codec=codec,
             image_info_row=image_info_row,
             row=row)
-        super().process_row(index=index, column_fun_tuples=column_fun_tuples,
-                            row=row_wrapper, overwrite=overwrite, fill=fill)
+        result = super().process_row(index=index, column_fun_tuples=column_fun_tuples,
+                                     row=row_wrapper, overwrite=overwrite, fill=fill)
+
+        if isinstance(result, Exception):
+            return result
 
         if self.reconstructed_dir_path is not None:
             output_reconstructed_path = os.path.join(
@@ -514,10 +537,6 @@ class CompressionExperiment(experiment.Experiment):
                 if options.verbose > 2:
                     print(f"[S]kipping reconstruction of {file_path}")
 
-            # cmin = 0 if not image_info_row["signed"] else -(2 ** (image_info_row["dynamic_range_bits"] - 1))
-            # cmax = (2 ** (image_info_row["dynamic_range_bits"]) - 1) if not image_info_row["signed"] \
-            #     else (2 ** (image_info_row["dynamic_range_bits"] - 1) - 1)
-
             if image_info_row["component_count"] == 3:
                 rendered_path = f"{output_reconstructed_path}.png"
                 if not os.path.exists(rendered_path) or options.force:
@@ -526,14 +545,15 @@ class CompressionExperiment(experiment.Experiment):
                     if options.reconstructed_size is not None:
                         width, height, _ = array.shape
                         array = array[
-                                width//2-options.reconstructed_size//2:width//2+options.reconstructed_size//2,
-                                height//2-options.reconstructed_size//2:height//2+options.reconstructed_size//2,:]
+                                width // 2 - options.reconstructed_size // 2:width // 2 + options.reconstructed_size // 2,
+                                height // 2 - options.reconstructed_size // 2:height // 2 + options.reconstructed_size // 2,
+                                :]
                     cmin = array.min()
                     cmax = array.max()
                     array = np.round((255 * (array.astype(np.int) - cmin) / (cmax - cmin))).astype("uint8")
                     if options.verbose > 1:
                         print(f"[R]endering {rendered_path}")
-                    
+
                     imageio.imwrite(rendered_path, array.swapaxes(0, 1))
 
             else:
@@ -543,9 +563,9 @@ class CompressionExperiment(experiment.Experiment):
                 if options.reconstructed_size is not None:
                     width, height, _ = full_array.shape
                     full_array = full_array[
-                            width // 2 - options.reconstructed_size // 2:width // 2 + options.reconstructed_size // 2,
-                            height // 2 - options.reconstructed_size // 2:height // 2 + options.reconstructed_size // 2,
-                            :]
+                                 width // 2 - options.reconstructed_size // 2:width // 2 + options.reconstructed_size // 2,
+                                 height // 2 - options.reconstructed_size // 2:height // 2 + options.reconstructed_size // 2,
+                                 :]
                 for i, rendered_path in enumerate(f"{output_reconstructed_path}_component{i}.png"
                                                   for i in range(image_info_row['component_count'])):
                     if not os.path.exists(rendered_path) or options.force:
@@ -566,6 +586,7 @@ class CompressionExperiment(experiment.Experiment):
         atable.ColumnProperties(name="lossless_reconstruction", label="Lossless?"),
         atable.ColumnProperties(name="compression_time_seconds", label="Compression time (s)", plot_min=0),
         atable.ColumnProperties(name="decompression_time_seconds", label="Decompression time (s)", plot_min=0),
+        atable.ColumnProperties(name="repetitions", label="Number of compression/decompression repetitions", plot_min=0),
         atable.ColumnProperties(name="compressed_size_bytes", label="Compressed size (bytes)", plot_min=0),
         atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256")
     ])
@@ -594,6 +615,7 @@ class CompressionExperiment(experiment.Experiment):
         row["compression_time_seconds"] = row.compression_results.compression_time_seconds
         assert row.decompression_results.decompression_time_seconds is not None
         row["decompression_time_seconds"] = row.decompression_results.decompression_time_seconds
+        row["repetitions"] = options.repetitions
         row["compression_ratio"] = os.path.getsize(row.compression_results.original_path) / os.path.getsize(
             row.compression_results.compressed_path)
         row["compressed_file_sha256"] = compressed_file_sha256
