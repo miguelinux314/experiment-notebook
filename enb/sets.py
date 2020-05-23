@@ -92,7 +92,9 @@ class FilePropertiesTable(atable.ATable):
             while file_dir and file_dir[0] == os.sep:
                 file_dir = file_dir[1:]
         else:
-            file_dir = os.path.basename(os.path.dirname(file_path))
+            file_dir = os.path.basename(os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
+        if not file_dir:
+            file_dir = os.path.basename(os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
         row[_column_name] = file_dir
 
     @atable.column_function("size_bytes", label="File size (bytes)")

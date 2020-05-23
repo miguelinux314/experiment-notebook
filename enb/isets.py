@@ -29,6 +29,7 @@ def entropy(data):
     probabilities = (count / total_sum for value, count in counter.items())
     return -sum(p * math.log2(p) for p in probabilities)
 
+
 class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
@@ -96,6 +97,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
             raise ValueError("Cannot determine image geometry "
                              f"from file name {os.path.basename(file_path)}")
 
+
 class ImagePropertiesTable(ImageGeometryTable):
     """Properties table for images, with geometry and additional statistical information.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
@@ -111,7 +113,7 @@ class ImagePropertiesTable(ImageGeometryTable):
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
         range_len = row["sample_max"] - row["sample_min"]
-        row[_column_name] = max(1,math.ceil(math.log2(range_len+1)))
+        row[_column_name] = max(1, math.floor(math.log2(range_len + 1)) + 1)
 
     @atable.column_function(
         atable.ColumnProperties(name="1B_value_counts",

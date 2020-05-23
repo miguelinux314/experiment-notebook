@@ -348,8 +348,6 @@ class CompressionExperiment(experiment.Experiment):
 
                         process_compression_time = time.process_time() - time_before
                         if self._compression_results is None:
-                            if options.verbose > 1:
-                                print(f"[E]xecuting decompression {self.codec.name} on {self.file_path}")
                             self._compression_results = self.codec.compression_results_from_paths(
                                 original_path=self.file_path, compressed_path=tmp_compressed_path)
                             self._compression_results.compression_time_seconds = process_compression_time
@@ -376,6 +374,10 @@ class CompressionExperiment(experiment.Experiment):
                 try:
                     measured_times = []
                     for repetition_index in range(options.repetitions):
+                        if options.verbose > 1:
+                            print(f"[E]xecuting compression {self.codec.name} on {self.file_path} "
+                                  f"[rep{repetition_index + 1}/{options.repetitions}]")
+
                         time_before = time.process_time()
                         self._decompression_results = self.codec.decompress(
                             compressed_path=self.compression_results.compressed_path,
@@ -579,6 +581,10 @@ class CompressionExperiment(experiment.Experiment):
 
         return row
 
+    @atable.column_function("compressed_size_bytes", label="Compressed data size (Bytes)", plot_min=0)
+    def set_compressed_data_size(self, index, row):
+        row[_column_name] = os.path.getsize(row.compression_results.compressed_path)
+
     @atable.column_function([
         atable.ColumnProperties(name="compression_ratio", label="Compression ratio", plot_min=0),
         atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
@@ -587,7 +593,6 @@ class CompressionExperiment(experiment.Experiment):
         atable.ColumnProperties(name="compression_time_seconds", label="Compression time (s)", plot_min=0),
         atable.ColumnProperties(name="decompression_time_seconds", label="Decompression time (s)", plot_min=0),
         atable.ColumnProperties(name="repetitions", label="Number of compression/decompression repetitions", plot_min=0),
-        atable.ColumnProperties(name="compressed_size_bytes", label="Compressed size (bytes)", plot_min=0),
         atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256")
     ])
     def set_comparison_results(self, index, row):
@@ -598,7 +603,7 @@ class CompressionExperiment(experiment.Experiment):
         assert row.compression_results.compressed_path == row.decompression_results.compressed_path
         assert row.image_info_row["bytes_per_sample"] * row.image_info_row["samples"] \
                == os.path.getsize(row.compression_results.original_path)
-        compression_bps = 8 * os.path.getsize(row.decompression_results.compressed_path) / (
+        compression_bps = 8 * row["compressed_size_bytes"] / (
             row.image_info_row["samples"])
         compression_efficiency_1byte_entropy = (row.image_info_row["entropy_1B_bps"] * row.image_info_row[
             "bytes_per_sample"]) / compression_bps
@@ -610,14 +615,12 @@ class CompressionExperiment(experiment.Experiment):
         row["lossless_reconstruction"] = filecmp.cmp(row.compression_results.original_path,
                                                      row.decompression_results.reconstructed_path)
         row["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
-        row["compressed_size_bytes"] = os.path.getsize(row.compression_results.compressed_path)
         assert row.compression_results.compression_time_seconds is not None
         row["compression_time_seconds"] = row.compression_results.compression_time_seconds
         assert row.decompression_results.decompression_time_seconds is not None
         row["decompression_time_seconds"] = row.decompression_results.decompression_time_seconds
         row["repetitions"] = options.repetitions
-        row["compression_ratio"] = os.path.getsize(row.compression_results.original_path) / os.path.getsize(
-            row.compression_results.compressed_path)
+        row["compression_ratio"] = os.path.getsize(row.compression_results.original_path) / row["compressed_size_bytes"]
         row["compressed_file_sha256"] = compressed_file_sha256
 
     @atable.column_function("bpppc", label="Compressed data rate (bpppc)", plot_min=0)
