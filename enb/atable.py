@@ -49,6 +49,7 @@ from builtins import hasattr
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "19/09/2019"
 
+import sys
 import itertools
 import collections
 import pandas as pd
@@ -58,6 +59,7 @@ import functools
 import time
 import datetime
 import inspect
+import traceback
 import ray
 
 from enb.config import get_options
@@ -519,7 +521,9 @@ class ATable(metaclass=MetaTable):
             raise CorruptedTableError(
                 atable=self, ex=index_exception_list[0][1],
                 msg=f"{len(index_exception_list)} out of"
-                    f" {len(target_indices)} errors happened")
+                    f" {len(target_indices)} errors happened. "
+                    f"Run with --exit_on_error to obtain a full "
+                    f"stack trace of the first error.")
 
         # Sanity checks before returning the DataFrame with only the requested indices
         # Verify loaded indices are ok (sanity check)
@@ -610,7 +614,10 @@ class ATable(metaclass=MetaTable):
                     print(repr(ex))
                 ex = ColumnFailedError(atable=self, index=index, column=column, ex=ex)
                 if options.exit_on_error:
-                    raise ex
+                    traceback.print_exc()
+                    print()
+                    print(f"Exiting because options.exit_on_error = {options.exit_on_error}")
+                    sys.exit(-1)
                 else:
                     return ex
 

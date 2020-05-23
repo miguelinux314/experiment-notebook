@@ -160,7 +160,7 @@ def get_options(from_main=False):
                                    default=None,
                                    nargs="+",
                                    type=str)
-    execution_options.add_argument("--exit_on_error", help="If set, any exception when processing rows aborts the program.",
+    execution_options.add_argument("--exit_on_error", help="If True, any exception when processing rows aborts the program.",
                                    action="store_true")
     execution_options.add_argument("--discard_partial_results",
                                    help="Discard partial results when an error is found running the experiment? "
