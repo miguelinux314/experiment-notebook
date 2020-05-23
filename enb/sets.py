@@ -17,6 +17,8 @@ import os
 import glob
 import hashlib
 import ray
+import collections
+import time
 
 from enb import atable
 from enb import config
@@ -52,10 +54,6 @@ def get_canonical_path(file_path):
     """:return: the canonical path to be stored in the database.
     """
     file_path = os.path.abspath(os.path.realpath(file_path))
-    # if options.base_dataset_dir is not None:
-    #     dataset_prefix = os.path.abspath(options.base_dataset_dir)
-    #     assert file_path.startswith(dataset_prefix)
-    #     file_path = file_path.replace(dataset_prefix, "")
     return file_path
 
 
@@ -143,10 +141,11 @@ class FileVersionTable(FilePropertiesTable):
           long-term stored
         """
         super().__init__(csv_support_path=csv_support_path, base_dir=version_base_dir)
-        self.original_base_dir = original_base_dir
+        self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir))
         self.original_properties_table = original_properties_table
-        self.version_base_dir = version_base_dir
+        self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
         self.version_name = version_name
+        self.current_run_version_times = {}
 
     def version(self, input_path, output_path, row):
         """Create a version of input_path and write it into output_path.
@@ -155,6 +154,8 @@ class FileVersionTable(FilePropertiesTable):
         :param output_path: path where the version should be saved
         :param row: metainformation available using super().get_df
           for input_path
+
+        :return: if not None, the time in seconds it took to perform the (forward) versioning.
         """
         raise NotImplementedError()
 
@@ -199,11 +200,17 @@ class FileVersionTable(FilePropertiesTable):
                     version_fun=version_fun_id, input_path=input_path_id,
                     output_path=output_path_id, overwrite=overwrite_id,
                     original_info_df=original_df_id, options=options_id))
-            ray.get(versioning_result_ids)
+            for output_file_path, time_list in ray.get(versioning_result_ids):
+                self.current_run_version_times[output_file_path] = time_list
         else:
             for original_path, version_path in zip(target_indices, version_indices):
-                version_one_path_local(version_fun=self.version, input_path=original_path, output_path=version_path,
-                                       overwrite=overwrite, original_info_df=original_df, options=options)
+                reported_index, self.current_run_version_times[version_path] = \
+                    version_one_path_local(
+                        version_fun=self.version, input_path=original_path,
+                        output_path=version_path, overwrite=overwrite,
+                        original_info_df=original_df,
+                        options=options)
+                assert reported_index == version_path, (reported_index, version_path)
 
         # Invoke df of the next parent that is not a FileVersionTable (an ATable subclass)
         filtered_bases = tuple(cls for cls in self.__class__.__bases__ if cls is not FileVersionTable)
@@ -215,6 +222,30 @@ class FileVersionTable(FilePropertiesTable):
     @atable.column_function("original_file_path")
     def set_original_file_path(self, file_path, row):
         row[_column_name] = get_canonical_path(file_path.replace(self.version_base_dir, self.original_base_dir))
+
+    @atable.column_function("version_time", label="Versioning time (s)")
+    def set_version_time(self, file_path, row):
+        version_time_list = self.current_run_version_times[file_path]
+
+        if any(t < 0 for t in version_time_list):
+            raise atable.CorruptedTableError("A negative versioning time measurement was found "
+                                             f"for {file_path}. Most likely, the transformed version "
+                                             f"already existed, the table did not contain {_column_name}, "
+                                             f"and options.force(={options.force}) is not set to True")
+
+        if not version_time_list:
+            raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
+                                             f"but it was not versioned in this run.")
+        row[_column_name] = sum(version_time_list) / len(version_time_list)
+        
+
+    @atable.column_function("version_time_repetitions", label="Repetitions for obtaining versioning time")
+    def set_version_repetitions(self, file_path, row):
+        version_time_list = self.current_run_version_times[file_path]
+        if not version_time_list:
+            raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
+                                             f"but it was not versioned in this run.")
+        row[_column_name] = len(version_time_list)
 
 
 @ray.remote
@@ -235,22 +266,39 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
     :param options: additional runtime options
     :param original_info_df DataFrame produced by a FilePropertiesTable instance that contains
         an entry for :meth:`atable.indices_to_internal_loc`.
+
+    :return a tuple (output_path, l), where output_path is the selected otuput path and
+      l is a list with the obtained versioning time. The list l shall contain options.repetitions elements.
+      NOTE: If the subclass version method returns a value, that value is taken
+      as the time measurement
     """
+    time_measurements = []
+
     output_path = get_canonical_path(output_path)
     if os.path.exists(output_path) and not overwrite:
         if options.verbose > 2:
-            print(f"[S]kipping versioning of {input_path}")
-        return
+            print(f"[S]kipping versioning of {input_path}->{output_path}")
+        return output_path, [-1]
 
     if options.verbose > 1:
         print(f"[V]ersioning {input_path} -> {output_path} (overwrite={overwrite})")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     row = original_info_df.loc[atable.indices_to_internal_loc(input_path)]
-    try:
-        version_fun(input_path=input_path, output_path=output_path, row=row)
-    except Exception as ex:
+    for repetition_index in range(options.repetitions):
         try:
-            os.remove(output_path)
-        except FileNotFoundError:
-            pass
-        raise ex
+            time_before = time.process_time()
+            versioning_time = version_fun(
+                input_path=input_path, output_path=output_path, row=row)
+            versioning_time = versioning_time if versioning_time is not None \
+                else time.process_time() - time_before
+            time_measurements.append(versioning_time)
+            if repetition_index < options.repetitions - 1:
+                os.remove(output_path)
+        except Exception as ex:
+            try:
+                os.remove(output_path)
+            except FileNotFoundError:
+                pass
+            raise ex
+    
+    return output_path, time_measurements

@@ -8,6 +8,11 @@ import math
 import numpy as np
 import re
 import collections
+import copy
+
+from enb.config import get_options
+
+options = get_options(from_main=False)
 
 from enb import atable
 from enb import sets
@@ -87,10 +92,9 @@ class ImageGeometryTable(sets.FilePropertiesTable):
                 width, height, component_count
             assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"]
             assert row["samples"] == width * height * component_count
-            return
-
-        raise ValueError("Cannot determine image geometry "
-                         f"from file name {os.path.basename(file_path)}")
+        else:
+            raise ValueError("Cannot determine image geometry "
+                             f"from file name {os.path.basename(file_path)}")
 
 class ImagePropertiesTable(ImageGeometryTable):
     """Properties table for images, with geometry and additional statistical information.
