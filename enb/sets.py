@@ -18,6 +18,7 @@ import glob
 import hashlib
 import ray
 import collections
+import itertools
 import time
 
 from enb import atable
@@ -221,9 +222,26 @@ class FileVersionTable(FilePropertiesTable):
                         options=options)
                 assert reported_index == version_path, (reported_index, version_path)
 
-        # Invoke df of the next parent that is not a FileVersionTable (an ATable subclass)
-        filtered_bases = tuple(cls for cls in self.__class__.__bases__ if cls is not FileVersionTable)
-        filtered_type = type(f"filtered_{self.__class__.__name__}", filtered_bases, {})
+        # Get the parent classes that define get_df methods different from this
+        base_classes = self.__class__.__bases__
+        previous_base_classes = []
+        while True:
+            filtered_classes = []
+            for b in base_classes:
+                if b is FileVersionTable:
+                    continue
+                try:
+                    if b.get_df == FileVersionTable.get_df:
+                        filtered_classes.extend(b.__bases__)
+                    else:
+                        filtered_classes.append(b)
+                except AttributeError:
+                    pass
+            if filtered_classes == previous_base_classes:
+                break
+            previous_base_classes = filtered_classes
+            base_classes = filtered_classes
+        filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
         return filtered_type.get_df(
             self, target_indices=version_indices, parallel_row_processing=parallel_row_processing,
             target_columns=target_columns, overwrite=overwrite)
