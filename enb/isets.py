@@ -109,10 +109,15 @@ class ImagePropertiesTable(ImageGeometryTable):
     def set_sample_extrema(self, file_path, row):
         array = load_array_bsq(file_or_path=file_path, image_properties_row=row).flatten()
         row["sample_min"], row["sample_max"] = array.min(), array.max()
+        assert row["sample_min"] == int(row["sample_min"])
+        assert row["sample_max"] == int(row["sample_max"])
+        row["sample_min"] = int(row["sample_min"])
+        row["sample_max"] = int(row["sample_max"])
 
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
-        range_len = row["sample_max"] - row["sample_min"]
+        range_len = int(row["sample_max"]) - int(row["sample_min"])
+        assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
         row[_column_name] = max(1, math.floor(math.log2(range_len + 1)) + 1)
 
     @atable.column_function(

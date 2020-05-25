@@ -34,17 +34,20 @@ hash_algorithm = "sha256"
 
 # -------------------------- End configurable part
 
-def get_all_test_files(ext="raw"):
+def get_all_test_files(ext="raw", base_dataset_dir=None):
     """Get a list of all set files contained in the data dir.
 
     :param ext: if not None, only files with that extension (without dot)
       are returned by this method.
+    :param base_dataset_dir: if not None, the dir where test files are searched
+      for recursively. If None, options.base_dataset_dir is used instead.
     """
-    assert os.path.isdir(options.base_dataset_dir), \
-        f"Nonexistent dataset dir {options.base_dataset_dir}"
+    base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
+    assert os.path.isdir(base_dataset_dir), \
+        f"Nonexistent dataset dir {base_dataset_dir}"
     return sorted(
         (get_canonical_path(p) for p in glob.glob(
-            os.path.join(options.base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
+            os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
             recursive=True)
          if os.path.isfile(p)),
         key=lambda p: os.path.getsize(p))
@@ -60,6 +63,8 @@ def get_canonical_path(file_path):
 class UnkownPropertiesException(Exception):
     pass
 
+class VersioningFailedException(Exception):
+    pass
 
 class FilePropertiesTable(atable.ATable):
     """Table describing basic file properties (see decorated methods below).
@@ -161,7 +166,7 @@ class FileVersionTable(FilePropertiesTable):
         """
         raise NotImplementedError()
 
-    def get_df(self, target_indices, fill=True, overwrite=False,
+    def get_df(self, target_indices=None, fill=True, overwrite=False,
                parallel_versioning=True, parallel_row_processing=True,
                target_columns=None):
         """Create a version of target_indices (which must all be contained
@@ -172,11 +177,13 @@ class FileVersionTable(FilePropertiesTable):
         whether they are previously present in the table.
 
         :param overwrite: if True, version files are written even if they exist
-        :param target_indices: list of indices that are to be contained in the table
+        :param target_indices: list of indices that are to be contained in the table,
+            or None to use the list of files returned by sets.get_all_test_files()
         :param parallel_versioning: if True, files are versioned in parallel if needed
         :param parallel_row_processing: if True, file properties are gathered in parallel
         :param target_columns: if not None, the list of columns that are considered for computation
         """
+        target_indices = target_indices if target_indices is not None else get_all_test_files()
         assert all(index == get_canonical_path(index) for index in target_indices)
         original_df = self.original_properties_table.get_df(
             target_indices=target_indices,
@@ -188,7 +195,7 @@ class FileVersionTable(FilePropertiesTable):
                           for index in target_indices]
         version_indices = [index.replace(base_path, version_path)
                            for index in target_indices]
-
+        
         if parallel_versioning:
             version_fun_id = ray.put(self.version)
             overwrite_id = ray.put(overwrite)
@@ -288,11 +295,13 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
     row = original_info_df.loc[atable.indices_to_internal_loc(input_path)]
     for repetition_index in range(options.repetitions):
         try:
-            time_before = time.process_time()
+            time_before = time.time()
             versioning_time = version_fun(
                 input_path=input_path, output_path=output_path, row=row)
+            if not os.path.exists(output_path) or os.path.getsize(output_path) == 0:
+                raise VersioningFailedException(f"Function {version_fun} did not produce a versioned path {input_path}->{output_path}")
             versioning_time = versioning_time if versioning_time is not None \
-                else time.process_time() - time_before
+                else time.time() - time_before
             time_measurements.append(versioning_time)
             if repetition_index < options.repetitions - 1:
                 os.remove(output_path)
