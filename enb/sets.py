@@ -77,7 +77,7 @@ class FilePropertiesTable(atable.ATable):
 
     def __init__(self, csv_support_path=None, base_dir=None):
         super().__init__(index=FilePropertiesTable.index_name, csv_support_path=csv_support_path)
-        self.base_dir = base_dir
+        self.base_dir = base_dir if base_dir is not None else options.base_dataset_dir
 
     def get_relative_path(self, file_path):
         """Get the relative path. Overwritten to handle the versioned path.
@@ -91,10 +91,11 @@ class FilePropertiesTable(atable.ATable):
 
     @atable.column_function("corpus", label="Corpus name")
     def set_corpus(self, file_path, row):
+        file_path = os.path.abspath(os.path.realpath(file_path))
         if options.base_dataset_dir is not None:
-            file_dir = os.path.dirname(os.path.abspath(os.path.realpath(file_path)))
-            base_dir = os.path.abspath(os.path.realpath(options.base_dataset_dir))
-            file_dir = file_dir.replace(base_dir, "")
+            file_dir = os.path.dirname(file_path)
+            if self.base_dir is not None:
+                file_dir = file_dir.replace(self.base_dir, "")
             while file_dir and file_dir[0] == os.sep:
                 file_dir = file_dir[1:]
         else:
@@ -273,6 +274,21 @@ class FileVersionTable(FilePropertiesTable):
             raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
                                              f"but it was not versioned in this run.")
         row[_column_name] = len(version_time_list)
+
+    @atable.redefines_column
+    def set_corpus(self, file_path, row):
+        file_path = os.path.abspath(os.path.realpath(file_path))
+        if options.base_dataset_dir is not None:
+            file_dir = os.path.dirname(file_path)
+            base_dir = os.path.abspath(os.path.realpath(self.version_base_dir))
+            file_dir = file_dir.replace(base_dir, "")
+            while file_dir and file_dir[0] == os.sep:
+                file_dir = file_dir[1:]
+        else:
+            file_dir = os.path.basename(os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
+        if not file_dir:
+            file_dir = os.path.basename(os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
+        row[_column_name] = file_dir
 
 
 @ray.remote
