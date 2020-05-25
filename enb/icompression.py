@@ -12,7 +12,6 @@ import tempfile
 import time
 import collections
 import recordclass
-import subprocess
 import functools
 import shutil
 import math
@@ -23,8 +22,8 @@ import enb
 from enb import atable
 from enb import experiment
 from enb import isets
+from enb import tcall
 from enb.atable import indices_to_internal_loc
-from enb.isets import ImagePropertiesTable
 from enb.config import get_options
 
 options = get_options()
@@ -101,7 +100,7 @@ class AbstractCodec(experiment.ExperimentTask):
     """
 
     def __init__(self, param_dict=None):
-        self.param_dict = dict(param_dict) if param_dict is not None else {}
+        super().__init__(param_dict=param_dict)
 
     @property
     def name(self):
@@ -232,19 +231,23 @@ class WrapperCodec(AbstractCodec):
             compressed_path=compressed_path,
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
-        status, output = subprocess.getstatusoutput(invocation)
-        if status != 0:
-            if options.verbose:
-                print(f"Error compressing {original_path} with {self.name}. "
-                      f"Status={status}. Output={output}")
+
+        try:
+            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
+            if options.verbose > 3:
+                print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+        except tcall.InvocationError as ex:
             raise CompressionException(
                 original_path=original_path,
                 compressed_path=compressed_path,
                 file_info=original_file_info,
-                status=status,
-                output=output)
-        elif options.verbose > 3:
-            print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+                status=-1,
+                output=None) from ex
+
+        compression_results = self.compression_results_from_paths(
+            original_path=original_path, compressed_path=compressed_path)
+        compression_results.compression_time_seconds = measured_time
+        return compression_results
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         decompression_params = self.get_decompression_params(
@@ -252,19 +255,22 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-        status, output = subprocess.getstatusoutput(invocation)
-        if status != 0:
-            if options.verbose:
-                print(f"Error decompressing {compressed_path} with {self.name}. "
-                      f"Invocation={invocation}; Status={status}; Output={output}")
+        try:
+            status, output, measured_time = tcall.get_status_output_time(invocation)
+            if options.verbose > 3:
+                print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+        except tcall.InvocationError as ex:
             raise DecompressionException(
                 compressed_path=compressed_path,
                 reconstructed_path=reconstructed_path,
                 file_info=original_file_info,
-                status=status,
-                output=output)
-        elif options.verbose > 3:
-            print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+                status=-1,
+                output=None) from ex
+
+        decompression_results = self.decompression_results_from_paths(
+            compressed_path=compressed_path, reconstructed_path=reconstructed_path)
+        decompression_results.decompression_time_seconds = measured_time
+        return decompression_results
 
     @staticmethod
     @functools.lru_cache(maxsize=2)
@@ -330,11 +336,14 @@ class CompressionExperiment(experiment.Experiment):
                 try:
                     measured_times = []
 
+                    if options.verbose > 1:
+                        print(f"[E]xecuting compression {self.codec.name} on {self.file_path} "
+                              f"[{options.repetitions} times]")
                     for repetition_index in range(options.repetitions):
-                        if options.verbose > 1:
+                        if options.verbose > 2:
                             print(f"[E]xecuting compression {self.codec.name} on {self.file_path} "
                                   f"[rep{repetition_index + 1}/{options.repetitions}]")
-                        time_before = time.process_time()
+                        time_before = time.time()
                         self._compression_results = self.codec.compress(original_path=self.file_path,
                                                                         compressed_path=tmp_compressed_path,
                                                                         original_file_info=self.image_info_row)
@@ -346,11 +355,14 @@ class CompressionExperiment(experiment.Experiment):
                                 file_info=self.image_info_row,
                                 output=f"Compression didn't produce a file (or it was empty) {self.file_path}")
 
-                        process_compression_time = time.process_time() - time_before
+                        wall_compression_time = time.time() - time_before
                         if self._compression_results is None:
+                            if options.verbose > 2:
+                                print(f"[W]arning: codec {self.codec.name} did not report execution times. "
+                                      f"Using wall clock instead (might be inaccurate)")
                             self._compression_results = self.codec.compression_results_from_paths(
                                 original_path=self.file_path, compressed_path=tmp_compressed_path)
-                            self._compression_results.compression_time_seconds = process_compression_time
+                            self._compression_results.compression_time_seconds = wall_compression_time
 
                         measured_times.append(self._compression_results.compression_time_seconds)
                         if repetition_index < options.repetitions - 1:
@@ -373,23 +385,29 @@ class CompressionExperiment(experiment.Experiment):
                     dir=options.base_tmp_dir)
                 try:
                     measured_times = []
+                    if options.verbose > 1:
+                        print(f"[E]xecuting decompression {self.codec.name} on {self.file_path} "
+                              f"[{options.repetitions} times]")
                     for repetition_index in range(options.repetitions):
-                        if options.verbose > 1:
-                            print(f"[E]xecuting compression {self.codec.name} on {self.file_path} "
+                        if options.verbose > 2:
+                            print(f"[E]xecuting decompression {self.codec.name} on {self.file_path} "
                                   f"[rep{repetition_index + 1}/{options.repetitions}]")
 
-                        time_before = time.process_time()
+                        time_before = time.time()
                         self._decompression_results = self.codec.decompress(
                             compressed_path=self.compression_results.compressed_path,
                             reconstructed_path=tmp_reconstructed_path,
                             original_file_info=self.image_info_row)
 
-                        process_decompression_time = time.process_time() - time_before
+                        wall_decompression_time = time.time() - time_before
                         if self._decompression_results is None:
+                            if options.verbose > 2:
+                                print(f"[W]arning: codec {self.codec.name} did not report execution times. "
+                                      f"Using wall clock instead (might be inaccurate)")
                             self._decompression_results = self.codec.decompression_results_from_paths(
                                 compressed_path=self.compression_results.compressed_path,
                                 reconstructed_path=tmp_reconstructed_path)
-                            self._decompression_results.decompression_time_seconds = process_decompression_time
+                            self._decompression_results.decompression_time_seconds = wall_decompression_time
 
                         if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
                                 self._decompression_results.reconstructed_path) == 0:
@@ -414,9 +432,7 @@ class CompressionExperiment(experiment.Experiment):
         def numpy_dtype(self):
             """Get the numpy dtype corresponding to the original image's data format
             """
-            return (">" if self.image_info_row["big_endian"] else "<") \
-                   + ("i" if self.image_info_row["signed"] else "u") \
-                   + str(self.image_info_row["bytes_per_sample"])
+            return isets.iproperties_row_to_numpy_dtype(self.image_info_row)
 
         def __getitem__(self, item):
             return self.row[item]

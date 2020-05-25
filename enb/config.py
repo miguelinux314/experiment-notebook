@@ -28,19 +28,28 @@ class ValidationAction(argparse.Action):
         except AssertionError:
             return False
 
-    def __call__(self, parser, namespace, values, option_string=None):
-        target_dir = values
+    @classmethod
+    def modify_value(cls, value):
+        return value
+
+    def __call__(self, parser, namespace, value, option_string=None):
         try:
-            self.assert_valid_value(target_dir)
-        except AssertionError as ex:
+            value = self.modify_value(value=value)
+            self.assert_valid_value(value)
+        except Exception as ex:
             parser.print_help()
             print()
             print(f"PARAMETER ERROR [{option_string}]: {ex}")
             parser.exit()
-        setattr(namespace, self.dest, target_dir)
+        setattr(namespace, self.dest, value)
+
+class PathAction(ValidationAction):
+    @classmethod
+    def modify_value(cls, value):
+        return os.path.abspath(os.path.realpath(os.path.expanduser(value)))
 
 
-class ReadableFileAction(ValidationAction):
+class ReadableFileAction(PathAction):
     """Validate that an argument is an existing file.
     """
 
@@ -49,7 +58,7 @@ class ReadableFileAction(ValidationAction):
         return os.path.isfile(value) and os.access(value, os.R_OK)
 
 
-class ExistingDirAction(ValidationAction):
+class ExistingDirAction(PathAction):
     """ArgumentParser action that verifies that argument is an existing dir
     """
 
