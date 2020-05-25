@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Wrapper for the POT transform
+"""Wrapper for the IWT transform
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "25/05/2020"
@@ -14,25 +14,25 @@ options = get_options(from_main=False)
 from . import abstract_mhdc_transform
 
 
-class POTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
+class IWTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
     """Forward POT version table
     """
 
     @property
     def transform_number(self):
-        return 2
+        return 1
 
 
-class InversePOTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
+class InverseIWTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
     """Inverse POT version table
     """
 
     @property
     def transform_number(self):
-        return 2
+        return 1
 
 
-def apply_pot(input_dir, output_dir, forward_properties_csv=None, inverse_properties_csv=None,
+def apply_iwt(input_dir, output_dir, forward_properties_csv=None, inverse_properties_csv=None,
               repetitions=10, run_sequential=True):
     """Apply the POT to input_dir and save the results to output_dir.
 
@@ -54,8 +54,8 @@ def apply_pot(input_dir, output_dir, forward_properties_csv=None, inverse_proper
     """
     return abstract_mhdc_transform.apply_transform(
         input_dir=input_dir, output_dir=output_dir,
-        forward_class=POTVersionTable,
-        inverse_class=InversePOTVersionTable,
+        forward_class=IWTVersionTable,
+        inverse_class=InverseIWTVersionTable,
         forward_properties_csv=forward_properties_csv,
         inverse_properties_csv=inverse_properties_csv,
         repetitions=repetitions, run_sequential=run_sequential)
@@ -68,14 +68,14 @@ if __name__ == '__main__':
     repetition_count = 10
     run_sequential = True
 
-    apply_pot(
+    apply_iwt(
         input_dir=os.path.abspath(os.path.realpath(
             options.base_dataset_dir if options.base_dataset_dir
             else default_input_dir)),
         output_dir=os.path.abspath(os.path.realpath(
             options.base_version_dataset_dir if options.base_version_dataset_dir
             else default_output_dir)),
-        forward_properties_csv=os.path.join(persistence_dir, "pot_versioned_properties.csv"),
-        inverse_properties_csv=os.path.join(persistence_dir, "ipot_versioned_properties.csv"),
+        forward_properties_csv=os.path.join(persistence_dir, "iwt_versioned_properties.csv"),
+        inverse_properties_csv=os.path.join(persistence_dir, "iiwt_versioned_properties.csv"),
         run_sequential=run_sequential,
         repetitions=repetition_count)
