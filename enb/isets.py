@@ -121,26 +121,22 @@ class ImagePropertiesTable(ImageGeometryTable):
         row[_column_name] = max(1, math.floor(math.log2(range_len + 1)) + 1)
 
     @atable.column_function(
-        atable.ColumnProperties(name="1B_value_counts",
-                                label="1-byte value counts",
-                                semilog_y=True, has_dict_values=True))
-    def set_1B_value_counts(self, file_path, row):
-        """Calculate a dict with the counts for each (unsigned) byte value
-        found in file_path
-        """
-        row[_column_name] = dict(collections.Counter(
-            np.fromfile(file_path, dtype="uint8").flatten()))
-
-    @atable.column_function(
         "entropy_1B_bps", label="Entropy (bps, 1-byte samples)", plot_min=0, plot_max=8)
     def set_file_entropy(self, file_path, row):
         """Return the zero-order entropy of the data in file_path (1-byte samples are assumed)
         """
-        value_count_dict = row["1B_value_counts"]
-        total_sum = sum(value_count_dict.values())
-        probabilities = [count / total_sum for count in value_count_dict.values()]
-        row[_column_name] = - sum(p * math.log2(p) for p in probabilities)
-        assert abs(row[_column_name] - entropy(np.fromfile(file_path, dtype="uint8"))) < 1e-12
+        row[_column_name] = entropy(np.fromfile(file_path, dtype="uint8").flatten())
+
+    @atable.column_function(
+        "entropy_2B_bps", label="Entropy (bps, 2-byte samples)", plot_min=0, plot_max=16)
+    def set_file_entropy(self, file_path, row):
+        """Set the zero-order entropy of the data in file_path (2-byte samples are assumed)
+        if bytes_per_sample is a multiple of 2, otherwise the column is set to -1
+        """
+        if row["bytes_per_sample"] % 2 != 0:
+            row[_column_name] = -1
+        else:
+            row[_column_name] = entropy(np.fromfile(file_path, dtype=np.uint16))
 
     @atable.column_function(
         [f"byte_value_{s}" for s in ["min", "max", "avg", "std"]])
@@ -150,6 +146,9 @@ class ImagePropertiesTable(ImageGeometryTable):
         row["byte_value_max"] = contents.max()
         row["byte_value_avg"] = contents.mean()
         row["byte_value_std"] = contents.std()
+
+
+class HistogramFullnessTable(sets.FilePropertiesTable):
 
     @atable.column_function(
         "histogram_fullness_1byte", label="Histogram usage fraction (1 byte)",
@@ -183,6 +182,17 @@ class ImagePropertiesTable(ImageGeometryTable):
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint32)).size / (2 ** 32)
         assert 0 <= row[_column_name] <= 1
+
+    @atable.column_function(
+        atable.ColumnProperties(name="1B_value_counts",
+                                label="1-byte value counts",
+                                semilog_y=True, has_dict_values=True))
+    def set_1B_value_counts(self, file_path, row):
+        """Calculate a dict with the counts for each (unsigned) byte value
+        found in file_path
+        """
+        row[_column_name] = dict(collections.Counter(
+            np.fromfile(file_path, dtype="uint8").flatten()))
 
 
 def load_array_bsq(file_or_path, image_properties_row):

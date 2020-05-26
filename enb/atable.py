@@ -49,6 +49,7 @@ from builtins import hasattr
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "19/09/2019"
 
+import os
 import sys
 import itertools
 import collections
@@ -514,6 +515,7 @@ class ATable(metaclass=MetaTable):
         #    (b) the save_partial_results options is enabled
         if not options.no_new_results and self.csv_support_path and \
                 (not index_exception_list or not options.discard_partial_results):
+            os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
             table_df.to_csv(self.csv_support_path, index=False)
 
         # A DataFrame is NOT returned if any error is produced

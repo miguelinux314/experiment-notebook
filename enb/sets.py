@@ -51,7 +51,8 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
             os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
             recursive=True)
          if os.path.isfile(p)),
-        key=lambda p: os.path.getsize(p))
+        # key=lambda p: os.path.getsize(p))
+        key=lambda p: get_canonical_path(p).lower())
 
 
 def get_canonical_path(file_path):
