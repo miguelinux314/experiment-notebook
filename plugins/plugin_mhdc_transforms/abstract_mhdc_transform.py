@@ -16,6 +16,7 @@ options = get_options(from_main=False)
 
 import enb.sets
 import enb.isets
+import enb.icompression
 import enb.ray_cluster
 import enb.tcall
 import enb.atable as atable
@@ -25,6 +26,19 @@ default_mhdc_binary_path = os.path.join(os.path.dirname(__file__), "mhdctransfor
 
 def output_path_to_si_path(output_path, transform_number):
     return f"{output_path}_SI.mhdc_t{transform_number}"
+
+
+class MHDCGeometryTable(enb.isets.ImageGeometryTable):
+    @enb.atable.redefines_column
+    def set_signed(self, file_path, row):
+        """"""
+        row[_column_name] = True
+
+
+class MHDCPropertiesTable(MHDCGeometryTable, enb.isets.ImagePropertiesTable):
+    """Properties table for forward MHDC-transformed images"""
+    pass
+
 
 class MHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImagePropertiesTable):
     mhdc_transform_path = default_mhdc_binary_path
@@ -159,6 +173,35 @@ class InverseMHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImageGeomet
             status, output, invocation_time = enb.tcall.get_status_output_time(invocation)
             return invocation_time
 
+
+class MDHCLosslessCompressionExperiment(enb.icompression.LosslessCompressionExperiment):
+    def __init__(self, codecs, dataset_paths=None, csv_experiment_path=None, csv_dataset_path=None,
+                 overwrite_file_properties=False, parallel_dataset_property_processing=None,
+                 reconstructed_dir_path=None, *args, **kwargs):
+        dataset_info_table = MHDCPropertiesTable(
+            csv_support_path=csv_dataset_path)
+
+        super().__init__(codecs=codecs, dataset_paths=dataset_paths, csv_experiment_path=csv_experiment_path,
+                         csv_dataset_path=csv_dataset_path, dataset_info_table=dataset_info_table,
+                         overwrite_file_properties=overwrite_file_properties,
+                         parallel_dataset_property_processing=parallel_dataset_property_processing,
+                         reconstructed_dir_path=reconstructed_dir_path,
+                         *args, **kwargs)
+
+    @property
+    def transform_number(self):
+        raise NotImplementedError()
+
+    @enb.atable.redefines_column
+    def set_compressed_data_size(self, index, row):
+        si_path = output_path_to_si_path(
+            output_path=row[enb.sets.FilePropertiesTable.index_name],
+            transform_number=self.transform_number)
+        assert os.path.exists(si_path), f"Side information {si_path} not found. Is it really a RWA-transformed set?"
+        row[_column_name] = os.path.getsize(row.compression_results.compressed_path) \
+                            + os.path.getsize(si_path)
+
+
 def apply_transform(
         input_dir, output_dir, forward_class, inverse_class,
         forward_properties_csv=None, inverse_properties_csv=None,
@@ -208,9 +251,9 @@ def apply_transform(
             original_properties_table=original_geometry_table, version_name=forward_class.__name__,
             csv_support_path=os.path.join(options.persistence_dir, "versioned_properties.csv"))
         forward_df = forward_table.get_df(target_indices=original_target_files,
-                                  parallel_versioning=not run_sequential,
-                                  overwrite=options.force,
-                                  parallel_row_processing=True)
+                                          parallel_versioning=not run_sequential,
+                                          overwrite=options.force,
+                                          parallel_row_processing=True)
 
         if options.verbose:
             print(f"[I]nverse MHDC<{inverse_class.__name__}> to {len(original_target_files)} images")
@@ -226,8 +269,8 @@ def apply_transform(
                 csv_support_path=os.path.join(
                     options.persistence_dir, "inverse_versioned_properties.csv"))
             inverse_df = inverse_table.get_df(parallel_versioning=not run_sequential,
-                                        parallel_row_processing=True,
-                                        target_indices=transformed_target_files)
+                                              parallel_row_processing=True,
+                                              target_indices=transformed_target_files)
 
         if options.verbose:
             print(f"[C]hecking lossless to {len(original_target_files)}  images")
@@ -241,8 +284,10 @@ def apply_transform(
         assert checked_count == len(original_target_files)
 
         if forward_properties_csv is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(forward_properties_csv)), exist_ok=True)
             shutil.copyfile(forward_table.csv_support_path, forward_properties_csv)
         if inverse_properties_csv is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(inverse_properties_csv)), exist_ok=True)
             shutil.copyfile(inverse_table.csv_support_path, inverse_properties_csv)
 
         return forward_df, inverse_df

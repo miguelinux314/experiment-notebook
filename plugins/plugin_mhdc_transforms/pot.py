@@ -11,7 +11,10 @@ from enb.config import get_options
 
 options = get_options(from_main=False)
 
+import enb.icompression
 from . import abstract_mhdc_transform
+
+pot_transform_number = 2
 
 
 class POTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
@@ -20,7 +23,7 @@ class POTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
 
     @property
     def transform_number(self):
-        return 2
+        return pot_transform_number
 
 
 class InversePOTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
@@ -29,7 +32,13 @@ class InversePOTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
 
     @property
     def transform_number(self):
-        return 2
+        return pot_transform_number
+
+
+class POTLosslessCompressionExperiment(abstract_mhdc_transform.MDHCLosslessCompressionExperiment):
+    @property
+    def transform_number(self):
+        return pot_transform_number
 
 
 def apply_pot(input_dir, output_dir, forward_properties_csv=None, inverse_properties_csv=None,

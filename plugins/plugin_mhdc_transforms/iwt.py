@@ -13,6 +13,8 @@ options = get_options(from_main=False)
 
 from . import abstract_mhdc_transform
 
+iwt_transform_number = 1
+
 
 class IWTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
     """Forward POT version table
@@ -20,7 +22,7 @@ class IWTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
 
     @property
     def transform_number(self):
-        return 1
+        return iwt_transform_number
 
 
 class InverseIWTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
@@ -29,7 +31,13 @@ class InverseIWTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
 
     @property
     def transform_number(self):
-        return 1
+        return iwt_transform_number
+
+
+class IWTLosslessCompressionExperiment(abstract_mhdc_transform.MDHCLosslessCompressionExperiment):
+    @property
+    def transform_number(self):
+        return iwt_transform_number
 
 
 def apply_iwt(input_dir, output_dir, forward_properties_csv=None, inverse_properties_csv=None,
@@ -66,6 +74,8 @@ if __name__ == '__main__':
     default_output_dir = "/data/research-materials/pot_green_book"
     persistence_dir = "./persistence"
     repetition_count = 10
+    if repetition_count != 10:
+        print("[watch] repetition_count = {}".format(repetition_count))
     run_sequential = True
 
     apply_iwt(
