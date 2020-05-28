@@ -189,9 +189,11 @@ class WrapperCodec(AbstractCodec):
     :param compressor_path: path to the the executable to be used for compression
     :param decompressor_path: path to the the executable to be used for decompression
     :param param_dict: name-value mapping of the parameters to be used for compression
+    :param output_invocation_dir: if not None, invocation strings are stored in this directory
+      with name based on the codec and the image's full path.
     """
 
-    def __init__(self, compressor_path, decompressor_path, param_dict=None):
+    def __init__(self, compressor_path, decompressor_path, param_dict=None, output_invocation_dir=None):
         super().__init__(param_dict=param_dict)
         if os.path.isfile(compressor_path) and os.access(compressor_path, os.EX_OK):
             self.compressor_path = compressor_path
@@ -203,6 +205,9 @@ class WrapperCodec(AbstractCodec):
         else:
             self.decompressor_path = shutil.which(decompressor_path)
             assert os.path.isfile(self.decompressor_path), f"{decompressor_path} isnot available"
+        self.output_invocation_dir = output_invocation_dir
+        if self.output_invocation_dir is not None:
+            os.makedirs(self.output_invocation_dir, exist_ok=True)
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         """Return a string (shell style) with the parameters
@@ -247,6 +252,20 @@ class WrapperCodec(AbstractCodec):
         compression_results = self.compression_results_from_paths(
             original_path=original_path, compressed_path=compressed_path)
         compression_results.compression_time_seconds = measured_time
+
+        if self.output_invocation_dir is not None:
+            invocation_name = "invocation_compression_" \
+                              + self.name \
+                              + os.path.abspath(os.path.realpath(original_file_info["file_path"])).replace(os.sep, "_")
+            with open(os.path.join(self.output_invocation_dir, invocation_name), "w") as invocation_file:
+                invocation_file.write(f"Original path: {original_path}\n"
+                                      f"Compressed path: {compressed_path}\n"
+                                      f"Codec: {self.name}\n"
+                                      f"Invocation: {invocation}\n"
+                                      f"Status: {status}\n"
+                                      f"Output: {output}\n"
+                                      f"Measured time: {measured_time}")
+
         return compression_results
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
@@ -270,6 +289,20 @@ class WrapperCodec(AbstractCodec):
         decompression_results = self.decompression_results_from_paths(
             compressed_path=compressed_path, reconstructed_path=reconstructed_path)
         decompression_results.decompression_time_seconds = measured_time
+
+        if self.output_invocation_dir is not None:
+            invocation_name = "invocation_decompression_" \
+                              + self.name \
+                              + os.path.abspath(os.path.realpath(original_file_info["file_path"])).replace(os.sep, "_")
+            with open(os.path.join(self.output_invocation_dir, invocation_name), "w") as invocation_file:
+                invocation_file.write(f"Compressed path: {compressed_path}\n"
+                                      f"Reconstructed path: {reconstructed_path}\n"
+                                      f"Codec: {self.name}\n"
+                                      f"Invocation: {invocation}\n"
+                                      f"Status: {status}\n"
+                                      f"Output: {output}\n"
+                                      f"Measured time: {measured_time}")
+
         return decompression_results
 
     @staticmethod
