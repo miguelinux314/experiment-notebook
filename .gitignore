@@ -2,3 +2,7 @@
 */plugin_lcnl/lcnl_*
 */plugin_fapec/fapec
 */plugin_fapec/unfapec
+*/plugin_jpeg/jpeg
+*/plugin_jpeg/*zip
+/private
+/venv
