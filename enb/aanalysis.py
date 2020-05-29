@@ -26,7 +26,7 @@ from enb.config import get_options
 
 options = get_options()
 
-marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1"]
+marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d"]
 color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
 
 
