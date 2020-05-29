@@ -42,6 +42,8 @@ class MHDCPropertiesTable(MHDCGeometryTable, enb.isets.ImagePropertiesTable):
 
 class MHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImagePropertiesTable):
     mhdc_transform_path = default_mhdc_binary_path
+    
+    invocation_output_folder = None
 
     @property
     def transform_number(self):
@@ -97,6 +99,17 @@ class MHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImagePropertiesTab
 
         # s32b is hardcoded in mhdctransform - revert to original bytes per sample
         self.compact_samples(transformed_path=output_path, compacted_path=output_path, row=row)
+
+        if self.invocation_output_folder is not None:
+            os.makedirs(self.invocation_output_folder, exist_ok=True)
+            invocation_output_path = os.path.join(
+                self.invocation_output_folder,
+                self.__class__.__name__ + "_" + os.path.abspath(os.path.realpath(input_path)).replace(os.sep, "_"))
+            with open(invocation_output_path, "w") as invocation_output_file:
+                invocation_output_file.write(f"Input_path: {input_path}\n "
+                                             f"Invocation: {invocation}\n "
+                                             f"Status: {status}\n "
+                                             f"Output: {output}")
 
         return reported_time
 
