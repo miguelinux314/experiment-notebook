@@ -684,6 +684,14 @@ class CompressionExperiment(experiment.Experiment):
         row[_column_name] = (row.image_info_row["dynamic_range_bits"] * row.image_info_row["samples"]) \
                             / (8 * row["compressed_size_bytes"])
 
+    @atable.column_function("compression_speed_sps", label="Compression speed (samples/s)", plot_min=0)
+    def set_compression_speed_sps(self, index, row):
+        row[_column_name] = row.image_info_row["samples"] / row["compression_time_seconds"]
+
+    @atable.column_function("decompression_speed_sps", label="Decompression speed (samples/s)", plot_min=0)
+    def set_compression_speed_sps(self, index, row):
+        row[_column_name] = row.image_info_row["samples"] / row["decompression_time_seconds"]
+
 
 class LosslessCompressionExperiment(CompressionExperiment):
     @atable.redefines_column
