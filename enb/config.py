@@ -162,7 +162,7 @@ def get_options(from_main=False):
                                    action="store_true",
                                    default=False)
     execution_options.add_argument("--repetitions", help="Number of repetitions when calculating execution times.",
-                                   action=PositiveIntegerAction, default=1)
+                                   action=PositiveIntegerAction, default=1, type=int)
     execution_options.add_argument("-c", "--columns",
                                    help="List of selected column names for computation. If one or more column names are provided, "
                                         "all others are ignored. Multiple columns can be expressed, separated by spaces.",
@@ -182,7 +182,7 @@ def get_options(from_main=False):
                                 action="store_true",
                                 default=False)
 
-    render_options.add_argument("--no_new_results", help="Don't compute any new data into the table",
+    render_options.add_argument("--no_new_results", help="Don't compute any new data. ",
                                 action="store_true", default=False)
 
     render_options.add_argument("--fig_width", help="Figure width. Larger values make text look smaller.",
@@ -193,6 +193,8 @@ def get_options(from_main=False):
                                default=-0.01, type=float)
     render_options.add_argument("--legend_column_count", help="Number of columns used in plot legends",
                                 default=2, type=int)
+
+    render_options.add_argument("--displayed_title", help="Show title in rendered plots?", type=str, default=None)
 
 
     default_ray_config_file = os.path.join(calling_script_dir, "ray_cluster_head.txt")
