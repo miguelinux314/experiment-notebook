@@ -26,7 +26,7 @@ from enb.config import get_options
 
 options = get_options()
 
-marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X"]
+marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1"]
 color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
 
 
@@ -34,7 +34,8 @@ color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range
 @config.propagates_options
 def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
-                             global_y_label="Relative frequency", semilog_hist_min=1e-10, options=None,
+                             global_y_label="Relative frequency", combine_groups=False, semilog_hist_min=1e-10,
+                             options=None,
                              group_name_order=None, fig_width=None, fig_height=None,
                              global_y_label_pos=None, legend_column_count=None):
     """Ray wrapper for render_plds_by_group"""
@@ -43,7 +44,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                semilog_hist_min=semilog_hist_min,
+                                combine_groups=combine_groups, semilog_hist_min=semilog_hist_min,
                                 group_name_order=group_name_order,
                                 fig_width=fig_width, fig_height=fig_height,
                                 global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count)
@@ -194,13 +195,16 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         plt.xticks(x_tick_values, x_tick_labels)
 
     plt.xlim(global_x_min - horizontal_margin / 2, global_x_max + horizontal_margin / 2)
-    if len(sorted_group_names) > 10:
+    if len(sorted_group_names) > 8:
         plt.subplots_adjust(hspace=0.75)
     elif len(sorted_group_names) > 5:
         plt.subplots_adjust(hspace=0.3)
 
     if global_y_label:
         fig.text(global_y_label_pos, 0.5, global_y_label, va='center', rotation='vertical')
+
+    if options.displayed_title is not None:
+        plt.suptitle(options.displayed_title)
 
     plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
     plt.close()
@@ -388,9 +392,13 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     hist_y_values = hist_y_values / len(column_df)
 
     if min_max_by_column[column][0] > column_df.min() or min_max_by_column[column][1] < column_df.max():
-        raise Exception(f"The forced range for {column} {tuple(min_max_by_column[column])} "
-                        f"misses {100 * (1 - sum(hist_y_values)):.0f}% of the actual values. "
-                        f"Actual range is ({column_df.min()}, {column_df.max()}).")
+        msg = str(f"The forced range for {column} {tuple(min_max_by_column[column])} "
+                  f"misses {100 * (1 - sum(hist_y_values)):.0f}% of the actual values. "
+                  f"Actual range is ({column_df.min()}, {column_df.max()}).")
+        if options.exit_on_error:
+            raise Exception(msg)
+        else:
+            print(f"[W]arning: {msg}")
     elif abs(sum(hist_y_values) - 1) > 1e-10:
         raise Exception("Unfortunately, some values seem to be missing - check for errors!")
 
@@ -744,7 +752,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False):
+                   adjust_height=False, combine_groups=True):
         """
         :param adjust_height:
         :param group_name_order:
@@ -764,18 +772,33 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
         expected_returns = []
         for column_x, column_y in selected_column_pairs:
-            pds_by_group = {}
+            pds_by_group = collections.defaultdict(list)
             x_label = column_to_properties[column_x].label if column_x in column_to_properties else None
             x_label = clean_column_name(column_x) if x_label is None else x_label
             y_label = column_to_properties[column_y].label if column_y in column_to_properties else None
             y_label = clean_column_name(column_y) if y_label is None else y_label
             if group_by is not None:
-                for group_label, group_df in full_df.groupby(by=group_by):
+                for i, (group_label, group_df) in enumerate(full_df.groupby(by=group_by)):
                     x_values, y_values = zip(*sorted(zip(
                         group_df[column_x].values, group_df[column_y].values)))
-                    pds_by_group[group_label] = [plotdata.ScatterData(
-                        x_values=x_values, y_values=y_values,
-                        alpha=self.alpha)]
+                    if combine_groups:
+                        pds_by_group[group_label].append(
+                            plotdata.ScatterData(
+                                x_values=[sum(x_values) / len(x_values)],
+                                y_values=[sum(y_values) / len(y_values)],
+                                label=group_label,
+                                extra_kwargs=dict(marker=marker_cycle[i%len(marker_cycle)]),
+                                alpha=min(self.alpha * 2, 0.75)))
+                        pds_by_group[group_label][-1].marker_size = self.marker_size * 5
+                    else:
+                        pds_by_group[group_label].append(
+                            plotdata.ScatterData(
+                                x_values=x_values, y_values=y_values,
+                                label=group_label,
+                                extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)]),
+                                alpha=self.alpha * (1 if not combine_groups else 0.15)))
+                        pds_by_group[group_label][-1].marker_size = self.marker_size * (1.5 if combine_groups else 1)
+                        
             if group_by is None or show_global:
                 x_values, y_values = zip(*sorted(zip(
                     full_df[column_x].values, full_df[column_y].values)))
@@ -785,9 +808,9 @@ class TwoColumnScatterAnalyzer(Analyzer):
             output_plot_path = os.path.join(output_plot_dir, f"twocolumns_scatter_{column_x}_VS_{column_y}.pdf")
 
             all_plds = [pld for pds in pds_by_group.values() for pld in pds]
-            for pld in all_plds:
-                pld.alpha = self.alpha
-                pld.marker_size = self.marker_size
+            # for pld in all_plds:
+            #     pld.alpha = self.alpha
+            #     pld.marker_size = self.marker_size
             global_x_min = min(min(pld.x_values) for pld in all_plds)
             global_x_max = max(max(pld.x_values) for pld in all_plds)
             global_y_min = min(min(pld.y_values) for pld in all_plds)
@@ -803,7 +826,8 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 y_min=ray.put(global_y_min - 0.05 * (global_y_max - global_y_min)),
                 y_max=ray.put(global_y_max + 0.05 * (global_y_max - global_y_min)),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
-                options=ray.put(options), group_name_order=ray.put(group_name_order)))
+                options=ray.put(options), group_name_order=ray.put(group_name_order),
+                combine_groups=ray.put(combine_groups)))
 
         ray.wait(expected_returns)
 
