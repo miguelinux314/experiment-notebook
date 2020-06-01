@@ -258,7 +258,7 @@ def apply_transform(
         if options.verbose:
             print(f"[F]orward MHDC<{forward_class.__name__}> to {len(original_target_files)} images")
         original_geometry_table = enb.isets.ImageGeometryTable(
-            csv_support_path=os.path.join(options.persistence_dir, "original_image_geometry.csv"))
+            csv_support_path=os.path.join(options.persistence_dir, "original_properties.csv"))
         forward_table = forward_class(
             original_base_dir=options.base_dataset_dir, version_base_dir=options.base_version_dataset_dir,
             original_properties_table=original_geometry_table, version_name=forward_class.__name__,
