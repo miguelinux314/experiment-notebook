@@ -4,5 +4,14 @@
 */plugin_fapec/unfapec
 */plugin_jpeg/jpeg
 */plugin_jpeg/*zip
+
+*/plugin_ccsds122/mhdcDecoder.sh
+*/plugin_ccsds122/mhdcEncoder.sh
+*/plugin_ccsds122/mhdcbpe
+*/plugin_ccsds122/mhdcdwt
+*/plugin_ccsds122/mhdcibpe
+*/plugin_ccsds122/mhdcpack
+*/plugin_ccsds122/mhdctransform
+
 /private
 /venv
