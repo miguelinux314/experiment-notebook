@@ -263,7 +263,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                    adjust_height=False):
         """Perform an analysis of target_columns, grouping as specified.
 
-        :param adjust_height:
+        :param adjust_height: adjust height to the maximum height contained in the y_values
         :param output_csv_file: path where the CSV report is stored
         :param output_plot_dir: path where the distribution plots are stored
         :param target_columns: list of column names for which an analysis is to be performed.
@@ -748,7 +748,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
 
 class TwoColumnScatterAnalyzer(Analyzer):
     marker_size = 5
-    alpha = 0.5
+    alpha = 0.25
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
@@ -788,7 +788,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
                                 y_values=[sum(y_values) / len(y_values)],
                                 label=group_label,
                                 extra_kwargs=dict(marker=marker_cycle[i%len(marker_cycle)]),
-                                alpha=min(self.alpha * 2, 0.75)))
+                                alpha=min(self.alpha * 2, 0.65)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * 5
                     else:
                         pds_by_group[group_label].append(

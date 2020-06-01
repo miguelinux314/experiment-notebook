@@ -28,7 +28,8 @@ def init_ray(force=False):
             with open(options.ray_config_file, "r") as options_file:
                 address_line = options_file.readline().strip()
                 if options.verbose:
-                    print(f"Joining cluster [config: {address_line}]...")
+                    print(f"Joining cluster [config: {address_line}] "
+                          f"[CPUlimit={options.ray_cpu_limit}]...")
                 ray.init(address=address_line, num_cpus=options.ray_cpu_limit)
         else:
             if options.verbose:
