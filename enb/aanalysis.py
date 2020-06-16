@@ -26,8 +26,9 @@ from enb.config import get_options
 
 options = get_options()
 
-marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d"]
+marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d", "<", ">", "x", "+"]
 color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
+fill_style_cycle = ["full"]*len(marker_cycle) + ["none"]*len(marker_cycle)
 
 
 @ray.remote
@@ -194,7 +195,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
         plt.xticks(x_tick_values, x_tick_labels)
 
-    plt.xlim(global_x_min - horizontal_margin / 2, global_x_max + horizontal_margin / 2)
+    xlim = (global_x_min - horizontal_margin / 2, global_x_max + horizontal_margin / 2)
+    plt.xlim(*xlim)
+    if len(sorted_group_names) > 15:
+        plt.subplots_adjust(hspace=1)
     if len(sorted_group_names) > 8:
         plt.subplots_adjust(hspace=0.75)
     elif len(sorted_group_names) > 5:
@@ -397,7 +401,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                   f"Actual range is ({column_df.min()}, {column_df.max()}).")
         if options.exit_on_error:
             raise Exception(msg)
-        else:
+        elif options.verbose:
             print(f"[W]arning: {msg}")
     elif abs(sum(hist_y_values) - 1) > 1e-10:
         raise Exception("Unfortunately, some values seem to be missing - check for errors!")
@@ -795,7 +799,8 @@ class TwoColumnScatterAnalyzer(Analyzer):
                             plotdata.ScatterData(
                                 x_values=x_values, y_values=y_values,
                                 label=group_label,
-                                extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)]),
+                                extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)],
+                                                  fillstyle=fill_style_cycle[i % len(fill_style_cycle)]),
                                 alpha=self.alpha * (1 if not combine_groups else 0.15)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * (1.5 if combine_groups else 1)
                         
@@ -916,7 +921,7 @@ class TwoColumnLineAnalyzer(Analyzer):
                     plotdata.LineData(x_values=x_values, y_values=y_values,
                                       x_label=column_name_x, y_label=column_name_y,
                                       label=family.label, alpha=self.alpha,
-                                      legend_column_count=options.legend_column_count,
+                                      legend_column_count=legend_column_count,
                                       extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) \
                                           if show_markers else None)]
 
