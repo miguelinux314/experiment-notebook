@@ -288,12 +288,14 @@ class WrapperCodec(AbstractCodec):
 
         decompression_results = self.decompression_results_from_paths(
             compressed_path=compressed_path, reconstructed_path=reconstructed_path)
+
         decompression_results.decompression_time_seconds = measured_time
 
         if self.output_invocation_dir is not None:
             invocation_name = "invocation_decompression_" \
                               + self.name \
-                              + os.path.abspath(os.path.realpath(original_file_info["file_path"])).replace(os.sep, "_")
+                              + os.path.abspath(os.path.realpath(
+                original_file_info["file_path"] if original_file_info is not None else compressed_path)).replace(os.sep, "_")
             with open(os.path.join(self.output_invocation_dir, invocation_name), "w") as invocation_file:
                 invocation_file.write(f"Compressed path: {compressed_path}\n"
                                       f"Reconstructed path: {reconstructed_path}\n"
@@ -348,6 +350,8 @@ class CompressionExperiment(experiment.Experiment):
     Also, the image_info_row attribute gives access to the image metainformation
     (e.g., geometry)
     """
+
+    check_lossless = True
 
     class RowWrapper:
         def __init__(self, file_path, codec, image_info_row, row):
