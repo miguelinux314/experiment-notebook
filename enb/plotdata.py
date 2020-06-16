@@ -109,7 +109,7 @@ class LineData(PlottableData2D):
                   **self.extra_kwargs)
         axes = plt if axes is None else axes
         self.render_axis_labels(axes=axes)
-        if self.label is not None:
+        if self.label is not None and self.legend_column_count != 0:
             plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                        ncol=self.legend_column_count)
 
@@ -123,7 +123,7 @@ class ScatterData(PlottableData2D):
         axes.scatter(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
                      s=self.marker_size, **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
-        if self.label is not None:
+        if self.label is not None and self.legend_column_count != 0:
             axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                         ncol=self.legend_column_count)
 
@@ -136,7 +136,7 @@ class BarData(PlottableData2D):
         axes.bar(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
                  **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
-        if self.label is not None:
+        if self.label is not None and self.legend_column_count != 0:
             axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                         ncol=self.legend_column_count)
 
@@ -157,7 +157,7 @@ class StepData(PlottableData2D):
         axes.step(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
                   where=self.where, **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
-        if self.label is not None:
+        if self.label is not None and self.legend_column_count != 0:
             plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                        ncol=self.legend_column_count)
 
