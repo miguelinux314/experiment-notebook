@@ -97,7 +97,8 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
                              original_file_info=original_file_info)
 
             if self.output_header_dir is not None:
-                header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(os.sep, "_")
+                header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(
+                    os.sep, "_")
                 os.makedirs(self.output_header_dir, exist_ok=True)
                 shutil.copyfile(image_dependent_header_file.name,
                                 os.path.join(self.output_header_dir, header_output_name))
@@ -248,13 +249,13 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
         return image_params
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        with tempfile.NamedTemporaryFile(prefix=f"header_{os.path.basename(original_path)}_") as image_dependent_header_file:
+        with tempfile.NamedTemporaryFile(
+                prefix=f"header_{os.path.basename(original_path)}_") as image_dependent_header_file:
             image_params = self.get_image_params(original_path=original_path, original_file_info=original_file_info)
 
             header_invocation = f"{self.lcnl_header_tool_path} " + \
                                 " ".join(f"-x {k}={v}" for k, v in image_params.items()) + \
                                 f" {image_dependent_header_file.name}"
-
             status, output = subprocess.getstatusoutput(header_invocation)
             if status != 0:
                 raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
@@ -266,7 +267,8 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
                              original_file_info=original_file_info)
 
             if self.output_header_dir is not None:
-                header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(os.sep, "_")
+                header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(
+                    os.sep, "_")
                 os.makedirs(self.output_header_dir, exist_ok=True)
                 shutil.copyfile(image_dependent_header_file.name,
                                 os.path.join(self.output_header_dir, header_output_name))
@@ -302,6 +304,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
         #     if self.param_dict['r_vector'] is None \
         #        and self.param_dict['a_vector'] is None else ''
         return s
+
 
 class CCSDS_LCNL_GreenBook(CCSDS_LCNL):
     """Wrapper for CCSDS_LCNL that uses the default params specified in
@@ -377,10 +380,17 @@ class CCSDS_LCNL_GreenBook(CCSDS_LCNL):
             image_params["phi_vector"] = 3
         else:
             image_params["phi_vector"] = 0
-
         image_params["v_max"] = 7 - image_params["phi_vector"]
 
+        # Use user-defined parameters if present
+        for param in ("phi_vector", "psi_vector", "large_theta", "v_max"):
+            try:
+                image_params[param] = self.param_dict[param]
+            except KeyError:
+                pass
+
         return image_params
+
 
 class CCSDS_LCNL_AdjustedGreenBook(CCSDS_LCNL_GreenBook):
     def get_image_params(self, original_path, original_file_info):
