@@ -13,6 +13,7 @@ import numpy as np
 
 from enb import icompression
 from enb import isets
+from enb import sets
 from enb import pgm
 from enb import tarlite
 from enb.config import get_options
@@ -23,7 +24,7 @@ options = get_options()
 class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
     max_dimension_size = 65535
 
-    def __init__(self, max_error=0, bin_dir=None):
+    def __init__(self, max_error=0, bin_dir=None, output_invocation_dir=None):
         """
         :param max_error: maximum pixelwise error allowed. Use 0 for lossless
           compression
@@ -44,7 +45,7 @@ class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
         param_dict["m"] = int(max_error)
         icompression.WrapperCodec.__init__(
             self, compressor_path=jpeg_bin_path, decompressor_path=jpeg_bin_path,
-            param_dict=param_dict)
+            param_dict=param_dict, output_invocation_dir=output_invocation_dir)
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         assert original_file_info["bytes_per_sample"] in [1, 2], \
@@ -61,6 +62,9 @@ class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
                               self.max_dimension_size // original_file_info["height"])
 
         tw = tarlite.TarliteWriter()
+
+        total_compression_time = 0
+
         with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
             stacked_size = 0
             for stack_index, start_band_index in enumerate(
@@ -71,17 +75,18 @@ class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
                                                 for z in range(start_band_index, end_band_index_not_included)))
                 stacked_size += stacked_array.shape[0] * stacked_array.shape[1]
 
-
                 with tempfile.NamedTemporaryFile(dir=options.base_tmp_dir,
                                                  suffix=".pgm") as tmp_stack_file:
                     pgm.write_pgm(array=stacked_array,
                                   bytes_per_sample=original_file_info["bytes_per_sample"],
                                   output_path=tmp_stack_file.name)
                     stack_compressed_path = os.path.join(tmp_dir, str(stack_index))
-                    super().compress(original_path=tmp_stack_file.name,
-                                     compressed_path=stack_compressed_path,
-                                     original_file_info=original_file_info)
-                    
+                    compression_results = super().compress(
+                        original_path=tmp_stack_file.name,
+                        compressed_path=stack_compressed_path,
+                        original_file_info=original_file_info)
+                    total_compression_time += compression_results.compression_time_seconds
+
                     tw.add_file(input_path=stack_compressed_path)
             assert stacked_size == complete_array.shape[0] * complete_array.shape[1] * complete_array.shape[2], \
                 f"Total stacked size {stacked_size} does not match the expectations. " \
@@ -89,12 +94,19 @@ class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
 
             tw.write(output_path=compressed_path)
 
+            compression_results = self.compression_results_from_paths(
+                original_path=original_path, compressed_path=compressed_path)
+            compression_results.compression_time_seconds = total_compression_time
+
+            return compression_results
+
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         tr = tarlite.TarliteReader(tarlite_path=compressed_path)
 
         bands_per_image = min(original_file_info["component_count"],
                               self.max_dimension_size // original_file_info["height"])
 
+        total_decompression_time = 0
         recovered_components = []
         with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
             tr.extract_all(output_dir_path=tmp_dir)
@@ -104,8 +116,9 @@ class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
                 compressed_stack_path = os.path.join(tmp_dir, str(stack_index))
 
                 with tempfile.NamedTemporaryFile(dir=options.base_tmp_dir, suffix=".pgm") as stack_path:
-                    super().decompress(compressed_path=compressed_stack_path,
-                                       reconstructed_path=stack_path.name)
+                    decompression_results = super().decompress(
+                        compressed_path=compressed_stack_path, reconstructed_path=stack_path.name)
+                    total_decompression_time += decompression_results.decompression_time_seconds
 
                     assert os.path.isfile(stack_path.name)
                     stack_array = pgm.read_pgm(input_path=stack_path.name)
@@ -129,15 +142,19 @@ class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
 
         recovered_array = np.dstack(recovered_components)
         assert recovered_array.shape == (
-        original_file_info['width'], original_file_info['height'], original_file_info['component_count'])
+            original_file_info['width'], original_file_info['height'], original_file_info['component_count'])
 
         if original_file_info["signed"]:
             recovered_array = recovered_array.astype(np.int64)
-            recovered_array -= 2 ** ((8 * original_file_info["bytes_per_sample"])-1)
+            recovered_array -= 2 ** ((8 * original_file_info["bytes_per_sample"]) - 1)
 
         isets.dump_array_bsq(array=recovered_array, file_or_path=reconstructed_path,
                              dtype=isets.iproperties_row_to_numpy_dtype(image_properties_row=original_file_info))
 
+        decompression_results = self.decompression_results_from_paths(
+            compressed_path=compressed_path, reconstructed_path=reconstructed_path)
+        decompression_results.decompression_time_seconds = total_decompression_time
+        return decompression_results
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         s = " ".join(f"-{k} {v}" for k, v in self.param_dict.items())
