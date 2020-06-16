@@ -244,6 +244,10 @@ class FileVersionTable(FilePropertiesTable):
             previous_base_classes = filtered_classes
             base_classes = filtered_classes
         filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
+
+        print("[watch] filtered_type = {}".format(filtered_type))
+
+
         return filtered_type.get_df(
             self, target_indices=version_indices, parallel_row_processing=parallel_row_processing,
             target_columns=target_columns, overwrite=overwrite)
@@ -325,7 +329,7 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
         return output_path, [-1]
 
     if options.verbose > 1:
-        print(f"[V]ersioning {input_path} -> {output_path} (overwrite={overwrite})")
+        print(f"[V]ersioning {input_path} -> {output_path} (overwrite={overwrite}) <{version_fun}>")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     row = original_info_df.loc[atable.indices_to_internal_loc(input_path)]
     for repetition_index in range(options.repetitions):
