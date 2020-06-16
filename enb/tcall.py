@@ -5,14 +5,18 @@
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "23/05/2020"
 
+import os
 import subprocess
 import re
 import time
+import shutil
+
 
 class InvocationError(Exception):
     """Raised when an invocation fails.
     """
     pass
+
 
 def get_status_output_time(invocation, expected_status_value=0, wall=False):
     """Run invocation, and return its status, output, and total
@@ -24,13 +28,18 @@ def get_status_output_time(invocation, expected_status_value=0, wall=False):
       (both in seconds).
     :return status, output, time
     """
-    invocation = f"/usr/bin/time -f 'u%U@s%S' {invocation}"
+    if os.path.isfile("/usr/bin/time"):
+        invocation = f"/usr/bin/time -f 'u%U@s%S' {invocation}"
+    else:
+        invocation = f"{invocation}"
+        wall = True
+
     wall_time_before = time.time()
     status, output = subprocess.getstatusoutput(invocation)
     wall_time_after = time.time()
 
     output_lines = output.splitlines()
-    output = "\n".join(output_lines[:-1])
+    output = "\n".join(output_lines[:-1] if not wall else output_lines)
     if expected_status_value is not None and status != expected_status_value:
         raise InvocationError(
             f"status={status} != {expected_status_value}.\nInput=[{invocation}].\nOutput=[{output}]".format(
@@ -43,12 +52,6 @@ def get_status_output_time(invocation, expected_status_value=0, wall=False):
         if m is not None:
             measured_time = float(m.group(1)) + float(m.group(2))
         else:
-            # print(f"[T]ime warning: using wall clock instead of time -f: {output_lines}")
-            # measured_time = wall_time_after - wall_time_before
-            # print("[watch] output_lines = {}".format(output_lines))
-            # print("[watch] output_lines[-1] = {}".format(output_lines[-1]))
             raise InvocationError(f"Output {output_lines} did not contain a valid time signature")
 
-
     return status, output, measured_time
-    
