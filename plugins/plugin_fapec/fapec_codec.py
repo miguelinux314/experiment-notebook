@@ -138,7 +138,7 @@ class FAPEC_DWT(FAPEC_Abstract):
 
     @property
     def label(self):
-        return f"FAPEC-DWT"
+        return f"FAPEC-IWT"
 
     def get_transform_dict_params(self, original_file_info):
         return dict(dwt=f"{original_file_info['width']} "
