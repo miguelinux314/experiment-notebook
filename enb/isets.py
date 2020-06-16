@@ -29,6 +29,32 @@ def entropy(data):
     probabilities = (count / total_sum for value, count in counter.items())
     return -sum(p * math.log2(p) for p in probabilities)
 
+def file_path_to_geometry_dict(file_path, existing_dict=None):
+    """Return a dict with basic geometry dict based on the file path and the file size.
+    :param existing_dict: if not None, the this dict is updated and then returned. If None,
+      a new dictionary is created
+    """
+    row = existing_dict if existing_dict is not None else {}
+    matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
+    if matches:
+        match = matches[-1]
+        if len(matches) > 1 and options.verbose:
+            print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
+                  f"Only the last one is considered.")
+        component_count, height, width = (int(match[i]) for i in range(3))
+        if any(dim < 1 for dim in (width, height, component_count)):
+            raise ValueError(f"Invalid dimension tag in {file_path}")
+        row["width"], row["height"], row["component_count"] = \
+            width, height, component_count
+
+        print("[watch] file_path = {}".format(file_path))
+        assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
+            (file_path, os.path.getsize(file_path), width, height, component_count, width * height * component_count * row["bytes_per_sample"])
+        assert row["samples"] == width * height * component_count
+    else:
+        raise ValueError("Cannot determine image geometry "
+                         f"from file name {os.path.basename(file_path)}")
+    return row
 
 class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
@@ -80,22 +106,23 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         """Obtain the image's geometry (width, height and number of components)
         based on the filename tags (and possibly its size)
         """
-        matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
-        if matches:
-            match = matches[-1]
-            if len(matches) > 1 and options.verbose:
-                print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
-                      f"Only the last one is considered.")
-            component_count, height, width = (int(match[i]) for i in range(3))
-            if any(dim < 1 for dim in (width, height, component_count)):
-                raise ValueError(f"Invalid dimension tag in {file_path}")
-            row["width"], row["height"], row["component_count"] = \
-                width, height, component_count
-            assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"]
-            assert row["samples"] == width * height * component_count
-        else:
-            raise ValueError("Cannot determine image geometry "
-                             f"from file name {os.path.basename(file_path)}")
+        file_path_to_geometry_dict(file_path=file_path, existing_dict=row)
+        # matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
+        # if matches:
+        #     match = matches[-1]
+        #     if len(matches) > 1 and options.verbose:
+        #         print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
+        #               f"Only the last one is considered.")
+        #     component_count, height, width = (int(match[i]) for i in range(3))
+        #     if any(dim < 1 for dim in (width, height, component_count)):
+        #         raise ValueError(f"Invalid dimension tag in {file_path}")
+        #     row["width"], row["height"], row["component_count"] = \
+        #         width, height, component_count
+        #     assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"]
+        #     assert row["samples"] == width * height * component_count
+        # else:
+        #     raise ValueError("Cannot determine image geometry "
+        #                      f"from file name {os.path.basename(file_path)}")
 
 
 class ImagePropertiesTable(ImageGeometryTable):
