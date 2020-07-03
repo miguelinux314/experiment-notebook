@@ -29,6 +29,7 @@ def entropy(data):
     probabilities = (count / total_sum for value, count in counter.items())
     return -sum(p * math.log2(p) for p in probabilities)
 
+
 def file_path_to_geometry_dict(file_path, existing_dict=None):
     """Return a dict with basic geometry dict based on the file path and the file size.
     :param existing_dict: if not None, the this dict is updated and then returned. If None,
@@ -47,14 +48,15 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
         row["width"], row["height"], row["component_count"] = \
             width, height, component_count
 
-        print("[watch] file_path = {}".format(file_path))
         assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
-            (file_path, os.path.getsize(file_path), width, height, component_count, width * height * component_count * row["bytes_per_sample"])
+            (file_path, os.path.getsize(file_path), width, height, component_count,
+             width * height * component_count * row["bytes_per_sample"])
         assert row["samples"] == width * height * component_count
     else:
         raise ValueError("Cannot determine image geometry "
                          f"from file name {os.path.basename(file_path)}")
     return row
+
 
 class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
@@ -220,6 +222,20 @@ class HistogramFullnessTable(sets.FilePropertiesTable):
         """
         row[_column_name] = dict(collections.Counter(
             np.fromfile(file_path, dtype="uint8").flatten()))
+
+
+class BandEntropyTable(ImageGeometryTable):
+    """Table to calculate the entropy of each band
+    """
+
+    @atable.column_function("entropy_per_band", label="Entropy per band", has_dict_values=True)
+    def set_entropy_per_band(self, file_path, row):
+        """Store a dictionary indexed by band index (zero-indexed) with values
+        being entropy in bits per sample.
+        """
+        array = load_array_bsq(file_or_path=file_path, image_properties_row=row)
+        row[_column_name] = {i: entropy(array[:, :, i].flatten())
+                             for i in range(row["component_count"])}
 
 
 def load_array_bsq(file_or_path, image_properties_row):
