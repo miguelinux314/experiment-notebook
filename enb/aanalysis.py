@@ -56,7 +56,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          color_by_group_name=None, global_y_label="Relative frequency",
                          combine_groups=False, semilog_hist_min=1e-10,
                          group_name_order=None,
-                         fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None):
+                         fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
+                         show_grid=None):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -74,11 +75,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param color_by_group_name: if not None, a dictionary of pyplot colors for the groups,
       indexed with the same keys as pds_by_group_name
     :param combine_groups: if False, each group is plotted in a different row. If True,
-      all groups share the same subplot
+      all groups share the same subplot (and no group name is displayed).
     :param group_name_order: if not None, it contains the order in which groups are
       displayed. If None, alphabetical, case-insensitive order is applied.
     :param fig_width, fig_height: Figure size. The larger the figure size,
       the smaller the text will look.
+    :param show_grid: if True, or if None and options.show_grid, grid is displayed
+      aligned with the major axis
     """
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
@@ -209,6 +212,12 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     if options.displayed_title is not None:
         plt.suptitle(options.displayed_title)
+
+    show_grid = options.show_grid if show_grid is None else show_grid
+    if show_grid:
+        for axes in group_axis_list:
+            axes.grid(alpha=0.25)
+        plt.grid(alpha=0.25)
 
     plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
     plt.close()
@@ -748,6 +757,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
         ray.get(result_ids)
         if options.verbose > 1:
             "TODO: fill csv and write to output_csv_file"
+
 
 
 class TwoColumnScatterAnalyzer(Analyzer):
