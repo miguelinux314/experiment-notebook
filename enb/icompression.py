@@ -596,7 +596,7 @@ class CompressionExperiment(experiment.Experiment):
                 rendered_path = f"{output_reconstructed_path}.png"
                 if not os.path.exists(rendered_path) or options.force:
                     array = isets.load_array_bsq(file_or_path=row_wrapper.decompression_results.reconstructed_path,
-                                                 image_properties_row=image_info_row)
+                                                 image_properties_row=image_info_row).astype(np.int)
                     if options.reconstructed_size is not None:
                         width, height, _ = array.shape
                         array = array[
@@ -614,7 +614,7 @@ class CompressionExperiment(experiment.Experiment):
             else:
                 full_array = isets.load_array_bsq(
                     file_or_path=row_wrapper.decompression_results.reconstructed_path,
-                    image_properties_row=image_info_row)
+                    image_properties_row=image_info_row).astype(np.int)
                 if options.reconstructed_size is not None:
                     width, height, _ = full_array.shape
                     full_array = full_array[
