@@ -19,7 +19,7 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
     BAND_FORMAT_BIP, BAND_FORMAT_BIL, BAND_FORMAT_BSQ, BAND_FORMAT_BAYER = range(4)
     default_band_format = BAND_FORMAT_BSQ
 
-    def __init__(self, bin_dir=None, chunk_size_str="64M", threads=1,
+    def __init__(self, bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
                  adaptiveness_block_length=64,
                  output_invocation_dir=None):
@@ -82,6 +82,28 @@ class FAPEC_NP(FAPEC_Abstract):
     @property
     def label(self):
         return "FAPEC-NP"
+
+class FAPEC_SPA(FAPEC_Abstract):
+    """Wrapper for FAPEC with only spatial decorrelation (Delta)
+    """
+
+    def get_transform_dict_params(self, original_file_info):
+        return dict()
+
+    @property
+    def label(self):
+        return "FAPEC-SPA"
+
+class FAPEC_MB(FAPEC_Abstract):
+    """Wrapper for FAPEC with no preprocessing (-np option).
+    """
+
+    def get_transform_dict_params(self, original_file_info):
+        return dict(bands=original_file_info["component_count"])
+
+    @property
+    def label(self):
+        return "FAPEC-MB"
 
 
 class FAPEC_LP(FAPEC_Abstract):
