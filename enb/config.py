@@ -194,6 +194,8 @@ def get_options(from_main=False):
     render_options.add_argument("--legend_column_count", help="Number of columns used in plot legends",
                                 default=2, type=int)
 
+    render_options.add_argument("--show_grid", help="Show major axis grid?", action="store_true")
+
     render_options.add_argument("--displayed_title", help="Show title in rendered plots?", type=str, default=None)
 
 
