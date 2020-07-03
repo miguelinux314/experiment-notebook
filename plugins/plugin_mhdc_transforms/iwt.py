@@ -17,7 +17,7 @@ iwt_transform_number = 1
 
 
 class IWTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
-    """Forward POT version table
+    """Forward IWT version table
     """
 
     @property
@@ -26,7 +26,7 @@ class IWTVersionTable(abstract_mhdc_transform.MHDCTransformTable):
 
 
 class InverseIWTVersionTable(abstract_mhdc_transform.InverseMHDCTransformTable):
-    """Inverse POT version table
+    """Inverse IWT version table
     """
 
     @property
@@ -42,7 +42,7 @@ class IWTLosslessCompressionExperiment(abstract_mhdc_transform.MDHCLosslessCompr
 
 def apply_iwt(input_dir, output_dir, forward_properties_csv=None, inverse_properties_csv=None,
               repetitions=10, run_sequential=True):
-    """Apply the POT to input_dir and save the results to output_dir.
+    """Apply the IWT to input_dir and save the results to output_dir.
 
     :param input_dir: input directory to be transformed (recursively)
     :param output_dir: path to the output transformed dir
@@ -58,7 +58,7 @@ def apply_iwt(input_dir, output_dir, forward_properties_csv=None, inverse_proper
     :raises AssertionError: if transformation/reconstruction is not lossless
 
     :return: fwd_pot_df, inv_pot_df, i.e., the dataframes obtained with get_df
-      for POTVersionTAble and InversePOTVersionTable, respectively.
+      for IWTVersionTAble and InverseIWTVersionTable, respectively.
     """
     return abstract_mhdc_transform.apply_transform(
         input_dir=input_dir, output_dir=output_dir,
@@ -71,11 +71,11 @@ def apply_iwt(input_dir, output_dir, forward_properties_csv=None, inverse_proper
 
 if __name__ == '__main__':
     default_input_dir = "./green_book_corpus"
-    default_output_dir = "/data/research-materials/pot_green_book"
+    default_output_dir = "/data/research-materials/iwt_green_book"
     persistence_dir = "./persistence"
     repetition_count = 10
     if repetition_count != 10:
-        print("[watch] repetition_count = {}".format(repetition_count))
+        print("[i]nfo repetition_count = {}".format(repetition_count))
     run_sequential = True
 
     apply_iwt(
