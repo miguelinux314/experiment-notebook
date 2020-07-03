@@ -665,7 +665,11 @@ class ATable(metaclass=MetaTable):
         else:
             loaded_df[self.private_index_column] = None
         loaded_df = loaded_df.set_index(self.private_index_column, drop=True)
-        check_unique_indices(loaded_df)
+        try:
+            check_unique_indices(loaded_df)
+        except CorruptedTableError as ex:
+            print(f"Error loading table from {self.csv_support_path}")
+            raise ex
         return loaded_df
 
 
@@ -714,9 +718,14 @@ def check_unique_indices(df: pd.DataFrame):
     duplicated_indices = df.index.duplicated()
     if duplicated_indices.any():
         s = f"Loaded table with the following duplicated indices:\n\t: "
-        s += "\n\t:: ".join(str(' , '.join(values))
-                            for values in df[duplicated_indices][df.indices].values)
-        raise CorruptedTableError(s)
+        duplicated_df = df[duplicated_indices]
+        for i in range(len(duplicated_df)):
+            print("[watch] duplicated_df.iloc[i] = {}".format(duplicated_df.iloc[i]))
+
+        # print("[watch] df[duplicated_indices] = {}".format(df[duplicated_indices]))
+        # s += "\n\t:: ".join(str(' , '.join(values))
+        #                     for values in df[duplicated_indices][df.indices].values)
+        raise CorruptedTableError(atable=None)
 
 
 def indices_to_internal_loc(values):
