@@ -38,8 +38,10 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                              global_y_label="Relative frequency", combine_groups=False, semilog_hist_min=1e-10,
                              options=None,
                              group_name_order=None, fig_width=None, fig_height=None,
-                             global_y_label_pos=None, legend_column_count=None):
+                             global_y_label_pos=None, legend_column_count=None,
+                             show_grid=None):
     """Ray wrapper for render_plds_by_group"""
+    # (options automatically propagated)
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                 column_properties=column_properties, global_x_label=global_x_label,
                                 horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
@@ -48,16 +50,17 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 combine_groups=combine_groups, semilog_hist_min=semilog_hist_min,
                                 group_name_order=group_name_order,
                                 fig_width=fig_width, fig_height=fig_height,
-                                global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count)
+                                global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
+                                show_grid=show_grid)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
-                         horizontal_margin, y_min=None, y_max=None, y_labels_by_group_name=None,
+                         horizontal_margin=0, y_min=None, y_max=None, y_labels_by_group_name=None,
                          color_by_group_name=None, global_y_label="Relative frequency",
                          combine_groups=False, semilog_hist_min=1e-10,
                          group_name_order=None,
                          fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
-                         show_grid=None):
+                         show_grid=None, x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -82,6 +85,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       the smaller the text will look.
     :param show_grid: if True, or if None and options.show_grid, grid is displayed
       aligned with the major axis
+    :param x_tick_list: if not None, these ticks will be displayed
+    :param x_tick_label_list: if not None, these labels will be displayed. Only used when x_tick_list is not None.
+    :param x_tick_label_angle: when label ticks are specified, they will be rotated to this angle
     """
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
@@ -111,7 +117,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         color_by_group_name = {}
         for i, group_name in enumerate(sorted_group_names):
             color_by_group_name[group_name] = color_cycle[i % len(color_cycle)]
-    os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
+    if os.path.dirname(output_plot_path):
+        os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
     fig, group_axis_list = plt.subplots(
         nrows=len(sorted_group_names) if not combine_groups else 1,
         ncols=1, sharex=True, sharey=combine_groups,
@@ -212,6 +219,17 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     if options.displayed_title is not None:
         plt.suptitle(options.displayed_title)
+
+    if x_tick_list is not None:
+        if not x_tick_label_list:
+            plt.xticks(x_tick_list)
+        else:
+            plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
+        plt.minorticks_off()
+    if x_tick_label_list is not None:
+        assert x_tick_list is not None
+        
+
 
     show_grid = options.show_grid if show_grid is None else show_grid
     if show_grid:
@@ -410,7 +428,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                   f"Actual range is ({column_df.min()}, {column_df.max()}).")
         if options.exit_on_error:
             raise Exception(msg)
-        elif options.verbose:
+        elif options.verbose > 2:
             print(f"[W]arning: {msg}")
     elif abs(sum(hist_y_values) - 1) > 1e-10:
         raise Exception("Unfortunately, some values seem to be missing - check for errors!")

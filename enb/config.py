@@ -43,6 +43,7 @@ class ValidationAction(argparse.Action):
             parser.exit()
         setattr(namespace, self.dest, value)
 
+
 class PathAction(ValidationAction):
     @classmethod
     def modify_value(cls, value):
@@ -110,14 +111,18 @@ class WritableOrCreableDirAction(ExistingDirAction):
         except AssertionError:
             parent_dir = os.path.dirname(target_dir)
             WritableDirAction.assert_valid_value(parent_dir)
+
+
 #
 class PositiveIntegerAction(ValidationAction):
     """Check that value is an integer and greater than zero.
     """
+
     @classmethod
     def assert_valid_value(cls, value):
         assert value == int(value)
         assert value > 0
+
 
 _options = None
 
@@ -169,35 +174,31 @@ def get_options(from_main=False):
                                    default=None,
                                    nargs="+",
                                    type=str)
-    execution_options.add_argument("--exit_on_error", help="If True, any exception when processing rows aborts the program.",
+    execution_options.add_argument("--exit_on_error",
+                                   help="If True, any exception when processing rows aborts the program.",
                                    action="store_true")
     execution_options.add_argument("--discard_partial_results",
                                    help="Discard partial results when an error is found running the experiment? "
                                         "Otherwise, they are output to persistent storage.",
                                    action="store_true")
+    execution_options.add_argument("--no_new_results", help="Don't compute any new data. ",
+                                   action="store_true", default=False)
 
     render_options = parser.add_argument_group("Rendering options")
     render_options.add_argument("--no_render", "--nr",
                                 help="Don't actually render data",
                                 action="store_true",
                                 default=False)
-
-    render_options.add_argument("--no_new_results", help="Don't compute any new data. ",
-                                action="store_true", default=False)
-
     render_options.add_argument("--fig_width", help="Figure width. Larger values make text look smaller.",
                                 default=5, type=float)
     render_options.add_argument("--fig_height", help="Figure height. Larger values make text look smaller.",
                                 default=4, type=float)
     render_options.add_argument("--global_y_label_pos", help="Relative position of the global Y label. Can be negative",
-                               default=-0.01, type=float)
+                                default=-0.01, type=float)
     render_options.add_argument("--legend_column_count", help="Number of columns used in plot legends",
                                 default=2, type=int)
-
     render_options.add_argument("--show_grid", help="Show major axis grid?", action="store_true")
-
     render_options.add_argument("--displayed_title", help="Show title in rendered plots?", type=str, default=None)
-
 
     default_ray_config_file = os.path.join(calling_script_dir, "ray_cluster_head.txt")
     execution_options.add_argument("-r", "--ray_config_file", action=ReadableFileAction,
