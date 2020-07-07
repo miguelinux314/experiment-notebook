@@ -21,7 +21,7 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
 
     def __init__(self, bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
-                 adaptiveness_block_length=64,
+                 adaptiveness_block_length=128,
                  output_invocation_dir=None):
         """
         :param bin_dir:
@@ -111,9 +111,9 @@ class FAPEC_LP(FAPEC_Abstract):
     """
 
     def __init__(self, linear_prediction_order=1,
-                 bin_dir=None, chunk_size_str="64M", threads=1,
+                 bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
-                 adaptiveness_block_length=64,
+                 adaptiveness_block_length=128,
                  output_invocation_dir=None):
         super().__init__(bin_dir=bin_dir, chunk_size_str=chunk_size_str,
                          threads=threads, lsb_discard_count=lsb_discard_count,
@@ -143,9 +143,9 @@ class FAPEC_LP(FAPEC_Abstract):
 
 class FAPEC_DWT(FAPEC_Abstract):
     def __init__(self, dwt_losses=0,
-                 bin_dir=None, chunk_size_str="64M", threads=1,
+                 bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
-                 adaptiveness_block_length=64,
+                 adaptiveness_block_length=128,
                  output_invocation_dir=None):
         super().__init__(bin_dir=bin_dir, chunk_size_str=chunk_size_str,
                          threads=threads, lsb_discard_count=lsb_discard_count,
@@ -173,9 +173,9 @@ class FAPEC_DWT(FAPEC_Abstract):
 
 class FAPEC_HPA(FAPEC_Abstract):
     def __init__(self, hpa_losses=0,
-                 bin_dir=None, chunk_size_str="64M", threads=1,
+                 bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
-                 adaptiveness_block_length=64,
+                 adaptiveness_block_length=128,
                  output_invocation_dir=None):
         super().__init__(bin_dir=bin_dir, chunk_size_str=chunk_size_str,
                          threads=threads, lsb_discard_count=lsb_discard_count,
