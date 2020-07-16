@@ -849,6 +849,14 @@ class TwoColumnScatterAnalyzer(Analyzer):
             global_y_min = min(min(pld.y_values) for pld in all_plds)
             global_y_max = max(max(pld.y_values) for pld in all_plds)
 
+            global_y_min = global_y_min - 0.05 * (global_y_max - global_y_min) \
+                if not column_y in column_to_properties or column_to_properties[column_y].plot_min is None \
+                else column_to_properties[column_y].plot_min
+
+            global_y_max = global_y_max + 0.05 * (global_y_max - global_y_min) \
+                if not column_y in column_to_properties or column_to_properties[column_y].plot_max is None \
+                else column_to_properties[column_y].plot_max
+
             pds_by_group_id = ray.put(pds_by_group)
 
             expected_returns.append(ray_render_plds_by_group.remote(
@@ -856,8 +864,8 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 output_plot_path=ray.put(output_plot_path),
                 column_properties=ray.put(column_to_properties[column_x] if column_x in column_to_properties else None),
                 horizontal_margin=ray.put(0.05 * (global_x_max - global_x_min)),
-                y_min=ray.put(global_y_min - 0.05 * (global_y_max - global_y_min)),
-                y_max=ray.put(global_y_max + 0.05 * (global_y_max - global_y_min)),
+                y_min=ray.put(global_y_min),
+                y_max=ray.put(global_y_max),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
                 options=ray.put(options), group_name_order=ray.put(group_name_order),
                 combine_groups=ray.put(combine_groups)))

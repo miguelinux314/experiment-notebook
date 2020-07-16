@@ -236,9 +236,8 @@ class WrapperCodec(AbstractCodec):
             compressed_path=compressed_path,
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
-
         try:
-            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
+            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)            
             if options.verbose > 3:
                 print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
         except tcall.InvocationError as ex:
