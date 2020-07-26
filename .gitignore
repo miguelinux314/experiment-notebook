@@ -16,5 +16,8 @@
 */plugin_mcalic/Mcalic_enc_nl
 */plugin_mcalic/Mcalic_dec_nl
 
+*/plugin_mhdc_transforms/mhdctransform
+*/plugin_mhdc_transforms/mhdcdwt
+
 /private
 /venv
