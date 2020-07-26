@@ -186,18 +186,18 @@ class FAPEC_2DDWT(FAPEC_DWT):
 
     def get_transform_dict_params(self, original_file_info):
 
+        dimension_str = f"{original_file_info['width']} " \
+                        f"{original_file_info['height'] * original_file_info['component_count']} " \
+                        f"1 "
 
         if original_file_info["component_count"] < 8461:
-            dimension_str = f"{original_file_info['width']} " \
-                            f"{original_file_info['height']*original_file_info['component_count']} " \
-                            f"1 "
-
             return dict(dwt=f"{dimension_str} "
                             f"{self.dwt_losses} "
                             f"{original_file_info['dynamic_range_bits']} "
                             f"{2}")  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
         else:
-            return dict(od=4)  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
+            # IASI crashes otherwise
+            return dict()
 
 
 
