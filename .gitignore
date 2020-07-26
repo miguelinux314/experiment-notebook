@@ -13,5 +13,8 @@
 */plugin_ccsds122/mhdcpack
 */plugin_ccsds122/mhdctransform
 
+*/plugins/plugin_mcalic/Mcalic_enc_nl
+*/plugins/plugin_mcalic/Mcalic_dec_nl
+
 /private
 /venv
