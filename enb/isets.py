@@ -147,7 +147,7 @@ class ImagePropertiesTable(ImageGeometryTable):
     def set_dynamic_range_bits(self, file_path, row):
         range_len = int(row["sample_max"]) - int(row["sample_min"])
         assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
-        row[_column_name] = max(1, math.floor(math.log2(range_len + 1)) + 1)
+        row[_column_name] = max(1, math.ceil(math.log2(range_len + 1)))
 
     @atable.column_function(
         "entropy_1B_bps", label="Entropy (bps, 1-byte samples)", plot_min=0, plot_max=8)
