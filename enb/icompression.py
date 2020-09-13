@@ -185,12 +185,14 @@ class NearLosslessCodec(LossyCodec):
 
 
 class WrapperCodec(AbstractCodec):
-    """A codec that uses an external process to compress and decompress
+    """A codec that uses an external process to compress and decompress.
+
     :param compressor_path: path to the the executable to be used for compression
     :param decompressor_path: path to the the executable to be used for decompression
     :param param_dict: name-value mapping of the parameters to be used for compression
     :param output_invocation_dir: if not None, invocation strings are stored in this directory
       with name based on the codec and the image's full path.
+
     """
 
     def __init__(self, compressor_path, decompressor_path, param_dict=None, output_invocation_dir=None):

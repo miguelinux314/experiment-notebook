@@ -3,18 +3,33 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Experiment Notebook's documentation!
+Welcome to the Experiment Notebook
 ===============================================
 
+The Experiment Notebook (from now on, ``enb``) library is designed to help you obtain
+and report computer-based experimental data. Focus on what is new in your
+current experiment, and let ``enb`` deal with the repetitive stuff.
+
+Some of the main features of ``enb`` are:
+
+  * **Flexible**: you can easily adapt the provided examples to suit your needs.
+  * **Persistent**: no need to re-run your experiments: results are automatically saved.
+  * **Disseminable**: ``enb`` helps you create figures and tables to report your data.
+  * **Extensible**: you can always add new samples, define new columns and produce new figures.
+
+.. note::
+   ``enb`` is based on well-known python libraries such as ``pandas`` and ``pyplot``.
+   No prior knowledge of these libraries is required, although it is highly recomended.
+
+The following help pages will tour you through the most important features of ``enb``,
+and show minimal examples that you can use as starting point for your projects.
+You can also take a look at the automatically generated :ref:`API<api>`.
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
+   installation
+   basic_workflow
+   api
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

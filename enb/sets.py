@@ -303,19 +303,20 @@ def ray_version_one_path(version_fun, input_path, output_path, overwrite, origin
 
 
 def version_one_path_local(version_fun, input_path, output_path, overwrite, original_info_df, options):
-    """Version input_path into output_path using version_fun
+    """Version input_path into output_path using version_fun.
+    
+    :return: a tuple ``(output_path, l)``, where output_path is the selected otuput path and
+      l is a list with the obtained versioning time. The list l shall contain options.repetitions elements.
+      NOTE: If the subclass version method returns a value, that value is taken
+      as the time measurement.
+    
     :param version_fun: function with signature like FileVersionTable.version
     :param input_path: path of the file to be versioned
     :param output_path: path where the versioned file is to be stored
     :param overwrite: if True, the version is calculated even if output_path already exists
     :param options: additional runtime options
-    :param original_info_df DataFrame produced by a FilePropertiesTable instance that contains
-        an entry for :meth:`atable.indices_to_internal_loc`.
-
-    :return a tuple (output_path, l), where output_path is the selected otuput path and
-      l is a list with the obtained versioning time. The list l shall contain options.repetitions elements.
-      NOTE: If the subclass version method returns a value, that value is taken
-      as the time measurement
+    :param original_info_df: DataFrame produced by a FilePropertiesTable instance that contains
+      an entry for :meth:`atable.indices_to_internal_loc`.
     """
     time_measurements = []
 
