@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 import ray
 
+import enb.atable
 from enb.atable import parse_dict_string
 from enb import plotdata
 from enb import config
@@ -28,7 +29,7 @@ options = get_options()
 
 marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d", "<", ">", "x", "+"]
 color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
-fill_style_cycle = ["full"]*len(marker_cycle) + ["none"]*len(marker_cycle)
+fill_style_cycle = ["full"] * len(marker_cycle) + ["none"] * len(marker_cycle)
 
 
 @ray.remote
@@ -100,7 +101,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
-
 
     if group_name_order is None:
         sorted_group_names = sorted(pds_by_group_name.keys(),
@@ -234,8 +234,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         plt.minorticks_off()
     if x_tick_label_list is not None:
         assert x_tick_list is not None
-        
-
 
     show_grid = options.show_grid if show_grid is None else show_grid
     if show_grid:
@@ -313,7 +311,9 @@ class ScalarDistributionAnalyzer(Analyzer):
         :param version_name: if not None, the version name is prepended to the x axis' label
         """
         target_columns = [target_columns] if isinstance(target_columns, str) else target_columns
-        column_to_properties = collections.defaultdict(None) if column_to_properties is None else column_to_properties
+        column_to_properties = collections.defaultdict(
+            lambda: enb.atable.ColumnProperties(name="unknown")) \
+            if column_to_properties is None else column_to_properties
         min_max_by_column = get_scalar_min_max_by_column(
             df=full_df, target_columns=target_columns, column_to_properties=column_to_properties)
 
@@ -412,7 +412,6 @@ class ScalarDistributionAnalyzer(Analyzer):
 
         ray.get(expected_return_ids)
 
-        print("TODO: fill analysis df")
         return analysis_df
 
 
@@ -441,7 +440,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
 
     hist_y_values = hist_y_values / hist_y_values.sum()
 
-    x_label = column if not properties.label else properties.label
+    x_label = column if (properties is None or not properties.label) else properties.label
 
     hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
     plot_data = plotdata.BarData(x_values=hist_x_values,
@@ -454,7 +453,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                                            * (bin_edges[1] - bin_edges[0])))
 
     average_point_position = 0.5
-    if properties and properties.semilog_y:
+    if properties is not None and properties.semilog_y:
         average_point_position = 10 ** (0.5 * (math.log10(semilogy_min_y) + math.log10(1)))
     error_lines = plotdata.ErrorLines(
         x_values=[column_df.mean()],
@@ -552,7 +551,9 @@ class HistogramDistributionAnalyzer(Analyzer):
         :param version_name: if not None, a string identifying the file version that produced full_df.
         """
         full_df = pd.DataFrame(full_df)
-        column_to_properties = collections.defaultdict(None) if column_to_properties is None else column_to_properties
+        column_to_properties = collections.defaultdict(
+            lambda: enb.atable.ColumnProperties("unknown")) \
+            if column_to_properties is None else column_to_properties
 
         return_ids = []
         for column_name in target_columns:
@@ -600,14 +601,14 @@ class HistogramDistributionAnalyzer(Analyzer):
                 x_label = f"{version_name} {x_label}"
             y_label = column_to_properties[column_name].hist_label if column_name in column_to_properties else None
             y_label = "Relative frequency" if y_label is None else y_label
-            #
+
             y_min = column_to_properties[column_name].hist_min if column_name in column_to_properties else None
             y_min = self.hist_min if y_min is None else y_min
             if y_min is not None and column_to_properties[column_name].semilog_y:
                 y_min = max(y_min, self.semilog_hist_min)
             y_max = column_to_properties[column_name].hist_max if column_name in column_to_properties else None
             y_max = self.hist_max if y_max is None else y_max
-            #
+
             return_ids.append(ray_render_plds_by_group.remote(
                 options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group_name),
@@ -714,7 +715,7 @@ def histogram_dist_column_to_pds(df, column, global_xmin_xmax,
 
 class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
     """Plot multiple overlapped histograms (e.g. dicts from float to float)
-    per group, one per row
+    per group, one per row.
     """
     line_alpha = 0.3
     line_width = 0.5
@@ -759,14 +760,12 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
             y_labels_by_group_name = {group_name: f"{group_name} ({lens_by_group[group_name]})"
                                       for group_name in pds_by_group.keys()}
 
-            #
             y_min = column_to_properties[column_name].hist_min if column_name in column_to_properties else None
             y_min = self.hist_min if y_min is None else y_min
             if y_min is not None and column_to_properties[column_name].semilog_y:
                 y_min = max(y_min, self.semilog_hist_min)
             y_max = column_to_properties[column_name].hist_max if column_name in column_to_properties else None
             y_max = self.hist_max if y_max is None else y_max
-            #
 
             result_ids.append(ray_render_plds_by_group.remote(
                 options=ray.put(options),
@@ -781,7 +780,6 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
         ray.get(result_ids)
         if options.verbose > 1:
             "TODO: fill csv and write to output_csv_file"
-
 
 
 class TwoColumnScatterAnalyzer(Analyzer):
@@ -825,7 +823,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
                                 x_values=[sum(x_values) / len(x_values)],
                                 y_values=[sum(y_values) / len(y_values)],
                                 label=group_label,
-                                extra_kwargs=dict(marker=marker_cycle[i%len(marker_cycle)]),
+                                extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)]),
                                 alpha=min(self.alpha * 2, 0.65)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * 5
                     else:
@@ -837,7 +835,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
                                                   fillstyle=fill_style_cycle[i % len(fill_style_cycle)]),
                                 alpha=self.alpha * (1 if not combine_groups else 0.15)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * (1.5 if combine_groups else 1)
-                        
+
             if group_by is None or show_global:
                 x_values, y_values = zip(*sorted(zip(
                     full_df[column_x].values, full_df[column_y].values)))
