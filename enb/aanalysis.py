@@ -101,6 +101,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
 
+
     if group_name_order is None:
         sorted_group_names = sorted(pds_by_group_name.keys(),
                                     key=lambda s: "" if s == "all" else s.strip().lower())
@@ -173,14 +174,19 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False)
 
     for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
-        group_axes.get_xaxis().set_major_locator(MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
-        group_axes.get_xaxis().set_minor_locator(AutoMinorLocator())
-
         group_axes.set_ylim(y_min, y_max)
+
         if semilog_x:
-            group_axes.semilogx()
+            x_base = column_properties.semilog_x_base if column_properties is not None else 10
+            group_axes.semilogx(basex=x_base)
+            group_axes.get_xaxis().set_major_locator(LogLocator(base=x_base))
+        else:
+            group_axes.get_xaxis().set_major_locator(MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
+            group_axes.get_xaxis().set_minor_locator(AutoMinorLocator())
+
         if semilog_y:
-            group_axes.semilogy()
+            base_y = column_properties.semilog_y_base if column_properties is not None else 10
+            group_axes.semilogy(basey=base_y)
             if combine_groups or len(sorted_group_names) <= 2:
                 numticks = 11
             elif len(sorted_group_names) <= 5:
@@ -189,7 +195,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 numticks = 4
             else:
                 numticks = 3
-            group_axes.get_yaxis().set_major_locator(LogLocator(numticks=numticks))
+            group_axes.get_yaxis().set_major_locator(LogLocator(base=base_y, numticks=numticks))
             group_axes.grid(True, "major", axis="y", alpha=0.2)
         else:
             group_axes.get_yaxis().set_major_locator(MaxNLocator(nbins="auto", integer=False))
