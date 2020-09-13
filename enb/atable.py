@@ -115,6 +115,7 @@ class ColumnProperties:
 
     def __init__(self, name, fun=None, label=None, plot_min=None, plot_max=None,
                  semilog_x=False, semilog_y=False,
+                 semilog_x_base=10, semilog_y_base=10,
                  hist_label=None, hist_min=None, hist_max=None,
                  hist_bin_width=None, has_dict_values=False, hist_label_dict=None,
                  **extra_attributes):
@@ -136,6 +137,8 @@ class ColumnProperties:
           this refers to the range of key (X-axis) values.
         :param semilog_x: True if a log scale should be used in the X axis
         :param semilog_y: True if a log scale should be used in the Y axis
+        :param semilog_x_base: log base to use if semilog_x is true
+        :param semilog_y_base: log base to use if semilog_y is true
 
         Parameters specific to histograms, only applicable when has_dict_values is True.
         :param hist_bin_width: histogram bin used when calculating distributions
@@ -157,6 +160,8 @@ class ColumnProperties:
         self.plot_max = plot_max
         self.semilog_x = semilog_x
         self.semilog_y = semilog_y
+        self.semilog_x_base = semilog_x_base
+        self.semilog_y_base = semilog_y_base
         self.hist_bin_width = hist_bin_width
         self.has_dict_values = has_dict_values or self.hist_bin_width is not None
         self.hist_label_dict = hist_label_dict
