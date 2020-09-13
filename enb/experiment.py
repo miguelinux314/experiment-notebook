@@ -79,7 +79,7 @@ class Experiment(atable.ATable):
                  dataset_paths=None,
                  csv_experiment_path=None,
                  csv_dataset_path=None,
-                 dataset_info_table: sets.FilePropertiesTable = None,
+                 dataset_info_table= None,
                  overwrite_file_properties=False,
                  parallel_dataset_property_processing=None):
         """
@@ -98,6 +98,9 @@ class Experiment(atable.ATable):
           subclass instance that can be used to obtain dataset file metainformation,
           and/or gather it from csv_dataset_path. If None, a new sets.FilePropertiesTable
           instance is created and used for this purpose.
+          This parameter can also be a class (instead of an instance). In this case, it
+          the initializer is asumed to accept a csv_support_path argument and be compatible
+          with the sets.FilePropertiesTable interface.
         :param overwrite_file_properties: if True, file properties are necessarily
           computed before starting the experiment. This can be useful for temporary
           and/or random datasets. If False, file properties are loaded from the
@@ -116,9 +119,11 @@ class Experiment(atable.ATable):
             csv_dataset_path = os.path.join(options.persistence_dir,
                                             f"{dataset_info_table.__class__.__name__}_persistence.csv")
         os.makedirs(os.path.dirname(csv_dataset_path), exist_ok=True)
+
+        if inspect.isclass(dataset_info_table):
+            dataset_info_table = dataset_info_table(csv_support_path=csv_dataset_path)
         self.dataset_info_table = dataset_info_table if dataset_info_table is not None \
             else sets.FilePropertiesTable(csv_support_path=csv_dataset_path)
-
         self.dataset_info_table.ignored_columns = \
             set(self.dataset_info_table.ignored_columns + self.ignored_columns)
 
