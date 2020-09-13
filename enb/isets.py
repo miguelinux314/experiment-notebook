@@ -32,8 +32,9 @@ def entropy(data):
 
 def file_path_to_geometry_dict(file_path, existing_dict=None):
     """Return a dict with basic geometry dict based on the file path and the file size.
+
     :param existing_dict: if not None, the this dict is updated and then returned. If None,
-      a new dictionary is created
+      a new dictionary is created.
     """
     row = existing_dict if existing_dict is not None else {}
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
@@ -239,16 +240,13 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     order.
 
     :param file_or_path: It can be either a file-like object, or a string-like
-    object.
-
-      * If it is a file, contents are writen without altering the file
+      object. If it is a file, contents are writen without altering the file
       pointer beforehand. In this case, the file is not closed afterwards.
-      * If it is a string-like object, it will be interpreted
+      If it is a string-like object, it will be interpreted
       as a file path, open as determined by the mode parameter.
-
     :param mode: if file_or_path is a path, the output file is opened in this mode
-
     :param dtype: if not None, the array is casted to this type before dumping
+
     """
     try:
         assert not file_or_path.closed, f"Cannot dump to a closed file"

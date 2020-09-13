@@ -1,13 +1,6 @@
 enb package
 ===========
 
-Subpackages
------------
-
-.. toctree::
-
-   enb.codec_implementations
-
 Submodules
 ----------
 
@@ -23,14 +16,6 @@ enb.atable module
 -----------------
 
 .. automodule:: enb.atable
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.codec module
-----------------
-
-.. automodule:: enb.codec
    :members:
    :undoc-members:
    :show-inheritance:
@@ -75,6 +60,14 @@ enb.isets module
    :undoc-members:
    :show-inheritance:
 
+enb.pgm module
+--------------
+
+.. automodule:: enb.pgm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.plotdata module
 -------------------
 
@@ -95,6 +88,22 @@ enb.sets module
 ---------------
 
 .. automodule:: enb.sets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.tarlite module
+------------------
+
+.. automodule:: enb.tarlite
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.tcall module
+----------------
+
+.. automodule:: enb.tcall
    :members:
    :undoc-members:
    :show-inheritance:

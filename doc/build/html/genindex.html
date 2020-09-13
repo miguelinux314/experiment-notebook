@@ -79,8 +79,13 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
             
           
         </div>
@@ -152,7 +157,9 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -169,47 +176,77 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.AbstractCodec">AbstractCodec (class in enb.codec)</a>
+      <li><a href="api/enb.html#enb.icompression.AbstractCodec">AbstractCodec (class in enb.icompression)</a>
 </li>
-      <li><a href="enb.html#enb.context.ContextGroup.add">add() (enb.context.ContextGroup method)</a>
+      <li><a href="api/enb.html#enb.context.ContextGroup.add">add() (enb.context.ContextGroup method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.context.ValueCounter.add">(enb.context.ValueCounter method)</a>
+        <li><a href="api/enb.html#enb.context.ValueCounter.add">(enb.context.ValueCounter method)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.atable.ATable.add_column_function">add_column_function() (enb.atable.ATable static method)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.add_column_function">add_column_function() (enb.atable.ATable static method)</a>
 </li>
-      <li><a href="enb.html#enb.context.ContextGroup.allowed_contexts">allowed_contexts() (enb.context.ContextGroup property)</a>
+      <li><a href="api/enb.html#enb.tarlite.TarliteWriter.add_file">add_file() (enb.tarlite.TarliteWriter method)</a>
 </li>
-      <li><a href="enb.html#enb.context.ContextGroup.allowed_values">allowed_values() (enb.context.ContextGroup property)</a>
+      <li><a href="api/enb.html#enb.aanalysis.TaskFamily.add_task_name">add_task_name() (enb.aanalysis.TaskFamily method)</a>
+</li>
+      <li><a href="api/enb.html#enb.context.ContextGroup.allowed_contexts">allowed_contexts() (enb.context.ContextGroup property)</a>
+</li>
+      <li><a href="api/enb.html#enb.context.ContextGroup.allowed_values">allowed_values() (enb.context.ContextGroup property)</a>
 
       <ul>
-        <li><a href="enb.html#enb.context.ValueCounter.allowed_values">(enb.context.ValueCounter property)</a>
+        <li><a href="api/enb.html#enb.context.ValueCounter.allowed_values">(enb.context.ValueCounter property)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.plotdata.PlottableData.alpha">alpha (enb.plotdata.PlottableData attribute)</a>
+      <li><a href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer.alpha">alpha (enb.aanalysis.TwoColumnLineAnalyzer attribute)</a>
 
       <ul>
-        <li><a href="enb.html#enb.plotdata.ScatterData.alpha">(enb.plotdata.ScatterData attribute)</a>
+        <li><a href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer.alpha">(enb.aanalysis.TwoColumnScatterAnalyzer attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.plotdata.PlottableData.alpha">(enb.plotdata.PlottableData attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.plotdata.ScatterData.alpha">(enb.plotdata.ScatterData attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.alpha_global">alpha_global (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.alpha_individual">alpha_individual (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.config.ExistingDirAction.assert_valid_value">assert_valid_value() (enb.config.ExistingDirAction class method)</a>
+      <li><a href="api/enb.html#enb.aanalysis.Analyzer.analyze_df">analyze_df() (enb.aanalysis.Analyzer method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.config.ReadableDirAction.assert_valid_value">(enb.config.ReadableDirAction class method)</a>
+        <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.analyze_df">(enb.aanalysis.HistogramDistributionAnalyzer method)</a>
 </li>
-        <li><a href="enb.html#enb.config.ReadableFileAction.assert_valid_value">(enb.config.ReadableFileAction class method)</a>
+        <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.analyze_df">(enb.aanalysis.OverlappedHistogramAnalyzer method)</a>
 </li>
-        <li><a href="enb.html#enb.config.ValidationAction.assert_valid_value">(enb.config.ValidationAction class method)</a>
+        <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.analyze_df">(enb.aanalysis.ScalarDistributionAnalyzer method)</a>
 </li>
-        <li><a href="enb.html#enb.config.WritableDirAction.assert_valid_value">(enb.config.WritableDirAction class method)</a>
+        <li><a href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df">(enb.aanalysis.TwoColumnLineAnalyzer method)</a>
 </li>
-        <li><a href="enb.html#enb.config.WritableOrCreableDirAction.assert_valid_value">(enb.config.WritableOrCreableDirAction class method)</a>
+        <li><a href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df">(enb.aanalysis.TwoColumnScatterAnalyzer method)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.atable.ATable">ATable (class in enb.atable)</a>
+      <li><a href="api/enb.html#enb.aanalysis.Analyzer">Analyzer (class in enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.ExistingDirAction.assert_valid_value">assert_valid_value() (enb.config.ExistingDirAction class method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.config.PositiveIntegerAction.assert_valid_value">(enb.config.PositiveIntegerAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.config.ReadableDirAction.assert_valid_value">(enb.config.ReadableDirAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.config.ReadableFileAction.assert_valid_value">(enb.config.ReadableFileAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.config.ValidationAction.assert_valid_value">(enb.config.ValidationAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.config.WritableDirAction.assert_valid_value">(enb.config.WritableDirAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.config.WritableOrCreableDirAction.assert_valid_value">(enb.config.WritableOrCreableDirAction class method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.html#enb.atable.ATable">ATable (class in enb.atable)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -217,7 +254,23 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.BarData">BarData (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.isets.BandEntropyTable">BandEntropyTable (class in enb.isets)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.bar_alpha">bar_alpha (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.bar_width_fraction">bar_width_fraction (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.bar_width_fraction">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.plotdata.BarData">BarData (class in enb.plotdata)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.base_dir">base_dir (enb.sets.FilePropertiesTable attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.atable.ATable.build_column_name_wrapper">build_column_name_wrapper() (enb.atable.ATable class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -225,79 +278,105 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.ErrorLines.cap_size">cap_size (enb.plotdata.ErrorLines attribute)</a>
+      <li><a href="api/enb.html#enb.plotdata.ErrorLines.cap_size">cap_size (enb.plotdata.ErrorLines attribute)</a>
 </li>
-      <li><a href="enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.check_lossless">check_lossless (enb.icompression.CompressionExperiment attribute)</a>
 </li>
-      <li><a href="enb.html#enb.config.ValidationAction.check_valid_value">check_valid_value() (enb.config.ValidationAction class method)</a>
+      <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.close">close() (enb.codec_implementations.bitstream.OutputBitStream method)</a>
+      <li><a href="api/enb.html#enb.config.ValidationAction.check_valid_value">check_valid_value() (enb.config.ValidationAction class method)</a>
 </li>
-      <li><a href="enb.html#enb.codec.CompressionResults.codec_name">codec_name (enb.codec.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.aanalysis.clean_column_name">clean_column_name() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.codec_name">codec_name (enb.icompression.CompressionResults attribute)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.DecompressionResults.codec_name">(enb.codec.DecompressionResults attribute)</a>
+        <li><a href="api/enb.html#enb.icompression.DecompressionResults.codec_name">(enb.icompression.DecompressionResults attribute)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.codec.CompressionResults.codec_param_dict">codec_param_dict (enb.codec.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.codec_param_dict">codec_param_dict (enb.icompression.CompressionResults attribute)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.DecompressionResults.codec_param_dict">(enb.codec.DecompressionResults attribute)</a>
+        <li><a href="api/enb.html#enb.icompression.DecompressionResults.codec_param_dict">(enb.icompression.DecompressionResults attribute)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.atable.ATable.column_function">column_function() (enb.atable.ATable class method)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.codecs">codecs() (enb.icompression.CompressionExperiment property)</a>
 </li>
-      <li><a href="enb.html#enb.atable.ATable.column_to_properties">column_to_properties (enb.atable.ATable attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.codecs_by_name">codecs_by_name() (enb.icompression.CompressionExperiment property)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.color_sequence">color_sequence (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.atable.ATable.column_function">column_function() (enb.atable.ATable class method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.experiment.Experiment.column_to_properties">(enb.experiment.Experiment attribute)</a>
-</li>
-        <li><a href="enb.html#enb.icompression.LosslessCompressionExperiment.column_to_properties">(enb.icompression.LosslessCompressionExperiment attribute)</a>
-</li>
-        <li><a href="enb.html#enb.isets.ImagePropertiesTable.column_to_properties">(enb.isets.ImagePropertiesTable attribute)</a>
-</li>
-        <li><a href="enb.html#enb.sets.FilePropertiesTable.column_to_properties">(enb.sets.FilePropertiesTable attribute)</a>
+        <li><a href="api/enb.html#enb.atable.column_function">(in module enb.atable)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.atable.ColumnFailedError">ColumnFailedError</a>
+      <li><a href="api/enb.html#enb.aanalysis.column_name_to_labels">column_name_to_labels() (in module enb.aanalysis)</a>
 </li>
+      <li><a href="api/enb.html#enb.atable.ATable.column_to_properties">column_to_properties (enb.atable.ATable attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.experiment.Experiment.column_to_properties">(enb.experiment.Experiment attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.CompressionExperiment.column_to_properties">(enb.icompression.CompressionExperiment attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.LosslessCompressionExperiment.column_to_properties">(enb.icompression.LosslessCompressionExperiment attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.column_to_properties">(enb.icompression.LossyCompressionExperiment attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.isets.BandEntropyTable.column_to_properties">(enb.isets.BandEntropyTable attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.column_to_properties">(enb.isets.HistogramFullnessTable attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.isets.ImageGeometryTable.column_to_properties">(enb.isets.ImageGeometryTable attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.column_to_properties">(enb.isets.ImagePropertiesTable attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.sets.FilePropertiesTable.column_to_properties">(enb.sets.FilePropertiesTable attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.column_to_properties">(enb.sets.FileVersionTable attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.ColumnProperties">ColumnProperties (class in enb.atable)</a>
+      <li><a href="api/enb.html#enb.atable.ColumnFailedError">ColumnFailedError</a>
 </li>
-      <li><a href="enb.html#enb.codec.AbstractCodec.compress">compress() (enb.codec.AbstractCodec method)</a>
+      <li><a href="api/enb.html#enb.atable.ColumnProperties">ColumnProperties (class in enb.atable)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.AbstractCodec.compress">compress() (enb.icompression.AbstractCodec method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.WrapperCodec.compress">(enb.codec.WrapperCodec method)</a>
-</li>
-        <li><a href="enb.codec_implementations.html#enb.codec_implementations.trivial_codecs.TrivialLosslessCodec.compress">(enb.codec_implementations.trivial_codecs.TrivialLosslessCodec method)</a>
+        <li><a href="api/enb.html#enb.icompression.WrapperCodec.compress">(enb.icompression.WrapperCodec method)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.codec.CompressionResults.compressed_path">compressed_path (enb.codec.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.compressed_path">compressed_path (enb.icompression.CompressionResults attribute)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.DecompressionResults.compressed_path">(enb.codec.DecompressionResults attribute)</a>
+        <li><a href="api/enb.html#enb.icompression.DecompressionResults.compressed_path">(enb.icompression.DecompressionResults attribute)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.codec.AbstractCodec.compression_results_from_paths">compression_results_from_paths() (enb.codec.AbstractCodec method)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.RowWrapper.compression_results">compression_results() (enb.icompression.CompressionExperiment.RowWrapper property)</a>
 </li>
-      <li><a href="enb.html#enb.codec.CompressionResults.compression_time_seconds">compression_time_seconds (enb.codec.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.AbstractCodec.compression_results_from_paths">compression_results_from_paths() (enb.icompression.AbstractCodec method)</a>
 </li>
-      <li><a href="enb.html#enb.codec.CompressionException">CompressionException</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.compression_time_seconds">compression_time_seconds (enb.icompression.CompressionResults attribute)</a>
 </li>
-      <li><a href="enb.html#enb.codec.CompressionResults">CompressionResults (class in enb.codec)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionException">CompressionException</a>
 </li>
-      <li><a href="enb.html#enb.context.ContextGroup.context_count_by_index">context_count_by_index() (enb.context.ContextGroup property)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment">CompressionExperiment (class in enb.icompression)</a>
 </li>
-      <li><a href="enb.html#enb.context.ContextGroup.context_relfreq_by_index">context_relfreq_by_index() (enb.context.ContextGroup property)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.RowWrapper">CompressionExperiment.RowWrapper (class in enb.icompression)</a>
 </li>
-      <li><a href="enb.html#enb.context.ContextGroup">ContextGroup (class in enb.context)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults">CompressionResults (class in enb.icompression)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.CorruptedStreamError">CorruptedStreamError</a>
+      <li><a href="api/enb.html#enb.context.ContextGroup.context_count_by_index">context_count_by_index() (enb.context.ContextGroup property)</a>
 </li>
-      <li><a href="enb.html#enb.atable.CorruptedTableError">CorruptedTableError</a>
+      <li><a href="api/enb.html#enb.context.ContextGroup.context_relfreq_by_index">context_relfreq_by_index() (enb.context.ContextGroup property)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.current_bit_position">current_bit_position() (enb.codec_implementations.bitstream.OutputBitStream property)</a>
+      <li><a href="api/enb.html#enb.context.ContextGroup">ContextGroup (class in enb.context)</a>
+</li>
+      <li><a href="api/enb.html#enb.atable.CorruptedTableError">CorruptedTableError</a>
 </li>
   </ul></td>
 </tr></table>
@@ -305,25 +384,27 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.AbstractCodec.decompress">decompress() (enb.codec.AbstractCodec method)</a>
+      <li><a href="api/enb.html#enb.icompression.AbstractCodec.decompress">decompress() (enb.icompression.AbstractCodec method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.WrapperCodec.decompress">(enb.codec.WrapperCodec method)</a>
-</li>
-        <li><a href="enb.codec_implementations.html#enb.codec_implementations.trivial_codecs.TrivialLosslessCodec.decompress">(enb.codec_implementations.trivial_codecs.TrivialLosslessCodec method)</a>
+        <li><a href="api/enb.html#enb.icompression.WrapperCodec.decompress">(enb.icompression.WrapperCodec method)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.codec.AbstractCodec.decompression_results_from_paths">decompression_results_from_paths() (enb.codec.AbstractCodec method)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.RowWrapper.decompression_results">decompression_results() (enb.icompression.CompressionExperiment.RowWrapper property)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.AbstractCodec.decompression_results_from_paths">decompression_results_from_paths() (enb.icompression.AbstractCodec method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.DecompressionResults.decompression_time_seconds">decompression_time_seconds (enb.codec.DecompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.DecompressionResults.decompression_time_seconds">decompression_time_seconds (enb.icompression.DecompressionResults attribute)</a>
 </li>
-      <li><a href="enb.html#enb.codec.DecompressionException">DecompressionException</a>
+      <li><a href="api/enb.html#enb.icompression.DecompressionException">DecompressionException</a>
 </li>
-      <li><a href="enb.html#enb.codec.DecompressionResults">DecompressionResults (class in enb.codec)</a>
+      <li><a href="api/enb.html#enb.icompression.DecompressionResults">DecompressionResults (class in enb.icompression)</a>
 </li>
-      <li><a href="enb.html#enb.plotdata.PlottableData2D.diff">diff() (enb.plotdata.PlottableData2D method)</a>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData2D.diff">diff() (enb.plotdata.PlottableData2D method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.dump_array_bsq">dump_array_bsq() (in module enb.isets)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -331,53 +412,55 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.EmptyStreamError">EmptyStreamError</a>
+      <li><a href="api/enb.html#module-enb">enb (module)</a>
 </li>
-      <li><a href="enb.html#module-enb">enb (module)</a>
+      <li><a href="api/enb.html#module-enb.aanalysis">enb.aanalysis (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.atable">enb.atable (module)</a>
+      <li><a href="api/enb.html#module-enb.atable">enb.atable (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.codec">enb.codec (module)</a>
+      <li><a href="api/enb.html#module-enb.config">enb.config (module)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#module-enb.codec_implementations">enb.codec_implementations (module)</a>
+      <li><a href="api/enb.html#module-enb.context">enb.context (module)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#module-enb.codec_implementations.bitstream">enb.codec_implementations.bitstream (module)</a>
+      <li><a href="api/enb.html#module-enb.experiment">enb.experiment (module)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#module-enb.codec_implementations.trivial_codecs">enb.codec_implementations.trivial_codecs (module)</a>
+      <li><a href="api/enb.html#module-enb.icompression">enb.icompression (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.config">enb.config (module)</a>
+      <li><a href="api/enb.html#module-enb.isets">enb.isets (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.context">enb.context (module)</a>
+      <li><a href="api/enb.html#module-enb.pgm">enb.pgm (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.experiment">enb.experiment (module)</a>
+      <li><a href="api/enb.html#module-enb.plotdata">enb.plotdata (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.icompression">enb.icompression (module)</a>
+      <li><a href="api/enb.html#module-enb.ray_cluster">enb.ray_cluster (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#module-enb.isets">enb.isets (module)</a>
+      <li><a href="api/enb.html#module-enb.sets">enb.sets (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.plotdata">enb.plotdata (module)</a>
+      <li><a href="api/enb.html#module-enb.tarlite">enb.tarlite (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.ray_cluster">enb.ray_cluster (module)</a>
+      <li><a href="api/enb.html#module-enb.tcall">enb.tcall (module)</a>
 </li>
-      <li><a href="enb.html#module-enb.sets">enb.sets (module)</a>
-</li>
-      <li><a href="enb.html#enb.context.ContextGroup.entropy">entropy() (enb.context.ContextGroup property)</a>
+      <li><a href="api/enb.html#enb.context.ContextGroup.entropy">entropy() (enb.context.ContextGroup property)</a>
 
       <ul>
-        <li><a href="enb.html#enb.context.ValueCounter.entropy">(enb.context.ValueCounter property)</a>
+        <li><a href="api/enb.html#enb.context.ValueCounter.entropy">(enb.context.ValueCounter property)</a>
 </li>
-        <li><a href="enb.html#enb.isets.entropy">(in module enb.isets)</a>
+        <li><a href="api/enb.html#enb.isets.entropy">(in module enb.isets)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.plotdata.ErrorLines">ErrorLines (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.errorbar_alpha">errorbar_alpha (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
-      <li><a href="enb.html#enb.config.ExistingDirAction">ExistingDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.plotdata.ErrorLines">ErrorLines (class in enb.plotdata)</a>
 </li>
-      <li><a href="enb.html#enb.experiment.Experiment">Experiment (class in enb.experiment)</a>
+      <li><a href="api/enb.html#enb.config.ExistingDirAction">ExistingDirAction (class in enb.config)</a>
 </li>
-      <li><a href="enb.html#enb.experiment.ExperimentTask">ExperimentTask (class in enb.experiment)</a>
+      <li><a href="api/enb.html#enb.experiment.Experiment">Experiment (class in enb.experiment)</a>
+</li>
+      <li><a href="api/enb.html#enb.experiment.ExperimentTask">ExperimentTask (class in enb.experiment)</a>
+</li>
+      <li><a href="api/enb.html#enb.tarlite.TarliteReader.extract_all">extract_all() (enb.tarlite.TarliteReader method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -385,19 +468,13 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.FileInfo.file_path">file_path (enb.codec.FileInfo attribute)</a>
-</li>
-      <li><a href="enb.html#enb.codec.FileInfo">FileInfo (class in enb.codec)</a>
-</li>
-      <li><a href="enb.html#enb.sets.FilePropertiesTable">FilePropertiesTable (class in enb.sets)</a>
+      <li><a href="api/enb.html#enb.isets.file_path_to_geometry_dict">file_path_to_geometry_dict() (in module enb.isets)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.flush">flush() (enb.codec_implementations.bitstream.OutputBitStream method)</a>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable">FilePropertiesTable (class in enb.sets)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.flush_complete_bytes">flush_complete_bytes() (enb.codec_implementations.bitstream.OutputBitStream method)</a>
-</li>
-      <li><a href="enb.html#enb.codec.FileInfo.from_path">from_path() (enb.codec.FileInfo static method)</a>
+      <li><a href="api/enb.html#enb.sets.FileVersionTable">FileVersionTable (class in enb.sets)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -405,39 +482,75 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.sets.get_all_test_files">get_all_test_files() (in module enb.sets)</a>
+      <li><a href="api/enb.html#enb.sets.get_all_test_files">get_all_test_files() (in module enb.sets)</a>
 </li>
-      <li><a href="enb.html#enb.codec.WrapperCodec.get_binary_signature">get_binary_signature (enb.codec.WrapperCodec attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_binary_signature">get_binary_signature (enb.icompression.WrapperCodec attribute)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.InputBitStream.get_bit">get_bit() (enb.codec_implementations.bitstream.InputBitStream method)</a>
+      <li><a href="api/enb.html#enb.sets.get_canonical_path">get_canonical_path() (in module enb.sets)</a>
 </li>
-      <li><a href="enb.html#enb.sets.get_canonical_path">get_canonical_path() (in module enb.sets)</a>
+      <li><a href="api/enb.html#enb.atable.get_class_that_defined_method">get_class_that_defined_method() (in module enb.atable)</a>
 </li>
-      <li><a href="enb.html#enb.codec.WrapperCodec.get_compression_params">get_compression_params() (enb.codec.WrapperCodec method)</a>
-
-      <ul>
-        <li><a href="enb.codec_implementations.html#enb.codec_implementations.trivial_codecs.TrivialCpWrapper.get_compression_params">(enb.codec_implementations.trivial_codecs.TrivialCpWrapper method)</a>
+      <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_compression_params">get_compression_params() (enb.icompression.WrapperCodec method)</a>
 </li>
-      </ul></li>
-      <li><a href="enb.html#enb.codec.WrapperCodec.get_decompression_params">get_decompression_params() (enb.codec.WrapperCodec method)</a>
-
-      <ul>
-        <li><a href="enb.codec_implementations.html#enb.codec_implementations.trivial_codecs.TrivialCpWrapper.get_decompression_params">(enb.codec_implementations.trivial_codecs.TrivialCpWrapper method)</a>
+      <li><a href="api/enb.html#enb.experiment.Experiment.get_dataset_info_row">get_dataset_info_row() (enb.experiment.Experiment method)</a>
 </li>
-      </ul></li>
+      <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_decompression_params">get_decompression_params() (enb.icompression.WrapperCodec method)</a>
+</li>
+      <li><a href="api/enb.html#enb.atable.get_defining_class_name">get_defining_class_name() (in module enb.atable)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.ATable.get_df">get_df() (enb.atable.ATable method)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.get_df">get_df() (enb.atable.ATable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.experiment.Experiment.get_df">(enb.experiment.Experiment method)</a>
 </li>
-      <li><a href="enb.html#enb.codec.get_lossless_codec_classes">get_lossless_codec_classes() (in module enb.codec)</a>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.get_df">(enb.sets.FileVersionTable method)</a>
 </li>
-      <li><a href="enb.html#enb.codec.get_lossy_codec_classes">get_lossy_codec_classes() (in module enb.codec)</a>
+      </ul></li>
+      <li><a href="api/enb.html#enb.aanalysis.get_histogram_dicts">get_histogram_dicts() (in module enb.aanalysis)</a>
 </li>
-      <li><a href="enb.html#enb.config.get_options">get_options() (in module enb.config)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.get_matlab_struct_str">get_matlab_struct_str() (enb.atable.ATable method)</a>
 </li>
-      <li><a href="enb.html#enb.sets.FilePropertiesTable.get_relative_path">get_relative_path() (enb.sets.FilePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.config.get_options">get_options() (in module enb.config)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.InputBitStream.get_unsigned_value">get_unsigned_value() (enb.codec_implementations.bitstream.InputBitStream method)</a>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.get_relative_path">get_relative_path() (enb.sets.FilePropertiesTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.get_scalar_min_max_by_column">get_scalar_min_max_by_column() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.tcall.get_status_output_time">get_status_output_time() (in module enb.tcall)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.hash_field_name">hash_field_name (enb.sets.FilePropertiesTable attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.hist_bin_count">hist_bin_count (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.hist_max">hist_max (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.hist_min">hist_min (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.histogram_bin_width">histogram_bin_width (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.aanalysis.histogram_dist_column_to_pds">histogram_dist_column_to_pds() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.histogram_margin">histogram_margin (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.histogram_margin">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.html#enb.aanalysis.histogram_overlap_column_to_pds">histogram_overlap_column_to_pds() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer">HistogramDistributionAnalyzer (class in enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.HistogramFullnessTable">HistogramFullnessTable (class in enb.isets)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -445,53 +558,73 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.ATable.ignored_columns">ignored_columns (enb.atable.ATable attribute)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.ignored_columns">ignored_columns (enb.atable.ATable attribute)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable">ImagePropertiesTable (class in enb.isets)</a>
+      <li><a href="api/enb.html#enb.isets.ImageGeometryTable">ImageGeometryTable (class in enb.isets)</a>
 </li>
-      <li><a href="enb.html#enb.atable.ATable.indices">indices() (enb.atable.ATable property)</a>
+      <li><a href="api/enb.html#enb.isets.ImagePropertiesTable">ImagePropertiesTable (class in enb.isets)</a>
 </li>
-      <li><a href="enb.html#enb.atable.ATable.indices_and_columns">indices_and_columns() (enb.atable.ATable property)</a>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.index_name">index_name (enb.sets.FilePropertiesTable attribute)</a>
 </li>
-      <li><a href="enb.html#enb.atable.indices_to_internal_loc">indices_to_internal_loc() (in module enb.atable)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.indices">indices() (enb.atable.ATable property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.ray_cluster.init_ray">init_ray() (in module enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.indices_and_columns">indices_and_columns() (enb.atable.ATable property)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.InputBitStream">InputBitStream (class in enb.codec_implementations.bitstream)</a>
+      <li><a href="api/enb.html#enb.atable.indices_to_internal_loc">indices_to_internal_loc() (in module enb.atable)</a>
 </li>
-      <li><a href="enb.html#enb.codec.AbstractCodec.is_lossless">is_lossless() (enb.codec.AbstractCodec property)</a>
+      <li><a href="api/enb.html#enb.ray_cluster.init_ray">init_ray() (in module enb.ray_cluster)</a>
+</li>
+      <li><a href="api/enb.html#enb.tcall.InvocationError">InvocationError</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.iproperties_row_to_numpy_dtype">iproperties_row_to_numpy_dtype() (in module enb.isets)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.iproperties_row_to_sample_type_tag">iproperties_row_to_sample_type_tag() (in module enb.isets)</a>
+</li>
+  </ul></td>
+</tr></table>
 
-      <ul>
-        <li><a href="enb.html#enb.codec.LosslessCodec.is_lossless">(enb.codec.LosslessCodec property)</a>
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.experiment.Experiment.joined_column_to_properties">joined_column_to_properties() (enb.experiment.Experiment property)</a>
 </li>
-        <li><a href="enb.html#enb.codec.LossyCodec.is_lossless">(enb.codec.LossyCodec property)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.AbstractCodec.label">label() (enb.codec.AbstractCodec property)</a>
+      <li><a href="api/enb.html#enb.experiment.ExperimentTask.label">label() (enb.experiment.ExperimentTask property)</a>
 
       <ul>
-        <li><a href="enb.html#enb.experiment.ExperimentTask.label">(enb.experiment.ExperimentTask property)</a>
+        <li><a href="api/enb.html#enb.icompression.AbstractCodec.label">(enb.icompression.AbstractCodec property)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.plotdata.ErrorLines.line_width">line_width (enb.plotdata.ErrorLines attribute)</a>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData.legend_column_count">legend_column_count (enb.plotdata.PlottableData attribute)</a>
 </li>
+      <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.line_alpha">line_alpha (enb.aanalysis.OverlappedHistogramAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.line_width">line_width (enb.aanalysis.OverlappedHistogramAnalyzer attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.plotdata.ErrorLines.line_width">(enb.plotdata.ErrorLines attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.LineData">LineData (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.plotdata.LineData">LineData (class in enb.plotdata)</a>
 </li>
-      <li><a href="enb.html#enb.codec.LosslessCodec">LosslessCodec (class in enb.codec)</a>
+      <li><a href="api/enb.html#enb.isets.load_array_bsq">load_array_bsq() (in module enb.isets)</a>
 </li>
-      <li><a href="enb.html#enb.icompression.LosslessCompressionExperiment">LosslessCompressionExperiment (class in enb.icompression)</a>
+      <li><a href="api/enb.html#enb.icompression.LosslessCodec">LosslessCodec (class in enb.icompression)</a>
 </li>
-      <li><a href="enb.html#enb.codec.LossyCodec">LossyCodec (class in enb.codec)</a>
+      <li><a href="api/enb.html#enb.icompression.LosslessCompressionExperiment">LosslessCompressionExperiment (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.LossyCodec">LossyCodec (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment">LossyCompressionExperiment (class in enb.icompression)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -499,35 +632,47 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.BarData.marker_size">marker_size (enb.plotdata.BarData attribute)</a>
+      <li><a href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer.marker_size">marker_size (enb.aanalysis.TwoColumnScatterAnalyzer attribute)</a>
 
       <ul>
-        <li><a href="enb.html#enb.plotdata.ErrorLines.marker_size">(enb.plotdata.ErrorLines attribute)</a>
+        <li><a href="api/enb.html#enb.plotdata.BarData.marker_size">(enb.plotdata.BarData attribute)</a>
 </li>
-        <li><a href="enb.html#enb.plotdata.ScatterData.marker_size">(enb.plotdata.ScatterData attribute)</a>
+        <li><a href="api/enb.html#enb.plotdata.ErrorLines.marker_size">(enb.plotdata.ErrorLines attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.plotdata.ScatterData.marker_size">(enb.plotdata.ScatterData attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.MetaTable">MetaTable (class in enb.atable)</a>
+      <li><a href="api/enb.html#enb.atable.MetaTable">MetaTable (class in enb.atable)</a>
 </li>
+      <li><a href="api/enb.html#enb.config.PathAction.modify_value">modify_value() (enb.config.PathAction class method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.config.ValidationAction.modify_value">(enb.config.ValidationAction class method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.AbstractCodec.name">name() (enb.codec.AbstractCodec property)</a>
+      <li><a href="api/enb.html#enb.experiment.ExperimentTask.name">name() (enb.experiment.ExperimentTask property)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.WrapperCodec.name">(enb.codec.WrapperCodec property)</a>
+        <li><a href="api/enb.html#enb.icompression.AbstractCodec.name">(enb.icompression.AbstractCodec property)</a>
 </li>
-        <li><a href="enb.html#enb.experiment.ExperimentTask.name">(enb.experiment.ExperimentTask property)</a>
+        <li><a href="api/enb.html#enb.icompression.WrapperCodec.name">(enb.icompression.WrapperCodec property)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.ATable.normalize_column_properties">normalize_column_properties() (enb.atable.ATable static method)</a>
+      <li><a href="api/enb.html#enb.icompression.NearLosslessCodec">NearLosslessCodec (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.html#enb.atable.ATable.normalize_column_properties">normalize_column_properties() (enb.atable.ATable static method)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.RowWrapper.numpy_dtype">numpy_dtype() (enb.icompression.CompressionExperiment.RowWrapper property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -535,13 +680,11 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.CompressionResults.original_path">original_path (enb.codec.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.original_path">original_path (enb.icompression.CompressionResults attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.codec.FileInfo.original_size_bytes">original_size_bytes (enb.codec.FileInfo attribute)</a>
-</li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream">OutputBitStream (class in enb.codec_implementations.bitstream)</a>
+      <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer">OverlappedHistogramAnalyzer (class in enb.aanalysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -549,27 +692,31 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.parse_dict_string">parse_dict_string() (in module enb.atable)</a>
+      <li><a href="api/enb.html#enb.atable.parse_dict_string">parse_dict_string() (in module enb.atable)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.InputBitStream.peek_unsigned_value">peek_unsigned_value() (enb.codec_implementations.bitstream.InputBitStream method)</a>
+      <li><a href="api/enb.html#enb.config.PathAction">PathAction (class in enb.config)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.pending_bit_buffer_size">pending_bit_buffer_size (enb.codec_implementations.bitstream.OutputBitStream attribute)</a>
+      <li><a href="api/enb.html#enb.atable.MetaTable.pendingdefs_classname_fun_columnproperties_kwargs">pendingdefs_classname_fun_columnproperties_kwargs (enb.atable.MetaTable attribute)</a>
 </li>
-      <li><a href="enb.html#enb.plotdata.PlottableData">PlottableData (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData">PlottableData (class in enb.plotdata)</a>
 </li>
-      <li><a href="enb.html#enb.plotdata.PlottableData2D">PlottableData2D (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData2D">PlottableData2D (class in enb.plotdata)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.ATable.private_index_column">private_index_column (enb.atable.ATable attribute)</a>
+      <li><a href="api/enb.html#enb.aanalysis.pool_scalar_into_analysis_df">pool_scalar_into_analysis_df() (in module enb.aanalysis)</a>
 </li>
-      <li><a href="enb.html#enb.atable.process_row_local">process_row_local() (in module enb.atable)</a>
+      <li><a href="api/enb.html#enb.config.PositiveIntegerAction">PositiveIntegerAction (class in enb.config)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.put_bit">put_bit() (enb.codec_implementations.bitstream.OutputBitStream method)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.private_index_column">private_index_column (enb.atable.ATable attribute)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.put_bits">put_bits() (enb.codec_implementations.bitstream.OutputBitStream method)</a>
+      <li><a href="api/enb.html#enb.atable.ATable.process_row">process_row() (enb.atable.ATable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.icompression.CompressionExperiment.process_row">(enb.icompression.CompressionExperiment method)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.bitstream.OutputBitStream.put_unsigned_value">put_unsigned_value() (enb.codec_implementations.bitstream.OutputBitStream method)</a>
+      </ul></li>
+      <li><a href="api/enb.html#enb.config.propagates_options">propagates_options() (in module enb.config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -577,87 +724,155 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.config.ReadableDirAction">ReadableDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.pgm.read_pgm">read_pgm() (in module enb.pgm)</a>
 </li>
-      <li><a href="enb.html#enb.config.ReadableFileAction">ReadableFileAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.config.ReadableDirAction">ReadableDirAction (class in enb.config)</a>
 </li>
-      <li><a href="enb.html#enb.codec.DecompressionResults.reconstructed_path">reconstructed_path (enb.codec.DecompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.config.ReadableFileAction">ReadableFileAction (class in enb.config)</a>
 </li>
-      <li><a href="enb.html#enb.plotdata.BarData.render">render() (enb.plotdata.BarData method)</a>
+      <li><a href="api/enb.html#enb.icompression.DecompressionResults.reconstructed_path">reconstructed_path (enb.icompression.DecompressionResults attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.atable.ATable.redefines_column">redefines_column() (enb.atable.ATable class method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.plotdata.ErrorLines.render">(enb.plotdata.ErrorLines method)</a>
+        <li><a href="api/enb.html#enb.atable.redefines_column">(in module enb.atable)</a>
 </li>
-        <li><a href="enb.html#enb.plotdata.LineData.render">(enb.plotdata.LineData method)</a>
+      </ul></li>
+      <li><a href="api/enb.html#enb.plotdata.BarData.render">render() (enb.plotdata.BarData method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.plotdata.ErrorLines.render">(enb.plotdata.ErrorLines method)</a>
 </li>
-        <li><a href="enb.html#enb.plotdata.PlottableData.render">(enb.plotdata.PlottableData method)</a>
+        <li><a href="api/enb.html#enb.plotdata.LineData.render">(enb.plotdata.LineData method)</a>
 </li>
-        <li><a href="enb.html#enb.plotdata.ScatterData.render">(enb.plotdata.ScatterData method)</a>
+        <li><a href="api/enb.html#enb.plotdata.PlottableData.render">(enb.plotdata.PlottableData method)</a>
 </li>
-        <li><a href="enb.html#enb.plotdata.StepData.render">(enb.plotdata.StepData method)</a>
+        <li><a href="api/enb.html#enb.plotdata.ScatterData.render">(enb.plotdata.ScatterData method)</a>
+</li>
+        <li><a href="api/enb.html#enb.plotdata.StepData.render">(enb.plotdata.StepData method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.PlottableData.render_axis_labels">render_axis_labels() (enb.plotdata.PlottableData method)</a>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData.render_axis_labels">render_axis_labels() (enb.plotdata.PlottableData method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.plotdata.PlottableData2D.render_axis_labels">(enb.plotdata.PlottableData2D method)</a>
+        <li><a href="api/enb.html#enb.plotdata.PlottableData2D.render_axis_labels">(enb.plotdata.PlottableData2D method)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.aanalysis.render_plds_by_group">render_plds_by_group() (in module enb.aanalysis)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.ScatterData">ScatterData (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.aanalysis.scalar_column_to_pds">scalar_column_to_pds() (in module enb.aanalysis)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_1B_value_counts">set_1B_value_counts() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer">ScalarDistributionAnalyzer (class in enb.aanalysis)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_byte_value_extrema">set_byte_value_extrema() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.plotdata.ScatterData">ScatterData (class in enb.plotdata)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_bytes_per_sample">set_bytes_per_sample() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.semilog_hist_min">semilog_hist_min (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.semilog_hist_min">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
-      <li><a href="enb.html#enb.icompression.LosslessCompressionExperiment.set_comparison_results">set_comparison_results() (enb.icompression.LosslessCompressionExperiment method)</a>
+      </ul></li>
+      <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.set_1B_value_counts">set_1B_value_counts() (enb.isets.HistogramFullnessTable method)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_file_entropy">set_file_entropy() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_big_endian">set_big_endian() (enb.isets.ImageGeometryTable method)</a>
 </li>
-      <li><a href="enb.html#enb.sets.FilePropertiesTable.set_file_size">set_file_size() (enb.sets.FilePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.set_bpppc">set_bpppc() (enb.icompression.CompressionExperiment method)</a>
 </li>
-      <li><a href="enb.html#enb.sets.FilePropertiesTable.set_hash_digest">set_hash_digest() (enb.sets.FilePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_byte_value_extrema">set_byte_value_extrema() (enb.isets.ImagePropertiesTable method)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_histogram_fullness_1byte">set_histogram_fullness_1byte() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_bytes_per_sample">set_bytes_per_sample() (enb.isets.ImageGeometryTable method)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_histogram_fullness_2bytes">set_histogram_fullness_2bytes() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.set_comparison_results">set_comparison_results() (enb.icompression.CompressionExperiment method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.icompression.LosslessCompressionExperiment.set_comparison_results">(enb.icompression.LosslessCompressionExperiment method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.set_compressed_data_size">set_compressed_data_size() (enb.icompression.CompressionExperiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.set_compression_ratio_dr">set_compression_ratio_dr() (enb.icompression.CompressionExperiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.set_corpus">set_corpus() (enb.sets.FilePropertiesTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.set_corpus">(enb.sets.FileVersionTable method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_dynamic_range_bits">set_dynamic_range_bits() (enb.isets.ImagePropertiesTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.BandEntropyTable.set_entropy_per_band">set_entropy_per_band() (enb.isets.BandEntropyTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_file_entropy">set_file_entropy() (enb.isets.ImagePropertiesTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.set_file_size">set_file_size() (enb.sets.FilePropertiesTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.set_hash_digest">set_hash_digest() (enb.sets.FilePropertiesTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.set_histogram_fullness_1byte">set_histogram_fullness_1byte() (enb.isets.HistogramFullnessTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.set_histogram_fullness_2bytes">set_histogram_fullness_2bytes() (enb.isets.HistogramFullnessTable method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_histogram_fullness_4bytes">set_histogram_fullness_4bytes() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.set_histogram_fullness_4bytes">set_histogram_fullness_4bytes() (enb.isets.HistogramFullnessTable method)</a>
 </li>
-      <li><a href="enb.html#enb.experiment.Experiment.set_param_dict">set_param_dict() (enb.experiment.Experiment method)</a>
+      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_image_geometry">set_image_geometry() (enb.isets.ImageGeometryTable method)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_samples">set_samples() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_MSE">set_MSE() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
-      <li><a href="enb.html#enb.isets.ImagePropertiesTable.set_signed">set_signed() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.config.set_options">set_options() (in module enb.config)</a>
 </li>
-      <li><a href="enb.html#enb.experiment.Experiment.set_task_name">set_task_name() (enb.experiment.Experiment method)</a>
+      <li><a href="api/enb.html#enb.sets.FileVersionTable.set_original_file_path">set_original_file_path() (enb.sets.FileVersionTable method)</a>
 </li>
-      <li><a href="enb.html#enb.plotdata.PlottableData2D.shift_x">shift_x() (enb.plotdata.PlottableData2D method)</a>
+      <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_PAE">set_PAE() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
-      <li><a href="enb.html#enb.plotdata.BarData.shift_y">shift_y() (enb.plotdata.BarData method)</a>
+      <li><a href="api/enb.html#enb.experiment.Experiment.set_param_dict">set_param_dict() (enb.experiment.Experiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_PSNR_dynamic_range">set_PSNR_dynamic_range() (enb.icompression.LossyCompressionExperiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_PSNR_nominal">set_PSNR_nominal() (enb.icompression.LossyCompressionExperiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_sample_extrema">set_sample_extrema() (enb.isets.ImagePropertiesTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_samples">set_samples() (enb.isets.ImageGeometryTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_signed">set_signed() (enb.isets.ImageGeometryTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.experiment.Experiment.set_task_label">set_task_label() (enb.experiment.Experiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.experiment.Experiment.set_task_name">set_task_name() (enb.experiment.Experiment method)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_repetitions">set_version_repetitions() (enb.sets.FileVersionTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_time">set_version_time() (enb.sets.FileVersionTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData2D.shift_x">shift_x() (enb.plotdata.PlottableData2D method)</a>
+</li>
+      <li><a href="api/enb.html#enb.plotdata.BarData.shift_y">shift_y() (enb.plotdata.BarData method)</a>
 
       <ul>
-        <li><a href="enb.html#enb.plotdata.PlottableData2D.shift_y">(enb.plotdata.PlottableData2D method)</a>
+        <li><a href="api/enb.html#enb.plotdata.PlottableData2D.shift_y">(enb.plotdata.PlottableData2D method)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.codec.CompressionResults.side_info_files">side_info_files (enb.codec.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.show_count">show_count (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.side_info_files">side_info_files (enb.icompression.CompressionResults attribute)</a>
 
       <ul>
-        <li><a href="enb.html#enb.codec.DecompressionResults.side_info_files">(enb.codec.DecompressionResults attribute)</a>
+        <li><a href="api/enb.html#enb.icompression.DecompressionResults.side_info_files">(enb.icompression.DecompressionResults attribute)</a>
 </li>
       </ul></li>
-      <li><a href="enb.html#enb.plotdata.StepData">StepData (class in enb.plotdata)</a>
+      <li><a href="api/enb.html#enb.plotdata.StepData">StepData (class in enb.plotdata)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.subdivision_count">subdivision_count (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -665,13 +880,25 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.context.ValueCounter.total_count">total_count() (enb.context.ValueCounter property)</a>
+      <li><a href="api/enb.html#enb.tarlite.tarlite_files">tarlite_files() (in module enb.tarlite)</a>
+</li>
+      <li><a href="api/enb.html#enb.tarlite.TarliteReader">TarliteReader (class in enb.tarlite)</a>
+</li>
+      <li><a href="api/enb.html#enb.tarlite.TarliteWriter">TarliteWriter (class in enb.tarlite)</a>
+</li>
+      <li><a href="api/enb.html#enb.experiment.Experiment.task_label_column">task_label_column (enb.experiment.Experiment attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.trivial_codecs.TrivialCpWrapper">TrivialCpWrapper (class in enb.codec_implementations.trivial_codecs)</a>
+      <li><a href="api/enb.html#enb.experiment.Experiment.task_name_column">task_name_column (enb.experiment.Experiment attribute)</a>
 </li>
-      <li><a href="enb.codec_implementations.html#enb.codec_implementations.trivial_codecs.TrivialLosslessCodec">TrivialLosslessCodec (class in enb.codec_implementations.trivial_codecs)</a>
+      <li><a href="api/enb.html#enb.aanalysis.TaskFamily">TaskFamily (class in enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.context.ValueCounter.total_count">total_count() (enb.context.ValueCounter property)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer">TwoColumnLineAnalyzer (class in enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer">TwoColumnScatterAnalyzer (class in enb.aanalysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -679,11 +906,13 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.sets.UnkownPropertiesException">UnkownPropertiesException</a>
+      <li><a href="api/enb.html#enb.sets.UnkownPropertiesException">UnkownPropertiesException</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.atable.unpack_index_value">unpack_index_value() (in module enb.atable)</a>
+      <li><a href="api/enb.html#enb.atable.unpack_index_value">unpack_index_value() (in module enb.atable)</a>
+</li>
+      <li><a href="api/enb.html#enb.tarlite.untarlite_files">untarlite_files() (in module enb.tarlite)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -691,13 +920,21 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.config.ValidationAction">ValidationAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.config.ValidationAction">ValidationAction (class in enb.config)</a>
+</li>
+      <li><a href="api/enb.html#enb.context.ValueCounter.value_to_relfreq">value_to_relfreq() (enb.context.ValueCounter property)</a>
+</li>
+      <li><a href="api/enb.html#enb.context.ValueCounter">ValueCounter (class in enb.context)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.context.ValueCounter.value_to_relfreq">value_to_relfreq() (enb.context.ValueCounter property)</a>
+      <li><a href="api/enb.html#enb.sets.FileVersionTable.version">version() (enb.sets.FileVersionTable method)</a>
 </li>
-      <li><a href="enb.html#enb.context.ValueCounter">ValueCounter (class in enb.context)</a>
+      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.version_name">version_name (enb.sets.FilePropertiesTable attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.version_one_path_local">version_one_path_local() (in module enb.sets)</a>
+</li>
+      <li><a href="api/enb.html#enb.sets.VersioningFailedException">VersioningFailedException</a>
 </li>
   </ul></td>
 </tr></table>
@@ -705,15 +942,19 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.plotdata.StepData.where">where (enb.plotdata.StepData attribute)</a>
+      <li><a href="api/enb.html#enb.plotdata.StepData.where">where (enb.plotdata.StepData attribute)</a>
 </li>
-      <li><a href="enb.html#enb.codec.WrapperCodec">WrapperCodec (class in enb.codec)</a>
+      <li><a href="api/enb.html#enb.icompression.WrapperCodec">WrapperCodec (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.WritableDirAction">WritableDirAction (class in enb.config)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enb.html#enb.config.WritableDirAction">WritableDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.config.WritableOrCreableDirAction">WritableOrCreableDirAction (class in enb.config)</a>
 </li>
-      <li><a href="enb.html#enb.config.WritableOrCreableDirAction">WritableOrCreableDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.tarlite.TarliteWriter.write">write() (enb.tarlite.TarliteWriter method)</a>
+</li>
+      <li><a href="api/enb.html#enb.pgm.write_pgm">write_pgm() (in module enb.pgm)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -537,6 +537,7 @@ class HistogramDistributionAnalyzer(Analyzer):
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
         """Analyze a column, where each cell contains a real to real mapping.
+
         :param adjust_height:
         :param full_df: full df from which the column is to be extracted
         :param target_columns: list of column names containing tensor (mapping) data

@@ -26,7 +26,8 @@ def get_status_output_time(invocation, expected_status_value=0, wall=False):
       an InvocationError is raised.
     :param wall: if True, execution wall time is returned. Otherwise, user+system CPU time is returned.
       (both in seconds).
-    :return status, output, time
+      
+    :return: status, output, time
     """
     if os.path.isfile("/usr/bin/time"):
         invocation = f"/usr/bin/time -f 'u%U@s%S' {invocation}"
