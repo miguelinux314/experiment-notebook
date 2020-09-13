@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Automatic analysis and report of of pandas :class:`pandas.DataFrames`
 (e.g., produced by :class:`enb.experiment.Experiment` instances)
-using pyplot
+using pyplot.
 """
 
 import os

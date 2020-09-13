@@ -253,17 +253,17 @@ class ATable(metaclass=MetaTable):
     # Column names in this list are not retrieved nor saved to file
     ignored_columns = []
 
-    def __init__(self, index="file_path", column_to_properties=None, csv_support_path=None):
+    def __init__(self, index="file_path", csv_support_path=None, column_to_properties=None):
         """
         :param index: column name or list of column names that will be
           used for indexing. Indices provided to self.get_df must be
           either one instance (when a single column name is given)
           or a list of as many instances as elemnts are contained in self.index.
           See self.indices
+        :param csv_support_path: path to a file where this ATable contents
+          are to be stored and retrieved. If None, persistence is disabled.
         :param column_to_properties: if not None, it is a mapping from strings to callables
           that defines the columns of the table and how to obtain the cell values
-        :param csv_support_path: path to a file where this ATable contents
-          are to be stored and retrieved
         """
         self.index = index
         self.csv_support_path = csv_support_path
