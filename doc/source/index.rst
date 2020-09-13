@@ -26,6 +26,7 @@ and show minimal examples that you can use as starting point for your projects.
 You can also take a look at the automatically generated :ref:`API<api>`.
 
 .. warning::
+
    This project is in beta! Comments welcome.
 
 .. toctree::
