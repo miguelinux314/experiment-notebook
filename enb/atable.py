@@ -65,6 +65,7 @@ import ray
 
 from enb.config import get_options
 from enb import config
+from enb import ray_cluster
 
 options = get_options()
 
@@ -425,6 +426,8 @@ class ATable(metaclass=MetaTable):
         :raises: CorrupedTableError, ColumnFailedError, when an error is encountered
           processing the data.
         """
+        ray_cluster.init_ray()
+
         if options.verbose > 2:
             print("Loading data and/or defaults...")
         table_df = self._load_saved_df()
