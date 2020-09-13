@@ -96,7 +96,6 @@ if not os.path.exists("_static/example_basic_workflow.zip") \
 # Re-generate module autodoc
 cwd = os.getcwd()
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-print("[watch] os.getcwd() = {}".format(os.getcwd()))
 
 shutil.rmtree("doc/source/api/")
 invocation = "sphinx-apidoc -o doc/source/api enb"
