@@ -19,11 +19,14 @@ Some of the main features of ``enb`` are:
 
 .. note::
    ``enb`` is based on well-known python libraries such as ``pandas`` and ``pyplot``.
-   No prior knowledge of these libraries is required, although it is highly recomended.
+   No prior knowledge of these libraries is required, although it is highly recommended.
 
 The following help pages will tour you through the most important features of ``enb``,
 and show minimal examples that you can use as starting point for your projects.
 You can also take a look at the automatically generated :ref:`API<api>`.
+
+.. warning::
+   This project is in beta! Comments welcome.
 
 .. toctree::
    :maxdepth: 1
