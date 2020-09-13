@@ -11,8 +11,7 @@ import random
 random.seed(0xbadc0f33)
 
 from test_all import options
-import enb.icompression as icompression
-import enb.codec_implementations.trivial_codecs
+from codec_implementations import trivial_codecs as trivial_codecs
 
 
 class TestAllCodecs(unittest.TestCase):
@@ -22,8 +21,8 @@ class TestAllCodecs(unittest.TestCase):
     def test_trivial_lossless(self):
         """Test the trivial raw-output codec.
         """
-        for cls in [enb.codec_implementations.trivial_codecs.TrivialLosslessCodec,
-                    enb.codec_implementations.trivial_codecs.TrivialCpWrapper]:
+        for cls in [trivial_codecs.TrivialLosslessCodec,
+                    trivial_codecs.TrivialCpWrapper]:
             test_one_codec(cls())
 
 
