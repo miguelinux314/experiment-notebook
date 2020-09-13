@@ -62,7 +62,6 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
-
     @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
     def set_bytes_per_sample(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
@@ -109,22 +108,6 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         based on the filename tags (and possibly its size)
         """
         file_path_to_geometry_dict(file_path=file_path, existing_dict=row)
-        # matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
-        # if matches:
-        #     match = matches[-1]
-        #     if len(matches) > 1 and options.verbose:
-        #         print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
-        #               f"Only the last one is considered.")
-        #     component_count, height, width = (int(match[i]) for i in range(3))
-        #     if any(dim < 1 for dim in (width, height, component_count)):
-        #         raise ValueError(f"Invalid dimension tag in {file_path}")
-        #     row["width"], row["height"], row["component_count"] = \
-        #         width, height, component_count
-        #     assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"]
-        #     assert row["samples"] == width * height * component_count
-        # else:
-        #     raise ValueError("Cannot determine image geometry "
-        #                      f"from file name {os.path.basename(file_path)}")
 
 
 class ImagePropertiesTable(ImageGeometryTable):
