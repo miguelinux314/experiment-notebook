@@ -8,6 +8,7 @@ __date__ = "19/09/2019"
 import os
 import collections
 import itertools
+import inspect
 
 from enb import atable
 from enb import sets
@@ -178,6 +179,11 @@ class Experiment(atable.ATable):
                 print("[W]arning: redundant dataset/experiment column(s): " +
                       ', '.join(redundant_columns) + ".")
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
+
+    def get_dataset_info_row(self, file_path):
+        """Get the dataset info table row for the file path given as argument.
+        """
+        return self.dataset_table_df.loc[atable.indices_to_internal_loc(file_path)]
 
     @property
     def joined_column_to_properties(self):
