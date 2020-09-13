@@ -67,6 +67,8 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_logo = "img/enb_logo_small.png"
+
 # Output static examples
 # Basic example
 if not os.path.exists("_static/example_basic_workflow.zip") \
