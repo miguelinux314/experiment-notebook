@@ -188,13 +188,18 @@ class Experiment(atable.ATable):
         if len(df) > 0:
             first_row = df.iloc[0]
             file_path, task_name = first_row[self.index]
-            task = self.tasks_by_name[task_name]
-            task_param_names = list(task.param_dict.keys())
+            task_param_names = set()
+            for task in self.tasks_by_name.values():
+                for k in task.param_dict.keys():
+                    task_param_names.add(k)
             for param_name in task_param_names:
                 def get_param_row(row):
                     file_path, task_name = row[self.index]
                     task = self.tasks_by_name[task_name]
-                    return task.param_dict[param_name]
+                    try:
+                        return task.param_dict[param_name]
+                    except KeyError as ex:
+                        return None
                 df[param_name] = df.apply(get_param_row, axis=1)
                 
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
