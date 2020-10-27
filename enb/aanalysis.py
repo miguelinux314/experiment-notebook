@@ -883,7 +883,8 @@ class TwoColumnLineAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False, show_markers=False, marker_size=3):
+                   adjust_height=False, show_markers=False, marker_size=3,
+                   legend_column_count=None):
         """
         :param adjust_height:
         :param full_df: full pandas.DataFrame to be analyzed and plotted
@@ -910,6 +911,8 @@ class TwoColumnLineAnalyzer(Analyzer):
         :param marker_size: if show_markers is True, this parameters sets
           the displayed marker size
         """
+        legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
+        
         assert target_columns, "Target columns cannot be empty nor None"
         try:
             len(target_columns[0]) == 2
@@ -962,7 +965,6 @@ class TwoColumnLineAnalyzer(Analyzer):
                     plotdata.LineData(x_values=x_values, y_values=y_values,
                                       x_label=column_name_x, y_label=column_name_y,
                                       label=family.label, alpha=self.alpha,
-                                      legend_column_count=legend_column_count,
                                       extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) \
                                           if show_markers else None)]
 
@@ -978,6 +980,7 @@ class TwoColumnLineAnalyzer(Analyzer):
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
                 horizontal_margin=0.05 * (global_max_x - global_min_x),
+                legend_column_count=legend_column_count,
                 combine_groups=True, group_name_order=[f.label for f in group_by])
 
 
