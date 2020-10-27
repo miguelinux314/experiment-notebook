@@ -152,7 +152,9 @@ class Experiment(atable.ATable):
 
     def get_df(self, target_indices=None, fill=True, overwrite=False,
                parallel_row_processing=True, target_tasks=None):
-        """Get a DataFrame with the results of the experiment.
+        """Get a DataFrame with the results of the experiment. The produced DataFrame
+        contains the columns from the dataset info table (but they are not stored
+        in the experiment's persistence file).
 
         :param parallel_row_processing: if True, parallel computation is used to fill the df,
           including compression
@@ -169,6 +171,8 @@ class Experiment(atable.ATable):
             sorted(set(target_indices)), sorted(set(target_task_names)))),
             parallel_row_processing=parallel_row_processing,
             fill=fill, overwrite=overwrite)
+        
+        # Add dataset columns
         rsuffix = "__redundant__index"
         df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
                      on=self.dataset_info_table.index, rsuffix=rsuffix)
@@ -178,6 +182,21 @@ class Experiment(atable.ATable):
             if redundant_columns:
                 print("[W]arning: redundant dataset/experiment column(s): " +
                       ', '.join(redundant_columns) + ".")
+                
+        
+        # Add columns based on task parameters
+        if len(df) > 0:
+            first_row = df.iloc[0]
+            file_path, task_name = first_row[self.index]
+            task = self.tasks_by_name[task_name]
+            task_param_names = list(task.param_dict.keys())
+            for param_name in task_param_names:
+                def get_param_row(row):
+                    file_path, task_name = row[self.index]
+                    task = self.tasks_by_name[task_name]
+                    return task.param_dict[param_name]
+                df[param_name] = df.apply(get_param_row, axis=1)
+                
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 
     def get_dataset_info_row(self, file_path):
