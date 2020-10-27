@@ -63,6 +63,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
+
     @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
     def set_bytes_per_sample(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
@@ -276,8 +277,34 @@ def iproperties_row_to_numpy_dtype(image_properties_row):
 
 
 def iproperties_row_to_sample_type_tag(image_properties_row):
-    """Return a sample type tag as recognized by isets (e.g., u16be)
+    """Return a sample type name tag as recognized by isets (e.g., u16be),
+    given an object similar to an ImageGeometryTable row.
     """
+    assert image_properties_row["signed"] in [True, False]
+    assert image_properties_row["bytes_per_sample"] in [1, 2, 3, 4]
+    assert image_properties_row["big_endian"] in [True, False]
+
     return ("s" if image_properties_row["signed"] else "u") \
            + str(8 * image_properties_row["bytes_per_sample"]) \
            + ("be" if image_properties_row["big_endian"] else "le")
+
+
+def iproperties_row_to_geometry_tag(image_properties_row):
+    """Return an image geometry name tag recognized by isets (e.g., 3x600x800
+    for an 800x600, 3 component image), 
+    given an object similar to an ImageGeometryTable row.
+    """
+    return f"{image_properties_row['component_count']}" \
+           f"x{image_properties_row['height']}" \
+           f"x{image_properties_row['width']}"
+
+
+def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_per_sample, signed):
+    """Return a full name tag (including sample type and dimension information),
+    recognized by isets.
+    """
+    row = dict(width=width, height=height, component_count=component_count,
+               big_endian=big_endian, bytes_per_sample=bytes_per_sample,
+               signed=signed)
+    return f"{iproperties_row_to_sample_type_tag(row)}" \
+           f"-{iproperties_row_to_geometry_tag(row)}"
