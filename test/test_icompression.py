@@ -15,11 +15,13 @@ import numpy as np
 import shutil
 
 import test_all
-from enb import icompression
-from enb import isets
 from enb.config import get_options
 
 options = get_options()
+
+from enb import icompression
+from enb import isets
+from codec_implementations import trivial_codecs
 
 
 class ConstantOutputCodec(icompression.LosslessCodec):
@@ -94,6 +96,67 @@ class TestIcompression(unittest.TestCase):
                                     (df["pae"], abs(error))
                                 assert (np.abs(df["mse"] - error ** 2) < (2 * sys.float_info.epsilon)).all(), \
                                     (df["mse"], abs(error))
+
+
+class TestSpectralAngle(unittest.TestCase):
+    def get_expected_angles_deg(self, img_a, img_b):
+        """Manually obtain the vector angles in degrees"""
+        width, height, component_count = img_a.shape
+        assert img_a.shape == img_b.shape
+
+        img_a = img_a.copy().astype("i4")
+        img_b = img_b.copy().astype("i4")
+
+        angles = []
+        for x in range(width):
+            for y in range(height):
+                a = img_a[x, y, :]
+                b = img_b[x, y, :]
+                num = np.dot(a, b)
+                den = np.sqrt(np.dot(a, a)) * np.sqrt(np.dot(b, b))
+
+                angle = np.arccos(num / den)
+                angles.append(np.rad2deg(angle))
+        return angles
+
+    def test_spectral_angle(self):
+        options.exit_on_error = True
+        options.sequential = True
+
+        for constant_offset in [1, 5, 10]:
+            width, height, component_count = 2, 3, 4
+            bytes_per_sample, signed, big_endian = 2, True, True
+            row = dict(signed=signed, bytes_per_sample=bytes_per_sample, big_endian=big_endian)
+            original_array = np.zeros((width, height, component_count), dtype=isets.iproperties_row_to_numpy_dtype(row))
+            for x in range(width):
+                for y in range(height):
+                    for z in range(component_count):
+                        original_array[x, y, z] = 100 * z + 10 * y + x
+            reconstructed_array = original_array + constant_offset
+            expected_angles = self.get_expected_angles_deg(original_array, reconstructed_array)
+
+            tag = isets.iproperties_to_name_tag(
+                width=width, height=height, component_count=component_count,
+                big_endian=big_endian, bytes_per_sample=bytes_per_sample, signed=signed)
+
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                with tempfile.NamedTemporaryFile(suffix="-" + tag + ".raw", dir=tmp_dir) as tmp_file:
+                    isets.dump_array_bsq(original_array, tmp_file.name)
+                    sa_exp = icompression.SpectralAngleTable(
+                        codecs=[trivial_codecs.OffsetLossyCodec(constant_offset)],
+                        dataset_paths=[tmp_file.name],
+                        csv_experiment_path=os.path.join(tmp_dir, "exp_persistence.csv"),
+                        csv_dataset_path=os.path.join(tmp_dir, "dataset_persistence.csv"))
+
+                    df = sa_exp.get_df()
+
+                    abs_diff_average_sa = abs(df.iloc[0]["mean_spectral_angle_deg"]
+                                              - (sum(expected_angles) / len(expected_angles)))
+                    abs_diff_max_sa = abs(df.iloc[0]["max_spectral_angle_deg"]
+                                          - max(expected_angles))
+
+                    assert abs_diff_average_sa < 1e-8, "Wrong mean spectral angle"
+                    assert abs_diff_max_sa < 1e-8, "Wrong maximum spectral angle"
 
 
 if __name__ == '__main__':
