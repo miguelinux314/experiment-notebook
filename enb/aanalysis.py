@@ -1036,3 +1036,4 @@ def clean_column_name(column_name):
     """Return a cleaned version of the column name, more indicated for display.
     """
     return column_name.replace("_", " ").strip()
+
