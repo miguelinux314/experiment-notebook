@@ -6,7 +6,10 @@ __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "31/03/2020"
 
 import shutil
+import numpy as np
+
 import enb.icompression as icompression
+import enb.isets as isets
 
 
 class TrivialLosslessCodec(icompression.LosslessCodec):
@@ -39,3 +42,22 @@ class TrivialCpWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"'{compressed_path}' '{reconstructed_path}'"
+
+
+class OffsetLossyCodec(icompression.LossyCodec):
+    """Trivial lossy codec that adds a constant to every pixel of the image,
+    and stores the result with the same data format as the original.
+    Note that overflows result in wrap around values (max+1 results in 0)
+    """
+
+    def __init__(self, constant):
+        super().__init__(param_dict=dict(constant=constant))
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        array = isets.load_array_bsq(
+            file_or_path=original_path, image_properties_row=original_file_info)
+        array += self.param_dict["constant"]
+        isets.dump_array_bsq(array=array, file_or_path=compressed_path)
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        shutil.copyfile(compressed_path, reconstructed_path)

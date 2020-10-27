@@ -239,7 +239,7 @@ class WrapperCodec(AbstractCodec):
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
         try:
-            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)            
+            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
             if options.verbose > 3:
                 print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
         except tcall.InvocationError as ex:
@@ -296,7 +296,8 @@ class WrapperCodec(AbstractCodec):
             invocation_name = "invocation_decompression_" \
                               + self.name \
                               + os.path.abspath(os.path.realpath(
-                original_file_info["file_path"] if original_file_info is not None else compressed_path)).replace(os.sep, "_")
+                original_file_info["file_path"] if original_file_info is not None else compressed_path)).replace(os.sep,
+                                                                                                                 "_")
             with open(os.path.join(self.output_invocation_dir, invocation_name), "w") as invocation_file:
                 invocation_file.write(f"Compressed path: {compressed_path}\n"
                                       f"Reconstructed path: {reconstructed_path}\n"
@@ -355,6 +356,14 @@ class CompressionExperiment(experiment.Experiment):
     check_lossless = True
 
     class RowWrapper:
+        """Rows passed as arguments to the table column functions of CompressionExperiment
+        subclasses are of this type. This allows accessing the compression_results and
+        decompression_results properties (see the CompressionResults and DecompressionResults classes), 
+        which automatically compress and decompress
+        the image with the appropriate codec. Row names are set and retrieved normally
+        with a dict-like syntax.
+        """
+
         def __init__(self, file_path, codec, image_info_row, row):
             self.file_path = file_path
             self.codec = codec
@@ -646,7 +655,8 @@ class CompressionExperiment(experiment.Experiment):
         atable.ColumnProperties(name="lossless_reconstruction", label="Lossless?"),
         atable.ColumnProperties(name="compression_time_seconds", label="Compression time (s)", plot_min=0),
         atable.ColumnProperties(name="decompression_time_seconds", label="Decompression time (s)", plot_min=0),
-        atable.ColumnProperties(name="repetitions", label="Number of compression/decompression repetitions", plot_min=0),
+        atable.ColumnProperties(name="repetitions", label="Number of compression/decompression repetitions",
+                                plot_min=0),
         atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256")
     ])
     def set_comparison_results(self, index, row):
@@ -740,3 +750,53 @@ class LossyCompressionExperiment(CompressionExperiment):
         max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
         row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
             if row["mse"] > 0 else float("inf")
+
+
+class SpectralAngleTable(LossyCompressionExperiment):
+    """Lossy compression experiment that computes spectral angle "distance" 
+    measures between the compressed and the reconstructed images.
+    
+    Subclasses of LossyCompressionExperiment may inherit from this one to
+    automatically add the data columns defined here
+    """
+
+    def get_spectral_angles_deg(self, index, row):
+        """Return a sequence of spectral angles (in degrees), 
+        one per (x,y) position in the image, flattened in raster order.
+        """
+        # Read original and reconstructed images
+        original_file_path, task_name = index
+        image_properties_row = self.get_dataset_info_row(original_file_path)
+        decompression_results = row.decompression_results
+        original_array = isets.load_array_bsq(
+            file_or_path=original_file_path, image_properties_row=image_properties_row)
+        reconstructed_array = isets.load_array_bsq(
+            file_or_path=decompression_results.reconstructed_path, image_properties_row=image_properties_row)
+
+        # Reshape flattening the x,y axes, and maintaining the z axis for each (x,y) position
+        original_array = np.reshape(
+            original_array.swapaxes(0, 1),
+            (image_properties_row["width"] * image_properties_row["height"], image_properties_row["component_count"]),
+            "F").astype("i4")
+        reconstructed_array = np.reshape(
+            reconstructed_array.swapaxes(0, 1),
+            (image_properties_row["width"] * image_properties_row["height"], image_properties_row["component_count"]),
+            "F").astype("i4")
+
+        dots = np.einsum("ij,ij->i", original_array, reconstructed_array)
+        magnitude_a = np.linalg.norm(original_array, axis=1)
+        magnitude_b = np.linalg.norm(reconstructed_array, axis=1)
+        # Clip, because the dot product can slip past 1 or -1 due to rounding
+        cosines = np.clip(dots / (magnitude_a * magnitude_b), -1, 1)
+        angles = np.degrees(np.arccos(cosines))
+        return angles.tolist()
+
+    @atable.column_function([
+        enb.atable.ColumnProperties("mean_spectral_angle_deg", label="Mean spectral angle (deg)",
+                                    plot_min=0, plot_max=180),
+        enb.atable.ColumnProperties("max_spectral_angle_deg", label="Max spectral angle (deg)",
+                                    plot_min=0, plot_max=180)])
+    def set_spectral_distances(self, index, row):
+        spectral_angles = self.get_spectral_angles_deg(index=index, row=row)
+        row["mean_spectral_angle_deg"] = sum(spectral_angles) / len(spectral_angles)
+        row["max_spectral_angle_deg"] = max(spectral_angles)
