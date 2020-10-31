@@ -155,8 +155,8 @@ class TestSpectralAngle(unittest.TestCase):
                     abs_diff_max_sa = abs(df.iloc[0]["max_spectral_angle_deg"]
                                           - max(expected_angles))
 
-                    assert abs_diff_average_sa < 1e-8, "Wrong mean spectral angle"
-                    assert abs_diff_max_sa < 1e-8, "Wrong maximum spectral angle"
+                    assert abs_diff_average_sa < 1e-5, f"Wrong mean spectral angle (diff={abs_diff_average_sa})"
+                    assert abs_diff_max_sa < 1e-5, f"Wrong maximum spectral angle (diff={abs_diff_max_sa})"
 
 
 if __name__ == '__main__':
