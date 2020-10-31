@@ -46,13 +46,14 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
     base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
     assert os.path.isdir(base_dataset_dir), \
         f"Nonexistent dataset dir {base_dataset_dir}"
-    return sorted(
+    sorted_path_list = sorted(
         (get_canonical_path(p) for p in glob.glob(
             os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
             recursive=True)
          if os.path.isfile(p)),
         # key=lambda p: os.path.getsize(p))
         key=lambda p: get_canonical_path(p).lower())
+    return sorted_path_list if not options.quick else sorted_path_list[:options.quick]
 
 
 def get_canonical_path(file_path):
@@ -65,8 +66,10 @@ def get_canonical_path(file_path):
 class UnkownPropertiesException(Exception):
     pass
 
+
 class VersioningFailedException(Exception):
     pass
+
 
 class FilePropertiesTable(atable.ATable):
     """Table describing basic file properties (see decorated methods below).
@@ -198,7 +201,7 @@ class FileVersionTable(FilePropertiesTable):
                           for index in target_indices]
         version_indices = [index.replace(base_path, version_path)
                            for index in target_indices]
-        
+
         if parallel_versioning:
             version_fun_id = ray.put(self.version)
             overwrite_id = ray.put(overwrite)
@@ -267,7 +270,6 @@ class FileVersionTable(FilePropertiesTable):
             raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
                                              f"but it was not versioned in this run.")
         row[_column_name] = sum(version_time_list) / len(version_time_list)
-        
 
     @atable.column_function("version_time_repetitions", label="Repetitions for obtaining versioning time")
     def set_version_repetitions(self, file_path, row):
@@ -336,7 +338,8 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
             versioning_time = version_fun(
                 input_path=input_path, output_path=output_path, row=row)
             if not os.path.exists(output_path) or os.path.getsize(output_path) == 0:
-                raise VersioningFailedException(f"Function {version_fun} did not produce a versioned path {input_path}->{output_path}")
+                raise VersioningFailedException(
+                    f"Function {version_fun} did not produce a versioned path {input_path}->{output_path}")
             versioning_time = versioning_time if versioning_time is not None \
                 else time.time() - time_before
             time_measurements.append(versioning_time)
@@ -348,5 +351,5 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
             except FileNotFoundError:
                 pass
             raise ex
-    
+
     return output_path, time_measurements
