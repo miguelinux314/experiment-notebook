@@ -183,6 +183,10 @@ def get_options(from_main=False):
                                    action="store_true")
     execution_options.add_argument("--no_new_results", help="Don't compute any new data. ",
                                    action="store_true", default=False)
+    execution_options.add_argument("--chunk_size", "--cs", 
+                                   help="Chunk size. Each processed chunk is made persistent "
+                                        "before processing the next one.",
+                                   default=None, type=int)
 
     render_options = parser.add_argument_group("Rendering options")
     render_options.add_argument("--no_render", "--nr",
