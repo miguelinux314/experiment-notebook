@@ -777,18 +777,27 @@ class SpectralAngleTable(LossyCompressionExperiment):
         original_array = np.reshape(
             original_array.swapaxes(0, 1),
             (image_properties_row["width"] * image_properties_row["height"], image_properties_row["component_count"]),
-            "F").astype("i4")
+            "F").astype("i8")
         reconstructed_array = np.reshape(
             reconstructed_array.swapaxes(0, 1),
             (image_properties_row["width"] * image_properties_row["height"], image_properties_row["component_count"]),
-            "F").astype("i4")
+            "F").astype("i8")
 
         dots = np.einsum("ij,ij->i", original_array, reconstructed_array)
         magnitude_a = np.linalg.norm(original_array, axis=1)
         magnitude_b = np.linalg.norm(reconstructed_array, axis=1)
+        
+        for i in range(magnitude_a.shape[0]):
+            # Avoid division by zero
+            magnitude_a[i] = max(1e-4, magnitude_a[i])
+            magnitude_b[i] = max(1e-4, magnitude_b[i])
+        
         # Clip, because the dot product can slip past 1 or -1 due to rounding
         cosines = np.clip(dots / (magnitude_a * magnitude_b), -1, 1)
         angles = np.degrees(np.arccos(cosines))
+        # Round because two identical images should return an angle of exactly 0
+        angles = np.round(angles, 5)
+        
         return angles.tolist()
 
     @atable.column_function([
@@ -798,5 +807,9 @@ class SpectralAngleTable(LossyCompressionExperiment):
                                     plot_min=0, plot_max=180)])
     def set_spectral_distances(self, index, row):
         spectral_angles = self.get_spectral_angles_deg(index=index, row=row)
+        
+        for angle in spectral_angles:
+            assert not np.isnan(angle), f"Error calculating an angle for {index}: {angle}"
+        
         row["mean_spectral_angle_deg"] = sum(spectral_angles) / len(spectral_angles)
         row["max_spectral_angle_deg"] = max(spectral_angles)
