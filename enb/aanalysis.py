@@ -36,8 +36,9 @@ fill_style_cycle = ["full"] * len(marker_cycle) + ["none"] * len(marker_cycle)
 @config.propagates_options
 def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
+                             x_min=None, x_max=None,
                              global_y_label="Relative frequency", combine_groups=False, semilog_hist_min=1e-10,
-                             options=None,
+                             options=None, # Used by @config.propagates_options
                              group_name_order=None, fig_width=None, fig_height=None,
                              global_y_label_pos=None, legend_column_count=None,
                              show_grid=None):
@@ -46,6 +47,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                 column_properties=column_properties, global_x_label=global_x_label,
                                 horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
+                                x_min=x_min, x_max=x_max,
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
                                 combine_groups=combine_groups, semilog_hist_min=semilog_hist_min,
@@ -56,7 +58,8 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
-                         horizontal_margin=0, y_min=None, y_max=None, y_labels_by_group_name=None,
+                         horizontal_margin=0, x_min=None, x_max=None,
+                         y_min=None, y_max=None, y_labels_by_group_name=None,
                          color_by_group_name=None, global_y_label="Relative frequency",
                          combine_groups=False, semilog_hist_min=1e-10,
                          group_name_order=None,
@@ -69,6 +72,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param pds_by_group_name: dictionary of lists of PlottableData instances
     :param output_plot_path: path to the file to be created with the plot
     :param column_properties: ColumnProperties instance for the column being plotted
+    :param x_min, x_max: range of values to be plotted in the X axis. If any is None,
+      the plot automatically adjusts to column_properties, or the data if limits
+      are not specified there either.
     :param y_min, y_max: range of values to be plotted in the Y axis. If any is None,
       the plot automatically adjusts to column_properties, or the data if limits
       are not specified there either.
@@ -211,7 +217,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
         plt.xticks(x_tick_values, x_tick_labels)
 
-    xlim = (global_x_min - horizontal_margin / 2, global_x_max + horizontal_margin / 2)
+    xlim = [global_x_min - horizontal_margin / 2, global_x_max + horizontal_margin / 2]
+    xlim[0] = xlim[0] if x_min is None else x_min
+    xlim[1] = xlim[1] if x_max is None else x_max
     plt.xlim(*xlim)
     if len(sorted_group_names) > 15:
         plt.subplots_adjust(hspace=1)
@@ -392,6 +400,12 @@ class ScalarDistributionAnalyzer(Analyzer):
                             pld.y_values = [0.5 * (y_max - y_min)]
             else:
                 y_max = 1
+                
+            try:
+                column_properties = column_to_properties[column_name]
+                x_min, x_max = column_properties.x_min, column_properties.x_max
+            except KeyError:
+                x_min, x_max = None, None
 
             expected_return_ids.append(
                 ray_render_plds_by_group.remote(
@@ -406,6 +420,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                     y_labels_by_group_name=ray.put({group: f"{group} ({length})" if show_count else f"{group}"
                                                     for group, length in
                                                     lengths_by_group_name.items()}),
+                    x_min=ray.put(x_min), x_max=ray.put(x_max),
                     y_min=ray.put(y_min), y_max=ray.put(y_max),
                     semilog_hist_min=ray.put(self.semilog_hist_min),
                     group_name_order=ray.put(group_name_order)))
@@ -610,6 +625,12 @@ class HistogramDistributionAnalyzer(Analyzer):
             y_max = column_to_properties[column_name].hist_max if column_name in column_to_properties else None
             y_max = self.hist_max if y_max is None else y_max
 
+            try:
+                column_properties = column_to_properties[column_name]
+                x_min, x_max = column_properties.x_min, column_properties.x_max
+            except KeyError:
+                x_min, x_max = None, None
+
             return_ids.append(ray_render_plds_by_group.remote(
                 options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group_name),
@@ -618,8 +639,8 @@ class HistogramDistributionAnalyzer(Analyzer):
                 column_properties=ray.put(column_properties),
                 global_x_label=ray.put(x_label),
                 global_y_label=ray.put(y_label),
-                y_min=ray.put(y_min),
-                y_max=ray.put(y_max),
+                x_min=ray.put(x_min), x_max=ray.put(x_max),
+                y_min=ray.put(y_min), y_max=ray.put(y_max),
                 y_labels_by_group_name=ray.put(labels_by_group),
                 group_name_order=ray.put(group_name_order)))
 
@@ -768,6 +789,12 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
             y_max = column_to_properties[column_name].hist_max if column_name in column_to_properties else None
             y_max = self.hist_max if y_max is None else y_max
 
+            try:
+                column_properties = column_to_properties[column_name]
+                x_min, x_max = column_properties.x_min, column_properties.x_max
+            except KeyError:
+                x_min, x_max = None, None
+
             result_ids.append(ray_render_plds_by_group.remote(
                 options=ray.put(options),
                 pds_by_group_name=ray.put(pds_by_group),
@@ -775,6 +802,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
                 column_properties=ray.put(properties), horizontal_margin=ray.put(0),
                 global_x_label=ray.put(x_label), y_labels_by_group_name=ray.put(y_labels_by_group_name),
                 global_y_label=ray.put(y_label), color_by_group_name=ray.put(None),
+                x_min=ray.put(x_min), x_max=ray.put(x_max),
                 y_min=ray.put(y_min), y_max=ray.put(y_max),
                 group_name_order=ray.put(group_name_order)))
 
@@ -854,6 +882,12 @@ class TwoColumnScatterAnalyzer(Analyzer):
             global_y_min = min(min(pld.y_values) for pld in all_plds)
             global_y_max = max(max(pld.y_values) for pld in all_plds)
 
+            try:
+                column_properties = column_to_properties[column_x]
+                global_x_min, global_x_max = column_properties.x_min, column_properties.x_max
+            except KeyError:
+                pass
+
             global_y_min = global_y_min - 0.05 * (global_y_max - global_y_min) \
                 if not column_y in column_to_properties or column_to_properties[column_y].plot_min is None \
                 else column_to_properties[column_y].plot_min
@@ -867,7 +901,8 @@ class TwoColumnScatterAnalyzer(Analyzer):
             expected_returns.append(ray_render_plds_by_group.remote(
                 pds_by_group_name=pds_by_group_id,
                 output_plot_path=ray.put(output_plot_path),
-                column_properties=ray.put(column_to_properties[column_x] if column_x in column_to_properties else None),
+                column_properties=ray.put(column_to_properties[column_x] 
+                                          if column_x in column_to_properties else None),
                 horizontal_margin=ray.put(0.05 * (global_x_max - global_x_min)),
                 y_min=ray.put(global_y_min),
                 y_max=ray.put(global_y_max),
@@ -935,12 +970,13 @@ class TwoColumnLineAnalyzer(Analyzer):
                 family_avg_x_y_values = []
                 for task_name in family.task_names:
                     rows = full_df[full_df["task_name"] == task_name]
+                    
                     # Sanity check on the number of rows
                     if data_point_count is None:
                         data_point_count = len(rows)
                     else:
-                        assert data_point_count == len(
-                            rows), f"Previously found {data_point_count} data points per task, " \
+                        assert data_point_count == len(rows), \
+                            f"Previously found {data_point_count} data points per task, " \
                                    f"but {task_name} in {family} has {len(rows)} data points."
 
                     family_avg_x_y_values.append(
@@ -971,12 +1007,20 @@ class TwoColumnLineAnalyzer(Analyzer):
             global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
             global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
 
+            try:
+                column_properties = column_to_properties[column_name_x]
+                global_min_x, global_max_x = column_properties.x_min, column_properties.x_max
+            except KeyError:
+                pass
+
             render_plds_by_group(
                 pds_by_group_name=plds_by_family_label,
                 output_plot_path=os.path.join(output_plot_dir, f"plot_line_{column_name_x}_{column_name_y}.pdf"),
                 column_properties=column_to_properties[column_name_x],
                 global_x_label=column_to_properties[column_name_x].label,
                 global_y_label=column_to_properties[column_name_y].label,
+                x_min=global_min_x,
+                x_max=global_max_x,
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
                 horizontal_margin=0.05 * (global_max_x - global_min_x),
