@@ -406,7 +406,8 @@ class ATable(metaclass=MetaTable):
                                    if k not in itertools.chain(self.indices, self.ignored_columns))
 
     def get_df(self, target_indices, target_columns=None,
-               fill=True, overwrite=False, parallel_row_processing=True):
+               fill=True, overwrite=False, parallel_row_processing=True,
+               chunk_size=None):
         """Return a pandas DataFrame containing all given indices and defined columns.
         If fill is True, missing values will be computed.
         If fill and overwrite are True, all values will be computed, regardless of
@@ -421,10 +422,45 @@ class ATable(metaclass=MetaTable):
           in permanent storage. Otherwise, existing values are skipped from the computation.
         :param parallel_row_processing: if True, processing of rows is performed in a parallel,
            possibly distributed fashion. Otherwise, they are processed serially using the invoking thread.
+        :param chunk_size: If None, its value is assigned from options.chunk_size. After this, 
+           if not None, the list of target indices is split in 
+           chunks of size at most chunk_size elements. Results are made persistent every time
+           one of these chunks is completed. If None, a single chunk is defined with all
+           indices, and results are made persistent only once. 
 
         :return: a DataFrame instance containing the requested data
         :raises: CorrupedTableError, ColumnFailedError, when an error is encountered
           processing the data.
+        """
+        target_indices = list(target_indices)
+        assert len(target_indices) > 0, "At least one index must be provided"
+
+        chunk_size = chunk_size if chunk_size is not None else options.chunk_size
+        chunk_size = chunk_size if chunk_size is not None else len(target_indices)
+        assert chunk_size > 0, f"Invalid chunk size {chunk_size}"
+        chunk_list = [target_indices[i:i + chunk_size] for i in range(0, len(target_indices), chunk_size)]
+        assert len(chunk_list) > 0
+        for i, chunk in enumerate(chunk_list):
+            if options.verbose:
+                print(f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} "
+                      f"@@ {100 * i * chunk_size / len(target_indices):.1f}"
+                      f"-{min(100, 100 * ((i+1)*chunk_size) / len(target_indices)):.1f}% "
+                      f"({datetime.datetime.now()})")
+            df = self.get_df_one_chunk(
+                target_indices=chunk, target_columns=target_columns, fill=fill,
+                overwrite=overwrite, parallel_row_processing=parallel_row_processing)
+
+        if len(chunk_list) > 1:
+            # Get the full df if more thank one chunk is requested
+            df = self.get_df_one_chunk(
+                target_indices=target_indices, target_columns=target_columns, fill=fill,
+                overwrite=overwrite, parallel_row_processing=parallel_row_processing)
+
+        return df
+
+    def get_df_one_chunk(self, target_indices, target_columns=None,
+                         fill=True, overwrite=False, parallel_row_processing=True):
+        """Implementation the :meth:`get_df` for one chunk of indices
         """
         ray_cluster.init_ray()
 
@@ -546,6 +582,7 @@ class ATable(metaclass=MetaTable):
         assert len(table_df) == len(target_indices), \
             "Unexpected table length / requested indices " \
             f"{(len(table_df), len(target_indices))}"
+
         return table_df
 
     def get_matlab_struct_str(self, target_indices):

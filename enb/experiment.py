@@ -151,16 +151,20 @@ class Experiment(atable.ATable):
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
     def get_df(self, target_indices=None, fill=True, overwrite=False,
-               parallel_row_processing=True, target_tasks=None):
+               parallel_row_processing=True, target_tasks=None,
+               chunk_size=None):
         """Get a DataFrame with the results of the experiment. The produced DataFrame
         contains the columns from the dataset info table (but they are not stored
         in the experiment's persistence file).
 
         :param parallel_row_processing: if True, parallel computation is used to fill the df,
           including compression
-        :param target_paths, target_tasks: if not None, results are calculated for these
-          instead of for all elements in self.target_file_paths and self.codecs,
-          respectively
+        :param target_indices: list of file paths to be processed. If None, self.target_file_paths
+          is used instead.  
+        :param target_tasks: list of tasks to be applied to each file. If None, self.codecs
+          is used instead.
+        :param chunk_size: if not None, a positive integer that determines the number of table
+          rows that are processed before made persistent.
         """
         target_indices = self.target_file_paths if target_indices is None else target_indices
         target_tasks = self.tasks if target_tasks is None else target_tasks
@@ -170,7 +174,7 @@ class Experiment(atable.ATable):
         df = super().get_df(target_indices=tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names)))),
             parallel_row_processing=parallel_row_processing,
-            fill=fill, overwrite=overwrite)
+            fill=fill, overwrite=overwrite, chunk_size=chunk_size)
         
         # Add dataset columns
         rsuffix = "__redundant__index"
@@ -186,8 +190,6 @@ class Experiment(atable.ATable):
         
         # Add columns based on task parameters
         if len(df) > 0:
-            first_row = df.iloc[0]
-            file_path, task_name = first_row[self.index]
             task_param_names = set()
             for task in self.tasks_by_name.values():
                 for k in task.param_dict.keys():
