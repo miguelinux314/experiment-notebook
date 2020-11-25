@@ -329,6 +329,8 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.column_to_properties">(enb.icompression.LossyCompressionExperiment attribute)</a>
 </li>
+        <li><a href="api/enb.html#enb.icompression.SpectralAngleTable.column_to_properties">(enb.icompression.SpectralAngleTable attribute)</a>
+</li>
         <li><a href="api/enb.html#enb.isets.BandEntropyTable.column_to_properties">(enb.isets.BandEntropyTable attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.column_to_properties">(enb.isets.HistogramFullnessTable attribute)</a>
@@ -502,8 +504,6 @@
 </li>
       <li><a href="api/enb.html#enb.atable.get_defining_class_name">get_defining_class_name() (in module enb.atable)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.ATable.get_df">get_df() (enb.atable.ATable method)</a>
 
       <ul>
@@ -512,6 +512,10 @@
         <li><a href="api/enb.html#enb.sets.FileVersionTable.get_df">(enb.sets.FileVersionTable method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.atable.ATable.get_df_one_chunk">get_df_one_chunk() (enb.atable.ATable method)</a>
+</li>
       <li><a href="api/enb.html#enb.aanalysis.get_histogram_dicts">get_histogram_dicts() (in module enb.aanalysis)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.get_matlab_struct_str">get_matlab_struct_str() (enb.atable.ATable method)</a>
@@ -521,6 +525,8 @@
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable.get_relative_path">get_relative_path() (enb.sets.FilePropertiesTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.get_scalar_min_max_by_column">get_scalar_min_max_by_column() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.SpectralAngleTable.get_spectral_angles_deg">get_spectral_angles_deg() (enb.icompression.SpectralAngleTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.tcall.get_status_output_time">get_status_output_time() (in module enb.tcall)</a>
 </li>
@@ -572,19 +578,23 @@
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.indices">indices() (enb.atable.ATable property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.ATable.indices_and_columns">indices_and_columns() (enb.atable.ATable property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.indices_to_internal_loc">indices_to_internal_loc() (in module enb.atable)</a>
 </li>
       <li><a href="api/enb.html#enb.ray_cluster.init_ray">init_ray() (in module enb.ray_cluster)</a>
 </li>
       <li><a href="api/enb.html#enb.tcall.InvocationError">InvocationError</a>
 </li>
+      <li><a href="api/enb.html#enb.isets.iproperties_row_to_geometry_tag">iproperties_row_to_geometry_tag() (in module enb.isets)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.iproperties_row_to_numpy_dtype">iproperties_row_to_numpy_dtype() (in module enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.iproperties_row_to_sample_type_tag">iproperties_row_to_sample_type_tag() (in module enb.isets)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.iproperties_to_name_tag">iproperties_to_name_tag() (in module enb.isets)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -824,10 +834,10 @@
 </li>
       <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.set_histogram_fullness_2bytes">set_histogram_fullness_2bytes() (enb.isets.HistogramFullnessTable method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.isets.HistogramFullnessTable.set_histogram_fullness_4bytes">set_histogram_fullness_4bytes() (enb.isets.HistogramFullnessTable method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_image_geometry">set_image_geometry() (enb.isets.ImageGeometryTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_MSE">set_MSE() (enb.icompression.LossyCompressionExperiment method)</a>
@@ -849,6 +859,8 @@
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_samples">set_samples() (enb.isets.ImageGeometryTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_signed">set_signed() (enb.isets.ImageGeometryTable method)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.SpectralAngleTable.set_spectral_distances">set_spectral_distances() (enb.icompression.SpectralAngleTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.set_task_label">set_task_label() (enb.experiment.Experiment method)</a>
 </li>
@@ -874,6 +886,8 @@
         <li><a href="api/enb.html#enb.icompression.DecompressionResults.side_info_files">(enb.icompression.DecompressionResults attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.icompression.SpectralAngleTable">SpectralAngleTable (class in enb.icompression)</a>
+</li>
       <li><a href="api/enb.html#enb.plotdata.StepData">StepData (class in enb.plotdata)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.subdivision_count">subdivision_count (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>

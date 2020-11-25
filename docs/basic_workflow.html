@@ -161,7 +161,10 @@
             
   <div class="section" id="basic-workflow">
 <h1>Basic workflow<a class="headerlink" href="#basic-workflow" title="Permalink to this headline">¶</a></h1>
-<p>This page explains the basic workflow with <code class="docutils literal notranslate"><span class="pre">enb</span></code> with a <a class="reference external" href="./_static/example_basic_workflow.zip">simple example</a>.</p>
+<p>This page explains the basic workflow with <code class="docutils literal notranslate"><span class="pre">enb</span></code> with a <a class="reference external" href="./_static/example_basic_workflow.zip">simple example</a>.
+You can find the lastest version of this example at the
+<a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example">templates/basic_workflow</a>
+folder of the project.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="_images/general_structure.png"><img alt="Basic steps when using ``enb``" src="_images/general_structure.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Basic steps when using <code class="docutils literal notranslate"><span class="pre">enb</span></code>.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
@@ -223,7 +226,7 @@ is to be stored.</p></li>
 </ul>
 </div></blockquote>
 <p>Once data are available and our <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass is defined,
-a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+360.g068d1b5be)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
+a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">WikiAnalysis</span><span class="p">(</span><span class="n">csv_support_path</span><span class="o">=</span><span class="s2">&quot;persistence_basic_workflow.csv&quot;</span><span class="p">)</span>
 <span class="n">result_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">sample_paths</span><span class="p">)</span>
 </pre></div>
@@ -236,7 +239,7 @@ This avoids re-running the <code class="docutils literal notranslate"><span clas
 </div>
 <div class="section" id="data-reporting">
 <h2><strong>3 - Data reporting</strong><a class="headerlink" href="#data-reporting" title="Permalink to this headline">¶</a></h2>
-<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+360.g068d1b5be)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
+<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
 The <code class="docutils literal notranslate"><span class="pre">enb</span></code> library provides a few automatic tools to analyze and report
 one or more data columns. More specifically, the <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 provides several subclasses of the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> class, e.g.:</p>
@@ -265,7 +268,7 @@ the following code can be used:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+360.g068d1b5be)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">output_csv_file</span></code> generates a CSV file with basic statistics (min, max, average, std) for the target columns.</p></li>
 </ul>
 </div>
