@@ -437,6 +437,7 @@ class ATable(metaclass=MetaTable):
 
         chunk_size = chunk_size if chunk_size is not None else options.chunk_size
         chunk_size = chunk_size if chunk_size is not None else len(target_indices)
+        chunk_size = chunk_size if not options.quick else len(target_indices)
         assert chunk_size > 0, f"Invalid chunk size {chunk_size}"
         chunk_list = [target_indices[i:i + chunk_size] for i in range(0, len(target_indices), chunk_size)]
         assert len(chunk_list) > 0
