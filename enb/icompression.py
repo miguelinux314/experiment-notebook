@@ -802,9 +802,9 @@ class SpectralAngleTable(LossyCompressionExperiment):
 
     @atable.column_function([
         enb.atable.ColumnProperties("mean_spectral_angle_deg", label="Mean spectral angle (deg)",
-                                    plot_min=0, plot_max=180),
+                                    plot_min=0, plot_max=None),
         enb.atable.ColumnProperties("max_spectral_angle_deg", label="Max spectral angle (deg)",
-                                    plot_min=0, plot_max=180)])
+                                    plot_min=0, plot_max=None)])
     def set_spectral_distances(self, index, row):
         spectral_angles = self.get_spectral_angles_deg(index=index, row=row)
         
