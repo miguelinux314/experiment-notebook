@@ -301,14 +301,14 @@ class ScalarDistributionAnalyzer(Analyzer):
 
     semilog_hist_min = 1e-5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
         """Perform an analysis of target_columns, grouping as specified.
 
         :param adjust_height: adjust height to the maximum height contained in the y_values
         :param output_csv_file: path where the CSV report is stored
-        :param output_plot_dir: path where the distribution plots are stored
+        :param output_plot_dir: path where the distribution plots are stored. Defaults to options.plotdir
         :param target_columns: list of column names for which an analysis is to be performed.
           A single string is also accepted (as a single column name).
         :param column_to_properties: if not None, a dict indexed by column name (as given
@@ -318,6 +318,7 @@ class ScalarDistributionAnalyzer(Analyzer):
         :param show_global: if True, distribution for all entries (without grouping) is also shown
         :param version_name: if not None, the version name is prepended to the x axis' label
         """
+        output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         target_columns = [target_columns] if isinstance(target_columns, str) else target_columns
         column_to_properties = collections.defaultdict(
             lambda: enb.atable.ColumnProperties(name="unknown")) \
@@ -548,7 +549,7 @@ class HistogramDistributionAnalyzer(Analyzer):
 
     color_sequence = ["blue", "orange", "r", "g", "magenta", "yellow"]
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
         """Analyze a column, where each cell contains a real to real mapping.
@@ -566,6 +567,7 @@ class HistogramDistributionAnalyzer(Analyzer):
         :param show_count: determines whether the number of element per group should be shown in the group label
         :param version_name: if not None, a string identifying the file version that produced full_df.
         """
+        output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         full_df = pd.DataFrame(full_df)
         column_to_properties = collections.defaultdict(
             lambda: enb.atable.ColumnProperties("unknown")) \
@@ -742,9 +744,10 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
     line_alpha = 0.3
     line_width = 0.5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
+        output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         result_ids = []
         for column_name in target_columns:
             if column_name in column_to_properties:
@@ -815,7 +818,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
     marker_size = 5
     alpha = 0.25
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False, combine_groups=True):
         """
@@ -826,6 +829,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
           The first element is the name of the column to use for the x axis,
           the second element is the name of the column for the y axis.
         """
+        output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         selected_column_pairs = []
         for column_x, column_y in target_columns:
             if options.columns:
@@ -921,7 +925,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
 class TwoColumnLineAnalyzer(Analyzer):
     alpha = 0.5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False, show_markers=False, marker_size=3,
                    legend_column_count=None):
@@ -951,6 +955,7 @@ class TwoColumnLineAnalyzer(Analyzer):
         :param marker_size: if show_markers is True, this parameters sets
           the displayed marker size
         """
+        output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
 
         assert target_columns, "Target columns cannot be empty nor None"

@@ -35,5 +35,6 @@ You can also take a look at the automatically generated :ref:`API<api>`.
 
    installation
    basic_workflow
+   lossless_compression_example
    api
    thanks
