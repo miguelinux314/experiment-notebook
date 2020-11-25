@@ -169,9 +169,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             except AttributeError:
                 pld.extra_kwargs = d
 
-            if column_properties and column_properties.plot_max is not None:
-                pld.x_values = [x for x in pld.x_values if x <= column_properties.plot_max + horizontal_margin]
-                pld.y_values = pld.y_values[:len(pld.x_values)]
+            # if column_properties and column_properties.plot_max is not None:
+            #     pld.x_values = [x for x in pld.x_values if x <= column_properties.plot_max + horizontal_margin]
+            #     pld.y_values = pld.y_values[:len(pld.x_values)]
             try:
                 pld.render(axes=group_axes)
             except Exception as ex:
@@ -403,7 +403,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                 
             try:
                 column_properties = column_to_properties[column_name]
-                x_min, x_max = column_properties.x_min, column_properties.x_max
+                x_min, x_max = column_properties.plot_min, column_properties.plot_max
             except KeyError:
                 x_min, x_max = None, None
 
@@ -627,7 +627,7 @@ class HistogramDistributionAnalyzer(Analyzer):
 
             try:
                 column_properties = column_to_properties[column_name]
-                x_min, x_max = column_properties.x_min, column_properties.x_max
+                x_min, x_max = column_properties.plot_min, column_properties.plot_max
             except KeyError:
                 x_min, x_max = None, None
 
@@ -791,7 +791,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
 
             try:
                 column_properties = column_to_properties[column_name]
-                x_min, x_max = column_properties.x_min, column_properties.x_max
+                x_min, x_max = column_properties.plot_min, column_properties.plot_max
             except KeyError:
                 x_min, x_max = None, None
 
@@ -884,7 +884,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
             try:
                 column_properties = column_to_properties[column_x]
-                global_x_min, global_x_max = column_properties.x_min, column_properties.x_max
+                global_x_min, global_x_max = column_properties.plot_min, column_properties.plot_max
             except KeyError:
                 pass
 
@@ -983,6 +983,8 @@ class TwoColumnLineAnalyzer(Analyzer):
                         (rows[column_name_x].mean(), rows[column_name_y].mean()))
 
                 family_avg_x_y_values = sorted(family_avg_x_y_values)
+                    
+                
                 try:
                     x_values, y_values = zip(*family_avg_x_y_values)
                 except ValueError as ex:
@@ -995,7 +997,6 @@ class TwoColumnLineAnalyzer(Analyzer):
                         print("[>>>] f = {}".format(f))
                         print("[>>>] f.label = {}".format(f.label))
                         print("[>>>] f.task_names = {}".format(f.task_names))
-
                     raise ex
                 plds_by_family_label[family.label] = [
                     plotdata.LineData(x_values=x_values, y_values=y_values,
@@ -1003,15 +1004,15 @@ class TwoColumnLineAnalyzer(Analyzer):
                                       label=family.label, alpha=self.alpha,
                                       extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) \
                                           if show_markers else None)]
-
-            global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
-            global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds)
-
             try:
                 column_properties = column_to_properties[column_name_x]
-                global_min_x, global_max_x = column_properties.x_min, column_properties.x_max
+                global_min_x, global_max_x = column_properties.plot_min, column_properties.plot_max
             except KeyError:
-                pass
+                global_min_x, global_max_x = None, None
+            global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds) \
+                if global_min_x is None else global_min_x
+            global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds) \
+                if global_max_x is None else global_max_x
 
             render_plds_by_group(
                 pds_by_group_name=plds_by_family_label,
