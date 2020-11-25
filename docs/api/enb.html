@@ -87,6 +87,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">enb package</a><ul>
@@ -243,7 +244,7 @@ value to weights (e.g., counts).</p>
 
 <dl class="method">
 <dt id="enb.aanalysis.HistogramDistributionAnalyzer.analyze_df">
-<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir=None</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze a column, where each cell contains a real to real mapping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -315,7 +316,7 @@ If None, group names are sorted alphabetically (case insensitive).</p></li>
 per group, one per row.</p>
 <dl class="method">
 <dt id="enb.aanalysis.OverlappedHistogramAnalyzer.analyze_df">
-<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.OverlappedHistogramAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir=None</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.OverlappedHistogramAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze a column, where each cell contains a real to real mapping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,14 +357,14 @@ If None, group names are sorted alphabetically (case insensitive).</p></li>
 <p>Automatic analysis and report of scalar data in pandas’ DataFrames</p>
 <dl class="method">
 <dt id="enb.aanalysis.ScalarDistributionAnalyzer.analyze_df">
-<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir=None</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform an analysis of target_columns, grouping as specified.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>adjust_height</strong> – adjust height to the maximum height contained in the y_values</p></li>
 <li><p><strong>output_csv_file</strong> – path where the CSV report is stored</p></li>
-<li><p><strong>output_plot_dir</strong> – path where the distribution plots are stored</p></li>
+<li><p><strong>output_plot_dir</strong> – path where the distribution plots are stored. Defaults to options.plotdir</p></li>
 <li><p><strong>target_columns</strong> – list of column names for which an analysis is to be performed.
 A single string is also accepted (as a single column name).</p></li>
 <li><p><strong>column_to_properties</strong> – if not None, a dict indexed by column name (as given
@@ -447,7 +448,7 @@ in self.task_names)</p>
 
 <dl class="method">
 <dt id="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df">
-<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em>, <em class="sig-param">show_markers=False</em>, <em class="sig-param">marker_size=3</em>, <em class="sig-param">legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir=None</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em>, <em class="sig-param">show_markers=False</em>, <em class="sig-param">marker_size=3</em>, <em class="sig-param">legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -493,7 +494,7 @@ the displayed marker size</p></li>
 
 <dl class="method">
 <dt id="enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df">
-<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em>, <em class="sig-param">combine_groups=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir=None</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em>, <em class="sig-param">combine_groups=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1317,7 +1318,7 @@ It is not intended to be displayed as much as to be used as an index.</p>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
-:param original_file_info: a dict-like object describing original_path’s properties (e.g., geometry), or None
+:param original_file_info: a dict-like object describing original_path’s properties (e.g., geometry), or None.
 :return: (optional) a CompressionResults instance, or None (see compression_results_from_paths)</p>
 </dd></dl>
 
@@ -1707,7 +1708,7 @@ with name based on the codec and the image’s full path.</p></li>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
-:param original_file_info: a dict-like object describing original_path’s properties (e.g., geometry), or None
+:param original_file_info: a dict-like object describing original_path’s properties (e.g., geometry), or None.
 :return: (optional) a CompressionResults instance, or None (see compression_results_from_paths)</p>
 </dd></dl>
 

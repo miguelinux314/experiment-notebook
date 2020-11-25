@@ -124,7 +124,7 @@ class AbstractCodec(experiment.ExperimentTask):
         """Compress original_path into compress_path using param_dict as params.
         :param original_path: path to the original file to be compressed
         :param compressed_path: path to the compressed file to be created
-        :param original_file_info: a dict-like object describing original_path's properties (e.g., geometry), or None
+        :param original_file_info: a dict-like object describing original_path's properties (e.g., geometry), or None.
         :return: (optional) a CompressionResults instance, or None (see compression_results_from_paths)
         """
         raise NotImplementedError()
