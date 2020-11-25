@@ -197,7 +197,7 @@ using pyplot.</p>
 <dl class="method">
 <dt id="enb.aanalysis.Analyzer.analyze_df">
 <code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+360.g068d1b5be)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -447,7 +447,7 @@ in self.task_names)</p>
 
 <dl class="method">
 <dt id="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df">
-<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em>, <em class="sig-param">show_markers=False</em>, <em class="sig-param">marker_size=3</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">analyze_df</code><span class="sig-paren">(</span><em class="sig-param">full_df</em>, <em class="sig-param">target_columns</em>, <em class="sig-param">output_plot_dir</em>, <em class="sig-param">output_csv_file=None</em>, <em class="sig-param">column_to_properties=None</em>, <em class="sig-param">group_by=None</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">show_global=True</em>, <em class="sig-param">show_count=True</em>, <em class="sig-param">version_name=None</em>, <em class="sig-param">adjust_height=False</em>, <em class="sig-param">show_markers=False</em>, <em class="sig-param">marker_size=3</em>, <em class="sig-param">legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -576,7 +576,7 @@ suffixes.</p>
 
 <dl class="function">
 <dt id="enb.aanalysis.render_plds_by_group">
-<code class="sig-prename descclassname">enb.aanalysis.</code><code class="sig-name descname">render_plds_by_group</code><span class="sig-paren">(</span><em class="sig-param">pds_by_group_name</em>, <em class="sig-param">output_plot_path</em>, <em class="sig-param">column_properties</em>, <em class="sig-param">global_x_label</em>, <em class="sig-param">horizontal_margin=0</em>, <em class="sig-param">y_min=None</em>, <em class="sig-param">y_max=None</em>, <em class="sig-param">y_labels_by_group_name=None</em>, <em class="sig-param">color_by_group_name=None</em>, <em class="sig-param">global_y_label='Relative frequency'</em>, <em class="sig-param">combine_groups=False</em>, <em class="sig-param">semilog_hist_min=1e-10</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">fig_width=None</em>, <em class="sig-param">fig_height=None</em>, <em class="sig-param">global_y_label_pos=None</em>, <em class="sig-param">legend_column_count=None</em>, <em class="sig-param">show_grid=None</em>, <em class="sig-param">x_tick_list=None</em>, <em class="sig-param">x_tick_label_list=None</em>, <em class="sig-param">x_tick_label_angle=0</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.render_plds_by_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">enb.aanalysis.</code><code class="sig-name descname">render_plds_by_group</code><span class="sig-paren">(</span><em class="sig-param">pds_by_group_name</em>, <em class="sig-param">output_plot_path</em>, <em class="sig-param">column_properties</em>, <em class="sig-param">global_x_label</em>, <em class="sig-param">horizontal_margin=0</em>, <em class="sig-param">x_min=None</em>, <em class="sig-param">x_max=None</em>, <em class="sig-param">y_min=None</em>, <em class="sig-param">y_max=None</em>, <em class="sig-param">y_labels_by_group_name=None</em>, <em class="sig-param">color_by_group_name=None</em>, <em class="sig-param">global_y_label='Relative frequency'</em>, <em class="sig-param">combine_groups=False</em>, <em class="sig-param">semilog_hist_min=1e-10</em>, <em class="sig-param">group_name_order=None</em>, <em class="sig-param">fig_width=None</em>, <em class="sig-param">fig_height=None</em>, <em class="sig-param">global_y_label_pos=None</em>, <em class="sig-param">legend_column_count=None</em>, <em class="sig-param">show_grid=None</em>, <em class="sig-param">x_tick_list=None</em>, <em class="sig-param">x_tick_label_list=None</em>, <em class="sig-param">x_tick_label_angle=0</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.render_plds_by_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render lists of plotdata.PlottableData instances indexed by group name,
 each group in a row, with a shared X axis, which is set automatically in common
 for all groups for easier comparison.</p>
@@ -586,6 +586,9 @@ for all groups for easier comparison.</p>
 <li><p><strong>pds_by_group_name</strong> – dictionary of lists of PlottableData instances</p></li>
 <li><p><strong>output_plot_path</strong> – path to the file to be created with the plot</p></li>
 <li><p><strong>column_properties</strong> – ColumnProperties instance for the column being plotted</p></li>
+<li><p><strong>x_max</strong> (<em>x_min</em><em>,</em>) – range of values to be plotted in the X axis. If any is None,
+the plot automatically adjusts to column_properties, or the data if limits
+are not specified there either.</p></li>
 <li><p><strong>y_max</strong> (<em>y_min</em><em>,</em>) – range of values to be plotted in the Y axis. If any is None,
 the plot automatically adjusts to column_properties, or the data if limits
 are not specified there either.</p></li>
@@ -712,7 +715,7 @@ to assign values to the intended column of the row object.</p>
 
 <dl class="method">
 <dt id="enb.atable.ATable.get_df">
-<code class="sig-name descname">get_df</code><span class="sig-paren">(</span><em class="sig-param">target_indices</em>, <em class="sig-param">target_columns=None</em>, <em class="sig-param">fill=True</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">parallel_row_processing=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_df</code><span class="sig-paren">(</span><em class="sig-param">target_indices</em>, <em class="sig-param">target_columns=None</em>, <em class="sig-param">fill=True</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">parallel_row_processing=True</em>, <em class="sig-param">chunk_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a pandas DataFrame containing all given indices and defined columns.
 If fill is True, missing values will be computed.
 If fill and overwrite are True, all values will be computed, regardless of
@@ -729,6 +732,11 @@ columns are computed.</p></li>
 in permanent storage. Otherwise, existing values are skipped from the computation.</p></li>
 <li><p><strong>parallel_row_processing</strong> – if True, processing of rows is performed in a parallel,
 possibly distributed fashion. Otherwise, they are processed serially using the invoking thread.</p></li>
+<li><p><strong>chunk_size</strong> – If None, its value is assigned from options.chunk_size. After this, 
+if not None, the list of target indices is split in 
+chunks of size at most chunk_size elements. Results are made persistent every time
+one of these chunks is completed. If None, a single chunk is defined with all
+indices, and results are made persistent only once.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -739,6 +747,12 @@ possibly distributed fashion. Otherwise, they are processed serially using the i
 processing the data.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.atable.ATable.get_df_one_chunk">
+<code class="sig-name descname">get_df_one_chunk</code><span class="sig-paren">(</span><em class="sig-param">target_indices</em>, <em class="sig-param">target_columns=None</em>, <em class="sig-param">fill=True</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">parallel_row_processing=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df_one_chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation the <a class="reference internal" href="#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_df()</span></code></a> for one chunk of indices</p>
 </dd></dl>
 
 <dl class="method">
@@ -1209,16 +1223,21 @@ associated metainformation columns for each corpus element.</p>
 
 <dl class="method">
 <dt id="enb.experiment.Experiment.get_df">
-<code class="sig-name descname">get_df</code><span class="sig-paren">(</span><em class="sig-param">target_indices=None</em>, <em class="sig-param">fill=True</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">parallel_row_processing=True</em>, <em class="sig-param">target_tasks=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.experiment.Experiment.get_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a DataFrame with the results of the experiment.</p>
+<code class="sig-name descname">get_df</code><span class="sig-paren">(</span><em class="sig-param">target_indices=None</em>, <em class="sig-param">fill=True</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">parallel_row_processing=True</em>, <em class="sig-param">target_tasks=None</em>, <em class="sig-param">chunk_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.experiment.Experiment.get_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a DataFrame with the results of the experiment. The produced DataFrame
+contains the columns from the dataset info table (but they are not stored
+in the experiment’s persistence file).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parallel_row_processing</strong> – if True, parallel computation is used to fill the df,
 including compression</p></li>
-<li><p><strong>target_tasks</strong> (<em>target_paths</em><em>,</em>) – if not None, results are calculated for these
-instead of for all elements in self.target_file_paths and self.codecs,
-respectively</p></li>
+<li><p><strong>target_indices</strong> – list of file paths to be processed. If None, self.target_file_paths
+is used instead.</p></li>
+<li><p><strong>target_tasks</strong> – list of tasks to be applied to each file. If None, self.codecs
+is used instead.</p></li>
+<li><p><strong>chunk_size</strong> – if not None, a positive integer that determines the number of table
+rows that are processed before made persistent.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1378,6 +1397,12 @@ Also, the image_info_row attribute gives access to the image metainformation
 <dt id="enb.icompression.CompressionExperiment.RowWrapper">
 <em class="property">class </em><code class="sig-name descname">RowWrapper</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">codec</em>, <em class="sig-param">image_info_row</em>, <em class="sig-param">row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.CompressionExperiment.RowWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Rows passed as arguments to the table column functions of CompressionExperiment
+subclasses are of this type. This allows accessing the compression_results and
+decompression_results properties (see the CompressionResults and DecompressionResults classes), 
+which automatically compress and decompress
+the image with the appropriate codec. Row names are set and retrieved normally
+with a dict-like syntax.</p>
 <dl class="method">
 <dt id="enb.icompression.CompressionExperiment.RowWrapper.compression_results">
 <em class="property">property </em><code class="sig-name descname">compression_results</code><a class="headerlink" href="#enb.icompression.CompressionExperiment.RowWrapper.compression_results" title="Permalink to this definition">¶</a></dt>
@@ -1631,6 +1656,33 @@ of the reconstructed image.</p>
 <dt id="enb.icompression.NearLosslessCodec">
 <em class="property">class </em><code class="sig-prename descclassname">enb.icompression.</code><code class="sig-name descname">NearLosslessCodec</code><span class="sig-paren">(</span><em class="sig-param">param_dict=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.NearLosslessCodec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.icompression.SpectralAngleTable">
+<em class="property">class </em><code class="sig-prename descclassname">enb.icompression.</code><code class="sig-name descname">SpectralAngleTable</code><span class="sig-paren">(</span><em class="sig-param">codecs</em>, <em class="sig-param">dataset_paths=None</em>, <em class="sig-param">csv_experiment_path=None</em>, <em class="sig-param">csv_dataset_path=None</em>, <em class="sig-param">dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em class="sig-param">overwrite_file_properties=False</em>, <em class="sig-param">parallel_dataset_property_processing=None</em>, <em class="sig-param">reconstructed_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a></p>
+<p>Lossy compression experiment that computes spectral angle “distance” 
+measures between the compressed and the reconstructed images.</p>
+<p>Subclasses of LossyCompressionExperiment may inherit from this one to
+automatically add the data columns defined here</p>
+<dl class="attribute">
+<dt id="enb.icompression.SpectralAngleTable.column_to_properties">
+<code class="sig-name descname">column_to_properties</code><em class="property"> = {'bpppc': ColumnProperties(name=bpppc, fun=&lt;function CompressionExperiment.set_bpppc&gt;, label=Compressed data rate (bpppc), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compressed_file_sha256': ColumnProperties(name=compressed_file_sha256, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compressed file's SHA256, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compressed_size_bytes': ColumnProperties(name=compressed_size_bytes, fun=&lt;function CompressionExperiment.set_compressed_data_size&gt;, label=Compressed data size (Bytes), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_efficiency_1byte_entropy': ColumnProperties(name=compression_efficiency_1byte_entropy, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression efficiency (1B entropy), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_ratio': ColumnProperties(name=compression_ratio, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression ratio, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_ratio_dr': ColumnProperties(name=compression_ratio_dr, fun=&lt;function CompressionExperiment.set_compression_ratio_dr&gt;, label=Compression ratio, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_time_seconds': ColumnProperties(name=compression_time_seconds, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression time (s), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'decompression_time_seconds': ColumnProperties(name=decompression_time_seconds, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Decompression time (s), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'lossless_reconstruction': ColumnProperties(name=lossless_reconstruction, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Lossless?, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'max_spectral_angle_deg': ColumnProperties(name=max_spectral_angle_deg, fun=&lt;function SpectralAngleTable.set_spectral_distances&gt;, label=Max spectral angle (deg), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'mean_spectral_angle_deg': ColumnProperties(name=mean_spectral_angle_deg, fun=&lt;function SpectralAngleTable.set_spectral_distances&gt;, label=Mean spectral angle (deg), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'mse': ColumnProperties(name=mse, fun=&lt;function LossyCompressionExperiment.set_MSE&gt;, label=MSE, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'pae': ColumnProperties(name=pae, fun=&lt;function LossyCompressionExperiment.set_PAE&gt;, label=PAE, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'param_dict': ColumnProperties(name=param_dict, fun=&lt;function Experiment.set_param_dict&gt;, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'psnr_bps': ColumnProperties(name=psnr_bps, fun=&lt;function LossyCompressionExperiment.set_PSNR_nominal&gt;, label=PSNR (dB), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'psnr_dr': ColumnProperties(name=psnr_dr, fun=&lt;function LossyCompressionExperiment.set_PSNR_dynamic_range&gt;, label=PSNR (dB), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'repetitions': ColumnProperties(name=repetitions, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Number of compression/decompression repetitions, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'task_label': ColumnProperties(name=task_label, fun=&lt;function Experiment.set_task_label&gt;, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'task_name': ColumnProperties(name=task_name, fun=&lt;function Experiment.set_task_name&gt;, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False)}</em><a class="headerlink" href="#enb.icompression.SpectralAngleTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enb.icompression.SpectralAngleTable.get_spectral_angles_deg">
+<code class="sig-name descname">get_spectral_angles_deg</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable.get_spectral_angles_deg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sequence of spectral angles (in degrees), 
+one per (x,y) position in the image, flattened in raster order.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.icompression.SpectralAngleTable.set_spectral_distances">
+<code class="sig-name descname">set_spectral_distances</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable.set_spectral_distances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1904,6 +1956,14 @@ a new dictionary is created.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="enb.isets.iproperties_row_to_geometry_tag">
+<code class="sig-prename descclassname">enb.isets.</code><code class="sig-name descname">iproperties_row_to_geometry_tag</code><span class="sig-paren">(</span><em class="sig-param">image_properties_row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.iproperties_row_to_geometry_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an image geometry name tag recognized by isets (e.g., 3x600x800
+for an 800x600, 3 component image), 
+given an object similar to an ImageGeometryTable row.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="enb.isets.iproperties_row_to_numpy_dtype">
 <code class="sig-prename descclassname">enb.isets.</code><code class="sig-name descname">iproperties_row_to_numpy_dtype</code><span class="sig-paren">(</span><em class="sig-param">image_properties_row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.iproperties_row_to_numpy_dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string that identifies the most simple numpy dtype needed
@@ -1914,7 +1974,15 @@ image_properties_row</p>
 <dl class="function">
 <dt id="enb.isets.iproperties_row_to_sample_type_tag">
 <code class="sig-prename descclassname">enb.isets.</code><code class="sig-name descname">iproperties_row_to_sample_type_tag</code><span class="sig-paren">(</span><em class="sig-param">image_properties_row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.iproperties_row_to_sample_type_tag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a sample type tag as recognized by isets (e.g., u16be)</p>
+<dd><p>Return a sample type name tag as recognized by isets (e.g., u16be),
+given an object similar to an ImageGeometryTable row.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enb.isets.iproperties_to_name_tag">
+<code class="sig-prename descclassname">enb.isets.</code><code class="sig-name descname">iproperties_to_name_tag</code><span class="sig-paren">(</span><em class="sig-param">width</em>, <em class="sig-param">height</em>, <em class="sig-param">component_count</em>, <em class="sig-param">big_endian</em>, <em class="sig-param">bytes_per_sample</em>, <em class="sig-param">signed</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.iproperties_to_name_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a full name tag (including sample type and dimension information),
+recognized by isets.</p>
 </dd></dl>
 
 <dl class="function">

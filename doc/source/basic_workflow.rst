@@ -3,7 +3,10 @@
 Basic workflow
 ==============
 
-This page explains the basic workflow with ``enb`` with a `simple example <./_static/example_basic_workflow.zip>`_.
+This page explains the basic workflow with ``enb`` with a `simple example <./_static/example_basic_workflow.zip>`_. 
+You can find the lastest version of this example at the 
+`templates/basic_workflow <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example>`_ 
+folder of the project.
 
 .. figure:: img/general_structure.png
     :width: 100%

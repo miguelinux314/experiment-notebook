@@ -19,5 +19,7 @@
 */plugin_mhdc_transforms/mhdctransform
 */plugin_mhdc_transforms/mhdcdwt
 
+doc/build/
+
 /private
 /venv

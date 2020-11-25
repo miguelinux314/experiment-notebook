@@ -38,7 +38,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
                              x_min=None, x_max=None,
                              global_y_label="Relative frequency", combine_groups=False, semilog_hist_min=1e-10,
-                             options=None, # Used by @config.propagates_options
+                             options=None,  # Used by @config.propagates_options
                              group_name_order=None, fig_width=None, fig_height=None,
                              global_y_label_pos=None, legend_column_count=None,
                              show_grid=None):
@@ -400,7 +400,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                             pld.y_values = [0.5 * (y_max - y_min)]
             else:
                 y_max = 1
-                
+
             try:
                 column_properties = column_to_properties[column_name]
                 x_min, x_max = column_properties.plot_min, column_properties.plot_max
@@ -898,12 +898,17 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
             pds_by_group_id = ray.put(pds_by_group)
 
+            if global_x_max is None or global_x_min is None:
+                horizontal_margin = 0
+            else:
+                horizontal_margin = 0.05 * (global_x_max - global_x_min)
+
             expected_returns.append(ray_render_plds_by_group.remote(
                 pds_by_group_name=pds_by_group_id,
                 output_plot_path=ray.put(output_plot_path),
-                column_properties=ray.put(column_to_properties[column_x] 
+                column_properties=ray.put(column_to_properties[column_x]
                                           if column_x in column_to_properties else None),
-                horizontal_margin=ray.put(0.05 * (global_x_max - global_x_min)),
+                horizontal_margin=ray.put(horizontal_margin),
                 y_min=ray.put(global_y_min),
                 y_max=ray.put(global_y_max),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
@@ -947,7 +952,7 @@ class TwoColumnLineAnalyzer(Analyzer):
           the displayed marker size
         """
         legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
-        
+
         assert target_columns, "Target columns cannot be empty nor None"
         try:
             len(target_columns[0]) == 2
@@ -970,21 +975,20 @@ class TwoColumnLineAnalyzer(Analyzer):
                 family_avg_x_y_values = []
                 for task_name in family.task_names:
                     rows = full_df[full_df["task_name"] == task_name]
-                    
+
                     # Sanity check on the number of rows
                     if data_point_count is None:
                         data_point_count = len(rows)
                     else:
                         assert data_point_count == len(rows), \
                             f"Previously found {data_point_count} data points per task, " \
-                                   f"but {task_name} in {family} has {len(rows)} data points."
+                            f"but {task_name} in {family} has {len(rows)} data points."
 
                     family_avg_x_y_values.append(
                         (rows[column_name_x].mean(), rows[column_name_y].mean()))
 
                 family_avg_x_y_values = sorted(family_avg_x_y_values)
-                    
-                
+
                 try:
                     x_values, y_values = zip(*family_avg_x_y_values)
                 except ValueError as ex:
@@ -1084,4 +1088,3 @@ def clean_column_name(column_name):
     """Return a cleaned version of the column name, more indicated for display.
     """
     return column_name.replace("_", " ").strip()
-
