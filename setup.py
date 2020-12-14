@@ -48,11 +48,11 @@ long_description = read('README.md')
 
 setup(
     name='enb',
-    version=0.1,
+    version=0.1.1,
     url='https://github.com/miguelinux314/experiment-notebook',
     license='MIT License',
     author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
-    install_requires=['pandas', 'ray', 'matplotlib', 'numpy', 'recordclass', 'sortedcontainers'],
+    install_requires=['pandas', 'ray', 'matplotlib', 'numpy', 'recordclass', 'sortedcontainers', 'imageio', 'redis'],
     author_email='miguel.hernandez@uab.cat',
     description='Library to gather and disseminate computer-based experimental results.',
     long_description=long_description,
