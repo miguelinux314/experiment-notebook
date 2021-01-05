@@ -19,8 +19,9 @@ class AbstractZipCodec(icompression.LosslessCodec):
 
     def __init__(self, compression_level=DEFAULT_COMPRESSION_LEVEL, param_dict=None):
         assert self.MIN_COMPRESSION_LEVEL <= compression_level <= self.MAX_COMPRESSION_LEVEL
+        param_dict = dict() if param_dict is None else param_dict
         param_dict["compression_level"] = compression_level
-        super().__init__(param_dict=param_dict, *kwargs, **kwargs)
+        super().__init__(param_dict=param_dict)
 
 
 class LZ77Huffman(AbstractZipCodec):
