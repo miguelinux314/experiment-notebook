@@ -150,7 +150,7 @@ class ImagePropertiesTable(ImageGeometryTable):
         if row["bytes_per_sample"] % 2 != 0:
             row[_column_name] = -1
         else:
-            row[_column_name] = entropy(np.fromfile(file_path, dtype=np.uint16))
+            row[_column_name] = entropy(np.fromfile(file_path, dtype=np.uint16).flatten())
 
     @atable.column_function(
         [f"byte_value_{s}" for s in ["min", "max", "avg", "std"]])

@@ -106,7 +106,7 @@ class FilePropertiesTable(atable.ATable):
             file_dir = os.path.basename(os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
         if not file_dir:
             file_dir = os.path.basename(os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
-        row[_column_name] = file_dir
+        row[_column_name] = os.path.basename(os.path.abspath(file_dir))
 
     @atable.column_function("size_bytes", label="File size (bytes)")
     def set_file_size(self, file_path, row):
