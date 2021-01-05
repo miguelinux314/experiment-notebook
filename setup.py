@@ -48,7 +48,7 @@ long_description = read('README.md')
 
 setup(
     name='enb',
-    version=0.1.1,
+    version="0.1.1",
     url='https://github.com/miguelinux314/experiment-notebook',
     license='MIT License',
     author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
