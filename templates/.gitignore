@@ -1,0 +1,5 @@
+lossless_compression_example/analysis/
+lossless_compression_example/persistence_lossless_compression_experiment_example.py/
+lossless_compression_example/plots/
+lossless_compression_example/plugin_jpeg/jpeg
+lossless_compression_example/plugin_jpeg/libjpeg_ls_20200408.zip

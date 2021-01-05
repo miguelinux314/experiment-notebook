@@ -23,7 +23,7 @@ class AbstractZipCodec(icompression.LosslessCodec):
         super().__init__(param_dict=param_dict, *kwargs, **kwargs)
 
 
-class LZ77Huffman(iAbstractZipCodec):
+class LZ77Huffman(AbstractZipCodec):
     """Apply the LZ77 algorithm and Huffman coding to the file using zlib.
     """
 
@@ -40,7 +40,7 @@ class LZ77Huffman(iAbstractZipCodec):
         return f"lz77huffman_lvl{self.param_dict['compression_level']}"
 
 
-class LZMA(icompression.LosslessCodec):
+class LZMA(AbstractZipCodec):
     """Apply the LZMA algorithm using the lzma library
     """
 
@@ -57,7 +57,7 @@ class LZMA(icompression.LosslessCodec):
         return f"lzma_lvl{self.param_dict['compression_level']}"
 
 
-class BZIP2(icompression.LosslessCodec):
+class BZIP2(AbstractZipCodec):
     """Apply the BZIP2 algorithm using zlib.
     """
 
