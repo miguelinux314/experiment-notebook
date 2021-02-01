@@ -8,7 +8,7 @@ Please refer to the :doc:`api` or the `source code <https://github.com/miguelinu
 for full details on all Analyzer subclasses.
 
 .. note::
-  The Iris flower dataset CSV is directly used even though it was not created with the enb library.
+  Several Analyzer classes are **not** shown below (TODO)
 
 Scalar data analysis
 ********************
@@ -41,7 +41,7 @@ The following example shows the distribution of two columns of the set.
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png
 
-**Interesting parameters** to the `analyze_df()` method:
+**Interesting parameters** to the :meth:`enb.aanalysis.ScalarDistributionAnalyzer.analyze_df()` method:
 
 * `group_by`: It allows differenciating data points based on the value of the given column.
   Different colors and markers are automatically and consistently used.
