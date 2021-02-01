@@ -29,12 +29,3 @@ You can also take a look at the automatically generated :ref:`API<api>`.
 
    This project is in beta! Comments welcome.
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents:
-
-   installation
-   basic_workflow
-   lossless_compression_example
-   api
-   thanks
