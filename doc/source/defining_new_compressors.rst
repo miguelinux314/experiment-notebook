@@ -1,4 +1,4 @@
-.. Description of an image compression experiment example (using icompression.py) 
+.. Defining new codecs (using icompression.py)
 
 Defining new codecs
 ===================

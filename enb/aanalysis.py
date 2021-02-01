@@ -105,7 +105,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
 
     y_min = column_properties.hist_min if y_min is None else y_min
-    y_min = max(semilog_hist_min, y_min if y_min is not None else 0) if column_properties.semilog_y else y_min
+    y_min = max(semilog_hist_min,
+                y_min if y_min is not None else 0) if column_properties is not None and column_properties.semilog_y else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
 
     if group_name_order is None:
@@ -820,7 +821,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False, combine_groups=True):
+                   adjust_height=False, combine_groups=True, show_individual=True):
         """
         :param adjust_height:
         :param group_name_order:
@@ -842,9 +843,11 @@ class TwoColumnScatterAnalyzer(Analyzer):
         expected_returns = []
         for column_x, column_y in selected_column_pairs:
             pds_by_group = collections.defaultdict(list)
-            x_label = column_to_properties[column_x].label if column_x in column_to_properties else None
+            x_label = column_to_properties[
+                column_x].label if column_to_properties is not None and column_x in column_to_properties else None
             x_label = clean_column_name(column_x) if x_label is None else x_label
-            y_label = column_to_properties[column_y].label if column_y in column_to_properties else None
+            y_label = column_to_properties[
+                column_y].label if column_to_properties is not None and column_y in column_to_properties else None
             y_label = clean_column_name(column_y) if y_label is None else y_label
             if group_by is not None:
                 for i, (group_label, group_df) in enumerate(full_df.groupby(by=group_by)):
@@ -856,24 +859,38 @@ class TwoColumnScatterAnalyzer(Analyzer):
                                 x_values=[sum(x_values) / len(x_values)],
                                 y_values=[sum(y_values) / len(y_values)],
                                 label=group_label,
-                                extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)]),
+                                extra_kwargs=dict(
+                                    marker=marker_cycle[i % len(marker_cycle)],
+                                    color=color_cycle[i % len(marker_cycle)]),
                                 alpha=min(self.alpha * 2, 0.65)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * 5
+                        if show_individual:
+                            pds_by_group[group_label].append(
+                                plotdata.ScatterData(
+                                    x_values=x_values, y_values=y_values,
+                                    extra_kwargs=dict(
+                                        marker=marker_cycle[i % len(marker_cycle)],
+                                        color=color_cycle[i % len(marker_cycle)]),
+                                    alpha=self.alpha))
                     else:
                         pds_by_group[group_label].append(
                             plotdata.ScatterData(
                                 x_values=x_values, y_values=y_values,
                                 label=group_label,
                                 extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)],
-                                                  fillstyle=fill_style_cycle[i % len(fill_style_cycle)]),
+                                                  fillstyle=fill_style_cycle[i % len(fill_style_cycle)],
+                                                  color=color_cycle[i % len(marker_cycle)]),
                                 alpha=self.alpha * (1 if not combine_groups else 0.15)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * (1.5 if combine_groups else 1)
 
-            if group_by is None or show_global:
+            if not pds_by_group or show_global:
                 x_values, y_values = zip(*sorted(zip(
                     full_df[column_x].values, full_df[column_y].values)))
                 pds_by_group["all"] = [plotdata.ScatterData(
-                    x_values=x_values, y_values=y_values, alpha=self.alpha)]
+                    x_values=x_values, y_values=y_values, alpha=self.alpha),
+                    plotdata.ScatterData(x_values=[np.array(x_values).mean()],
+                                         y_values=[np.array(y_values).mean()],
+                                         alpha=self.alpha)]
 
             output_plot_path = os.path.join(output_plot_dir, f"twocolumns_scatter_{column_x}_VS_{column_y}.pdf")
 
@@ -889,15 +906,17 @@ class TwoColumnScatterAnalyzer(Analyzer):
             try:
                 column_properties = column_to_properties[column_x]
                 global_x_min, global_x_max = column_properties.plot_min, column_properties.plot_max
-            except KeyError:
+            except (KeyError, TypeError):
                 pass
 
             global_y_min = global_y_min - 0.05 * (global_y_max - global_y_min) \
-                if not column_y in column_to_properties or column_to_properties[column_y].plot_min is None \
+                if column_to_properties is None or not column_y in column_to_properties \
+                   or column_to_properties[column_y].plot_min is None \
                 else column_to_properties[column_y].plot_min
 
             global_y_max = global_y_max + 0.05 * (global_y_max - global_y_min) \
-                if not column_y in column_to_properties or column_to_properties[column_y].plot_max is None \
+                if column_to_properties is None or not column_y in column_to_properties \
+                   or column_to_properties[column_y].plot_max is None \
                 else column_to_properties[column_y].plot_max
 
             pds_by_group_id = ray.put(pds_by_group)
@@ -910,8 +929,9 @@ class TwoColumnScatterAnalyzer(Analyzer):
             expected_returns.append(ray_render_plds_by_group.remote(
                 pds_by_group_name=pds_by_group_id,
                 output_plot_path=ray.put(output_plot_path),
-                column_properties=ray.put(column_to_properties[column_x]
-                                          if column_x in column_to_properties else None),
+                column_properties=ray.put(
+                    column_to_properties[column_x]
+                    if column_to_properties is not None and column_x in column_to_properties else None),
                 horizontal_margin=ray.put(horizontal_margin),
                 y_min=ray.put(global_y_min),
                 y_max=ray.put(global_y_max),
@@ -925,13 +945,19 @@ class TwoColumnScatterAnalyzer(Analyzer):
 class TwoColumnLineAnalyzer(Analyzer):
     alpha = 0.5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
-                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+    def analyze_df(self, full_df, target_columns, group_by, task_column_name="task_name",
+                   output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+                   group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False, show_markers=False, marker_size=3,
                    legend_column_count=None):
         """
         :param adjust_height:
         :param full_df: full pandas.DataFrame to be analyzed and plotted
+        :param group_by: a list of TaskFamily instances. Note that this behavior
+          differs from that of other Analyzers, which take a column name.
+        :param task_column_name: if provided, the df is grouped by the elements
+          of this column instead of "task_name", using the families provided
+          to group_by
         :param target_columns: an iterable of either two column names or
           one or more tuple-like objects with two elements also being column names.
           The first column name gives the one to be used for the x axis,
@@ -942,8 +968,6 @@ class TwoColumnLineAnalyzer(Analyzer):
           are saved
         :param column_to_properties: a dictionary of atable.ColumnProperties
           indexed by their corresponding column name
-        :param group_by: a list of TaskFamily instances. Note that this behavior
-          differs from that of other Analyzers, which take a column name.
         :param show_global: if group_by is not None, show_global determines
           whether the whole dataframe (regardless of the group_by column)
           is analyzed as well.
@@ -979,7 +1003,7 @@ class TwoColumnLineAnalyzer(Analyzer):
             for i, family in enumerate(group_by):
                 family_avg_x_y_values = []
                 for task_name in family.task_names:
-                    rows = full_df[full_df["task_name"] == task_name]
+                    rows = full_df[full_df[task_column_name] == task_name]
 
                     # Sanity check on the number of rows
                     if data_point_count is None:
