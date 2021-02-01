@@ -93,8 +93,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Welcome to the Experiment Notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lossless_compression_example.html">Lossless Compression Experiment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../defining_new_compressors.html">Defining new codecs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Analyzing data</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">enb package</a><ul>
@@ -478,7 +478,7 @@ in self.task_names)</p>
 
 <dl class="method">
 <dt id="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df">
-<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>show_markers=False</em>, <em>marker_size=3</em>, <em>legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>group_by</em>, <em>task_column_name='task_name'</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>show_markers=False</em>, <em>marker_size=3</em>, <em>legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -486,6 +486,11 @@ in self.task_names)</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>adjust_height</strong> – </li>
 <li><strong>full_df</strong> – full pandas.DataFrame to be analyzed and plotted</li>
+<li><strong>group_by</strong> – a list of TaskFamily instances. Note that this behavior
+differs from that of other Analyzers, which take a column name.</li>
+<li><strong>task_column_name</strong> – if provided, the df is grouped by the elements
+of this column instead of “task_name”, using the families provided
+to group_by</li>
 <li><strong>target_columns</strong> – an iterable of either two column names or
 one or more tuple-like objects with two elements also being column names.
 The first column name gives the one to be used for the x axis,
@@ -496,8 +501,6 @@ be saved</li>
 are saved</li>
 <li><strong>column_to_properties</strong> – a dictionary of atable.ColumnProperties
 indexed by their corresponding column name</li>
-<li><strong>group_by</strong> – a list of TaskFamily instances. Note that this behavior
-differs from that of other Analyzers, which take a column name.</li>
 <li><strong>show_global</strong> – if group_by is not None, show_global determines
 whether the whole dataframe (regardless of the group_by column)
 is analyzed as well.</li>
@@ -528,7 +531,7 @@ the displayed marker size</li>
 
 <dl class="method">
 <dt id="enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df">
-<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>combine_groups=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>combine_groups=True</em>, <em>show_individual=True</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
