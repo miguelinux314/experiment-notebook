@@ -93,7 +93,7 @@ A minimal setup is needed so that the experiment can be created and can locate t
 
 .. note::
     The ``codecs`` list here can contain any number of :class:`enb.icompression.LosslessCodec`
-    instances. 
+    instances. See :doc:`defining_new_compressors` for further information.
 
 .. code-block:: python
 
@@ -144,25 +144,12 @@ and any of the other classes in that module.
     )
    
 
-.. note:: 
-   The ``compression_ratio_dr``. ``bpppc`` and ``compression_time_seconds`` columns
-   are automatically created by the LosslessCompressionExperiment class. You can 
-   extend this class with new columns, as described in the :doc:`basic_workflow` example.
+.. note::
 
-.. note:: Of course, custom analysis of the dataframe is possible for maximum control.
-
-5 - Defining new codecs
-***********************
-
-In order to add new custom codecs to your lossless (or lossy) compression experiments,
-you just need to add new instances of :class:`enb.icompression.AbstractCodec` subclasses.
-
-When creating these subclasses, you just need to implement the
-:class:`enb.icompression.AbstractCodec.compress` and 
-:class:`enb.icompression.AbstractCodec.decompress` methods.
+    The ``compression_ratio_dr``. ``bpppc`` and ``compression_time_seconds`` columns
+    are automatically created by the LosslessCompressionExperiment class. You can
+    extend this class with new columns, as described in the :doc:`basic_workflow` example.
 
 .. note::
-   The ``original_file_info`` parameter passed to the two previous methods is a dict-like
-   instance that contains the 'width', 'height' and 'component_count' keys, among others.
-   See the source of the :class:`enb.isets.ImageGeometryTable` class for a list of all keys that 
-   are available in this dict-like object.
+
+    Of course, custom analysis of the dataframe is possible for maximum control.

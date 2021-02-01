@@ -162,8 +162,7 @@ class ImagePropertiesTable(ImageGeometryTable):
         row["byte_value_std"] = contents.std()
 
 
-class HistogramFullnessTable(sets.FilePropertiesTable):
-
+class HistogramFullnessTable1Byte(atable.ATable):
     @atable.column_function(
         "histogram_fullness_1byte", label="Histogram usage fraction (1 byte)",
         plot_min=0, plot_max=1)
@@ -175,6 +174,7 @@ class HistogramFullnessTable(sets.FilePropertiesTable):
             file_path, dtype=np.uint8)).size / (2 ** 8)
         assert 0 <= row[_column_name] <= 1
 
+class HistogramFullnessTable2Bytes(atable.ATable):
     @atable.column_function(
         "histogram_fullness_2bytes", label="Histogram usage fraction (2 bytes)",
         plot_min=0, plot_max=1)
@@ -186,6 +186,7 @@ class HistogramFullnessTable(sets.FilePropertiesTable):
             file_path, dtype=np.uint16)).size / (2 ** 16)
         assert 0 <= row[_column_name] <= 1
 
+class HistogramFullnessTable4Bytes(atable.ATable):
     @atable.column_function(
         "histogram_fullness_4bytes", label="Histogram usage fraction (4 bytes)",
         plot_min=0, plot_max=1)
@@ -196,17 +197,6 @@ class HistogramFullnessTable(sets.FilePropertiesTable):
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint32)).size / (2 ** 32)
         assert 0 <= row[_column_name] <= 1
-
-    @atable.column_function(
-        atable.ColumnProperties(name="1B_value_counts",
-                                label="1-byte value counts",
-                                semilog_y=True, has_dict_values=True))
-    def set_1B_value_counts(self, file_path, row):
-        """Calculate a dict with the counts for each (unsigned) byte value
-        found in file_path
-        """
-        row[_column_name] = dict(collections.Counter(
-            np.fromfile(file_path, dtype="uint8").flatten()))
 
 
 class BandEntropyTable(ImageGeometryTable):

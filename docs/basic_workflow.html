@@ -1,41 +1,45 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Basic workflow &mdash; Experiment Notebook MIT License documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Image Compression Experiment" href="lossless_compression_example.html" />
+    <link rel="next" title="Lossless Compression Experiment" href="lossless_compression_example.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
@@ -50,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <a href="contents.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -76,6 +80,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,6 +90,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Experiment Notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basic workflow</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#data-curation"><strong>1 - Data curation</strong></a></li>
@@ -93,7 +99,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#it-s-good-to-know"><strong>It’s good to know…</strong></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lossless_compression_example.html">Image Compression Experiment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -101,6 +108,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -110,7 +118,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="contents.html">Experiment Notebook</a>
         
       </nav>
 
@@ -135,18 +143,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Basic workflow</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/basic_workflow.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -168,7 +178,7 @@ You can find the lastest version of this example at the
 folder of the project.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="_images/general_structure.png"><img alt="Basic steps when using ``enb``" src="_images/general_structure.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">Basic steps when using <code class="docutils literal notranslate"><span class="pre">enb</span></code>.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Basic steps when using <code class="docutils literal notranslate"><span class="pre">enb</span></code>.</span></p>
 </div>
 <p>The basic workflow when using <code class="docutils literal notranslate"><span class="pre">enb</span></code> can be summarized in three key steps:</p>
 <div class="section" id="data-curation">
@@ -180,8 +190,8 @@ of your test images, if you work with genetic sequences, each file could
 be one sequence, etc.</p>
 <blockquote>
 <div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It is best practice to separate data samples from
+<p class="first admonition-title">Note</p>
+<p class="last">It is best practice to separate data samples from
 test parameters (e.g., arguments to the algorithm(s) used to process
 each of your samples.</p>
 </div>
@@ -209,7 +219,7 @@ each of your samples.</p>
 <p>The second step consists in defining the function(s) that produce the desired results.
 The easiest way is to extend the <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class, like for example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">WikiAnalysis</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
- <span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="s2">&quot;line_count&quot;</span><span class="p">)</span>
+ <span class="nd">@enb.atable.column_function</span><span class="p">(</span><span class="s2">&quot;line_count&quot;</span><span class="p">)</span>
  <span class="k">def</span> <span class="nf">set_line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
          <span class="n">row</span><span class="p">[</span><span class="s2">&quot;line_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">input_file</span><span class="p">)</span>
@@ -218,38 +228,38 @@ The easiest way is to extend the <a class="reference internal" href="api/enb.htm
 <p>In general, this can be done in two simple steps:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Define a method <code class="docutils literal notranslate"><span class="pre">f</span></code> with interface <code class="docutils literal notranslate"><span class="pre">f(self,</span> <span class="pre">file_path,</span> <span class="pre">row)</span></code>. The <code class="docutils literal notranslate"><span class="pre">file_path</span></code>
+<li>Define a method <code class="docutils literal notranslate"><span class="pre">f</span></code> with interface <code class="docutils literal notranslate"><span class="pre">f(self,</span> <span class="pre">file_path,</span> <span class="pre">row)</span></code>. The <code class="docutils literal notranslate"><span class="pre">file_path</span></code>
 argument is the path to one test sample (e.g., <code class="docutils literal notranslate"><span class="pre">./data/wiki/s_beauvoir.txt</span></code>.
 The <code class="docutils literal notranslate"><span class="pre">row</span></code> argument is a dict-like instance, into which the desired result (for this input sample)
-is to be stored.</p></li>
-<li><p>Decorate the method with <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function(column_name)</span></code>, where
-<code class="docutils literal notranslate"><span class="pre">column_name</span></code> is a unique name that identifies the result produced by the method.</p></li>
+is to be stored.</li>
+<li>Decorate the method with <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function(column_name)</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">column_name</span></code> is a unique name that identifies the result produced by the method.</li>
 </ul>
 </div></blockquote>
 <p>Once data are available and our <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass is defined,
-a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
+a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+592.g9c33e5e4f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">WikiAnalysis</span><span class="p">(</span><span class="n">csv_support_path</span><span class="o">=</span><span class="s2">&quot;persistence_basic_workflow.csv&quot;</span><span class="p">)</span>
 <span class="n">result_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">sample_paths</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">csv_support_path</span></code> argument is the file used to store the <a class="reference external" href="_static/persistence_basic_workflow.csv">raw results</a>.
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">csv_support_path</span></code> argument is the file used to store the <a class="reference external" href="_static/persistence_basic_workflow.csv">raw results</a>.
 This avoids re-running the <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function</span></code>-decorated functions more than once.</p>
 </div>
 </div>
 <div class="section" id="data-reporting">
 <h2><strong>3 - Data reporting</strong><a class="headerlink" href="#data-reporting" title="Permalink to this headline">¶</a></h2>
-<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
+<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+592.g9c33e5e4f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
 The <code class="docutils literal notranslate"><span class="pre">enb</span></code> library provides a few automatic tools to analyze and report
 one or more data columns. More specifically, the <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 provides several subclasses of the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> class, e.g.:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a></p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer" title="enb.aanalysis.TwoColumnScatterAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer</span></code></a></p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer" title="enb.aanalysis.TwoColumnLineAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer</span></code></a></p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer" title="enb.aanalysis.HistogramDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.HistogramDistributionAnalyzer</span></code></a></p></li>
+<li><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a></li>
+<li><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer" title="enb.aanalysis.TwoColumnScatterAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer</span></code></a></li>
+<li><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer" title="enb.aanalysis.TwoColumnLineAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer</span></code></a></li>
+<li><a class="reference internal" href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer" title="enb.aanalysis.HistogramDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.HistogramDistributionAnalyzer</span></code></a></li>
 </ul>
 </div></blockquote>
 <p>The most basic automatic analyzer is <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a>.
@@ -267,19 +277,19 @@ the following code can be used:</p>
 </div>
 <p>You can download here <a class="reference external" href="_static/distribution_line_count.pdf">the resulting figure</a>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_csv_file</span></code> generates a CSV file with basic statistics (min, max, average, std) for the target columns.</p></li>
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+592.g9c33e5e4f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">output_csv_file</span></code> generates a CSV file with basic statistics (min, max, average, std) for the target columns.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="it-s-good-to-know">
 <h2><strong>It’s good to know…</strong><a class="headerlink" href="#it-s-good-to-know" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>You can add as many columns as desired (even after running the experiments). Consider the second
+<li><p class="first">You can add as many columns as desired (even after running the experiments). Consider the second
 method for the <code class="docutils literal notranslate"><span class="pre">WikiAnalysis</span></code> class above:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb.atable.column_function</span><span class="p">(</span>
     <span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;word_count&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Word count&quot;</span><span class="p">,</span> <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">set_line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
@@ -287,14 +297,14 @@ method for the <code class="docutils literal notranslate"><span class="pre">Wiki
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">enb.atable.column_function</span></code> decorator accepts <code class="docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code>
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">enb.atable.column_function</span></code> decorator accepts <code class="docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code>
 instances. These column properties describe not only the unique name for the data
-column, but also other information useful for reporting the obtained results.</p></li>
-<li><p>The <cite>_column_name</cite> global is defined whenever a <code class="docutils literal notranslate"><span class="pre">column_function</span></code>-decorated method
+column, but also other information useful for reporting the obtained results.</li>
+<li>The <cite>_column_name</cite> global is defined whenever a <code class="docutils literal notranslate"><span class="pre">column_function</span></code>-decorated method
 is called, containing the unique column name being computed. The use of this global
-is totally optional, but enables less error-prone column renaming.</p></li>
+is totally optional, but enables less error-prone column renaming.</li>
 </ul>
 </div>
 </li>
@@ -303,9 +313,9 @@ is totally optional, but enables less error-prone column renaming.</p></li>
 <div class="line"><br /></div>
 </div>
 <ul>
-<li><p>You can analyze the distribution of one column, while grouping based on another. For instance,
+<li><p class="first">You can analyze the distribution of one column, while grouping based on another. For instance,
 if the <code class="docutils literal notranslate"><span class="pre">status</span></code> column is defined in the <code class="docutils literal notranslate"><span class="pre">WikiAnalysis</span></code> class of our example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb.atable.column_function</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">set_dead_person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
   <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
      <span class="n">row</span><span class="p">[</span><span class="n">_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dead&quot;</span> <span class="k">if</span> <span class="s2">&quot;death_place&quot;</span> <span class="ow">in</span> <span class="n">input_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;alive&quot;</span>
@@ -331,29 +341,29 @@ if the <code class="docutils literal notranslate"><span class="pre">status</span
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="lossless_compression_example.html" class="btn btn-neutral float-right" title="Image Compression Experiment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="lossless_compression_example.html" class="btn btn-neutral float-right" title="Lossless Compression Experiment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Miguel Hernández-Cabronero
+        &#169; Copyright 2020, Miguel Hernández-Cabronero.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -361,7 +371,6 @@ if the <code class="docutils literal notranslate"><span class="pre">status</span
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

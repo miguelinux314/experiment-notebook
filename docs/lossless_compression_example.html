@@ -1,41 +1,45 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Lossless Compression Experiment &mdash; Experiment Notebook MIT License documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API" href="api.html" />
+    <link rel="next" title="Defining new codecs" href="defining_new_compressors.html" />
     <link rel="prev" title="Basic workflow" href="basic_workflow.html" /> 
 </head>
 
@@ -50,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <a href="contents.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -76,6 +80,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,6 +90,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Experiment Notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lossless Compression Experiment</a><ul>
@@ -98,9 +104,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#data-analysis">Data analysis</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#defining-new-codecs">5 - Defining new codecs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -108,6 +114,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -117,7 +124,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="contents.html">Experiment Notebook</a>
         
       </nav>
 
@@ -142,18 +149,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Lossless Compression Experiment</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/lossless_compression_example.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -172,8 +181,8 @@
 <p>This page explains the general dynamics of using the <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> class.
 This class is a subclass of <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
+<p class="first admonition-title">Note</p>
+<p class="last">This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
 followed the installation instructions in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
 </div>
 <div class="section" id="example-setup">
@@ -198,20 +207,22 @@ where you are running the experiment (.). The following code will do the trick:<
 <p>For image compression experiments, it is needed that:</p>
 <blockquote>
 <div><ul>
-<li><p>Images are in RAW (uncompressed) format, preferably with ‘.raw’ extension,
-in BSQ in case more than one component is present.</p></li>
-<li><p>Images contain a tag such as ‘u8be-3x600x800’ in their name.</p>
+<li><p class="first">Images are in RAW (uncompressed) format, preferably with ‘.raw’ extension,
+in BSQ in case more than one component is present.</p>
+</li>
+<li><p class="first">Images contain a tag such as ‘u8be-3x600x800’ in their name.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><em>u</em> or <em>s</em> should be used for unsigned or signed data</p></li>
-<li><p><em>8</em>, <em>16</em> or <em>32</em> indicate the bitdepth in bits of each sample</p></li>
-<li><p>the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
-the images width, height and number of components (bands).</p></li>
+<li><em>u</em> or <em>s</em> should be used for unsigned or signed data</li>
+<li><em>8</em>, <em>16</em> or <em>32</em> indicate the bitdepth in bits of each sample</li>
+<li>the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
+the images width, height and number of components (bands).</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p>Images can be organized in subfolders. This is not mandatory, and it is not used in the current
-example.</p></li>
+<li><p class="first">Images can be organized in subfolders. This is not mandatory, and it is not used in the current
+example.</p>
+</li>
 </ul>
 </div></blockquote>
 </div>
@@ -235,7 +246,7 @@ is documented and (hopefully) self-explanatory.</p>
 <p>The initialization is straightforward. Note how the plugin’s main module needs to be imported.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">enb.config</span> <span class="kn">import</span> <span class="n">get_options</span>
-<span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="n">from_main</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="n">from_main</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">enb</span> <span class="kn">import</span> <span class="n">icompression</span>
 <span class="kn">from</span> <span class="nn">enb</span> <span class="kn">import</span> <span class="n">aanalysis</span>
 <span class="kn">import</span> <span class="nn">plugin_jpeg.jpeg_codecs</span>
@@ -246,9 +257,9 @@ is documented and (hopefully) self-explanatory.</p>
 <h3>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
 <p>A minimal setup is needed so that the experiment can be created and can locate the data of interest.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">codecs</span></code> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>
-instances.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">codecs</span></code> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>
+instances. See <a class="reference internal" href="defining_new_compressors.html"><span class="doc">Defining new codecs</span></a> for further information.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup global options</span>
 <span class="n">options</span><span class="o">.</span><span class="n">base_dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;./data&quot;</span>
@@ -262,7 +273,7 @@ instances.</p>
 <div class="section" id="id1">
 <h3>Experiment execution<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The lossless compression experiment can now be created, and used to generate a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.0.dev0+1310.g61f67b63e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+592.g9c33e5e4f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment</span>
 <span class="n">exp</span> <span class="o">=</span> <span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCompressionExperiment</span><span class="p">(</span><span class="n">codecs</span><span class="o">=</span><span class="n">codecs</span><span class="p">)</span>
 
@@ -293,30 +304,15 @@ and any of the other classes in that module.</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">compression_ratio_dr</span></code>. <code class="docutils literal notranslate"><span class="pre">bpppc</span></code> and <code class="docutils literal notranslate"><span class="pre">compression_time_seconds</span></code> columns
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">compression_ratio_dr</span></code>. <code class="docutils literal notranslate"><span class="pre">bpppc</span></code> and <code class="docutils literal notranslate"><span class="pre">compression_time_seconds</span></code> columns
 are automatically created by the LosslessCompressionExperiment class. You can
 extend this class with new columns, as described in the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Of course, custom analysis of the dataframe is possible for maximum control.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Of course, custom analysis of the dataframe is possible for maximum control.</p>
 </div>
-</div>
-</div>
-<div class="section" id="defining-new-codecs">
-<h2>5 - Defining new codecs<a class="headerlink" href="#defining-new-codecs" title="Permalink to this headline">¶</a></h2>
-<p>In order to add new custom codecs to your lossless (or lossy) compression experiments,
-you just need to add new instances of <a class="reference internal" href="api/enb.html#enb.icompression.AbstractCodec" title="enb.icompression.AbstractCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec</span></code></a> subclasses.</p>
-<p>When creating these subclasses, you just need to implement the
-<a class="reference internal" href="api/enb.html#enb.icompression.AbstractCodec.compress" title="enb.icompression.AbstractCodec.compress"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec.compress</span></code></a> and
-<a class="reference internal" href="api/enb.html#enb.icompression.AbstractCodec.decompress" title="enb.icompression.AbstractCodec.decompress"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec.decompress</span></code></a> methods.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">original_file_info</span></code> parameter passed to the two previous methods is a dict-like
-instance that contains the ‘width’, ‘height’ and ‘component_count’ keys, among others.
-See the source of the <a class="reference internal" href="api/enb.html#enb.isets.ImageGeometryTable" title="enb.isets.ImageGeometryTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.ImageGeometryTable</span></code></a> class for a list of all keys that
-are available in this dict-like object.</p>
 </div>
 </div>
 </div>
@@ -326,29 +322,29 @@ are available in this dict-like object.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="basic_workflow.html" class="btn btn-neutral float-left" title="Basic workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="defining_new_compressors.html" class="btn btn-neutral float-right" title="Defining new codecs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basic_workflow.html" class="btn btn-neutral float-left" title="Basic workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Miguel Hernández-Cabronero
+        &#169; Copyright 2020, Miguel Hernández-Cabronero.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -356,7 +352,6 @@ are available in this dict-like object.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
