@@ -28,8 +28,6 @@ if __name__ == '__main__':
         (enb.aanalysis.ScalarDistributionAnalyzer, ["sepal_length", "sepal_width"], {"adjust_height": True}),
         (enb.aanalysis.TwoColumnScatterAnalyzer, [("sepal_length", "petal_width")], {"show_global": False}),
     ]:
-        print(f"[watch] cls={cls}")
-
         for group_by in [None, "class"]:
             dir = os.path.join(options.plot_dir, f"groupby_{group_by}" if group_by else "", cls.__name__)
             os.makedirs(dir, exist_ok=True)

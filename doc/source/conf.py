@@ -87,6 +87,8 @@ if not os.path.exists("_static/example_basic_workflow.zip") \
         raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
             status, invocation, output))
     os.chdir(cwd)
+
+    # Basic Workflow Example
     shutil.copy("examples/plots/distribution_line_count.pdf", "_static")
     shutil.copy("examples/plots/distribution_word_count.pdf", "_static")
     shutil.copy("examples/persistence_basic_workflow.csv", "_static")
@@ -94,6 +96,7 @@ if not os.path.exists("_static/example_basic_workflow.zip") \
         zip_file.write("examples/basic_workflow.py", arcname="basic_workflow.py")
         for f in glob.glob("examples/data/wiki/*"):
             zip_file.write(f, arcname=f.replace("examples/", ""))
+
             
 # Re-generate module autodoc
 cwd = os.getcwd()
