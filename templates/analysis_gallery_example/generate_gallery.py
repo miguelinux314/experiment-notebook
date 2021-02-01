@@ -7,6 +7,7 @@ __date__ = "01/02/2021"
 
 import os
 import subprocess
+import glob
 import pandas as pd
 
 import enb.config
@@ -35,3 +36,13 @@ if __name__ == '__main__':
             analyzer = cls()
             analyzer.analyze_df(full_df=df, target_columns=target_columns,
                                 group_by=group_by, output_plot_dir=dir, **extra_kwargs)
+
+    # Make a png mirror of the PDF files
+    for pdf_path in glob.glob(os.path.join(options.plot_dir, "**", "*.pdf"), recursive=True):
+        png_path = pdf_path.replace("pdf_plots", "png_plots").replace(".pdf", ".png")
+        os.makedirs(os.path.dirname(png_path), exist_ok=True)
+        invocation = f"convert -density 400 {pdf_path} {png_path}"
+        status, output = subprocess.getstatusoutput(invocation)
+        if status != 0:
+            raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                status, invocation, output))
