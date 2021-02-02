@@ -92,19 +92,13 @@ a :class:`pandas.DataFrame` instance containing results can be obtained as follo
  This avoids re-running the ``@enb.atable.column_function``-decorated functions more than once.
 
 
-
 **3 - Data reporting**
 ----------------------
 
 Produced results are made available as :class:`pandas.DataFrame` instances.
 The ``enb`` library provides a few automatic tools to analyze and report
-one or more data columns. More specifically, the :mod:`enb.aanalysis` module
-provides several subclasses of the :class:`enb.aanalysis.Analyzer` class, e.g.:
-
-  * :class:`enb.aanalysis.ScalarDistributionAnalyzer`
-  * :class:`enb.aanalysis.TwoColumnScatterAnalyzer`
-  * :class:`enb.aanalysis.TwoColumnLineAnalyzer`
-  * :class:`enb.aanalysis.HistogramDistributionAnalyzer`
+one or more data columns. You can find gallery of plotting and analysis tools available in `enb`
+in the :doc:`analyzer_gallery`.
 
 The most basic automatic analyzer is :class:`enb.aanalysis.ScalarDistributionAnalyzer`.
 It produces an histogram of the values of a given data column, and shows average and

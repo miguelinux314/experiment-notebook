@@ -16,5 +16,6 @@ The basics of using analyzers is in the next section.
 A gallery of examples very loosely categorized is provided in the next one.
 
 .. toctree::
+
     using_analyzer_subclasses
     analyzer_gallery
