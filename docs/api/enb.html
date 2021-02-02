@@ -478,7 +478,7 @@ in self.task_names)</p>
 
 <dl class="method">
 <dt id="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df">
-<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>group_by</em>, <em>task_column_name='task_name'</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>show_markers=False</em>, <em>marker_size=3</em>, <em>legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>group_by</em>, <em>show_v_range_bar=False</em>, <em>show_h_range_bar=False</em>, <em>show_v_std_bar=False</em>, <em>show_h_std_bar=False</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>show_markers=False</em>, <em>marker_size=3</em>, <em>task_column_name='task_name'</em>, <em>legend_column_count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -526,7 +526,7 @@ the displayed marker size</li>
 <dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a></p>
 <dl class="attribute">
 <dt id="enb.aanalysis.TwoColumnScatterAnalyzer.alpha">
-<code class="descname">alpha</code><em class="property"> = 0.25</em><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.alpha" title="Permalink to this definition">¶</a></dt>
+<code class="descname">alpha</code><em class="property"> = 0.5</em><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.alpha" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2270,9 +2270,14 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 
 <dl class="class">
 <dt id="enb.plotdata.ErrorLines">
-<em class="property">class </em><code class="descclassname">enb.plotdata.</code><code class="descname">ErrorLines</code><span class="sig-paren">(</span><em>x_values</em>, <em>y_values</em>, <em>err_neg</em>, <em>err_pos</em>, <em>marker_size=None</em>, <em>cap_size=None</em>, <em>vertical=False</em>, <em>line_width=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.ErrorLines" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">enb.plotdata.</code><code class="descname">ErrorLines</code><span class="sig-paren">(</span><em>x_values</em>, <em>y_values</em>, <em>err_neg_values</em>, <em>err_pos_values</em>, <em>alpha=None</em>, <em>marker_size=None</em>, <em>cap_size=None</em>, <em>vertical=False</em>, <em>line_width=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.ErrorLines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData2D" title="enb.plotdata.PlottableData2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData2D</span></code></a></p>
 <p>One or more error lines</p>
+<dl class="attribute">
+<dt id="enb.plotdata.ErrorLines.alpha">
+<code class="descname">alpha</code><em class="property"> = 0.5</em><a class="headerlink" href="#enb.plotdata.ErrorLines.alpha" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="enb.plotdata.ErrorLines.cap_size">
 <code class="descname">cap_size</code><em class="property"> = 3</em><a class="headerlink" href="#enb.plotdata.ErrorLines.cap_size" title="Permalink to this definition">¶</a></dt>

@@ -477,7 +477,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
         y_values=[average_point_position],
         marker_size=5,
         alpha=errorbar_alpha,
-        err_neg=[column_df.std()], err_pos=[column_df.std()],
+        err_neg_values=[column_df.std()], err_pos_values=[column_df.std()],
         line_width=2,
         vertical=False)
 
@@ -728,8 +728,8 @@ def histogram_dist_column_to_pds(df, column, global_xmin_xmax,
     global_hist_avg = [np.array(l).mean() for l in hist_y_lists]
     global_hist_std = [np.array(l).std() for l in hist_y_lists]
     produced_pds.append(plotdata.ErrorLines(x_values=hist_x_values, y_values=global_hist_avg,
-                                            err_neg=global_hist_std,
-                                            err_pos=global_hist_std,
+                                            err_neg_values=global_hist_std,
+                                            err_pos_values=global_hist_std,
                                             marker_size=0.5,
                                             alpha=individual_pd_alpha,
                                             vertical=True,
@@ -817,7 +817,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
 
 class TwoColumnScatterAnalyzer(Analyzer):
     marker_size = 5
-    alpha = 0.25
+    alpha = 0.5
 
     def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
@@ -861,6 +861,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
                                 label=group_label,
                                 extra_kwargs=dict(
                                     marker=marker_cycle[i % len(marker_cycle)],
+                                    s=self.marker_size,
                                     color=color_cycle[i % len(marker_cycle)]),
                                 alpha=min(self.alpha * 2, 0.65)))
                         pds_by_group[group_label][-1].marker_size = self.marker_size * 5
@@ -870,8 +871,9 @@ class TwoColumnScatterAnalyzer(Analyzer):
                                     x_values=x_values, y_values=y_values,
                                     extra_kwargs=dict(
                                         marker=marker_cycle[i % len(marker_cycle)],
-                                        color=color_cycle[i % len(marker_cycle)]),
-                                    alpha=self.alpha))
+                                        color=color_cycle[i % len(marker_cycle)],
+                                        s=self.marker_size / 2),
+                                    alpha=0.7 * self.alpha))
                     else:
                         pds_by_group[group_label].append(
                             plotdata.ScatterData(
@@ -945,10 +947,13 @@ class TwoColumnScatterAnalyzer(Analyzer):
 class TwoColumnLineAnalyzer(Analyzer):
     alpha = 0.5
 
-    def analyze_df(self, full_df, target_columns, group_by, task_column_name="task_name",
+    def analyze_df(self, full_df, target_columns, group_by,
+                   show_v_range_bar=False, show_h_range_bar=False,
+                   show_v_std_bar=False, show_h_std_bar=False,
                    output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False, show_markers=False, marker_size=3,
+                   task_column_name="task_name",
                    legend_column_count=None):
         """
         :param adjust_height:
@@ -1002,6 +1007,12 @@ class TwoColumnLineAnalyzer(Analyzer):
             plds_by_family_label = sortedcontainers.SortedDict()
             for i, family in enumerate(group_by):
                 family_avg_x_y_values = []
+                family_x_pos_values = []
+                family_x_neg_values = []
+                family_y_pos_values = []
+                family_y_neg_values = []
+                family_x_std_values = []
+                family_y_std_values = []
                 for task_name in family.task_names:
                     rows = full_df[full_df[task_column_name] == task_name]
 
@@ -1015,6 +1026,12 @@ class TwoColumnLineAnalyzer(Analyzer):
 
                     family_avg_x_y_values.append(
                         (rows[column_name_x].mean(), rows[column_name_y].mean()))
+                    family_x_pos_values.append(rows[column_name_x].max() - rows[column_name_x].mean())
+                    family_x_neg_values.append(rows[column_name_x].mean() - rows[column_name_x].min())
+                    family_y_pos_values.append(rows[column_name_y].max() - rows[column_name_y].mean())
+                    family_y_neg_values.append(rows[column_name_y].mean() - rows[column_name_y].min())
+                    family_x_std_values.append(rows[column_name_x].std())
+                    family_y_std_values.append(rows[column_name_y].std())
 
                 family_avg_x_y_values = sorted(family_avg_x_y_values)
 
@@ -1031,12 +1048,40 @@ class TwoColumnLineAnalyzer(Analyzer):
                         print("[>>>] f.label = {}".format(f.label))
                         print("[>>>] f.task_names = {}".format(f.task_names))
                     raise ex
-                plds_by_family_label[family.label] = [
-                    plotdata.LineData(x_values=x_values, y_values=y_values,
-                                      x_label=column_name_x, y_label=column_name_y,
-                                      label=family.label, alpha=self.alpha,
-                                      extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) \
-                                          if show_markers else None)]
+
+                plds_by_family_label[family.label] = []
+                plds_by_family_label[family.label].append(plotdata.LineData(
+                    x_values=x_values, y_values=y_values,
+                    x_label=column_name_x,
+                    y_label=column_name_y,
+                    label=family.label, alpha=self.alpha,
+                    extra_kwargs=dict(
+                        marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) if show_markers else None))
+                if show_v_range_bar:
+                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                        x_values=x_values, y_values=y_values,
+                        err_pos_values=family_y_pos_values,
+                        err_neg_values=family_y_neg_values,
+                        vertical=True, line_width=1, cap_size=5))
+                if show_h_range_bar:
+                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                        x_values=x_values, y_values=y_values,
+                        err_pos_values=family_x_pos_values,
+                        err_neg_values=family_x_neg_values,
+                        vertical=False, line_width=1, cap_size=5))
+                if show_v_std_bar:
+                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                        x_values=x_values, y_values=y_values,
+                        err_pos_values=family_y_std_values,
+                        err_neg_values=family_y_std_values,
+                        vertical=True, line_width=1, cap_size=3))
+                if show_h_std_bar:
+                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                        x_values=x_values, y_values=y_values,
+                        err_pos_values=family_x_std_values,
+                        err_neg_values=family_x_std_values,
+                        vertical=True, line_width=1, cap_size=3))
+
             try:
                 column_properties = column_to_properties[column_name_x]
                 global_min_x, global_max_x = column_properties.plot_min, column_properties.plot_max
@@ -1050,6 +1095,7 @@ class TwoColumnLineAnalyzer(Analyzer):
             if column_to_properties is None:
                 def new():
                     return enb.atable.ColumnProperties("unknown")
+
                 column_to_properties = collections.defaultdict(new)
 
             render_plds_by_group(
@@ -1057,9 +1103,9 @@ class TwoColumnLineAnalyzer(Analyzer):
                 output_plot_path=os.path.join(output_plot_dir, f"plot_line_{column_name_x}_{column_name_y}.pdf"),
                 column_properties=column_to_properties[column_name_x],
                 global_x_label=column_to_properties[column_name_x].label
-                    if column_to_properties[column_name_x].label else column_name_x,
+                if column_to_properties[column_name_x].label else column_name_x,
                 global_y_label=column_to_properties[column_name_y].label
-                    if column_to_properties[column_name_x].label else column_name_y,
+                if column_to_properties[column_name_x].label else column_name_y,
                 x_min=global_min_x,
                 x_max=global_max_x,
                 y_min=column_to_properties[column_name_y].plot_min,

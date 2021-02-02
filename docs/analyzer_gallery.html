@@ -98,11 +98,8 @@
 <li class="toctree-l2"><a class="reference internal" href="using_analyzer_subclasses.html">Using Analyzer subclasses</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Analyzer gallery</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#scalar-data-analysis">Scalar data analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multiple-column-analysis">Multiple column analysis</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#two-columns-2d-scatter">Two columns: 2D Scatter</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#two-columns-and-one-parameter-line-plot">Two columns and one parameter: line plot</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#two-columns-2d-scatter">Two columns: 2D Scatter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#two-columns-and-one-parameter-line-plot">Two columns and one parameter: line plot</a></li>
 </ul>
 </li>
 </ul>
@@ -184,10 +181,6 @@
 <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/blob/master/templates/analysis_gallery_example/generate_gallery.py">templates/analysis_gallery_example/generate_gallery.py</a> script.</p>
 <p>Please refer to the <a class="reference internal" href="api.html"><span class="doc">API</span></a> or the <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook">source code</a>
 for full details on all Analyzer subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Several Analyzer classes are <strong>not</strong> shown below (TODO)</p>
-</div>
 <div class="section" id="scalar-data-analysis">
 <h2>Scalar data analysis<a class="headerlink" href="#scalar-data-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a> class produces one or more histograms, stacked along the y axis.
@@ -204,10 +197,8 @@ subgroups.</li>
 of its plot. If False, histograms are not scaled.</li>
 </ul>
 </div>
-<div class="section" id="multiple-column-analysis">
-<h2>Multiple column analysis<a class="headerlink" href="#multiple-column-analysis" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="two-columns-2d-scatter">
-<h3>Two columns: 2D Scatter<a class="headerlink" href="#two-columns-2d-scatter" title="Permalink to this headline">¶</a></h3>
+<h2>Two columns: 2D Scatter<a class="headerlink" href="#two-columns-2d-scatter" title="Permalink to this headline">¶</a></h2>
 <p>A 2D scatter of plots can be used to analyze two columns jointly.</p>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer" title="enb.aanalysis.TwoColumnScatterAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer</span></code></a> class produces a single scatter plot given two target
 columns as an input.</p>
@@ -222,7 +213,7 @@ of each class is shown.</li>
 </ul>
 </div>
 <div class="section" id="two-columns-and-one-parameter-line-plot">
-<h3>Two columns and one parameter: line plot<a class="headerlink" href="#two-columns-and-one-parameter-line-plot" title="Permalink to this headline">¶</a></h3>
+<h2>Two columns and one parameter: line plot<a class="headerlink" href="#two-columns-and-one-parameter-line-plot" title="Permalink to this headline">¶</a></h2>
 <p>Often, we want to analyze the behavior of a method that accepts one or more parameters.
 The goal is to jointly analyze two data columns, combining
 together data for each parameter value.</p>
@@ -254,8 +245,13 @@ shows how to define a list of task families that can be used as the <cite>group_
 <li><p class="first"><cite>show_markers</cite>: a boolean controlling whether data points are made explicit with a marker. If False,
 a plain line is typically shown.</p>
 </li>
+<li><p class="first"><cite>show_v_range_bar</cite>, <cite>show_h_range_bar</cite>: if True, vertical or horizontal bars will be added to each data point
+to signal the full span of your data</p>
+</li>
+<li><p class="first"><cite>show_v_std_bar</cite>, <cite>show_h_std_bar</cite>: if True, vertical or horizontal bars will be added to each data point
+to signal plus/minus 1 standard deviation</p>
+</li>
 </ul>
-</div>
 </div>
 </div>
 
