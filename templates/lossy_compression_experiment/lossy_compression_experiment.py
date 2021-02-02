@@ -22,7 +22,6 @@ if __name__ == '__main__':
 
     all_codecs = []
     all_families = []
-
     # A family is a set of related tasks
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
     for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(5)):

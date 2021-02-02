@@ -237,7 +237,7 @@ is to be stored.</li>
 </ul>
 </div></blockquote>
 <p>Once data are available and our <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass is defined,
-a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+594.g3dfbf4965)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
+a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+610.g787d6f335)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">WikiAnalysis</span><span class="p">(</span><span class="n">csv_support_path</span><span class="o">=</span><span class="s2">&quot;persistence_basic_workflow.csv&quot;</span><span class="p">)</span>
 <span class="n">result_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">sample_paths</span><span class="p">)</span>
 </pre></div>
@@ -250,18 +250,10 @@ This avoids re-running the <code class="docutils literal notranslate"><span clas
 </div>
 <div class="section" id="data-reporting">
 <h2><strong>3 - Data reporting</strong><a class="headerlink" href="#data-reporting" title="Permalink to this headline">¶</a></h2>
-<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+594.g3dfbf4965)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
+<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+610.g787d6f335)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
 The <code class="docutils literal notranslate"><span class="pre">enb</span></code> library provides a few automatic tools to analyze and report
-one or more data columns. More specifically, the <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
-provides several subclasses of the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> class, e.g.:</p>
-<blockquote>
-<div><ul class="simple">
-<li><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a></li>
-<li><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer" title="enb.aanalysis.TwoColumnScatterAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer</span></code></a></li>
-<li><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer" title="enb.aanalysis.TwoColumnLineAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer</span></code></a></li>
-<li><a class="reference internal" href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer" title="enb.aanalysis.HistogramDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.HistogramDistributionAnalyzer</span></code></a></li>
-</ul>
-</div></blockquote>
+one or more data columns. You can find gallery of plotting and analysis tools available in <cite>enb</cite>
+in the <a class="reference internal" href="analyzer_gallery.html"><span class="doc">Analyzer gallery</span></a>.</p>
 <p>The most basic automatic analyzer is <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a>.
 It produces an histogram of the values of a given data column, and shows average and
 standard deviation on top.
@@ -279,7 +271,7 @@ the following code can be used:</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
-<li><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+594.g3dfbf4965)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+610.g787d6f335)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</li>
 <li><code class="docutils literal notranslate"><span class="pre">output_csv_file</span></code> generates a CSV file with basic statistics (min, max, average, std) for the target columns.</li>
 </ul>
 </div>
