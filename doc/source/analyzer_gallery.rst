@@ -7,9 +7,6 @@ All figures are produced by the code example in the
 Please refer to the :doc:`api` or the `source code <https://github.com/miguelinux314/experiment-notebook>`_
 for full details on all Analyzer subclasses.
 
-.. note::
-  Several Analyzer classes are **not** shown below (TODO)
-
 Scalar data analysis
 ********************
 
@@ -32,11 +29,8 @@ The following example shows the distribution of sepal lengths by Iris class:
   of its plot. If False, histograms are not scaled.
 
 
-Multiple column analysis
-************************
-
 Two columns: 2D Scatter
-~~~~~~~~~~~~~~~~~~~~~~~
+***********************
 
 A 2D scatter of plots can be used to analyze two columns jointly.
 
@@ -56,7 +50,7 @@ The following example shows the distribution of two columns of the set.
   of each class is shown.
 
 Two columns and one parameter: line plot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+****************************************
 
 Often, we want to analyze the behavior of a method that accepts one or more parameters.
 The goal is to jointly analyze two data columns, combining
@@ -92,4 +86,8 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
 * `show_markers`: a boolean controlling whether data points are made explicit with a marker. If False,
   a plain line is typically shown.
 
+* `show_v_range_bar`, `show_h_range_bar`: if True, vertical or horizontal bars will be added to each data point
+  to signal the full span of your data
 
+* `show_v_std_bar`, `show_h_std_bar`: if True, vertical or horizontal bars will be added to each data point
+  to signal plus/minus 1 standard deviation

@@ -8,6 +8,7 @@ __date__ = "10/09/2019"
 import numpy as np
 import collections
 import matplotlib
+
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
@@ -120,8 +121,9 @@ class ScatterData(PlottableData2D):
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
+        self.extra_kwargs["s"] = self.marker_size
         axes.scatter(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
-                     s=self.marker_size, **self.extra_kwargs)
+                     **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
             axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
@@ -168,23 +170,27 @@ class ErrorLines(PlottableData2D):
     marker_size = 1
     cap_size = 3
     line_width = 1
+    alpha = 0.5
 
-    def __init__(self, x_values, y_values, err_neg, err_pos,
+    def __init__(self, x_values, y_values, err_neg_values, err_pos_values,
+                 alpha=None,
                  marker_size=None, cap_size=None, vertical=False,
                  line_width=None, *args, **kwargs):
         """
         :param x_values, y_values: centers of the error lines
-        :param err_neg: list of lengths for the negative part of the error
-        :param err_pos: list of lengths for the positive part of the error
+        :param err_neg_values: list of lengths for the negative part of the error
+        :param err_pos_values: list of lengths for the positive part of the error
         :param vertical: determines whether the error bars are vertical or horizontal
         """
         super().__init__(x_values=x_values, y_values=y_values, *args, **kwargs)
-        self.err_neg = err_neg
-        self.err_pos = err_pos
-        self.cap_size = cap_size if cap_size is None else self.cap_size
+        self.err_neg = err_neg_values
+        self.err_pos = err_pos_values
+        self.cap_size = cap_size if cap_size is not None else self.cap_size
         self.marker_size = marker_size if marker_size is not None else self.marker_size
         self.line_width = line_width if line_width is not None else self.line_width
         self.vertical = vertical
+        if alpha is not None:
+            self.alpha = alpha
         assert len(self.x_values) == len(self.y_values)
         assert len(self.x_values) == len(self.err_pos)
 
@@ -197,12 +203,12 @@ class ErrorLines(PlottableData2D):
         err_argument = err_argument[:, :len(self.x_values)]
         if self.vertical:
             axes.errorbar(self.x_values, self.y_values, yerr=err_argument,
-                          fmt="-o", capsize=1, capthick=0.5, lw=0, elinewidth=self.line_width, ms=self.marker_size,
+                          fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width, ms=self.marker_size,
                           alpha=self.alpha,
                           **self.extra_kwargs)
         else:
             axes.errorbar(self.x_values, self.y_values, xerr=err_argument,
-                          fmt="-o", capsize=1, capthick=0.5, lw=0, elinewidth=self.line_width, ms=self.marker_size,
+                          fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width, ms=self.marker_size,
                           alpha=self.alpha,
                           **self.extra_kwargs)
 
