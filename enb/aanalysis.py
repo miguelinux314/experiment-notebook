@@ -1040,26 +1040,34 @@ class TwoColumnLineAnalyzer(Analyzer):
             try:
                 column_properties = column_to_properties[column_name_x]
                 global_min_x, global_max_x = column_properties.plot_min, column_properties.plot_max
-            except KeyError:
+            except (KeyError, TypeError):
                 global_min_x, global_max_x = None, None
             global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds) \
                 if global_min_x is None else global_min_x
             global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds) \
                 if global_max_x is None else global_max_x
 
+            if column_to_properties is None:
+                def new():
+                    return enb.atable.ColumnProperties("unknown")
+                column_to_properties = collections.defaultdict(new)
+
             render_plds_by_group(
                 pds_by_group_name=plds_by_family_label,
                 output_plot_path=os.path.join(output_plot_dir, f"plot_line_{column_name_x}_{column_name_y}.pdf"),
                 column_properties=column_to_properties[column_name_x],
-                global_x_label=column_to_properties[column_name_x].label,
-                global_y_label=column_to_properties[column_name_y].label,
+                global_x_label=column_to_properties[column_name_x].label
+                    if column_to_properties[column_name_x].label else column_name_x,
+                global_y_label=column_to_properties[column_name_y].label
+                    if column_to_properties[column_name_x].label else column_name_y,
                 x_min=global_min_x,
                 x_max=global_max_x,
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
                 horizontal_margin=0.05 * (global_max_x - global_min_x),
                 legend_column_count=legend_column_count,
-                combine_groups=True, group_name_order=[f.label for f in group_by])
+                combine_groups=True,
+                group_name_order=[f.label for f in group_by])
 
 
 class TaskFamily:

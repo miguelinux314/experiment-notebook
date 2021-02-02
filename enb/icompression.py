@@ -650,10 +650,6 @@ class CompressionExperiment(experiment.Experiment):
 
     @atable.column_function([
         atable.ColumnProperties(name="compression_ratio", label="Compression ratio", plot_min=0),
-        atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
-                                label="Compression efficiency (1B entropy)", plot_min=0),
-        atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
-                                label="Compression efficiency (2B entropy)", plot_min=0),
         atable.ColumnProperties(name="lossless_reconstruction", label="Lossless?"),
         atable.ColumnProperties(name="compression_time_seconds", label="Compression time (s)", plot_min=0),
         atable.ColumnProperties(name="decompression_time_seconds", label="Decompression time (s)", plot_min=0),
@@ -669,12 +665,6 @@ class CompressionExperiment(experiment.Experiment):
         assert row.compression_results.compressed_path == row.decompression_results.compressed_path
         assert row.image_info_row["bytes_per_sample"] * row.image_info_row["samples"] \
                == os.path.getsize(row.compression_results.original_path)
-        compression_efficiency_1byte_entropy = \
-            row.image_info_row["entropy_1B_bps"] * row.image_info_row["size_bytes"] \
-            / (row["compressed_size_bytes"] * 8)
-        compression_efficiency_2byte_entropy = \
-            row.image_info_row["entropy_2B_bps"] * (row.image_info_row["size_bytes"]/2) \
-            / (row["compressed_size_bytes"] * 8)
         hasher = hashlib.sha256()
         with open(row.compression_results.compressed_path, "rb") as compressed_file:
             hasher.update(compressed_file.read())
@@ -682,8 +672,6 @@ class CompressionExperiment(experiment.Experiment):
 
         row["lossless_reconstruction"] = filecmp.cmp(row.compression_results.original_path,
                                                      row.decompression_results.reconstructed_path)
-        row["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
-        row["compression_efficiency_2byte_entropy"] = compression_efficiency_2byte_entropy
         assert row.compression_results.compression_time_seconds is not None
         row["compression_time_seconds"] = row.compression_results.compression_time_seconds
         assert row.decompression_results.decompression_time_seconds is not None
@@ -703,6 +691,21 @@ class CompressionExperiment(experiment.Experiment):
         """
         row[_column_name] = (row.image_info_row["dynamic_range_bits"] * row.image_info_row["samples"]) \
                             / (8 * row["compressed_size_bytes"])
+
+    @atable.column_function(
+        [atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
+                                 label="Compression efficiency (1B entropy)", plot_min=0),
+         atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
+                                 label="Compression efficiency (2B entropy)", plot_min=0)])
+    def set_efficiency(self, index, row):
+        compression_efficiency_1byte_entropy = \
+            row.image_info_row["entropy_1B_bps"] * row.image_info_row["size_bytes"] \
+            / (row["compressed_size_bytes"] * 8)
+        compression_efficiency_2byte_entropy = \
+            row.image_info_row["entropy_2B_bps"] * (row.image_info_row["size_bytes"] / 2) \
+            / (row["compressed_size_bytes"] * 8)
+        row["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
+        row["compression_efficiency_2byte_entropy"] = compression_efficiency_2byte_entropy
 
 
 class LosslessCompressionExperiment(CompressionExperiment):
