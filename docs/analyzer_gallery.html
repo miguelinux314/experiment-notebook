@@ -189,6 +189,8 @@ Each histogram contains a marker for the average value, and a bar for +/- 1 stan
 <img alt="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" src="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" />
 <p><strong>Interesting parameters</strong> to the <cite>analyze_df()</cite> method:</p>
 <ul class="simple">
+<li><cite>output_csv_file</cite>: if given, a CSV with basic statistics about the columns of interest is provided.
+Analyzer subclasses may overwrite this output.</li>
 <li><cite>group_by</cite>: useful to stack more than one histogram, by dividing the data frame based on the value of a column.
 <cite>group_by=”class”</cite> was used to generate the image above.</li>
 <li><cite>show_global</cite>: controls wether results for the whole dataset (not split by group_by) is to be shown along the
@@ -249,9 +251,12 @@ a plain line is typically shown.</p>
 to signal the full span of your data</p>
 </li>
 <li><p class="first"><cite>show_v_std_bar</cite>, <cite>show_h_std_bar</cite>: if True, vertical or horizontal bars will be added to each data point
-to signal plus/minus 1 standard deviation</p>
+to signal plus/minus 1 standard deviation (std).</p>
 </li>
 </ul>
+<p>Another example with horizontal range and plus/minus +1 std (taken from <a class="reference internal" href="lossy_compression_example.html"><span class="doc">Lossy Compression Experiment</span></a>)
+is shown next:</p>
+<img alt="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png" src="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png" />
 </div>
 </div>
 

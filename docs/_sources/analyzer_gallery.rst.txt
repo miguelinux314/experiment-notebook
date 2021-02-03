@@ -19,6 +19,9 @@ The following example shows the distribution of sepal lengths by Iris class:
 
 **Interesting parameters** to the `analyze_df()` method:
 
+* `output_csv_file`: if given, a CSV with basic statistics about the columns of interest is provided.
+  Analyzer subclasses may overwrite this output.
+
 * `group_by`: useful to stack more than one histogram, by dividing the data frame based on the value of a column.
   `group_by="class"` was used to generate the image above.
 
@@ -90,4 +93,10 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
   to signal the full span of your data
 
 * `show_v_std_bar`, `show_h_std_bar`: if True, vertical or horizontal bars will be added to each data point
-  to signal plus/minus 1 standard deviation
+  to signal plus/minus 1 standard deviation (std).
+
+Another example with horizontal range and plus/minus +1 std (taken from :doc:`lossy_compression_example`)
+is shown next:
+
+.. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png
+

@@ -39,7 +39,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Defining new codecs" href="defining_new_compressors.html" />
+    <link rel="next" title="Lossy Compression Experiment" href="lossy_compression_example.html" />
     <link rel="prev" title="Image compression" href="image_compression.html" /> 
 </head>
 
@@ -95,18 +95,19 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Lossless Compression Experiment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#example-setup">1 - Example setup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-curation">2 - Data curation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#experiment-execution">3 - Experiment execution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#code-explanation">4 - Code explanation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#initialization">Initialization</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#setup">Setup</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Experiment execution</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-analysis">Data analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lossless-experiment-setup">Lossless: experiment setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lossless-data-curation">Lossless: data curation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lossless-execution">Lossless: execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lossless-code">Lossless: code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lossless-initialization">Lossless: initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lossless-setup">Lossless: setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lossless-experiment-running">Lossless: experiment running</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#lossless-data-analysis">Lossless: data analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
@@ -191,8 +192,8 @@ This class is a subclass of <a class="reference internal" href="api/enb.html#enb
 <p class="last">This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
 followed the installation instructions in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
 </div>
-<div class="section" id="example-setup">
-<h2>1 - Example setup<a class="headerlink" href="#example-setup" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lossless-experiment-setup">
+<h2>Lossless: experiment setup<a class="headerlink" href="#lossless-experiment-setup" title="Permalink to this headline">¶</a></h2>
 <p>You can find the example at <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/tree/master/templates/lossless_compression_example">templates/lossless_compression_example</a>.
 In Linux, you can clone the latest version with the following steps:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://github.com/miguelinux314/experiment-notebook/archive/master.zip
@@ -200,16 +201,16 @@ unzip master.zip
 cp -r experiment-notebook-master/templates/lossless_compression_example/ .
 </pre></div>
 </div>
-<p>This example makes uses of the <code class="docutils literal notranslate"><span class="pre">plugin_jpeg</span></code> plugin. You need to copy it to the same folder
+<p>This example makes uses of the <cite>plugin_jpeg</cite> plugin. You need to copy it to the same folder
 where you are running the experiment (.). The following code will do the trick:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r experiment-notebook-master/plugins/plugin_jpeg .
 </pre></div>
 </div>
 <p>This completes the setup of the experiment</p>
 </div>
-<div class="section" id="data-curation">
-<h2>2 - Data curation<a class="headerlink" href="#data-curation" title="Permalink to this headline">¶</a></h2>
-<p>Data has been previously curated for you, and placed in the <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder.</p>
+<div class="section" id="lossless-data-curation">
+<h2>Lossless: data curation<a class="headerlink" href="#lossless-data-curation" title="Permalink to this headline">¶</a></h2>
+<p>Data has been previously curated for you, and placed in the <cite>data/</cite> folder.</p>
 <p>For image compression experiments, it is needed that:</p>
 <blockquote>
 <div><ul>
@@ -232,23 +233,23 @@ example.</p>
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="experiment-execution">
-<h2>3 - Experiment execution<a class="headerlink" href="#experiment-execution" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lossless-execution">
+<h2>Lossless: execution<a class="headerlink" href="#lossless-execution" title="Permalink to this headline">¶</a></h2>
 <p>You just need to execute the following line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./lossless_compression_experiment_example.py
 </pre></div>
 </div>
-<p>This should produce the <code class="docutils literal notranslate"><span class="pre">plots</span></code>, <code class="docutils literal notranslate"><span class="pre">analysis</span></code> folders.
-Furthermore, a <code class="docutils literal notranslate"><span class="pre">persistence_lossless_compression_experiment_example.py</span></code> folder is created
+<p>This should produce the <cite>plots</cite>, <cite>analysis</cite> folders.
+Furthermore, a <cite>persistence_lossless_compression_experiment_example.py</cite> folder is created
 with persistence information, so that images do not need to be analyzed again, and that
 compression needs not be performed again unless you add any new codecs to your experiment.</p>
 </div>
-<div class="section" id="code-explanation">
-<h2>4 - Code explanation<a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
-<p>The example code in <code class="docutils literal notranslate"><span class="pre">persistence_lossless_compression_experiment_example.py</span></code>
+<div class="section" id="lossless-code">
+<h2>Lossless: code<a class="headerlink" href="#lossless-code" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/blob/master/templates/lossless_compression_example/lossless_compression_experiment_example.py">example code</a>
 is documented and (hopefully) self-explanatory.</p>
-<div class="section" id="initialization">
-<h3>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="lossless-initialization">
+<h3>Lossless: initialization<a class="headerlink" href="#lossless-initialization" title="Permalink to this headline">¶</a></h3>
 <p>The initialization is straightforward. Note how the plugin’s main module needs to be imported.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">enb.config</span> <span class="kn">import</span> <span class="n">get_options</span>
@@ -259,12 +260,12 @@ is documented and (hopefully) self-explanatory.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="setup">
-<h3>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="lossless-setup">
+<h3>Lossless: setup<a class="headerlink" href="#lossless-setup" title="Permalink to this headline">¶</a></h3>
 <p>A minimal setup is needed so that the experiment can be created and can locate the data of interest.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">codecs</span></code> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>
+<p class="last">The <cite>codecs</cite> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>
 instances. See <a class="reference internal" href="defining_new_compressors.html"><span class="doc">Defining new codecs</span></a> for further information.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup global options</span>
@@ -276,10 +277,10 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 </pre></div>
 </div>
 </div>
-<div class="section" id="id1">
-<h3>Experiment execution<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="lossless-experiment-running">
+<h3>Lossless: experiment running<a class="headerlink" href="#lossless-experiment-running" title="Permalink to this headline">¶</a></h3>
 <p>The lossless compression experiment can now be created, and used to generate a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+610.g787d6f335)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+618.g1ffedc2b3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment</span>
 <span class="n">exp</span> <span class="o">=</span> <span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCompressionExperiment</span><span class="p">(</span><span class="n">codecs</span><span class="o">=</span><span class="n">codecs</span><span class="p">)</span>
 
@@ -289,9 +290,20 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
     <span class="n">overwrite</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">force</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <cite>compression_ratio_dr`</cite>. <cite>bpppc</cite> and <cite>compression_time_seconds</cite> columns
+are automatically created by the LosslessCompressionExperiment class. You can
+extend this class with new columns, as described in the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example.</p>
 </div>
-<div class="section" id="data-analysis">
-<h3>Data analysis<a class="headerlink" href="#data-analysis" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Of course, custom analysis of the dataframe is possible for maximum control.</p>
+</div>
+</div>
+</div>
+<div class="section" id="lossless-data-analysis">
+<h2>Lossless: data analysis<a class="headerlink" href="#lossless-data-analysis" title="Permalink to this headline">¶</a></h2>
 <p>One can perform automatic analysis of the dataframe with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a>
 and any of the other classes in that module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot some results</span>
@@ -309,17 +321,6 @@ and any of the other classes in that module.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">compression_ratio_dr</span></code>. <code class="docutils literal notranslate"><span class="pre">bpppc</span></code> and <code class="docutils literal notranslate"><span class="pre">compression_time_seconds</span></code> columns
-are automatically created by the LosslessCompressionExperiment class. You can
-extend this class with new columns, as described in the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Of course, custom analysis of the dataframe is possible for maximum control.</p>
-</div>
-</div>
 </div>
 </div>
 
@@ -329,7 +330,7 @@ extend this class with new columns, as described in the <a class="reference inte
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="defining_new_compressors.html" class="btn btn-neutral float-right" title="Defining new codecs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lossy_compression_example.html" class="btn btn-neutral float-right" title="Lossy Compression Experiment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="image_compression.html" class="btn btn-neutral float-left" title="Image compression" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

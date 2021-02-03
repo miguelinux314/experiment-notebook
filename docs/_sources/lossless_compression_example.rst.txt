@@ -9,8 +9,8 @@ This class is a subclass of :class:`enb.experiment.Experiment`.
 .. note:: This example assumes you have understood the :doc:`basic_workflow` example, and that you have successfully
   followed the installation instructions in :doc:`installation`.
 
-1 - Example setup
-*****************
+Lossless: experiment setup
+**************************
 
 You can find the example at `templates/lossless_compression_example <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/lossless_compression_example>`_.
 In Linux, you can clone the latest version with the following steps:
@@ -21,7 +21,7 @@ In Linux, you can clone the latest version with the following steps:
    unzip master.zip
    cp -r experiment-notebook-master/templates/lossless_compression_example/ .
    
-This example makes uses of the ``plugin_jpeg`` plugin. You need to copy it to the same folder
+This example makes uses of the `plugin_jpeg` plugin. You need to copy it to the same folder
 where you are running the experiment (.). The following code will do the trick:
 
 .. code-block:: bash
@@ -30,10 +30,10 @@ where you are running the experiment (.). The following code will do the trick:
 
 This completes the setup of the experiment
 
-2 - Data curation
-*****************
+Lossless: data curation
+***********************
 
-Data has been previously curated for you, and placed in the ``data/`` folder.
+Data has been previously curated for you, and placed in the `data/` folder.
 
 For image compression experiments, it is needed that:  
 
@@ -50,8 +50,9 @@ For image compression experiments, it is needed that:
     - Images can be organized in subfolders. This is not mandatory, and it is not used in the current 
       example.
 
-3 - Experiment execution
-************************
+
+Lossless: execution
+*******************
 
 You just need to execute the following line:
 
@@ -59,19 +60,19 @@ You just need to execute the following line:
     
     ./lossless_compression_experiment_example.py
 
-This should produce the ``plots``, ``analysis`` folders. 
-Furthermore, a ``persistence_lossless_compression_experiment_example.py`` folder is created
+This should produce the `plots`, `analysis` folders.
+Furthermore, a `persistence_lossless_compression_experiment_example.py` folder is created
 with persistence information, so that images do not need to be analyzed again, and that
 compression needs not be performed again unless you add any new codecs to your experiment.
 
-4 - Code explanation
-********************
+Lossless: code
+**************
 
-The example code in ``persistence_lossless_compression_experiment_example.py`` 
+The `example code <https://github.com/miguelinux314/experiment-notebook/blob/master/templates/lossless_compression_example/lossless_compression_experiment_example.py>`_
 is documented and (hopefully) self-explanatory. 
 
-Initialization
---------------
+Lossless: initialization
+------------------------
 
 The initialization is straightforward. Note how the plugin's main module needs to be imported.
 
@@ -86,13 +87,13 @@ The initialization is straightforward. Note how the plugin's main module needs t
     
     
 
-Setup
---------------
+Lossless: setup
+---------------
 
 A minimal setup is needed so that the experiment can be created and can locate the data of interest.
 
 .. note::
-    The ``codecs`` list here can contain any number of :class:`enb.icompression.LosslessCodec`
+    The `codecs` list here can contain any number of :class:`enb.icompression.LosslessCodec`
     instances. See :doc:`defining_new_compressors` for further information.
 
 .. code-block:: python
@@ -105,8 +106,8 @@ A minimal setup is needed so that the experiment can be created and can locate t
     codecs.append(plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=0))
 
 
-Experiment execution
---------------------
+Lossless: experiment running
+----------------------------
 
 The lossless compression experiment can now be created, and used to generate a 
 :class:`pandas.DataFrame` instance with all defined columns.
@@ -121,11 +122,21 @@ The lossless compression experiment can now be created, and used to generate a
         parallel_row_processing=not options.sequential,
         overwrite=options.force > 0)
 
-Data analysis
--------------
+.. note::
+
+    The `compression_ratio_dr``. `bpppc` and `compression_time_seconds` columns
+    are automatically created by the LosslessCompressionExperiment class. You can
+    extend this class with new columns, as described in the :doc:`basic_workflow` example.
+
+.. note::
+
+    Of course, custom analysis of the dataframe is possible for maximum control.
+
+Lossless: data analysis
+***********************
 
 One can perform automatic analysis of the dataframe with :class:`enb.aanalysis.ScalarDistributionAnalyzer`
-and any of the other classes in that module. 
+and any of the other classes in that module.
 
 .. code-block:: python
 
@@ -144,12 +155,4 @@ and any of the other classes in that module.
     )
    
 
-.. note::
 
-    The ``compression_ratio_dr``. ``bpppc`` and ``compression_time_seconds`` columns
-    are automatically created by the LosslessCompressionExperiment class. You can
-    extend this class with new columns, as described in the :doc:`basic_workflow` example.
-
-.. note::
-
-    Of course, custom analysis of the dataframe is possible for maximum control.
