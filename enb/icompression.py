@@ -120,6 +120,12 @@ class AbstractCodec(experiment.ExperimentTask):
         """
         return self.name
 
+    @property
+    def label_with_params(self):
+        return self.label + " " + ", ".join(f"{enb.aanalysis.clean_column_name(k)}"
+                                            f"={self.param_dict[k]}"
+                                            for k in sorted(self.param_dict.keys()))
+
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         """Compress original_path into compress_path using param_dict as params.
         :param original_path: path to the original file to be compressed
@@ -512,7 +518,8 @@ class CompressionExperiment(experiment.Experiment):
                  dataset_info_table: enb.isets.ImagePropertiesTable = None,
                  overwrite_file_properties=False,
                  parallel_dataset_property_processing=None,
-                 reconstructed_dir_path=None):
+                 reconstructed_dir_path=None,
+                 compressed_copy_dir_path=None):
         """
         :param codecs: list of :py:class:`AbstractCodec` instances. Note that
           codecs are compatible with the interface of :py:class:`ExperimentTask`.
@@ -537,6 +544,8 @@ class CompressionExperiment(experiment.Experiment):
           are to be obtained in parallel. If None, it is given by not options.sequential.
         :param reconstructed_dir_path: if not None, a directory where reconstructed images are
           to be stored.
+        :param compressed_copy_dir_path: if not None, it gives the directory where a copy of the compressed images.
+          is to be stored. If may not be generated for images for which all columns are known
         """
         table_class = type(dataset_info_table) if dataset_info_table is not None \
             else enb.isets.ImagePropertiesTable
@@ -555,6 +564,7 @@ class CompressionExperiment(experiment.Experiment):
                          overwrite_file_properties=overwrite_file_properties,
                          parallel_dataset_property_processing=parallel_dataset_property_processing)
         self.reconstructed_dir_path = reconstructed_dir_path
+        self.compressed_copy_dir_path = compressed_copy_dir_path
 
     @property
     def codecs(self):
@@ -587,20 +597,26 @@ class CompressionExperiment(experiment.Experiment):
         if isinstance(result, Exception):
             return result
 
+        if self.compressed_copy_dir_path:
+            output_compressed_path = os.path.join(
+                self.compressed_copy_dir_path,
+                codec.name,
+                os.path.basename(os.path.dirname(file_path)), os.path.basename(file_path))
+            os.makedirs(os.path.dirname(output_compressed_path), exist_ok=True)
+            if options.verbose > 1:
+                print(f"[C]opying {file_path} into {output_compressed_path}")
+            shutil.copy(row_wrapper.compression_results.compressed_path, output_compressed_path)
+
         if self.reconstructed_dir_path is not None:
             output_reconstructed_path = os.path.join(
                 self.reconstructed_dir_path,
                 codec.name,
                 os.path.basename(os.path.dirname(file_path)), os.path.basename(file_path))
             os.makedirs(os.path.dirname(output_reconstructed_path), exist_ok=True)
-            if not os.path.exists(output_reconstructed_path) or options.force:
-                if options.verbose > 1:
-                    print(f"[C]opying {file_path} into {output_reconstructed_path}")
-                shutil.copy(row_wrapper.decompression_results.reconstructed_path,
-                            output_reconstructed_path)
-            else:
-                if options.verbose > 2:
-                    print(f"[S]kipping reconstruction of {file_path}")
+            if options.verbose > 1:
+                print(f"[C]opying {row_wrapper.compression_results.compressed_path} into {output_reconstructed_path}")
+            shutil.copy(row_wrapper.decompression_results.reconstructed_path,
+                        output_reconstructed_path)
 
             if image_info_row["component_count"] == 3:
                 rendered_path = f"{output_reconstructed_path}.png"
