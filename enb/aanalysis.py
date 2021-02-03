@@ -149,15 +149,17 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     global_x_min = float("inf")
     global_x_max = float("-inf")
     for pd in (plottable for pds in pds_by_group_name.values() for plottable in pds):
-        pd.legend_column_count = legend_column_count
-        global_x_min = min(global_x_min, min(pd.x_values))
-        global_x_max = max(global_x_max, max(pd.x_values))
+        global_x_min = min(global_x_min, min(x if not math.isinf(x) else 0 for x in pd.x_values))
+        global_x_max = max(global_x_max, max(x if not math.isinf(x) else 1 for x in pd.x_values))
     if global_x_max - global_x_min > 1:
-        global_x_min = math.floor(global_x_min)
-        global_x_max = math.ceil(global_x_max)
+        global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
+        global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
     if column_properties:
         global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
         global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
+
+    if global_x_max is None:
+        global_x_min = 1
 
     for i, (group_name, group_axes) in enumerate(group_name_axes):
         group_color = color_by_group_name[group_name]
@@ -209,8 +211,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             group_axes.get_yaxis().set_minor_locator(AutoMinorLocator())
         if not combine_groups:
             group_axes.get_yaxis().set_label_position("right")
-            group_axes.set_ylabel(y_labels_by_group_name[group_name], rotation=0,
-                                  ha="left", va="center")
+            group_axes.set_ylabel(y_labels_by_group_name[group_name]
+                                  if group_name in y_labels_by_group_name
+                                  else clean_column_name(group_name),
+                                  rotation=0, ha="left", va="center")
 
     plt.xlabel(global_x_label)
     if column_properties and column_properties.hist_label_dict is not None:
@@ -304,7 +308,8 @@ class ScalarDistributionAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False):
+                   adjust_height=False,
+                   y_labels_by_group_name=None):
         """Perform an analysis of target_columns, grouping as specified.
 
         :param adjust_height: adjust height to the maximum height contained in the y_values
@@ -326,6 +331,10 @@ class ScalarDistributionAnalyzer(Analyzer):
             if column_to_properties is None else column_to_properties
         min_max_by_column = get_scalar_min_max_by_column(
             df=full_df, target_columns=target_columns, column_to_properties=column_to_properties)
+        min_max_by_column = dict(min_max_by_column)
+        for c in min_max_by_column:
+            for i in range(2):
+                min_max_by_column[c][i] = None if not math.isinf(min_max_by_column[c][i]) else None
 
         pooler_suffix_tuples = [(pd.DataFrame.min, "min"), (pd.DataFrame.max, "max"),
                                 (pd.DataFrame.mean, "avg"), (pd.DataFrame.std, "std")]
@@ -366,7 +375,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                 for column in target_columns})
             lengths_by_group_name["all"] = len(full_df)
         if output_csv_file:
-            os.makedirs(os.path.dirname(output_csv_file), exist_ok=True)
+            os.makedirs(os.path.dirname(os.path.abspath(output_csv_file)), exist_ok=True)
             analysis_df.to_csv(output_csv_file)
 
         expected_return_ids = []
@@ -384,8 +393,11 @@ class ScalarDistributionAnalyzer(Analyzer):
             if column_name in column_to_properties and column_to_properties[column_name].hist_bin_width is not None:
                 histogram_bin_width = column_to_properties[column_name].hist_bin_width
             if histogram_bin_width is None:
-                histogram_bin_width = ((min_max_by_column[column_name][1] - min_max_by_column[column_name][0])
-                                       / self.hist_bin_count)
+                try:
+                    histogram_bin_width = ((min_max_by_column[column_name][1] - min_max_by_column[column_name][0])
+                                           / self.hist_bin_count)
+                except TypeError:
+                    histogram_bin_width = 1 / self.hist_bin_count
             y_min = 0 if not column_name in column_to_properties \
                          or not column_to_properties[column_name].semilog_y else self.semilog_hist_min
 
@@ -409,6 +421,12 @@ class ScalarDistributionAnalyzer(Analyzer):
             except KeyError:
                 x_min, x_max = None, None
 
+            if y_labels_by_group_name is None:
+                y_labels_by_group_name = {
+                    group: f"{group} ({length})" if show_count else f"{group}"
+                    for group, length in
+                    lengths_by_group_name.items()}
+
             expected_return_ids.append(
                 ray_render_plds_by_group.remote(
                     options=ray.put(options),
@@ -419,9 +437,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                                               if column_name in column_to_properties else None),
                     horizontal_margin=ray.put(histogram_bin_width),
                     global_x_label=ray.put(x_label),
-                    y_labels_by_group_name=ray.put({group: f"{group} ({length})" if show_count else f"{group}"
-                                                    for group, length in
-                                                    lengths_by_group_name.items()}),
+                    y_labels_by_group_name=ray.put(y_labels_by_group_name),
                     x_min=ray.put(x_min), x_max=ray.put(x_max),
                     y_min=ray.put(y_min), y_max=ray.put(y_max),
                     semilog_hist_min=ray.put(self.semilog_hist_min),
@@ -439,21 +455,24 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     """
     column_df = df[column]
     # Histogram with bins in [0,1] that sum 1
-    hist_y_values, bin_edges = np.histogram(column_df.values, bins=hist_bin_count,
-                                            range=min_max_by_column[column],
-                                            density=False)
+    range = [0,0]
+    try:
+        range[0] = min(range[0], min(v for v in df[column] if not math.isinf(v)))
+        range[1] = max(range[1], max(v for v in df[column] if not math.isinf(v)))
+    except ValueError:
+        pass
+
+    hist_y_values, bin_edges = np.histogram(
+        column_df.values, bins=hist_bin_count, range=range, density=False)
     hist_y_values = hist_y_values / len(column_df)
 
-    if min_max_by_column[column][0] > column_df.min() or min_max_by_column[column][1] < column_df.max():
-        msg = str(f"The forced range for {column} {tuple(min_max_by_column[column])} "
-                  f"misses {100 * (1 - sum(hist_y_values)):.0f}% of the actual values. "
-                  f"Actual range is ({column_df.min()}, {column_df.max()}).")
-        if options.exit_on_error:
-            raise Exception(msg)
-        elif options.verbose > 2:
-            print(f"[W]arning: {msg}")
-    elif abs(sum(hist_y_values) - 1) > 1e-10:
-        raise Exception("Unfortunately, some values seem to be missing - check for errors!")
+    if abs(sum(hist_y_values) - 1) > 1e-10:
+        if math.isinf(df[column].max()) or math.isinf(df[column].min()):
+            print(f"Infinite values are not accounted for in {column}, "
+                  f"which represent {100 * (1 - sum(hist_y_values))}% of the values")
+        else:
+            print(f"[watch] sum(hist_y_values)={sum(hist_y_values)}")
+            raise Exception("Unfortunately, some values seem to be missing - check for errors!")
 
     hist_y_values = hist_y_values / hist_y_values.sum()
 
@@ -510,10 +529,13 @@ def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
             min_max_by_column[column][1] = df[column].max()
 
         if min_max_by_column[column][1] > 1:
-            min_max_by_column[column][0] = \
-                math.floor(min_max_by_column[column][0])
-            min_max_by_column[column][1] = \
-                math.ceil(min_max_by_column[column][1])
+            if not math.isnan(min_max_by_column[column][0]) and not math.isinf(min_max_by_column[column][0]):
+                min_max_by_column[column][0] = \
+                    math.floor(min_max_by_column[column][0])
+            if not math.isnan(min_max_by_column[column][1]) and not math.isinf(min_max_by_column[column][1]):
+                min_max_by_column[column][1] = \
+                    math.ceil(min_max_by_column[column][1])
+
     return min_max_by_column
 
 
@@ -1062,13 +1084,13 @@ class TwoColumnLineAnalyzer(Analyzer):
                         x_values=x_values, y_values=y_values,
                         err_pos_values=family_y_pos_values,
                         err_neg_values=family_y_neg_values,
-                        vertical=True, line_width=1, cap_size=5))
+                        vertical=True, line_width=0.75, cap_size=5))
                 if show_h_range_bar:
                     plds_by_family_label[family.label].append(plotdata.ErrorLines(
                         x_values=x_values, y_values=y_values,
                         err_pos_values=family_x_pos_values,
                         err_neg_values=family_x_neg_values,
-                        vertical=False, line_width=1, cap_size=5))
+                        vertical=False, line_width=0.75, cap_size=5))
                 if show_v_std_bar:
                     plds_by_family_label[family.label].append(plotdata.ErrorLines(
                         x_values=x_values, y_values=y_values,
@@ -1080,7 +1102,7 @@ class TwoColumnLineAnalyzer(Analyzer):
                         x_values=x_values, y_values=y_values,
                         err_pos_values=family_x_std_values,
                         err_neg_values=family_x_std_values,
-                        vertical=True, line_width=1, cap_size=3))
+                        vertical=False, line_width=1, cap_size=3))
 
             try:
                 column_properties = column_to_properties[column_name_x]
@@ -1123,17 +1145,20 @@ class TaskFamily:
     all configuration values except for a parameter.
     """
 
-    def __init__(self, label, task_names=None):
+    def __init__(self, label, task_names=None, names_to_labels=None):
         """
         :param label: Printable name that identifies the family
         :param task_names: if not None, it must be a list of task names (strings)
           that are expected to be found in an ATable's DataFrame when analyzing
           it.
+        :param names_to_labels: if not None, it must be a dictionary indexed by
+        task name that contains a displayable version of it
         """
         self.label = label
         self.task_names = task_names if task_names is not None else []
+        self.names_to_labels = names_to_labels if names_to_labels is not None else {}
 
-    def add_task_name(self, task_name):
+    def add_task(self, task_name, task_label=None):
         """
         Add a new task name to the family (it becomes the last element
         in self.task_names)
@@ -1142,6 +1167,8 @@ class TaskFamily:
         """
         assert task_name not in self.task_names
         self.task_names.append(task_name)
+        if task_label:
+            self.names_to_labels[task_name] = task_label
 
 
 def get_histogram_dicts(df, column):

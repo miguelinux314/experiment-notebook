@@ -16,6 +16,7 @@ import enb.icompression
 import enb.aanalysis
 
 import plugin_jpeg.jpeg_codecs
+import plugin_mcalic.mcalic_codecs
 
 if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "landsat")
@@ -24,23 +25,48 @@ if __name__ == '__main__':
     all_families = []
     # A family is a set of related tasks
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
-    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(5)):
+    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(7)):
         all_codecs.append(c)
-        jpeg_ls_family.add_task_name(c.name)
+        jpeg_ls_family.add_task(c.name, c.label_with_params)
     all_families.append(jpeg_ls_family)
+
+    # One can add as many families as lines should be depicted
+    mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
+    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(10)):
+        all_codecs.append(c)
+        mcalic_family.add_task(c.name, c.label_with_params)
+    all_families.append(mcalic_family)
+
+    # One can easily define pretty plot labels for all codecs individually, even when
+    # one or more parameter families are used
+    label_by_group_name = dict()
+    for family in all_families:
+        label_by_group_name.update(family.names_to_labels)
 
     # Run experiment and produce figures
     exp = enb.icompression.LossyCompressionExperiment(codecs=all_codecs)
     df = exp.get_df()
+    enb.aanalysis.ScalarDistributionAnalyzer().analyze_df(
+        full_df=df,
+        target_columns=["bpppc", "pae", "compression_efficiency_2byte_entropy", "psnr_dr"],
+        output_csv_file="analysis.csv",
+        column_to_properties=exp.joined_column_to_properties,
+        group_by="task_name",
+        y_labels_by_group_name=label_by_group_name,
+    )
     enb.aanalysis.TwoColumnLineAnalyzer().analyze_df(
         full_df=df,
-        target_columns=[("pae", "psnr_dr"), ("bpppc", "pae"), ("bpppc", "psnr_dr")],
+        target_columns=[("bpppc", "pae"), ("bpppc", "psnr_dr")],
         column_to_properties=exp.joined_column_to_properties,
-        group_by=[jpeg_ls_family])
+        show_markers=True,
+        show_h_range_bar=True,
+        show_h_std_bar=True,
+        group_by=all_families,
+        legend_column_count=2)
 
     # pdf to high-def PNG
     for pdf_path in glob.glob(os.path.join(os.path.dirname(__file__), "plots", "**", "*.pdf"), recursive=True):
-        output_dir = os.path.abspath(pdf_path).replace(os.path.abspath("./plots"), "./png_plots")
+        output_dir = os.path.dirname(os.path.abspath(pdf_path)).replace(os.path.abspath("./plots"), "./png_plots")
         os.makedirs(output_dir, exist_ok=True)
         png_path = os.path.join(output_dir, os.path.basename(pdf_path).replace(".pdf", ".png"))
         invocation = f"convert -density 400 {pdf_path} {png_path}"
