@@ -209,7 +209,7 @@ using pyplot.</p>
 <dl class="method">
 <dt id="enb.aanalysis.Analyzer.analyze_df">
 <code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+610.g787d6f335)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+618.g1ffedc2b3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -380,7 +380,7 @@ If None, group names are sorted alphabetically (case insensitive).</li>
 <p>Automatic analysis and report of scalar data in pandas’ DataFrames</p>
 <dl class="method">
 <dt id="enb.aanalysis.ScalarDistributionAnalyzer.analyze_df">
-<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir=None</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em>, <em>y_labels_by_group_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform an analysis of target_columns, grouping as specified.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -444,15 +444,15 @@ an atable.ColumnProperties instance</li>
 
 <dl class="class">
 <dt id="enb.aanalysis.TaskFamily">
-<em class="property">class </em><code class="descclassname">enb.aanalysis.</code><code class="descname">TaskFamily</code><span class="sig-paren">(</span><em>label</em>, <em>task_names=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TaskFamily" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">enb.aanalysis.</code><code class="descname">TaskFamily</code><span class="sig-paren">(</span><em>label</em>, <em>task_names=None</em>, <em>names_to_labels=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TaskFamily" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Describe a sorted list of task names that identify a family of related
 results within a DataFrame. Typically, this family will be constructed using
 task workers (e.g., <code class="xref py py-class docutils literal notranslate"><span class="pre">icompression.AbstractCodec</span></code> instances) that share
 all configuration values except for a parameter.</p>
 <dl class="method">
-<dt id="enb.aanalysis.TaskFamily.add_task_name">
-<code class="descname">add_task_name</code><span class="sig-paren">(</span><em>task_name</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TaskFamily.add_task_name" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.aanalysis.TaskFamily.add_task">
+<code class="descname">add_task</code><span class="sig-paren">(</span><em>task_name</em>, <em>task_label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TaskFamily.add_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new task name to the family (it becomes the last element
 in self.task_names)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1539,6 +1539,11 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="enb.icompression.AbstractCodec.label_with_params">
+<code class="descname">label_with_params</code><a class="headerlink" href="#enb.icompression.AbstractCodec.label_with_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="enb.icompression.AbstractCodec.name">
 <code class="descname">name</code><a class="headerlink" href="#enb.icompression.AbstractCodec.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the codec. Subclasses are expected to yield different values
@@ -1558,7 +1563,7 @@ in the name.</p>
 
 <dl class="class">
 <dt id="enb.icompression.CompressionExperiment">
-<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">CompressionExperiment</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.CompressionExperiment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">CompressionExperiment</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em>, <em>compressed_copy_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.CompressionExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a></p>
 <p>This class allows seamless execution of compression experiments.</p>
 <p>In the functions decorated with &#64;atable,column_function, the row argument
@@ -1783,7 +1788,7 @@ the CompressionExperiment instance)</p>
 
 <dl class="class">
 <dt id="enb.icompression.LosslessCompressionExperiment">
-<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">LosslessCompressionExperiment</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LosslessCompressionExperiment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">LosslessCompressionExperiment</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em>, <em>compressed_copy_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LosslessCompressionExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a></p>
 <dl class="attribute">
 <dt id="enb.icompression.LosslessCompressionExperiment.column_to_properties">
@@ -1807,7 +1812,7 @@ the CompressionExperiment instance)</p>
 
 <dl class="class">
 <dt id="enb.icompression.LossyCompressionExperiment">
-<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">LossyCompressionExperiment</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LossyCompressionExperiment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">LossyCompressionExperiment</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em>, <em>compressed_copy_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LossyCompressionExperiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a></p>
 <dl class="attribute">
 <dt id="enb.icompression.LossyCompressionExperiment.column_to_properties">
@@ -1849,7 +1854,7 @@ of the reconstructed image.</p>
 
 <dl class="class">
 <dt id="enb.icompression.SpectralAngleTable">
-<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">SpectralAngleTable</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">SpectralAngleTable</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table: enb.isets.ImagePropertiesTable = None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em>, <em>compressed_copy_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a></p>
 <p>Lossy compression experiment that computes spectral angle “distance” 
 measures between the compressed and the reconstructed images.</p>

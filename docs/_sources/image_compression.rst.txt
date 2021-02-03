@@ -12,4 +12,5 @@ create new compressors.
    :maxdepth: 1
 
    lossless_compression_example
+   lossy_compression_example
    defining_new_compressors
