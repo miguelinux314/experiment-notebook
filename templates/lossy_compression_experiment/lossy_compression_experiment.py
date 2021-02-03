@@ -25,16 +25,16 @@ if __name__ == '__main__':
     all_families = []
     # A family is a set of related tasks
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
-    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(7)):
+    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(5)):
         all_codecs.append(c)
-        jpeg_ls_family.add_task(c.name, c.label_with_params)
+        jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
     # One can add as many families as lines should be depicted
     mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
-    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(10)):
+    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(5)):
         all_codecs.append(c)
-        mcalic_family.add_task(c.name, c.label_with_params)
+        mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
     all_families.append(mcalic_family)
 
     # One can easily define pretty plot labels for all codecs individually, even when
@@ -52,6 +52,7 @@ if __name__ == '__main__':
         output_csv_file="analysis.csv",
         column_to_properties=exp.joined_column_to_properties,
         group_by="task_name",
+        adjust_height=True,
         y_labels_by_group_name=label_by_group_name,
     )
     enb.aanalysis.TwoColumnLineAnalyzer().analyze_df(
@@ -65,7 +66,7 @@ if __name__ == '__main__':
         legend_column_count=2)
 
     # pdf to high-def PNG
-    for pdf_path in glob.glob(os.path.join(os.path.dirname(__file__), "plots", "**", "*.pdf"), recursive=True):
+    for pdf_path in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "plots", "**", "*.pdf"), recursive=True):
         output_dir = os.path.dirname(os.path.abspath(pdf_path)).replace(os.path.abspath("./plots"), "./png_plots")
         os.makedirs(output_dir, exist_ok=True)
         png_path = os.path.join(output_dir, os.path.basename(pdf_path).replace(".pdf", ".png"))
