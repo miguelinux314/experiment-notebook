@@ -1,3 +1,4 @@
+from . import singleton_cli
 from . import atable
 from . import aanalysis
 from . import sets

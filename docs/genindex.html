@@ -94,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_options.html">Command-line options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -180,6 +181,7 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -204,6 +206,8 @@
       <li><a href="api/enb.html#enb.tarlite.TarliteWriter.add_file">add_file() (enb.tarlite.TarliteWriter method)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.TaskFamily.add_task">add_task() (enb.aanalysis.TaskFamily method)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.AllOptions">AllOptions (class in enb.config)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ContextGroup.allowed_contexts">allowed_contexts (enb.context.ContextGroup attribute)</a>
 </li>
@@ -231,6 +235,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.alpha_individual">alpha_individual (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
 </li>
+      <li><a href="api/enb.html#enb.config.DirOptions.analysis_dir">analysis_dir (enb.config.DirOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.analyze_df">analyze_df() (enb.aanalysis.Analyzer method)</a>
 
       <ul>
@@ -247,20 +253,20 @@
       </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer">Analyzer (class in enb.aanalysis)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExistingDirAction.assert_valid_value">assert_valid_value() (enb.config.ExistingDirAction class method)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.ExistingDirAction.assert_valid_value">assert_valid_value() (enb.singleton_cli.ExistingDirAction class method)</a>
 
       <ul>
-        <li><a href="api/enb.html#enb.config.PositiveIntegerAction.assert_valid_value">(enb.config.PositiveIntegerAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.PositiveIntegerAction.assert_valid_value">(enb.singleton_cli.PositiveIntegerAction class method)</a>
 </li>
-        <li><a href="api/enb.html#enb.config.ReadableDirAction.assert_valid_value">(enb.config.ReadableDirAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.ReadableDirAction.assert_valid_value">(enb.singleton_cli.ReadableDirAction class method)</a>
 </li>
-        <li><a href="api/enb.html#enb.config.ReadableFileAction.assert_valid_value">(enb.config.ReadableFileAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.ReadableFileAction.assert_valid_value">(enb.singleton_cli.ReadableFileAction class method)</a>
 </li>
-        <li><a href="api/enb.html#enb.config.ValidationAction.assert_valid_value">(enb.config.ValidationAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.ValidationAction.assert_valid_value">(enb.singleton_cli.ValidationAction class method)</a>
 </li>
-        <li><a href="api/enb.html#enb.config.WritableDirAction.assert_valid_value">(enb.config.WritableDirAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.WritableDirAction.assert_valid_value">(enb.singleton_cli.WritableDirAction class method)</a>
 </li>
-        <li><a href="api/enb.html#enb.config.WritableOrCreableDirAction.assert_valid_value">(enb.config.WritableOrCreableDirAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.WritableOrCreableDirAction.assert_valid_value">(enb.singleton_cli.WritableOrCreableDirAction class method)</a>
 </li>
       </ul></li>
       <li><a href="api/enb.html#enb.atable.ATable">ATable (class in enb.atable)</a>
@@ -281,11 +287,17 @@
         <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.bar_width_fraction">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.plotdata.BarData">BarData (class in enb.plotdata)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.config.DirOptions.base_dataset_dir">base_dataset_dir (enb.config.DirOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable.base_dir">base_dir (enb.sets.FilePropertiesTable attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.base_tmp_dir">base_tmp_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.base_version_dataset_dir">base_version_dataset_dir (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.build_column_name_wrapper">build_column_name_wrapper() (enb.atable.ATable class method)</a>
 </li>
@@ -301,7 +313,9 @@
 </li>
       <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ValidationAction.check_valid_value">check_valid_value() (enb.config.ValidationAction class method)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.ValidationAction.check_valid_value">check_valid_value() (enb.singleton_cli.ValidationAction class method)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.chunk_size">chunk_size (enb.config.ExecutionOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.clean_column_name">clean_column_name() (in module enb.aanalysis)</a>
 </li>
@@ -369,6 +383,8 @@
 </li>
       <li><a href="api/enb.html#enb.atable.ColumnProperties">ColumnProperties (class in enb.atable)</a>
 </li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.columns">columns (enb.config.ExecutionOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec.compress">compress() (enb.icompression.AbstractCodec method)</a>
 
       <ul>
@@ -423,15 +439,35 @@
 </li>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec.decompression_results_from_paths">decompression_results_from_paths() (enb.icompression.AbstractCodec method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.DecompressionResults.decompression_time_seconds">decompression_time_seconds (enb.icompression.DecompressionResults attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.DecompressionException">DecompressionException</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.DecompressionResults">DecompressionResults (class in enb.icompression)</a>
 </li>
+      <li><a href="api/enb.html#enb.config.DirOptions.default_analysis_dir">default_analysis_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.default_base_dataset_dir">default_base_dataset_dir (enb.config.DirOptions attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.config.DirOptions.default_external_binary_dir">default_external_binary_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.default_output_plots_dir">default_output_plots_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.default_persistence_dir">default_persistence_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RayOptions.default_ray_config_file">default_ray_config_file (enb.config.RayOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.default_tmp_dir">default_tmp_dir (enb.config.DirOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData2D.diff">diff() (enb.plotdata.PlottableData2D method)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions">DirOptions (class in enb.config)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.discard_partial_results">discard_partial_results (enb.config.ExecutionOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.displayed_title">displayed_title (enb.config.RenderingOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.dump_array_bsq">dump_array_bsq() (in module enb.isets)</a>
 </li>
@@ -465,11 +501,13 @@
 </li>
       <li><a href="api/enb.html#module-enb.plotdata">enb.plotdata (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#module-enb.ray_cluster">enb.ray_cluster (module)</a>
 </li>
       <li><a href="api/enb.html#module-enb.sets">enb.sets (module)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#module-enb.singleton_cli">enb.singleton_cli (module)</a>
 </li>
       <li><a href="api/enb.html#module-enb.tarlite">enb.tarlite (module)</a>
 </li>
@@ -487,11 +525,17 @@
 </li>
       <li><a href="api/enb.html#enb.plotdata.ErrorLines">ErrorLines (class in enb.plotdata)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExistingDirAction">ExistingDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions">ExecutionOptions (class in enb.config)</a>
+</li>
+      <li><a href="api/enb.html#enb.singleton_cli.ExistingDirAction">ExistingDirAction (class in enb.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.exit_on_error">exit_on_error (enb.config.ExecutionOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment">Experiment (class in enb.experiment)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.ExperimentTask">ExperimentTask (class in enb.experiment)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.external_bin_base_dir">external_bin_base_dir (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.tarlite.TarliteReader.extract_all">extract_all() (enb.tarlite.TarliteReader method)</a>
 </li>
@@ -501,6 +545,10 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.fig_height">fig_height (enb.config.RenderingOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.fig_width">fig_width (enb.config.RenderingOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.file_path_to_geometry_dict">file_path_to_geometry_dict() (in module enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable">FilePropertiesTable (class in enb.sets)</a>
@@ -512,6 +560,8 @@
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.flush">flush() (enb.bitstream.OutputBitStream method)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.flush_complete_bytes">flush_complete_bytes() (enb.bitstream.OutputBitStream method)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.force">force (enb.config.ExecutionOptions attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -564,6 +614,10 @@
       <li><a href="api/enb.html#enb.tcall.get_status_output_time">get_status_output_time() (in module enb.tcall)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.InputBitStream.get_unsigned_value">get_unsigned_value() (enb.bitstream.InputBitStream method)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.global_y_label_pos">global_y_label_pos (enb.config.RenderingOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.singleton_cli.GlobalOptions">GlobalOptions (class in enb.singleton_cli)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -637,6 +691,8 @@
 </li>
       <li><a href="api/enb.html#enb.isets.iproperties_to_name_tag">iproperties_to_name_tag() (in module enb.isets)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI.items">items() (enb.singleton_cli.SingletonCLI method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -659,8 +715,12 @@
       </ul></li>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec.label_with_params">label_with_params (enb.icompression.AbstractCodec attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.plotdata.PlottableData.legend_column_count">legend_column_count (enb.plotdata.PlottableData attribute)</a>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.legend_column_count">legend_column_count (enb.config.RenderingOptions attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.plotdata.PlottableData.legend_column_count">(enb.plotdata.PlottableData attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.line_alpha">line_alpha (enb.aanalysis.OverlappedHistogramAnalyzer attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.line_width">line_width (enb.aanalysis.OverlappedHistogramAnalyzer attribute)</a>
@@ -703,10 +763,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.MetaTable">MetaTable (class in enb.atable)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.PathAction.modify_value">modify_value() (enb.config.PathAction class method)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.PathAction.modify_value">modify_value() (enb.singleton_cli.PathAction class method)</a>
 
       <ul>
-        <li><a href="api/enb.html#enb.config.ValidationAction.modify_value">(enb.config.ValidationAction class method)</a>
+        <li><a href="api/enb.html#enb.singleton_cli.ValidationAction.modify_value">(enb.singleton_cli.ValidationAction class method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -723,9 +783,13 @@
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.name">(enb.icompression.WrapperCodec attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.icompression.NearLosslessCodec">NearLosslessCodec (class in enb.icompression)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.icompression.NearLosslessCodec">NearLosslessCodec (class in enb.icompression)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.no_new_results">no_new_results (enb.config.ExecutionOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.no_render">no_render (enb.config.RenderingOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.normalize_column_properties">normalize_column_properties() (enb.atable.ATable static method)</a>
 </li>
@@ -753,13 +817,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.parse_dict_string">parse_dict_string() (in module enb.atable)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.PathAction">PathAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.PathAction">PathAction (class in enb.singleton_cli)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.InputBitStream.peek_unsigned_value">peek_unsigned_value() (enb.bitstream.InputBitStream method)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.pending_bit_buffer_size">pending_bit_buffer_size (enb.bitstream.OutputBitStream attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.MetaTable.pendingdefs_classname_fun_columnproperties_kwargs">pendingdefs_classname_fun_columnproperties_kwargs (enb.atable.MetaTable attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.persistence_dir">persistence_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.plot_dir">plot_dir (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData">PlottableData (class in enb.plotdata)</a>
 </li>
@@ -769,7 +837,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.config.PositiveIntegerAction">PositiveIntegerAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.PositiveIntegerAction">PositiveIntegerAction (class in enb.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI.print_help">print_help() (enb.singleton_cli.SingletonCLI method)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.private_index_column">private_index_column (enb.atable.ATable attribute)</a>
 </li>
@@ -781,6 +851,8 @@
       </ul></li>
       <li><a href="api/enb.html#enb.config.propagates_options">propagates_options() (in module enb.config)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI.property">property() (enb.singleton_cli.SingletonCLI class method)</a>
+</li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.put_bit">put_bit() (enb.bitstream.OutputBitStream method)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.put_bits">put_bits() (enb.bitstream.OutputBitStream method)</a>
@@ -790,16 +862,34 @@
   </ul></td>
 </tr></table>
 
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.quick">quick (enb.config.ExecutionOptions attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.config.RayOptions.ray_config_file">ray_config_file (enb.config.RayOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RayOptions.ray_cpu_limit">ray_cpu_limit (enb.config.RayOptions attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RayOptions">RayOptions (class in enb.config)</a>
+</li>
       <li><a href="api/enb.html#enb.pgm.read_pgm">read_pgm() (in module enb.pgm)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ReadableDirAction">ReadableDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.ReadableDirAction">ReadableDirAction (class in enb.singleton_cli)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ReadableFileAction">ReadableFileAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.ReadableFileAction">ReadableFileAction (class in enb.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.reconstructed_dir">reconstructed_dir (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.DecompressionResults.reconstructed_path">reconstructed_path (enb.icompression.DecompressionResults attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.reconstructed_size">reconstructed_size (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.redefines_column">redefines_column() (enb.atable.ATable class method)</a>
 
@@ -807,6 +897,8 @@
         <li><a href="api/enb.html#enb.atable.redefines_column">(in module enb.atable)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.plotdata.BarData.render">render() (enb.plotdata.BarData method)</a>
 
       <ul>
@@ -821,8 +913,6 @@
         <li><a href="api/enb.html#enb.plotdata.StepData.render">(enb.plotdata.StepData method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.plotdata.PlottableData.render_axis_labels">render_axis_labels() (enb.plotdata.PlottableData method)</a>
 
       <ul>
@@ -830,6 +920,10 @@
 </li>
       </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.render_plds_by_group">render_plds_by_group() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions">RenderingOptions (class in enb.config)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.repetitions">repetitions (enb.config.ExecutionOptions attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -849,6 +943,8 @@
         <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.semilog_hist_min">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.sequential">sequential (enb.config.ExecutionOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_big_endian">set_big_endian() (enb.isets.ImageGeometryTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.CompressionExperiment.set_bpppc">set_bpppc() (enb.icompression.CompressionExperiment method)</a>
@@ -891,10 +987,10 @@
 </li>
       <li><a href="api/enb.html#enb.isets.HistogramFullnessTable4Bytes.set_histogram_fullness_4bytes">set_histogram_fullness_4bytes() (enb.isets.HistogramFullnessTable4Bytes method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_image_geometry">set_image_geometry() (enb.isets.ImageGeometryTable method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_MSE">set_MSE() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
       <li><a href="api/enb.html#enb.config.set_options">set_options() (in module enb.config)</a>
@@ -935,12 +1031,18 @@
       </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.show_count">show_count (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.show_grid">show_grid (enb.config.RenderingOptions attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.CompressionResults.side_info_files">side_info_files (enb.icompression.CompressionResults attribute)</a>
 
       <ul>
         <li><a href="api/enb.html#enb.icompression.DecompressionResults.side_info_files">(enb.icompression.DecompressionResults attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.singleton_cli.Singleton">Singleton (class in enb.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI">SingletonCLI (class in enb.singleton_cli)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.SpectralAngleTable">SpectralAngleTable (class in enb.icompression)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.StepData">StepData (class in enb.plotdata)</a>
@@ -993,11 +1095,13 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.config.ValidationAction">ValidationAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.ValidationAction">ValidationAction (class in enb.singleton_cli)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ValueCounter.value_to_relfreq">value_to_relfreq (enb.context.ValueCounter attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ValueCounter">ValueCounter (class in enb.context)</a>
+</li>
+      <li><a href="api/enb.html#enb.singleton_cli.GlobalOptions.verbose">verbose (enb.singleton_cli.GlobalOptions attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1019,11 +1123,11 @@
 </li>
       <li><a href="api/enb.html#enb.icompression.WrapperCodec">WrapperCodec (class in enb.icompression)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.WritableDirAction">WritableDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.WritableDirAction">WritableDirAction (class in enb.singleton_cli)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.config.WritableOrCreableDirAction">WritableOrCreableDirAction (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.singleton_cli.WritableOrCreableDirAction">WritableOrCreableDirAction (class in enb.singleton_cli)</a>
 </li>
       <li><a href="api/enb.html#enb.tarlite.TarliteWriter.write">write() (enb.tarlite.TarliteWriter method)</a>
 </li>

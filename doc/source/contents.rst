@@ -10,5 +10,6 @@ Contents
    basic_workflow
    image_compression
    analyzing_data
+   command_line_options
    api
    thanks
