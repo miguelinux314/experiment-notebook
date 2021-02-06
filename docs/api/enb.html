@@ -95,6 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Analyzing data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_options.html">Command-line options</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">enb package</a><ul>
@@ -111,6 +112,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.plotdata">enb.plotdata module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.ray_cluster">enb.ray_cluster module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.sets">enb.sets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-enb.singleton_cli">enb.singleton_cli module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.tarlite">enb.tarlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.tcall">enb.tcall module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb">Module contents</a></li>
@@ -209,7 +211,7 @@ using pyplot.</p>
 <dl class="method">
 <dt id="enb.aanalysis.Analyzer.analyze_df">
 <code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+621.g1efd74d17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+641.gd558bce8e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1125,138 +1127,212 @@ Useful to iterate homogeneously regardless of whether single or multiple indices
 </div>
 <div class="section" id="module-enb.config">
 <span id="enb-config-module"></span><h2>enb.config module<a class="headerlink" href="#module-enb.config" title="Permalink to this headline">¶</a></h2>
-<p>Store and expose configuration options</p>
+<p>Store and expose configuration options.</p>
 <dl class="class">
-<dt id="enb.config.ExistingDirAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">ExistingDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ExistingDirAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.PathAction" title="enb.config.PathAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.PathAction</span></code></a></p>
-<p>ArgumentParser action that verifies that argument is an existing dir</p>
-<dl class="classmethod">
-<dt id="enb.config.ExistingDirAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ExistingDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assert that target_dir is a readable dir</p>
-</dd></dl>
-
+<dt id="enb.config.AllOptions">
+<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">AllOptions</code><a class="headerlink" href="#enb.config.AllOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.ExecutionOptions" title="enb.config.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.RenderingOptions" title="enb.config.RenderingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.RenderingOptions</span></code></a>, <a class="reference internal" href="#enb.config.RayOptions" title="enb.config.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.DirOptions" title="enb.config.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.DirOptions</span></code></a></p>
+<p>Compendium of options available by default in enb</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="enb.config.PathAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">PathAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.PathAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.ValidationAction" title="enb.config.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.ValidationAction</span></code></a></p>
-<dl class="classmethod">
-<dt id="enb.config.PathAction.modify_value">
-<em class="property">classmethod </em><code class="descname">modify_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.PathAction.modify_value" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.config.DirOptions">
+<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">DirOptions</code><a class="headerlink" href="#enb.config.DirOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.GlobalOptions" title="enb.singleton_cli.GlobalOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.GlobalOptions</span></code></a></p>
+<dl class="attribute">
+<dt id="enb.config.DirOptions.analysis_dir">
+<code class="descname">analysis_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.analysis_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.base_dataset_dir">
+<code class="descname">base_dataset_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.base_dataset_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.base_tmp_dir">
+<code class="descname">base_tmp_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.base_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.base_version_dataset_dir">
+<code class="descname">base_version_dataset_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.base_version_dataset_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.default_analysis_dir">
+<code class="descname">default_analysis_dir</code><em class="property"> = '/home/miguelinux/.local/bin/analysis'</em><a class="headerlink" href="#enb.config.DirOptions.default_analysis_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.default_base_dataset_dir">
+<code class="descname">default_base_dataset_dir</code><em class="property"> = '/home/miguelinux/.local/bin/datasets'</em><a class="headerlink" href="#enb.config.DirOptions.default_base_dataset_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.default_external_binary_dir">
+<code class="descname">default_external_binary_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.default_external_binary_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.default_output_plots_dir">
+<code class="descname">default_output_plots_dir</code><em class="property"> = '/home/miguelinux/.local/bin/plots'</em><a class="headerlink" href="#enb.config.DirOptions.default_output_plots_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.default_persistence_dir">
+<code class="descname">default_persistence_dir</code><em class="property"> = '/home/miguelinux/.local/bin/persistence_sphinx-build'</em><a class="headerlink" href="#enb.config.DirOptions.default_persistence_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.default_tmp_dir">
+<code class="descname">default_tmp_dir</code><em class="property"> = '/dev/shm'</em><a class="headerlink" href="#enb.config.DirOptions.default_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.external_bin_base_dir">
+<code class="descname">external_bin_base_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.external_bin_base_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.persistence_dir">
+<code class="descname">persistence_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.persistence_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.plot_dir">
+<code class="descname">plot_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.plot_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.reconstructed_dir">
+<code class="descname">reconstructed_dir</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.reconstructed_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.DirOptions.reconstructed_size">
+<code class="descname">reconstructed_size</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.DirOptions.reconstructed_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="enb.config.PositiveIntegerAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">PositiveIntegerAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.PositiveIntegerAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.ValidationAction" title="enb.config.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.ValidationAction</span></code></a></p>
-<p>Check that value is an integer and greater than zero.</p>
-<dl class="classmethod">
-<dt id="enb.config.PositiveIntegerAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.PositiveIntegerAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.config.ExecutionOptions">
+<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">ExecutionOptions</code><a class="headerlink" href="#enb.config.ExecutionOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.GlobalOptions" title="enb.singleton_cli.GlobalOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.GlobalOptions</span></code></a></p>
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.chunk_size">
+<code class="descname">chunk_size</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.chunk_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.columns">
+<code class="descname">columns</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.discard_partial_results">
+<code class="descname">discard_partial_results</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.discard_partial_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.exit_on_error">
+<code class="descname">exit_on_error</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.exit_on_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.force">
+<code class="descname">force</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.force" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.no_new_results">
+<code class="descname">no_new_results</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.no_new_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.quick">
+<code class="descname">quick</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.quick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.repetitions">
+<code class="descname">repetitions</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.repetitions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enb.config.ExecutionOptions.sequential">
+<code class="descname">sequential</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.ExecutionOptions.sequential" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="enb.config.ReadableDirAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">ReadableDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ReadableDirAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.ExistingDirAction" title="enb.config.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.ExistingDirAction</span></code></a></p>
-<p>ArgumentParser action that verifies that argument is an existing,
-readable dir</p>
-<dl class="classmethod">
-<dt id="enb.config.ReadableDirAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ReadableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assert that target_dir is a readable dir</p>
-</dd></dl>
+<dt id="enb.config.RayOptions">
+<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">RayOptions</code><a class="headerlink" href="#enb.config.RayOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.GlobalOptions" title="enb.singleton_cli.GlobalOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.GlobalOptions</span></code></a></p>
+<dl class="attribute">
+<dt id="enb.config.RayOptions.default_ray_config_file">
+<code class="descname">default_ray_config_file</code><em class="property"> = '/home/miguelinux/.local/bin/ray_cluster_head.txt'</em><a class="headerlink" href="#enb.config.RayOptions.default_ray_config_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-</dd></dl>
+<dl class="attribute">
+<dt id="enb.config.RayOptions.ray_config_file">
+<code class="descname">ray_config_file</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RayOptions.ray_config_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="class">
-<dt id="enb.config.ReadableFileAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">ReadableFileAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ReadableFileAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.PathAction" title="enb.config.PathAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.PathAction</span></code></a></p>
-<p>Validate that an argument is an existing file.</p>
-<dl class="classmethod">
-<dt id="enb.config.ReadableFileAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ReadableFileAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dl class="attribute">
+<dt id="enb.config.RayOptions.ray_cpu_limit">
+<code class="descname">ray_cpu_limit</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RayOptions.ray_cpu_limit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="enb.config.ValidationAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">ValidationAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ValidationAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Action</span></code></p>
-<p>Base class for defining custom parser validation actions.</p>
-<dl class="classmethod">
-<dt id="enb.config.ValidationAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ValidationAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.config.RenderingOptions">
+<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">RenderingOptions</code><a class="headerlink" href="#enb.config.RenderingOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.GlobalOptions" title="enb.singleton_cli.GlobalOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.GlobalOptions</span></code></a></p>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.displayed_title">
+<code class="descname">displayed_title</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.displayed_title" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="classmethod">
-<dt id="enb.config.ValidationAction.check_valid_value">
-<em class="property">classmethod </em><code class="descname">check_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ValidationAction.check_valid_value" title="Permalink to this definition">¶</a></dt>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.fig_height">
+<code class="descname">fig_height</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.fig_height" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="classmethod">
-<dt id="enb.config.ValidationAction.modify_value">
-<em class="property">classmethod </em><code class="descname">modify_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.ValidationAction.modify_value" title="Permalink to this definition">¶</a></dt>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.fig_width">
+<code class="descname">fig_width</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.fig_width" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.global_y_label_pos">
+<code class="descname">global_y_label_pos</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.global_y_label_pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="class">
-<dt id="enb.config.WritableDirAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">WritableDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.WritableDirAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.ExistingDirAction" title="enb.config.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.ExistingDirAction</span></code></a></p>
-<p>ArgumentParser action that verifies that argument is an existing,
-writable dir</p>
-<dl class="classmethod">
-<dt id="enb.config.WritableDirAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.WritableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assert that target_dir is a readable dir</p>
-</dd></dl>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.legend_column_count">
+<code class="descname">legend_column_count</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.legend_column_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-</dd></dl>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.no_render">
+<code class="descname">no_render</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.no_render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="class">
-<dt id="enb.config.WritableOrCreableDirAction">
-<em class="property">class </em><code class="descclassname">enb.config.</code><code class="descname">WritableOrCreableDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.WritableOrCreableDirAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.ExistingDirAction" title="enb.config.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.ExistingDirAction</span></code></a></p>
-<p>ArgumentParser action that verifies that argument is either an existing dir
-or a path where a new folder can be created</p>
-<dl class="classmethod">
-<dt id="enb.config.WritableOrCreableDirAction.assert_valid_value">
-<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.WritableOrCreableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assert that target_dir is a writable dir, or its parent exists
-and is writable.</p>
-</dd></dl>
+<dl class="attribute">
+<dt id="enb.config.RenderingOptions.show_grid">
+<code class="descname">show_grid</code><em class="property"> = None</em><a class="headerlink" href="#enb.config.RenderingOptions.show_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="enb.config.get_options">
 <code class="descclassname">enb.config.</code><code class="descname">get_options</code><span class="sig-paren">(</span><em>from_main=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.get_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a Namespace obtained from parsing command line arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>from_main</strong> – if from_main is False, it is guaranteed that no
-required argument is used in the parser, so that options can be obtained
-without any arguments (e.g., for tests). Set this parameter to True
-when creating CLIs. Note that from_main=True options must be parsed
-before any other module tries to access them.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a Namespace obtained from parsing command line arguments.</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Deprecated - use enb.config.options isntead.</p>
 </dd></dl>
 
 <dl class="function">
@@ -2725,6 +2801,204 @@ an entry for <code class="xref py py-meth docutils literal notranslate"><span cl
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-enb.singleton_cli">
+<span id="enb-singleton-cli-module"></span><h2>enb.singleton_cli module<a class="headerlink" href="#module-enb.singleton_cli" title="Permalink to this headline">¶</a></h2>
+<p>Module to define global option classes that can be instantiated only once,
+and that can semi-automatically create command-line interfaces based on the
+user’s definition of configurable variables.</p>
+<p>Basic usage:</p>
+<blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">`options</span> <span class="pre">=</span> <span class="pre">GlobalOptions()`</span></code></div></blockquote>
+<p>Properties are added by decorating functions. Multiple inheritance is possible with classes that decorate
+CLI properties, just make sure to subclass from GlobalOptions.</p>
+<dl class="class">
+<dt id="enb.singleton_cli.ExistingDirAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">ExistingDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ExistingDirAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.PathAction" title="enb.singleton_cli.PathAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.PathAction</span></code></a></p>
+<p>ArgumentParser action that verifies that argument is an existing dir</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.ExistingDirAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ExistingDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that target_dir is a readable dir</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.GlobalOptions">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">GlobalOptions</code><a class="headerlink" href="#enb.singleton_cli.GlobalOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.SingletonCLI" title="enb.singleton_cli.SingletonCLI"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.SingletonCLI</span></code></a></p>
+<p>Singleton class that holds the global options.
+When instantiated first, it reads CLI options retaining class defaults when not specified.
+When instantiated next, a reference to the instance created first is returned. Thefore,
+changes can be applied to any of the instantiations and those will be visible anywhere</p>
+<dl class="attribute">
+<dt id="enb.singleton_cli.GlobalOptions.verbose">
+<code class="descname">verbose</code><em class="property"> = None</em><a class="headerlink" href="#enb.singleton_cli.GlobalOptions.verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.PathAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">PathAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.PathAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.ValidationAction" title="enb.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.ValidationAction</span></code></a></p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.PathAction.modify_value">
+<em class="property">classmethod </em><code class="descname">modify_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.PathAction.modify_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.PositiveIntegerAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">PositiveIntegerAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.PositiveIntegerAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.ValidationAction" title="enb.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.ValidationAction</span></code></a></p>
+<p>Check that value is an integer and greater than zero.</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.PositiveIntegerAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.PositiveIntegerAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.ReadableDirAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">ReadableDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ReadableDirAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.ExistingDirAction" title="enb.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.ExistingDirAction</span></code></a></p>
+<p>ArgumentParser action that verifies that argument is an existing,
+readable dir</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.ReadableDirAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ReadableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that target_dir is a readable dir</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.ReadableFileAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">ReadableFileAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ReadableFileAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.PathAction" title="enb.singleton_cli.PathAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.PathAction</span></code></a></p>
+<p>Validate that an argument is an existing file.</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.ReadableFileAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ReadableFileAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.Singleton">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">Singleton</code><a class="headerlink" href="#enb.singleton_cli.Singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>Classes with this metaclass can only be defined once.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.SingletonCLI">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">SingletonCLI</code><a class="headerlink" href="#enb.singleton_cli.SingletonCLI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Singleton class that holds the global options.
+When instantiated first, it reads CLI options retaining class defaults when not specified.
+When instantiated next, a reference to the instance created first is returned. Therefore,
+changes can be applied to any of the instantiations and those will be visible anywhere.
+New CLI properties can be defined using the <cite>cli_property</cite> decorator on methods (CLI help is based
+on that function’s docstring).</p>
+<dl class="method">
+<dt id="enb.singleton_cli.SingletonCLI.items">
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.SingletonCLI.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enb.singleton_cli.SingletonCLI.print_help">
+<code class="descname">print_help</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.SingletonCLI.print_help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="enb.singleton_cli.SingletonCLI.property">
+<em class="property">classmethod </em><code class="descname">property</code><span class="sig-paren">(</span><em>*alias</em>, <em>group_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.SingletonCLI.property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for properties that can be automatically parsed
+using argparse, and also programmatically (the setter is
+created by default when the getter is defined).
+Note that the arg parser automatically produces a CLI
+interface help based on the docstring (sets the help= argument)
+and <cite>kargs</cite> (these may overwrite the help string).</p>
+<p>Note that the function being decorated is never called.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>alias</strong> – a list of aliases that can be used for
+the property in the command line.</li>
+<li><strong>group_name</strong> – the name of the group to be used, used the general section
+if the value is None.</li>
+<li><strong>kwargs</strong> – remaining arguments to be passed to this class’
+<code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code> instance. See that class
+for detailed help on what parameters there are and how to use
+them. (Note that help is taken from the doctstring if not provided)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.ValidationAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">ValidationAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ValidationAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Action</span></code></p>
+<p>Base class for defining custom parser validation actions.</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.ValidationAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ValidationAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="enb.singleton_cli.ValidationAction.check_valid_value">
+<em class="property">classmethod </em><code class="descname">check_valid_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ValidationAction.check_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="enb.singleton_cli.ValidationAction.modify_value">
+<em class="property">classmethod </em><code class="descname">modify_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.ValidationAction.modify_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.WritableDirAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">WritableDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.WritableDirAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.ExistingDirAction" title="enb.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.ExistingDirAction</span></code></a></p>
+<p>ArgumentParser action that verifies that argument is an existing,
+writable dir</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.WritableDirAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.WritableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that target_dir is a readable dir</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.singleton_cli.WritableOrCreableDirAction">
+<em class="property">class </em><code class="descclassname">enb.singleton_cli.</code><code class="descname">WritableOrCreableDirAction</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.WritableOrCreableDirAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.singleton_cli.ExistingDirAction" title="enb.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.singleton_cli.ExistingDirAction</span></code></a></p>
+<p>ArgumentParser action that verifies that argument is either an existing dir
+or a path where a new folder can be created</p>
+<dl class="classmethod">
+<dt id="enb.singleton_cli.WritableOrCreableDirAction.assert_valid_value">
+<em class="property">classmethod </em><code class="descname">assert_valid_value</code><span class="sig-paren">(</span><em>target_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.singleton_cli.WritableOrCreableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that target_dir is a writable dir, or its parent exists
+and is writable.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

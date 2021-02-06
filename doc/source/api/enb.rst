@@ -100,6 +100,14 @@ enb.sets module
     :undoc-members:
     :show-inheritance:
 
+enb.singleton\_cli module
+-------------------------
+
+.. automodule:: enb.singleton_cli
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 enb.tarlite module
 ------------------
 
