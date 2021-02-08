@@ -32,13 +32,12 @@ class EmpordaWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
 		return f"{self.get_transform_params(original_path, compressed_path, original_file_info)}; java -Xmx24g -jar {self.compressor_path} -c -i" \
 		f" {compressed_path} -o {compressed_path} -ig {original_file_info['component_count']} " \
 		f"{original_file_info['height']} {original_file_info['width']} 2 0 0 -qs {self.quantizer_step} -ec " \
-		f"{self.emporda_option} -cm 1 -pm 0 -wp 1024 -up 32 -f /home/ester/Documentos/GICI/experiment-notebook-master/templates/lossless_compression_example/plugin_emporda/options.txt"
-		#TODO: options.txt (Modificat path)
+		f"{self.emporda_option} -cm 1 -pm 0 -wp 1024 -up 32 -f ./plugin_emporda/options.txt"
 
 	def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
 		return f"java -Xmx24g -jar {self.decompressor_path} -d -i {compressed_path} -o {reconstructed_path}.raw -ig "\
 		f"{original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} 2 0 0 -qs {self.quantizer_step} "\
-		f"-ec {self.emporda_option} -cm 1 -pm 0 -wp 1024 -up 32 -f options.txt; {self.get_detransform_params(reconstructed_path, original_file_info)}"
+		f"-ec {self.emporda_option} -cm 1 -pm 0 -wp 1024 -up 32 -f ./plugin_emporda/options.txt; {self.get_detransform_params(reconstructed_path, original_file_info)}"
 
 	def compress(self, original_path: str, compressed_path: str, original_file_info=None):
 		compression_params = self.get_compression_params(original_path=original_path, compressed_path=compressed_path, original_file_info=original_file_info)
