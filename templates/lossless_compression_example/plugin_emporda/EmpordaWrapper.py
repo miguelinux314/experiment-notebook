@@ -82,7 +82,7 @@ class EmpordaWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
 		decompression_results = self.decompression_results_from_paths(compressed_path=compressed_path, reconstructed_path=reconstructed_path)
 
 		decompression_results.decompression_time_seconds = measured_time
-		compression_results.codec_param_dict["emporda_option"]=3
+		decompression_results.codec_param_dict["emporda_option"]=3
 
 		if self.output_invocation_dir is not None:
 			invocation_name = "invocation_decompression_" + self.name + os.path.abspath(os.path.realpath(original_file_info["file_path"] if original_file_info is not None else compressed_path)).replace(os.sep,"_")
