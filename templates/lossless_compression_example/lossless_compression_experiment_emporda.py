@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """Lossless compression experiment example (uses JPEG-LS)
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "25/11/2020"
 
 import os
 
