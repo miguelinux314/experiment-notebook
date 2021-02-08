@@ -57,7 +57,8 @@ class ExecutionOptions(singleton_cli.GlobalOptions):
     def columns(self):
         pass
 
-    @cli_property(help="If True, any exception when processing rows aborts the program.", action="store_true")
+    @cli_property(help="If True, any exception when processing rows aborts the program.", action="store_true",
+                  default=True)
     def exit_on_error(self):
         pass
 
