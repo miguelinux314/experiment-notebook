@@ -210,7 +210,11 @@ class SingletonCLI(metaclass=Singleton):
         def wrapper(decorated_method):
             argparse_kwargs = dict(help=decorated_method.__doc__)
             alias_with_dashes = [f"--{decorated_method.__name__}"]
-            alias_with_dashes.extend(f"--{a}" for a in alias)
+            for a in alias:
+                if len(a) == 1:
+                    alias_with_dashes.append(f"-{a}")
+                else:
+                    alias_with_dashes.append(f"--{a}")
             argparse_kwargs.update(**kwargs)
             try:
                 arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
@@ -237,6 +241,12 @@ class SingletonCLI(metaclass=Singleton):
 
     def __iter__(self):
         return self._parsed_properties.__iter__()
+    
+    def __str__(self):
+        return f"Options({str(self._parsed_properties)})"
+    
+    def __repr__(self):
+        return f"Options({repr(self._parsed_properties)})"
 
 
 class GlobalOptions(SingletonCLI):
