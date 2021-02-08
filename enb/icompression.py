@@ -358,7 +358,7 @@ class CompressionExperiment(experiment.Experiment):
     Also, the image_info_row attribute gives access to the image metainformation
     (e.g., geometry)
     """
-
+    default_file_properties_table_class = enb.isets.ImagePropertiesTable
     check_lossless = True
 
     class RowWrapper:
@@ -515,7 +515,7 @@ class CompressionExperiment(experiment.Experiment):
                  dataset_paths=None,
                  csv_experiment_path=None,
                  csv_dataset_path=None,
-                 dataset_info_table: enb.isets.ImagePropertiesTable = None,
+                 dataset_info_table=None,
                  overwrite_file_properties=False,
                  parallel_dataset_property_processing=None,
                  reconstructed_dir_path=None,
@@ -548,7 +548,7 @@ class CompressionExperiment(experiment.Experiment):
           is to be stored. If may not be generated for images for which all columns are known
         """
         table_class = type(dataset_info_table) if dataset_info_table is not None \
-            else enb.isets.ImagePropertiesTable
+            else self.default_file_properties_table_class
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
             else os.path.join(options.persistence_dir, f"{table_class.__name__}_persistence.csv")
         imageinfo_table = dataset_info_table if dataset_info_table is not None \
