@@ -694,7 +694,7 @@ class ATable(metaclass=MetaTable):
             for column, properties in self.column_to_properties.items():
                 if properties.has_dict_values:
                     loaded_df[column] = loaded_df[column].apply(parse_dict_string)
-        except (FileNotFoundError, ValueError) as ex:
+        except FileNotFoundError as ex:
             if self.csv_support_path is None:
                 if options.verbose > 2:
                     print(f"[I]nfo: no csv persistence support.")
@@ -719,7 +719,7 @@ class ATable(metaclass=MetaTable):
         return loaded_df
 
 
-def parse_dict_string(cell_value, key_type=float, value_type=float):
+def parse_dict_string(cell_value, key_type=None, value_type=float):
     """Parse a cell value for a string describing a dictionary.
     Some checks are performed based on ATable cell contents, i.e.,
 
