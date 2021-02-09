@@ -718,8 +718,22 @@ class ATable(metaclass=MetaTable):
             raise ex
         return loaded_df
 
+def string_or_float(cell_value):
+    """Takes the input value from an ATable cell and returns either
+    its float value or its string value. In the latter case, one level of surrounding
+    ' or " is removed from the value before returning.
+    """
+    try:
+        v = float(cell_value)
+    except ValueError:
+        v = str(cell_value)
+        v = v.strip()
+        if (v.startswith("'") and v.endswith("'")) \
+                or (v.startswith('"') and v.endswith('"')):
+            v = v[1:-1]
+    return v
 
-def parse_dict_string(cell_value, key_type=None, value_type=float):
+def parse_dict_string(cell_value, key_type=string_or_float, value_type=float):
     """Parse a cell value for a string describing a dictionary.
     Some checks are performed based on ATable cell contents, i.e.,
 
