@@ -170,7 +170,6 @@ class ColumnProperties:
         self.hist_min = hist_min
         self.hist_max = hist_max
         for k, v in extra_attributes.items():
-            print(f"[ColumnProperties {self.name}] setting extra attributes: {k}->{v}")
             self.__setattr__(k, v)
 
     def __repr__(self):
@@ -679,7 +678,7 @@ class ATable(metaclass=MetaTable):
         """
         try:
             if not self.csv_support_path:
-                raise ValueError(f"self.csv_support_path = {self.csv_support_path}")
+                raise FileNotFoundError(self.csv_support_path)
             loaded_df = pd.read_csv(self.csv_support_path)
             # for column in (c for c in self.indices_and_columns if c not in self.indices):
             for column in self.indices_and_columns:
