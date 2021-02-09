@@ -22,6 +22,7 @@ import time
 import enb
 from enb import atable
 from enb import config
+
 options = enb.config.options
 
 # -------------------------- Begin configurable part
@@ -152,7 +153,7 @@ class FileVersionTable(FilePropertiesTable):
         :param csv_support_path: path to the file where results (of the versioned data) are to be
           long-term stored
         """
-        super().__init__(csv_support_path=original_properties_table.csv_support_path, base_dir=version_base_dir)
+        super().__init__(csv_support_path=csv_support_path, base_dir=version_base_dir)
         self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir))
         self.original_properties_table = original_properties_table
         self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
