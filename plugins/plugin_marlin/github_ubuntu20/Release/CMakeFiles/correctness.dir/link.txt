@@ -1,0 +1,1 @@
+/usr/bin/c++   -g -Wall -Wextra -Wcast-qual -Wcast-align -Wstrict-aliasing=1 -Wswitch-enum -Wundef -pedantic -Wfatal-errors -Wshadow -I/usr/include/opencv4 -O3 -DNDEBUG   CMakeFiles/correctness.dir/test/correctness.cc.o  -o correctness  libmarlin.a 
