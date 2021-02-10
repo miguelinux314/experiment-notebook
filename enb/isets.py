@@ -9,6 +9,7 @@ import numpy as np
 import re
 import collections
 import copy
+import imageio
 
 from enb.config import get_options
 
@@ -298,3 +299,8 @@ def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_pe
                signed=signed)
     return f"{iproperties_row_to_sample_type_tag(row)}" \
            f"-{iproperties_row_to_geometry_tag(row)}"
+
+def raw_path_to_png(raw_path, image_properties_row, png_path):
+    img = load_array_bsq(file_or_path=raw_path, image_properties_row=image_properties_row)
+    os.makedirs(os.path.dirname(png_path), exist_ok=True)
+    imageio.imwrite(png_path, img.swapaxes(0,1), format="png")

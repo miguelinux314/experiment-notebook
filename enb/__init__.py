@@ -3,6 +3,7 @@ from . import atable
 from . import aanalysis
 from . import sets
 from . import isets
+from . import icompression
 from . import pgm
 from . import aanalysis
 from . import plotdata
