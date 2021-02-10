@@ -31,8 +31,6 @@ import os
 import sys
 import glob
 
-import enb
-
 here = os.path.abspath(os.path.dirname(__file__))
 
 def read(*filenames, **kwargs):
