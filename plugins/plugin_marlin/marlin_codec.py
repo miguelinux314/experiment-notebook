@@ -29,6 +29,15 @@ class ImageMarlin(enb.icompression.NearLosslessCodec, enb.icompression.PNGWrappe
         assert int(qstep) == qstep
         assert os.path.isfile(marlin_binary)
 
+    @property
+    def name(self):
+        """Don't include the binary signature
+        """
+        name = f"{self.__class__.__name__}"
+        if self.param_dict:
+            name += "__" + "_".join(f"{k}={v}" for k, v in sorted(self.param_dict.items()))
+        return name
+
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"c {original_path} {compressed_path} " \
                f"-qstep={self.param_dict['qstep']}"
