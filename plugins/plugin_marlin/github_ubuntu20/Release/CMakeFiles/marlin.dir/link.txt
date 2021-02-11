@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmarlin.a  CMakeFiles/marlin.dir/src/configuration.cc.o CMakeFiles/marlin.dir/src/dictionary.cc.o CMakeFiles/marlin.dir/src/entropyCoder.cc.o CMakeFiles/marlin.dir/src/entropyDecoder.cc.o CMakeFiles/marlin.dir/src/marlin.cc.o CMakeFiles/marlin.dir/src/prebuilt.cc.o CMakeFiles/marlin.dir/src/profiler.cc.o
+/usr/bin/ranlib libmarlin.a
