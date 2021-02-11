@@ -1,6 +1,8 @@
 # Experiment Notebook
 Python library to design, run and plot experiments.
 
+`pip install enb`
+
 Ideal for cases where:
 
 	- multiple inputs need to be processed by one or more customizable tasks, producing a table of data
@@ -9,4 +11,7 @@ Ideal for cases where:
 
 Also take a look at the `templates` and the `plugins` folder for some examples.
 
-You can read the documentation [here](https://miguelinux314.github.io/experiment-notebook).
+You can read the documentation and browse the code at https://miguelinux314.github.io/experiment-notebook.
+
+You are welcome to submit your extensions via a pull request to the `dev` branch.
+
