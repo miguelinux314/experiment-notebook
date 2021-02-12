@@ -10,6 +10,7 @@ import plugin_FSE.FSEWrapper
 
 if __name__ == '__main__':
     # Setup global options
+    #options.base_dataset_dir = "./data"
     options.base_dataset_dir = "./data"
 
     # Define list of codecs
