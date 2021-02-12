@@ -9,8 +9,8 @@ options = get_options()
 
 class FSEWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
     def __init__(self):
-        icompression.WrapperCodec.__init__(self, compressor_path=f"./fse",
-                                           decompressor_path=f"./fse", param_dict=None,
+        icompression.WrapperCodec.__init__(self, compressor_path=f"./plugin_FSE/fse",
+                                           decompressor_path=f"./plugin_FSE/fse", param_dict=None,
                                            output_invocation_dir=None)
 
 
