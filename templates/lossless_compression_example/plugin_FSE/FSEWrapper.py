@@ -17,3 +17,6 @@ class FSEWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -e -d -f {compressed_path} {reconstructed_path}"
+
+    
+    
