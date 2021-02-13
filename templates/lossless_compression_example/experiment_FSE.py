@@ -1,16 +1,13 @@
 import os
-
 from enb.config import get_options
-
-options = get_options(from_main=False)
-
 from enb import icompression
 from enb import aanalysis
 import plugin_FSE.FSEWrapper
 
+options = get_options(from_main=False)
+
 if __name__ == '__main__':
     # Setup global options
-    #options.base_dataset_dir = "./data"
     options.base_dataset_dir = "./data"
 
     # Define list of codecs
