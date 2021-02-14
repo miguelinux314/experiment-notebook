@@ -72,15 +72,15 @@ class Experiment(atable.ATable):
     instance is returned that contains both the experiment results, and the
     associated metainformation columns for each corpus element.
     """
-
     task_name_column = "task_name"
     task_label_column = "task_label"
+    default_file_properties_table_class = sets.FilePropertiesTable
 
     def __init__(self, tasks,
                  dataset_paths=None,
                  csv_experiment_path=None,
                  csv_dataset_path=None,
-                 dataset_info_table= None,
+                 dataset_info_table=None,
                  overwrite_file_properties=False,
                  parallel_dataset_property_processing=None):
         """
@@ -121,10 +121,13 @@ class Experiment(atable.ATable):
                                             f"{dataset_info_table.__class__.__name__}_persistence.csv")
         os.makedirs(os.path.dirname(csv_dataset_path), exist_ok=True)
 
-        if inspect.isclass(dataset_info_table):
-            dataset_info_table = dataset_info_table(csv_support_path=csv_dataset_path)
-        self.dataset_info_table = dataset_info_table if dataset_info_table is not None \
-            else sets.FilePropertiesTable(csv_support_path=csv_dataset_path)
+        if dataset_info_table is None:
+            dataset_info_table = self.default_file_properties_table_class(csv_support_path=csv_dataset_path)
+        else:
+            if inspect.isclass(dataset_info_table):
+                dataset_info_table = dataset_info_table(csv_support_path=csv_dataset_path)
+        self.dataset_info_table = dataset_info_table
+
         self.dataset_info_table.ignored_columns = \
             set(self.dataset_info_table.ignored_columns + self.ignored_columns)
 

@@ -170,7 +170,6 @@ class ColumnProperties:
         self.hist_min = hist_min
         self.hist_max = hist_max
         for k, v in extra_attributes.items():
-            print(f"[ColumnProperties {self.name}] setting extra attributes: {k}->{v}")
             self.__setattr__(k, v)
 
     def __repr__(self):
@@ -679,7 +678,7 @@ class ATable(metaclass=MetaTable):
         """
         try:
             if not self.csv_support_path:
-                raise ValueError(f"self.csv_support_path = {self.csv_support_path}")
+                raise FileNotFoundError(self.csv_support_path)
             loaded_df = pd.read_csv(self.csv_support_path)
             # for column in (c for c in self.indices_and_columns if c not in self.indices):
             for column in self.indices_and_columns:
@@ -694,7 +693,7 @@ class ATable(metaclass=MetaTable):
             for column, properties in self.column_to_properties.items():
                 if properties.has_dict_values:
                     loaded_df[column] = loaded_df[column].apply(parse_dict_string)
-        except (FileNotFoundError, ValueError) as ex:
+        except FileNotFoundError as ex:
             if self.csv_support_path is None:
                 if options.verbose > 2:
                     print(f"[I]nfo: no csv persistence support.")
@@ -718,8 +717,22 @@ class ATable(metaclass=MetaTable):
             raise ex
         return loaded_df
 
+def string_or_float(cell_value):
+    """Takes the input value from an ATable cell and returns either
+    its float value or its string value. In the latter case, one level of surrounding
+    ' or " is removed from the value before returning.
+    """
+    try:
+        v = float(cell_value)
+    except ValueError:
+        v = str(cell_value)
+        v = v.strip()
+        if (v.startswith("'") and v.endswith("'")) \
+                or (v.startswith('"') and v.endswith('"')):
+            v = v[1:-1]
+    return v
 
-def parse_dict_string(cell_value, key_type=float, value_type=float):
+def parse_dict_string(cell_value, key_type=string_or_float, value_type=float):
     """Parse a cell value for a string describing a dictionary.
     Some checks are performed based on ATable cell contents, i.e.,
 

@@ -38,6 +38,8 @@ class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCode
         raise NotImplementedError()
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        assert original_file_info["bytes_per_sample"] == 2, "CCSDS 122 configured for 16bit only"
+
         if self.param_dict["target_rate_bpppc"] is None:
             target_rate_param = ""
         else:
