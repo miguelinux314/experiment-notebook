@@ -102,7 +102,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     fig_width = options.fig_width if fig_width is None else fig_width
     fig_height = options.fig_height if fig_height is None else fig_height
     global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
+
     legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
+    if legend_column_count:
+        for name, pds in pds_by_group_name.items():
+            for pd in pds:
+                pd.legend_column_count = legend_column_count
+
 
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min,
@@ -455,7 +461,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     """
     column_df = df[column]
     # Histogram with bins in [0,1] that sum 1
-    range = [0,0]
+    range = [0, 0]
     try:
         range[0] = min(range[0], min(v for v in df[column] if not math.isinf(v)))
         range[1] = max(range[1], max(v for v in df[column] if not math.isinf(v)))
@@ -843,7 +849,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False, combine_groups=True, show_individual=True):
+                   adjust_height=False, show_individual=True, legend_column_count=None):
         """
         :param adjust_height:
         :param group_name_order:
@@ -851,7 +857,10 @@ class TwoColumnScatterAnalyzer(Analyzer):
         :param target_columns: must be a list of tuple-like instances, each with two elements.
           The first element is the name of the column to use for the x axis,
           the second element is the name of the column for the y axis.
+        :param group_by: if not None, it must be either a string representing a column
+          or a list of TaskFamily instances.
         """
+        legend_column_count = legend_column_count if legend_column_count is not None else options.legend_column_count
         output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         selected_column_pairs = []
         for column_x, column_y in target_columns:
@@ -872,40 +881,49 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 column_y].label if column_to_properties is not None and column_y in column_to_properties else None
             y_label = clean_column_name(column_y) if y_label is None else y_label
             if group_by is not None:
-                for i, (group_label, group_df) in enumerate(full_df.groupby(by=group_by)):
+                try:
+                    assert all(isinstance(t, TaskFamily) for t in group_by)
+                    group_column = "task_name"
+                    group_by_families = True
+                except TypeError:
+                    group_column = group_by
+                    group_by_families = False
+
+                for i, (group_label, group_df) in enumerate(full_df.groupby(by=group_column)):
                     x_values, y_values = zip(*sorted(zip(
                         group_df[column_x].values, group_df[column_y].values)))
-                    if combine_groups:
-                        pds_by_group[group_label].append(
-                            plotdata.ScatterData(
-                                x_values=[sum(x_values) / len(x_values)],
-                                y_values=[sum(y_values) / len(y_values)],
-                                label=group_label,
-                                extra_kwargs=dict(
-                                    marker=marker_cycle[i % len(marker_cycle)],
-                                    s=self.marker_size,
-                                    color=color_cycle[i % len(marker_cycle)]),
-                                alpha=min(self.alpha * 2, 0.65)))
-                        pds_by_group[group_label][-1].marker_size = self.marker_size * 5
-                        if show_individual:
-                            pds_by_group[group_label].append(
-                                plotdata.ScatterData(
-                                    x_values=x_values, y_values=y_values,
-                                    extra_kwargs=dict(
-                                        marker=marker_cycle[i % len(marker_cycle)],
-                                        color=color_cycle[i % len(marker_cycle)],
-                                        s=self.marker_size / 2),
-                                    alpha=0.7 * self.alpha))
+                    if not group_by_families:
+                        label = group_label
                     else:
+                        for family in group_by:
+                            try:
+                                label = family.name_to_label[group_label]
+                                break
+                            except KeyError:
+                                pass
+                        else:
+                            raise ValueError(f"task name {group_label} not found in group_by={group_by}")
+
+                    pds_by_group[group_label].append(
+                        plotdata.ScatterData(
+                            x_values=[sum(x_values) / len(x_values)],
+                            y_values=[sum(y_values) / len(y_values)],
+                            label=label,
+                            extra_kwargs=dict(
+                                marker=marker_cycle[i % len(marker_cycle)],
+                                s=self.marker_size,
+                                color=color_cycle[i % len(color_cycle)]),
+                            alpha=min(self.alpha * 2, 0.65)))
+                    pds_by_group[group_label][-1].marker_size = self.marker_size * 5
+                    if show_individual:
                         pds_by_group[group_label].append(
                             plotdata.ScatterData(
                                 x_values=x_values, y_values=y_values,
-                                label=group_label,
-                                extra_kwargs=dict(marker=marker_cycle[i % len(marker_cycle)],
-                                                  fillstyle=fill_style_cycle[i % len(fill_style_cycle)],
-                                                  color=color_cycle[i % len(marker_cycle)]),
-                                alpha=self.alpha * (1 if not combine_groups else 0.15)))
-                        pds_by_group[group_label][-1].marker_size = self.marker_size * (1.5 if combine_groups else 1)
+                                extra_kwargs=dict(
+                                    marker=marker_cycle[i % len(marker_cycle)],
+                                    color=color_cycle[i % len(color_cycle)],
+                                    s=self.marker_size),
+                                alpha=0.7 * self.alpha))
 
             if not pds_by_group or show_global:
                 x_values, y_values = zip(*sorted(zip(
@@ -961,7 +979,8 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 y_max=ray.put(global_y_max),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
                 options=ray.put(options), group_name_order=ray.put(group_name_order),
-                combine_groups=ray.put(combine_groups)))
+                combine_groups=ray.put(True),
+                legend_column_count=ray.put(legend_column_count)))
 
         ray.wait(expected_returns)
 
@@ -1145,18 +1164,18 @@ class TaskFamily:
     all configuration values except for a parameter.
     """
 
-    def __init__(self, label, task_names=None, names_to_labels=None):
+    def __init__(self, label, task_names=None, name_to_label=None):
         """
         :param label: Printable name that identifies the family
         :param task_names: if not None, it must be a list of task names (strings)
           that are expected to be found in an ATable's DataFrame when analyzing
           it.
-        :param names_to_labels: if not None, it must be a dictionary indexed by
+        :param name_to_label: if not None, it must be a dictionary indexed by
         task name that contains a displayable version of it
         """
         self.label = label
         self.task_names = task_names if task_names is not None else []
-        self.names_to_labels = names_to_labels if names_to_labels is not None else {}
+        self.name_to_label = name_to_label if name_to_label is not None else {}
 
     def add_task(self, task_name, task_label=None):
         """
@@ -1168,7 +1187,7 @@ class TaskFamily:
         assert task_name not in self.task_names
         self.task_names.append(task_name)
         if task_label:
-            self.names_to_labels[task_name] = task_label
+            self.name_to_label[task_name] = task_label
 
 
 def get_histogram_dicts(df, column):
