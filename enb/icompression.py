@@ -17,6 +17,7 @@ import shutil
 import math
 import numpy as np
 import imageio
+import subprocess
 
 import enb
 from enb import atable
@@ -345,6 +346,37 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
+class PNGWrapperCodec(WrapperCodec):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        img = enb.isets.load_array_bsq(
+            file_or_path=original_path, image_properties_row=original_file_info)
+        with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
+            imageio.imwrite(tmp_file.name, img)
+            compression_results = super().compress(original_path=tmp_file.name,
+                             compressed_path=compressed_path,
+                             original_file_info=original_file_info)
+            cr = self.compression_results_from_paths(
+                original_path=original_path, compressed_path=compressed_path)
+            cr.compression_time_seconds = max(
+                0, compression_results.compression_time_seconds)
+            return cr
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
+            decompression_results = super().decompress(
+                compressed_path=compressed_path, reconstructed_path=tmp_file.name)
+            img = imageio.imread(tmp_file.name, "png")
+            img.swapaxes(0, 1)
+            assert len(img.shape) in [2, 3, 4]
+            if len(img.shape) == 2:
+                img = np.expand_dims(img, axis=2)
+            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path)
+
+            dr = self.decompression_results_from_paths(
+                compressed_path=compressed_path, reconstructed_path=reconstructed_path)
+            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
+
+
 class CompressionExperiment(experiment.Experiment):
     """This class allows seamless execution of compression experiments.
 
@@ -358,7 +390,7 @@ class CompressionExperiment(experiment.Experiment):
     Also, the image_info_row attribute gives access to the image metainformation
     (e.g., geometry)
     """
-
+    default_file_properties_table_class = enb.isets.ImagePropertiesTable
     check_lossless = True
 
     class RowWrapper:
@@ -515,7 +547,7 @@ class CompressionExperiment(experiment.Experiment):
                  dataset_paths=None,
                  csv_experiment_path=None,
                  csv_dataset_path=None,
-                 dataset_info_table: enb.isets.ImagePropertiesTable = None,
+                 dataset_info_table=None,
                  overwrite_file_properties=False,
                  parallel_dataset_property_processing=None,
                  reconstructed_dir_path=None,
@@ -548,7 +580,7 @@ class CompressionExperiment(experiment.Experiment):
           is to be stored. If may not be generated for images for which all columns are known
         """
         table_class = type(dataset_info_table) if dataset_info_table is not None \
-            else enb.isets.ImagePropertiesTable
+            else self.default_file_properties_table_class
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
             else os.path.join(options.persistence_dir, f"{table_class.__name__}_persistence.csv")
         imageinfo_table = dataset_info_table if dataset_info_table is not None \

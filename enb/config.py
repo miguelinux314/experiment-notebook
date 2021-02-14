@@ -48,7 +48,7 @@ class ExecutionOptions(singleton_cli.GlobalOptions):
     def repetitions(self):
         pass
 
-    @cli_property("-c",
+    @cli_property("c",
                   help="List of selected column names for computation. If one or more column names are provided, "
                        "all others are ignored. Multiple columns can be expressed, separated by spaces.",
                   default=None,
@@ -57,7 +57,8 @@ class ExecutionOptions(singleton_cli.GlobalOptions):
     def columns(self):
         pass
 
-    @cli_property(help="If True, any exception when processing rows aborts the program.", action="store_true")
+    @cli_property(help="If True, any exception when processing rows aborts the program.", action="store_true",
+                  default=True)
     def exit_on_error(self):
         pass
 
