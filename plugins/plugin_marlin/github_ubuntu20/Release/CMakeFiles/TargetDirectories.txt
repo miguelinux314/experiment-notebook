@@ -1,0 +1,9 @@
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/rebuild_cache.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/correctness.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/testImage.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/imageMarlin.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/edit_cache.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/test.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/buildPrecalculatedDictionaries.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/imarlin.dir
+/home/miguelinux/Desktop/marlin/marlin/Release/CMakeFiles/marlin.dir

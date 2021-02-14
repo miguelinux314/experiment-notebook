@@ -17,15 +17,13 @@ import os
 import glob
 import hashlib
 import ray
-import collections
-import itertools
 import time
 
+import enb
 from enb import atable
 from enb import config
-from enb.config import get_options
 
-options = get_options()
+options = enb.config.options
 
 # -------------------------- Begin configurable part
 
@@ -150,7 +148,9 @@ class FileVersionTable(FilePropertiesTable):
           (versioned directories preserve names and structure within
           the base dir)
         :param version_name: name of this file version
-        :param csv_support_path: path to the file where results are to be
+        :param original_properties_table: instance of the file properties table (or subclass)
+          to be used.
+        :param csv_support_path: path to the file where results (of the versioned data) are to be
           long-term stored
         """
         super().__init__(csv_support_path=csv_support_path, base_dir=version_base_dir)
@@ -342,6 +342,11 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
                     f"Function {version_fun} did not produce a versioned path {input_path}->{output_path}")
             versioning_time = versioning_time if versioning_time is not None \
                 else time.time() - time_before
+            if versioning_time < 0:
+                if options.verbose:
+                    print(f"[W]arning: versioning_time = {versioning_time} < 0 for "
+                          f"{self.__class__.__name__} on {input_path}")
+                versioning_time = 0
             time_measurements.append(versioning_time)
             if repetition_index < options.repetitions - 1:
                 os.remove(output_path)
