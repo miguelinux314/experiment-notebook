@@ -1,6 +1,6 @@
 Plugin fse
 
-The code of the executable is available on https://github.com/Cyan4973/FiniteStateEntropy
+The code of the executable is available at https://github.com/Cyan4973/FiniteStateEntropy
 
 Its license is the following:
 Copyright (c) 2013, Yann Collet
