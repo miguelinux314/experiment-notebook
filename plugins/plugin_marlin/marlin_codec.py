@@ -20,10 +20,11 @@ class ImageMarlin(enb.icompression.NearLosslessCodec, enb.icompression.PNGWrappe
     """
     def __init__(self,
                  qstep=1,
+                 entfreq=1,
                  marlin_binary=os.path.join(os.path.dirname(__file__), "imageMarlin")):
         super().__init__(compressor_path=marlin_binary,
                          decompressor_path=marlin_binary,
-                         param_dict=dict(qstep=qstep))
+                         param_dict=dict(qstep=qstep, entfreq=entfreq))
         self.marlin_binary = marlin_binary
         assert qstep >= 1
         assert int(qstep) == qstep
@@ -40,7 +41,8 @@ class ImageMarlin(enb.icompression.NearLosslessCodec, enb.icompression.PNGWrappe
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"c {original_path} {compressed_path} " \
-               f"-qstep={self.param_dict['qstep']}"
+               f"-qstep={self.param_dict['qstep']} " \
+               f"-entfreq={self.param_dict['entfreq']} "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"d {compressed_path} {reconstructed_path}"
