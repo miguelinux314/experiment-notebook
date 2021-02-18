@@ -1,6 +1,6 @@
 **Plugin Huffman**
 
-Download the code of the executable at [GitHub Pages](https://github.com/Cyan4973/FiniteStateEntropy)
+Download the code of the executable at [FiniteStateEntropy](https://github.com/Cyan4973/FiniteStateEntropy)
 
 Copyright (c) 2013, Yann Collet
 All rights reserved.
