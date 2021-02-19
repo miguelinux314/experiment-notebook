@@ -10,12 +10,11 @@ class Huffman(icompression.WrapperCodec, icompression.LosslessCodec):
 			compressor_path=huff_binary,
 			decompressor_path=huff_binary,
 			param_dict=None, output_invocation_dir=None)
+		
 		self.huff_binary = huff_binary
+		
 		assert os.path.isfile(huff_binary)
-		'''
-		icompression.WrapperCodec.__init__(self, compressor_path=f"./plugin_huffman/Huff",
-                decompressor_path=f"./plugin_huffman/Huff", param_dict=None, output_invocation_dir=None)
-		'''
+
 	def get_compression_params(self, original_path, compressed_path, original_file_info):
 		return f"-h -f {original_path} {compressed_path}"
 
