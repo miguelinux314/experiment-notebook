@@ -15,7 +15,7 @@ import numpy as np
 import enb
 
 
-class ImageMarlin(enb.icompression.NearLosslessCodec, enb.icompression.PNGWrapperCodec):
+class ImageMarlin(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.PNGWrapperCodec):
     """Wrapper for the imageMarlin codec
     """
     def __init__(self,
@@ -39,7 +39,13 @@ class ImageMarlin(enb.icompression.NearLosslessCodec, enb.icompression.PNGWrappe
             name += "__" + "_".join(f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
 
+    @property
+    def label(self):
+        return "ImageMarlin"
+
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        assert original_file_info["bytes_per_sample"] == 1, f"ImageMarlin supports monocomponent 8-bit images only"
+
         return f"c {original_path} {compressed_path} " \
                f"-qstep={self.param_dict['qstep']} " \
                f"-entfreq={self.param_dict['entfreq']} "
