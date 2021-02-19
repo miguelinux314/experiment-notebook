@@ -4,7 +4,7 @@ from enb.config import get_options
 
 options = get_options()
 
-class HuffmanWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
+class Huffman(icompression.WrapperCodec, icompression.LosslessCodec):
 	def __init__(self):
 		icompression.WrapperCodec.__init__(self,
 			compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "Huff"),
