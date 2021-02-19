@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -29,9 +29,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -53,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <a href="contents.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -120,7 +121,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="contents.html">Experiment Notebook</a>
         
       </nav>
 
@@ -151,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="analyzing_data.html">Analyzing data</a> &raquo;</li>
         
@@ -188,14 +189,14 @@ Each histogram contains a marker for the average value, and a bar for +/- 1 stan
 <img alt="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" src="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" />
 <p><strong>Interesting parameters</strong> to the <cite>analyze_df()</cite> method:</p>
 <ul class="simple">
-<li><p><cite>output_csv_file</cite>: if given, a CSV with basic statistics about the columns of interest is provided.
-Analyzer subclasses may overwrite this output.</p></li>
-<li><p><cite>group_by</cite>: useful to stack more than one histogram, by dividing the data frame based on the value of a column.
-<cite>group_by=”class”</cite> was used to generate the image above.</p></li>
-<li><p><cite>show_global</cite>: controls wether results for the whole dataset (not split by group_by) is to be shown along the
-subgroups.</p></li>
-<li><p><cite>adjust_height</cite>: if True, the histograms are all scaled so that the maximum relative frequency reaches the top
-of its plot. If False, histograms are not scaled.</p></li>
+<li><cite>output_csv_file</cite>: if given, a CSV with basic statistics about the columns of interest is provided.
+Analyzer subclasses may overwrite this output.</li>
+<li><cite>group_by</cite>: useful to stack more than one histogram, by dividing the data frame based on the value of a column.
+<cite>group_by=”class”</cite> was used to generate the image above.</li>
+<li><cite>show_global</cite>: controls wether results for the whole dataset (not split by group_by) is to be shown along the
+subgroups.</li>
+<li><cite>adjust_height</cite>: if True, the histograms are all scaled so that the maximum relative frequency reaches the top
+of its plot. If False, histograms are not scaled.</li>
 </ul>
 </div>
 <div class="section" id="two-columns-2d-scatter">
@@ -207,10 +208,10 @@ columns as an input.</p>
 <img alt="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png" src="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png" />
 <p><strong>Interesting parameters</strong> to the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df()</span></code></a> method:</p>
 <ul class="simple">
-<li><p><cite>group_by</cite>: It allows distinguishing data points based on the value of the given column.
-Different colors and markers are automatically and consistently used.</p></li>
-<li><p><cite>show_individual</cite>: When True, all data points are shown. When False, only the average values
-of each class is shown.</p></li>
+<li><cite>group_by</cite>: It allows distinguishing data points based on the value of the given column.
+Different colors and markers are automatically and consistently used.</li>
+<li><cite>show_individual</cite>: When True, all data points are shown. When False, only the average values
+of each class is shown.</li>
 </ul>
 </div>
 <div class="section" id="two-columns-and-one-parameter-line-plot">
@@ -221,15 +222,15 @@ together data for each parameter value.</p>
 <p>For instance, the JPEG-LS compressor accepts the peak absolute error (PAE) as a parameter.
 It is very natural to group JPEG-LS results for different PAE parameters, as in the figure below.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For each family member (i.e., all compression results for one compressor configuration),
+<p class="first admonition-title">Note</p>
+<p class="last">For each family member (i.e., all compression results for one compressor configuration),
 multiple results will typically be present (one per element of the input dataset).
 This <strong>analyzer obtains the average</strong> within each column being considered <strong>for that specific configuration</strong>.</p>
 </div>
 <img alt="https://raw.githubusercontent.com/miguelinux314/experiment-notebook/master/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" src="https://raw.githubusercontent.com/miguelinux314/experiment-notebook/master/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" />
 <p><strong>Interesting parameters</strong> to the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer.analyze_df()</span></code></a> method:</p>
 <ul>
-<li><p><cite>group_by</cite>: instead of column names, this argument must be a list of <a class="reference internal" href="api/enb.html#enb.aanalysis.TaskFamily" title="enb.aanalysis.TaskFamily"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TaskFamily</span></code></a> instances.
+<li><p class="first"><cite>group_by</cite>: instead of column names, this argument must be a list of <a class="reference internal" href="api/enb.html#enb.aanalysis.TaskFamily" title="enb.aanalysis.TaskFamily"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TaskFamily</span></code></a> instances.
 The following example taken from <cite>this lossy compression example&lt;https://github.com/miguelinux314/experiment-notebook/blob/master/templates/lossy_compression_experiment/lossy_compression_experiment.py&gt;</cite>
 shows how to define a list of task families that can be used as the <cite>group_by</cite> argument:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_codecs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -243,12 +244,15 @@ shows how to define a list of task families that can be used as the <cite>group_
 </pre></div>
 </div>
 </li>
-<li><p><cite>show_markers</cite>: a boolean controlling whether data points are made explicit with a marker. If False,
-a plain line is typically shown.</p></li>
-<li><p><cite>show_v_range_bar</cite>, <cite>show_h_range_bar</cite>: if True, vertical or horizontal bars will be added to each data point
-to signal the full span of your data</p></li>
-<li><p><cite>show_v_std_bar</cite>, <cite>show_h_std_bar</cite>: if True, vertical or horizontal bars will be added to each data point
-to signal plus/minus 1 standard deviation (std).</p></li>
+<li><p class="first"><cite>show_markers</cite>: a boolean controlling whether data points are made explicit with a marker. If False,
+a plain line is typically shown.</p>
+</li>
+<li><p class="first"><cite>show_v_range_bar</cite>, <cite>show_h_range_bar</cite>: if True, vertical or horizontal bars will be added to each data point
+to signal the full span of your data</p>
+</li>
+<li><p class="first"><cite>show_v_std_bar</cite>, <cite>show_h_std_bar</cite>: if True, vertical or horizontal bars will be added to each data point
+to signal plus/minus 1 standard deviation (std).</p>
+</li>
 </ul>
 <p>Another example with horizontal range and plus/minus +1 std (taken from <a class="reference internal" href="lossy_compression_example.html"><span class="doc">Lossy Compression Experiment</span></a>)
 is shown next:</p>
