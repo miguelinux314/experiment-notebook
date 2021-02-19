@@ -781,9 +781,11 @@ def check_unique_indices(df: pd.DataFrame):
         for i in range(len(duplicated_df)):
             print("[watch] duplicated_df.iloc[i] = {}".format(duplicated_df.iloc[i]))
 
-        # print("[watch] df[duplicated_indices] = {}".format(df[duplicated_indices]))
-        # s += "\n\t:: ".join(str(' , '.join(values))
-        #                     for values in df[duplicated_indices][df.indices].values)
+        if options.verbose:
+            print("[watch] df[duplicated_indices] = {}".format(df[duplicated_indices]))
+            s += "\n\t:: ".join(str(' , '.join(values))
+                            for values in df[duplicated_indices][df.indices].values)
+            print(s)
         raise CorruptedTableError(atable=None)
 
 
@@ -794,6 +796,7 @@ def indices_to_internal_loc(values):
     """
     if isinstance(values, str):
         values = [values]
+    values = [os.path.abspath(v) if os.path.exists(v) else v for v in values]
     return str(tuple(values))
 
 
