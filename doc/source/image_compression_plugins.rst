@@ -18,3 +18,4 @@ You can find example usage code in `this script <https://github.com/miguelinux31
 used to generate the table.
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/codec_availability.png
+
