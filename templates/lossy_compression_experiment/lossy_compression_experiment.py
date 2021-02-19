@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # one or more parameter families are used
     label_by_group_name = dict()
     for family in all_families:
-        label_by_group_name.update(family.names_to_labels)
+        label_by_group_name.update(family.name_to_label)
 
     # Run experiment and produce figures
     exp = enb.icompression.LossyCompressionExperiment(codecs=all_codecs)
