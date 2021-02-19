@@ -51,7 +51,7 @@ setup(
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.2.tar.gz",
     license='MIT',
     author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
-    install_requires=['pandas', 'ray', 'matplotlib', 'numpy', 'recordclass', 'sortedcontainers', 'imageio', 'redis', 'sphinx_rtd_theme'],
+    install_requires=['pandas', 'ray', 'matplotlib', 'numpy', 'recordclass', 'sortedcontainers', 'imageio', 'redis', 'sphinx_rtd_theme', 'numpngw'],
     author_email='miguel.hernandez@uab.cat',
     description='Library to gather and disseminate computer-based experimental results.',
     long_description=long_description,
