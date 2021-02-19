@@ -27,6 +27,7 @@ from plugins import plugin_ccsds122
 from plugins import plugin_fapec
 from plugins import plugin_flif
 from plugins import plugin_fse
+from plugins import plugin_huffman
 from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
@@ -79,6 +80,12 @@ if __name__ == '__main__':
         all_codecs.append(c)
         fse_family.add_task(c.name, f"{c.label}")
     all_families.append(fse_family)
+
+    huffman_family = enb.aanalysis.TaskFamily(label="Huffman")
+    for c in (plugin_huffman.huffman_codec.Huffman(),):
+        all_codecs.append(c)
+        huffman_family.add_task(c.name, f"{c.label}")
+    all_families.append(huffman_family)
 
     lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
     for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
