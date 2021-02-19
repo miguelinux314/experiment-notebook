@@ -29,13 +29,12 @@ def get_status_output_time(invocation, expected_status_value=0, wall=False):
       
     :return: status, output, time
     """
-
     if os.path.isfile("/usr/bin/time"):
         invocation = f"/usr/bin/time -f 'u%U@s%S' {invocation}"
     else:
         invocation = f"{invocation}"
         wall = True
-
+        
     wall_time_before = time.time()
     status, output = subprocess.getstatusoutput(invocation)
     wall_time_after = time.time()

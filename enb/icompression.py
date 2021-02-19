@@ -18,6 +18,7 @@ import math
 import numpy as np
 import imageio
 import subprocess
+import numpngw
 
 import enb
 from enb import atable
@@ -353,8 +354,9 @@ class PNGWrapperCodec(WrapperCodec):
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
+        
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
-            imageio.imwrite(tmp_file.name, img)
+            numpngw.write_png(tmp_file.name, img)
             compression_results = super().compress(original_path=tmp_file.name,
                              compressed_path=compressed_path,
                              original_file_info=original_file_info)
