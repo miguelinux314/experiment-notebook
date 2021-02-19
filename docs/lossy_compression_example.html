@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -29,16 +29,17 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Defining new codecs" href="defining_new_compressors.html" />
+    <link rel="next" title="Using image compression plugins" href="image_compression_plugins.html" />
     <link rel="prev" title="Lossless Compression Experiment" href="lossless_compression_example.html" /> 
 </head>
 
@@ -53,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <a href="contents.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -106,6 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#lossy-data-analysis">Lossy: data analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using image compression plugins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
@@ -128,7 +130,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="contents.html">Experiment Notebook</a>
         
       </nav>
 
@@ -159,7 +161,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="image_compression.html">Image compression</a> &raquo;</li>
         
@@ -189,13 +191,13 @@ and how easily report results. This class is a subclass of <a class="reference i
 <p>An example is used, and line plots with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer" title="enb.aanalysis.TwoColumnLineAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer</span></code></a> are introduced.
 Note that line plots can be used with lossless compression experiments as well.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
+<p class="first admonition-title">Note</p>
+<p class="last">This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
 followed the installation instructions in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <cite>compression_ratio_dr</cite>. <cite>bpppc</cite> and <cite>compression_time_seconds</cite> columns
+<p class="first admonition-title">Note</p>
+<p class="last">The <cite>compression_ratio_dr</cite>. <cite>bpppc</cite> and <cite>compression_time_seconds</cite> columns
 are automatically created by the LosslyCompressionExperiment class. You can
 extend this class with new columns, as described in the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example.</p>
 </div>
@@ -224,20 +226,22 @@ It contains the landsat images from the CCSDS Data Compression working group.</p
 <p>As usual, it is needed that:</p>
 <blockquote>
 <div><ul>
-<li><p>Images are in RAW (uncompressed) format, preferably with ‘.raw’ extension,
-in BSQ in case more than one component is present.</p></li>
-<li><p>Images contain a tag such as ‘u8be-3x600x800’ in their name.</p>
+<li><p class="first">Images are in RAW (uncompressed) format, preferably with ‘.raw’ extension,
+in BSQ in case more than one component is present.</p>
+</li>
+<li><p class="first">Images contain a tag such as ‘u8be-3x600x800’ in their name.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><em>u</em> or <em>s</em> should be used for unsigned or signed data</p></li>
-<li><p><em>8</em>, <em>16</em> or <em>32</em> indicate the bitdepth in bits of each sample</p></li>
-<li><p>the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
-the images width, height and number of components (bands).</p></li>
+<li><em>u</em> or <em>s</em> should be used for unsigned or signed data</li>
+<li><em>8</em>, <em>16</em> or <em>32</em> indicate the bitdepth in bits of each sample</li>
+<li>the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
+the images width, height and number of components (bands).</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p>Images can be organized in subfolders. This is not mandatory, and it is not used in the current
-example.</p></li>
+<li><p class="first">Images can be organized in subfolders. This is not mandatory, and it is not used in the current
+example.</p>
+</li>
 </ul>
 </div></blockquote>
 </div>
@@ -261,7 +265,7 @@ is documented and (hopefully) self-explanatory.</p>
 <p>The initialization is straightforward. Note how the plugin’s main module needs to be imported.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">enb.config</span> <span class="kn">import</span> <span class="n">get_options</span>
-<span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="n">from_main</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="n">from_main</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">enb</span> <span class="kn">import</span> <span class="n">icompression</span>
 <span class="kn">from</span> <span class="nn">enb</span> <span class="kn">import</span> <span class="n">aanalysis</span>
 <span class="kn">import</span> <span class="nn">plugin_jpeg.jpeg_codecs</span>
@@ -277,8 +281,8 @@ and the families of codecs we want to use.</p>
 which are passed to the <cite>group_by</cite> argument.</p>
 <p>A plain list of all codecs to be tested needs also be produced, as in the <a class="reference internal" href="lossless_compression_example.html"><span class="doc">Lossless Compression Experiment</span></a>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <cite>codecs</cite> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a>
+<p class="first admonition-title">Note</p>
+<p class="last">The <cite>codecs</cite> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a>
 instances. See <a class="reference internal" href="defining_new_compressors.html"><span class="doc">Defining new codecs</span></a> for further information.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">options</span><span class="o">.</span><span class="n">base_dataset_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;landsat&quot;</span><span class="p">)</span>
@@ -289,14 +293,14 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 <span class="n">jpeg_ls_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;JPEG-LS&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">plugin_jpeg</span><span class="o">.</span><span class="n">jpeg_codecs</span><span class="o">.</span><span class="n">JPEG_LS</span><span class="p">(</span><span class="n">max_error</span><span class="o">=</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)):</span>
     <span class="n">all_codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-    <span class="n">jpeg_ls_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2"> PAE </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">jpeg_ls_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;{c.label} PAE {m}&quot;</span><span class="p">)</span>
 <span class="n">all_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jpeg_ls_family</span><span class="p">)</span>
 
 <span class="c1"># One can add as many families as lines should be depicted</span>
 <span class="n">mcalic_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;M-CALIC&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">plugin_mcalic</span><span class="o">.</span><span class="n">mcalic_codecs</span><span class="o">.</span><span class="n">MCALIC_Magli</span><span class="p">(</span><span class="n">max_error</span><span class="o">=</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)):</span>
     <span class="n">all_codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-    <span class="n">mcalic_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2"> PAE </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">mcalic_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;{c.label} PAE {m}&quot;</span><span class="p">)</span>
 <span class="n">all_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mcalic_family</span><span class="p">)</span>
 
 <span class="c1"># One can easily define pretty plot labels for all codecs individually, even when</span>
@@ -310,7 +314,7 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 <div class="section" id="lossy-experiment-running">
 <h3>Lossy: experiment running<a class="headerlink" href="#lossy-experiment-running" title="Permalink to this headline">¶</a></h3>
 <p>The lossless compression experiment can now be created, and used to generate a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+693.ga427887c1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+770.g68fe64b4e6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
 <p>Notice how <cite>show_h_range_bar</cite> and <cite>show_h_std_bar</cite> are employed to signal the range and +/- 1 std in the x axis.
 They can be used in the y axis by replacing <cite>h</cite> with <cite>v</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run experiment and produce figures</span>
@@ -336,9 +340,9 @@ and <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLine
     <span class="n">full_df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
     <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;bpppc&quot;</span><span class="p">,</span> <span class="s2">&quot;pae&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;bpppc&quot;</span><span class="p">,</span> <span class="s2">&quot;psnr_dr&quot;</span><span class="p">)],</span>
     <span class="n">column_to_properties</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">joined_column_to_properties</span><span class="p">,</span>
-    <span class="n">show_markers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">show_h_range_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">show_h_std_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_markers</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">show_h_range_bar</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">show_h_std_bar</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
     <span class="n">group_by</span><span class="o">=</span><span class="n">all_families</span><span class="p">,</span>
     <span class="n">legend_column_count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
@@ -357,7 +361,7 @@ for the JPEG-LS and M-CALIC codecs is shown below as well:</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="defining_new_compressors.html" class="btn btn-neutral float-right" title="Defining new codecs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="image_compression_plugins.html" class="btn btn-neutral float-right" title="Using image compression plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="lossless_compression_example.html" class="btn btn-neutral float-left" title="Lossless Compression Experiment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
