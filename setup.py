@@ -46,7 +46,7 @@ long_description = read('README.md')
 
 setup(
     name='enb',
-    version="0.2.2",
+    version="0.2.3",
     url='https://github.com/miguelinux314/experiment-notebook',
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.2.tar.gz",
     license='MIT',

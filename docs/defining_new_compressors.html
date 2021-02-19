@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#lossless-codecs">1. Lossless codecs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lossy-and-near-lossless-codecs">2. Lossy and near lossless codecs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#executable-wrapper-codecs">3. Executable wrapper codecs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packing-your-codec-as-a-plugin">4. Packing your codec as a plugin</a></li>
 </ul>
 </li>
 </ul>
@@ -257,6 +258,31 @@ you need to type, the <a class="reference internal" href="api/enb.html#enb.icomp
 <p class="last">The return value of <cite>get_compression_params</cite> and <cite>get_decompression_params</cite> should not include the executable
 path itself, only the parameters.</p>
 </div>
+</div>
+<div class="section" id="packing-your-codec-as-a-plugin">
+<span id="creating-codec-plugins"></span><h2>4. Packing your codec as a plugin<a class="headerlink" href="#packing-your-codec-as-a-plugin" title="Permalink to this headline">¶</a></h2>
+<p>Once you have tested your codec, you might want to release it as a plugin so that other <cite>enb</cite> users can benefit from
+your development.
+To create your plugin and share it with the community,</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Put the script and any required binaries in a folder within <cite>plugins/</cite>.</p>
+</li>
+<li><p class="first">Add a <cite>__init__.py</cite> file to that folder, with imports such as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">my_module</span>
+</pre></div>
+</div>
+<p>if <cite>my_module.py</cite> is one of the modules you want to export.</p>
+</li>
+<li><p class="first">Modify <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/blob/dev/plugins/test_all_codecs/test_all_codecs.py">plugins/test_all_codecs/test_all_codecs.py</a>
+adding an instance of your codec, and verify that it has the expected capabilities.</p>
+</li>
+<li><p class="first">Send a pull request to <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/tree/dev">https://github.com/miguelinux314/experiment-notebook/tree/dev</a></p>
+</li>
+</ul>
+</div></blockquote>
+<p>A list of currently available codec plugins and their capabilities is available at <a class="reference internal" href="#"><span class="doc">Defining new codecs</span></a>.
+Section <a class="reference internal" href="#creating-codec-plugins"><span class="std std-ref">4. Packing your codec as a plugin</span></a> of that document provides help on how to pack and publish your codec.</p>
 </div>
 </div>
 
