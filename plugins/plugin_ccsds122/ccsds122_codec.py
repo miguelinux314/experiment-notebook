@@ -30,7 +30,7 @@ class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCode
         assert wavelet_2d_type in ["Integer", "Float"]
         self.param_dict["wavelet_2d_type"] = wavelet_2d_type
         assert target_rate_bpppc is None or target_rate_bpppc > 0
-        self.param_dict["target_rate_bpppc"] = round(target_rate_bpppc, 4)
+        self.param_dict["target_rate_bpppc"] = round(target_rate_bpppc, 4) if target_rate_bpppc is not None else None
 
     def get_transform_params(self, original_file_info):
         """Return a string with the transformation params for each subclass.

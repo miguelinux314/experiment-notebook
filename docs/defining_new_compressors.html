@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -29,9 +29,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -39,7 +40,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Analyzing data" href="analyzing_data.html" />
-    <link rel="prev" title="Lossy Compression Experiment" href="lossy_compression_example.html" /> 
+    <link rel="prev" title="Using image compression plugins" href="image_compression_plugins.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -53,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <a href="contents.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -94,10 +95,12 @@
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using image compression plugins</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Defining new codecs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#lossless-codecs">1. Lossless codecs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lossy-and-near-lossless-codecs">2. Lossy and near lossless codecs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#executable-wrapper-codecs">3. Executable wrapper codecs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packing-your-codec-as-a-plugin">4. Packing your codec as a plugin</a></li>
 </ul>
 </li>
 </ul>
@@ -121,7 +124,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="contents.html">Experiment Notebook</a>
         
       </nav>
 
@@ -152,7 +155,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="image_compression.html">Image compression</a> &raquo;</li>
         
@@ -192,9 +195,9 @@ following example:</p>
   <span class="n">MAX_COMPRESSION_LEVEL</span> <span class="o">=</span> <span class="mi">9</span>
   <span class="n">DEFAULT_COMPRESSION_LEVEL</span> <span class="o">=</span> <span class="mi">5</span>
 
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compression_level</span><span class="o">=</span><span class="n">DEFAULT_COMPRESSION_LEVEL</span><span class="p">,</span> <span class="n">param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compression_level</span><span class="o">=</span><span class="n">DEFAULT_COMPRESSION_LEVEL</span><span class="p">,</span> <span class="n">param_dict</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
       <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">MIN_COMPRESSION_LEVEL</span> <span class="o">&lt;=</span> <span class="n">compression_level</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_COMPRESSION_LEVEL</span>
-      <span class="n">param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">param_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">param_dict</span>
+      <span class="n">param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">param_dict</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">param_dict</span>
       <span class="n">param_dict</span><span class="p">[</span><span class="s2">&quot;compression_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compression_level</span>
       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">param_dict</span><span class="o">=</span><span class="n">param_dict</span><span class="p">)</span>
       <span class="sd">&quot;&quot;&quot;Apply the LZ77 algorithm and Huffman coding to the file using zlib.</span>
@@ -206,14 +209,14 @@ following example:</p>
           <span class="n">compressed_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">original_file</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
                                 <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">[</span><span class="s2">&quot;compression_level&quot;</span><span class="p">]))</span>
 
-  <span class="k">def</span> <span class="nf">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">compressed_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">,</span> \
               <span class="nb">open</span><span class="p">(</span><span class="n">reconstructed_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">reconstructed_file</span><span class="p">:</span>
           <span class="n">reconstructed_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">compressed_file</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
 
   <span class="nd">@property</span>
   <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-      <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;lz77huffman_lvl</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;compression_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;lz77huffman_lvl{self.param_dict[&#39;compression_level&#39;]}&quot;</span>
 </pre></div>
 </div>
 <p>Further working examples are readily available in the
@@ -242,19 +245,44 @@ you need to type, the <a class="reference internal" href="api/enb.html#enb.icomp
       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">compressor_path</span><span class="o">=</span><span class="s2">&quot;cp&quot;</span><span class="p">,</span> <span class="n">decompressor_path</span><span class="o">=</span><span class="s2">&quot;cp&quot;</span><span class="p">)</span>
 
   <span class="k">def</span> <span class="nf">get_compression_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_path</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
-      <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">original_path</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">compressed_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+      <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;&#39;{original_path}&#39; &#39;{compressed_path}&#39;&quot;</span>
 
   <span class="k">def</span> <span class="nf">get_decompression_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
-      <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">compressed_path</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">reconstructed_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+      <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;&#39;{compressed_path}&#39; &#39;{reconstructed_path}&#39;&quot;</span>
 </pre></div>
 </div>
 <p>In this case, only <cite>get_compression_params</cite> and <cite>get_decompression_params</cite> need to be implemented</p>
 <p>The return value of these is a string with the parameters one would type after the binary path, e.g., in a bash console.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The return value of <cite>get_compression_params</cite> and <cite>get_decompression_params</cite> should not include the executable
+<p class="first admonition-title">Note</p>
+<p class="last">The return value of <cite>get_compression_params</cite> and <cite>get_decompression_params</cite> should not include the executable
 path itself, only the parameters.</p>
 </div>
+</div>
+<div class="section" id="packing-your-codec-as-a-plugin">
+<span id="creating-codec-plugins"></span><h2>4. Packing your codec as a plugin<a class="headerlink" href="#packing-your-codec-as-a-plugin" title="Permalink to this headline">¶</a></h2>
+<p>Once you have tested your codec, you might want to release it as a plugin so that other <cite>enb</cite> users can benefit from
+your development.
+To create your plugin and share it with the community,</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Put the script and any required binaries in a folder within <cite>plugins/</cite>.</p>
+</li>
+<li><p class="first">Add a <cite>__init__.py</cite> file to that folder, with imports such as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">my_module</span>
+</pre></div>
+</div>
+<p>if <cite>my_module.py</cite> is one of the modules you want to export.</p>
+</li>
+<li><p class="first">Modify <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/blob/dev/plugins/test_all_codecs/test_all_codecs.py">plugins/test_all_codecs/test_all_codecs.py</a>
+adding an instance of your codec, and verify that it has the expected capabilities.</p>
+</li>
+<li><p class="first">Send a pull request to <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/tree/dev">https://github.com/miguelinux314/experiment-notebook/tree/dev</a></p>
+</li>
+</ul>
+</div></blockquote>
+<p>A list of currently available codec plugins and their capabilities is available at <a class="reference internal" href="#"><span class="doc">Defining new codecs</span></a>.
+Section <a class="reference internal" href="#creating-codec-plugins"><span class="std std-ref">4. Packing your codec as a plugin</span></a> of that document provides help on how to pack and publish your codec.</p>
 </div>
 </div>
 
@@ -265,7 +293,7 @@ path itself, only the parameters.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="analyzing_data.html" class="btn btn-neutral float-right" title="Analyzing data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="lossy_compression_example.html" class="btn btn-neutral float-left" title="Lossy Compression Experiment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image_compression_plugins.html" class="btn btn-neutral float-left" title="Using image compression plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
