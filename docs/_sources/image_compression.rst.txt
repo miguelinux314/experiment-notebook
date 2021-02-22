@@ -13,4 +13,5 @@ create new compressors.
 
    lossless_compression_example
    lossy_compression_example
+   image_compression_plugins
    defining_new_compressors
