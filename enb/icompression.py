@@ -200,7 +200,6 @@ class WrapperCodec(AbstractCodec):
     :param param_dict: name-value mapping of the parameters to be used for compression
     :param output_invocation_dir: if not None, invocation strings are stored in this directory
       with name based on the codec and the image's full path.
-
     """
 
     def __init__(self, compressor_path, decompressor_path, param_dict=None, output_invocation_dir=None):
@@ -246,6 +245,9 @@ class WrapperCodec(AbstractCodec):
             compressed_path=compressed_path,
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
+        if options.verbose > 2:
+            print(f"[watch] invocation={invocation}")
+
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
             if options.verbose > 3:
