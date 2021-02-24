@@ -8,6 +8,7 @@ __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "02/02/2021"
 
 import sys
+import re
 import os
 import glob
 import subprocess
@@ -15,6 +16,8 @@ import filecmp
 import pandas as pd
 import tempfile
 import matplotlib.pyplot as plt
+import pandas.plotting as pdpt
+import collections
 
 from enb.config import get_options
 import enb.atable
@@ -32,7 +35,6 @@ from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
-
 
 if __name__ == '__main__':
     all_codecs = []
@@ -111,9 +113,10 @@ if __name__ == '__main__':
     all_families.append(zip_family)
 
     jpeg_xl_family = enb.aanalysis.TaskFamily(label="JPEG-XL")
-    for c in (plugin_jpeg_xl.jpegxl_codec.JPEG_XL(quality_0_to_100=100, compression_level= 7) for m in [0]):
+    for c in (plugin_jpeg_xl.jpegxl_codec.JPEG_XL(quality_0_to_100=100, compression_level=7) for m in [0]):
         all_codecs.append(c)
-        jpeg_xl_family.add_task(c.name, f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
+        jpeg_xl_family.add_task(c.name,
+                                f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
 
     label_by_group_name = dict()
@@ -124,15 +127,24 @@ if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
     exp = enb.icompression.LossyCompressionExperiment(codecs=all_codecs)
 
-    columns = ["codec_name"]
     target_dirs = sorted(glob.glob(os.path.join(os.path.dirname(__file__), "data", "*")))
+
     target_dir_names = [os.path.basename(d) for d in target_dirs]
+
+    columns = ["codec_name"]
     columns.extend(target_dir_names)
+    columns.extend(["min_lossless_bitdepth", "max_lossless_bitdepth"])
     df_capabilities = pd.DataFrame(columns=columns)
 
-    table_codecs = all_codecs if len(sys.argv) == 1 else \
-        [c for c in all_codecs if any(p.lower() in c.name.lower() for p in sys.argv[1:])]
+    args = [v for v in sys.argv[1:] if not v.startswith("-")]
+    if args:
+        table_codecs = [c for c in all_codecs if any(a.lower() in c.name.lower() for a in args)]
+    else:
+        table_codecs = all_codecs
     table_codecs = sorted(table_codecs, key=lambda c: c.label.lower())
+    min_lossless_bitdepth_by_name = collections.defaultdict(lambda: float("inf"))
+    max_lossless_bitdepth_by_name = collections.defaultdict(lambda: float("-inf"))
+
     for codec in table_codecs:
         data_dict = dict(codec_name=codec.label)
         if options.verbose:
@@ -148,7 +160,6 @@ if __name__ == '__main__':
                         tempfile.NamedTemporaryFile() as tmp_reconstructed:
                     state = "compressing"
                     try:
-
                         codec.compress(original_path=input_path,
                                        compressed_path=tmp_compressed.name,
                                        original_file_info=row_info)
@@ -162,6 +173,16 @@ if __name__ == '__main__':
                             else:
                                 data_dict[column_name] = "Lossy"
                             break
+                        else:
+                            match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
+                            signed = match.group(1) == "s"
+                            bits_per_sample = int(match.group(2))
+                            min_lossless_bitdepth_by_name[codec.label] = min(
+                                min_lossless_bitdepth_by_name[codec.label],
+                                bits_per_sample)
+                            max_lossless_bitdepth_by_name[codec.label] = max(
+                                max_lossless_bitdepth_by_name[codec.label],
+                                bits_per_sample)
                     except Exception as ex:
                         data_dict[column_name] = "Not available"
                         if options.verbose:
@@ -169,33 +190,85 @@ if __name__ == '__main__':
                         break
             else:
                 data_dict[column_name] = "Lossless"
+        data_dict["min_lossless_bitdepth"] = min_lossless_bitdepth_by_name[codec.name]
+        data_dict["max_lossless_bitdepth"] = max_lossless_bitdepth_by_name[codec.name]
         df_capabilities.loc[codec.label] = pd.Series(data_dict)
-        
-    print(f"[watch] df_capabilities={df_capabilities}")
-    
 
-    df_colors = df_capabilities.copy()
-    df_colors["codec_name"] = "#ffffff"
-    for d in target_dir_names:
-        df_colors[d] = df_capabilities[d].apply(
-            lambda x: "#55ff55" if x == "Lossless"
+    df_capabilities["lossless_range"] = df_capabilities["codec_name"].apply(
+        lambda name: f"{min_lossless_bitdepth_by_name[name]} "
+                     f"- {max_lossless_bitdepth_by_name[name]} "
+    )
+    del df_capabilities["min_lossless_bitdepth"]
+    del df_capabilities["max_lossless_bitdepth"]
+
+    import pprint
+
+    pprint.pprint(min_lossless_bitdepth_by_name)
+    pprint.pprint(max_lossless_bitdepth_by_name)
+
+    print(f"[watch] df_capabilities.iloc[0]={df_capabilities.iloc[0]}")
+    print(f"[watch] df_capabilities={df_capabilities}")
+
+    all_dir_names = list(target_dir_names)
+    all_target_dir_names = ["mono_u8be", "rgb_u8be", "multi_u8be",
+                            "mono_u16be", "rgb_u16be", "multi_u16be",
+                            "mono_s16be", "rgb_s16be", "multi_s16be",
+                            "codec_name",
+                            "lossless_range"]
+
+    all_column_names = [
+        "8bit Mono", "8bit RGB", "8bit Multi",
+        "16bit Mono", "16bit RGB", "16bit Multi",
+        "Sig. 16bit Mono", "Sig. 16bit RGB", "Sig. 16bit Multi",
+        "Lossless range"
+    ]
+
+    full_df = df_capabilities.copy()
+    for i, group_name in enumerate(["u8be", "u16be", "s16be"]):
+        old_col_names = all_target_dir_names[i * 3:(i + 1) * 3] + all_target_dir_names[-1:]
+        new_col_names = all_column_names[i * 3:(i + 1) * 3] + all_column_names[-1:]
+        df_capabilities = full_df.copy()
+
+        df_colors = df_capabilities.copy()
+        df_colors["codec_name"] = "#ffffff"
+        for d in df_capabilities.columns:
+            df_colors[d] = df_capabilities[d].apply(
+                lambda x: "#55ff55" if x == "Lossless"
                 else "#ff5555" if x == "Not lossless"
                 else "#6666ff" if x == "Lossy"
                 else "#fbf3b5")
 
+        for old, new in zip(old_col_names, new_col_names):
+            if old in df_capabilities:
+                df_capabilities[new] = df_capabilities[old]
+                del df_capabilities[old]
+            if old in df_colors:
+                df_colors[new] = df_colors[old]
+                del df_colors[old]
 
-    import pandas.plotting as pdpt
-    plt.figure()
-    fig, ax = plt.subplots(1, 1)
-    ax.axis("off")
+        print(f"[watch] new_col_names={new_col_names}")
 
-    df_capabilities.set_index("codec_name")
-    table = pdpt.table(ax, df_capabilities[target_dir_names],
-                       loc="center", cellColours=df_colors[target_dir_names].values, cellLoc="center")
-    plt.savefig("codec_availability.pdf", bbox_inches="tight")
-    plt.close()
-    invocation = "convert -density 400 codec_availability.pdf -trim codec_availability.png"
-    status, output = subprocess.getstatusoutput(invocation)
-    if status != 0:
-        raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-            status, invocation, output))
+        df_capabilities = df_capabilities[new_col_names + ["codec_name"]]
+        df_colors = df_colors[[*new_col_names]]
+
+        plt.figure()
+        fig, ax = plt.subplots(1, 1)
+        ax.axis("off")
+
+        print(f"[watch] df_capabilities.columns={df_capabilities.columns}")
+
+        df_capabilities.set_index("codec_name")
+        print(f"[watch] column_names={new_col_names}")
+
+        table = pdpt.table(ax, df_capabilities[new_col_names],
+                           loc="center",
+                           cellColours=df_colors[new_col_names].values,
+                           cellLoc="center")
+        pdf_name = f"codec_availability_{group_name}.pdf"
+        plt.savefig(pdf_name, bbox_inches="tight")
+        plt.close()
+        invocation = f"convert -density 400 {pdf_name} -trim {pdf_name.replace('.pdf', '.png')}"
+        status, output = subprocess.getstatusoutput(invocation)
+        if status != 0:
+            raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                status, invocation, output))

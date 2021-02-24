@@ -120,5 +120,5 @@ To create your plugin and share it with the community,
 
     - Send a pull request to https://github.com/miguelinux314/experiment-notebook/tree/dev
 
-A list of currently available codec plugins and their capabilities is available at :doc:`defining_new_compressors`.
+A list of currently available codec plugins and their capabilities is available at :doc:`image_compression_plugins`.
 Section :ref:`creating_codec_plugins` of that document provides help on how to pack and publish your codec.
