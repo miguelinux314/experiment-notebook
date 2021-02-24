@@ -40,4 +40,4 @@ class JPEG_XL(icompression.LosslessCodec,icompression.PNGWrapperCodec):
 
     @property
     def label(self):
-        return f"JPEG_XL - Quality :  {self.param_dict['quality_0_to_100']} Compression Level : {self.param_dict['compression_level']} "
+        return f"JPEG_XL"
