@@ -370,31 +370,44 @@ class PNGWrapperCodec(WrapperCodec):
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
             decompression_results = super().decompress(
                 compressed_path=compressed_path, reconstructed_path=tmp_file.name)
+
+            invocation = f"file {tmp_file.name}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
             img = imageio.imread(tmp_file.name, "png")
             img.swapaxes(0, 1)
             assert len(img.shape) in [2, 3, 4]
             if len(img.shape) == 2:
                 img = np.expand_dims(img, axis=2)
-            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path)
+
+            dtype = ">"
+            dtype += "i" if original_file_info["signed"] else "u"
+            dtype += f"{original_file_info['bytes_per_sample']}"
+
+            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path, dtype=dtype)
 
             dr = self.decompression_results_from_paths(
                 compressed_path=compressed_path, reconstructed_path=reconstructed_path)
             dr.decompression_time_seconds = decompression_results.decompression_time_seconds
 
+
 class PGMWrapperCodec(WrapperCodec):
     """Raw images are coded into PNG before compression with the wrapper,
     and PNG is decoded to raw after decompression.
     """
+
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         assert original_file_info["component_count"] == 1, "PGM only supported for 1-component images"
-        assert original_file_info["bytes_per_sample"] in [1,2], "PGM only supported for 8 or 16 bit images"
+        assert original_file_info["bytes_per_sample"] in [1, 2], "PGM only supported for 8 or 16 bit images"
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
 
         with tempfile.NamedTemporaryFile(suffix=".pgm", mode="wb") as tmp_file:
-            imageio.imwrite(tmp_file.name, img)
+            numpngw.imwrite(tmp_file.name, img)
             with open(tmp_file, "rb") as raw_file:
-                 contents = raw_file.read()
+                contents = raw_file.read()
             os.remove(tmp_file)
             with open(tmp_file, "wb") as pgm_file:
                 tmp_file.write(bytes(f"P6\n"
@@ -718,7 +731,7 @@ class CompressionExperiment(experiment.Experiment):
                     if options.verbose > 1:
                         print(f"[R]endering {rendered_path}")
 
-                    imageio.imwrite(rendered_path, array.swapaxes(0, 1))
+                    numpngw.imwrite(rendered_path, array.swapaxes(0, 1))
 
             else:
                 full_array = isets.load_array_bsq(
@@ -739,7 +752,7 @@ class CompressionExperiment(experiment.Experiment):
                         array = np.round((255 * (array - cmin) / (cmax - cmin))).astype("uint8")
                         if options.verbose > 1:
                             print(f"[R]endering {rendered_path}")
-                        imageio.imwrite(rendered_path, array)
+                        numpngw.imwrite(rendered_path, array)
 
         return row
 
