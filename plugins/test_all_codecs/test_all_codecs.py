@@ -27,6 +27,7 @@ from plugins import plugin_ccsds122
 from plugins import plugin_fapec
 from plugins import plugin_flif
 from plugins import plugin_fse
+from plugins import plugin_huffman
 from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
@@ -80,6 +81,12 @@ if __name__ == '__main__':
         fse_family.add_task(c.name, f"{c.label}")
     all_families.append(fse_family)
 
+    huffman_family = enb.aanalysis.TaskFamily(label="Huffman")
+    for c in (plugin_huffman.huffman_codec.Huffman(),):
+        all_codecs.append(c)
+        huffman_family.add_task(c.name, f"{c.label}")
+    all_families.append(huffman_family)
+
     lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
     for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
               for ec in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID,
@@ -122,7 +129,6 @@ if __name__ == '__main__':
     target_dir_names = [os.path.basename(d) for d in target_dirs]
     columns.extend(target_dir_names)
     df_capabilities = pd.DataFrame(columns=columns)
-    print(f"[watch] columns={columns}")
 
     table_codecs = all_codecs if len(sys.argv) == 1 else \
         [c for c in all_codecs if any(p.lower() in c.name.lower() for p in sys.argv[1:])]
