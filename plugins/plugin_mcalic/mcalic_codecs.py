@@ -23,7 +23,7 @@ from enb import tarlite
 options = get_options()
 
 
-class MCALIC_Magli(icompression.NearLosslessCodec, icompression.WrapperCodec):
+class MCALIC_Magli(icompression.LosslessCodec, icompression.NearLosslessCodec, icompression.WrapperCodec):
     FORMAT_BSQ, FORMAT_BIL = range(2)
     default_format = FORMAT_BSQ
 
@@ -112,12 +112,17 @@ class MCALIC_Magli(icompression.NearLosslessCodec, icompression.WrapperCodec):
         """
         assert original_file_info["bytes_per_sample"] == 2, \
             f"This implementation of M-CALIC ({self.compressor_path}) only supports 16bpp"
+        assert original_file_info["component_count"] > 1, \
+            f"This implementation of M-CALIC ({self.compressor_path}) only supports images with more than one component"
+
+
         with tempfile.NamedTemporaryFile(
                 dir=options.base_tmp_dir, prefix=f"bil_le_{os.path.basename(original_path)}") as bil_le_file:
             # M-Calic implementation requires little endian, unsigned 16bpp BIL format
             original_dtype = isets.iproperties_row_to_numpy_dtype(image_properties_row=original_file_info)
             img = np.fromfile(original_path, dtype=original_dtype).reshape(
                 original_file_info["component_count"], original_file_info["height"], original_file_info["width"])
+            
 
             offset = None
             if original_file_info["signed"]:
@@ -145,7 +150,7 @@ class MCALIC_Magli(icompression.NearLosslessCodec, icompression.WrapperCodec):
                                                            original_file_info=original_file_info)
                     tarlite.TarliteWriter(initial_input_paths=[si_file.name, tmp_compressed_file.name]).write(
                         compressed_path)
-                    compression_results.original_path=original_path
+                    compression_results.original_path = original_path
                     compression_results.compressed_path = compressed_path
                     return compression_results
             else:
@@ -156,9 +161,10 @@ class MCALIC_Magli(icompression.NearLosslessCodec, icompression.WrapperCodec):
                 return compression_results
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"{original_path} {compressed_path} " \
-               f"{original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
-               f"16 {self.param_dict['max_error']} {self.param_dict['data_format']}"
+        s = f"{original_path} {compressed_path} " \
+            f"{original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
+            f"{8 * original_file_info['bytes_per_sample']} {self.param_dict['max_error']} {self.param_dict['data_format']}"
+        return s
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         if original_file_info["width"] <= self.max_dimension_size and original_file_info[
@@ -303,7 +309,7 @@ class MCALIC_Magli(icompression.NearLosslessCodec, icompression.WrapperCodec):
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"{reconstructed_path} {compressed_path} " \
                f"{original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
-               f"16 {self.param_dict['max_error']} {self.param_dict['data_format']}"
+               f"{8*original_file_info['bytes_per_sample']} {self.param_dict['max_error']} {self.param_dict['data_format']}"
 
     @property
     def label(self):
