@@ -16,10 +16,12 @@ You can read the documentation and browse the code at https://miguelinux314.gith
 You are welcome to submit your extensions via a pull request to the `dev` branch.
 
 Main developer:
-	Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>
+
+	- Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>
 
 Contributors:
-	Ester Jara <ester.jara@uab.cat>
-	Natàlia Blasco <natalia.blasco@uab.cat>
-	Artur Llabrés <artur.llabres@uab.cat>
-	Ashwin Kumar Gururajan <ashwin.gururajan@uab.cat>
+
+	- Ester Jara <ester.jara@uab.cat>
+	- Natàlia Blasco <natalia.blasco@uab.cat>
+	- Artur Llabrés <artur.llabres@uab.cat>
+	- Ashwin Kumar Gururajan <ashwin.gururajan@uab.cat>
