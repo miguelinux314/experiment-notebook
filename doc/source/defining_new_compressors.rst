@@ -96,3 +96,29 @@ The return value of these is a string with the parameters one would type after t
 .. note::
   The return value of `get_compression_params` and `get_decompression_params` should not include the executable
   path itself, only the parameters.
+
+.. _creating_codec_plugins:
+
+4. Packing your codec as a plugin
+---------------------------------
+Once you have tested your codec, you might want to release it as a plugin so that other `enb` users can benefit from
+your development.
+To create your plugin and share it with the community,
+
+    - Put the script and any required binaries in a folder within `plugins/`.
+
+    - Add a `__init__.py` file to that folder, with imports such as
+
+      .. code-block:: python
+
+          from . import my_module
+
+      if `my_module.py` is one of the modules you want to export.
+
+    - Modify `plugins/test_all_codecs/test_all_codecs.py <https://github.com/miguelinux314/experiment-notebook/blob/dev/plugins/test_all_codecs/test_all_codecs.py>`_
+      adding an instance of your codec, and verify that it has the expected capabilities.
+
+    - Send a pull request to https://github.com/miguelinux314/experiment-notebook/tree/dev
+
+A list of currently available codec plugins and their capabilities is available at :doc:`image_compression_plugins`.
+Section :ref:`creating_codec_plugins` of that document provides help on how to pack and publish your codec.
