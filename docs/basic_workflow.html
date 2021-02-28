@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -29,9 +29,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -53,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <a href="contents.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -117,7 +118,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="contents.html">Experiment Notebook</a>
         
       </nav>
 
@@ -148,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Basic workflow</li>
     
@@ -177,7 +178,7 @@ You can find the lastest version of this example at the
 folder of the project.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="_images/general_structure.png"><img alt="Basic steps when using ``enb``" src="_images/general_structure.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">Basic steps when using <code class="docutils literal notranslate"><span class="pre">enb</span></code>.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Basic steps when using <code class="docutils literal notranslate"><span class="pre">enb</span></code>.</span></p>
 </div>
 <p>The basic workflow when using <code class="docutils literal notranslate"><span class="pre">enb</span></code> can be summarized in three key steps:</p>
 <div class="section" id="data-curation">
@@ -189,8 +190,8 @@ of your test images, if you work with genetic sequences, each file could
 be one sequence, etc.</p>
 <blockquote>
 <div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It is best practice to separate data samples from
+<p class="first admonition-title">Note</p>
+<p class="last">It is best practice to separate data samples from
 test parameters (e.g., arguments to the algorithm(s) used to process
 each of your samples.</p>
 </div>
@@ -218,7 +219,7 @@ each of your samples.</p>
 <p>The second step consists in defining the function(s) that produce the desired results.
 The easiest way is to extend the <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class, like for example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">WikiAnalysis</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
- <span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="s2">&quot;line_count&quot;</span><span class="p">)</span>
+ <span class="nd">@enb.atable.column_function</span><span class="p">(</span><span class="s2">&quot;line_count&quot;</span><span class="p">)</span>
  <span class="k">def</span> <span class="nf">set_line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
          <span class="n">row</span><span class="p">[</span><span class="s2">&quot;line_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">input_file</span><span class="p">)</span>
@@ -227,29 +228,29 @@ The easiest way is to extend the <a class="reference internal" href="api/enb.htm
 <p>In general, this can be done in two simple steps:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Define a method <code class="docutils literal notranslate"><span class="pre">f</span></code> with interface <code class="docutils literal notranslate"><span class="pre">f(self,</span> <span class="pre">file_path,</span> <span class="pre">row)</span></code>. The <code class="docutils literal notranslate"><span class="pre">file_path</span></code>
+<li>Define a method <code class="docutils literal notranslate"><span class="pre">f</span></code> with interface <code class="docutils literal notranslate"><span class="pre">f(self,</span> <span class="pre">file_path,</span> <span class="pre">row)</span></code>. The <code class="docutils literal notranslate"><span class="pre">file_path</span></code>
 argument is the path to one test sample (e.g., <code class="docutils literal notranslate"><span class="pre">./data/wiki/s_beauvoir.txt</span></code>.
 The <code class="docutils literal notranslate"><span class="pre">row</span></code> argument is a dict-like instance, into which the desired result (for this input sample)
-is to be stored.</p></li>
-<li><p>Decorate the method with <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function(column_name)</span></code>, where
-<code class="docutils literal notranslate"><span class="pre">column_name</span></code> is a unique name that identifies the result produced by the method.</p></li>
+is to be stored.</li>
+<li>Decorate the method with <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function(column_name)</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">column_name</span></code> is a unique name that identifies the result produced by the method.</li>
 </ul>
 </div></blockquote>
 <p>Once data are available and our <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass is defined,
-a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+693.ga427887c1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
+a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+818.gdec7d213fb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance containing results can be obtained as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">WikiAnalysis</span><span class="p">(</span><span class="n">csv_support_path</span><span class="o">=</span><span class="s2">&quot;persistence_basic_workflow.csv&quot;</span><span class="p">)</span>
 <span class="n">result_df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">sample_paths</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">csv_support_path</span></code> argument is the file used to store the <a class="reference external" href="_static/persistence_basic_workflow.csv">raw results</a>.
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">csv_support_path</span></code> argument is the file used to store the <a class="reference external" href="_static/persistence_basic_workflow.csv">raw results</a>.
 This avoids re-running the <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function</span></code>-decorated functions more than once.</p>
 </div>
 </div>
 <div class="section" id="data-reporting">
 <h2><strong>3 - Data reporting</strong><a class="headerlink" href="#data-reporting" title="Permalink to this headline">¶</a></h2>
-<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+693.ga427887c1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
+<p>Produced results are made available as <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+818.gdec7d213fb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances.
 The <code class="docutils literal notranslate"><span class="pre">enb</span></code> library provides a few automatic tools to analyze and report
 one or more data columns. You can find gallery of plotting and analysis tools available in <cite>enb</cite>
 in the <a class="reference internal" href="analyzer_gallery.html"><span class="doc">Analyzer gallery</span></a>.</p>
@@ -268,19 +269,19 @@ the following code can be used:</p>
 </div>
 <p>You can download here <a class="reference external" href="_static/distribution_line_count.pdf">the resulting figure</a>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+693.ga427887c1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_csv_file</span></code> generates a CSV file with basic statistics (min, max, average, std) for the target columns.</p></li>
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+818.gdec7d213fb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">output_csv_file</span></code> generates a CSV file with basic statistics (min, max, average, std) for the target columns.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="it-s-good-to-know">
 <h2><strong>It’s good to know…</strong><a class="headerlink" href="#it-s-good-to-know" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>You can add as many columns as desired (even after running the experiments). Consider the second
+<li><p class="first">You can add as many columns as desired (even after running the experiments). Consider the second
 method for the <code class="docutils literal notranslate"><span class="pre">WikiAnalysis</span></code> class above:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb.atable.column_function</span><span class="p">(</span>
     <span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;word_count&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Word count&quot;</span><span class="p">,</span> <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">set_line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
@@ -288,14 +289,14 @@ method for the <code class="docutils literal notranslate"><span class="pre">Wiki
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">enb.atable.column_function</span></code> decorator accepts <code class="docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code>
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">enb.atable.column_function</span></code> decorator accepts <code class="docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code>
 instances. These column properties describe not only the unique name for the data
-column, but also other information useful for reporting the obtained results.</p></li>
-<li><p>The <cite>_column_name</cite> global is defined whenever a <code class="docutils literal notranslate"><span class="pre">column_function</span></code>-decorated method
+column, but also other information useful for reporting the obtained results.</li>
+<li>The <cite>_column_name</cite> global is defined whenever a <code class="docutils literal notranslate"><span class="pre">column_function</span></code>-decorated method
 is called, containing the unique column name being computed. The use of this global
-is totally optional, but enables less error-prone column renaming.</p></li>
+is totally optional, but enables less error-prone column renaming.</li>
 </ul>
 </div>
 </li>
@@ -304,9 +305,9 @@ is totally optional, but enables less error-prone column renaming.</p></li>
 <div class="line"><br /></div>
 </div>
 <ul>
-<li><p>You can analyze the distribution of one column, while grouping based on another. For instance,
+<li><p class="first">You can analyze the distribution of one column, while grouping based on another. For instance,
 if the <code class="docutils literal notranslate"><span class="pre">status</span></code> column is defined in the <code class="docutils literal notranslate"><span class="pre">WikiAnalysis</span></code> class of our example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@enb.atable.column_function</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">set_dead_person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
   <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
      <span class="n">row</span><span class="p">[</span><span class="n">_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dead&quot;</span> <span class="k">if</span> <span class="s2">&quot;death_place&quot;</span> <span class="ow">in</span> <span class="n">input_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;alive&quot;</span>
