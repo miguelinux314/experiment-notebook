@@ -2,6 +2,9 @@ plugin HEVC H256
 
 Download the code of the executables at https://vcgit.hhi.fraunhofer.de/jvet/HM
 
+Note: If you want to work with 16 bit images use:
+   cmake -DCMAKE_BUILD_TYPE=Release -DHIGH_BITDEPTH=ON
+
 Copyright (c) 2010-2020, ITU/ISO/IEC
 All rights reserved.
 
