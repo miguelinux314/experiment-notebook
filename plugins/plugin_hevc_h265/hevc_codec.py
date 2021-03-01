@@ -6,7 +6,7 @@ from enb.config import get_options
 options = get_options()
 
 class HEVC_H265(icompression.WrapperCodec, icompression.LossyCodec):
-    def __init__(self, config_path="hevc_lossless.cfg"):
+    def __init__(self, config_path):
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "TAppEncoderStatic"),
