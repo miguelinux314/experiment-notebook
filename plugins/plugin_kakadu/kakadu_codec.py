@@ -14,10 +14,10 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
 			decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
 			param_dict=None, output_invocation_dir=None)
 
-		self.HT = HT
 		self.MCT = MCT
-		self.param_dict['HT'] = self.HT
+		self.HT = HT
 		self.param_dict['MCT'] = self.MCT
+		self.param_dict['HT'] = self.HT
 
 
 	def get_compression_params(self, original_path, compressed_path, original_file_info):
