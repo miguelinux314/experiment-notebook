@@ -8,16 +8,16 @@ import shutil
 options = get_options()
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
-	def __init__(self, MCT=False, HT=False):
+	def __init__(self, HT=False, MCT=False):
 		icompression.WrapperCodec.__init__(self,
 			compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
 			decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
 			param_dict=None, output_invocation_dir=None)
 
-		self.MCT = MCT
 		self.HT = HT
-		self.param_dict['MCT'] = self.MCT
+		self.MCT = MCT
 		self.param_dict['HT'] = self.HT
+		self.param_dict['MCT'] = self.MCT
 
 
 	def get_compression_params(self, original_path, compressed_path, original_file_info):
@@ -27,7 +27,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
 		else:
 			return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
 				f"-o {compressed_path} -no_info -full -no_weights Corder=LRCP Clayers={original_file_info['component_count']} Creversible=yes Cycc=no " \
-				f"Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={8 if original_file_info['bytes_per_sample'] == 1 else 16} " \
+				f"Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample']*8} " \
 				f"Nsigned={'yes' if original_file_info['signed'] else 'no'} {'Cmodes=HT' if self.HT == True else ''}"
 
 	def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
