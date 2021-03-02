@@ -62,10 +62,6 @@ class JPEG2000(icompression.WrapperCodec, icompression.LosslessCodec):
 		return compression_results
 
 	def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-		'''temp_path_1 = tempfile.NamedTemporaryFile(suffix=".raw").name
-		temp_path_2 = tempfile.NamedTemporaryFile(suffix=".raw").name
-		temp_path_3 = tempfile.NamedTemporaryFile(suffix=".raw").name
-		temp_path = f"{temp_path_1},{temp_path_2},{temp_path_3}"'''
 		temp_list = []
 		temp_path = f""
 		for i in range(0, original_file_info['component_count']):
