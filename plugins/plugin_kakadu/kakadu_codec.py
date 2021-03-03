@@ -17,7 +17,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
         assert isinstance(HT, bool), "HT must be a boolean (True/False)"
         self.HT = HT
         
-        assert Clevels in range(0,6), "Clevels should be an integer between 0 and 5"
+        assert Clevels in range(0,33), "Clevels should be an integer between 0 and 33"
         self.Clevels=Clevels
         
         self.param_dict['HT'] = self.HT
@@ -135,7 +135,7 @@ class Kakadu_MCT(Kakadu):
         assert isinstance(HT, bool), "HT must be a boolean (True/False)"
         self.HT = HT
         
-        assert Clevels in range(0,6), "Clevels should be an integer between 0 and 5"
+        assert Clevels in range(0,33), "Clevels should be an integer between 0 and 33"
         self.Clevels=Clevels
         
         self.param_dict['HT'] = self.HT
