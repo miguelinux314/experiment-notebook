@@ -36,11 +36,12 @@ from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
 from plugins import plugin_hevc_h265
+from plugins import plugin_kakadu
 
 if __name__ == '__main__':
     all_codecs = []
     all_families = []
-
+    
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
     for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=0) for m in [0]):
         all_codecs.append(c)
@@ -119,6 +120,12 @@ if __name__ == '__main__':
         jpeg_xl_family.add_task(c.name,
                                 f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
+                                
+    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(HT=ht) for ht in [False, True]):
+        all_codecs.append(c)
+        kakadu_family.add_task(c.name, f"{c.label} PAE {c.param_dict['HT']} {c.param_dict['Clevels']}")
+    all_families.append(kakadu_family)
 
     label_by_group_name = dict()
     for family in all_families:
