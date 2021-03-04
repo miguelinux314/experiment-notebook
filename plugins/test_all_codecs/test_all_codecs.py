@@ -35,8 +35,8 @@ from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
-from plugins import plugin_kakadu
 from plugins import plugin_hevc_h265
+from plugins import plugin_kakadu
 
 if __name__ == '__main__':
     all_codecs = []
