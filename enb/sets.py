@@ -13,6 +13,7 @@ to know what files the experiment should be run on.
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "18/09/2019"
 
+import sys
 import os
 import glob
 import hashlib
@@ -42,6 +43,13 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
       for recursively. If None, options.base_dataset_dir is used instead.
     """
     base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
+    if base_dataset_dir is None:
+        if options.verbose > 1:
+            print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
+        return [sys.argv[0]]
+
+
+
     assert os.path.isdir(base_dataset_dir), \
         f"Nonexistent dataset dir {base_dataset_dir}"
     sorted_path_list = sorted(
