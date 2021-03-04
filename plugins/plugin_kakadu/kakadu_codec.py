@@ -126,12 +126,12 @@ class Kakadu_MCT(Kakadu):
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
-               f"-o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.Clevels} Clayers={original_file_info['component_count']} " \
+               f"-o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.param_dic['Clevels']} Clayers={original_file_info['component_count']} " \
                f"Creversible=yes Cycc=no Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} Sprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} Mcomponents={original_file_info['component_count']} " \
                f"Mstage_inputs:I1=\\{{0,{original_file_info['component_count']-1}\\}} Mstage_outputs:I1=\\{{0,{original_file_info['component_count']-1}\\}} Mstage_collections:I1=\\{{{original_file_info['component_count']},{original_file_info['component_count']}\\}} " \
-               f"Mstage_xforms:I1=\\{{DWT,1,4,0,0\\}} Mvector_size:I4={original_file_info['component_count']} Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1 {'Cmodes=HT' if self.HT == True else ''}"
+               f"Mstage_xforms:I1=\\{{DWT,1,4,0,0\\}} Mvector_size:I4={original_file_info['component_count']} Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1 {'Cmodes=HT' if self.param_dic['HT'] == True else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
