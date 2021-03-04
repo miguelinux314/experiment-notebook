@@ -5,7 +5,7 @@ from enb.config import get_options
 
 options = get_options()
 
-class HEVC_H265(icompression.WrapperCodec, icompression.LosslessCodec):
+class HEVC_H265_lossless(icompression.WrapperCodec, icompression.LosslessCodec):
     def __init__(self, config_path, geometry=400):
         icompression.WrapperCodec.__init__(
             self,
@@ -19,7 +19,7 @@ class HEVC_H265(icompression.WrapperCodec, icompression.LosslessCodec):
         return f"-i {original_path} -c {self.config_path} -b {compressed_path} -wdt {original_file_info['width']} " \
                f"-hgt {original_file_info['height']} -f {original_file_info['component_count']} " \
                f"-cf {self.param_dict['geometry']} --InputChromaFormat={self.param_dict['geometry']} " \
-               f"--InputBitDepth={8*original_file_info['bytes_per_sample']}"
+               f"--InputBitDepth={8*original_file_info['bytes_per_sample']} -fr 1"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-b {compressed_path} -o {reconstructed_path} -d {8*original_file_info['bytes_per_sample']}"

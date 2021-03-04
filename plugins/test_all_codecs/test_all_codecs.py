@@ -35,6 +35,7 @@ from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
+from plugins import plugin_hevc_h265
 
 if __name__ == '__main__':
     all_codecs = []
@@ -46,19 +47,19 @@ if __name__ == '__main__':
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
-    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in [0]):
-        all_codecs.append(c)
-        mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
-    all_families.append(mcalic_family)
+    #mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
+    #for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in [0]):
+    #    all_codecs.append(c)
+    #    mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
+    #all_families.append(mcalic_family)
 
-    ccsds122_family = enb.aanalysis.TaskFamily(label="CCSDS 122")
-    for c in (plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
-              plugin_ccsds122.ccsds122_codec.MHDC_ID(),
-              plugin_ccsds122.ccsds122_codec.MHDC_POT()):
-        all_codecs.append(c)
-        ccsds122_family.add_task(c.name, f"{c.label}")
-    all_families.append(ccsds122_family)
+    #ccsds122_family = enb.aanalysis.TaskFamily(label="CCSDS 122")
+    #for c in (plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
+    #          plugin_ccsds122.ccsds122_codec.MHDC_ID(),
+    #          plugin_ccsds122.ccsds122_codec.MHDC_POT()):
+    #    all_codecs.append(c)
+    #    ccsds122_family.add_task(c.name, f"{c.label}")
+    #all_families.append(ccsds122_family)
 
     # fapec_family = enb.aanalysis.TaskFamily(label="FAPEC")
     # for c in (plugin_fapec.fapec_codec.FAPEC_LP(),
@@ -89,14 +90,14 @@ if __name__ == '__main__':
         huffman_family.add_task(c.name, f"{c.label}")
     all_families.append(huffman_family)
 
-    lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
-    for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
-              for ec in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID,
-                         plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE,
-                         plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE)):
-        all_codecs.append(c)
-        lcnl_family.add_task(c.name, f"{c.label}")
-    all_families.append(lcnl_family)
+    #lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
+    #for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
+    #          for ec in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID,
+    #                     plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE,
+    #                     plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE)):
+    #    all_codecs.append(c)
+    #    lcnl_family.add_task(c.name, f"{c.label}")
+    #all_families.append(lcnl_family)
 
     marlin_family = enb.aanalysis.TaskFamily(label="ImageMarlin")
     for c in (plugin_marlin.marlin_codec.ImageMarlin(),):
@@ -118,6 +119,12 @@ if __name__ == '__main__':
         jpeg_xl_family.add_task(c.name,
                                 f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
+
+    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
+    for c in (plugin_hevc_h265.hevc_codec.HEVC_H265_lossless("./hevc_lossless.cfg", geometry=400),):
+        all_codecs.append(c)
+        hevc_family.add_task(c.name, f"{c.label}")
+    all_families.append(hevc_family)
 
     label_by_group_name = dict()
     for family in all_families:
