@@ -30,6 +30,7 @@ from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
+from plugins import plugin_hevc_h265
 
 
 if __name__ == '__main__':
