@@ -25,3 +25,5 @@ Contributors:
 	- Natàlia Blasco <natalia.blasco@uab.cat>
 	- Artur Llabrés <artur.llabres@uab.cat>
 	- Ashwin Kumar Gururajan <ashwin.gururajan@uab.cat>
+
+See CHANGELOG.md for a list of recent changes
