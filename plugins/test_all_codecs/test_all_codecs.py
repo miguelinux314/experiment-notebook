@@ -18,6 +18,7 @@ import tempfile
 import matplotlib.pyplot as plt
 import pandas.plotting as pdpt
 import collections
+import shutil
 
 from enb.config import get_options
 import enb.atable
@@ -118,20 +119,23 @@ if __name__ == '__main__':
     for c in (plugin_jpeg_xl.jpegxl_codec.JPEG_XL(quality_0_to_100=100, compression_level=7) for m in [0]):
         all_codecs.append(c)
         jpeg_xl_family.add_task(c.name,
-                                f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
+                                f"{c.label} {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
-                                
-    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu(HT=ht) for ht in [False, True]):
+
+    for ht in [False]: # ht=True does not work for now
+        kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}")
+        c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht)
         all_codecs.append(c)
-        kakadu_family.add_task(c.name, f"{c.label} PAE {c.param_dict['HT']} {c.param_dict['Clevels']}")
-    all_families.append(kakadu_family)
-                               
-    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu_MCT")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(HT=ht) for ht in [False, True]):
+        kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}",
+                               f"{c.label} HT {c.param_dict['ht']}")
+        all_families.append(kakadu_family)
+
+        kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}")
+        c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht)
         all_codecs.append(c)
-        kakadu_family.add_task(c.name, f"{c.label} PAE {c.param_dict['HT']} {c.param_dict['Clevels']}")
-    all_families.append(kakadu_family)                         
+        kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}",
+                                   f"{c.label} HT {c.param_dict['ht']}")
+        all_families.append(kakadu_mct_family)
 
     label_by_group_name = dict()
     for family in all_families:
@@ -186,7 +190,12 @@ if __name__ == '__main__':
                                 data_dict[column_name] = "Not lossless"
                             else:
                                 data_dict[column_name] = "Lossy"
+                            
+                            print("[W]arning! not lossless!")
+
                             break
+
+
                         else:
                             match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
                             signed = match.group(1) == "s"
@@ -197,6 +206,9 @@ if __name__ == '__main__':
                             max_lossless_bitdepth_by_name[codec.label] = max(
                                 max_lossless_bitdepth_by_name[codec.label],
                                 bits_per_sample)
+
+                            if options.verbose > 2:
+                                print("Losless!")
                     except Exception as ex:
                         data_dict[column_name] = "Not available"
                         if options.verbose:
@@ -215,8 +227,9 @@ if __name__ == '__main__':
     del df_capabilities["min_lossless_bitdepth"]
     del df_capabilities["max_lossless_bitdepth"]
 
-    import pprint
+    df_capabilities.to_csv("full_df_capabilitites.csv")
 
+    import pprint
     pprint.pprint(min_lossless_bitdepth_by_name)
     pprint.pprint(max_lossless_bitdepth_by_name)
 
