@@ -238,7 +238,8 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
       as a file path, open as determined by the mode parameter.
     :param mode: if file_or_path is a path, the output file is opened in this mode
     :param dtype: if not None, the array is casted to this type before dumping
-
+    :param force_big_endian: if True, a copy of the array is made and its bytes are swapped before outputting
+      data to file. This parameter is ignored if dtype is provided.
     """
     try:
         assert not file_or_path.closed, f"Cannot dump to a closed file"
@@ -247,9 +248,10 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
         file_or_path = open(file_or_path, mode)
         open_here = True
 
-    array = array.swapaxes(0, 2)
     if dtype is not None and array.dtype != dtype:
         array = array.astype(dtype)
+
+    array = array.swapaxes(0, 2)
     array.tofile(file_or_path)
 
     if open_here:
