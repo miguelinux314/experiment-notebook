@@ -1,4 +1,6 @@
 import os
+import sys
+import subprocess
 import tempfile
 from enb import icompression
 from enb.config import get_options
@@ -6,62 +8,44 @@ from enb import tcall
 
 options = get_options()
 
+
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
-    def __init__(self, HT=False, Clevels=5):
-        assert isinstance(HT, bool), "HT must be a boolean (True/False)"
-        assert Clevels in range(0,33), "Clevels should be an integer between 0 and 33"
-        
+    """TODO: add docstring for the classes, the module and non-inherited methods.
+    """
+
+    def __init__(self, ht=False, spatial_dwt_levels=5, lossless=True):
+        assert isinstance(ht, bool), "HT must be a boolean (True/False)"
+        if ht:
+            raise Exception("License does not allow the use of HT")
+
+        assert spatial_dwt_levels in range(0, 34)
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
             decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
-            param_dict={'HT':HT,'Clevels':Clevels}, output_invocation_dir=None)
+            param_dict=dict(
+                ht=ht,
+                spatial_dwt_levels=spatial_dwt_levels,
+                lossless=lossless))
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width']*original_file_info['height']*original_file_info['bytes_per_sample']}" \
-               f" -o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.param_dict['Clevels']} Clayers={original_file_info['component_count']} Creversible=yes Cycc=no " \
-               f"Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample']*8} " \
-               f"Nsigned={'yes' if original_file_info['signed'] else 'no'} {'Cmodes=HT' if self.param_dict['HT']==True else ''}"
+        return f"-i {original_path}*{original_file_info['component_count']}" \
+               f"@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
+               f"-o {compressed_path} -no_info -full -no_weights " \
+               f"Corder=LRCP " \
+               f"Clevels={self.param_dict['spatial_dwt_levels']} " \
+               f"Clayers={original_file_info['component_count']} " \
+               f"Creversible={'yes' if self.param_dict['lossless'] else 'no'} " \
+               f"Cycc=no " \
+               f"Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} " \
+               f"Nprecision={original_file_info['bytes_per_sample'] * 8} " \
+               f"Sprecision={original_file_info['bytes_per_sample'] * 8} " \
+               f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
+               f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
+               f"{'Cmodes=HT' if self.param_dict['ht'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
-
-    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        compression_params = self.get_compression_params(
-            original_path=original_path,
-            compressed_path=compressed_path,
-            original_file_info=original_file_info)
-        invocation = f"{self.compressor_path} {compression_params}"
-        try:
-            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
-            if options.verbose > 3:
-                print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
-        except tcall.InvocationError as ex:
-            raise CompressionException(
-                original_path=original_path,
-                compressed_path=compressed_path,
-                file_info=original_file_info,
-                status=-1,
-                output=None) from ex
-
-        compression_results = self.compression_results_from_paths(
-            original_path=original_path, compressed_path=compressed_path)
-        compression_results.compression_time_seconds = measured_time
-
-        if self.output_invocation_dir is not None:
-            invocation_name = "invocation_compression_" \
-                              + self.name \
-                              + os.path.abspath(os.path.realpath(original_file_info["file_path"])).replace(os.sep, "_")
-            with open(os.path.join(self.output_invocation_dir, invocation_name), "w") as invocation_file:
-                invocation_file.write(f"Original path: {original_path}\n"
-                                      f"Compressed path: {compressed_path}\n"
-                                      f"Codec: {self.name}\n"
-                                      f"Invocation: {invocation}\n"
-                                      f"Status: {status}\n"
-                                      f"Output: {output}\n"
-                                      f"Measured time: {measured_time}")
-
-        return compression_results
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         temp_list = []
@@ -72,70 +56,49 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
                 temp_path += f"{temp_list[i]},"
             else:
                 temp_path += f"{temp_list[i]}"
-        decompression_params = self.get_decompression_params(
-            compressed_path=compressed_path,
-            reconstructed_path=temp_path,
-            original_file_info=original_file_info)
-        invocation = f"{self.decompressor_path} {decompression_params}"
-        try:
-            status, output, measured_time = tcall.get_status_output_time(invocation)
-            with open(reconstructed_path, 'wb') as reconstructed:
-                for name in temp_path.split(","):
-                    with open(name, 'rb') as file:
-                        data = file.read()
-                        reconstructed.write(data)
-            if options.verbose > 3:
-                print(f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
-        except tcall.InvocationError as ex:
-            raise DecompressionException(
-                compressed_path=compressed_path,
-                reconstructed_path=reconstructed_path,
-                file_info=original_file_info,
-                status=-1,
-                output=None) from ex
+        decompression_results = icompression.WrapperCodec.decompress(
+            self, compressed_path, reconstructed_path=temp_path, original_file_info=original_file_info)
 
-        decompression_results = self.decompression_results_from_paths(
-            compressed_path=compressed_path, reconstructed_path=reconstructed_path)
-
-        decompression_results.decompression_time_seconds = measured_time
-
-        if self.output_invocation_dir is not None:
-            invocation_name = "invocation_decompression_" \
-                              + self.name \
-                              + os.path.abspath(os.path.realpath(
-                original_file_info["file_path"] if original_file_info is not None else compressed_path)).replace(os.sep,
-                                                                                                                 "_")
-            with open(os.path.join(self.output_invocation_dir, invocation_name), "w") as invocation_file:
-                invocation_file.write(f"Compressed path: {compressed_path}\n"
-                                      f"Reconstructed path: {reconstructed_path}\n"
-                                      f"Codec: {self.name}\n"
-                                      f"Invocation: {invocation}\n"
-                                      f"Status: {status}\n"
-                                      f"Output: {output}\n"
-                                      f"Measured time: {measured_time}")
+        with open(reconstructed_path, "wb") as output_file:
+            for p in temp_path.split(","):
+                with open(p, "rb") as component_file:
+                    output_file.write(component_file.read())
 
         return decompression_results
 
+
     @property
     def label(self):
-        return "Kakadu" 
-    
+        return f"Kakadu {'HT' if self.param_dict['ht'] else ''}"
+
+
 class Kakadu_MCT(Kakadu):
-    def __init__(self, HT=False, Clevels=5):
-        Kakadu.__init__(self, HT=HT, Clevels=Clevels)
+    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5):
+        assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
+        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels)
+        self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
-               f"-o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.param_dict['Clevels']} Clayers={original_file_info['component_count']} " \
-               f"Creversible=yes Cycc=no Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample'] * 8} " \
-               f"Nsigned={'yes' if original_file_info['signed'] else 'no'} Sprecision={original_file_info['bytes_per_sample'] * 8} " \
-               f"Ssigned={'yes' if original_file_info['signed'] else 'no'} Mcomponents={original_file_info['component_count']} " \
-               f"Mstage_inputs:I1=\\{{0,{original_file_info['component_count']-1}\\}} Mstage_outputs:I1=\\{{0,{original_file_info['component_count']-1}\\}} Mstage_collections:I1=\\{{{original_file_info['component_count']},{original_file_info['component_count']}\\}} " \
-               f"Mstage_xforms:I1=\\{{DWT,1,4,0,0\\}} Mvector_size:I4={original_file_info['component_count']} Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1 {'Cmodes=HT' if self.param_dict['HT'] == True else ''}"
+        # TODO: split into 2D and 3D transform arguments, put here only the ones that do not
+        # appear for the 2D case
+        return Kakadu.get_compression_params(
+            self,
+            original_path=original_path,
+            compressed_path=compressed_path,
+            original_file_info=original_file_info) + \
+               f" Mcomponents={original_file_info['component_count']} " \
+               f"Mstage_inputs:I1=\\{{0,{original_file_info['component_count'] - 1}\\}} " \
+               f"Mstage_outputs:I1=\\{{0,{original_file_info['component_count'] - 1}\\}} " \
+               f"Mstage_collections:I1=\\{{{original_file_info['component_count']},{original_file_info['component_count']}\\}} " \
+               f"Mstage_xforms:I1=\\{{DWT," \
+               + ('1' if self.param_dict['lossless'] else '0') + \
+               f",4,0,{self.param_dict['spectral_dwt_levels']}\\}} " \
+               f"Mvector_size:I4={original_file_info['component_count']} " \
+               f"Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1 "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
+        return f"-i {compressed_path} -o {reconstructed_path} -raw_components "
 
     @property
     def label(self):
-        return "Kakadu_MCT"
+        return f"Kakadu MCT {'HT' if self.param_dict['ht'] else ''}"
