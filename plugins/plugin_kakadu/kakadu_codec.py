@@ -15,8 +15,6 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
 
     def __init__(self, ht=False, spatial_dwt_levels=5, lossless=True):
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
-        if ht:
-            raise Exception("License does not allow the use of HT")
 
         assert spatial_dwt_levels in range(0, 34)
         icompression.WrapperCodec.__init__(
