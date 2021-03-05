@@ -122,7 +122,7 @@ if __name__ == '__main__':
                                 f"{c.label} {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
 
-    for ht in [False]: # ht=True does not work for now
+    for ht in [True, False]: # ht=True does not work for now
         kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}")
         c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht)
         all_codecs.append(c)
