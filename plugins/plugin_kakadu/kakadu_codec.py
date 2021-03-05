@@ -8,23 +8,20 @@ options = get_options()
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
     def __init__(self, HT=False, Clevels=5):
+        assert isinstance(HT, bool), "HT must be a boolean (True/False)"
+        assert Clevels in range(0,33), "Clevels should be an integer between 0 and 33"
+        
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
             decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
-            param_dict=None, output_invocation_dir=None)
-        
-        assert isinstance(HT, bool), "HT must be a boolean (True/False)"
-        self.HT = HT
-        
-        assert Clevels in range(0,33), "Clevels should be an integer between 0 and 33"
-        self.Clevels=Clevels
-        
-        self.param_dict['HT'] = self.HT
-        self.param_dict['Clevels'] = self.Clevels
+            param_dict={'HT':HT,'Clevels':Clevels}, output_invocation_dir=None)
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width']*original_file_info['height']*original_file_info['bytes_per_sample']} -o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.Clevels} Clayers={original_file_info['component_count']} Creversible=yes Cycc=no Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample']*8} Nsigned={'yes' if original_file_info['signed'] else 'no'} {'Cmodes=HT' if self.HT==True else ''}"
+        return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width']*original_file_info['height']*original_file_info['bytes_per_sample']}" \
+               f" -o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.param_dict['Clevels']} Clayers={original_file_info['component_count']} Creversible=yes Cycc=no " \
+               f"Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample']*8} " \
+               f"Nsigned={'yes' if original_file_info['signed'] else 'no'} {'Cmodes=HT' if self.param_dict['HT']==True else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
@@ -124,29 +121,21 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec):
         return "Kakadu" 
     
 class Kakadu_MCT(Kakadu):
-    def __init__(self):
-        Kakadu.__init__(self, HT=False, Clevels=5)
-        icompression.WrapperCodec.__init__(
-            self,
-            compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
-            decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
-            param_dict=None, output_invocation_dir=None)
+    def __init__(self, HT=False, Clevels=5):
+        Kakadu.__init__(self, HT=HT, Clevels=Clevels)
 
-        assert isinstance(HT, bool), "HT must be a boolean (True/False)"
-        self.HT = HT
-        
-        assert Clevels in range(0,33), "Clevels should be an integer between 0 and 33"
-        self.Clevels=Clevels
-        
-        self.param_dict['HT'] = self.HT
-        self.param_dict['Clevels'] = self.Clevels
-    
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        raise NotImplementedError
-        
+        return f"-i {original_path}*{original_file_info['component_count']}@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
+               f"-o {compressed_path} -no_info -full -no_weights Corder=LRCP Clevels={self.param_dict['Clevels']} Clayers={original_file_info['component_count']} " \
+               f"Creversible=yes Cycc=no Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} Nprecision={original_file_info['bytes_per_sample'] * 8} " \
+               f"Nsigned={'yes' if original_file_info['signed'] else 'no'} Sprecision={original_file_info['bytes_per_sample'] * 8} " \
+               f"Ssigned={'yes' if original_file_info['signed'] else 'no'} Mcomponents={original_file_info['component_count']} " \
+               f"Mstage_inputs:I1=\\{{0,{original_file_info['component_count']-1}\\}} Mstage_outputs:I1=\\{{0,{original_file_info['component_count']-1}\\}} Mstage_collections:I1=\\{{{original_file_info['component_count']},{original_file_info['component_count']}\\}} " \
+               f"Mstage_xforms:I1=\\{{DWT,1,4,0,0\\}} Mvector_size:I4={original_file_info['component_count']} Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1 {'Cmodes=HT' if self.param_dict['HT'] == True else ''}"
+
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        raise NotImplementedError
-    
+        return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
+
     @property
     def label(self):
         return "Kakadu_MCT"
