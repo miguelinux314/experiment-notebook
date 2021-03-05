@@ -36,7 +36,7 @@ from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
-from plugins import plugin_hevc_h265
+from plugins import plugin_hevc
 from plugins import plugin_kakadu
 
 if __name__ == '__main__':
@@ -137,6 +137,12 @@ if __name__ == '__main__':
                                    f"{c.label} HT {c.param_dict['ht']}")
         all_families.append(kakadu_mct_family)
 
+    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
+    c = plugin_hevc.hevc_codec.HEVC()
+    all_codecs.append(c)
+    hevc_family.add_task(c.name, c.label)
+    all_families.append(hevc_family)
+
     label_by_group_name = dict()
     for family in all_families:
         label_by_group_name.update(family.name_to_label)
@@ -162,6 +168,8 @@ if __name__ == '__main__':
     table_codecs = sorted(table_codecs, key=lambda c: c.label.lower())
     min_lossless_bitdepth_by_name = collections.defaultdict(lambda: float("inf"))
     max_lossless_bitdepth_by_name = collections.defaultdict(lambda: float("-inf"))
+    min_compression_ratio_by_name = collections.defaultdict(lambda: float("inf"))
+    max_compression_ratio_by_name = collections.defaultdict(lambda: float("-inf"))
 
     for codec in table_codecs:
         data_dict = dict(codec_name=codec.label)
@@ -207,6 +215,15 @@ if __name__ == '__main__':
                                 max_lossless_bitdepth_by_name[codec.label],
                                 bits_per_sample)
 
+                            min_compression_ratio_by_name[codec.label] = min(
+                                min_compression_ratio_by_name[codec.label],
+                                os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
+                            )
+                            max_compression_ratio_by_name[codec.label] = max(
+                                max_compression_ratio_by_name[codec.label],
+                                os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
+                            )
+
                             if options.verbose > 2:
                                 print("Losless!")
                     except Exception as ex:
@@ -224,6 +241,11 @@ if __name__ == '__main__':
         lambda name: f"{min_lossless_bitdepth_by_name[name]} "
                      f"- {max_lossless_bitdepth_by_name[name]} "
     )
+    df_capabilities["cr_range"] = df_capabilities["codec_name"].apply(
+        lambda name: f"{min_compression_ratio_by_name[name]:.2f} "
+                     f"- {max_compression_ratio_by_name[name]:.2f} "
+    )
+
     del df_capabilities["min_lossless_bitdepth"]
     del df_capabilities["max_lossless_bitdepth"]
 
@@ -241,19 +263,19 @@ if __name__ == '__main__':
                             "mono_u16be", "rgb_u16be", "multi_u16be",
                             "mono_s16be", "rgb_s16be", "multi_s16be",
                             "codec_name",
-                            "lossless_range"]
+                            "lossless_range", "cr_range"]
 
     all_column_names = [
         "8bit Mono", "8bit RGB", "8bit Multi",
         "16bit Mono", "16bit RGB", "16bit Multi",
         "Sig. 16bit Mono", "Sig. 16bit RGB", "Sig. 16bit Multi",
-        "Lossless range"
+        "Lossless range", "CR range"
     ]
 
     full_df = df_capabilities.copy()
     for i, group_name in enumerate(["u8be", "u16be", "s16be"]):
-        old_col_names = all_target_dir_names[i * 3:(i + 1) * 3] + all_target_dir_names[-1:]
-        new_col_names = all_column_names[i * 3:(i + 1) * 3] + all_column_names[-1:]
+        old_col_names = all_target_dir_names[i * 3:(i + 1) * 3] + all_target_dir_names[-2:]
+        new_col_names = all_column_names[i * 3:(i + 1) * 3] + all_column_names[-2:]
         df_capabilities = full_df.copy()
 
         df_colors = df_capabilities.copy()
