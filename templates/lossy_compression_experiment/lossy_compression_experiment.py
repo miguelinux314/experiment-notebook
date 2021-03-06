@@ -17,6 +17,7 @@ import enb.aanalysis
 
 import plugin_jpeg.jpeg_codecs
 import plugin_mcalic.mcalic_codecs
+import plugin_hevc.hevc_codec
 
 if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "landsat")
@@ -36,6 +37,12 @@ if __name__ == '__main__':
         all_codecs.append(c)
         mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
     all_families.append(mcalic_family)
+
+    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
+    c = plugin_hevc.hevc_codec.HEVC()
+    all_codecs.append(c)
+    hevc_family.add_task(c.name, c.label)
+    all_families.append(hevc_family)
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used
