@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Compression experiment intended to execute all codec plugins
+
 TODO: complete with remaining plugins.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
@@ -17,6 +18,7 @@ import tempfile
 import matplotlib.pyplot as plt
 import pandas.plotting as pdpt
 import collections
+import shutil
 
 from enb.config import get_options
 import enb.atable
@@ -34,13 +36,13 @@ from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
-from plugins import plugin_hevc_h265
+from plugins import plugin_hevc
 from plugins import plugin_kakadu
 
 if __name__ == '__main__':
     all_codecs = []
     all_families = []
-
+    
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
     for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=0) for m in [0]):
         all_codecs.append(c)
@@ -117,20 +119,29 @@ if __name__ == '__main__':
     for c in (plugin_jpeg_xl.jpegxl_codec.JPEG_XL(quality_0_to_100=100, compression_level=7) for m in [0]):
         all_codecs.append(c)
         jpeg_xl_family.add_task(c.name,
-                                f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
+                                f"{c.label} {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
-                                
-    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu(HT=ht) for ht in [False, True]):
+
+    for ht in [False]: # ht=True does not work for now
+        kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}")
+        c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht)
         all_codecs.append(c)
-        kakadu_family.add_task(c.name, f"{c.label} PAE {c.param_dict['HT']} {c.param_dict['Clevels']}")
-    all_families.append(kakadu_family)
-                               
-    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu_MCT")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(HT=ht) for ht in [False, True]):
+        kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}",
+                               f"{c.label} HT {c.param_dict['ht']}")
+        all_families.append(kakadu_family)
+
+        kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}")
+        c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht)
         all_codecs.append(c)
-        kakadu_family.add_task(c.name, f"{c.label} PAE {c.param_dict['HT']} {c.param_dict['Clevels']}")
-    all_families.append(kakadu_family)
+        kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}",
+                                   f"{c.label} HT {c.param_dict['ht']}")
+        all_families.append(kakadu_mct_family)
+
+    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
+    c = plugin_hevc.hevc_codec.HEVC()
+    all_codecs.append(c)
+    hevc_family.add_task(c.name, c.label)
+    all_families.append(hevc_family)
 
     label_by_group_name = dict()
     for family in all_families:
@@ -157,6 +168,8 @@ if __name__ == '__main__':
     table_codecs = sorted(table_codecs, key=lambda c: c.label.lower())
     min_lossless_bitdepth_by_name = collections.defaultdict(lambda: float("inf"))
     max_lossless_bitdepth_by_name = collections.defaultdict(lambda: float("-inf"))
+    min_compression_ratio_by_name = collections.defaultdict(lambda: float("inf"))
+    max_compression_ratio_by_name = collections.defaultdict(lambda: float("-inf"))
 
     for codec in table_codecs:
         data_dict = dict(codec_name=codec.label)
@@ -185,7 +198,12 @@ if __name__ == '__main__':
                                 data_dict[column_name] = "Not lossless"
                             else:
                                 data_dict[column_name] = "Lossy"
+                            
+                            print("[W]arning! not lossless!")
+
                             break
+
+
                         else:
                             match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
                             signed = match.group(1) == "s"
@@ -196,6 +214,18 @@ if __name__ == '__main__':
                             max_lossless_bitdepth_by_name[codec.label] = max(
                                 max_lossless_bitdepth_by_name[codec.label],
                                 bits_per_sample)
+
+                            min_compression_ratio_by_name[codec.label] = min(
+                                min_compression_ratio_by_name[codec.label],
+                                os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
+                            )
+                            max_compression_ratio_by_name[codec.label] = max(
+                                max_compression_ratio_by_name[codec.label],
+                                os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
+                            )
+
+                            if options.verbose > 2:
+                                print("Losless!")
                     except Exception as ex:
                         data_dict[column_name] = "Not available"
                         if options.verbose:
@@ -211,11 +241,17 @@ if __name__ == '__main__':
         lambda name: f"{min_lossless_bitdepth_by_name[name]} "
                      f"- {max_lossless_bitdepth_by_name[name]} "
     )
+    df_capabilities["cr_range"] = df_capabilities["codec_name"].apply(
+        lambda name: f"{min_compression_ratio_by_name[name]:.2f} "
+                     f"- {max_compression_ratio_by_name[name]:.2f} "
+    )
+
     del df_capabilities["min_lossless_bitdepth"]
     del df_capabilities["max_lossless_bitdepth"]
 
-    import pprint
+    df_capabilities.to_csv("full_df_capabilitites.csv")
 
+    import pprint
     pprint.pprint(min_lossless_bitdepth_by_name)
     pprint.pprint(max_lossless_bitdepth_by_name)
 
@@ -227,19 +263,19 @@ if __name__ == '__main__':
                             "mono_u16be", "rgb_u16be", "multi_u16be",
                             "mono_s16be", "rgb_s16be", "multi_s16be",
                             "codec_name",
-                            "lossless_range"]
+                            "lossless_range", "cr_range"]
 
     all_column_names = [
         "8bit Mono", "8bit RGB", "8bit Multi",
         "16bit Mono", "16bit RGB", "16bit Multi",
         "Sig. 16bit Mono", "Sig. 16bit RGB", "Sig. 16bit Multi",
-        "Lossless range"
+        "Lossless range", "CR range"
     ]
 
     full_df = df_capabilities.copy()
     for i, group_name in enumerate(["u8be", "u16be", "s16be"]):
-        old_col_names = all_target_dir_names[i * 3:(i + 1) * 3] + all_target_dir_names[-1:]
-        new_col_names = all_column_names[i * 3:(i + 1) * 3] + all_column_names[-1:]
+        old_col_names = all_target_dir_names[i * 3:(i + 1) * 3] + all_target_dir_names[-2:]
+        new_col_names = all_column_names[i * 3:(i + 1) * 3] + all_column_names[-2:]
         df_capabilities = full_df.copy()
 
         df_colors = df_capabilities.copy()
