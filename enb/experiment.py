@@ -46,6 +46,16 @@ class ExperimentTask:
         """
         return self.name
 
+    def __eq__(self, other):
+        try:
+            return all(self.param_dict[k] == other.param_dict[k] for k in self.param_dict.keys()) \
+                   and all(self.param_dict[k] == other.param_dict[k] for k in self.other_dict.keys())
+        except (KeyError, AttributeError):
+            return False
+
+    def __hash__(self):
+        return tuple(sorted(self.param_dict.items())).__hash__()
+
     def __repr__(self):
         return f"<{self.__class__.__name__} (" \
                + ', '.join(repr(param) + '=' + repr(value)
