@@ -7,5 +7,7 @@ Big thanks to all these people/projects without which ``enb`` would not be possi
 * `pandas <https://pandas.pydata.org/>`_
 * `matlab <https://matplotlib.org/>`_
 * `numpy <https://numpy.org/>`_
-* icons: `inipagi <https://www.iconfinder.com/inipagi>`_, `Adrian Valeanu <https://www.iconfinder.com/designmodo>`_, `Boca Tutor <https://www.iconfinder.com/bocatutor>`_
-* ... and many others!
+* `ray <https://docs.ray.io/>`_
+* icons: `inipagi <https://www.iconfinder.com/inipagi>`_,
+  `Adrian Valeanu <https://www.iconfinder.com/designmodo>`_,
+  `Boca Tutor <https://www.iconfinder.com/bocatutor>`_
