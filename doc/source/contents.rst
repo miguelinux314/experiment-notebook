@@ -11,7 +11,7 @@ It is ideal for cases where:
 	- one wants to apply custom code to existing data to produce new columns
 	- analysis tables and plots are needed for one or more data columns
 
-    .. toctree::
+.. toctree::
    :maxdepth: 1
    :caption: Contents:
 
