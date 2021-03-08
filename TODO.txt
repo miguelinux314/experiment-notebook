@@ -1,0 +1,1 @@
+- Add page about analyzer output configuration (colors, sizes, config--, etc)
