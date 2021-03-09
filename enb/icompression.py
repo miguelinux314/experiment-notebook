@@ -246,7 +246,7 @@ class WrapperCodec(AbstractCodec):
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
         if options.verbose > 2:
-            print(f"[watch] invocation={invocation}")
+            print(f"[watch] WrapperCodec:compress: invocation={invocation}")
 
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
@@ -285,6 +285,11 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
+        
+        if options.verbose > 2:
+            print(f"[watch] WrapperCodec:decompress: invocation={invocation}")
+            
+        
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation)
             if options.verbose > 3:
