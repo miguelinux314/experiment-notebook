@@ -444,7 +444,7 @@ class ATable(metaclass=MetaTable):
             if options.verbose:
                 print(f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} "
                       f"@@ {100 * i * chunk_size / len(target_indices):.1f}"
-                      f"-{min(100, 100 * ((i+1)*chunk_size) / len(target_indices)):.1f}% "
+                      f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
                       f"({datetime.datetime.now()})")
             df = self.get_df_one_chunk(
                 target_indices=chunk, target_columns=target_columns, fill=fill,
@@ -678,8 +678,13 @@ class ATable(metaclass=MetaTable):
         """
         try:
             if not self.csv_support_path:
+                if options.verbose > 1:
+                    print(f"[W]arning: csv support file for {self} not set")
                 raise FileNotFoundError(self.csv_support_path)
             loaded_df = pd.read_csv(self.csv_support_path)
+            if options.verbose > 2:
+                print(f"[I]nfo: loaded df from with len {len(loaded_df)}")
+
             # for column in (c for c in self.indices_and_columns if c not in self.indices):
             for column in self.indices_and_columns:
                 if column not in loaded_df.columns:
@@ -717,6 +722,7 @@ class ATable(metaclass=MetaTable):
             raise ex
         return loaded_df
 
+
 def string_or_float(cell_value):
     """Takes the input value from an ATable cell and returns either
     its float value or its string value. In the latter case, one level of surrounding
@@ -731,6 +737,7 @@ def string_or_float(cell_value):
                 or (v.startswith('"') and v.endswith('"')):
             v = v[1:-1]
     return v
+
 
 def parse_dict_string(cell_value, key_type=string_or_float, value_type=float):
     """Parse a cell value for a string describing a dictionary.
@@ -784,7 +791,7 @@ def check_unique_indices(df: pd.DataFrame):
         if options.verbose:
             print("[watch] df[duplicated_indices] = {}".format(df[duplicated_indices]))
             s += "\n\t:: ".join(str(' , '.join(values))
-                            for values in df[duplicated_indices][df.indices].values)
+                                for values in df[duplicated_indices][df.indices].values)
             print(s)
         raise CorruptedTableError(atable=None)
 
