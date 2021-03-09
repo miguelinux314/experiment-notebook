@@ -43,4 +43,8 @@ class JPEG_XL(icompression.LosslessCodec,icompression.PNGWrapperCodec):
 
     @property
     def label(self):
+<<<<<<< HEAD
         return f"JPEG XL"
+=======
+        return f"JPEG_XL"
+>>>>>>> origin/jpeg_xl

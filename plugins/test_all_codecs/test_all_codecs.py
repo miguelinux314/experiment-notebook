@@ -116,6 +116,7 @@ if __name__ == '__main__':
     all_families.append(zip_family)
 
     jpeg_xl_family = enb.aanalysis.TaskFamily(label="JPEG-XL")
+<<<<<<< HEAD
     for c in (plugin_jpeg_xl.jpegxl_codec.JPEG_XL(quality_0_to_100=100, compression_level=7) for m in [0]):
         all_codecs.append(c)
         jpeg_xl_family.add_task(c.name,
@@ -142,6 +143,12 @@ if __name__ == '__main__':
     all_codecs.append(c)
     hevc_family.add_task(c.name, c.label)
     all_families.append(hevc_family)
+=======
+    for c in (plugin_jpeg_xl.jpegxl_codec.JPEG_XL(quality_0_to_100=100, compression_level= 7) for m in [0]):
+        all_codecs.append(c)
+        jpeg_xl_family.add_task(c.name, f"{c.label} PAE {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
+    all_families.append(jpeg_xl_family)
+>>>>>>> origin/jpeg_xl
 
     label_by_group_name = dict()
     for family in all_families:
