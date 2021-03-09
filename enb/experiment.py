@@ -46,6 +46,16 @@ class ExperimentTask:
         """
         return self.name
 
+    def __eq__(self, other):
+        try:
+            return all(self.param_dict[k] == other.param_dict[k] for k in self.param_dict.keys()) \
+                   and all(self.param_dict[k] == other.param_dict[k] for k in self.other_dict.keys())
+        except (KeyError, AttributeError):
+            return False
+
+    def __hash__(self):
+        return tuple(sorted(self.param_dict.items())).__hash__()
+
     def __repr__(self):
         return f"<{self.__class__.__name__} (" \
                + ', '.join(repr(param) + '=' + repr(value)
@@ -134,7 +144,7 @@ class Experiment(atable.ATable):
         assert len(self.dataset_info_table.indices) == 1, \
             f"dataset_info_table is expected to have a single index"
 
-        if options.verbose:
+        if options.verbose > 1:
             print(f"Obtaining properties of {len(dataset_paths)} files... "
                   f"[dataset info: {type(self.dataset_info_table).__name__}]")
         self.dataset_table_df = self.dataset_info_table.get_df(
@@ -149,6 +159,7 @@ class Experiment(atable.ATable):
         if csv_experiment_path is None:
             csv_experiment_path = os.path.join(options.persistence_dir,
                                                f"{self.__class__.__name__}_persistence.csv")
+        
         os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
@@ -171,6 +182,7 @@ class Experiment(atable.ATable):
         """
         target_indices = self.target_file_paths if target_indices is None else target_indices
         target_tasks = self.tasks if target_tasks is None else target_tasks
+
 
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
