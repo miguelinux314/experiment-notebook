@@ -9,16 +9,14 @@
 # ---------------------------------------------
 # INSTALLATION
 #
-# To install for all users, run
+# Option 1) from pip
+# 	pip install enb
 #
-# $ sudo python setup.py  install
+# Option 2) install this once
+#  pip install .
 #
-# To install for the current user only, run
-#
-# $ python setup.py  install --user
-# ---------------------------------------------
-#
-# See documentation for more information and usage examples.
+# Option 3) install this and link to track any changes made to the code
+#  pip install .
 #
 
 
@@ -46,7 +44,7 @@ long_description = read('README.md')
 
 setup(
     name='enb',
-    version="0.2.3",
+    version="0.2.4",
     url='https://github.com/miguelinux314/experiment-notebook',
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.2.tar.gz",
     license='MIT',
