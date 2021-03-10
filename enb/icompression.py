@@ -204,16 +204,18 @@ class WrapperCodec(AbstractCodec):
 
     def __init__(self, compressor_path, decompressor_path, param_dict=None, output_invocation_dir=None):
         super().__init__(param_dict=param_dict)
-        if os.path.isfile(compressor_path) and os.access(compressor_path, os.EX_OK):
+        if os.path.isfile(compressor_path):
             self.compressor_path = compressor_path
         else:
             self.compressor_path = shutil.which(compressor_path)
-            assert os.path.isfile(self.compressor_path), f"{compressor_path} isnot available"
-        if os.path.exists(decompressor_path) and os.access(decompressor_path, os.EX_OK):
+            assert self.compressor_path and os.path.isfile(self.compressor_path), \
+                f"{compressor_path} is not available"
+        if os.path.exists(decompressor_path):
             self.decompressor_path = decompressor_path
         else:
             self.decompressor_path = shutil.which(decompressor_path)
-            assert os.path.isfile(self.decompressor_path), f"{decompressor_path} isnot available"
+            assert self.compressor_path and os.path.isfile(self.decompressor_path), \
+                f"{decompressor_path} is not available"
         self.output_invocation_dir = output_invocation_dir
         if self.output_invocation_dir is not None:
             os.makedirs(self.output_invocation_dir, exist_ok=True)
