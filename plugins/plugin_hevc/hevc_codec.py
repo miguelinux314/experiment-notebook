@@ -1,6 +1,7 @@
 import os
 from enb import icompression
 from enb.config import get_options
+import sortedcontainers
 
 options = get_options()
 
@@ -37,19 +38,23 @@ class HEVC_lossless(icompression.WrapperCodec, icompression.LosslessCodec):
 
 
 class HEVC_lossy(icompression.WrapperCodec, icompression.LossyCodec):
-    def __init__(self, config_path=None, chroma_format="400"):
+    def __init__(self, config_path=None, chroma_format="400", qp=4):
         config_path = config_path if config_path is not None \
             else os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               f"hevc_lossy_{chroma_format}.cfg")
 
+        param_dict = sortedcontainers.SortedDict()
+        param_dict['QP'] = str(qp)
         chroma_format = str(chroma_format)
+        param_dict['chroma_format'] = chroma_format
+
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
 
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "TAppEncoderStatic"),
             decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "TAppDecoderStatic"),
-            param_dict=dict(chroma_format=chroma_format))
+            param_dict=param_dict)
 
         self.config_path = config_path
 
@@ -60,7 +65,7 @@ class HEVC_lossy(icompression.WrapperCodec, icompression.LossyCodec):
             return f"-i {original_path} -c {self.config_path} -b {compressed_path} -wdt {original_file_info['width']} " \
                    f"-hgt {original_file_info['height']} -f {original_file_info['component_count']} " \
                    f"-cf {self.param_dict['chroma_format']} --InputChromaFormat={self.param_dict['chroma_format']} " \
-                   f"--InputBitDepth={8 * original_file_info['bytes_per_sample']} -fr 1"
+                   f"--InputBitDepth={8 * original_file_info['bytes_per_sample']} -fr 1 -q {self.param_dict['QP']}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         if original_file_info['bytes_per_sample'] > 1:
