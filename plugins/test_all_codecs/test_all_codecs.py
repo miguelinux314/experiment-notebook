@@ -138,9 +138,12 @@ if __name__ == '__main__':
         all_families.append(kakadu_mct_family)
 
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    c = plugin_hevc.hevc_codec.HEVC()
-    all_codecs.append(c)
-    hevc_family.add_task(c.name, c.label)
+    c1 = plugin_hevc.hevc_codec.HEVC_lossless()
+    c2 = plugin_hevc.hevc_codec.HEVC_lossy()
+    all_codecs.append(c1)
+    all_codecs.append(c2)
+    hevc_family.add_task(c1.name, c1.label)
+    hevc_family.add_task(c2.name, c2.label)
     all_families.append(hevc_family)
 
     label_by_group_name = dict()
