@@ -1,0 +1,9 @@
+file_path,line_count,word_count,status
+./data/wiki/d_knuth.txt,373,6053,alive
+./data/wiki/n_chomsky.txt,1854,20675,alive
+./data/wiki/a_turing.txt,430,15489,dead
+./data/wiki/r_franklin.txt,419,15509,dead
+./data/wiki/m_curie.txt,538,11316,dead
+./data/wiki/s_beauvoir.txt,292,5312,dead
+./data/wiki/k_popper.txt,533,13629,dead
+./data/wiki/c_shannon.txt,343,5734,dead
