@@ -33,6 +33,7 @@ You can also take a look at the automatically generated :ref:`API<api>`.
    :maxdepth: 1
    :caption: Contents:
 
+   contents
    installation
    basic_workflow
    image_compression
