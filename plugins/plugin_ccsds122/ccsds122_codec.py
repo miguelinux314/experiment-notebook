@@ -23,7 +23,7 @@ class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCode
         :param wavelet_2d_type: "Integer" for lossless 2D DWT, "Float" for lossy 2D DWT
         :param target_rate_bpppc: if not None, it selects a target rate in bpppc for each iamge
         """
-        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(os.path.abspath(__file__))
         super().__init__(compressor_path=os.path.join(bin_dir, "mhdcEncoder.sh"),
                          decompressor_path=os.path.join(bin_dir, "mhdcDecoder.sh"),
                          output_invocation_dir=output_invocation_dir)
