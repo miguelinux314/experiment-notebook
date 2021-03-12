@@ -42,7 +42,7 @@ from plugins import plugin_kakadu
 if __name__ == '__main__':
     all_codecs = []
     all_families = []
-    
+
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
     for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=0) for m in [0]):
         all_codecs.append(c)
@@ -186,6 +186,7 @@ if __name__ == '__main__':
                         tempfile.NamedTemporaryFile() as tmp_reconstructed:
                     state = "compressing"
                     try:
+
                         codec.compress(original_path=input_path,
                                        compressed_path=tmp_compressed.name,
                                        original_file_info=row_info)
@@ -198,7 +199,7 @@ if __name__ == '__main__':
                                 data_dict[column_name] = "Not lossless"
                             else:
                                 data_dict[column_name] = "Lossy"
-                            
+
                             print("[W]arning! not lossless!")
 
                             break
