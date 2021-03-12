@@ -39,9 +39,9 @@ if __name__ == '__main__':
     all_families.append(mcalic_family)
 
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    c = plugin_hevc.hevc_codec.HEVC()
-    all_codecs.append(c)
-    hevc_family.add_task(c.name, c.label)
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1,32,4)):
+        all_codecs.append(c)
+        hevc_family.add_task(c.name, c.label)
     all_families.append(hevc_family)
 
     # One can easily define pretty plot labels for all codecs individually, even when
