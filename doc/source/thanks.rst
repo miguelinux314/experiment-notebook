@@ -9,10 +9,11 @@ Libraries:
     * `pandas <https://pandas.pydata.org/>`_
     * `matlab <https://matplotlib.org/>`_
     * `numpy <https://numpy.org/>`_
-    * `ray <https://docs.ray.io/>`_ library
+    * `ray <https://docs.ray.io/>`_
 
 Icons:
+
     * `inipagi <https://www.iconfinder.com/inipagi>`_
-    * `Adrian Valeanu <https://www.iconfinder.com/designmodo>`_,
-    *`Boca Tutor <https://www.iconfinder.com/bocatutor>`_
+    * `Adrian Valeanu <https://www.iconfinder.com/designmodo>`_
+    * `Boca Tutor <https://www.iconfinder.com/bocatutor>`_
 

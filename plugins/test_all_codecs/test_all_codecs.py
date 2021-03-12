@@ -18,7 +18,7 @@ import tempfile
 import matplotlib.pyplot as plt
 import pandas.plotting as pdpt
 import collections
-import shutil
+import math
 
 from enb.config import get_options
 import enb.atable
@@ -138,9 +138,12 @@ if __name__ == '__main__':
         all_families.append(kakadu_mct_family)
 
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    c = plugin_hevc.hevc_codec.HEVC()
-    all_codecs.append(c)
-    hevc_family.add_task(c.name, c.label)
+    c1 = plugin_hevc.hevc_codec.HEVC_lossless()
+    c2 = plugin_hevc.hevc_codec.HEVC_lossy(qp=25)
+    all_codecs.append(c1)
+    all_codecs.append(c2)
+    hevc_family.add_task(c1.name, c1.label)
+    hevc_family.add_task(c2.name, c2.label)
     all_families.append(hevc_family)
 
     label_by_group_name = dict()
@@ -193,39 +196,36 @@ if __name__ == '__main__':
                         codec.decompress(compressed_path=tmp_compressed.name,
                                          reconstructed_path=tmp_reconstructed.name,
                                          original_file_info=row_info)
+
+                        match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
+                        signed = match.group(1) == "s"
+                        bits_per_sample = int(match.group(2))
+
+                        min_compression_ratio_by_name[codec.label] = min(
+                            min_compression_ratio_by_name[codec.label],
+                            os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
+                        )
+                        max_compression_ratio_by_name[codec.label] = max(
+                            max_compression_ratio_by_name[codec.label],
+                            os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
+                        )
+
                         if not filecmp.cmp(input_path, tmp_reconstructed.name):
                             if (isinstance(codec, enb.icompression.LosslessCodec)):
                                 data_dict[column_name] = "Not lossless"
                             else:
                                 data_dict[column_name] = "Lossy"
-                            
-                            print("[W]arning! not lossless!")
-
                             break
-
-
                         else:
-                            match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
-                            signed = match.group(1) == "s"
-                            bits_per_sample = int(match.group(2))
+                            if options.verbose > 2:
+                                print("Losless!")
+
                             min_lossless_bitdepth_by_name[codec.label] = min(
                                 min_lossless_bitdepth_by_name[codec.label],
                                 bits_per_sample)
                             max_lossless_bitdepth_by_name[codec.label] = max(
                                 max_lossless_bitdepth_by_name[codec.label],
                                 bits_per_sample)
-
-                            min_compression_ratio_by_name[codec.label] = min(
-                                min_compression_ratio_by_name[codec.label],
-                                os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
-                            )
-                            max_compression_ratio_by_name[codec.label] = max(
-                                max_compression_ratio_by_name[codec.label],
-                                os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
-                            )
-
-                            if options.verbose > 2:
-                                print("Losless!")
                     except Exception as ex:
                         data_dict[column_name] = "Not available"
                         if options.verbose:
@@ -238,12 +238,18 @@ if __name__ == '__main__':
         df_capabilities.loc[codec.label] = pd.Series(data_dict)
 
     df_capabilities["lossless_range"] = df_capabilities["codec_name"].apply(
-        lambda name: f"{min_lossless_bitdepth_by_name[name]} "
-                     f"- {max_lossless_bitdepth_by_name[name]} "
+        lambda name: f"{min_lossless_bitdepth_by_name[name]}"
+                     f":{max_lossless_bitdepth_by_name[name]}"
+                     if math.isfinite(float(min_lossless_bitdepth_by_name[name]))
+                        and math.isfinite(float(max_lossless_bitdepth_by_name[name]))
+                     else "None"
     )
     df_capabilities["cr_range"] = df_capabilities["codec_name"].apply(
-        lambda name: f"{min_compression_ratio_by_name[name]:.2f} "
-                     f"- {max_compression_ratio_by_name[name]:.2f} "
+        lambda name: f"{min_compression_ratio_by_name[name]:.2f}"
+                     f":{max_compression_ratio_by_name[name]:.2f}"
+                     if math.isfinite(float(min_compression_ratio_by_name[name]))
+                        and math.isfinite(float(max_compression_ratio_by_name[name]))
+                     else "None"
     )
 
     del df_capabilities["min_lossless_bitdepth"]
@@ -284,7 +290,7 @@ if __name__ == '__main__':
             df_colors[d] = df_capabilities[d].apply(
                 lambda x: "#55ff55" if x == "Lossless"
                 else "#ff5555" if x == "Not lossless"
-                else "#6666ff" if x == "Lossy"
+                else "#8cb4ff" if x == "Lossy"
                 else "#fbf3b5")
 
         for old, new in zip(old_col_names, new_col_names):
