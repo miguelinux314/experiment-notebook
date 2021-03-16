@@ -9,7 +9,7 @@ import enb.icompression
 import enb.aanalysis
 
 import plugin_jpeg.jpeg_codecs
-#import plugin_mcalic.mcalic_codecs
+import plugin_mcalic.mcalic_codecs
 #import plugin_hevc.hevc_codec
 
 if __name__ == '__main__':
@@ -25,11 +25,11 @@ if __name__ == '__main__':
     all_families.append(jpeg_ls_family)
 
     # One can add as many families as lines should be depicted
-    '''mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
+    mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
     for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(5)):
         all_codecs.append(c)
         mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
-    all_families.append(mcalic_family)'''
+    all_families.append(mcalic_family)
 
     '''hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
     c = plugin_hevc.hevc_codec.HEVC()
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         adjust_height=True,
         y_labels_by_group_name=label_by_group_name,
     )
-    '''enb.aanalysis.TwoColumnLineAnalyzer().analyze_df(
+    enb.aanalysis.TwoColumnLineAnalyzer().analyze_df(
         full_df=df,
         target_columns=[("bpppc", "ms_ssim")],
         column_to_properties=exp.joined_column_to_properties,
@@ -63,10 +63,10 @@ if __name__ == '__main__':
         show_h_range_bar=True,
         show_h_std_bar=True,
         group_by=all_families,
-        legend_column_count=2)'''
+        legend_column_count=2)
 
     # pdf to high-def PNG
-    '''for pdf_path in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "plots", "**", "*.pdf"), recursive=True):
+    for pdf_path in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "plots", "**", "*.pdf"), recursive=True):
         output_dir = os.path.dirname(os.path.abspath(pdf_path)).replace(os.path.abspath("./plots"), "./png_plots")
         os.makedirs(output_dir, exist_ok=True)
         png_path = os.path.join(output_dir, os.path.basename(pdf_path).replace(".pdf", ".png"))
@@ -74,4 +74,4 @@ if __name__ == '__main__':
         status, output = subprocess.getstatusoutput(invocation)
         if status != 0:
             raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                status, invocation, output))'''
+                status, invocation, output))
