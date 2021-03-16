@@ -901,19 +901,9 @@ class SSIM(CompressionExperiment):
                                      dtype=row.numpy_dtype)
         original_array = np.reshape(original_array, (row.image_info_row["width"], row.image_info_row["height"], row.image_info_row["component_count"]))
 
-        '''rawData = open(row.compression_results.original_path, 'rb').read()
-        imgSize = (row.image_info_row["width"], row.image_info_row["height"])  # the image size
-        I = Image.frombytes('I;16', imgSize, rawData)
-        original_array = np.asarray(I)'''
-
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                      dtype=row.numpy_dtype)
         reconstructed_array = np.reshape(reconstructed_array, (row.image_info_row["width"], row.image_info_row["height"], row.image_info_row["component_count"]))
-
-        '''rawData = open(row.decompression_results.reconstructed_path, 'rb').read()
-        imgSize = (row.image_info_row["width"], row.image_info_row["height"])  # the image size
-        I = Image.frombytes('I;16', imgSize, rawData)
-        reconstructed_array = np.asarray(I)'''
 
         if original_array.shape != reconstructed_array.shape:
             raise RuntimeError('Input images must have the same shape (%s vs. %s).',
@@ -922,8 +912,6 @@ class SSIM(CompressionExperiment):
             raise RuntimeError('Input images must have four dimensions, not %d',
                                original_array.ndim)
 
-        # Note: default weights don't sum to 1.0 but do match the paper / matlab
-        # code.
         weights = np.array(weights if weights else
                            [0.0448, 0.2856, 0.3001, 0.2363, 0.1333])
         levels = weights.size
