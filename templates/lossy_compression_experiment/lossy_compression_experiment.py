@@ -18,6 +18,7 @@ import enb.aanalysis
 import plugin_jpeg.jpeg_codecs
 import plugin_mcalic.mcalic_codecs
 import plugin_hevc.hevc_codec
+import plugin_kakadu.kakadu_codec
 
 if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "landsat")
@@ -38,11 +39,29 @@ if __name__ == '__main__':
         mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
     all_families.append(mcalic_family)
 
-    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1,32,4)):
+    # hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
+    # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1,32,4)):
+    #     all_codecs.append(c)
+    #     hevc_family.add_task(c.name, c.label)
+    # all_families.append(hevc_family)
+    
+    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(1, 5)):
         all_codecs.append(c)
-        hevc_family.add_task(c.name, c.label)
-    all_families.append(hevc_family)
+        kakadu_family.add_task(c.name, c.label)
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(25, 125, 25)):
+        all_codecs.append(c)
+        kakadu_family.add_task(c.name, c.label)
+    all_families.append(kakadu_family)
+
+    kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(bit_rate=br) for br in range(1, 5)):
+        all_codecs.append(c)
+        kakadu_mct_family.add_task(c.name, c.label)
+    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(quality_factor=qf) for qf in range(25, 125, 25)):
+        all_codecs.append(c)
+        kakadu_mct_family.add_task(c.name, c.label)
+    all_families.append(kakadu_mct_family)
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used
