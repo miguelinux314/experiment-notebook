@@ -22,7 +22,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
         if quality_factor:
             assert 0 < quality_factor <= 100
             lossless = False
-
+        
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
@@ -48,9 +48,9 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f"Sprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
-               f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
-               f"{'-rate ' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''} " \
-               f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
+               f"{'Cmodes=HT' if self.param_dict['ht'] else '' } " \
+               f"{'-rate '+str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''} " \
+               f"{'Qfactor='+str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
@@ -75,6 +75,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
 
         return decompression_results
 
+
     @property
     def label(self):
         return f"Kakadu {'HT' if self.param_dict['ht'] else ''}" \
@@ -84,8 +85,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
 class Kakadu_MCT(Kakadu):
     def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, bit_rate=False, quality_factor=False):
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
-        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, bit_rate=bit_rate,
-                        quality_factor=quality_factor)
+        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, bit_rate=bit_rate, quality_factor=quality_factor)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
