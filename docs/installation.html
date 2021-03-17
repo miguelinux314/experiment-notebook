@@ -92,7 +92,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#windows-and-macos">Windows and MacOS</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
@@ -182,24 +182,51 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
-<p>The <cite>enb</cite> library is also available via pip.</p>
-<p>You will typically need to follow these steps to have <cite>enb</cite> working on your Windows box:</p>
+<div class="section" id="windows-and-macos">
+<h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>enb</cite> library is also available on Windows and MacOS via pip.</p>
+<p>You will typically need to follow these steps to have <cite>enb</cite> working on your box:</p>
 <blockquote>
-<div><ol class="arabic simple">
-<li><a class="reference external" href="https://docs.ray.io/en/master/installation.html">Install</a> the <cite>ray</cite> python library (a dependency of the library)</li>
-<li>Install <cite>enb</cite> via pip, e.g.,</li>
+<div><ol class="arabic">
+<li><p class="first"><a class="reference external" href="https://docs.ray.io/en/master/installation.html">Download</a> the <cite>ray</cite> python library
+<em>for the python version you want to use</em> (a <cite>.whl</cite> file).
+(a dependency of the library).</p>
+</li>
+<li><p class="first">Install the ray library, e.g.,</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pìp install -U ray-2.0.0.dev0-cp38-cp38-macosx_10_13_x86_64.whl
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Install <cite>enb</cite> via pip, e.g.,</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb --user
+</pre></div>
+</div>
+</div></blockquote>
+</li>
 </ol>
 </div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb --user
+<p>The pip command must correspond to the python version for which ray was installed.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you are developing for enb, it is highly recommended to used a virtual environment.
+To do so, for instance for python3.8, the complete setup would be:</p>
+<blockquote class="last">
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/usr/bin/python3.8 -m venv venv <span class="c1"># run only once</span>
+<span class="nb">source</span> venv/bin/active          <span class="c1"># run once per session</span>
+pip install -U ray-2.0.0.whl    <span class="c1"># run once</span>
+pip install enb                 <span class="c1"># run once. Applies to this venv</span>
 </pre></div>
+</div>
+</div></blockquote>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Initialization of the <cite>ray</cite> library (used for parallelization) can take a few
 seconds on Windows machines. Actual execution of <cite>enb</cite> code typically takes about the
-same time on both Windows and Linux machines.</p>
+same time on all platforms.</p>
 </div>
 </div>
 </div>
