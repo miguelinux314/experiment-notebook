@@ -58,7 +58,7 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
         HEVC.__init__(self, config_path, chroma_format, qp)
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        if original_file_info['bytes_per_sample'] > 2:
+        if original_file_info['bytes_per_sample'] > 1:
             raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
         else:
             return f"-i {original_path} -c {self.config_path} -b {compressed_path} -wdt {original_file_info['width']} " \
@@ -68,7 +68,7 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
                    f"-q {self.param_dict['QP']}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        if original_file_info['bytes_per_sample'] > 2:
+        if original_file_info['bytes_per_sample'] > 1:
             raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
         else:
             return f"-b {compressed_path} -o {reconstructed_path} -d {8 * original_file_info['bytes_per_sample']}"
