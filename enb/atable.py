@@ -681,6 +681,7 @@ class ATable(metaclass=MetaTable):
                 if options.verbose > 1:
                     print(f"[W]arning: csv support file for {self} not set")
                 raise FileNotFoundError(self.csv_support_path)
+            
             loaded_df = pd.read_csv(self.csv_support_path)
             if options.verbose > 2:
                 print(f"[I]nfo: loaded df from with len {len(loaded_df)}")
@@ -698,7 +699,7 @@ class ATable(metaclass=MetaTable):
             for column, properties in self.column_to_properties.items():
                 if properties.has_dict_values:
                     loaded_df[column] = loaded_df[column].apply(parse_dict_string)
-        except FileNotFoundError as ex:
+        except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
             if self.csv_support_path is None:
                 if options.verbose > 2:
                     print(f"[I]nfo: no csv persistence support.")
