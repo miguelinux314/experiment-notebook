@@ -20,7 +20,7 @@ import plugin_mcalic.mcalic_codecs
 import plugin_hevc.hevc_codec
 
 if __name__ == '__main__':
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./8bit_images")
 
     all_codecs = []
     all_families = []
