@@ -14,6 +14,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
     """
 
     def __init__(self, ht=False, spatial_dwt_levels=5, lossless=True, bit_rate=False, quality_factor=False):
+        # TODO:  Lossless None, user can set it to True. User can not set it to True and select a bitrate and qfactor
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
         assert spatial_dwt_levels in range(0, 34)
         if bit_rate:
