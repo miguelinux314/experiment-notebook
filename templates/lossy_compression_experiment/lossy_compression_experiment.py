@@ -20,7 +20,6 @@ import plugin_mcalic.mcalic_codecs
 import plugin_hevc.hevc_codec
 
 if __name__ == '__main__':
-    # options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "landsat")
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
 
     all_codecs = []
@@ -32,15 +31,8 @@ if __name__ == '__main__':
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    # One can add as many families as lines should be depicted
-    # mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
-    # for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(5)):
-    #     all_codecs.append(c)
-    #     mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
-    # all_families.append(mcalic_family)
-
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m, config_path="./plugin_hevc/hevc_lossy_400_ver2.cfg") for m in range(4,30,4)):
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m, config_path="./plugin_hevc/hevc_lossy_400.cfg") for m in range(4,30,4)):
         all_codecs.append(c)
         hevc_family.add_task(c.name, c.label)
     all_families.append(hevc_family)
