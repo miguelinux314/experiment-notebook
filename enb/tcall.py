@@ -9,6 +9,7 @@ import os
 import subprocess
 import re
 import time
+import platform
 import shutil
 
 
@@ -29,8 +30,14 @@ def get_status_output_time(invocation, expected_status_value=0, wall=False):
       
     :return: status, output, time
     """
-    if os.path.isfile("/usr/bin/time"):
-        invocation = f"/usr/bin/time -f 'u%U@s%S' {invocation}"
+
+    if "Darwin" in platform.system():
+        time_command = "/usr/local/bin/gtime"
+    else:
+        time_command = "/usr/bin/time"
+
+    if os.path.isfile(time_command):
+        invocation = f"{time_command} -f 'u%U@s%S' {invocation}"
     else:
         invocation = f"{invocation}"
         wall = True
