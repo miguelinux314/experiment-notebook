@@ -885,6 +885,8 @@ class LossyCompressionExperiment(CompressionExperiment):
 
 
 class StructuralSimilarity(CompressionExperiment):
+    """Set the Structural Similarity (SSIM) and Multi-Scale Structural Similarity metrics (MS-SSIM)
+    to measure the similarity between two images"""
 
     @atable.column_function([
         atable.ColumnProperties(name="ssim", label="SSIM", plot_min=0),
@@ -902,6 +904,19 @@ class StructuralSimilarity(CompressionExperiment):
         row["ms_ssim"] = self.MultiScaleSSIM(original_array, reconstructed_array)
 
     def MultiScaleSSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, weights=None):
+        """Return the MS-SSIM score between `img1` and `img2`.
+
+        This function implements Multi-Scale Structural Similarity (MS-SSIM) Image
+        Quality Assessment according to Zhou Wang's paper, "Multi-scale structural
+        similarity for image quality assessment" (2003).
+        Link: https://ece.uwaterloo.ca/~z70wang/publications/msssim.pdf
+
+        Author's MATLAB implementation:
+        http://www.cns.nyu.edu/~lcv/ssim/msssim.zip
+
+        Author's Python implementation:
+        https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
+        """
         if img1.shape != img2.shape:
             raise RuntimeError('Input images must have the same shape (%s vs. %s).',
                                img1.shape, img2.shape)
@@ -929,6 +944,14 @@ class StructuralSimilarity(CompressionExperiment):
         return np.prod(mcs[0:levels - 1] ** weights[0:levels - 1]) * (mssim[levels - 1] ** weights[levels - 1])
 
     def SSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, full=False):
+        """Return the Structural Similarity Map between `img1` and `img2`.
+
+        This function attempts to match the functionality of ssim_index_new.m by
+        Zhou Wang: http://www.cns.nyu.edu/~lcv/ssim/msssim.zip
+
+        Author's Python implementation:
+        https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
+        """
         if img1.shape != img2.shape:
             raise RuntimeError('Input images must have the same shape (%s vs. %s).',
                                img1.shape, img2.shape)
@@ -978,7 +1001,7 @@ class StructuralSimilarity(CompressionExperiment):
         return ssim
 
     def _FSpecialGauss(self, size, sigma):
-        """Function to mimic the 'fspecial' gaussian MATLAB function."""
+
         radius = size // 2
         offset = 0.0
         start, stop = -radius, radius + 1
@@ -991,7 +1014,7 @@ class StructuralSimilarity(CompressionExperiment):
         return g / g.sum()
 
 class SpectralAngleTable(LossyCompressionExperiment):
-    """Lossy compression experiment that computes spectral angle "distance" 
+    """Lossy compression experiment that computes spectral angle "distance"
     measures between the compressed and the reconstructed images.
     
     Subclasses of LossyCompressionExperiment may inherit from this one to
