@@ -4,13 +4,15 @@ from enb.config import get_options
 
 options = get_options()
 
+# TODO: document module
+# TODO: document classes and initializer parameters
+# TODO: add parameter to control target bitrate (in lossy)
+# Don't include it if the user does not choose anything
+#       --RateControl            Rate control: enable rate control
+#       --TargetBitrate          Rate control: target bit-rate
 
 class HEVC(icompression.WrapperCodec):
-    def __init__(self, config_path=None, chroma_format="400", qp=0):
-        config_path = config_path if config_path is not None \
-            else os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                              f"hevc_lossless_{chroma_format}.cfg")
-
+    def __init__(self, config_path, chroma_format="400", qp=0):
         chroma_format = str(chroma_format)
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
         param_dict = dict(chroma_format=chroma_format)
@@ -26,23 +28,29 @@ class HEVC(icompression.WrapperCodec):
 
         self.config_path = config_path
 
+    def get_compression_params(self, original_path, compressed_path, original_file_info):
+        return f"-i {original_path} " \
+               f"-c {self.config_path} " \
+               f"-b {compressed_path} " \
+               f"-wdt {original_file_info['width']} " \
+               f"-hgt {original_file_info['height']} " \
+               f"-f {original_file_info['component_count']} " \
+               f"-cf {self.param_dict['chroma_format']} " \
+               f"--InputChromaFormat={self.param_dict['chroma_format']} " \
+               f"--InputBitDepth={8 * original_file_info['bytes_per_sample']} "
+
+    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        return f"-b {compressed_path} " \
+               f"-o {reconstructed_path} " \
+               f"-d {8 * original_file_info['bytes_per_sample']}"
+
 
 class HEVC_lossless(icompression.LosslessCodec, HEVC):
-    def __init__(self, config_path=None, chroma_format="400", qp=0):
+    def __init__(self, config_path=None, chroma_format="400"):
         config_path = config_path if config_path is not None \
             else os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               f"hevc_lossless_{chroma_format}.cfg")
-
-        HEVC.__init__(self, config_path, chroma_format, qp)
-
-    def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-i {original_path} -c {self.config_path} -b {compressed_path} -wdt {original_file_info['width']} " \
-               f"-hgt {original_file_info['height']} -f {original_file_info['component_count']} " \
-               f"-cf {self.param_dict['chroma_format']} --InputChromaFormat={self.param_dict['chroma_format']} " \
-               f"--InputBitDepth={8 * original_file_info['bytes_per_sample']}"
-
-    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-b {compressed_path} -o {reconstructed_path} -d {8 * original_file_info['bytes_per_sample']}"
+        HEVC.__init__(self, config_path, chroma_format, qp=0)
 
     @property
     def label(self):
@@ -54,24 +62,31 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
         config_path = config_path if config_path is not None \
             else os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               f"hevc_lossy_{chroma_format}.cfg")
-
-        HEVC.__init__(self, config_path, chroma_format, qp)
+        HEVC.__init__(
+            self, config_path=config_path, chroma_format=chroma_format, qp=qp)
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         if original_file_info['bytes_per_sample'] > 1:
-            raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
+            raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} "
+                            f"not supported yet.")
         else:
-            return f"-i {original_path} -c {self.config_path} -b {compressed_path} -wdt {original_file_info['width']} " \
-                   f"-hgt {original_file_info['height']} -f {original_file_info['component_count']} " \
-                   f"-cf {self.param_dict['chroma_format']} --InputChromaFormat={self.param_dict['chroma_format']} " \
-                   f"--InputBitDepth={8 * original_file_info['bytes_per_sample']} " \
-                   f"-q {self.param_dict['QP']}"
+            params = super().get_compression_params(
+                original_path=original_path,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info) + \
+                   f" -q {self.param_dict['QP']}"
+            return params
+            
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         if original_file_info['bytes_per_sample'] > 1:
-            raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
+            raise Exception(f"Bytes per sample = "
+                            f"{original_file_info['bytes_per_sample']} "
+                            f"not supported")
         else:
-            return f"-b {compressed_path} -o {reconstructed_path} -d {8 * original_file_info['bytes_per_sample']}"
+            return super().get_decompression_params(compressed_path=compressed_path,
+                                                    reconstructed_path=reconstructed_path,
+                                                    original_file_info=original_file_info)
 
     @property
     def label(self):

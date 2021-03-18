@@ -182,7 +182,7 @@ class ErrorLines(PlottableData2D):
         :param err_pos_values: list of lengths for the positive part of the error
         :param vertical: determines whether the error bars are vertical or horizontal
         """
-        super().__init__(x_values=x_values, y_values=y_values, *args, **kwargs)
+        super().__init__(x_values=x_values, y_values=y_values, remove_duplicates=False, *args, **kwargs)
         self.err_neg = err_neg_values
         self.err_pos = err_pos_values
         self.cap_size = cap_size if cap_size is not None else self.cap_size
@@ -192,7 +192,7 @@ class ErrorLines(PlottableData2D):
         if alpha is not None:
             self.alpha = alpha
         assert len(self.x_values) == len(self.y_values)
-        assert len(self.x_values) == len(self.err_pos)
+        assert len(self.x_values) == len(self.err_pos), (len(self.x_values), len(self.err_pos), self.x_values, self.err_pos)
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
