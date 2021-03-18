@@ -16,30 +16,22 @@ import enb.icompression
 import enb.aanalysis
 
 import plugin_jpeg.jpeg_codecs
-import plugin_mcalic.mcalic_codecs
 import plugin_hevc.hevc_codec
 
 if __name__ == '__main__':
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "landsat")
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./8bit_images")
 
     all_codecs = []
     all_families = []
     # A family is a set of related tasks
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
-    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(5)):
+    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(1, 6)):
         all_codecs.append(c)
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    # One can add as many families as lines should be depicted
-    mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
-    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(5)):
-        all_codecs.append(c)
-        mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
-    all_families.append(mcalic_family)
-
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1,32,4)):
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
         all_codecs.append(c)
         hevc_family.add_task(c.name, c.label)
     all_families.append(hevc_family)
@@ -73,7 +65,8 @@ if __name__ == '__main__':
         legend_column_count=2)
 
     # pdf to high-def PNG
-    for pdf_path in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "plots", "**", "*.pdf"), recursive=True):
+    for pdf_path in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "plots", "**", "*.pdf"),
+                              recursive=True):
         output_dir = os.path.dirname(os.path.abspath(pdf_path)).replace(os.path.abspath("./plots"), "./png_plots")
         os.makedirs(output_dir, exist_ok=True)
         png_path = os.path.join(output_dir, os.path.basename(pdf_path).replace(".pdf", ".png"))
