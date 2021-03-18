@@ -109,7 +109,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             for pd in pds:
                 pd.legend_column_count = legend_column_count
 
-
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min,
                 y_min if y_min is not None else 0) if column_properties is not None and column_properties.semilog_y else y_min
@@ -474,11 +473,12 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
 
     if abs(sum(hist_y_values) - 1) > 1e-10:
         if math.isinf(df[column].max()) or math.isinf(df[column].min()):
-            print(f"Infinite values are not accounted for in {column}, "
-                  f"which represent {100 * (1 - sum(hist_y_values))}% of the values")
+            if options.verbose:
+                print(f"[W]arning: Infinite values are not accounted for in {column}, "
+                      f"which represent {100 * (1 - sum(hist_y_values)):.1f}% of the values.")
         else:
-            print(f"[watch] sum(hist_y_values)={sum(hist_y_values)}")
-            raise Exception("Unfortunately, some values seem to be missing - check for errors!")
+            raise Exception("Unfortunately, some values seem to be missing - check for errors! "
+                            f"sum(hist_y_values)={sum(hist_y_values)}")
 
     hist_y_values = hist_y_values / hist_y_values.sum()
 
@@ -1065,73 +1065,101 @@ class TwoColumnLineAnalyzer(Analyzer):
                             f"Previously found {data_point_count} data points per task, " \
                             f"but {task_name} in {family} has {len(rows)} data points."
 
-                    family_avg_x_y_values.append(
-                        (rows[column_name_x].mean(), rows[column_name_y].mean()))
-                    family_x_pos_values.append(rows[column_name_x].max() - rows[column_name_x].mean())
-                    family_x_neg_values.append(rows[column_name_x].mean() - rows[column_name_x].min())
-                    family_y_pos_values.append(rows[column_name_y].max() - rows[column_name_y].mean())
-                    family_y_neg_values.append(rows[column_name_y].mean() - rows[column_name_y].min())
-                    family_x_std_values.append(rows[column_name_x].std())
-                    family_y_std_values.append(rows[column_name_y].std())
+                    # Check and discard infinities before calculation
+                    x_data = np.array(rows[column_name_x].values)
+                    y_data = np.array(rows[column_name_y].values)
+                    mean_x = x_data.mean()
+                    mean_y = y_data.mean()
 
-                family_avg_x_y_values = sorted(family_avg_x_y_values)
+                    if math.isinf(mean_x + mean_y):
+                        finite_positions = [math.isfinite(x) and math.isfinite(y)
+                                            for x, y in zip(x_data, y_data)]
+                        x_data = np.array([x_data[i] for i, finite in enumerate(finite_positions) if finite])
+                        y_data = np.array([y_data[i] for i, finite in enumerate(finite_positions) if finite])
+                        mean_x = x_data.mean() if x_data.size else 0
+                        mean_y = y_data.mean() if x_data.size else 0
+                        if options.verbose:
+                            print(f"[W]arning: some of the provided results are infinite "
+                                  f"and won't be taken into account for this plot: "
+                                  f"{100 * sum(1 for f in finite_positions if f) / len(finite_positions)}% elements used.")
 
-                try:
-                    x_values, y_values = zip(*family_avg_x_y_values)
-                except ValueError as ex:
-                    print("[>>>] (column_name_x, column_name_y) = {}".format((column_name_x, column_name_y)))
-                    print("[>>>] family.label = {}".format(family.label))
-                    print("[>>>] family.task_names = {}".format(family.task_names))
-                    print("[>>>] len(family_avg_x_y_values) = {}".format(len(family_avg_x_y_values)))
-                    print("-" * 50)
-                    for f in group_by:
-                        print("[>>>] f = {}".format(f))
-                        print("[>>>] f.label = {}".format(f.label))
-                        print("[>>>] f.task_names = {}".format(f.task_names))
-                    raise ex
+                    if x_data.size and y_data.size:
+                        family_avg_x_y_values.append((mean_x, mean_y))
+                        family_x_pos_values.append(x_data.max() - mean_x)
+                        family_x_neg_values.append(mean_x - x_data.min())
+                        family_y_pos_values.append(y_data.max() - mean_y)
+                        family_y_neg_values.append(mean_y - y_data.min())
+                        family_x_std_values.append(x_data.std())
+                        family_y_std_values.append(y_data.std())
 
-                plds_by_family_label[family.label] = []
-                plds_by_family_label[family.label].append(plotdata.LineData(
-                    x_values=x_values, y_values=y_values,
-                    x_label=column_name_x,
-                    y_label=column_name_y,
-                    label=family.label, alpha=self.alpha,
-                    extra_kwargs=dict(
-                        marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) if show_markers else None))
-                if show_v_range_bar:
-                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                # Sort all values together
+                family_data = ((*x_y, x_pos, x_neg, y_pos, y_neg, x_std, y_std)
+                               for x_y, x_pos, x_neg, y_pos, y_neg, x_std, y_std
+                               in zip(family_avg_x_y_values,
+                                      family_x_pos_values,
+                                      family_x_neg_values,
+                                      family_y_pos_values,
+                                      family_y_neg_values,
+                                      family_x_std_values,
+                                      family_y_std_values))
+                family_data = sorted(family_data)
+                if family_data:
+                    x_values, y_values, \
+                    family_x_pos_values, family_x_neg_values, \
+                    family_y_pos_values, family_y_neg_values, \
+                    family_x_std_values, family_y_std_values = \
+                        [[d[i] for d in family_data] for i in range(len(family_data[0]))]
+
+                    plds_by_family_label[family.label] = []
+                    plds_by_family_label[family.label].append(plotdata.LineData(
                         x_values=x_values, y_values=y_values,
-                        err_pos_values=family_y_pos_values,
-                        err_neg_values=family_y_neg_values,
-                        vertical=True, line_width=0.75, cap_size=5))
-                if show_h_range_bar:
-                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
-                        x_values=x_values, y_values=y_values,
-                        err_pos_values=family_x_pos_values,
-                        err_neg_values=family_x_neg_values,
-                        vertical=False, line_width=0.75, cap_size=5))
-                if show_v_std_bar:
-                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
-                        x_values=x_values, y_values=y_values,
-                        err_pos_values=family_y_std_values,
-                        err_neg_values=family_y_std_values,
-                        vertical=True, line_width=1, cap_size=3))
-                if show_h_std_bar:
-                    plds_by_family_label[family.label].append(plotdata.ErrorLines(
-                        x_values=x_values, y_values=y_values,
-                        err_pos_values=family_x_std_values,
-                        err_neg_values=family_x_std_values,
-                        vertical=False, line_width=1, cap_size=3))
+                        x_label=column_name_x,
+                        y_label=column_name_y,
+                        label=family.label, alpha=self.alpha,
+                        extra_kwargs=dict(
+                            marker=marker_cycle[i % len(marker_cycle)], ms=marker_size) if show_markers else None))
+                    if show_v_range_bar:
+                        plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                            x_values=x_values, y_values=y_values,
+                            err_pos_values=family_y_pos_values,
+                            err_neg_values=family_y_neg_values,
+                            vertical=True, line_width=0.75, cap_size=3))
+                    if show_h_range_bar:
+                        plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                            x_values=x_values, y_values=y_values,
+                            err_pos_values=family_x_pos_values,
+                            err_neg_values=family_x_neg_values,
+                            vertical=False, line_width=0.75, cap_size=3))
+                    if show_v_std_bar:
+                        plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                            x_values=x_values, y_values=y_values,
+                            err_pos_values=family_y_std_values,
+                            err_neg_values=family_y_std_values,
+                            vertical=True, line_width=1, cap_size=2))
+                    if show_h_std_bar:
+                        plds_by_family_label[family.label].append(plotdata.ErrorLines(
+                            x_values=x_values, y_values=y_values,
+                            err_pos_values=family_x_std_values,
+                            err_neg_values=family_x_std_values,
+                            vertical=False, line_width=1, cap_size=2))
+                else:
+                    plds_by_family_label[family.label] = []
 
             try:
                 column_properties = column_to_properties[column_name_x]
                 global_min_x, global_max_x = column_properties.plot_min, column_properties.plot_max
             except (KeyError, TypeError):
                 global_min_x, global_max_x = None, None
-            global_min_x = min(min(pld.x_values) for plds in plds_by_family_label.values() for pld in plds) \
-                if global_min_x is None else global_min_x
-            global_max_x = max(max(pld.x_values) for plds in plds_by_family_label.values() for pld in plds) \
-                if global_max_x is None else global_max_x
+
+            global_min_x = float("inf")
+            global_max_x = float("-inf")
+            for plds in plds_by_family_label.values():
+                for pld in plds:
+                    global_min_x = min(global_min_x, min(pld.x_values))
+                    global_max_x = min(global_max_x, max(pld.x_values))
+
+            if math.isinf(global_min_x) or math.isinf(global_max_x):
+                global_min_x, global_max_x = None, None
 
             if column_to_properties is None:
                 def new():
@@ -1151,7 +1179,7 @@ class TwoColumnLineAnalyzer(Analyzer):
                 x_max=global_max_x,
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
-                horizontal_margin=0.05 * (global_max_x - global_min_x),
+                horizontal_margin=0.05 * (global_max_x - global_min_x) if global_max_x is not None and global_min_x is not None else 0,
                 legend_column_count=legend_column_count,
                 combine_groups=True,
                 group_name_order=[f.label for f in group_by])
