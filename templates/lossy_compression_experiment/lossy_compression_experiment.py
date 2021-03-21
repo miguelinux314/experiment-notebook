@@ -32,6 +32,7 @@ if __name__ == '__main__':
     all_families.append(jpeg_ls_family)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     # One can add as many families as lines should be depicted
     mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
     for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(5)):
@@ -47,6 +48,10 @@ if __name__ == '__main__':
     
     kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
     for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(1, 5)):
+=======
+    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
+>>>>>>> 108c969bb355cebae3b48978c4de1b175ef60f3f
 =======
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
     for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
