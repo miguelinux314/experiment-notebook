@@ -127,9 +127,9 @@ if __name__ == '__main__':
             kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}"
                                                            + f"{'lossless' if lossless else 'lossy'}")
             if lossless:
-                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht)
+                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=True)
             else:
-                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, quality_factor=75)
+                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless, quality_factor=75)
             all_codecs.append(c)
             kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
                                    + f"{'lossless' if lossless else 'lossy'}",
@@ -138,14 +138,11 @@ if __name__ == '__main__':
 
             kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}"
                                                                + f"{'lossless' if lossless else 'lossy'}")
-            if lossless:
-                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht)
-            else:
-                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, quality_factor=75)
+            c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
             all_codecs.append(c)
             kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
                                        + f"{'lossless' if lossless else 'lossy'}",
-                                       f"{c.label} HT {c.param_dict['ht']} Quality Factor {c.param_dict['quality_factor']}")
+                                       f"{c.label} HT {c.param_dict['ht']}")
             all_families.append(kakadu_mct_family)
 
     hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
