@@ -13,16 +13,22 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
     """TODO: add docstring for the classes, the module and non-inherited methods.
     """
 
-    def __init__(self, ht=False, spatial_dwt_levels=5, lossless=True, bit_rate=False, quality_factor=False):
+    def __init__(self, ht=False, spatial_dwt_levels=5, lossless=None, bit_rate=False, quality_factor=False):
         # TODO:  Lossless None, user can set it to True. User can not set it to True and select a bitrate and qfactor
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
         assert spatial_dwt_levels in range(0, 34)
-        if bit_rate:
-            assert bit_rate > 0
-            lossless = False
-        if quality_factor:
-            assert 0 < quality_factor <= 100
-            lossless = False
+        if lossless:
+            assert bit_rate is False, "a bit rate can not be set if lossless is True"
+            assert quality_factor is False, "a quality factor can not be set if lossless is True"
+        elif lossless is None or not lossless:
+            if bit_rate:
+                assert bit_rate > 0
+                lossless = False
+            if quality_factor:
+                assert 0 < quality_factor <= 100
+                lossless = False
+        else:
+            lossless = True
 
         icompression.WrapperCodec.__init__(
             self,
@@ -83,10 +89,9 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
 
 
 class Kakadu_MCT(Kakadu):
-    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, bit_rate=False, quality_factor=False):
+    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None):
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
-        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, bit_rate=bit_rate,
-                        quality_factor=quality_factor)
+        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
@@ -105,9 +110,7 @@ class Kakadu_MCT(Kakadu):
                + ('1' if self.param_dict['lossless'] else '0') + \
                f",4,0,{self.param_dict['spectral_dwt_levels']}\\}} " \
                f"Mvector_size:I4={original_file_info['component_count']} " \
-               f"Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1 " \
-               f"{'-rate ' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''} " \
-               f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
+               f"Mvector_coeffs:I4=0 Mnum_stages=1 Mstages=1"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components "

@@ -31,46 +31,29 @@ if __name__ == '__main__':
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    # One can add as many families as lines should be depicted
-    mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
-    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in range(5)):
-        all_codecs.append(c)
-        mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
-    all_families.append(mcalic_family)
-
     # hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1,32,4)):
+    # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
     #     all_codecs.append(c)
     #     hevc_family.add_task(c.name, c.label)
     # all_families.append(hevc_family)
-    
+
     kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
     for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(1, 5)):
-=======
-    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
->>>>>>> 108c969bb355cebae3b48978c4de1b175ef60f3f
-=======
-    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
->>>>>>> 108c969bb355cebae3b48978c4de1b175ef60f3f
         all_codecs.append(c)
         kakadu_family.add_task(c.name, c.label)
     for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(25, 125, 25)):
         all_codecs.append(c)
         kakadu_family.add_task(c.name, c.label)
     all_families.append(kakadu_family)
-
-    kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(bit_rate=br) for br in range(1, 5)):
-        all_codecs.append(c)
-        kakadu_mct_family.add_task(c.name, c.label)
-    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(quality_factor=qf) for qf in range(25, 125, 25)):
-        all_codecs.append(c)
-        kakadu_mct_family.add_task(c.name, c.label)
-    all_families.append(kakadu_mct_family)
+    #
+    # kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
+    # for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(bit_rate=br) for br in range(1, 5)):
+    #     all_codecs.append(c)
+    #     kakadu_mct_family.add_task(c.name, c.label)
+    # for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(quality_factor=qf) for qf in range(25, 125, 25)):
+    #     all_codecs.append(c)
+    #     kakadu_mct_family.add_task(c.name, c.label)
+    # all_families.append(kakadu_mct_family)
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used
