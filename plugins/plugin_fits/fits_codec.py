@@ -1,18 +1,9 @@
 ##!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement, print_function
-import sys, os
-import tempfile
-import warnings
-from numpy import arange, array
-from pkg_resources import resource_filename
 import fitsio
-from fitsio import FITS, FITSHDR
-#from ._fitsio_wrap import cfitsio_use_standard_strings
 import sets
 import glob
-import numpy as np
 from astropy.io import fits
 
 
@@ -30,7 +21,26 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                          version_base_dir=tmp_dir)
 
     def version(self, input_path, output_path):
-    	fitsio.write(output_path, input_path, qlevel=None)
+    	hdul = fits.open(input_path)
+    	header = hdul[0].header
+    	if header['NAXIS'] == 2:
+    		if header['BITPIX'] < 0:
+    			label = '_f'+ str(header['BITPIX']*-1)+'-'+ str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])
+    			label2= 'float'+ str(header['BITPIX']*-1)
+    		elif header['BITPIX'] > 0:
+    			label = '_i'+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])
+    			label2= 'uint'+ str(header['BITPIX'])
+    	elif header['NAXIS'] == 3:
+    		if header['BITPIX'] < 0:
+    			label ='_f'+ str(header['BITPIX']*-1)+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])+'x'+ str(header['NAXIS3'])
+    			label2= 'float'+ str(header['BITPIX']*-1)
+    		elif header['BITPIX'] >0:
+    			label = '_i'+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])+'x'+ str(header['NAXIS3'])
+    			label2= 'uint'+ str(header['BITPIX'])
+    	filename=input_path
+    	data = fitsio.read(filename)
+    	raw=FitsVersionTable.dump_array_bsq(data, 'raw'+output_path+label+'.raw', mode="wb", dtype=label2 ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
+    	
             
 
     def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
@@ -63,33 +73,10 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
         if open_here:
             file_or_path.close()
    
-    def Readfits(target_indices):
-    	for i in range(len(target_indices)):
-    		hdul = fits.open(target_indices[i])
-    		header = hdul[0].header
-    		if header['NAXIS'] == 2:
-    			if header['BITPIX'] < 0:
-    				label = str('_f')+ str(header['BITPIX']*-1)+'-'+ str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
-    			elif header['BITPIX'] > 0:
-    				label = str('_i')+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
-    		elif header['NAXIS'] == 3:
-    			if header['BITPIX'] < 0:
-    				label =str('_f')+ str(header['BITPIX']*-1)+'-'+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
-    			elif header['BITPIX'] >0:
-    				label = str('_i')+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
-    	filename=target_indices[i]
-    	data = fitsio.read(filename)
-    	raw=FitsVersionTable.dump_array_bsq(data, 'rawito'+str([i])+label+'.raw', mode="wb", dtype='>f' ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
-    	return label
- 	
-
-target_indices=glob.glob('*.fits') #FITS files list
-writeraws= FitsVersionTable.Readfits(target_indices)
-'''
-fpt = sets.FilePropertiesTable()
-fpt_df = fpt.get_df(target_indices=target_indices)
-fpt_df["original_file_path"] = fpt_df["file_path"]
     	
-tvt = FitsVersionTable(original_properties_table=fpt)
-tvt_df = tvt.get_df(target_indices=target_indices)
-'''
+ 	
+if __name__ == "__main__":
+	target_indices='.fits' #file to read
+	FitsVersionTable.version(input_path, input_path, output_path)
+
+
