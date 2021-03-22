@@ -1,4 +1,4 @@
-#!/usr/bin/python
+##!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement, print_function
@@ -13,7 +13,7 @@ from fitsio import FITS, FITSHDR
 import sets
 import glob
 import numpy as np
-
+from astropy.io import fits
 
 
 
@@ -21,15 +21,17 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     """Fits FileVersionTable that makes an identical copy of the original
     """
     version_name = "TrivialCopy"
-
+    
     def __init__(self, original_properties_table):
-        super().__init__(version_name=self.version_name,
+    	tmp_dir='tmp_dir'
+    	super().__init__(version_name=self.version_name,
                          original_base_dir=".",
                          original_properties_table=original_properties_table,
                          version_base_dir=tmp_dir)
 
-    def version(self, input_path, output_path, row):
-        shutil.copy(input_path, output_path)
+    def version(self, input_path, output_path):
+    	fitsio.write(output_path, input_path, qlevel=None)
+            
 
     def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
         """Dump an array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
@@ -60,35 +62,33 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
 
         if open_here:
             file_or_path.close()
+   
+    def Readfits(target_indices):
+    	for i in range(len(target_indices)):
+    		hdul = fits.open(target_indices[i])
+    		header = hdul[0].header
+    		if header['NAXIS'] == 2:
+    			if header['BITPIX'] < 0:
+    				label = str('_f')+ str(header['BITPIX']*-1)+'-'+ str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
+    			elif header['BITPIX'] > 0:
+    				label = str('_i')+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
+    		elif header['NAXIS'] == 3:
+    			if header['BITPIX'] < 0:
+    				label =str('_f')+ str(header['BITPIX']*-1)+'-'+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
+    			elif header['BITPIX'] >0:
+    				label = str('_i')+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
+    	filename=target_indices[i]
+    	data = fitsio.read(filename)
+    	raw=FitsVersionTable.dump_array_bsq(data, 'rawito'+str([i])+label+'.raw', mode="wb", dtype='>f' ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
+    	return label
+ 	
 
 target_indices=glob.glob('*.fits') #FITS files list
-
-for i in range(len(target_indices)):
-    hdul = fits.open(target_indices[i])
-    header = hdul[0].header
-    
-    if header['NAXIS'] == 2:
-		if header['BITPIX']<0:
-			label = str('_f')+ str(header['BITPIX']*-1)+ str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
-		elif header['BITPIX']>0:
-			label = str('_i')+ str(header['BITPIX'])+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
-	elif header['NAXIS']==3:
-		if header['BITPIX']<0:
-			label =str('_f')+ str(header['BITPIX']*-1)+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
-		elif header['BITPIX']>0:
-			label = str('_i')+ str(header['BITPIX'])+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
-            
-	filename=target_indices[i]
-	data=fitsio.read(filename)
-	raw=FitsVersionTable.dump_array_bsq(data, 'rawito'+str([i])+'.raw', mode="wb", dtype='>f' ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
-
-	fpt = sets.FilePropertiesTable()
-	fpt_df = fpt.get_df(target_indices=target_indices)
-	fpt_df["original_file_path"] = fpt_df["file_path"]
-
-	tvt = FitsVersionTable(original_properties_table=fpt)
-	tvt_df = tvt.get_df(target_indices=target_indices)
-
-
-	#fitsio.write('compressed'+str([i])+'.fit', raw, compress='gzip', qlevel=None)
+label= FitsVersionTable.Readfits(target_indices)
+fpt = sets.FilePropertiesTable()
+fpt_df = fpt.get_df(target_indices=target_indices)
+fpt_df["original_file_path"] = fpt_df["file_path"]
+    	
+tvt = FitsVersionTable(original_properties_table=fpt)
+tvt_df = tvt.get_df(target_indices=target_indices)
 
