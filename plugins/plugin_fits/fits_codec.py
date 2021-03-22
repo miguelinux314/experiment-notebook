@@ -22,7 +22,7 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
 
     def version(self, input_path, output_path):
     	hdul = fits.open(input_path)
-    	header = hdul[0].header
+    	header = hdul[0].header #change in case fits image extension does not correspond to 0
     	if header['NAXIS'] == 2:
     		if header['BITPIX'] < 0:
     			label = '_f'+ str(header['BITPIX']*-1)+'-'+ str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])
