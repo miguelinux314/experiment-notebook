@@ -17,8 +17,8 @@ import numpy as np
 
 
 
-class TrivialVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
-    """Trivial FileVersionTable that makes an identical copy of the original
+class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
+    """Fits FileVersionTable that makes an identical copy of the original
     """
     version_name = "TrivialCopy"
 
@@ -69,24 +69,24 @@ for i in range(len(target_indices)):
     
     if header['NAXIS'] == 2:
 		if header['BITPIX']<0:
-			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('_f')+ str(header['BITPIX']*-1)
+			label = str('_f')+ str(header['BITPIX']*-1)+ str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
 		elif header['BITPIX']>0:
-			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('_i')+ str(header['BITPIX'])
+			label = str('_i')+ str(header['BITPIX'])+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])
 	elif header['NAXIS']==3:
 		if header['BITPIX']<0:
-			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])+str('_f')+ str(header['BITPIX']*-1)
+			label =str('_f')+ str(header['BITPIX']*-1)+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
 		elif header['BITPIX']>0:
-			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])+str('_i')+ str(header['BITPIX'])
+			label = str('_i')+ str(header['BITPIX'])+str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])
             
 	filename=target_indices[i]
 	data=fitsio.read(filename)
-	raw=TrivialVersionTable.dump_array_bsq(data, 'rawito'+str([i])+'.raw', mode="wb", dtype=None)
+	raw=FitsVersionTable.dump_array_bsq(data, 'rawito'+str([i])+'.raw', mode="wb", dtype='>f' ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
 
 	fpt = sets.FilePropertiesTable()
 	fpt_df = fpt.get_df(target_indices=target_indices)
 	fpt_df["original_file_path"] = fpt_df["file_path"]
 
-	tvt = TrivialVersionTable(original_properties_table=fpt)
+	tvt = FitsVersionTable(original_properties_table=fpt)
 	tvt_df = tvt.get_df(target_indices=target_indices)
 
 
