@@ -84,11 +84,12 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
  	
 
 target_indices=glob.glob('*.fits') #FITS files list
-label= FitsVersionTable.Readfits(target_indices)
+writeraws= FitsVersionTable.Readfits(target_indices)
+'''
 fpt = sets.FilePropertiesTable()
 fpt_df = fpt.get_df(target_indices=target_indices)
 fpt_df["original_file_path"] = fpt_df["file_path"]
     	
 tvt = FitsVersionTable(original_properties_table=fpt)
 tvt_df = tvt.get_df(target_indices=target_indices)
-
+'''
