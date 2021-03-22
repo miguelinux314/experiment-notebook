@@ -80,13 +80,15 @@ for i in range(len(target_indices)):
             
 	filename=target_indices[i]
 	data=fitsio.read(filename)
-	#dump_array_bsq()
-	
-fpt = sets.FilePropertiesTable()
-fpt_df = fpt.get_df(target_indices=target_indices)
-fpt_df["original_file_path"] = fpt_df["file_path"]
+	raw=TrivialVersionTable.dump_array_bsq(data, 'rawito'+str([i])+'.raw', mode="wb", dtype=None)
 
-tvt = TrivialVersionTable(original_properties_table=fpt)
-tvt_df = tvt.get_df(target_indices=target_indices)
+	fpt = sets.FilePropertiesTable()
+	fpt_df = fpt.get_df(target_indices=target_indices)
+	fpt_df["original_file_path"] = fpt_df["file_path"]
 
-#fitsio.write('CAL_g.fit', data, compress='gzip', qlevel=None)
+	tvt = TrivialVersionTable(original_properties_table=fpt)
+	tvt_df = tvt.get_df(target_indices=target_indices)
+
+
+	#fitsio.write('compressed'+str([i])+'.fit', raw, compress='gzip', qlevel=None)
+
