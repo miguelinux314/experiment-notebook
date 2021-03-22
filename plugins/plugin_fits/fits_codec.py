@@ -65,18 +65,18 @@ target_indices=glob.glob('*.fits') #FITS files list
 
 for i in range(len(target_indices)):
     hdul = fits.open(target_indices[i])
-    header=hdul[0].header
+    header = hdul[0].header
     
-    if header['NAXIS']==2:
+    if header['NAXIS'] == 2:
 		if header['BITPIX']<0:
-			label=header['NAXIS1'],'x', header['NAXIS2'],'_f', header['BITPIX']*-1
+			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('_f')+ str(header['BITPIX']*-1)
 		elif header['BITPIX']>0:
-			label=header['NAXIS1'],'x', header['NAXIS2'],'_i', header['BITPIX'])
+			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('_i')+ str(header['BITPIX'])
 	elif header['NAXIS']==3:
 		if header['BITPIX']<0:
-			label=header['NAXIS1'],'x', header['NAXIS2'],'x', header['NAXIS3'],'_f', header['BITPIX']*-1
+			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])+str('_f')+ str(header['BITPIX']*-1)
 		elif header['BITPIX']>0:
-			label=header['NAXIS1'],'x', header['NAXIS2'],'_i', header['BITPIX'])
+			label=str(header['NAXIS1'])+str('x')+ str(header['NAXIS2'])+str('x')+ str(header['NAXIS3'])+str('_i')+ str(header['BITPIX'])
             
 	filename=target_indices[i]
 	data=fitsio.read(filename)
