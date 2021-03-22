@@ -5,7 +5,7 @@ import fitsio
 import sets
 import glob
 from astropy.io import fits
-
+import os
 
 
 class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
@@ -39,7 +39,8 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     			label2= 'uint'+ str(header['BITPIX'])
     	filename=input_path
     	data = fitsio.read(filename)
-    	raw=FitsVersionTable.dump_array_bsq(data, 'raw'+output_path+label+'.raw', mode="wb", dtype=label2 ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
+	os.mkdir('./'+label2)
+    	raw=FitsVersionTable.dump_array_bsq(data, label2+'/'+'raw'+output_path+label+'.raw', mode="wb", dtype=label2 ) #>f means big-endian single-precision float, float64 or uint16 are also valid formats
     	
             
 
