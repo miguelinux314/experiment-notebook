@@ -9,13 +9,14 @@ import isets
 import sets
 
 class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
-    """Fits FileVersionTable that makes an identical copy of the original
+    """Fits FileVersionTable that reads FITS files, converts them to raw
+    and sorts them by integer or float format
     """
     version_name = "TrivialCopy"
     
     def __init__(self, original_properties_table):
     	tmp_dir='tmp_dir'
-    	super().__init__(version_name=self.version_name,
+    	super().__init__(version_name=self.fits_to_raw,
                          original_base_dir=".",
                          original_properties_table=original_properties_table,
                          version_base_dir=tmp_dir)
