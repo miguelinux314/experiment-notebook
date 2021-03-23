@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import fitsio
+import sets
 import glob
 from astropy.io import fits
 import os
 import isets
-import sets
 
 class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
-    """Fits FileVersionTable that reads FITS files, converts them to raw
-    and sorts them by integer or float format
+    """Fits FileVersionTable that makes an identical copy of the original
     """
     version_name = "TrivialCopy"
     
@@ -22,25 +21,22 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                          version_base_dir=tmp_dir)
 
     def fits_to_raw(self, input_path, output_path):
-	
     	hdul = fits.open('CALIFAIC0159.V500.rscube.fits')
     	header = hdul[0].header #change in case fits image extension does not correspond to 0
-	
     	if header['NAXIS'] == 2:
     		if header['BITPIX'] < 0:
-    			label = '_f'+ str(header['BITPIX']*-1)+'-'+ str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])
-    			label2= 'float'+ str(header['BITPIX']*-1)
+    			label = '_f{}-{}x{}'.format(header['BITPIX']*-1, header['NAXIS1'], header['NAXIS2'])
+    			label2= 'float{}'.format(header['BITPIX']*-1)
     		elif header['BITPIX'] > 0:
-    			label = '_i'+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])
-    			label2= 'uint'+ str(header['BITPIX'])
+    			label = '_i{}-{}x{}'.format(header['BITPIX'], header['NAXIS1'], header['NAXIS2'])
+    			label2= 'uint{}'.format(header['BITPIX'])
     	elif header['NAXIS'] == 3:
     		if header['BITPIX'] < 0:
-    			label ='_f'+ str(header['BITPIX']*-1)+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])+'x'+ str(header['NAXIS3'])
-    			label2= 'float'+ str(header['BITPIX']*-1)
+    			label ='_f{}-{}x{}x{}'.format(header['BITPIX']*-1, header['NAXIS1'], header['NAXIS2'], header['NAXIS3'])
+    			label2= 'float{}'.format(header['BITPIX']*-1)
     		elif header['BITPIX'] >0:
-    			label = '_i'+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])+'x'+ str(header['NAXIS3'])
-    			label2= 'uint'+ str(header['BITPIX'])
-			
+    			label = '_i{}-{}x{}x{}'.format(header['BITPIX'], header['NAXIS1'], header['NAXIS2'], header['NAXIS3'])
+    			label2= 'uint{}'.format(header['BITPIX'])
     	filename=input_path
     	data = fitsio.read(filename)
     	if not os.path.exists(label2):
@@ -51,4 +47,3 @@ if __name__ == "__main__":
 	target_indices=glob.glob('*.fits') #read fits files
 	for i in range(len(target_indices)):
 		FitsVersionTable.fits_to_raw(target_indices[i], target_indices[i], target_indices[i])
-
