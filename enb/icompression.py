@@ -886,24 +886,36 @@ class LossyCompressionExperiment(CompressionExperiment):
 
 class StructuralSimilarity(CompressionExperiment):
     """Set the Structural Similarity (SSIM) and Multi-Scale Structural Similarity metrics (MS-SSIM)
-    to measure the similarity between two images"""
+    to measure the similarity between two images.
+
+    Authors:
+        - http://www.cns.nyu.edu/~lcv/ssim/msssim.zip
+        - https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
+    """
 
     @atable.column_function([
-        atable.ColumnProperties(name="ssim", label="SSIM", plot_min=0),
-        atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_min=0)])
+        atable.ColumnProperties(name="ssim", label="SSIM", plot_max=1),
+        atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_max=1)])
     def set_StructuralSimilarity(self, index, row):
+
+        # TODO: Would it be possible to call to isets.load_array_bsq and change axes as necessary?
         original_array = np.fromfile(row.compression_results.original_path,
                                      dtype=row.numpy_dtype)
-        original_array = np.reshape(original_array, (row.image_info_row["width"], row.image_info_row["height"], row.image_info_row["component_count"]))
+        original_array = np.reshape(original_array,
+                                    (row.image_info_row["width"], row.image_info_row["height"],
+                                     row.image_info_row["component_count"]))
 
         reconstructed_array = np.fromfile(row.decompression_results.reconstructed_path,
                                           dtype=row.numpy_dtype)
-        reconstructed_array = np.reshape(reconstructed_array, (row.image_info_row["width"], row.image_info_row["height"], row.image_info_row["component_count"]))
+        reconstructed_array = np.reshape(reconstructed_array,
+                                         (row.image_info_row["width"], row.image_info_row["height"],
+                                          row.image_info_row["component_count"]))
 
-        row["ssim"] = self.SSIM(original_array, reconstructed_array)
-        row["ms_ssim"] = self.MultiScaleSSIM(original_array, reconstructed_array)
+        row["ssim"] = self.compute_SSIM(original_array, reconstructed_array)
+        row["ms_ssim"] = self.cumpute_MSSIM(original_array, reconstructed_array)
 
-    def MultiScaleSSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, weights=None):
+
+    def cumpute_MSSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, weights=None):
         """Return the MS-SSIM score between `img1` and `img2`.
 
         This function implements Multi-Scale Structural Similarity (MS-SSIM) Image
@@ -916,6 +928,21 @@ class StructuralSimilarity(CompressionExperiment):
 
         Author's Python implementation:
         https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
+
+        Authors documentation:
+
+        :param img1: Numpy array holding the first RGB image batch.
+        :param img2: Numpy array holding the second RGB image batch.
+        :param max_val: the dynamic range of the images (i.e., the difference between the
+                maximum the and minimum allowed values).
+        :param filter_size: Size of blur kernel to use (will be reduced for small
+              images).
+        :param filter_sigma: Standard deviation for Gaussian blur kernel (will be reduced
+                for small images).
+        :param k1: Constant used to maintain stability in the SSIM calculation (0.01 in
+                the original paper).
+        :param k2: Constant used to maintain stability in the SSIM calculation (0.03 in
+                the original paper).
         """
         if img1.shape != img2.shape:
             raise RuntimeError('Input images must have the same shape (%s vs. %s).',
@@ -932,7 +959,7 @@ class StructuralSimilarity(CompressionExperiment):
         mssim = np.array([])
         mcs = np.array([])
         for _ in range(levels):
-            ssim, cs = self.SSIM(
+            ssim, cs = self.compute_SSIM(
                 im1, im2, max_val=max_val, filter_size=filter_size,
                 filter_sigma=filter_sigma, k1=k1, k2=k2, full=True)
             mssim = np.append(mssim, ssim)
@@ -943,7 +970,7 @@ class StructuralSimilarity(CompressionExperiment):
 
         return np.prod(mcs[0:levels - 1] ** weights[0:levels - 1]) * (mssim[levels - 1] ** weights[levels - 1])
 
-    def SSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, full=False):
+    def compute_SSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, full=False):
         """Return the Structural Similarity Map between `img1` and `img2`.
 
         This function attempts to match the functionality of ssim_index_new.m by
@@ -951,6 +978,19 @@ class StructuralSimilarity(CompressionExperiment):
 
         Author's Python implementation:
         https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
+
+        :param img1: Numpy array holding the first RGB image batch.
+        :param img2: Numpy array holding the second RGB image batch.
+        :param max_val: the dynamic range of the images (i.e., the difference between the
+                maximum the and minimum allowed values).
+        :param filter_size: Size of blur kernel to use (will be reduced for small
+              images).
+        :param filter_sigma: Standard deviation for Gaussian blur kernel (will be reduced
+                for small images).
+        :param k1: Constant used to maintain stability in the SSIM calculation (0.01 in
+                the original paper).
+        :param k2: Constant used to maintain stability in the SSIM calculation (0.03 in
+                the original paper).
         """
         if img1.shape != img2.shape:
             raise RuntimeError('Input images must have the same shape (%s vs. %s).',
