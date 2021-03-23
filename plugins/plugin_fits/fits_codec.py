@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import fitsio
-import sets
 import glob
 from astropy.io import fits
 import os
 import isets
+import sets
 
 class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     """Fits FileVersionTable that makes an identical copy of the original
