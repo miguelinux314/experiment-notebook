@@ -8,9 +8,8 @@ __date__ = "02/02/2021"
 import os
 import glob
 import subprocess
-from enb.config import get_options
-
-options = get_options()
+import numpy as np
+from enb.config import options
 
 import enb.icompression
 import enb.aanalysis
@@ -19,7 +18,7 @@ import plugin_jpeg.jpeg_codecs
 import plugin_hevc.hevc_codec
 
 if __name__ == '__main__':
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./8bit_images")
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
 
     all_codecs = []
     all_families = []
@@ -30,11 +29,11 @@ if __name__ == '__main__':
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
+    hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
         all_codecs.append(c)
-        hevc_family.add_task(c.name, c.label)
-    all_families.append(hevc_family)
+        hevc_qp_family.add_task(c.name, c.label)
+    all_families.append(hevc_qp_family)
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used
@@ -47,7 +46,7 @@ if __name__ == '__main__':
     df = exp.get_df()
     enb.aanalysis.ScalarDistributionAnalyzer().analyze_df(
         full_df=df,
-        target_columns=["bpppc", "pae", "compression_efficiency_2byte_entropy", "psnr_dr"],
+        target_columns=["bpppc", "pae", "compression_efficiency_1byte_entropy", "psnr_dr"],
         output_csv_file="analysis.csv",
         column_to_properties=exp.joined_column_to_properties,
         group_by="task_name",
