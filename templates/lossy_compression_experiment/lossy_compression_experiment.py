@@ -18,6 +18,7 @@ import plugin_jpeg.jpeg_codecs
 import plugin_hevc.hevc_codec
 import plugin_kakadu.kakadu_codec
 
+
 def get_families_and_codecs():
     all_codecs = []
     all_families = []
@@ -28,12 +29,17 @@ def get_families_and_codecs():
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-<<<<<<< HEAD
     # hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
     # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
     #     all_codecs.append(c)
     #     hevc_family.add_task(c.name, c.label)
     # all_families.append(hevc_family)
+
+    hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
+        all_codecs.append(c)
+        hevc_qp_family.add_task(c.name, c.label)
+    all_families.append(hevc_qp_family)
 
     kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
     for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(1, 5)):
@@ -52,12 +58,8 @@ def get_families_and_codecs():
     #     all_codecs.append(c)
     #     kakadu_mct_family.add_task(c.name, c.label)
     # all_families.append(kakadu_mct_family)
-=======
-    hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
-        all_codecs.append(c)
-        hevc_qp_family.add_task(c.name, c.label)
-    all_families.append(hevc_qp_family)
+
+
 
     return all_families, all_codecs
 
@@ -65,7 +67,6 @@ if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
 
     all_families, all_codecs = get_families_and_codecs()
->>>>>>> 21444a09f27a9d6e6bee97fd5b2395aa0afd73ac
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used
