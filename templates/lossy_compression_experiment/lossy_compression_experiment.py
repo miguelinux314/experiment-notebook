@@ -17,9 +17,7 @@ import enb.aanalysis
 import plugin_jpeg.jpeg_codecs
 import plugin_hevc.hevc_codec
 
-if __name__ == '__main__':
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
-
+def get_families_and_codecs():
     all_codecs = []
     all_families = []
     # A family is a set of related tasks
@@ -34,6 +32,13 @@ if __name__ == '__main__':
         all_codecs.append(c)
         hevc_qp_family.add_task(c.name, c.label)
     all_families.append(hevc_qp_family)
+
+    return all_families, all_codecs
+
+if __name__ == '__main__':
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
+
+    all_families, all_codecs = get_families_and_codecs()
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used

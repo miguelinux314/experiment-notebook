@@ -1,34 +1,20 @@
+#!/usr/bin/env python
 
 import os
 import glob
 import subprocess
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 import enb.icompression
 import enb.aanalysis
 
-import plugin_jpeg.jpeg_codecs
-import plugin_hevc.hevc_codec
+import lossy_compression_experiment
 
 if __name__ == '__main__':
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./8bit_images")
+    options.base_dataset_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "data", "8bit_images")
 
-    all_codecs = []
-    all_families = []
-    # A family is a set of related tasks
-    jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
-    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(1, 6)):
-        all_codecs.append(c)
-        jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
-    all_families.append(jpeg_ls_family)
-
-    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
-        all_codecs.append(c)
-        hevc_family.add_task(c.name, c.label)
-    all_families.append(hevc_family)
+    all_families, all_codecs = lossy_compression_experiment.get_families_and_codecs()
 
     # One can easily define pretty plot labels for all codecs individually, even when
     # one or more parameter families are used
