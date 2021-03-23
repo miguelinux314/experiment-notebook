@@ -10,6 +10,7 @@ Libraries:
     * `matlab <https://matplotlib.org/>`_
     * `numpy <https://numpy.org/>`_
     * `ray <https://docs.ray.io/>`_
+    * `Ayushman Dash, Zhou Wang's (SSIM code) <https://github.com/dashayushman>`_
 
 Icons:
 
