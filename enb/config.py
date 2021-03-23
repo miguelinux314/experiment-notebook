@@ -185,8 +185,8 @@ class DirOptions(singleton_cli.GlobalOptions):
     else:
         default_tmp_dir = None
 
-    @cli_property("t", action=singleton_cli.WritableDirAction,
-                  aliases=["tmp_dir"],
+    @cli_property("t",
+                  action=singleton_cli.WritableDirAction,
                   default=default_tmp_dir, help=f"Temporary dir.")
     def base_tmp_dir(self):
         pass
