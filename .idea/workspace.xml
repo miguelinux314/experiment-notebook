@@ -19,26 +19,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="247d6130-3d6c-4797-b9b7-550b97ea3b46" name="Default Changelist" comment="Fixed Kakadu MCT lossy compression">
-      <change afterPath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_kakadu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/enb.egg-info/requires.txt" beforeDir="false" afterPath="$PROJECT_DIR$/enb.egg-info/requires.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/plugin_jpeg/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/plugin_jpeg/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/plugin_jpeg/jpeg_codecs.py" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/plugin_jpeg/jpeg_codecs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_s16be.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_s16be.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_s16be.png" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_s16be.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u16be.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u16be.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u16be.png" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u16be.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u8be.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u8be.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u8be.png" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/codec_availability_u8be.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/full_df_capabilitites.csv" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/full_df_capabilitites.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/test_all_codecs/persistence_test_all_codecs.py/ImagePropertiesTable_persistence.csv" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test_all_codecs/persistence_test_all_codecs.py/ImagePropertiesTable_persistence.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/lossy_compression_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/templates/lossy_compression_experiment/lossy_compression_experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_jpeg~21444a09f27a9d6e6bee97fd5b2395aa0afd73ac" beforeDir="false" afterPath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_kakadu/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_kakadu/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_kakadu/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_kakadu/kakadu_codec.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_mcalic~21444a09f27a9d6e6bee97fd5b2395aa0afd73ac" beforeDir="false" afterPath="$PROJECT_DIR$/templates/lossy_compression_experiment/plugin_mcalic" afterDir="false" />
+    <list default="true" id="247d6130-3d6c-4797-b9b7-550b97ea3b46" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +135,7 @@
       <workItem from="1616349244361" duration="171000" />
       <workItem from="1616349417134" duration="3995000" />
       <workItem from="1616490473972" duration="100000" />
-      <workItem from="1616524444540" duration="1429000" />
+      <workItem from="1616524444540" duration="1740000" />
     </task>
     <task id="LOCAL-00001" summary="Added lossy compression to the Kakadu codec, both with and without MCT. The compression can be controlled using the bit rate or the quality factor.">
       <created>1615924892489</created>
@@ -176,7 +158,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616353267928</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Created symlink to plugin_kakadu">
+      <created>1616525946767</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1616525946767</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,7 +187,8 @@
     <MESSAGE value="Added lossy compression to the Kakadu codec, both with and without MCT. The compression can be controlled using the bit rate or the quality factor." />
     <MESSAGE value="Added todo" />
     <MESSAGE value="Fixed Kakadu MCT lossy compression" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed Kakadu MCT lossy compression" />
+    <MESSAGE value="Created symlink to plugin_kakadu" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="WindowStateProjectService">
     <state x="593" y="206" key="#Inspections" timestamp="1616524475274">
@@ -228,34 +218,34 @@
     </state>
     <state x="335" y="214" width="426" height="479" key="FileChooserDialogImpl/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616525581225" />
     <state x="335" y="214" key="FileChooserDialogImpl/0.0.1920.1044@0.0.1920.1044" timestamp="1616349413246" />
-    <state width="1874" height="381" key="GridCell.Tab.0.bottom" timestamp="1616525024451">
+    <state width="1874" height="381" key="GridCell.Tab.0.bottom" timestamp="1616526147807">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="381" key="GridCell.Tab.0.bottom/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616525024451" />
+    <state width="1874" height="381" key="GridCell.Tab.0.bottom/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616526147807" />
     <state width="1874" height="381" key="GridCell.Tab.0.bottom/0.0.1920.1044@0.0.1920.1044" timestamp="1616353413705" />
-    <state width="1874" height="381" key="GridCell.Tab.0.center" timestamp="1616525024451">
+    <state width="1874" height="381" key="GridCell.Tab.0.center" timestamp="1616526147806">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="381" key="GridCell.Tab.0.center/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616525024451" />
+    <state width="1874" height="381" key="GridCell.Tab.0.center/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616526147806" />
     <state width="1874" height="381" key="GridCell.Tab.0.center/0.0.1920.1044@0.0.1920.1044" timestamp="1616353413703" />
-    <state width="1874" height="381" key="GridCell.Tab.0.left" timestamp="1616525024451">
+    <state width="1874" height="381" key="GridCell.Tab.0.left" timestamp="1616526147806">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="381" key="GridCell.Tab.0.left/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616525024451" />
+    <state width="1874" height="381" key="GridCell.Tab.0.left/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616526147806" />
     <state width="1874" height="381" key="GridCell.Tab.0.left/0.0.1920.1044@0.0.1920.1044" timestamp="1616353413702" />
-    <state width="1874" height="381" key="GridCell.Tab.0.right" timestamp="1616525024451">
+    <state width="1874" height="381" key="GridCell.Tab.0.right" timestamp="1616526147806">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="381" key="GridCell.Tab.0.right/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616525024451" />
+    <state width="1874" height="381" key="GridCell.Tab.0.right/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616526147806" />
     <state width="1874" height="381" key="GridCell.Tab.0.right/0.0.1920.1044@0.0.1920.1044" timestamp="1616353413704" />
     <state x="460" y="160" key="SettingsEditor" timestamp="1615917578213">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="460" y="160" key="SettingsEditor/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1615917578213" />
-    <state x="559" y="261" key="Vcs.Push.Dialog.v2" timestamp="1616353275181">
+    <state x="559" y="261" key="Vcs.Push.Dialog.v2" timestamp="1616525952901">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="559" y="261" key="Vcs.Push.Dialog.v2/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1615924903366" />
+    <state x="559" y="261" key="Vcs.Push.Dialog.v2/0.0.1920.1044/1920.0.1366.768@0.0.1920.1044" timestamp="1616525952901" />
     <state x="559" y="261" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1616353275181" />
     <state x="767" y="440" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1616349481009">
       <screen x="0" y="0" width="1920" height="1044" />
