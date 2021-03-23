@@ -20,9 +20,11 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                          original_properties_table=original_properties_table,
                          version_base_dir=tmp_dir)
 
-    def version(self, input_path, output_path):
+    def fits_to_raw(self, input_path, output_path):
+	
     	hdul = fits.open('CALIFAIC0159.V500.rscube.fits')
     	header = hdul[0].header #change in case fits image extension does not correspond to 0
+	
     	if header['NAXIS'] == 2:
     		if header['BITPIX'] < 0:
     			label = '_f'+ str(header['BITPIX']*-1)+'-'+ str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])
@@ -37,6 +39,7 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     		elif header['BITPIX'] >0:
     			label = '_i'+ str(header['BITPIX'])+'-'+str(header['NAXIS1'])+'x'+ str(header['NAXIS2'])+'x'+ str(header['NAXIS3'])
     			label2= 'uint'+ str(header['BITPIX'])
+			
     	filename=input_path
     	data = fitsio.read(filename)
     	if not os.path.exists(label2):
@@ -46,5 +49,5 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
 if __name__ == "__main__":
 	target_indices=glob.glob('*.fits') #read fits files
 	for i in range(len(target_indices)):
-		FitsVersionTable.version(target_indices[i], target_indices[i], target_indices[i])
+		FitsVersionTable.fits_to_raw(target_indices[i], target_indices[i], target_indices[i])
 
