@@ -159,7 +159,7 @@ class SingletonCLI(metaclass=Singleton):
             self.__setattr__(k, v)
 
     @classmethod
-    def property(cls, *aliases, group_name=None, **kwargs):
+    def property(cls, *alias, group_name=None, **kwargs):
         """Decorator for properties that can be automatically parsed
         using argparse, and also programmatically (the setter is
         created by default when the getter is defined).
@@ -170,7 +170,7 @@ class SingletonCLI(metaclass=Singleton):
         Note that the function being decorated is never called.
 
 
-        :param aliases: a list of aliases that can be used for
+        :param alias: a list of aliases that can be used for
           the property in the command line.
         :param group_name: the name of the group to be used, used the general section
           if the value is None.
@@ -210,7 +210,7 @@ class SingletonCLI(metaclass=Singleton):
         def wrapper(decorated_method):
             argparse_kwargs = dict(help=decorated_method.__doc__)
             alias_with_dashes = [f"--{decorated_method.__name__}"]
-            for a in aliases:
+            for a in alias:
                 if len(a) == 1:
                     alias_with_dashes.append(f"-{a}")
                 else:
