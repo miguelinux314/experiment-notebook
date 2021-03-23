@@ -145,11 +145,13 @@ if __name__ == '__main__':
                                        f"{c.label} HT {c.param_dict['ht']}")
             all_families.append(kakadu_mct_family)
 
-    hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossless(), plugin_hevc.hevc_codec.HEVC_lossy(qp=25)):
+    for label, c in [("HEVC lossless", plugin_hevc.hevc_codec.HEVC_lossless()),
+                     ("HEVC lossy QP25", plugin_hevc.hevc_codec.HEVC_lossy(qp=25)),
+                     ("HEVC lossy 0.25bps", plugin_hevc.hevc_codec.HEVC_lossy(bit_rate=0.25))]:
+        family = enb.aanalysis.TaskFamily(label=label)
         all_codecs.append(c)
-        hevc_family.add_task(c.name, c.label)
-    all_families.append(hevc_family)
+        family.add_task(c.name, c.label)
+        all_families.append(family)
 
     label_by_group_name = dict()
     for family in all_families:
@@ -179,10 +181,10 @@ if __name__ == '__main__':
     min_compression_ratio_by_name = collections.defaultdict(lambda: float("inf"))
     max_compression_ratio_by_name = collections.defaultdict(lambda: float("-inf"))
 
-    for codec in table_codecs:
-        data_dict = dict(codec_name=codec.label)
+    for c in table_codecs:
+        data_dict = dict(codec_name=c.label)
         if options.verbose:
-            print(f"Testing codec {codec.name}...")
+            print(f"Testing codec {c.name}...")
         for d in target_dirs:
             column_name = os.path.basename(d)
             if options.verbose > 1:
@@ -194,29 +196,29 @@ if __name__ == '__main__':
                         tempfile.NamedTemporaryFile() as tmp_reconstructed:
                     state = "compressing"
                     try:
-                        codec.compress(original_path=input_path,
-                                       compressed_path=tmp_compressed.name,
-                                       original_file_info=row_info)
+                        c.compress(original_path=input_path,
+                                   compressed_path=tmp_compressed.name,
+                                   original_file_info=row_info)
                         state = "decompressing"
-                        codec.decompress(compressed_path=tmp_compressed.name,
-                                         reconstructed_path=tmp_reconstructed.name,
-                                         original_file_info=row_info)
+                        c.decompress(compressed_path=tmp_compressed.name,
+                                     reconstructed_path=tmp_reconstructed.name,
+                                     original_file_info=row_info)
 
                         match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
                         signed = match.group(1) == "s"
                         bits_per_sample = int(match.group(2))
 
-                        min_compression_ratio_by_name[codec.label] = min(
-                            min_compression_ratio_by_name[codec.label],
+                        min_compression_ratio_by_name[c.label] = min(
+                            min_compression_ratio_by_name[c.label],
                             os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
                         )
-                        max_compression_ratio_by_name[codec.label] = max(
-                            max_compression_ratio_by_name[codec.label],
+                        max_compression_ratio_by_name[c.label] = max(
+                            max_compression_ratio_by_name[c.label],
                             os.path.getsize(input_path) / os.path.getsize(tmp_compressed.name)
                         )
 
                         if not filecmp.cmp(input_path, tmp_reconstructed.name):
-                            if (isinstance(codec, enb.icompression.LosslessCodec)):
+                            if (isinstance(c, enb.icompression.LosslessCodec)):
                                 data_dict[column_name] = "Not lossless"
                             else:
                                 data_dict[column_name] = "Lossy"
@@ -225,11 +227,11 @@ if __name__ == '__main__':
                             if options.verbose > 2:
                                 print("Losless!")
 
-                            min_lossless_bitdepth_by_name[codec.label] = min(
-                                min_lossless_bitdepth_by_name[codec.label],
+                            min_lossless_bitdepth_by_name[c.label] = min(
+                                min_lossless_bitdepth_by_name[c.label],
                                 bits_per_sample)
-                            max_lossless_bitdepth_by_name[codec.label] = max(
-                                max_lossless_bitdepth_by_name[codec.label],
+                            max_lossless_bitdepth_by_name[c.label] = max(
+                                max_lossless_bitdepth_by_name[c.label],
                                 bits_per_sample)
                     except Exception as ex:
                         data_dict[column_name] = "Not available"
@@ -238,9 +240,9 @@ if __name__ == '__main__':
                         break
             else:
                 data_dict[column_name] = "Lossless"
-        data_dict["min_lossless_bitdepth"] = min_lossless_bitdepth_by_name[codec.name]
-        data_dict["max_lossless_bitdepth"] = max_lossless_bitdepth_by_name[codec.name]
-        df_capabilities.loc[codec.label] = pd.Series(data_dict)
+        data_dict["min_lossless_bitdepth"] = min_lossless_bitdepth_by_name[c.name]
+        data_dict["max_lossless_bitdepth"] = max_lossless_bitdepth_by_name[c.name]
+        df_capabilities.loc[c.label] = pd.Series(data_dict)
 
     df_capabilities["lossless_range"] = df_capabilities["codec_name"].apply(
         lambda name: f"{min_lossless_bitdepth_by_name[name]}"
