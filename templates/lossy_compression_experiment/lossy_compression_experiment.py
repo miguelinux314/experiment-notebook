@@ -29,11 +29,11 @@ def get_families_and_codecs():
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    # hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
-    # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
-    #     all_codecs.append(c)
-    #     hevc_qp_family.add_task(c.name, c.label)
-    # all_families.append(hevc_qp_family)
+    hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
+    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
+        all_codecs.append(c)
+        hevc_qp_family.add_task(c.name, c.label)
+    all_families.append(hevc_qp_family)
 
     kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
     for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(2, 6)):
