@@ -14,7 +14,6 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
     """
 
     def __init__(self, ht=False, spatial_dwt_levels=5, lossless=None, bit_rate=False, quality_factor=False):
-        # TODO:  Lossless None, user can set it to True. User can not set it to True and select a bitrate and qfactor
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
         assert spatial_dwt_levels in range(0, 34)
         if lossless:
@@ -79,6 +78,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
             for p in temp_path.split(","):
                 with open(p, "rb") as component_file:
                     output_file.write(component_file.read())
+        decompression_results.reconstructed_path = reconstructed_path
 
         return decompression_results
 
