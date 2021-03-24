@@ -11,7 +11,7 @@ import isets
 class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     """Fits FileVersionTable that makes an identical copy of the original
     """
-    version_name = "FitsToRaw"
+    version_name = "FitsToRaw" 
     
     def __init__(self, original_properties_table):
     	tmp_dir='tmp_dir'
