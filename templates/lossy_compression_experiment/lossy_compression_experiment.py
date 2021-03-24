@@ -29,39 +29,29 @@ def get_families_and_codecs():
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    # hevc_family = enb.aanalysis.TaskFamily(label="HEVC")
-    # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=m) for m in range(1, 52, 6)):
+    # hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
+    # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
     #     all_codecs.append(c)
-    #     hevc_family.add_task(c.name, c.label)
-    # all_families.append(hevc_family)
-
-    hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
-    for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
-        all_codecs.append(c)
-        hevc_qp_family.add_task(c.name, c.label)
-    all_families.append(hevc_qp_family)
+    #     hevc_qp_family.add_task(c.name, c.label)
+    # all_families.append(hevc_qp_family)
 
     kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(1, 5)):
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(2, 6)):
         all_codecs.append(c)
         kakadu_family.add_task(c.name, c.label)
     for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(25, 125, 25)):
         all_codecs.append(c)
         kakadu_family.add_task(c.name, c.label)
     all_families.append(kakadu_family)
-    #
-    # kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
-    # for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(bit_rate=br) for br in range(1, 5)):
-    #     all_codecs.append(c)
-    #     kakadu_mct_family.add_task(c.name, c.label)
-    # for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(quality_factor=qf) for qf in range(25, 125, 25)):
-    #     all_codecs.append(c)
-    #     kakadu_mct_family.add_task(c.name, c.label)
-    # all_families.append(kakadu_mct_family)
 
-
+    kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
+    c = plugin_kakadu.kakadu_codec.Kakadu_MCT(lossless=False)
+    all_codecs.append(c)
+    kakadu_mct_family.add_task(c.name, c.label)
+    all_families.append(kakadu_mct_family)
 
     return all_families, all_codecs
+
 
 if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
