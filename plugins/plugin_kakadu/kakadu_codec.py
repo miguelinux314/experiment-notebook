@@ -88,6 +88,13 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f" {'lossless' if self.param_dict['lossless'] else 'lossy'}"
 
 
+# TODO: the bitrate does not work well: please read the help for    -rate -|<bits/pel>,<bits/pel>,... in kdu_compress
+# and fix
+
+# TODO: Kakadu MCT does not accept quality factor not bitrate - it totally should accept and pass
+# those to the parent initializator
+
+# TODO: add different parameters to kakadu MCT in the lossy compression experiment
 class Kakadu_MCT(Kakadu):
     def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None):
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
