@@ -218,7 +218,8 @@ if __name__ == '__main__':
                         )
 
                         if not filecmp.cmp(input_path, tmp_reconstructed.name):
-                            if (isinstance(c, enb.icompression.LosslessCodec)):
+                            if (not isinstance(c, enb.icompression.LossyCodec)
+                                    and not isinstance(c, enb.icompression.NearLosslessCodec)):
                                 data_dict[column_name] = "Not lossless"
                             else:
                                 data_dict[column_name] = "Lossy"
