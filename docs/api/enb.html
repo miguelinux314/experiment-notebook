@@ -210,7 +210,7 @@ using pyplot.</p>
 <dl class="method">
 <dt id="enb.aanalysis.Analyzer.analyze_df">
 <code class="descname">analyze_df</code><span class="sig-paren">(</span><em>full_df</em>, <em>target_columns</em>, <em>output_plot_dir</em>, <em>output_csv_file=None</em>, <em>column_to_properties=None</em>, <em>group_by=None</em>, <em>group_name_order=None</em>, <em>show_global=True</em>, <em>show_count=True</em>, <em>version_name=None</em>, <em>adjust_height=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+1084.g3a9c94bc14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+1126.g05a0e98adf)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2039,7 +2039,7 @@ since codecs are expected to store all needed metainformation in the compressed 
 <dt id="enb.icompression.SpectralAngleTable">
 <em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">SpectralAngleTable</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table=None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em>, <em>compressed_copy_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a></p>
-<p>Lossy compression experiment that computes spectral angle “distance” 
+<p>Lossy compression experiment that computes spectral angle “distance”
 measures between the compressed and the reconstructed images.</p>
 <p>Subclasses of LossyCompressionExperiment may inherit from this one to
 automatically add the data columns defined here</p>
@@ -2058,6 +2058,101 @@ one per (x,y) position in the image, flattened in raster order.</p>
 <dl class="method">
 <dt id="enb.icompression.SpectralAngleTable.set_spectral_distances">
 <code class="descname">set_spectral_distances</code><span class="sig-paren">(</span><em>index</em>, <em>row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.SpectralAngleTable.set_spectral_distances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enb.icompression.StructuralSimilarity">
+<em class="property">class </em><code class="descclassname">enb.icompression.</code><code class="descname">StructuralSimilarity</code><span class="sig-paren">(</span><em>codecs</em>, <em>dataset_paths=None</em>, <em>csv_experiment_path=None</em>, <em>csv_dataset_path=None</em>, <em>dataset_info_table=None</em>, <em>overwrite_file_properties=False</em>, <em>parallel_dataset_property_processing=None</em>, <em>reconstructed_dir_path=None</em>, <em>compressed_copy_dir_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.StructuralSimilarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a></p>
+<p>Set the Structural Similarity (SSIM) and Multi-Scale Structural Similarity metrics (MS-SSIM)
+to measure the similarity between two images.</p>
+<dl class="docutils">
+<dt>Authors:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="http://www.cns.nyu.edu/~lcv/ssim/msssim.zip">http://www.cns.nyu.edu/~lcv/ssim/msssim.zip</a></li>
+<li><a class="reference external" href="https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py">https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py</a></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="enb.icompression.StructuralSimilarity.column_to_properties">
+<code class="descname">column_to_properties</code><em class="property"> = {'bpppc': ColumnProperties(name=bpppc, fun=&lt;function CompressionExperiment.set_bpppc&gt;, label=Compressed data rate (bpppc), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compressed_file_sha256': ColumnProperties(name=compressed_file_sha256, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compressed file's SHA256, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compressed_size_bytes': ColumnProperties(name=compressed_size_bytes, fun=&lt;function CompressionExperiment.set_compressed_data_size&gt;, label=Compressed data size (Bytes), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_efficiency_1byte_entropy': ColumnProperties(name=compression_efficiency_1byte_entropy, fun=&lt;function CompressionExperiment.set_efficiency&gt;, label=Compression efficiency (1B entropy), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_efficiency_2byte_entropy': ColumnProperties(name=compression_efficiency_2byte_entropy, fun=&lt;function CompressionExperiment.set_efficiency&gt;, label=Compression efficiency (2B entropy), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_ratio': ColumnProperties(name=compression_ratio, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression ratio, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_ratio_dr': ColumnProperties(name=compression_ratio_dr, fun=&lt;function CompressionExperiment.set_compression_ratio_dr&gt;, label=Compression ratio, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'compression_time_seconds': ColumnProperties(name=compression_time_seconds, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Compression time (s), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'decompression_time_seconds': ColumnProperties(name=decompression_time_seconds, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Decompression time (s), plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'lossless_reconstruction': ColumnProperties(name=lossless_reconstruction, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Lossless?, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'ms_ssim': ColumnProperties(name=ms_ssim, fun=&lt;function StructuralSimilarity.set_StructuralSimilarity&gt;, label=MS-SSIM, plot_max=1, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'param_dict': ColumnProperties(name=param_dict, fun=&lt;function Experiment.set_param_dict&gt;, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'repetitions': ColumnProperties(name=repetitions, fun=&lt;function CompressionExperiment.set_comparison_results&gt;, label=Number of compression/decompression repetitions, plot_min=0, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'ssim': ColumnProperties(name=ssim, fun=&lt;function StructuralSimilarity.set_StructuralSimilarity&gt;, label=SSIM, plot_max=1, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'task_label': ColumnProperties(name=task_label, fun=&lt;function Experiment.set_task_label&gt;, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False), 'task_name': ColumnProperties(name=task_name, fun=&lt;function Experiment.set_task_name&gt;, semilog_x=False, semilog_y=False, semilog_x_base=10, semilog_y_base=10, has_dict_values=False)}</em><a class="headerlink" href="#enb.icompression.StructuralSimilarity.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enb.icompression.StructuralSimilarity.compute_SSIM">
+<code class="descname">compute_SSIM</code><span class="sig-paren">(</span><em>img1</em>, <em>img2</em>, <em>max_val=255</em>, <em>filter_size=11</em>, <em>filter_sigma=1.5</em>, <em>k1=0.01</em>, <em>k2=0.03</em>, <em>full=False</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.StructuralSimilarity.compute_SSIM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Structural Similarity Map between <cite>img1</cite> and <cite>img2</cite>.</p>
+<p>This function attempts to match the functionality of ssim_index_new.m by
+Zhou Wang: <a class="reference external" href="http://www.cns.nyu.edu/~lcv/ssim/msssim.zip">http://www.cns.nyu.edu/~lcv/ssim/msssim.zip</a></p>
+<p>Author’s Python implementation:
+<a class="reference external" href="https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py">https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>img1</strong> – Numpy array holding the first RGB image batch.</li>
+<li><strong>img2</strong> – Numpy array holding the second RGB image batch.</li>
+<li><strong>max_val</strong> – the dynamic range of the images (i.e., the difference between the
+maximum the and minimum allowed values).</li>
+<li><strong>filter_size</strong> – Size of blur kernel to use (will be reduced for small
+images).</li>
+<li><strong>filter_sigma</strong> – Standard deviation for Gaussian blur kernel (will be reduced
+for small images).</li>
+<li><strong>k1</strong> – Constant used to maintain stability in the SSIM calculation (0.01 in
+the original paper).</li>
+<li><strong>k2</strong> – Constant used to maintain stability in the SSIM calculation (0.03 in
+the original paper).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.icompression.StructuralSimilarity.cumpute_MSSIM">
+<code class="descname">cumpute_MSSIM</code><span class="sig-paren">(</span><em>img1</em>, <em>img2</em>, <em>max_val=255</em>, <em>filter_size=11</em>, <em>filter_sigma=1.5</em>, <em>k1=0.01</em>, <em>k2=0.03</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.StructuralSimilarity.cumpute_MSSIM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the MS-SSIM score between <cite>img1</cite> and <cite>img2</cite>.</p>
+<p>This function implements Multi-Scale Structural Similarity (MS-SSIM) Image
+Quality Assessment according to Zhou Wang’s paper, “Multi-scale structural
+similarity for image quality assessment” (2003).
+Link: <a class="reference external" href="https://ece.uwaterloo.ca/~z70wang/publications/msssim.pdf">https://ece.uwaterloo.ca/~z70wang/publications/msssim.pdf</a></p>
+<p>Author’s MATLAB implementation:
+<a class="reference external" href="http://www.cns.nyu.edu/~lcv/ssim/msssim.zip">http://www.cns.nyu.edu/~lcv/ssim/msssim.zip</a></p>
+<p>Author’s Python implementation:
+<a class="reference external" href="https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py">https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py</a></p>
+<p>Authors documentation:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>img1</strong> – Numpy array holding the first RGB image batch.</li>
+<li><strong>img2</strong> – Numpy array holding the second RGB image batch.</li>
+<li><strong>max_val</strong> – the dynamic range of the images (i.e., the difference between the
+maximum the and minimum allowed values).</li>
+<li><strong>filter_size</strong> – Size of blur kernel to use (will be reduced for small
+images).</li>
+<li><strong>filter_sigma</strong> – Standard deviation for Gaussian blur kernel (will be reduced
+for small images).</li>
+<li><strong>k1</strong> – Constant used to maintain stability in the SSIM calculation (0.01 in
+the original paper).</li>
+<li><strong>k2</strong> – Constant used to maintain stability in the SSIM calculation (0.03 in
+the original paper).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="enb.icompression.StructuralSimilarity.set_StructuralSimilarity">
+<code class="descname">set_StructuralSimilarity</code><span class="sig-paren">(</span><em>index</em>, <em>row</em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.StructuralSimilarity.set_StructuralSimilarity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
