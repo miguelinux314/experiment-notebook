@@ -35,14 +35,17 @@ def get_families_and_codecs():
         hevc_qp_family.add_task(c.name, c.label)
     all_families.append(hevc_qp_family)
 
-    kakadu_family = enb.aanalysis.TaskFamily(label="Kakadu")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in range(2, 6)):
+    kakadu_br_family = enb.aanalysis.TaskFamily(label="Kakadu BR")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in np.linspace(0.1, 5, 10)):
         all_codecs.append(c)
-        kakadu_family.add_task(c.name, c.label)
-    for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(25, 125, 25)):
+        kakadu_br_family.add_task(c.name, c.label)
+    all_families.append(kakadu_br_family)
+
+    kakadu_qf_family = enb.aanalysis.TaskFamily(label="Kakadu QF")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(0, 100, 20)):
         all_codecs.append(c)
-        kakadu_family.add_task(c.name, c.label)
-    all_families.append(kakadu_family)
+        kakadu_qf_family.add_task(c.name, c.label)
+    all_families.append(kakadu_qf_family)
 
     kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
     c = plugin_kakadu.kakadu_codec.Kakadu_MCT(lossless=False)
