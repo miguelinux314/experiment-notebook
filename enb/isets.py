@@ -69,10 +69,22 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     def set_bytes_per_sample(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
             row[_column_name] = 1
-        elif any(s in file_path for s in ("u16be", "u16le", "s16be", "s16le")):
+        elif any(s in file_path for s in ("u16be", "u16le", "s16be", "s16le", "f16")):
             row[_column_name] = 2
-        elif any(s in file_path for s in ("u32be", "u32le", "s32be", "s32le")):
+        elif any(s in file_path for s in ("u32be", "u32le", "s32be", "s32le", "f32")):
             row[_column_name] = 4
+        elif any("f64" in file_path):
+            row[_column_name] = 8
+        else:
+            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+
+    @atable.column_function("float", label="Float", plot_min=0)
+    def set_float(self, file_path, row):
+        if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
+                                        "u32be", "u32le", "s32be", "s32le")):
+            row[_column_name] = "False"
+        elif any(s in file_path for s in ("f16", "f32", "f64")):
+            row[_column_name] = "True"
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
@@ -80,7 +92,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     def set_signed(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u16be", "u16le", "u32be", "u32le")):
             row[_column_name] = False
-        elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le")):
+        elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le", "f16", "f32", "f64")):
             row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
@@ -91,6 +103,8 @@ class ImageGeometryTable(sets.FilePropertiesTable):
             row[_column_name] = True
         elif any(s in file_path for s in ("u8le", "u16le", "u32le", "s8le", "s16le", "s32le")):
             row[_column_name] = False
+        elif any(s in file_path for s in ("f16", "f32", "f64")):
+            row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
