@@ -42,7 +42,7 @@ from plugins import plugin_kakadu
 if __name__ == '__main__':
     all_codecs = []
     all_families = []
-    
+
     jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
     for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=0) for m in [0]):
         all_codecs.append(c)
@@ -122,20 +122,28 @@ if __name__ == '__main__':
                                 f"{c.label} {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
 
-    for ht in [True, False]: # ht=True does not work for now
-        kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}")
-        c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht)
-        all_codecs.append(c)
-        kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}",
-                               f"{c.label} HT {c.param_dict['ht']}")
-        all_families.append(kakadu_family)
+    for ht in [True, False]:
+        for lossless in [True, False]:
+            kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}"
+                                                           + f"{'lossless' if lossless else 'lossy'}")
+            if lossless:
+                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=True)
+            else:
+                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless, quality_factor=75)
+            all_codecs.append(c)
+            kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
+                                   + f"{'lossless' if lossless else 'lossy'}",
+                                   f"{c.label} HT {c.param_dict['ht']} Quality Factor {c.param_dict['quality_factor']}")
+            all_families.append(kakadu_family)
 
-        kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}")
-        c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht)
-        all_codecs.append(c)
-        kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}",
-                                   f"{c.label} HT {c.param_dict['ht']}")
-        all_families.append(kakadu_mct_family)
+            kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}"
+                                                               + f"{'lossless' if lossless else 'lossy'}")
+            c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
+            all_codecs.append(c)
+            kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
+                                       + f"{'lossless' if lossless else 'lossy'}",
+                                       f"{c.label} HT {c.param_dict['ht']}")
+            all_families.append(kakadu_mct_family)
 
     for label, c in [("HEVC lossless", plugin_hevc.hevc_codec.HEVC_lossless()),
                      ("HEVC lossy QP25", plugin_hevc.hevc_codec.HEVC_lossy(qp=25)),
@@ -239,16 +247,16 @@ if __name__ == '__main__':
     df_capabilities["lossless_range"] = df_capabilities["codec_name"].apply(
         lambda name: f"{min_lossless_bitdepth_by_name[name]}"
                      f":{max_lossless_bitdepth_by_name[name]}"
-                     if math.isfinite(float(min_lossless_bitdepth_by_name[name]))
-                        and math.isfinite(float(max_lossless_bitdepth_by_name[name]))
-                     else "None"
+        if math.isfinite(float(min_lossless_bitdepth_by_name[name]))
+           and math.isfinite(float(max_lossless_bitdepth_by_name[name]))
+        else "None"
     )
     df_capabilities["cr_range"] = df_capabilities["codec_name"].apply(
         lambda name: f"{min_compression_ratio_by_name[name]:.2f}"
                      f":{max_compression_ratio_by_name[name]:.2f}"
-                     if math.isfinite(float(min_compression_ratio_by_name[name]))
-                        and math.isfinite(float(max_compression_ratio_by_name[name]))
-                     else "None"
+        if math.isfinite(float(min_compression_ratio_by_name[name]))
+           and math.isfinite(float(max_compression_ratio_by_name[name]))
+        else "None"
     )
 
     del df_capabilities["min_lossless_bitdepth"]
@@ -257,6 +265,7 @@ if __name__ == '__main__':
     df_capabilities.to_csv("full_df_capabilitites.csv")
 
     import pprint
+
     pprint.pprint(min_lossless_bitdepth_by_name)
     pprint.pprint(max_lossless_bitdepth_by_name)
 
