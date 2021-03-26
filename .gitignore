@@ -23,3 +23,7 @@ doc/build/
 
 /private
 /venv
+
+/templates/lossy_compression_experiment/persistence_lossy_compression_experiment.py/
+/templates/lossy_compression_experiment/persistence_experiment_ssim.py/
+/plugins/test_all_codecs/persistence_test_all_codecs.py/
