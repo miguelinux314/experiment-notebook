@@ -69,10 +69,22 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     def set_bytes_per_sample(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
             row[_column_name] = 1
-        elif any(s in file_path for s in ("u16be", "u16le", "s16be", "s16le")):
+        elif any(s in file_path for s in ("u16be", "u16le", "s16be", "s16le", "f16")):
             row[_column_name] = 2
-        elif any(s in file_path for s in ("u32be", "u32le", "s32be", "s32le")):
+        elif any(s in file_path for s in ("u32be", "u32le", "s32be", "s32le", "f32")):
             row[_column_name] = 4
+        elif any(s in file_path for s in ("f64")):
+            row[_column_name] = 8
+        else:
+            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+
+    @atable.column_function("float", label="Floating point data?")
+    def set_float(self, file_path, row):
+        if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
+                                        "u32be", "u32le", "s32be", "s32le")):
+            row[_column_name] = False
+        elif any(s in file_path for s in ("f16", "f32", "f64")):
+            row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
@@ -80,7 +92,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     def set_signed(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u16be", "u16le", "u32be", "u32le")):
             row[_column_name] = False
-        elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le")):
+        elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le", "f16", "f32", "f64")):
             row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
@@ -91,6 +103,8 @@ class ImageGeometryTable(sets.FilePropertiesTable):
             row[_column_name] = True
         elif any(s in file_path for s in ("u8le", "u16le", "u32le", "s8le", "s16le", "s32le")):
             row[_column_name] = False
+        elif any(s in file_path for s in ("f16", "f32", "f64")):
+            row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
@@ -124,14 +138,18 @@ class ImagePropertiesTable(ImageGeometryTable):
     def set_sample_extrema(self, file_path, row):
         array = load_array_bsq(file_or_path=file_path, image_properties_row=row).flatten()
         row["sample_min"], row["sample_max"] = array.min(), array.max()
-        assert row["sample_min"] == int(row["sample_min"])
-        assert row["sample_max"] == int(row["sample_max"])
-        row["sample_min"] = int(row["sample_min"])
-        row["sample_max"] = int(row["sample_max"])
+        if row["float"] == False:
+            assert row["sample_min"] == int(row["sample_min"])
+            assert row["sample_max"] == int(row["sample_max"])
+            row["sample_min"] = int(row["sample_min"])
+            row["sample_max"] = int(row["sample_max"])
 
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
-        range_len = int(row["sample_max"]) - int(row["sample_min"])
+        if row["float"] == True:
+            range_len = (row["sample_max"]) - (row["sample_min"])
+        else:
+            range_len = int(row["sample_max"]) - int(row["sample_min"])
         assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
         row[_column_name] = max(1, math.ceil(math.log2(range_len + 1)))
 
@@ -218,7 +236,6 @@ def load_array_bsq(file_or_path, image_properties_row):
     """Load a numpy array indexed by [x,y,z] from file_or_path using
     the geometry information in image_properties_row.
     """
-
     return np.fromfile(file_or_path,
                        dtype=iproperties_row_to_numpy_dtype(image_properties_row)).reshape(
         (image_properties_row["component_count"],
@@ -263,10 +280,13 @@ def iproperties_row_to_numpy_dtype(image_properties_row):
     to represent an image with properties as defined in
     image_properties_row
     """
-    return ((">" if image_properties_row["big_endian"] else "<")
-            if image_properties_row["bytes_per_sample"] > 1 else "") \
-           + ("i" if image_properties_row["signed"] else "u") \
-           + str(image_properties_row["bytes_per_sample"])
+    if image_properties_row["float"] == True:
+        return "f" + str(image_properties_row["bytes_per_sample"])
+    else:
+        return ((">" if image_properties_row["big_endian"] else "<")
+                if image_properties_row["bytes_per_sample"] > 1 else "") \
+               + ("i" if image_properties_row["signed"] else "u") \
+               + str(image_properties_row["bytes_per_sample"])
 
 
 def iproperties_row_to_sample_type_tag(image_properties_row):
@@ -274,7 +294,7 @@ def iproperties_row_to_sample_type_tag(image_properties_row):
     given an object similar to an ImageGeometryTable row.
     """
     assert image_properties_row["signed"] in [True, False]
-    assert image_properties_row["bytes_per_sample"] in [1, 2, 3, 4]
+    assert image_properties_row["bytes_per_sample"] in [1, 2, 3, 4, 8]
     assert image_properties_row["big_endian"] in [True, False]
 
     return ("s" if image_properties_row["signed"] else "u") \
