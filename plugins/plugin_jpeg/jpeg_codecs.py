@@ -6,14 +6,12 @@ __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "08/04/2020"
 
 import os
-import sortedcontainers
-import shutil
 import tempfile
 import numpy as np
+import sortedcontainers
 
 from enb import icompression
 from enb import isets
-from enb import sets
 from enb import pgm
 from enb import tarlite
 from enb.config import get_options
