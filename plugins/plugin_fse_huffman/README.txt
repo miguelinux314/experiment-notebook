@@ -1,4 +1,4 @@
-Plugin Huffman
+Plugin fse and Huffman
 
 Download the code of the executable at https://github.com/Cyan4973/FiniteStateEntropy
 

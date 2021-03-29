@@ -30,8 +30,7 @@ from plugins import plugin_mcalic
 from plugins import plugin_ccsds122
 from plugins import plugin_fapec
 from plugins import plugin_flif
-from plugins import plugin_fse
-from plugins import plugin_huffman
+from plugins import plugin_fse_huffman
 from plugins import plugin_lcnl
 from plugins import plugin_marlin
 from plugins import plugin_zip
@@ -81,13 +80,13 @@ if __name__ == '__main__':
     all_families.append(flif_family)
 
     fse_family = enb.aanalysis.TaskFamily(label="FSE")
-    for c in (plugin_fse.fse_codec.FSE(),):
+    for c in (plugin_fse_huffman.fse_codec.FSE(),):
         all_codecs.append(c)
         fse_family.add_task(c.name, f"{c.label}")
     all_families.append(fse_family)
 
     huffman_family = enb.aanalysis.TaskFamily(label="Huffman")
-    for c in (plugin_huffman.huffman_codec.Huffman(),):
+    for c in (plugin_fse_huffman.huffman_codec.Huffman(),):
         all_codecs.append(c)
         huffman_family.add_task(c.name, f"{c.label}")
     all_families.append(huffman_family)
