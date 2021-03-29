@@ -16,6 +16,8 @@ import enb.aanalysis
 
 import plugin_jpeg.jpeg_codecs
 import plugin_hevc.hevc_codec
+import plugin_kakadu.kakadu_codec
+
 
 def get_families_and_codecs():
     all_codecs = []
@@ -33,7 +35,26 @@ def get_families_and_codecs():
         hevc_qp_family.add_task(c.name, c.label)
     all_families.append(hevc_qp_family)
 
+    kakadu_br_family = enb.aanalysis.TaskFamily(label="Kakadu BR")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(bit_rate=br) for br in np.linspace(0.1, 5, 10)):
+        all_codecs.append(c)
+        kakadu_br_family.add_task(c.name, c.label)
+    all_families.append(kakadu_br_family)
+
+    kakadu_qf_family = enb.aanalysis.TaskFamily(label="Kakadu QF")
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(0, 100, 20)):
+        all_codecs.append(c)
+        kakadu_qf_family.add_task(c.name, c.label)
+    all_families.append(kakadu_qf_family)
+
+    kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT")
+    c = plugin_kakadu.kakadu_codec.Kakadu_MCT(lossless=False)
+    all_codecs.append(c)
+    kakadu_mct_family.add_task(c.name, c.label)
+    all_families.append(kakadu_mct_family)
+
     return all_families, all_codecs
+
 
 if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "./data/8bit_images")
