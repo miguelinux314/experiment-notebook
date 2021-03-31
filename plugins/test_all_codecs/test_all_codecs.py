@@ -48,19 +48,19 @@ if __name__ == '__main__':
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
-    for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in [0]):
-        all_codecs.append(c)
-        mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
-    all_families.append(mcalic_family)
+    # mcalic_family = enb.aanalysis.TaskFamily(label="M-CALIC")
+    # for c in (plugin_mcalic.mcalic_codecs.MCALIC_Magli(max_error=m) for m in [0]):
+    #     all_codecs.append(c)
+    #     mcalic_family.add_task(c.name, f"{c.label} PAE {c.param_dict['max_error']}")
+    # all_families.append(mcalic_family)
 
-    ccsds122_family = enb.aanalysis.TaskFamily(label="CCSDS 122")
-    for c in (plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
-              plugin_ccsds122.ccsds122_codec.MHDC_ID(),
-              plugin_ccsds122.ccsds122_codec.MHDC_POT()):
-        all_codecs.append(c)
-        ccsds122_family.add_task(c.name, f"{c.label}")
-    all_families.append(ccsds122_family)
+    # ccsds122_family = enb.aanalysis.TaskFamily(label="CCSDS 122")
+    # for c in (plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
+    #           plugin_ccsds122.ccsds122_codec.MHDC_ID(),
+    #           plugin_ccsds122.ccsds122_codec.MHDC_POT()):
+    #     all_codecs.append(c)
+    #     ccsds122_family.add_task(c.name, f"{c.label}")
+    # all_families.append(ccsds122_family)
 
     # fapec_family = enb.aanalysis.TaskFamily(label="FAPEC")
     # for c in (plugin_fapec.fapec_codec.FAPEC_LP(),
@@ -91,14 +91,14 @@ if __name__ == '__main__':
         huffman_family.add_task(c.name, f"{c.label}")
     all_families.append(huffman_family)
 
-    lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
-    for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
-              for ec in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID,
-                         plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE,
-                         plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE)):
-        all_codecs.append(c)
-        lcnl_family.add_task(c.name, f"{c.label}")
-    all_families.append(lcnl_family)
+    # lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
+    # for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
+    #           for ec in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID,
+    #                      plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE,
+    #                      plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE)):
+    #     all_codecs.append(c)
+    #     lcnl_family.add_task(c.name, f"{c.label}")
+    # all_families.append(lcnl_family)
 
     marlin_family = enb.aanalysis.TaskFamily(label="ImageMarlin")
     for c in (plugin_marlin.marlin_codec.ImageMarlin(),):
@@ -126,7 +126,7 @@ if __name__ == '__main__':
             kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}"
                                                            + f"{'lossless' if lossless else 'lossy'}")
             if lossless:
-                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=True)
+                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless)
             else:
                 c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless, quality_factor=75)
             all_codecs.append(c)
@@ -137,7 +137,10 @@ if __name__ == '__main__':
 
             kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}"
                                                                + f"{'lossless' if lossless else 'lossy'}")
-            c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
+            if lossless:
+                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
+            else:
+                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless, quality_factor=75)
             all_codecs.append(c)
             kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
                                        + f"{'lossless' if lossless else 'lossy'}",
