@@ -1,3 +1,8 @@
+"""
+Wrappers for the Kakadu codec.
+For instructions on downloading and installing visit:
+https://github.com/miguelinux314/experiment-notebook/blob/master/plugins/plugin_kakadu/README.md
+"""
 import math
 import numpy as np
 import os
@@ -11,12 +16,27 @@ from enb import tcall
 
 options = get_options()
 
+# TODO: run test_all_codecs to ensure it still works
+# TODO: test both bit_rate and quality_factor at the same time
+# TODO: the bitrate does not work well
+
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
-    """TODO: add docstring for the classes, the module and non-inherited methods.
-    """
-
     def __init__(self, ht=False, spatial_dwt_levels=5, lossless=None, bit_rate=False, quality_factor=False, psnr=False):
+        """
+            :param ht: if True, the high-throughput version of the Kakadu codec is used
+            :param spatial_dwt_levels: number of spatial discrete wavelet transform levels. Must be between 0 and 33.
+            :param lossless: if True, the compression will be lossless, and bit_rate, quality_factor or psnr can not be
+             used. If None, a lossless compression will be performed, unless bit_rate/quality_factor/psnr are set, in
+             which case lossless will be set to False and the compression will be lossy.
+            :param bit_rate: target bits per sample for each component of the image. If bit_rate is set, then lossless
+            must be None or False.
+            :param quality_factor: target quality factor for a lossy compression. If quality_factor is set then lossless
+            must be None or False. Must be between 0 and 100.
+            :param psnr: target peak signal-to-noise ratio for a lossy compression. A binary search is performed to
+            find which quality factor will result in the indicated PSNR. If psnr is set then lossless must be None or
+            False.
+        """
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
         assert spatial_dwt_levels in range(0, 34)
         if lossless:
@@ -64,8 +84,8 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
-               f"{'-rate -|' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''}" \
-               f"{(', ' + str(self.param_dict['bit_rate']))*(original_file_info['component_count']-1) if self.param_dict['bit_rate'] else ''} " \
+               f"{'-rate ' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''}" \
+               f"{(',' + str(self.param_dict['bit_rate']))*(original_file_info['component_count']-1) if self.param_dict['bit_rate'] else ''} " \
                f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
@@ -99,6 +119,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
             self, original_path, compressed_path, original_file_info=original_file_info)
         return compression_results
 
+
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         temp_list = []
         temp_path = f""
@@ -125,17 +146,17 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f" {'lossless' if self.param_dict['lossless'] else 'lossy'}"
 
 
-# TODO: the bitrate does not work well: please read the help for    -rate -|<bits/pel>,<bits/pel>,... in kdu_compress
-# and fix
 
-# TODO: Kakadu MCT does not accept quality factor not bitrate - it totally should accept and pass
-# those to the parent initializator
 
-# TODO: add different parameters to kakadu MCT in the lossy compression experiment
 class Kakadu_MCT(Kakadu):
-    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None):
+    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None,
+                 bit_rate=False, quality_factor=False, psnr=False):
+        """
+        :param spectral_dwt_levels: number of spectral discrete wavelet transform levels. Must be between 0 and 32.
+        """
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
-        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless)
+        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless,
+                        bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
