@@ -16,7 +16,6 @@ from enb import tcall
 
 options = get_options()
 
-# TODO: run test_all_codecs to ensure it still works
 # TODO: test both bit_rate and quality_factor at the same time
 # TODO: the bitrate does not work well
 
