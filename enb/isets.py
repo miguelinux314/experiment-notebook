@@ -78,13 +78,13 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
-    @atable.column_function("float", label="Float", plot_min=0)
+    @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
                                         "u32be", "u32le", "s32be", "s32le")):
-            row[_column_name] = "False"
+            row[_column_name] = False
         elif any(s in file_path for s in ("f16", "f32", "f64")):
-            row[_column_name] = "True"
+            row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
@@ -138,7 +138,7 @@ class ImagePropertiesTable(ImageGeometryTable):
     def set_sample_extrema(self, file_path, row):
         array = load_array_bsq(file_or_path=file_path, image_properties_row=row).flatten()
         row["sample_min"], row["sample_max"] = array.min(), array.max()
-        if row["float"] == "False":
+        if row["float"] == False:
             assert row["sample_min"] == int(row["sample_min"])
             assert row["sample_max"] == int(row["sample_max"])
             row["sample_min"] = int(row["sample_min"])
@@ -146,7 +146,7 @@ class ImagePropertiesTable(ImageGeometryTable):
 
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
-        if row["float"] == "True":
+        if row["float"] == True:
             range_len = (row["sample_max"]) - (row["sample_min"])
         else:
             range_len = int(row["sample_max"]) - int(row["sample_min"])
@@ -280,7 +280,7 @@ def iproperties_row_to_numpy_dtype(image_properties_row):
     to represent an image with properties as defined in
     image_properties_row
     """
-    if image_properties_row["float"] == "True":
+    if image_properties_row["float"] == True:
         return "f" + str(image_properties_row["bytes_per_sample"])
     else:
         return ((">" if image_properties_row["big_endian"] else "<")
