@@ -114,7 +114,7 @@ uninstall:
 	rm -f /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-flif$(LIBEXT)
 
 clean:
-	rm -f flif dflif lib*flif*$(LIBEXT)* viewflif flif.asan flif.dbg flif.prof flif.stats test-interface $(FILES_O) lib/src/flif.o lib/src/library/flif-interface.o
+	rm -f flif dflif lib*flif*$(LIBEXT)* viewflif flif.asan flif.dbg flif.prof flif.stats test-interface $(FILES_O) lib/src/flif.o lib/src/library/flif-interface.o lib/
 
 
 # The targets below are only meant for developers
