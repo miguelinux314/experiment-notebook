@@ -23,11 +23,11 @@ def get_families_and_codecs():
     all_codecs = []
     all_families = []
     # A family is a set of related tasks
-    jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
-    for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(1, 6)):
-        all_codecs.append(c)
-        jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
-    all_families.append(jpeg_ls_family)
+    # jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
+    # for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(1, 6)):
+    #     all_codecs.append(c)
+    #     jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
+    # all_families.append(jpeg_ls_family)
 
     # hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
     # for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
@@ -42,7 +42,7 @@ def get_families_and_codecs():
     all_families.append(kakadu_br_family)
 
     kakadu_qf_family = enb.aanalysis.TaskFamily(label="Kakadu QF")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in range(0, 100, 20)):
+    for c in (plugin_kakadu.kakadu_codec.Kakadu(quality_factor=qf) for qf in np.linspace(1, 100, 5)):
         all_codecs.append(c)
         kakadu_qf_family.add_task(c.name, c.label)
     all_families.append(kakadu_qf_family)
@@ -60,7 +60,7 @@ def get_families_and_codecs():
     all_families.append(kakadu_mct_br_family)
 
     kakadu_mct_qf_family = enb.aanalysis.TaskFamily(label="Kakadu MCT QF")
-    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(quality_factor=qf) for qf in range(0, 100, 20)):
+    for c in (plugin_kakadu.kakadu_codec.Kakadu_MCT(quality_factor=qf) for qf in np.linspace(1, 100, 5)):
         all_codecs.append(c)
         kakadu_mct_qf_family.add_task(c.name, c.label)
     all_families.append(kakadu_mct_qf_family)
