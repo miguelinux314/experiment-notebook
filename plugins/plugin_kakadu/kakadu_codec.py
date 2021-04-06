@@ -16,8 +16,8 @@ from enb import tcall
 
 options = get_options()
 
-# TODO: test both bit_rate and quality_factor at the same time
-# TODO: the bitrate does not work well
+# TODO: ensure that only bit_rate or quality_factor is used
+# TODO: the bitrate does not work well. User enters the total bit_rate
 
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
@@ -159,8 +159,6 @@ class Kakadu_MCT(Kakadu):
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        # TODO: split into 2D and 3D transform arguments, put here only the ones that do not
-        # appear for the 2D case
         return Kakadu.get_compression_params(
             self,
             original_path=original_path,

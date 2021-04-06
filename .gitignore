@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .idea/
 */plugin_lcnl/ldc_*
 */plugin_lcnl/lcnl_*
@@ -5,6 +6,25 @@
 */plugin_fapec/unfapec
 */plugin_jpeg/jpeg
 */plugin_jpeg/*zip
+=======
+plugins/plugin_lcnl/ldc_*
+plugins/plugin_lcnl/lcnl_*
+plugins/plugin_fapec/fapec
+plugins/plugin_fapec/unfapec
+plugins/plugin_jpeg/jpeg
+plugins/plugin_flif/flif
+plugins/plugin_fse_huffman/fse
+plugins/plugin_hevc/TAppDecoderStatic
+plugins/plugin_hevc/TAppEncoderStatic
+plugins/plugin_marlin/imageMarlin
+plugins/plugin_jpeg_xl/cjxl
+plugins/plugin_jpeg_xl/djxl
+
+plugins/plugin_mcalic/Mcalic_enc_nl
+plugins/plugin_mcalic/Mcalic_dec_nl
+plugins/plugin_mhdc_transforms/mhdctransform
+plugins/plugin_mhdc_transforms/mhdcdwt
+>>>>>>> 3ca41e7be4b55be4e2ce2c6198fb78640d23db2b
 
 */plugin_ccsds122/mhdcDecoder.sh
 */plugin_ccsds122/mhdcEncoder.sh
@@ -14,12 +34,6 @@
 */plugin_ccsds122/mhdcpack
 */plugin_ccsds122/mhdctransform
 
-*/plugin_mcalic/Mcalic_enc_nl
-*/plugin_mcalic/Mcalic_dec_nl
-
-*/plugin_mhdc_transforms/mhdctransform
-*/plugin_mhdc_transforms/mhdcdwt
-
 doc/build/
 
 /private
@@ -28,3 +42,6 @@ doc/build/
 /templates/lossy_compression_experiment/persistence_lossy_compression_experiment.py/
 /templates/lossy_compression_experiment/persistence_experiment_ssim.py/
 /plugins/test_all_codecs/persistence_test_all_codecs.py/
+
+
+enb.egg-info/
