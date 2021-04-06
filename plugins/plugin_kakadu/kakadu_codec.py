@@ -16,8 +16,8 @@ from enb import tcall
 
 options = get_options()
 
-# TODO: ensure that only bit_rate or quality_factor is used
 # TODO: the bitrate does not work well. User enters the total bit_rate
+# TODO: make jpeg and hvec in order to run lossy experiment with all codecs
 
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
@@ -46,12 +46,15 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
         elif lossless is None or not lossless:
             if bit_rate:
                 assert bit_rate > 0
+                assert not quality_factor and not psnr
                 lossless = False
             if quality_factor:
                 assert 0 < quality_factor <= 100
+                assert not bit_rate and not psnr
                 lossless = False
             if psnr:
                 assert psnr > 0
+                assert not bit_rate and not quality_factor
                 lossless = False
         else:
             lossless = True
@@ -84,8 +87,33 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
                f"{'-rate ' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''}" \
-               f"{(',' + str(self.param_dict['bit_rate']))*(original_file_info['component_count']-1) if self.param_dict['bit_rate'] else ''} " \
                f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
+        # Clayers is not what I think it is??
+    """
+    -rate -|<bits/pel>,<bits/pel>,...
+       One or more bit-rates, expressed in terms of the ratio between the total
+       number of compressed bits (including headers) and the product of the
+       largest horizontal and  vertical image component dimensions.  A dash,
+       "-", may be used in place of the first bit-rate in the list to indicate
+       that the final quality layer should include all compressed bits.
+       Specifying a very large rate target is fundamentally different to using
+       the dash, "-", because the former approach may cause the incremental
+       rate allocator to discard terminal coding passes which do not lie on the
+       rate-distortion convex hull.  This means that reversible compression
+       might not yield a truly lossless representation if you specify `-rate'
+       without a dash for the first rate target, no matter how large the
+       largest rate target is.
+          If "Clayers" is not used, the number of layers is set to the number
+       of rates specified here. If "Clayers" is used to specify an actual
+       number of quality layers, one of the following must be true: 1) the
+       number of rates specified here is identical to the specified number of
+       layers; or 2) one, two or no rates are specified using this argument.
+       When two rates are specified, the number of layers must be 2 or more and
+       intervening layers will be assigned roughly logarithmically spaced
+       bit-rates. When only one rate is specified, an internal heuristic
+       determines a lower bound and logarithmically spaces the layer rates over
+       the range.
+    """
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
@@ -117,7 +145,6 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
         compression_results = icompression.WrapperCodec.compress(
             self, original_path, compressed_path, original_file_info=original_file_info)
         return compression_results
-
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         temp_list = []
