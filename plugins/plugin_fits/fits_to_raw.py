@@ -41,9 +41,10 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     			      label2= 'uint{header['BITPIX']}'
         
         data = fitsio.read('{input_path}')
-        if not os.path.exists('{label2}'):
-    		    os.makedirs('{label2}', exist_ok = True)
-        raw=isets.dump_array_bsq(data,' {label2}/raw+{output_path}{label}.raw ', mode="wb", dtype=label2 ) 
+	path=os.path.join('', '{label2}')
+        if not os.path.exists(path):
+    		    os.makedirs(path, exist_ok = True)
+        raw=isets.dump_array_bsq(data,'{path}raw{output_path}{label}.raw', mode="wb", dtype=label2 ) 
         
 if __name__ == "__main__":
     target_indices=glob.glob('*.fits') #read fits files
