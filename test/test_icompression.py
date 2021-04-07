@@ -126,8 +126,9 @@ class TestSpectralAngle(unittest.TestCase):
         for constant_offset in [1, 5, 10]:
             width, height, component_count = 2, 3, 4
             bytes_per_sample, signed, big_endian = 2, True, True
-            row = dict(signed=signed, bytes_per_sample=bytes_per_sample, big_endian=big_endian)
-            original_array = np.zeros((width, height, component_count), dtype=isets.iproperties_row_to_numpy_dtype(row))
+            row = dict(signed=signed, bytes_per_sample=bytes_per_sample, big_endian=big_endian, float=False)
+            original_array = np.zeros((width, height, component_count),
+                                      dtype=isets.iproperties_row_to_numpy_dtype(row))
             for x in range(width):
                 for y in range(height):
                     for z in range(component_count):
