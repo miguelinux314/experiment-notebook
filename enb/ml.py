@@ -7,7 +7,7 @@ import enb
 from enb import experiment
 
 
-class Model(nn.Module, experiment.ExperimentTask):
+class Model(experiment.ExperimentTask):
     def __init__(self, criterion=nn.CrossEntropyLoss(), param_dict=None):
         param_dict['criterion'] = criterion
         super().__init__(param_dict=param_dict)
