@@ -50,7 +50,6 @@ class VVC(icompression.WrapperCodec):
                f"--InternalBitDepth={8 * original_file_info['bytes_per_sample']} " \
                f"-fr 1 "
 
-
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-b {compressed_path} " \
                f"-o {reconstructed_path} " \
@@ -115,8 +114,9 @@ class VVC_lossy(icompression.LossyCodec, VVC):
         if self.param_dict['bit_rate'] is not None:
             target_rate = math.ceil(self.param_dict['bit_rate']
                                     * original_file_info['width'] * original_file_info['height'])
-            params += " --RateControl "
+            params += " --RateControl"
             params += f" --TargetBitrate={target_rate} "
+            #params += "--MaxSubLayers=16"
         else:
             params += f" --QP={self.param_dict['QP']} --InitialQP={self.param_dict['QP']}"
         return params
