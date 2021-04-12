@@ -16,9 +16,6 @@ from enb import tcall
 
 options = get_options()
 
-# TODO: the bitrate does not work well. User enters the total bit_rate
-# TODO: make jpeg and hvec in order to run lossy experiment with all codecs
-
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
     def __init__(self, ht=False, spatial_dwt_levels=5, lossless=None, bit_rate=False, quality_factor=False, psnr=False):
@@ -86,34 +83,8 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
-               f"{'-rate ' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''}" \
+               f"{'-rate ' + str(self.param_dict['bit_rate']*original_file_info['component_count']) if self.param_dict['bit_rate'] else ''}" \
                f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
-        # Clayers is not what I think it is??
-    """
-    -rate -|<bits/pel>,<bits/pel>,...
-       One or more bit-rates, expressed in terms of the ratio between the total
-       number of compressed bits (including headers) and the product of the
-       largest horizontal and  vertical image component dimensions.  A dash,
-       "-", may be used in place of the first bit-rate in the list to indicate
-       that the final quality layer should include all compressed bits.
-       Specifying a very large rate target is fundamentally different to using
-       the dash, "-", because the former approach may cause the incremental
-       rate allocator to discard terminal coding passes which do not lie on the
-       rate-distortion convex hull.  This means that reversible compression
-       might not yield a truly lossless representation if you specify `-rate'
-       without a dash for the first rate target, no matter how large the
-       largest rate target is.
-          If "Clayers" is not used, the number of layers is set to the number
-       of rates specified here. If "Clayers" is used to specify an actual
-       number of quality layers, one of the following must be true: 1) the
-       number of rates specified here is identical to the specified number of
-       layers; or 2) one, two or no rates are specified using this argument.
-       When two rates are specified, the number of layers must be 2 or more and
-       intervening layers will be assigned roughly logarithmically spaced
-       bit-rates. When only one rate is specified, an internal heuristic
-       determines a lower bound and logarithmically spaces the layer rates over
-       the range.
-    """
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
@@ -122,10 +93,12 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
         if self.param_dict['psnr']:
             psnr = float("inf")
             temp_path = tempfile.NamedTemporaryFile().name
-            qfactor_a = 0
-            qfactor_b = 100
-            while abs(self.param_dict['psnr'] - psnr) > 0.5:
-                self.param_dict['quality_factor'] = (qfactor_b + qfactor_a) / 2
+            br_a = 0
+            br_b = 1
+            iteration = 0
+            while abs(self.param_dict['psnr'] - psnr) > 0.5 and iteration <= 100:
+                iteration += 1
+                self.param_dict['bit_rate'] = (br_b + br_a) / 2
                 icompression.WrapperCodec.compress(
                     self, original_path, compressed_path, original_file_info=original_file_info)
                 self.decompress(compressed_path, reconstructed_path=temp_path, original_file_info=original_file_info)
@@ -138,9 +111,9 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                 mse = np.average(((original_array - reconstructed_array) ** 2))
                 psnr = 10 * math.log10((max_error ** 2) / mse) if mse > 0 else float("inf")
                 if self.param_dict['psnr'] > psnr:
-                    qfactor_a = self.param_dict['quality_factor']
+                    br_a = self.param_dict['bit_rate']
                 else:
-                    qfactor_b = self.param_dict['quality_factor']
+                    br_b = self.param_dict['bit_rate']
 
         compression_results = icompression.WrapperCodec.compress(
             self, original_path, compressed_path, original_file_info=original_file_info)
@@ -170,7 +143,6 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
     def label(self):
         return f"Kakadu {'HT' if self.param_dict['ht'] else ''}" \
                f" {'lossless' if self.param_dict['lossless'] else 'lossy'}"
-
 
 
 
