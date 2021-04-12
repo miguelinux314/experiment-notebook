@@ -37,6 +37,7 @@ from plugins import plugin_zip
 from plugins import plugin_jpeg_xl
 from plugins import plugin_hevc
 from plugins import plugin_kakadu
+from plugins import plugin_vvc
 
 if __name__ == '__main__':
     all_codecs = []
@@ -154,6 +155,16 @@ if __name__ == '__main__':
         all_codecs.append(c)
         family.add_task(c.name, c.label)
         all_families.append(family)
+
+    for label, c in [("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
+                     ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
+                     ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25))]:
+        family = enb.aanalysis.TaskFamily(label=label)
+        all_codecs.append(c)
+        family.add_task(c.name, c.label)
+        all_families.append(family)
+
+
 
     label_by_group_name = dict()
     for family in all_families:
