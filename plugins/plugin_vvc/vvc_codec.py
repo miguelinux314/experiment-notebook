@@ -38,6 +38,7 @@ class VVC(icompression.WrapperCodec):
         self.config_path = config_path
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        assert original_file_info['component_count'] == 1, f"Only 1 frame supported"
         return f"-i {original_path} " \
                f"-c {self.config_path} " \
                f"-b {compressed_path} " \
@@ -51,6 +52,7 @@ class VVC(icompression.WrapperCodec):
                f"-fr 1 "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        assert original_file_info['component_count'] == 1, f"Only 1 frame supported"
         return f"-b {compressed_path} " \
                f"-o {reconstructed_path} " \
                f"-d {8 * original_file_info['bytes_per_sample']}"
@@ -91,6 +93,7 @@ class VVC_lossy(icompression.LossyCodec, VVC):
         :param qp: Specifies the base value of the quantization parameter (0-51).
         :param bit_rate: target bitrate in bps.
         """
+
         bit_rate = round(float(bit_rate), self.rate_decimals) if bit_rate is not None else bit_rate
 
         config_path = config_path if config_path is not None \
@@ -102,6 +105,8 @@ class VVC_lossy(icompression.LossyCodec, VVC):
         self.param_dict['bit_rate'] = bit_rate
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        assert self.param_dict['bit_rate'] is None, f"Bit rate not implemented"
+
         if original_file_info['bytes_per_sample'] > 1:
             raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} "
                             f"not supported yet.")
@@ -122,6 +127,8 @@ class VVC_lossy(icompression.LossyCodec, VVC):
         return params
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        assert self.param_dict['bit_rate'] is None, f"Bit rate not implemented"
+
         if original_file_info['bytes_per_sample'] > 1:
             raise Exception(f"Bytes per sample = "
                             f"{original_file_info['bytes_per_sample']} "
