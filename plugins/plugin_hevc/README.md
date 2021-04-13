@@ -44,4 +44,4 @@ On Ubuntu/Debian:
 ### OS X
 
 * Install [homebrew](http://brew.sh)
-* `brew install gcc@9
+* `brew install gcc@9`
