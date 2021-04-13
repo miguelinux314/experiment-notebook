@@ -45,8 +45,8 @@ dependences:
 
 flif:
 	cd $(PROGDIR) && $(MAKE)
-	cd $(PROGDIR)/src && \
-	cp flif ../../
+	cd $(PROGDIR)/src
+	find $(PROGDIR)/src -type f -name "flif" -exec cp "{}" ./ \;
 
 clean:
 	rm -rf lib
