@@ -15,6 +15,7 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     sorting them by type (integer or float)	and by bits per pixel
     """
     fits_extension = "fit"
+    allowed_extensions = ["fit", "fits"]
     version_name = "FitsToRaw"
 
     def __init__(self, original_base_dir, version_base_dir):
@@ -25,18 +26,21 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
             version_name=self.version_name)
 
     def get_default_target_indices(self):
-        return sets.get_all_test_files(
-            ext="fit", base_dataset_dir=self.original_base_dir) \
-               + sets.get_all_test_files(
-            ext="fits", base_dataset_dir=self.original_base_dir)
-
+        indices = []
+        for ext in self.allowed_extensions:
+            indices.extend(sets.get_all_test_files(
+            ext=ext, base_dataset_dir=self.original_base_dir))
+        return indices
 
     def original_to_versioned_path(self, original_path):
         # TODO: double check whether NAXIS1 is the width and NAXIS2 the height or
         # if there is any transposition. Double check that
-
         hdul = fits.open(original_path)
-        header = hdul[0].header  # change in case fits image extension does not correspond to 0
+        hdul_index = 0
+        while hdul[hdul_index].header["NAXIS"] == 0:
+            hdul_index += 1
+        header = hdul[hdul_index].header
+
         if header['NAXIS'] == 2:
             if header['BITPIX'] < 0:
                 # TODO: All geometry name tags must be ZxYxX, the name cannot be only YxX.
@@ -60,6 +64,11 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
             # TODO: Several sample images report NAXIS=0. Fix this
             raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
 
+        if original_path.lower().endswith(".fit"):
+            input_ext = "fit"
+        elif original_path.lower().endswith(".fits"):
+            input_ext = "fits"
+
         return os.path.join(
             os.path.dirname(
                 os.path.abspath(original_path)).replace(
@@ -67,14 +76,16 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                 os.path.abspath(self.version_base_dir)),
             type_name,
             os.path.basename(original_path).replace(
-                f".{self.fits_extension}", f"{name_label}.raw"))
+                f".{input_ext}", f"{name_label}.raw"))
 
     def version(self, input_path, output_path, row):
-        assert input_path.endswith(self.fits_extension), \
-            f"Invalid extension in {input_path} (expected {self.fits_extension})"
+        assert any(input_path.endswith(f".{ext}") for ext in self.allowed_extensions)
 
         hdul = fits.open(input_path)
-        header = hdul[0].header  # change in case fits image extension does not correspond to 0
+        hdul_index = 0
+        while hdul[hdul_index].header["NAXIS"] == 0:
+            hdul_index += 1
+        header = hdul[hdul_index].header  # change in case fits image extension does not correspond to 0
         data = fitsio.read(input_path)
         if header['NAXIS'] == 2:
             data = np.expand_dims(data, axis=2)
@@ -86,6 +97,7 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
 
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         isets.dump_array_bsq(data, output_path)
+
 
 if __name__ == '__main__':
     print("This example converts all .fit files in fits_data into raw_data, preserving "
