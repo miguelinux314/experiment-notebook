@@ -158,7 +158,8 @@ if __name__ == '__main__':
 
     for label, c in [("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
                      ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
-                     ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25))]:
+                     # ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25)),
+                     ]:
         family = enb.aanalysis.TaskFamily(label=label)
         all_codecs.append(c)
         family.add_task(c.name, c.label)
