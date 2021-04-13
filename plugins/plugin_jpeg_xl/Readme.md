@@ -4,7 +4,7 @@ JPEG XL Reference Software is available at https://gitlab.com/wg1/jpeg-xl and av
 
 The binaries complied here use release version v0.3.2 available at https://gitlab.com/wg1/jpeg-xl/-/releases
 
-## Installing dependencies
+## Build instructions
 
 ### GNU/Linux
 On Ubuntu/Debian:
