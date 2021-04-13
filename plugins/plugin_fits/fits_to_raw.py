@@ -14,8 +14,8 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     """Read FITS files and convert them to raw files,
     sorting them by type (integer or float)	and by bits per pixel
     """
-    version_name = "FitsToRaw"
     fits_extension = "fit"
+    version_name = "FitsToRaw"
 
     def __init__(self, original_base_dir, version_base_dir):
         super().__init__(
@@ -26,7 +26,10 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
 
     def get_default_target_indices(self):
         return sets.get_all_test_files(
-            ext=self.fits_extension, base_dataset_dir=self.original_base_dir)
+            ext="fit", base_dataset_dir=self.original_base_dir) \
+               + sets.get_all_test_files(
+            ext="fits", base_dataset_dir=self.original_base_dir)
+
 
     def original_to_versioned_path(self, original_path):
         # TODO: double check whether NAXIS1 is the width and NAXIS2 the height or
