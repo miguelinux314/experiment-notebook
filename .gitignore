@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+.idea/
+*/plugin_lcnl/ldc_*
+*/plugin_lcnl/lcnl_*
+*/plugin_fapec/fapec
+*/plugin_fapec/unfapec
+*/plugin_jpeg/jpeg
+*/plugin_jpeg/*zip
+=======
 plugins/plugin_lcnl/ldc_*
 plugins/plugin_lcnl/lcnl_*
 plugins/plugin_fapec/fapec
@@ -15,6 +24,7 @@ plugins/plugin_mcalic/Mcalic_enc_nl
 plugins/plugin_mcalic/Mcalic_dec_nl
 plugins/plugin_mhdc_transforms/mhdctransform
 plugins/plugin_mhdc_transforms/mhdcdwt
+>>>>>>> 3ca41e7be4b55be4e2ce2c6198fb78640d23db2b
 
 */plugin_ccsds122/mhdcDecoder.sh
 */plugin_ccsds122/mhdcEncoder.sh

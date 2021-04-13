@@ -10,4 +10,5 @@ from . import plugin_marlin
 from . import plugin_mcalic
 from . import plugin_zip
 from . import plugin_hevc
+from . import plugin_vvc
 
