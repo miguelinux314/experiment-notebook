@@ -51,14 +51,14 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                 type_name = f'float{header["BITPIX"] * -1}'
             if header['BITPIX'] > 0:
                 name_label = f'-i{header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                type_name = f'uint{header["BITPIX"]}'
+                type_name = f'i{header["BITPIX"]}'
         elif header['NAXIS'] == 3:
             if header['BITPIX'] < 0:
-                name_label = f'-f{header["BITPIX"] * -1}-{header["NAXIS2"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                name_label = f'-f{header["BITPIX"] * -1}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
                 type_name = f'float{header["BITPIX"] * -1}'
             if header['BITPIX'] > 0:
                 name_label = f'-i{header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                type_name = f'uint{header["BITPIX"]}'
+                type_name = f'i{header["BITPIX"]}'
         else:
             raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
             
