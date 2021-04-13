@@ -25,8 +25,7 @@ class VVC(icompression.WrapperCodec):
         chroma_format = str(chroma_format)
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
         qp = int(qp) if qp is not None else self.default_qp
-        # TODO: the new qp is 63 or something similar. Please verify
-        assert 0 <= qp <= 51
+        assert 0 <= qp <= 63
 
         param_dict = dict(chroma_format=chroma_format, QP=qp)
         icompression.WrapperCodec.__init__(
