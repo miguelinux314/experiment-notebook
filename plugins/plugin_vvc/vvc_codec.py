@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Wrapper for the VVC codec, using the reference implementation from
 
@@ -6,17 +7,16 @@ https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master
 
 import os
 from enb import icompression
-from enb.config import get_options
+from enb.config import options
 import math
 
-options = get_options()
 
 class VVC(icompression.WrapperCodec):
-    default_qp = 0
-
     """
     Base class for VVC coder
     """
+    default_qp = 0
+
     def __init__(self, config_path, chroma_format="400", qp=None):
         """
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
@@ -25,10 +25,10 @@ class VVC(icompression.WrapperCodec):
         chroma_format = str(chroma_format)
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
         qp = int(qp) if qp is not None else self.default_qp
+        # TODO: the new qp is 63 or something similar. Please verify
         assert 0 <= qp <= 51
 
         param_dict = dict(chroma_format=chroma_format, QP=qp)
-
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "EncoderAppStatic"),
@@ -66,6 +66,7 @@ class VVC_lossless(icompression.LosslessCodec, VVC):
     """
     VVC subclass for lossless compression
     """
+
     def __init__(self, config_path=None, chroma_format="400"):
         """
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
@@ -121,7 +122,7 @@ class VVC_lossy(icompression.LossyCodec, VVC):
                                     * original_file_info['width'] * original_file_info['height'])
             params += " --RateControl"
             params += f" --TargetBitrate={target_rate} "
-            #params += "--MaxSubLayers=16"
+            # params += "--MaxSubLayers=16"
         else:
             params += f" --QP={self.param_dict['QP']} --InitialQP={self.param_dict['QP']}"
         return params

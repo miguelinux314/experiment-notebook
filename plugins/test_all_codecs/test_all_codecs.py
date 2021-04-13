@@ -127,7 +127,7 @@ if __name__ == '__main__':
             kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}"
                                                            + f"{'lossless' if lossless else 'lossy'}")
             if lossless:
-                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=True)
+                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless)
             else:
                 c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless, quality_factor=75)
             all_codecs.append(c)
@@ -138,7 +138,10 @@ if __name__ == '__main__':
 
             kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}"
                                                                + f"{'lossless' if lossless else 'lossy'}")
-            c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
+            if lossless:
+                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
+            else:
+                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless, quality_factor=75)
             all_codecs.append(c)
             kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
                                        + f"{'lossless' if lossless else 'lossy'}",
@@ -155,7 +158,8 @@ if __name__ == '__main__':
 
     for label, c in [("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
                      ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
-                     ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25))]:
+                     # ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25)),
+                     ]:
         family = enb.aanalysis.TaskFamily(label=label)
         all_codecs.append(c)
         family.add_task(c.name, c.label)
