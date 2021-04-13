@@ -1,33 +1,65 @@
+"""
+Wrappers for the Kakadu codec.
+For instructions on downloading and installing visit:
+https://github.com/miguelinux314/experiment-notebook/blob/master/plugins/plugin_kakadu/README.md
+"""
+import math
+import numpy as np
 import os
 import sys
 import subprocess
 import tempfile
 from enb import icompression
 from enb.config import get_options
+from enb import isets
 from enb import tcall
 
 options = get_options()
 
 
 class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
-    """TODO: add docstring for the classes, the module and non-inherited methods.
-    """
+    # When searching for exact PSNR values, this error is tolerated
+    psnr_tolerance = 1e-3
+    max_search_iterations = 32
 
-    def __init__(self, ht=False, spatial_dwt_levels=5, lossless=None, bit_rate=False, quality_factor=False):
+    def __init__(self, ht=False, spatial_dwt_levels=5,
+                 lossless=None, bit_rate=None, quality_factor=None, psnr=None):
+        """
+            :param ht: if True, the high-throughput version of the Kakadu codec is used
+            :param spatial_dwt_levels: number of spatial discrete wavelet transform levels.
+              Must be between 0 and 33.
+            :param lossless: if True, the compression will be lossless, and bit_rate, quality_factor or
+              psnr can not be
+              used. If None, a lossless compression will be performed, unless
+              bit_rate/quality_factor/psnr are set,
+              in which case lossless will be set to False and the compression will be lossy.
+            :param bit_rate: target bits per sample for each component of the image. If bit_rate is set,
+              then lossless must be None or False.
+            :param quality_factor: target quality factor for a lossy compression.
+              If quality_factor is set then lossless
+              must be None or False. Must be between 0 and 100.
+            :param psnr: target peak signal-to-noise ratio for a lossy compression.
+              A binary search is performed to find which quality factor will result in the
+              indicated PSNR with the tolerance given by self.psnr_tolerance.
+              If psnr is set then lossless must be None or False.
+        """
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
-        assert spatial_dwt_levels in range(0, 34)
+        assert spatial_dwt_levels in range(0, 34), \
+            f"Invalud number of spatial DWT levels {spatial_dwt_levels}"
+
         if lossless:
-            assert bit_rate is False, "a bit rate can not be set if lossless is True"
-            assert quality_factor is False, "a quality factor can not be set if lossless is True"
-        elif lossless is None or not lossless:
-            if bit_rate:
-                assert bit_rate > 0
-                lossless = False
-            if quality_factor:
-                assert 0 < quality_factor <= 100
-                lossless = False
+            assert all(v is None for v in [bit_rate, quality_factor, psnr]), \
+                f"Cannot set bitrate, quality factor or PSNR when lossless is requested."
         else:
-            lossless = True
+            assert sum(1 for v in (bit_rate, quality_factor, psnr) if v is not None) <= 1, \
+                f"Only one of bitrate, quality factor and PSNR can be set at a time."
+            if bit_rate is not None:
+                assert bit_rate > 0, f"Invalid bit rate {bit_rate}"
+            if quality_factor is not None:
+                assert 0 < quality_factor <= 100, f"Invalid quality factor {quality_factor}"
+            if psnr is not None:
+                assert psnr > 0, f"Invalid psnr {psnr}"
+            lossless = False
 
         icompression.WrapperCodec.__init__(
             self,
@@ -38,7 +70,8 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                 spatial_dwt_levels=spatial_dwt_levels,
                 lossless=lossless,
                 bit_rate=bit_rate,
-                quality_factor=quality_factor))
+                quality_factor=quality_factor,
+                psnr=psnr))
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"-i {original_path}*{original_file_info['component_count']}" \
@@ -54,12 +87,66 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f"Sprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
-               f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
-               f"{'-rate ' + str(self.param_dict['bit_rate']) if self.param_dict['bit_rate'] else ''} " \
+               + (f"Qstep=0.000000001 " if self.param_dict['bit_rate'] is not None else "") \
+               + f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
+               f"{'-rate ' + str(self.param_dict['bit_rate'] * original_file_info['component_count']) if self.param_dict['bit_rate'] else ''}" \
                f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
+
+    def compress(self, original_path, compressed_path, original_file_info=None):
+        if self.param_dict['psnr'] is not None:
+            with tempfile.NamedTemporaryFile() as tmp_file:
+                br_a = 0
+                br_b = 32
+                iteration = 0
+
+                psnr_error = float("inf")
+                while psnr_error > self.psnr_tolerance and iteration <= self.max_search_iterations:
+                    iteration += 1
+                    self.param_dict['bit_rate'] = (br_b + br_a) / 2
+                    compression_results = icompression.WrapperCodec.compress(
+                        self, original_path, compressed_path, original_file_info=original_file_info)
+                    self.decompress(
+                        compressed_path,
+                        reconstructed_path=tmp_file.name,
+                        original_file_info=original_file_info)
+
+                    max_error = (2 ** (8 * original_file_info["bytes_per_sample"])) - 1
+                    dtype = isets.iproperties_row_to_numpy_dtype(original_file_info)
+                    original_array = np.fromfile(original_path, dtype=dtype).astype(np.int64)
+                    reconstructed_array = np.fromfile(tmp_file.name, dtype=dtype).astype(np.int64)
+                    actual_bps = 8 * os.path.getsize(compressed_path) / original_file_info["samples"]
+
+                    mse = np.average(((original_array - reconstructed_array) ** 2))
+                    psnr = 10 * math.log10((max_error ** 2) / mse) if mse > 0 else float("inf")
+                    if self.param_dict['psnr'] > psnr:
+                        br_a = min(self.param_dict['bit_rate'], actual_bps)
+                    else:
+                        br_b = max(self.param_dict['bit_rate'], actual_bps)
+
+                    psnr_error = abs(self.param_dict['psnr'] - psnr)
+
+                    # print(f"[watch] iteration={iteration}")
+                    # print(f"[watch] mse={mse}")
+                    # print(f"[watch] psnr={psnr}")
+                    #
+                    # print(f"[watch] br_a={br_a}")
+                    # print(f"[watch] br_b={br_b}")
+                    # print(f"[watch] actual_bps={actual_bps}")
+                    # print(f"[watch] self.param_dict['bit_rate'] - actual_bps={self.param_dict['bit_rate'] - actual_bps}")
+                    # print()
+                print(f"[watch] psnr_error={psnr_error}")
+                    
+
+
+
+        else:
+            compression_results = icompression.WrapperCodec.compress(
+                self, original_path, compressed_path, original_file_info=original_file_info)
+
+        return compression_results
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         temp_list = []
@@ -79,7 +166,6 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                 with open(p, "rb") as component_file:
                     output_file.write(component_file.read())
         decompression_results.reconstructed_path = reconstructed_path
-
         return decompression_results
 
     @property
@@ -88,22 +174,18 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f" {'lossless' if self.param_dict['lossless'] else 'lossy'}"
 
 
-# TODO: the bitrate does not work well: please read the help for    -rate -|<bits/pel>,<bits/pel>,... in kdu_compress
-# and fix
-
-# TODO: Kakadu MCT does not accept quality factor not bitrate - it totally should accept and pass
-# those to the parent initializator
-
-# TODO: add different parameters to kakadu MCT in the lossy compression experiment
 class Kakadu_MCT(Kakadu):
-    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None):
+    def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None,
+                 bit_rate=None, quality_factor=None, psnr=None):
+        """
+        :param spectral_dwt_levels: number of spectral discrete wavelet transform levels. Must be between 0 and 32.
+        """
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
-        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless)
+        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless,
+                        bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        # TODO: split into 2D and 3D transform arguments, put here only the ones that do not
-        # appear for the 2D case
         return Kakadu.get_compression_params(
             self,
             original_path=original_path,
