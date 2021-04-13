@@ -10,7 +10,7 @@ The binaries complied here use release version v0.3.2 available at https://gitla
 On Ubuntu/Debian:
 
   * `sudo apt install cmake pkg-config libbrotli-dev`
-  * `sudo apt install libgif-dev libjpeg-dev libopenexr-dev libpng-dev libwebp-dev
+  * `sudo apt install libgif-dev libjpeg-dev libopenexr-dev libpng-dev libwebp-dev`
 
 ### OS X
 
