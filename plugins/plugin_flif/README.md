@@ -1,4 +1,4 @@
-## Build Instructions
+## Installing dependencies
 
 ### GNU/Linux
 On Ubuntu:
