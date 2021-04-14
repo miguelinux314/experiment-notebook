@@ -47,9 +47,9 @@ dir:
 
 dependences:
 	sh $(PROGDIR)/deps.sh
-	brew install jpeg-xl
-	brew install llvm
-	brew install coreutils cmake giflib jpeg-turbo libpng ninja zlib
+	# brew install jpeg-xl
+	# brew install llvm
+	# brew install coreutils cmake giflib jpeg-turbo libpng ninja zlib
 
 jpegxl:
 	cd $(PROGDIR)/build && echo "I'm in build" && \
