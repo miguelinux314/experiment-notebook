@@ -6,6 +6,8 @@ https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master
 """
 
 import os
+
+import enb.icompression
 from enb import icompression
 from enb.config import options
 import math
@@ -25,8 +27,7 @@ class VVC(icompression.WrapperCodec):
         chroma_format = str(chroma_format)
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
         qp = int(qp) if qp is not None else self.default_qp
-        # TODO: the new qp is 63 or something similar. Please verify
-        assert 0 <= qp <= 51
+        assert 0 <= qp <= 63
 
         param_dict = dict(chroma_format=chroma_format, QP=qp)
         icompression.WrapperCodec.__init__(
@@ -148,3 +149,11 @@ class VVC_lossy(icompression.LossyCodec, VVC):
             s = f"VVC QP{self.param_dict['QP']}"
 
         return s
+
+if __name__ == '__main__':
+    print("This example compresses all .raw images in ./test_data/")
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
+    exp = enb.icompression.LosslessCompressionExperiment(codecs=[VVC_lossless()])
+    df = exp.get_df()
+    print("Done!")
+    
