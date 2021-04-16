@@ -50,14 +50,14 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                 name_label = f'-f{header["BITPIX"] * -1}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
                 type_name = f'float{header["BITPIX"] * -1}'
             if header['BITPIX'] > 0:
-                name_label = f'-i{header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
                 type_name = f'i{header["BITPIX"]}'
         elif header['NAXIS'] == 3:
             if header['BITPIX'] < 0:
                 name_label = f'-f{header["BITPIX"] * -1}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
                 type_name = f'float{header["BITPIX"] * -1}'
             if header['BITPIX'] > 0:
-                name_label = f'-i{header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
                 type_name = f'i{header["BITPIX"]}'
         else:
             raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
@@ -83,17 +83,22 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
         hdul_index = 0
         while hdul[hdul_index].header["NAXIS"] == 0:
             hdul_index += 1
-        header = hdul[hdul_index].header 
-        data = fitsio.read(input_path)
-        if header['NAXIS'] == 2:
-            data = np.expand_dims(data, axis=2)
-        elif header['NAXIS'] == 3:
-            pass
-        else:
-            raise Exception(f"Unsupported NAXIS {header['NAXIS']} for {input_path}")
-
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        isets.dump_array_bsq(data, output_path)
+        for i in range(len(hdul)-hdul_index):
+            header = hdul[hdul_index].header
+            data=hdul[hdul_index].data.transpose()
+            if header['NAXIS'] == 2:
+                data = np.expand_dims(data, axis=2)
+            elif header['NAXIS'] == 3:
+                pass
+            else:
+                raise Exception(f"Unsupported NAXIS {header['NAXIS']} for {input_path}")
+            print('paso versions dump array')
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            isets.dump_array_bsq(data, output_path)
+             with open(f'{output_path[0:-4]}_image{hdul_index}.dat', 'a') as f:
+                f.write(str(hdul[hdul_index].header))
+                f.close
+            hdul_index +=1
 
 if __name__ == '__main__':
     print("This example converts all .fit files in fits_data into raw_data, preserving "
