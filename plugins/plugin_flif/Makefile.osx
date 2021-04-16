@@ -1,4 +1,3 @@
-
 CFLAGS += -std=gnu++11 -Wall -Wextra -Wcast-qual -Wcast-align -Wstrict-aliasing=1 -Wswitch-enum -Wundef -pedantic  -Wfatal-errors -Werror
 
 CFLAGS += -I./src
@@ -33,27 +32,21 @@ LFLAGS += $(wildcard ./ext/*.a)
 #CFLAGS += -fomit-frame-pointer
 #CFLAGS += -fmerge-all-constants -fmodulo-sched -fmodulo-sched-allow-regmoves -funsafe-loop-optimizations -floop-unroll-and-jam
 
-PROGDIR?= ./jpegxl_git
+PROGDIR?= ./lib
 
 .PHONY: default
-default: zip dir dependences jpegxl clean
+default: zip dependences flif clean
 
 zip:
-	unzip jpegxl_git.zip
-
-dir:
-	mkdir $(PROGDIR)/build
-	cp $(PROGDIR)/CMakeLists.txt $(PROGDIR)/build
+	unzip flif_0.3_2017.zip
 
 dependences:
-	sh $(PROGDIR)/deps.sh
+	brew install pkg-config libpng sdl2
 
-jpegxl:
-	cd $(PROGDIR)/build && echo "I'm in build" && \
-	cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. && \
-	cmake --build . -- -j$(nproc) && \
-	cp ./tools/cjxl ../../ && \
-	cp ./tools/djxl ../../
+flif:
+	cd $(PROGDIR) && $(MAKE)
+	cd $(PROGDIR)/src
+	find $(PROGDIR)/src -type f -name "flif" -exec cp "{}" ./ \;
 
 clean:
-	rm -rf jpegxl_git
+	rm -rf lib
