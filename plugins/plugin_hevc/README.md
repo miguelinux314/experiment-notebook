@@ -1,9 +1,11 @@
-plugin HEVC H256
+## Plugin HEVC H256
 
 Download the code of the executables at https://vcgit.hhi.fraunhofer.de/jvet/HM
 
 Note: If you want to work with 16 bit images use:
    cmake -DCMAKE_BUILD_TYPE=Release -DHIGH_BITDEPTH=ON
+
+## License
 
 Copyright (c) 2010-2020, ITU/ISO/IEC
 All rights reserved.
@@ -31,3 +33,15 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
+
+## Build instructions
+
+### GNU/Linux
+On Ubuntu/Debian:
+
+  * `sudo apt install cmake`
+
+### OS X
+
+* Install [homebrew](http://brew.sh)
+* `brew install gcc@9`
