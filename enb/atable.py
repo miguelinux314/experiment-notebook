@@ -449,13 +449,11 @@ class ATable(metaclass=MetaTable):
             df = self.get_df_one_chunk(
                 target_indices=chunk, target_columns=target_columns, fill=fill,
                 overwrite=overwrite, parallel_row_processing=parallel_row_processing)
-
         if len(chunk_list) > 1:
             # Get the full df if more thank one chunk is requested
             df = self.get_df_one_chunk(
                 target_indices=target_indices, target_columns=target_columns, fill=fill,
                 overwrite=overwrite, parallel_row_processing=parallel_row_processing)
-
         return df
 
     def get_df_one_chunk(self, target_indices, target_columns=None,
