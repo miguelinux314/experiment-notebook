@@ -169,19 +169,24 @@ class FileVersionTable(FilePropertiesTable):
 
         self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir)) \
             if original_base_dir is not None else options.base_dataset_dir
+
+        for base_class in self.__class__.__bases__:
+            if base_class is not FileVersionTable and issubclass(base_class, FilePropertiesTable):
+                default_class = base_class
+                break
+        else:
+            default_class = FilePropertiesTable
+
         self.original_properties_table = original_properties_table \
             if original_properties_table is not None \
-            else FilePropertiesTable(base_dir=self.original_base_dir)
+            else default_class(base_dir=self.original_base_dir)
+
         self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
         self.version_name = version_name
         self.current_run_version_times = {}
         assert self.version_base_dir is not None
         os.makedirs(self.version_base_dir, exist_ok=True)
-
-        
-
-
-        super().__init__(csv_support_path=csv_support_path, base_dir=version_base_dir)
+        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path, base_dir=version_base_dir)
 
     def version(self, input_path, output_path, row):
         """Create a version of input_path and write it into output_path.
@@ -196,12 +201,14 @@ class FileVersionTable(FilePropertiesTable):
         raise NotImplementedError()
 
     def get_default_target_indices(self):
-        return get_all_test_files()
+        return get_all_test_files(base_dataset_dir=self.original_base_dir)
 
     def original_to_versioned_path(self, original_path):
         """Get the path of the versioned file corresponding to original_path.
         """
-        return original_path.replace(os.path.abspath(self.base_dir), os.path.abspath(self.version_base_dir))
+        return os.path.abspath(os.path.realpath(original_path)).replace(
+            os.path.abspath(os.path.realpath(self.original_base_dir)),
+            os.path.abspath(os.path.realpath(self.version_base_dir)))
 
     def get_df(self, target_indices=None, fill=True, overwrite=False,
                parallel_versioning=True, parallel_row_processing=True,
@@ -221,13 +228,12 @@ class FileVersionTable(FilePropertiesTable):
         :param target_columns: if not None, the list of columns that are considered for computation
         """
         target_indices = target_indices if target_indices is not None else self.get_default_target_indices()
+
         assert all(index == get_canonical_path(index) for index in target_indices)
         original_df = self.original_properties_table.get_df(
             target_indices=target_indices,
             target_columns=target_columns)
 
-        base_path = os.path.abspath(self.original_base_dir)
-        version_path = os.path.abspath(self.version_base_dir)
         target_indices = [get_canonical_path(index)
                           for index in target_indices]
         version_indices = [self.original_to_versioned_path(index)
@@ -292,10 +298,11 @@ class FileVersionTable(FilePropertiesTable):
         version_time_list = self.current_run_version_times[file_path]
 
         if any(t < 0 for t in version_time_list):
-            raise atable.CorruptedTableError("A negative versioning time measurement was found "
-                                             f"for {file_path}. Most likely, the transformed version "
-                                             f"already existed, the table did not contain {_column_name}, "
-                                             f"and options.force(={options.force}) is not set to True")
+            raise atable.CorruptedTableError(
+                "A negative versioning time measurement was found "
+                f"for {file_path}. Most likely, the transformed version "
+                f"already existed, the table did not contain {_column_name}, "
+                f"and options.force(={options.force}) is not set to True")
 
         if not version_time_list:
             raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
