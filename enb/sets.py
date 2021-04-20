@@ -169,9 +169,18 @@ class FileVersionTable(FilePropertiesTable):
 
         self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir)) \
             if original_base_dir is not None else options.base_dataset_dir
+
+        for base_class in self.__class__.__bases__:
+            if base_class is not FileVersionTable and issubclass(base_class, FilePropertiesTable):
+                default_class = base_class
+                break
+        else:
+            default_class = FilePropertiesTable
+
         self.original_properties_table = original_properties_table \
             if original_properties_table is not None \
-            else FilePropertiesTable(base_dir=self.original_base_dir)
+            else default_class(base_dir=self.original_base_dir)
+
         self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
         self.version_name = version_name
         self.current_run_version_times = {}
@@ -192,7 +201,7 @@ class FileVersionTable(FilePropertiesTable):
         raise NotImplementedError()
 
     def get_default_target_indices(self):
-        return get_all_test_files(base_dataset_dir=self.base_dir)
+        return get_all_test_files(base_dataset_dir=self.original_base_dir)
 
     def original_to_versioned_path(self, original_path):
         """Get the path of the versioned file corresponding to original_path.
@@ -219,6 +228,7 @@ class FileVersionTable(FilePropertiesTable):
         :param target_columns: if not None, the list of columns that are considered for computation
         """
         target_indices = target_indices if target_indices is not None else self.get_default_target_indices()
+
         assert all(index == get_canonical_path(index) for index in target_indices)
         original_df = self.original_properties_table.get_df(
             target_indices=target_indices,
