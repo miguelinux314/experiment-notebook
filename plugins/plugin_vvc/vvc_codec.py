@@ -6,6 +6,8 @@ https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master
 """
 
 import os
+
+import enb.icompression
 from enb import icompression
 from enb.config import options
 import math
@@ -147,3 +149,11 @@ class VVC_lossy(icompression.LossyCodec, VVC):
             s = f"VVC QP{self.param_dict['QP']}"
 
         return s
+
+if __name__ == '__main__':
+    print("This example compresses all .raw images in ./test_data/")
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
+    exp = enb.icompression.LosslessCompressionExperiment(codecs=[VVC_lossless()])
+    df = exp.get_df()
+    print("Done!")
+    
