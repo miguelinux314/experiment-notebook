@@ -183,7 +183,6 @@ class Experiment(atable.ATable):
         target_indices = self.target_file_paths if target_indices is None else target_indices
         target_tasks = self.tasks if target_tasks is None else target_tasks
 
-
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
         df = super().get_df(target_indices=tuple(itertools.product(
