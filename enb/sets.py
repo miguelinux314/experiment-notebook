@@ -277,8 +277,8 @@ class FileVersionTable(FilePropertiesTable):
                 break
             previous_base_classes = filtered_classes
             base_classes = filtered_classes
+        
         filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
-
         return filtered_type.get_df(
             self, target_indices=version_indices, parallel_row_processing=parallel_row_processing,
             target_columns=target_columns, overwrite=overwrite)
