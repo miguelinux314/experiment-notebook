@@ -230,9 +230,8 @@ class FileVersionTable(FilePropertiesTable):
         target_indices = target_indices if target_indices is not None else self.get_default_target_indices()
 
         assert all(index == get_canonical_path(index) for index in target_indices)
-        original_df = self.original_properties_table.get_df(
-            target_indices=target_indices,
-            target_columns=target_columns)
+        original_df = self.original_properties_table.get_df(target_indices=target_indices,
+                                                            target_columns=target_columns)
 
         target_indices = [get_canonical_path(index)
                           for index in target_indices]
