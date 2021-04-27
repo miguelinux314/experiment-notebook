@@ -10,6 +10,7 @@ import collections
 import itertools
 import inspect
 
+import enb.sets
 from enb import atable
 from enb import sets
 from enb.config import get_options
@@ -84,6 +85,7 @@ class Experiment(atable.ATable):
     """
     task_name_column = "task_name"
     task_label_column = "task_label"
+    default_extension = "raw"
     default_file_properties_table_class = sets.FilePropertiesTable
 
     def __init__(self, tasks,
@@ -121,6 +123,11 @@ class Experiment(atable.ATable):
         :param parallel_row_processing: if not None, it determines whether file properties
           are to be obtained in parallel. If None, it is given by not options.sequential.
         """
+        overwrite_file_properties = overwrite_file_properties \
+            if overwrite_file_properties is not None else options.force
+
+        parallel_dataset_property_processing = parallel_dataset_property_processing \
+            if parallel_dataset_property_processing is not None else not options.sequential
         self.tasks = list(tasks)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
@@ -147,12 +154,12 @@ class Experiment(atable.ATable):
         if options.verbose > 1:
             print(f"Obtaining properties of {len(dataset_paths)} files... "
                   f"[dataset info: {type(self.dataset_info_table).__name__}]")
-        self.dataset_table_df = self.dataset_info_table.get_df(
-            target_indices=dataset_paths,
-            parallel_row_processing=(parallel_dataset_property_processing
-                                     if parallel_dataset_property_processing is not None
-                                     else not options.sequential),
-            overwrite=overwrite_file_properties)
+        self.dataset_table_df = self.dataset_info_table.get_df(target_indices=dataset_paths,
+                                                               overwrite=overwrite_file_properties,
+                                                               parallel_row_processing=(
+                                                                   parallel_dataset_property_processing
+                                                                   if parallel_dataset_property_processing is not None
+                                                                   else not options.sequential))
 
         self.target_file_paths = dataset_paths
 
@@ -164,32 +171,33 @@ class Experiment(atable.ATable):
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
-    def get_df(self, target_indices=None, fill=True, overwrite=False,
-               parallel_row_processing=True, target_tasks=None,
+    def get_df(self, target_indices=None, target_columns=None, fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
         """Get a DataFrame with the results of the experiment. The produced DataFrame
         contains the columns from the dataset info table (but they are not stored
         in the experiment's persistence file).
 
         :param parallel_row_processing: if True, parallel computation is used to fill the df,
-          including compression
+          including compression. If False, sequential execution is applied. If None,
+          not options.sequential is used.
         :param target_indices: list of file paths to be processed. If None, self.target_file_paths
           is used instead.  
-        :param target_tasks: list of tasks to be applied to each file. If None, self.codecs
-          is used instead.
         :param chunk_size: if not None, a positive integer that determines the number of table
           rows that are processed before made persistent.
+        :param overwrite: if not None, a flag determining whether existing values should be
+          calculated again. If none, options
         """
         target_indices = self.target_file_paths if target_indices is None else target_indices
-        target_tasks = self.tasks if target_tasks is None else target_tasks
-
+        overwrite = overwrite if overwrite is not None else options.force
+        target_tasks = list(self.tasks)
+        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
+            else not options.sequential
 
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
         df = super().get_df(target_indices=tuple(itertools.product(
-            sorted(set(target_indices)), sorted(set(target_task_names)))),
-            parallel_row_processing=parallel_row_processing,
-            fill=fill, overwrite=overwrite, chunk_size=chunk_size)
+            sorted(set(target_indices)), sorted(set(target_task_names)))), fill=fill, overwrite=overwrite,
+            parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
         
         # Add dataset columns
         rsuffix = "__redundant__index"
@@ -220,6 +228,15 @@ class Experiment(atable.ATable):
                 df[param_name] = df.apply(get_param_row, axis=1)
                 
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
+
+    def index_to_path_task(self, index):
+        """Given an ATable index, return (task, path), where task is the current row's
+        task name and path the input file's canonical path.
+
+        Note that thos index is the same used in every ATable row column signature,
+        e.g., (self, index, row).
+        """
+        return index
 
     def get_dataset_info_row(self, file_path):
         """Get the dataset info table row for the file path given as argument.
