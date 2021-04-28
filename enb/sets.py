@@ -81,6 +81,7 @@ class FilePropertiesTable(atable.ATable):
     version_name = "original"
     hash_field_name = f"{hash_algorithm}"
     index_name = "file_path"
+    default_extension = "raw"
     base_dir = None
 
     def __init__(self, csv_support_path=None, base_dir=None):
@@ -88,6 +89,17 @@ class FilePropertiesTable(atable.ATable):
             csv_support_path = os.path.join(options.persistence_dir, f"persistence_{self.__class__.__name__}.csv")
         super().__init__(index=FilePropertiesTable.index_name, csv_support_path=csv_support_path)
         self.base_dir = base_dir if base_dir is not None else options.base_dataset_dir
+
+    def get_df(self, target_indices=None, target_columns=None,
+               fill=True, overwrite=None, parallel_row_processing=None,
+               chunk_size=None):
+        target_indices = target_indices if target_indices is not None \
+            else get_all_test_files(ext=self.default_extension, base_dataset_dir=self.base_dir)
+        return super().get_df(target_indices=target_indices,
+                              target_columns=target_columns,
+                              fill=fill, overwrite=overwrite,
+                              parallel_row_processing=parallel_row_processing,
+                              chunk_size=chunk_size)
 
     def get_relative_path(self, file_path):
         """Get the relative path. Overwritten to handle the versioned path.
@@ -210,8 +222,8 @@ class FileVersionTable(FilePropertiesTable):
             os.path.abspath(os.path.realpath(self.original_base_dir)),
             os.path.abspath(os.path.realpath(self.version_base_dir)))
 
-    def get_df(self, target_indices=None, fill=True, overwrite=False,
-               parallel_versioning=True, parallel_row_processing=True,
+    def get_df(self, target_indices=None, fill=True, overwrite=None,
+               parallel_versioning=None, parallel_row_processing=None,
                target_columns=None):
         """Create a version of target_indices (which must all be contained
         in self.original_base_dir) into self.version_base_dir.
@@ -228,6 +240,9 @@ class FileVersionTable(FilePropertiesTable):
         :param target_columns: if not None, the list of columns that are considered for computation
         """
         target_indices = target_indices if target_indices is not None else self.get_default_target_indices()
+        parallel_versioning = parallel_versioning if parallel_versioning is not None else not options.sequential
+        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None else not options.sequential
+        overwrite = overwrite if overwrite is not None else options.force
 
         assert all(index == get_canonical_path(index) for index in target_indices)
         original_df = self.original_properties_table.get_df(target_indices=target_indices,
@@ -237,6 +252,8 @@ class FileVersionTable(FilePropertiesTable):
                           for index in target_indices]
         version_indices = [self.original_to_versioned_path(index)
                            for index in target_indices]
+
+        print(f"[watch] parallel_versioning={parallel_versioning}")
 
         if parallel_versioning:
             version_fun_id = ray.put(self.version)
