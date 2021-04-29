@@ -166,6 +166,7 @@ class FileVersionTable(FilePropertiesTable):
         :param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
           the base dir)
+
         :param version_name: arbitrary name of this file version
 
         :param original_base_dir: path to the original directory
@@ -198,7 +199,7 @@ class FileVersionTable(FilePropertiesTable):
         self.current_run_version_times = {}
         assert self.version_base_dir is not None
         os.makedirs(self.version_base_dir, exist_ok=True)
-        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path, base_dir=version_base_dir)
+        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path, base_dir=original_base_dir)
 
     def version(self, input_path, output_path, row):
         """Create a version of input_path and write it into output_path.
@@ -217,10 +218,20 @@ class FileVersionTable(FilePropertiesTable):
 
     def original_to_versioned_path(self, original_path):
         """Get the path of the versioned file corresponding to original_path.
+        This function will replicate the folder structure within self.original_base_dir.
         """
-        return os.path.abspath(os.path.realpath(original_path)).replace(
-            os.path.abspath(os.path.realpath(self.original_base_dir)),
-            os.path.abspath(os.path.realpath(self.version_base_dir)))
+        parts = os.path.abspath(original_path).split(os.sep)[1:]
+        for used_parts in range(1,len(parts)+1):
+            if os.path.exists(os.path.join(self.original_base_dir, *parts[-used_parts:])):
+                versioned_path = os.path.join(self.version_base_dir, *parts[-used_parts:])
+                break
+        else:
+            raise Exception(f"Original path {original_path} not found in {self.original_base_dir}")
+
+        if options.verbose > 2:
+            print(f"[W]ill version {original_path} -> {versioned_path}")
+
+        return versioned_path
 
     def get_df(self, target_indices=None, fill=True, overwrite=None,
                parallel_versioning=None, parallel_row_processing=None,
@@ -252,8 +263,6 @@ class FileVersionTable(FilePropertiesTable):
                           for index in target_indices]
         version_indices = [self.original_to_versioned_path(index)
                            for index in target_indices]
-
-        print(f"[watch] parallel_versioning={parallel_versioning}")
 
         if parallel_versioning:
             version_fun_id = ray.put(self.version)
@@ -312,11 +321,10 @@ class FileVersionTable(FilePropertiesTable):
     @atable.column_function("version_time", label="Versioning time (s)")
     def set_version_time(self, file_path, row):
         version_time_list = self.current_run_version_times[file_path]
-
         if any(t < 0 for t in version_time_list):
             raise atable.CorruptedTableError(
                 "A negative versioning time measurement was found "
-                f"for {file_path}. Most likely, the transformed version "
+                f"for {file_path} using {self.__class__.__name__}. Most likely, the transformed version "
                 f"already existed, the table did not contain {_column_name}, "
                 f"and options.force(={options.force}) is not set to True")
 
