@@ -48,8 +48,6 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
             print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
         return [get_canonical_path(sys.argv[0])]
 
-
-
     assert os.path.isdir(base_dataset_dir), \
         f"Nonexistent dataset dir {base_dataset_dir}"
     sorted_path_list = sorted(
@@ -83,11 +81,25 @@ class FilePropertiesTable(atable.ATable):
     version_name = "original"
     hash_field_name = f"{hash_algorithm}"
     index_name = "file_path"
+    default_extension = "raw"
     base_dir = None
 
     def __init__(self, csv_support_path=None, base_dir=None):
+        if csv_support_path is None and options.persistence_dir is not None:
+            csv_support_path = os.path.join(options.persistence_dir, f"persistence_{self.__class__.__name__}.csv")
         super().__init__(index=FilePropertiesTable.index_name, csv_support_path=csv_support_path)
         self.base_dir = base_dir if base_dir is not None else options.base_dataset_dir
+
+    def get_df(self, target_indices=None, target_columns=None,
+               fill=True, overwrite=None, parallel_row_processing=None,
+               chunk_size=None):
+        target_indices = target_indices if target_indices is not None \
+            else get_all_test_files(ext=self.default_extension, base_dataset_dir=self.base_dir)
+        return super().get_df(target_indices=target_indices,
+                              target_columns=target_columns,
+                              fill=fill, overwrite=overwrite,
+                              parallel_row_processing=parallel_row_processing,
+                              chunk_size=chunk_size)
 
     def get_relative_path(self, file_path):
         """Get the relative path. Overwritten to handle the versioned path.
@@ -146,27 +158,48 @@ class FileVersionTable(FilePropertiesTable):
             pass
     """
 
-    def __init__(self, original_base_dir, version_base_dir,
-                 original_properties_table, version_name,
+    def __init__(self, version_base_dir, version_name,
+                 original_properties_table=None,
+                 original_base_dir=None,
                  csv_support_path=None):
         """
-        :param original_base_dir: path to the original directory
-          (it must contain all indices requested later with self.get_df())
         :param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
           the base dir)
-        :param version_name: name of this file version
+
+        :param version_name: arbitrary name of this file version
+
+        :param original_base_dir: path to the original directory
+          (it must contain all indices requested later with self.get_df()).
+          If None, options.base_datset_dir is used
+
         :param original_properties_table: instance of the file properties table (or subclass)
-          to be used.
+          to be used. If None, a FilePropertiesTable is instanced automatically.
+
         :param csv_support_path: path to the file where results (of the versioned data) are to be
-          long-term stored
+          long-term stored. If None, one is assigned by default based on options.persistence_dir.
         """
-        super().__init__(csv_support_path=csv_support_path, base_dir=version_base_dir)
-        self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir))
-        self.original_properties_table = original_properties_table
+
+        self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir)) \
+            if original_base_dir is not None else options.base_dataset_dir
+
+        for base_class in self.__class__.__bases__:
+            if base_class is not FileVersionTable and issubclass(base_class, FilePropertiesTable):
+                default_class = base_class
+                break
+        else:
+            default_class = FilePropertiesTable
+
+        self.original_properties_table = original_properties_table \
+            if original_properties_table is not None \
+            else default_class(base_dir=self.original_base_dir)
+
         self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
         self.version_name = version_name
         self.current_run_version_times = {}
+        assert self.version_base_dir is not None
+        os.makedirs(self.version_base_dir, exist_ok=True)
+        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path, base_dir=original_base_dir)
 
     def version(self, input_path, output_path, row):
         """Create a version of input_path and write it into output_path.
@@ -180,8 +213,28 @@ class FileVersionTable(FilePropertiesTable):
         """
         raise NotImplementedError()
 
-    def get_df(self, target_indices=None, fill=True, overwrite=False,
-               parallel_versioning=True, parallel_row_processing=True,
+    def get_default_target_indices(self):
+        return get_all_test_files(base_dataset_dir=self.original_base_dir)
+
+    def original_to_versioned_path(self, original_path):
+        """Get the path of the versioned file corresponding to original_path.
+        This function will replicate the folder structure within self.original_base_dir.
+        """
+        parts = os.path.abspath(original_path).split(os.sep)[1:]
+        for used_parts in range(1,len(parts)+1):
+            if os.path.exists(os.path.join(self.original_base_dir, *parts[-used_parts:])):
+                versioned_path = os.path.join(self.version_base_dir, *parts[-used_parts:])
+                break
+        else:
+            raise Exception(f"Original path {original_path} not found in {self.original_base_dir}")
+
+        if options.verbose > 2:
+            print(f"[W]ill version {original_path} -> {versioned_path}")
+
+        return versioned_path
+
+    def get_df(self, target_indices=None, fill=True, overwrite=None,
+               parallel_versioning=None, parallel_row_processing=None,
                target_columns=None):
         """Create a version of target_indices (which must all be contained
         in self.original_base_dir) into self.version_base_dir.
@@ -197,17 +250,18 @@ class FileVersionTable(FilePropertiesTable):
         :param parallel_row_processing: if True, file properties are gathered in parallel
         :param target_columns: if not None, the list of columns that are considered for computation
         """
-        target_indices = target_indices if target_indices is not None else get_all_test_files()
-        assert all(index == get_canonical_path(index) for index in target_indices)
-        original_df = self.original_properties_table.get_df(
-            target_indices=target_indices,
-            target_columns=target_columns)
+        target_indices = target_indices if target_indices is not None else self.get_default_target_indices()
+        parallel_versioning = parallel_versioning if parallel_versioning is not None else not options.sequential
+        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None else not options.sequential
+        overwrite = overwrite if overwrite is not None else options.force
 
-        base_path = os.path.abspath(self.original_base_dir)
-        version_path = os.path.abspath(self.version_base_dir)
+        assert all(index == get_canonical_path(index) for index in target_indices)
+        original_df = self.original_properties_table.get_df(target_indices=target_indices,
+                                                            target_columns=target_columns)
+
         target_indices = [get_canonical_path(index)
                           for index in target_indices]
-        version_indices = [index.replace(base_path, version_path)
+        version_indices = [self.original_to_versioned_path(index)
                            for index in target_indices]
 
         if parallel_versioning:
@@ -267,12 +321,12 @@ class FileVersionTable(FilePropertiesTable):
     @atable.column_function("version_time", label="Versioning time (s)")
     def set_version_time(self, file_path, row):
         version_time_list = self.current_run_version_times[file_path]
-
         if any(t < 0 for t in version_time_list):
-            raise atable.CorruptedTableError("A negative versioning time measurement was found "
-                                             f"for {file_path}. Most likely, the transformed version "
-                                             f"already existed, the table did not contain {_column_name}, "
-                                             f"and options.force(={options.force}) is not set to True")
+            raise atable.CorruptedTableError(
+                "A negative versioning time measurement was found "
+                f"for {file_path} using {self.__class__.__name__}. Most likely, the transformed version "
+                f"already existed, the table did not contain {_column_name}, "
+                f"and options.force(={options.force}) is not set to True")
 
         if not version_time_list:
             raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "

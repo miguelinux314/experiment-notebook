@@ -263,9 +263,7 @@ def apply_transform(
             original_base_dir=options.base_dataset_dir, version_base_dir=options.base_version_dataset_dir,
             original_properties_table=original_geometry_table, version_name=forward_class.__name__,
             csv_support_path=os.path.join(options.persistence_dir, "versioned_properties.csv"))
-        forward_df = forward_table.get_df(target_indices=original_target_files,
-                                          parallel_versioning=not run_sequential,
-                                          overwrite=options.force,
+        forward_df = forward_table.get_df(target_indices=original_target_files, overwrite=options.force,
                                           parallel_row_processing=True)
 
         if options.verbose:
@@ -281,9 +279,7 @@ def apply_transform(
                 version_name=inverse_class.__name__,
                 csv_support_path=os.path.join(
                     options.persistence_dir, "inverse_versioned_properties.csv"))
-            inverse_df = inverse_table.get_df(parallel_versioning=not run_sequential,
-                                              parallel_row_processing=True,
-                                              target_indices=transformed_target_files)
+            inverse_df = inverse_table.get_df(target_indices=transformed_target_files, parallel_row_processing=True)
 
         if options.verbose:
             print(f"[C]hecking lossless to {len(original_target_files)}  images")
