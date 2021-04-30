@@ -1,5 +1,7 @@
+wheel
 pandas
-ray
+psutil
+ray[default]
 matplotlib
 numpy
 scipy
