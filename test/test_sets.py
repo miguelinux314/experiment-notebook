@@ -33,8 +33,8 @@ class TestSets(unittest.TestCase):
             dataset_properties_table = sets.FilePropertiesTable(csv_support_path=tmp_path)
 
             # Attempt loading from an empty file, verify it is empty
-            empty_property_table = dataset_properties_table.get_df(
-                target_indices=target_indices, fill=False, parallel_row_processing=parallel)
+            empty_property_table = dataset_properties_table.get_df(target_indices=target_indices, fill=False,
+                                                                   parallel_row_processing=parallel)
             assert len(empty_property_table) == len(target_indices)
 
             assert np.all(empty_property_table[[
@@ -43,13 +43,12 @@ class TestSets(unittest.TestCase):
                 empty_property_table
 
             # Run the actual loading sequence
-            dataset_properties_df = dataset_properties_table.get_df(
-                target_indices=target_indices, parallel_row_processing=parallel)
+            dataset_properties_df = dataset_properties_table.get_df(target_indices=target_indices,
+                                                                    parallel_row_processing=parallel)
 
             # Obtain again, forcing load from the temporary file
-            new_df = dataset_properties_table.get_df(
-                target_indices=target_indices,
-                fill=False, overwrite=False, parallel_row_processing=parallel)
+            new_df = dataset_properties_table.get_df(target_indices=target_indices, fill=False, overwrite=False,
+                                                     parallel_row_processing=parallel)
             assert (dataset_properties_df.columns == new_df.columns).all()
             for c in dataset_properties_df.columns:
                 if not (dataset_properties_df[c] == new_df[c]).all():
