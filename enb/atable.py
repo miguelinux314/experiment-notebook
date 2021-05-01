@@ -15,16 +15,12 @@
 * For example
 
   ::
+        import enb
 
-        import ray
-        from enb import atable
+        class Subclass(enb.atable.ATable):
+            def column_index_length(self, index, row):
+                return len(index)
 
-        class Subclass(atable.ATable):
-            @atable.column_function("index_length")
-            def set_index_length(self, index, row):
-                row["index_length"] = len(index)
-
-        ray.init()
         sc = Subclass(index="index")
         df = sc.get_df(target_indices=["a"*i for i in range(10)])
         print(df.head())
@@ -214,7 +210,12 @@ class MetaTable(type):
             defining_class_name = get_class_that_defined_method(properties.fun).__name__
             if defining_class_name != subclass.__name__:
                 ctp_fun = properties.fun
-                sc_fun = getattr(subclass, properties.fun.__name__)
+                try:
+                    sc_fun = getattr(subclass, properties.fun.__name__)
+                except AttributeError:
+                    # Not overwritten, nothing else to check here
+                    continue
+
                 if ctp_fun != sc_fun:
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
                         if hasattr(sc_fun, "_redefines_column"):
@@ -232,10 +233,18 @@ class MetaTable(type):
                                   f"or simply with @atable.redefines_column to maintain the same "
                                   f"difinition")
 
-        funname_to_pending_entry = {t[1].__name__: t for t in cls.pendingdefs_classname_fun_columnproperties_kwargs}
-
         # Add pending decorated and column_* methods (declared as columns before subclass existed)
+        inherited_classname_fun_columnproperties_kwargs = [t for t in
+                                                           cls.pendingdefs_classname_fun_columnproperties_kwargs
+                                                           if t[0] != subclass.__name__]
+        decorated_classname_fun_columnproperties_kwargs = [t for t in
+                                                           cls.pendingdefs_classname_fun_columnproperties_kwargs
+                                                           if t[0] == subclass.__name__]
 
+        for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
+            ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
+
+        funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
         for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
             try:
                 # Add decorated function
@@ -254,7 +263,9 @@ class MetaTable(type):
                 cp = ColumnProperties(name=column_name, fun=wrapper)
                 ATable.add_column_function(cls=subclass, column_properties=cp, fun=wrapper)
 
-        assert len(funname_to_pending_entry) == 0, funname_to_pending_entry
+        assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
+
+        cls.pendingdefs_classname_fun_columnproperties_kwargs.clear()
 
         return subclass
 
