@@ -232,15 +232,40 @@ class MetaTable(type):
                                   f"or simply with @atable.redefines_column to maintain the same "
                                   f"difinition")
 
-        # Add pending methods (declared as columns before subclass existed)
-        for classname, fun, cp, kwargs in cls.pendingdefs_classname_fun_columnproperties_kwargs:
-            if classname != name:
-                raise SyntaxError(f"Not expected to find a decorated function {fun.__name__}, "
-                                  f"classname={classname} when defining {name}.")
-            ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
-        cls.pendingdefs_classname_fun_columnproperties_kwargs.clear()
+        funname_to_pending_entry = {t[1].__name__: t for t in cls.pendingdefs_classname_fun_columnproperties_kwargs}
+
+        # Add pending decorated and column_* methods (declared as columns before subclass existed)
+
+        for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
+            try:
+                # Add decorated function
+                classname, fun, cp, kwargs = funname_to_pending_entry[fun.__name__]
+                ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
+                del funname_to_pending_entry[fun.__name__]
+            except KeyError:
+                assert all(cp.fun is not fun for cp in subclass.column_to_properties.values())
+                if not fun.__name__.startswith("column_"):
+                    continue
+                column_name = fun.__name__[len("column_"):]
+                if not column_name:
+                    raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
+
+                wrapper = get_auto_column_wrapper(fun=fun)
+                cp = ColumnProperties(name=column_name, fun=wrapper)
+                ATable.add_column_function(cls=subclass, column_properties=cp, fun=wrapper)
+
+        assert len(funname_to_pending_entry) == 0, funname_to_pending_entry
 
         return subclass
+
+
+def get_auto_column_wrapper(fun):
+    # Function is not decorated: add wrapper if starts with column_*
+    def wrapper(self, index, row):
+        f"""Column wrapper{fun.__name__}"""
+        row[_column_name] = fun(self, index, row)
+
+    return wrapper
 
 
 class ATable(metaclass=MetaTable):
@@ -433,7 +458,7 @@ class ATable(metaclass=MetaTable):
         """
         overwrite = overwrite if overwrite is not None else options.force
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
-                else not options.sequential
+            else not options.sequential
         target_indices = list(target_indices)
         assert len(target_indices) > 0, "At least one index must be provided"
 
@@ -684,7 +709,7 @@ class ATable(metaclass=MetaTable):
                 if options.verbose > 1:
                     print(f"[W]arning: csv support file for {self} not set")
                 raise FileNotFoundError(self.csv_support_path)
-            
+
             loaded_df = pd.read_csv(self.csv_support_path)
             if options.verbose > 2:
                 print(f"[I]nfo: loaded df from with len {len(loaded_df)}")
