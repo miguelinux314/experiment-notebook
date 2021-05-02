@@ -429,8 +429,15 @@ class ScalarDistributionAnalyzer(Analyzer):
             if y_labels_by_group_name is None:
                 y_labels_by_group_name = {
                     group: f"{group} ({length})" if show_count else f"{group}"
-                    for group, length in
-                    lengths_by_group_name.items()}
+                    for group, length in lengths_by_group_name.items()}
+            elif show_count:
+                for group, length in lengths_by_group_name.items():
+                    try:
+                        affix = f" ({length})"
+                        if not y_labels_by_group_name[group].endswith(affix):
+                            y_labels_by_group_name[group] += f" ({length})"
+                    except KeyError:
+                        y_labels_by_group_name[group] = f"{group} ({length})" if show_count else f"{group}"
 
             expected_return_ids.append(
                 ray_render_plds_by_group.remote(

@@ -18,18 +18,20 @@
 # Option 3) install this and link to track any changes made to the code
 #  pip install .
 #
+# Tip: use pip install -e . to install a live link so that changes are automatically applied to your environment.
+#
+# From https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
 
-
-# Taken from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
 import io
 import codecs
 import os
 import sys
 import glob
+import subprocess
 
 here = os.path.abspath(os.path.dirname(__file__))
+
 
 def read(*filenames, **kwargs):
     encoding = kwargs.get('encoding', 'utf-8')
@@ -40,27 +42,20 @@ def read(*filenames, **kwargs):
             buf.append(f.read())
     return sep.join(buf)
 
-long_description = read('README.md')
 
 setup(
+    # Meta
     name='enb',
-    version="0.2.4",
+    version="0.2.5",
     url='https://github.com/miguelinux314/experiment-notebook',
-    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.2.tar.gz",
+    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.5.tar.gz",
     license='MIT',
     author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
-    install_requires=[
-        'pandas', 'ray', 'matplotlib', 'numpy', 'scipy',
-        'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw'],
     author_email='miguel.hernandez@uab.cat',
     description='Library to gather and disseminate computer-based experimental results.',
-    long_description=long_description,
-    packages=find_packages(),
-    include_package_data=True,
+    long_description=read('README.md'),
     platforms='any',
-
-    classifiers = [
+    classifiers=[
         'Programming Language :: Python',
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
@@ -70,5 +65,19 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering',
-        ],
+    ],
+
+    # UI
+    entry_points={
+        "console_scripts": ["enb=enb.__main__:enb"]
+    },
+
+    # Setup config
+    setup_requires=['wheel'],
+    install_requires=[
+        'wheel', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
+        'recordclass', 'sortedcontainers', 'imageio', 'redis',
+        'sphinx_rtd_theme', 'numpngw'],
+    packages=find_packages(),
+    # include_package_data=True,
 )

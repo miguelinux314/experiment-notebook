@@ -405,7 +405,7 @@ class ATable(metaclass=MetaTable):
                                    if k not in itertools.chain(self.indices, self.ignored_columns))
 
     def get_df(self, target_indices, target_columns=None,
-               fill=True, overwrite=False, parallel_row_processing=True,
+               fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
         """Return a pandas DataFrame containing all given indices and defined columns.
         If fill is True, missing values will be computed.
@@ -431,6 +431,9 @@ class ATable(metaclass=MetaTable):
         :raises: CorrupedTableError, ColumnFailedError, when an error is encountered
           processing the data.
         """
+        overwrite = overwrite if overwrite is not None else options.force
+        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
+                else not options.sequential
         target_indices = list(target_indices)
         assert len(target_indices) > 0, "At least one index must be provided"
 
