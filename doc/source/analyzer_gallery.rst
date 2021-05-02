@@ -15,7 +15,7 @@ Each histogram contains a marker for the average value, and a bar for +/- 1 stan
 
 The following example shows the distribution of sepal lengths by Iris class:
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/dev/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png
 
 **Interesting parameters** to the `analyze_df()` method:
 
@@ -42,7 +42,7 @@ columns as an input.
 
 The following example shows the distribution of two columns of the set.
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/dev/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png
 
 **Interesting parameters** to the :meth:`enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df()` method:
 
@@ -71,7 +71,7 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
 **Interesting parameters** to the :meth:`enb.aanalysis.TwoColumnLineAnalyzer.analyze_df()` method:
 
 * `group_by`: instead of column names, this argument must be a list of :class:`enb.aanalysis.TaskFamily` instances.
-  The following example taken from `this lossy compression example<https://github.com/miguelinux314/experiment-notebook/blob/master/templates/lossy_compression_experiment/lossy_compression_experiment.py>`
+  The following example taken from `this lossy compression example<https://github.com/miguelinux314/experiment-notebook/blob/dev/templates/lossy_compression_experiment/lossy_compression_experiment.py>`
   shows how to define a list of task families that can be used as the `group_by` argument:
 
   .. code-block:: python
@@ -98,5 +98,5 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
 Another example with horizontal range and plus/minus +1 std (taken from :doc:`lossy_compression_example`)
 is shown next:
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png
 
