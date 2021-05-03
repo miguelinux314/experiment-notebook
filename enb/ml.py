@@ -11,23 +11,23 @@ from enb.atable import indices_to_internal_loc
 
 options = get_options()
 
+
 class Model(experiment.ExperimentTask):
     def __init__(self, criterion=nn.CrossEntropyLoss(), param_dict=None):
         param_dict['criterion'] = criterion
         super().__init__(param_dict=param_dict)
 
-    def test(self, test_loader):
-        self.eval()
+    def test(self, test_loader):  # need a way to add custom data_loaders
+        self.param_dict['model'].eval()
         test_loss = 0
         correct = 0
         totals = 0
         all_preds = []
         all_targets = []
-        print("HELLO")
         with torch.no_grad():
             for data, target in test_loader:
                 data, target = data, target
-                output = self.parm_dict['model'].forward(data)
+                output = self.param_dict['model'].forward(data)
                 test_loss += self.param_dict['criterion'](output, target).item() * data.shape[0]  # sum up batch loss
                 pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
                 correct += pred.eq(target.view_as(pred)).sum().item()
@@ -63,7 +63,6 @@ class MachineLearningExperiment(experiment.Experiment):
         def testing_results(self):
             """Perform the actual testing experiment for the selected row.
             """
-            print("HELLO")
             if self._testing_results is None:
                 time_before = time.time()
                 self._testing_results = self.model.test(self.testing_dataset_path)
@@ -144,7 +143,6 @@ class MachineLearningExperiment(experiment.Experiment):
         row_wrapper = self.RowWrapper(file_path, model, row)
         result = super().process_row(index=index, column_fun_tuples=column_fun_tuples,
                                      row=row_wrapper, overwrite=overwrite, fill=fill)
-
 
         if isinstance(result, Exception):
             return result
