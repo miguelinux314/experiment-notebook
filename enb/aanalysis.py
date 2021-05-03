@@ -592,7 +592,7 @@ class HistogramDistributionAnalyzer(Analyzer):
 
         :param adjust_height:
         :param full_df: full df from which the column is to be extracted
-        :param target_columns: list of column names containing tensor (mapping) data
+        :param target_columns: list of column names containing tensor (dictionary) data
         :param output_plot_dir: path of the directory where the plot is to be saved
         :param output_csv_file: path of the csv file where basic analysis results are stored
         :param column_to_properties: dictionary with ColumnProperties entries
