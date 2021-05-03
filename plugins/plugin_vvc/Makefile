@@ -33,20 +33,25 @@ LFLAGS += $(wildcard ./ext/*.a)
 #CFLAGS += -fomit-frame-pointer
 #CFLAGS += -fmerge-all-constants -fmodulo-sched -fmodulo-sched-allow-regmoves -funsafe-loop-optimizations -floop-unroll-and-jam
 
-PROGDIR?=$(abspath ./HM-master)
+PROGDIR?= ./VVCSoftware_VTM-master
 
 .PHONY: default
-default: clean zip hevc clean
-
-clean:
-	rm -rf HM-master
+default: zip dir vvc clean
 
 zip:
-	unzip HM-master.zip
+	unzip VVCSoftware_VTM-master.zip
 
-hevc:
-	@cd $(PROGDIR) && \
-	cmake -DCMAKE_BUILD_TYPE=Release -DHIGH_BITDEPTH=ON -GNinja . && \
-	make -j && \
-	cp -v $(PROGDIR)/bin/TAppEncoderStaticd $(PROGDIR)/../TAppEncoderStatic && \
-	cp -v $(PROGDIR)/bin/TAppDecoderStaticd $(PROGDIR)/../TAppDecoderStatic
+dir:
+	mkdir $(PROGDIR)/dir
+	cp $(PROGDIR)/CMakeLists.txt $(PROGDIR)/dir
+
+
+vvc:
+	cd $(PROGDIR)/dir && echo "I'm in dir" && \
+	cmake -DCMAKE_BUILD_TYPE=Release .. && \
+	make -j
+	cp $(PROGDIR)/bin/EncoderAppStatic ./
+	cp $(PROGDIR)/bin/DecoderAppStatic ./
+
+clean:
+	rm -rf VVCSoftware_VTM-master

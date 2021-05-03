@@ -181,7 +181,7 @@ class Experiment(atable.ATable):
           including compression. If False, sequential execution is applied. If None,
           not options.sequential is used.
         :param target_indices: list of file paths to be processed. If None, self.target_file_paths
-          is used instead.  
+          is used instead.
         :param chunk_size: if not None, a positive integer that determines the number of table
           rows that are processed before made persistent.
         :param overwrite: if not None, a flag determining whether existing values should be
