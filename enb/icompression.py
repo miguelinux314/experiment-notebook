@@ -349,11 +349,14 @@ class WrapperCodec(AbstractCodec):
         """
         compressor_signature = self.get_binary_signature(self.compressor_path)
         decompressor_signature = self.get_binary_signature(self.decompressor_path)
-        if compressor_signature == decompressor_signature:
-            signature = f"{compressor_signature}"
+        if compressor_signature and decompressor_signature:
+            if compressor_signature == decompressor_signature:
+                signature = f"{compressor_signature}"
+            else:
+                signature = f"{compressor_signature}_{compressor_signature}"
         else:
-            signature = f"c{compressor_signature}_d{compressor_signature}"
-        name = f"{self.__class__.__name__}_{signature}"
+            signature = None
+        name = f"{self.__class__.__name__}_{signature}" if signature else self.__class__.__name__
         if self.param_dict:
             name += "__" + "_".join(f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
