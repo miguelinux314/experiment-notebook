@@ -13,16 +13,11 @@ import datetime
 
 # So that all tests can use the intended module structure transparently
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-os.chdir(os.path.dirname(os.path.dirname(__file__)))
-
-
-import enb.ray_cluster
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--verbose", help="Be verbose? Repeat for more", action="count", default=0)
 options = parser.parse_known_args()[0]
-
-enb.ray_cluster.init_ray()
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().discover(os.path.dirname(__file__))
