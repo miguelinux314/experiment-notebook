@@ -38,6 +38,10 @@ class VVC(icompression.WrapperCodec):
 
         self.config_path = config_path
 
+        @staticmethod
+        def get_binary_signature(binary_path):
+            return "debug"
+
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info['component_count'] == 1, f"Only 1 frame supported"
         return f"-i {original_path} " \
@@ -63,7 +67,7 @@ class VVC(icompression.WrapperCodec):
         raise NotImplementedError("Subclasses must implement their own label.")
 
 
-class VVC_lossless(icompression.LosslessCodec, VVC):
+class VVC_lossless(VVC, icompression.LosslessCodec):
     """
     VVC subclass for lossless compression
     """
@@ -82,7 +86,7 @@ class VVC_lossless(icompression.LosslessCodec, VVC):
         return "VVC lossless"
 
 
-class VVC_lossy(icompression.LossyCodec, VVC):
+class VVC_lossy(VVC, icompression.LossyCodec):
     """
     VVC subclass for lossy compression
     """
@@ -147,13 +151,14 @@ class VVC_lossy(icompression.LossyCodec, VVC):
             s = f"VVC {rate_format.format(self.param_dict['bit_rate'])}bps"
         else:
             s = f"VVC QP{self.param_dict['QP']}"
-
         return s
 
 if __name__ == '__main__':
     print("This example compresses all .raw images in ./test_data/")
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
     exp = enb.icompression.LosslessCompressionExperiment(codecs=[VVC_lossless()])
-    df = exp.get_df()
+    enb.aanalysis.ScalarDistributionAnalyzer().analyze_df(
+        full_df=exp.get_df(),
+        column_to_properties=exp.column_to_properties)
     print("Done!")
     
