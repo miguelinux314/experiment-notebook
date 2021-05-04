@@ -195,8 +195,9 @@ class Experiment(atable.ATable):
 
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
-        df = super().get_df(target_indices=tuple(itertools.product(
-            sorted(set(target_indices)), sorted(set(target_task_names)))), fill=fill, overwrite=overwrite,
+        target_indices = tuple(itertools.product(
+            sorted(set(target_indices)), sorted(set(target_task_names))))
+        df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
             parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
         
         # Add dataset columns

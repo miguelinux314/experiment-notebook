@@ -58,6 +58,8 @@ import datetime
 import inspect
 import traceback
 import ray
+import ast
+import sqlalchemy
 
 from enb.config import get_options
 from enb import config
@@ -597,7 +599,7 @@ class ATable(metaclass=MetaTable):
         if not options.no_new_results and self.csv_support_path and \
                 (not index_exception_list or not options.discard_partial_results):
             os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
-            table_df.to_csv(self.csv_support_path, index=False)
+            self.write_persistence(table_df)
 
         # A DataFrame is NOT returned if any error is produced
         if index_exception_list:
@@ -621,6 +623,16 @@ class ATable(metaclass=MetaTable):
             f"{(len(table_df), len(target_indices))}"
 
         return table_df
+
+    def write_persistence(self, df : pd.DataFrame, output_csv=None):
+        """Dump a dataframe produced by this table.
+
+        :param output_csv: if None, self.csv_support_path is used as the output path.
+        """
+        output_csv = output_csv if output_csv is not None else self.csv_support_path
+        if options.verbose > 1:
+            print(f"[D]umping CSV {len(df)} entries -> {output_csv}")
+        df.to_csv(output_csv, index=False)
 
     def get_matlab_struct_str(self, target_indices):
         """Return a string containing MATLAB code that defines a list of structs
@@ -735,7 +747,9 @@ class ATable(metaclass=MetaTable):
             loaded_df = loaded_df[self.indices_and_columns]
             for column, properties in self.column_to_properties.items():
                 if properties.has_dict_values:
-                    loaded_df[column] = loaded_df[column].apply(parse_dict_string)
+                    loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
+                    assert (loaded_df[column].apply(lambda v: isinstance(v, dict))).all(), \
+                        f"Not all entries are dicts for {column}"
         except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
             if self.csv_support_path is None:
                 if options.verbose > 2:
@@ -759,6 +773,10 @@ class ATable(metaclass=MetaTable):
             print(f"Error loading table from {self.csv_support_path}")
             raise ex
         return loaded_df
+
+    @property
+    def name(self):
+        return f"{self.__class__.__name__}"
 
 
 def string_or_float(cell_value):
@@ -802,17 +820,7 @@ def parse_dict_string(cell_value, key_type=string_or_float, value_type=float):
         raise TypeError(f"Trying to parse a dict string '{cell_value}', "
                         f"wrong type {type(cell_value)} found instead. "
                         f"Double check the has_dict_values column property.") from ex
-    cell_value = cell_value[1:-1].strip()
-    column_dict = dict()
-    for pair in (cell_value.split(",") if cell_value else []):
-        a, b = [s.strip() for s in pair.split(":")]
-        if key_type is not None:
-            a = key_type(a)
-        if value_type is not None:
-            b = value_type(b)
-        assert a not in column_dict, f"A non-unique-key ({a}) dictionary string was found {cell_value}"
-        column_dict[a] = b
-    return column_dict
+    return ast.literal_eval(cell_value)
 
 
 def check_unique_indices(df: pd.DataFrame):
