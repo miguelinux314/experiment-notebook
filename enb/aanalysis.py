@@ -313,8 +313,7 @@ class ScalarDistributionAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False,
-                   y_labels_by_group_name=None):
+                   adjust_height=False, y_labels_by_group_name=None):
         """Perform an analysis of target_columns, grouping as specified.
 
         :param adjust_height: adjust height to the maximum height contained in the y_values
@@ -337,9 +336,6 @@ class ScalarDistributionAnalyzer(Analyzer):
         min_max_by_column = get_scalar_min_max_by_column(
             df=full_df, target_columns=target_columns, column_to_properties=column_to_properties)
         min_max_by_column = dict(min_max_by_column)
-        for c in min_max_by_column:
-            for i in range(2):
-                min_max_by_column[c][i] = None if not math.isinf(min_max_by_column[c][i]) else None
 
         pooler_suffix_tuples = [(pd.DataFrame.min, "min"), (pd.DataFrame.max, "max"),
                                 (pd.DataFrame.mean, "avg"), (pd.DataFrame.std, "std")]
@@ -467,12 +463,20 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     """
     column_df = df[column]
     # Histogram with bins in [0,1] that sum 1
-    range = [0, 0]
-    try:
-        range[0] = min(range[0], min(v for v in df[column] if not math.isinf(v)))
-        range[1] = max(range[1], max(v for v in df[column] if not math.isinf(v)))
-    except ValueError:
-        pass
+    # range = [0, 0]
+    # try:
+    #     range[0] = min()
+    #     range[0] = min(range[0], min(v for v in df[column] if not math.isinf(v)))
+    #     range[1] = max(range[1], max(v for v in df[column] if not math.isinf(v)))
+    # except ValueError:
+    #     pass
+    range = list(min_max_by_column[column])
+    # if any(math.isinf(v) for v in range):
+    #     range[0] = min()
+    #     range[0] = min(v for v in df[column] if not math.isinf(v))
+    #     range[1] = max(v for v in df[column] if not math.isinf(v))
+    print(f"[watch] range={range}")
+    
 
     hist_y_values, bin_edges = np.histogram(
         column_df.values, bins=hist_bin_count, range=range, density=False)
@@ -481,11 +485,15 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     if abs(sum(hist_y_values) - 1) > 1e-10:
         if math.isinf(df[column].max()) or math.isinf(df[column].min()):
             if options.verbose:
-                print(f"[W]arning: Infinite values are not accounted for in {column}, "
-                      f"which represent {100 * (1 - sum(hist_y_values)):.1f}% of the values.")
+                print(f"[W]arning: not all samples included in the scalar distribution for {column} "
+                      f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
+                      f"Note that infinite values are not accounted for, and the plot_min "
+                      f"and plot_max column properties affect this range.")
         else:
-            raise Exception("Unfortunately, some values seem to be missing - check for errors! "
-                            f"sum(hist_y_values)={sum(hist_y_values)}")
+            if options.verbose:
+                print(f"[W]arning: not all samples included in the scalar distribution for {column} "
+                      f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
+                      f"Note that plot_min and plot_max column properties might be affecting this range.")
 
     hist_y_values = hist_y_values / hist_y_values.sum()
 
@@ -527,7 +535,11 @@ def pool_scalar_into_analysis_df(analysis_df, analysis_label, data_df, pooler_su
 
 def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
     """Get a dictionary indexed by column name with minimum and maximum values.
-    (useful e.g., for normalized processing of subgroups)
+    (useful e.g., for normalized processing of subgroups).
+
+    If column to properties is set, for a column, the minimum and maximum are taken from them.
+    None limits are taken from the minimum and maximum values that are not infinite.
+
     """
     min_max_by_column = {}
     for column in target_columns:
@@ -536,18 +548,24 @@ def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
                                          column_to_properties[column].plot_max]
         else:
             min_max_by_column[column] = [None, None]
+
         if min_max_by_column[column][0] is None:
             min_max_by_column[column][0] = df[column].min()
+            if math.isinf(min_max_by_column[column][0]) or math.isnan(min_max_by_column[column][0]):
+                min_max_by_column[column][0] = min(v for v in d[column]
+                                                   if not math.isinf(v) and not math.isnan(v))
+
         if min_max_by_column[column][1] is None:
             min_max_by_column[column][1] = df[column].max()
+            if math.isinf(min_max_by_column[column][1]) or math.isnan(min_max_by_column[column][1]):
+                min_max_by_column[column][1] = max(v for v in d[column]
+                                                   if not math.isinf(v) and not math.isnan(v))
 
         if min_max_by_column[column][1] > 1:
-            if not math.isnan(min_max_by_column[column][0]) and not math.isinf(min_max_by_column[column][0]):
-                min_max_by_column[column][0] = \
-                    math.floor(min_max_by_column[column][0])
-            if not math.isnan(min_max_by_column[column][1]) and not math.isinf(min_max_by_column[column][1]):
-                min_max_by_column[column][1] = \
-                    math.ceil(min_max_by_column[column][1])
+            if column not in column_to_properties or column_to_properties[column].plot_min is None:
+                min_max_by_column[column][0] = math.floor(min_max_by_column[column][0])
+            if column not in column_to_properties or column_to_properties[column].plot_max is None:
+                min_max_by_column[column][1] = math.ceil(min_max_by_column[column][1])
 
     return min_max_by_column
 
@@ -570,6 +588,7 @@ class HistogramDistributionAnalyzer(Analyzer):
     alpha_global = 0.5
     alpha_individual = 0.25
 
+    # Default histogram bin width
     histogram_bin_width = 1
 
     # Fraction in 0,1 of the bar width for histogram
@@ -1186,7 +1205,8 @@ class TwoColumnLineAnalyzer(Analyzer):
                 x_max=global_max_x,
                 y_min=column_to_properties[column_name_y].plot_min,
                 y_max=column_to_properties[column_name_y].plot_max,
-                horizontal_margin=0.05 * (global_max_x - global_min_x) if global_max_x is not None and global_min_x is not None else 0,
+                horizontal_margin=0.05 * (
+                        global_max_x - global_min_x) if global_max_x is not None and global_min_x is not None else 0,
                 legend_column_count=legend_column_count,
                 combine_groups=True,
                 group_name_order=[f.label for f in group_by])
