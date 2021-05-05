@@ -77,7 +77,7 @@ setup(
     install_requires=[
         'wheel', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw', 'sqlalchemy'],
+        'sphinx_rtd_theme', 'numpngw'],
     packages=find_packages(),
     # include_package_data=True,
 )
