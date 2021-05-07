@@ -41,7 +41,8 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                              options=None,  # Used by @config.propagates_options
                              group_name_order=None, fig_width=None, fig_height=None,
                              global_y_label_pos=None, legend_column_count=None,
-                             show_grid=None):
+                             show_grid=None,
+                             x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0):
     """Ray wrapper for render_plds_by_group"""
     # (options automatically propagated)
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
@@ -54,7 +55,10 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 group_name_order=group_name_order,
                                 fig_width=fig_width, fig_height=fig_height,
                                 global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
-                                show_grid=show_grid)
+                                show_grid=show_grid,
+                                x_tick_list=x_tick_list,
+                                x_tick_label_list=x_tick_label_list,
+                                x_tick_label_angle=x_tick_label_angle)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
@@ -462,21 +466,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     relative distribution
     """
     column_df = df[column]
-    # Histogram with bins in [0,1] that sum 1
-    # range = [0, 0]
-    # try:
-    #     range[0] = min()
-    #     range[0] = min(range[0], min(v for v in df[column] if not math.isinf(v)))
-    #     range[1] = max(range[1], max(v for v in df[column] if not math.isinf(v)))
-    # except ValueError:
-    #     pass
-    range = list(min_max_by_column[column])
-    # if any(math.isinf(v) for v in range):
-    #     range[0] = min()
-    #     range[0] = min(v for v in df[column] if not math.isinf(v))
-    #     range[1] = max(v for v in df[column] if not math.isinf(v))
-    print(f"[watch] range={range}")
-    
+    range = tuple(min_max_by_column[column])
 
     hist_y_values, bin_edges = np.histogram(
         column_df.values, bins=hist_bin_count, range=range, density=False)
@@ -1210,6 +1200,113 @@ class TwoColumnLineAnalyzer(Analyzer):
                 legend_column_count=legend_column_count,
                 combine_groups=True,
                 group_name_order=[f.label for f in group_by])
+
+
+class ScalarDictAnalyzer(Analyzer):
+    """Analyzer to plot columns that contain dictionary data with scalar entries.
+    """
+
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+                   adjust_height=False, show_std_bar=True, show_individual_results=False,
+                   x_tick_label_angle=90):
+        target_columns = target_columns if not isinstance(target_columns, str) else [target_columns]
+        output_plot_dir = output_plot_dir if output_plot_dir is not None else options.plot_dir
+
+        enb.ray_cluster.init_ray()
+
+        min_max_by_column = {}
+        keys_by_column = {}
+        column_to_properties = dict() if column_to_properties is None else dict(column_to_properties)
+        for column in target_columns:
+            if column not in column_to_properties:
+                column_to_properties[column] = enb.atable.ColumnProperties(name=column, has_dict_values=True)
+            if not column_to_properties[column].has_dict_values:
+                raise Exception(f"Not possible to plot column {column}, has_dict_values was not set to True")
+
+            keys_by_column[column] = \
+                set(full_df[column].apply(lambda d: list(d.keys())).sum())
+        all_keys = sorted(set(itertools.chain(*keys_by_column.values())))
+        key_to_x = {k: i for i, k in enumerate(all_keys)}
+
+        df_id = ray.put(full_df)
+        column_to_ray_id = {
+            column: scalar_dict_to_pds.remote(
+                df=df_id, column=ray.put(column),
+                column_properties=ray.put(column_to_properties[column]),
+                key_to_x=ray.put(key_to_x),
+                show_std_bar=ray.put(show_std_bar),
+                show_individual_results=ray.put(show_individual_results)
+            )
+            for column in target_columns}
+        column_to_pds_by_group = {column: {"all": ray.get(id)
+                                           for column, id in column_to_ray_id.items()}}
+
+
+        render_ids = []
+        for column, pds_by_group in column_to_pds_by_group.items():
+            output_plot_path = os.path.join(output_plot_dir, f"scalar_dict_{column}.pdf")
+
+            if not options.sequential:
+                render_ids.append(ray_render_plds_by_group.remote(
+                    pds_by_group_name=ray.put(pds_by_group),
+                    output_plot_path=ray.put(output_plot_path),
+                    column_properties=ray.put(column_to_properties[column]),
+                    global_x_label=ray.put(column_to_properties[column].label),
+                    global_y_label=ray.put(""),
+                    x_tick_list=ray.put([key_to_x[k] for k in all_keys]),
+                    x_tick_label_list=ray.put(all_keys),
+                    x_tick_label_angle=ray.put(x_tick_label_angle),
+                    horizontal_margin=0.1,
+                    options=ray.put(options)))
+            else:
+                render_plds_by_group(pds_by_group_name=pds_by_group,
+                                     output_plot_path=output_plot_path,
+                                     column_properties=column_to_properties[column],
+                                     global_x_label=column_to_properties[column].label,
+                                     global_y_label="",
+                                     x_tick_list=[key_to_x[k] for k in all_keys],
+                                     x_tick_label_list=all_keys,
+                                     x_tick_label_angle=x_tick_label_angle,
+                                     horizontal_margin=0.1)
+
+        _ = [ray.get(id) for id in render_ids]
+
+
+@ray.remote
+def scalar_dict_to_pds(df, column, column_properties, key_to_x,
+                       show_std_bar=True, show_individual_results=False):
+    key_to_stats = dict()
+    finite_data_by_column = dict()
+    for k in key_to_x.keys():
+        column_data = df[column].apply(lambda d: d[k] if k in d else float("inf"))
+        finite_data_by_column[column] = column_data[np.isfinite(column_data)]
+        description = finite_data_by_column[column].describe()
+        if len(finite_data_by_column[column]) > 0:
+            key_to_stats[k] = dict(min=description["min"],
+                                   max=description["max"],
+                                   std=description["std"],
+                                   mean=description["mean"])
+
+    plot_data_list = []
+    for k, stats in key_to_stats.items():
+        plot_data_list.append(plotdata.ScatterData(
+            x_values=[key_to_x[k]], y_values=[stats["mean"]]))
+        plot_data_list[-1].marker_size = 10
+        if show_std_bar:
+            plot_data_list.append(plotdata.ErrorLines(
+                x_values=[key_to_x[k]], y_values=[stats["mean"]],
+                err_neg_values=[description["std"]],
+                err_pos_values=[description["std"]],
+                vertical=True, cap_size=2))
+        if show_individual_results:
+            plot_data_list.append(plotdata.ScatterData(
+                x_values=[key_to_x[k]]*len(finite_data_by_column[column]),
+                y_values=finite_data_by_column[column],
+                alpha=0.3))
+            plot_data_list[-1].marker_size = 3
+
+    return plot_data_list
 
 
 class TaskFamily:
