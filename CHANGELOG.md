@@ -1,5 +1,6 @@
 # (under development) v0.2.6
 
+- Added ScalarToScalarAnalyzer to plot dictionary cell data
 - Improved HEVC and VVC compilation scripts
 - Improved default wrapper codec names when no hexdump signature is desired 
 - Several minor fix-ups to plot rendering and general stability
