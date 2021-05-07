@@ -171,7 +171,8 @@ class Experiment(atable.ATable):
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
-    def get_df(self, target_indices=None, target_columns=None, fill=True, overwrite=None, parallel_row_processing=None,
+    def get_df(self, target_indices=None, target_columns=None,
+               fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
         """Get a DataFrame with the results of the experiment. The produced DataFrame
         contains the columns from the dataset info table (but they are not stored

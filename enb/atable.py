@@ -153,7 +153,7 @@ class ColumnProperties:
         """
         self.name = name
         self.fun = fun
-        self.label = label
+        self.label = label if label is not None else name
         self.plot_min = plot_min
         self.plot_max = plot_max
         self.semilog_x = semilog_x
