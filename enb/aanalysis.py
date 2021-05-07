@@ -1247,12 +1247,14 @@ class ScalarDictAnalyzer(Analyzer):
         for column, pds_by_group in column_to_pds_by_group.items():
             output_plot_path = os.path.join(output_plot_dir, f"scalar_dict_{column}.pdf")
 
+            global_x_label = f"{column_to_properties[column].label}"
+
             if not options.sequential:
                 render_ids.append(ray_render_plds_by_group.remote(
                     pds_by_group_name=ray.put(pds_by_group),
                     output_plot_path=ray.put(output_plot_path),
                     column_properties=ray.put(column_to_properties[column]),
-                    global_x_label=ray.put(column_to_properties[column].label),
+                    global_x_label=ray.put(global_x_label),
                     global_y_label=ray.put(""),
                     x_tick_list=ray.put([key_to_x[k] for k in all_keys]),
                     x_tick_label_list=ray.put(all_keys),
@@ -1263,7 +1265,7 @@ class ScalarDictAnalyzer(Analyzer):
                 render_plds_by_group(pds_by_group_name=pds_by_group,
                                      output_plot_path=output_plot_path,
                                      column_properties=column_to_properties[column],
-                                     global_x_label=column_to_properties[column].label,
+                                     global_x_label=global_x_label,
                                      global_y_label="",
                                      x_tick_list=[key_to_x[k] for k in all_keys],
                                      x_tick_label_list=all_keys,
