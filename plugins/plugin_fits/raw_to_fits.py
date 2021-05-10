@@ -22,7 +22,6 @@ class RawToFits:
             name=params[0]
             
             img=np.fromfile(open(file), dtype = f'{astype}',  count = -1)
-            print(img.shape)
             array=np.reshape(img,(frames,columns,rows))
 
             hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{file[0:-4]}.txt',sep='\n', endcard=False,padding=False))
