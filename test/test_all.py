@@ -30,4 +30,4 @@ if __name__ == '__main__':
         print(f"{'':-^30s}")
         print()
 
-    unittest.TextTestRunner(verbosity=3 if options.verbose else 1).run(suite)
+    unittest.TextTestRunner(verbosity=3).run(suite)
