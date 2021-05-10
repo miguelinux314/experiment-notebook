@@ -3,15 +3,25 @@ import fitsio
 from astropy.io import fits
 import os
 import glob
+import enb.sets import sets
+import enb.isets as isets
+from enb.config import options
 
-
-class FitsToRaw:
-    
-    def Version():
+class FitsToRaw(sets.FileVersionTable, sets.FilePropertiesTable):
+    def __init__(self, original_base_dir, version_base_dir):
+        super().__init__(
+            original_base_dir=original_base_dir,
+            version_base_dir=version_base_dir,
+            original_properties_table=sets.FilePropertiesTable(),
+            version_name=self.version_name)
+            
+            
+    def Version(input_path):
         FITS=glob.glob('./fits_data/*.fit*')
 
         for i in range(len(FITS)):
             hdul = fits.open(FITS[i])
+            print(FITS[i])
             hdul_index=0
             header = hdul[hdul_index].header 
             while hdul[hdul_index].header["NAXIS"] == 0:
@@ -57,5 +67,5 @@ class FitsToRaw:
 if __name__ == '__main__':
     print("This example converts all .fit files in fits_data into raw_data, preserving "
           "the directory hierarchy.")
-
-    FitsToRaw.Version()
+    input_path='./fits_data'
+    FitsToRaw.Version(input_path)
