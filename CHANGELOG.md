@@ -1,3 +1,12 @@
+# (under development) v0.2.6
+
+- Added ScalarToScalarAnalyzer to plot dictionary cell data
+- Improved HEVC and VVC compilation scripts
+- Improved default wrapper codec names when no hexdump signature is desired 
+- Several minor fix-ups to plot rendering and general stability
+- Improved support for datasets consisting of symbolic links to a single copy of the dataset
+- Docs displayed on the public site automatically point to the dev branch now
+
 # 2021/04/27 v0.2.5
 
 - Improved enb compatibility with Windows and MacOS
