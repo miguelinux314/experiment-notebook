@@ -7,7 +7,7 @@ import glob
 
 class RawToFits:
     def Version():
-        RAWS=glob.glob('./raws/*.raw')
+        RAWS=glob.glob('./raw_data/*.raw')
 
         for i in range(len(RAWS)):
             file=RAWS[i]
@@ -25,7 +25,7 @@ class RawToFits:
             array=np.reshape(img,(frames,columns,rows))
 
             hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{file[0:-4]}.txt',sep='\n', endcard=False,padding=False))
-            hdu.writeto(f'./fits/{name[0:-2]}.fits')
+            hdu.writeto(f'./fits_data/{name[0:-2]}.fits')
             
 if __name__ == '__main__':
     print("This example converts all raw files in raw_data into fits_data, preserving "
