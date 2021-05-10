@@ -171,7 +171,8 @@ class Experiment(atable.ATable):
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
-    def get_df(self, target_indices=None, target_columns=None, fill=True, overwrite=None, parallel_row_processing=None,
+    def get_df(self, target_indices=None, target_columns=None,
+               fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
         """Get a DataFrame with the results of the experiment. The produced DataFrame
         contains the columns from the dataset info table (but they are not stored
@@ -181,7 +182,7 @@ class Experiment(atable.ATable):
           including compression. If False, sequential execution is applied. If None,
           not options.sequential is used.
         :param target_indices: list of file paths to be processed. If None, self.target_file_paths
-          is used instead.  
+          is used instead.
         :param chunk_size: if not None, a positive integer that determines the number of table
           rows that are processed before made persistent.
         :param overwrite: if not None, a flag determining whether existing values should be
@@ -195,8 +196,9 @@ class Experiment(atable.ATable):
 
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
-        df = super().get_df(target_indices=tuple(itertools.product(
-            sorted(set(target_indices)), sorted(set(target_task_names)))), fill=fill, overwrite=overwrite,
+        target_indices = tuple(itertools.product(
+            sorted(set(target_indices)), sorted(set(target_task_names))))
+        df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
             parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
         
         # Add dataset columns
