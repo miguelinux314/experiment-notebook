@@ -12,7 +12,6 @@ class FitsToRaw:
 
         for i in range(len(FITS)):
             hdul = fits.open(FITS[i])
-            print(FITS[i])
             hdul_index=0
             header = hdul[hdul_index].header 
             while hdul[hdul_index].header["NAXIS"] == 0:
