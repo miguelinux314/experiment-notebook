@@ -1,6 +1,9 @@
 # (under development) v0.2.6
 
-- Added ScalarToScalarAnalyzer to plot dictionary cell data
+- FileVersionTable subclasses now can choose not to check the expected output files and use all produced
+  files in the versioned dir instead.
+- Added FITS to raw version table
+- Added ScalarToScalarAnalyzer to plot dictionary cell data. Shadowed bands based on std can now be depicted.
 - Improved HEVC and VVC compilation scripts
 - Improved default wrapper codec names when no hexdump signature is desired 
 - Several minor fix-ups to plot rendering and general stability
