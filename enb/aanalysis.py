@@ -1206,16 +1206,35 @@ class ScalarDictAnalyzer(Analyzer):
     """Analyzer to plot columns that contain dictionary data with scalar entries.
     """
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, combine_keys=None,
+                   key_to_x=None, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False, show_std_bar=True, show_individual_results=False,
                    x_tick_label_angle=90):
+        """For each target column, analyze dictionary values stored in each cell.
+        Scalar analysis is applied on each key found in the dictionaries.
+
+        :param full_df: df to be analyzer
+        :param target_columns: either a string with the name of a column, or a list of column names. In either case,
+          all referenced columns must contain dictionary data with scalar (integer, float, etc) values.
+        :param combine_keys: if not None, it must be a callable that takes an input dictionary and returns another one.
+          This can be used to combine groups of keys into a single one before analysis.
+        :param key_to_x: if None, found keys are sorted alphabetically and placed at 0, 1, ..., etc.
+          If not None, if must be a dictionary so that dictionary keys (after applying @a combine_keys, if present),
+          are all present in key_to_x, and values are real values (typically a permutation of the default key_to_x).
+        :param show_std_bar: if True, vertical error bars are shown centered on each average point, plus/minus one
+          standard deviation.
+
+        All remaining parameters are as defined in :class:`Analyzer` or :ref:`render_plds_by_group`.
+        """
         target_columns = target_columns if not isinstance(target_columns, str) else [target_columns]
         output_plot_dir = output_plot_dir if output_plot_dir is not None else options.plot_dir
 
+        if combine_keys is not None:
+            full_df = full_df.copy()
+
         enb.ray_cluster.init_ray()
 
-        min_max_by_column = {}
         keys_by_column = {}
         column_to_properties = dict() if column_to_properties is None else dict(column_to_properties)
         for column in target_columns:
@@ -1224,10 +1243,13 @@ class ScalarDictAnalyzer(Analyzer):
             if not column_to_properties[column].has_dict_values:
                 raise Exception(f"Not possible to plot column {column}, has_dict_values was not set to True")
 
+            if combine_keys is not None:
+                full_df[column] = full_df[column].apply(combine_keys)
             keys_by_column[column] = \
                 set(full_df[column].apply(lambda d: list(d.keys())).sum())
+
         all_keys = sorted(set(itertools.chain(*keys_by_column.values())))
-        key_to_x = {k: i for i, k in enumerate(all_keys)}
+        key_to_x = {k: i for i, k in enumerate(all_keys)} if key_to_x is None else key_to_x
 
         df_id = ray.put(full_df)
         column_to_ray_id = {
