@@ -36,10 +36,6 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
         return indices
 
     def original_to_versioned_path(self, original_path):
-        # TODO: double check whether NAXIS1 is the width and NAXIS2 the height or
-        # if there is any transposition. Double check that
-        hdul = fits.open(original_path)
-
         if original_path.lower().endswith(".fit"):
             input_ext = "fit"
         elif original_path.lower().endswith(".fits"):
