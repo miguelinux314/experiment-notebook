@@ -36,6 +36,7 @@ fill_style_cycle = ["full"] * len(marker_cycle) + ["none"] * len(marker_cycle)
 @config.propagates_options
 def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
                              y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
+                             overwrite_colors=True,
                              x_min=None, x_max=None,
                              global_y_label="Relative frequency", combine_groups=False, semilog_hist_min=1e-10,
                              options=None,  # Used by @config.propagates_options
@@ -48,6 +49,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                 column_properties=column_properties, global_x_label=global_x_label,
                                 horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
+                                overwrite_colors=overwrite_colors,
                                 x_min=x_min, x_max=x_max,
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
@@ -63,6 +65,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
                          horizontal_margin=0, x_min=None, x_max=None,
+                         overwrite_colors=True,
                          y_min=None, y_max=None, y_labels_by_group_name=None,
                          color_by_group_name=None, global_y_label="Relative frequency",
                          combine_groups=False, semilog_hist_min=1e-10,
@@ -76,6 +79,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param pds_by_group_name: dictionary of lists of PlottableData instances
     :param output_plot_path: path to the file to be created with the plot
     :param column_properties: ColumnProperties instance for the column being plotted
+    :param overwrite_colors: if True, all plottable data in each group is set to the same color,
+      defined by color_cycle.
     :param x_min, x_max: range of values to be plotted in the X axis. If any is None,
       the plot automatically adjusts to column_properties, or the data if limits
       are not specified there either.
@@ -158,8 +163,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     global_x_min = float("inf")
     global_x_max = float("-inf")
     for pd in (plottable for pds in pds_by_group_name.values() for plottable in pds):
-        global_x_min = min(global_x_min, min(x if not math.isinf(x) else 0 for x in pd.x_values) if pd.x_values else global_x_min)
-        global_x_max = max(global_x_max, max(x if not math.isinf(x) else 1 for x in pd.x_values) if pd.x_values else global_x_max)
+        global_x_min = min(global_x_min,
+                           min(x if not math.isinf(x) else 0 for x in pd.x_values) if pd.x_values else global_x_min)
+        global_x_max = max(global_x_max,
+                           max(x if not math.isinf(x) else 1 for x in pd.x_values) if pd.x_values else global_x_max)
     if global_x_max - global_x_min > 1:
         global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
         global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
@@ -174,16 +181,15 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         for pld in pds_by_group_name[group_name]:
             pld.x_label = None
             pld.y_label = None
-            pld.color = group_color
-            d = dict(color=group_color)
+            d = dict()
+            if overwrite_colors:
+                pld.color = group_color
+            d.update(color=pld.color)
             try:
                 pld.extra_kwargs.update(d)
             except AttributeError:
                 pld.extra_kwargs = d
 
-            # if column_properties and column_properties.plot_max is not None:
-            #     pld.x_values = [x for x in pld.x_values if x <= column_properties.plot_max + horizontal_margin]
-            #     pld.y_values = pld.y_values[:len(pld.x_values)]
             try:
                 pld.render(axes=group_axes)
             except Exception as ex:
@@ -1285,9 +1291,19 @@ class ScalarDictAnalyzer(Analyzer):
                     show_std_band=ray.put(show_std_band),
                     show_individual_results=ray.put(show_individual_results))
 
+        group_names = set()
         for column, group_to_id in column_to_id_by_group.items():
             for group_name, id in group_to_id.items():
                 column_to_pds_by_group[column][group_name] = ray.get(id)
+                group_names.add(group_name)
+        group_names = sorted(group_names)
+
+        for column, pds_by_group in column_to_pds_by_group.items():
+            for group_name, pds in pds_by_group.items():
+                for pd in pds:
+                    pd.color = color_cycle[group_names.index(pd.label) % len(color_cycle)]
+                    if not combine_groups or not isinstance(pd, plotdata.LineData):
+                        pd.label = None
 
         render_ids = []
         for column, pds_by_group in column_to_pds_by_group.items():
@@ -1318,6 +1334,7 @@ class ScalarDictAnalyzer(Analyzer):
                         y_min=ray.put(y_min), y_max=ray.put(y_max),
                         show_grid=ray.put(show_grid),
                         combine_groups=ray.put(combine_groups),
+                        overwrite_colors=ray.put(False),
                         options=ray.put(options)))
                 else:
                     render_plds_by_group(pds_by_group_name=pds_by_group,
@@ -1330,6 +1347,8 @@ class ScalarDictAnalyzer(Analyzer):
                                          x_tick_label_angle=x_tick_label_angle,
                                          x_min=x_min, x_max=x_max,
                                          y_min=y_min, y_max=y_max,
+                                         combine_groups=combine_groups,
+                                         overwrite_colors=False,
                                          show_grid=show_grid)
 
                 _ = [ray.get(id) for id in render_ids]
@@ -1363,8 +1382,7 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
         avg_x_values.append(key_to_x[k])
         avg_y_values.append(stats["mean"])
         std_values.append(stats["std"] if math.isfinite(stats["std"]) else 0)
-    plot_data_list.append(plotdata.LineData(x_values=avg_x_values, y_values=avg_y_values,
-                                            label=group_label))
+    plot_data_list.append(plotdata.LineData(x_values=avg_x_values, y_values=avg_y_values))
 
     if show_std_band:
         plot_data_list.append(plotdata.HorizontalBand(
@@ -1388,6 +1406,10 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
                 y_values=finite_data_by_column[column],
                 alpha=0.8))
             plot_data_list[-1].marker_size = 5
+
+    # This is used in ScalarDictAnalyzer.analyze_df to set the right colors
+    for pd in plot_data_list:
+        pd.label = group_label
 
     return plot_data_list
 
