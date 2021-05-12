@@ -120,7 +120,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     if group_name_order is None:
         sorted_group_names = sorted(pds_by_group_name.keys(),
-                                    key=lambda s: "" if s == "all" else s.strip().lower())
+                                    key=lambda s: "" if s == "all" else str(s).strip().lower())
     else:
         for group_name in group_name_order:
             assert group_name in pds_by_group_name, \
@@ -1210,8 +1210,10 @@ class ScalarDictAnalyzer(Analyzer):
     def analyze_df(self, full_df, target_columns, combine_keys=None,
                    key_to_x=None, key_list=None, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   show_std_bar=True, show_individual_results=False,
-                   x_tick_label_angle=90, show_grid=True):
+                   show_std_bar=True, show_std_band=False,
+                   show_individual_results=False,
+                   x_tick_label_angle=90, show_grid=True,
+                   combine_groups=False):
         """For each target column, analyze dictionary values stored in each cell.
         Scalar analysis is applied on each key found in the dictionaries.
 
@@ -1226,6 +1228,7 @@ class ScalarDictAnalyzer(Analyzer):
         :param key_list: if not None, it must be a list of the dictionary keys to be displayed, with the desired order.
         :param show_std_bar: if True, vertical error bars are shown centered on each average point, plus/minus one
           standard deviation.
+        :param show_std_band: if True, a band of width 2*sigma is added to each line.
 
         All remaining parameters are as defined in :class:`Analyzer` or :ref:`render_plds_by_group`.
         """
@@ -1265,8 +1268,10 @@ class ScalarDictAnalyzer(Analyzer):
                     column_to_id_by_group[column][group_name] = scalar_dict_to_pds.remote(
                         df=df_id, column=ray.put(column),
                         column_properties=ray.put(column_to_properties[column]),
+                        group_label=ray.put(group_name),
                         key_to_x=ray.put(key_to_x),
                         show_std_bar=ray.put(show_std_bar),
+                        show_std_band=ray.put(show_std_band),
                         show_individual_results=ray.put(show_individual_results))
         if group_by is None or show_global is True:
             df_id = ray.put(full_df)
@@ -1274,8 +1279,10 @@ class ScalarDictAnalyzer(Analyzer):
                 column_to_id_by_group[column]["all"] = scalar_dict_to_pds.remote(
                     df=df_id, column=ray.put(column),
                     column_properties=ray.put(column_to_properties[column]),
+                    group_label=ray.put(group_name),
                     key_to_x=ray.put(key_to_x),
                     show_std_bar=ray.put(show_std_bar),
+                    show_std_band=ray.put(show_std_band),
                     show_individual_results=ray.put(show_individual_results))
 
         for column, group_to_id in column_to_id_by_group.items():
@@ -1310,6 +1317,7 @@ class ScalarDictAnalyzer(Analyzer):
                         x_min=ray.put(x_min), x_max=ray.put(x_max),
                         y_min=ray.put(y_min), y_max=ray.put(y_max),
                         show_grid=ray.put(show_grid),
+                        combine_groups=ray.put(combine_groups),
                         options=ray.put(options)))
                 else:
                     render_plds_by_group(pds_by_group_name=pds_by_group,
@@ -1333,7 +1341,8 @@ class ScalarDictAnalyzer(Analyzer):
 @ray.remote
 def scalar_dict_to_pds(df, column, column_properties, key_to_x,
                        group_label=None,
-                       show_std_bar=True, show_individual_results=False):
+                       show_std_bar=True, show_std_band=False,
+                       show_individual_results=False):
     key_to_stats = dict()
     finite_data_by_column = dict()
     for k in key_to_x.keys():
@@ -1357,18 +1366,19 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
     plot_data_list.append(plotdata.LineData(x_values=avg_x_values, y_values=avg_y_values,
                                             label=group_label))
 
-    if show_std_bar:
+    if show_std_band:
         plot_data_list.append(plotdata.HorizontalBand(
             x_values=avg_x_values,
             y_values=avg_y_values,
             pos_width_values=std_values,
-            neg_width_values=std_values,
-            show_bounding_lines=True))
+            neg_width_values=std_values))
+
+    if show_std_bar:
         plot_data_list.append(plotdata.ErrorLines(
             x_values=avg_x_values, y_values=avg_y_values,
             err_neg_values=std_values,
             err_pos_values=std_values,
-            line_width=0.5,
+            line_width=1,
             vertical=True, cap_size=2, alpha=0.3))
 
     if show_individual_results:
