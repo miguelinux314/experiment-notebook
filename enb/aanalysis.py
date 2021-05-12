@@ -158,8 +158,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     global_x_min = float("inf")
     global_x_max = float("-inf")
     for pd in (plottable for pds in pds_by_group_name.values() for plottable in pds):
-        global_x_min = min(global_x_min, min(x if not math.isinf(x) else 0 for x in pd.x_values))
-        global_x_max = max(global_x_max, max(x if not math.isinf(x) else 1 for x in pd.x_values))
+        global_x_min = min(global_x_min, min(x if not math.isinf(x) else 0 for x in pd.x_values) if pd.x_values else global_x_min)
+        global_x_max = max(global_x_max, max(x if not math.isinf(x) else 1 for x in pd.x_values) if pd.x_values else global_x_max)
     if global_x_max - global_x_min > 1:
         global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
         global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
@@ -1286,9 +1286,9 @@ class ScalarDictAnalyzer(Analyzer):
         for column, pds_by_group in column_to_pds_by_group.items():
             output_plot_path = os.path.join(output_plot_dir, f"scalar_dict_{column}.pdf")
             global_x_label = f"{column_to_properties[column].label}"
-            margin = max(key_to_x.values()) / (10 * len(key_to_x))
+            margin = max(key_to_x.values()) / (10 * len(key_to_x)) if key_to_x else 0
             x_min = -margin
-            x_max = max(key_to_x.values()) + margin
+            x_max = max(key_to_x.values()) + margin if key_to_x else None
             y_min = column_to_properties[column].plot_min
             y_max = column_to_properties[column].plot_max
 
