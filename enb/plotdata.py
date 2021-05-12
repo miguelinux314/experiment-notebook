@@ -259,18 +259,15 @@ class HorizontalBand(PlottableData2D):
                 self.y_values + self.pos_width_values * band_fraction,
                 self.y_values + self.pos_width_values * next_band_fraction,
                 alpha=self.alpha * band_probability,
-                color=self.color,
-                linewidth=0)
+                color=self.color, edgecolor=self.color, facecolor=self.color, linewidth=0)
             # Fill bottom
             axes.fill_between(
                 self.x_values,
                 self.y_values - self.neg_width_values * next_band_fraction,
                 self.y_values - self.neg_width_values * band_fraction,
                 alpha=self.alpha * band_probability,
-                color=self.color,
-                linewidth=0)
+                color=self.color, edgecolor=self.color, facecolor=self.color, linewidth=0)
 
-        # Add bounding lines
         if self.show_bounding_lines:
             axes.plot(self.x_values, self.y_values - self.neg_width_values,
                       linewidth=0.5, alpha=0.68*self.alpha, color=self.color)
