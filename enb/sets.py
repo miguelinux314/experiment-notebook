@@ -355,6 +355,11 @@ class FileVersionTable(FilePropertiesTable):
                                              f"but it was not versioned in this run.")
         row[_column_name] = len(version_time_list)
 
+    def column_version_name(self, file_path, row):
+        """Automatically add the version name as a column
+        """
+        return self.version_name
+
     @atable.redefines_column
     def set_corpus(self, file_path, row):
         file_path = os.path.abspath(os.path.realpath(file_path))
