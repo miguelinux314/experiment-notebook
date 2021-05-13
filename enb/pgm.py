@@ -9,6 +9,8 @@ import sys
 import numpy as np
 import re
 
+import enb.isets
+
 
 def read_pgm(input_path, byteorder='>'):
     """Return image data from a raw PGM file as numpy array.
@@ -45,3 +47,7 @@ def write_pgm(array, bytes_per_sample, output_path, byteorder=">"):
     with open(output_path, "wb") as output_file:
         output_file.write(f"P5\n{width}\n{height}\n{(2**(8*bytes_per_sample))-1}\n".encode("utf-8"))
         array.swapaxes(0,1).astype(f"{byteorder}u{bytes_per_sample}").tofile(output_file)
+
+
+def pgm_to_raw(input_path, output_path):
+    enb.isets.dump_array_bsq(array=read_pgm(input_path), file_or_path=output_path)
