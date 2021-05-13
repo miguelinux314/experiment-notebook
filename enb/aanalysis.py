@@ -115,8 +115,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
     if legend_column_count:
         for name, pds in pds_by_group_name.items():
-            for pd in pds:
-                pd.legend_column_count = legend_column_count
+            for pld in pds:
+                pld.legend_column_count = legend_column_count
 
     y_min = column_properties.hist_min if y_min is None else y_min
     y_min = max(semilog_hist_min,
@@ -162,11 +162,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     global_x_min = float("inf")
     global_x_max = float("-inf")
-    for pd in (plottable for pds in pds_by_group_name.values() for plottable in pds):
+    for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
         global_x_min = min(global_x_min,
-                           min(x if not math.isinf(x) else 0 for x in pd.x_values) if pd.x_values else global_x_min)
+                           min(x if not math.isinf(x) else 0 for x in pld.x_values) if pld.x_values else global_x_min)
         global_x_max = max(global_x_max,
-                           max(x if not math.isinf(x) else 1 for x in pd.x_values) if pd.x_values else global_x_max)
+                           max(x if not math.isinf(x) else 1 for x in pld.x_values) if pld.x_values else global_x_max)
     if global_x_max - global_x_min > 1:
         global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
         global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
@@ -1304,10 +1304,10 @@ class ScalarDictAnalyzer(Analyzer):
 
         for column, pds_by_group in column_to_pds_by_group.items():
             for group_name, pds in pds_by_group.items():
-                for pd in pds:
-                    pd.color = color_cycle[group_names.index(str(pd.label)) % len(color_cycle)]
-                    if not combine_groups or not isinstance(pd, plotdata.LineData):
-                        pd.label = None
+                for pld in pds:
+                    pld.color = color_cycle[group_names.index(str(pld.label)) % len(color_cycle)]
+                    if not combine_groups or not isinstance(pld, plotdata.LineData):
+                        pld.label = None
 
         render_ids = []
         for column, pds_by_group in column_to_pds_by_group.items():
@@ -1370,7 +1370,7 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
     finite_data_by_column = dict()
     for k in key_to_x.keys():
         column_data = df[column].apply(lambda d: d[k] if k in d else float("inf"))
-        finite_data_by_column[column] = column_data[np.isfinite(column_data)]
+        finite_data_by_column[column] = column_data[column_data.apply(lambda v : math.isfinite(v))]
         description = finite_data_by_column[column].describe()
         if len(finite_data_by_column[column]) > 0:
             key_to_stats[k] = dict(min=description["min"],
@@ -1412,8 +1412,8 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
             plot_data_list[-1].marker_size = 5
 
     # This is used in ScalarDictAnalyzer.analyze_df to set the right colors
-    for pd in plot_data_list:
-        pd.label = group_label
+    for pld in plot_data_list:
+        pld.label = group_label
 
     return plot_data_list
 
