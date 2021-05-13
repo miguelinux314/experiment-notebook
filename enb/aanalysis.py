@@ -130,7 +130,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         for group_name in group_name_order:
             assert group_name in pds_by_group_name, \
                 f"The provided list group_name_order contains the group name {group_name}, " \
-                f"which is not cotained in the provided groups ({pds_by_group_name})."
+                f"which is not contained in the provided groups ({pds_by_group_name})."
         sorted_group_names = list(group_name_order)
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
@@ -265,10 +265,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         assert x_tick_list is not None
 
     show_grid = options.show_grid if show_grid is None else show_grid
+
     if show_grid:
-        for axes in group_axis_list:
-            axes.grid("major", alpha=0.5)
-        plt.grid("major", alpha=0.5)
+        if combine_groups:
+            plt.grid("major", alpha=0.5)
+        else:
+            for axes in group_axis_list:
+                axes.grid("major", alpha=0.5)
 
     plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
     plt.close()
@@ -1285,7 +1288,7 @@ class ScalarDictAnalyzer(Analyzer):
                 column_to_id_by_group[column]["all"] = scalar_dict_to_pds.remote(
                     df=df_id, column=ray.put(column),
                     column_properties=ray.put(column_to_properties[column]),
-                    group_label=ray.put(group_name),
+                    group_label=ray.put("all"),
                     key_to_x=ray.put(key_to_x),
                     show_std_bar=ray.put(show_std_bar),
                     show_std_band=ray.put(show_std_band),
@@ -1296,12 +1299,13 @@ class ScalarDictAnalyzer(Analyzer):
             for group_name, id in group_to_id.items():
                 column_to_pds_by_group[column][group_name] = ray.get(id)
                 group_names.add(group_name)
-        group_names = sorted(group_names)
+
+        group_names = sorted(str(n) for n in group_names)
 
         for column, pds_by_group in column_to_pds_by_group.items():
             for group_name, pds in pds_by_group.items():
                 for pd in pds:
-                    pd.color = color_cycle[group_names.index(pd.label) % len(color_cycle)]
+                    pd.color = color_cycle[group_names.index(str(pd.label)) % len(color_cycle)]
                     if not combine_groups or not isinstance(pd, plotdata.LineData):
                         pd.label = None
 
