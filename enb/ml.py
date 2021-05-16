@@ -54,8 +54,9 @@ class Model(experiment.ExperimentTask):
 
 class MachineLearningExperiment(experiment.Experiment):
     class RowWrapper:
-        def __init__(self, testing_dataset_path, model, row):
+        def __init__(self, testing_dataset_path, test_loader, model, row):
             self.testing_dataset_path = testing_dataset_path
+            self.test_loader = test_loader
             self.model = model
             self.row = row
             self._training_results = None
@@ -67,7 +68,7 @@ class MachineLearningExperiment(experiment.Experiment):
             """
             if self._testing_results is None:
                 time_before = time.time()
-                self._testing_results = self.model.test(self.testing_dataset_path)
+                self._testing_results = self.model.test(self.test_loader)
                 wall_testing_time = time.time() - time_before
 
             return self._testing_results
@@ -144,6 +145,8 @@ class MachineLearningExperiment(experiment.Experiment):
         dataset_paths = dataset_paths if dataset_paths is not None \
             else sets.get_all_test_files()
 
+        self.dataset_paths = dataset_paths  # TODO: remove this
+
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,
                                             f"{dataset_info_table.__class__.__name__}_persistence.csv")
@@ -190,9 +193,9 @@ class MachineLearningExperiment(experiment.Experiment):
         test_loader = torch.utils.data.DataLoader(self.test_set, batch_size=512, shuffle=False, num_workers=2)
 
         for model in self.tasks:
-            testing_results = model.test(test_loader)
-
-        print(testing_results)
+            row_wrapper = self.RowWrapper(testing_dataset_path=self.dataset_paths, test_loader=test_loader,
+                                          model=model, row="1")
+            print(row_wrapper.testing_results())
 
     # @property
     # def models_by_name(self):
