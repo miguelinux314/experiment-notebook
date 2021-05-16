@@ -292,7 +292,7 @@ class ATable(metaclass=MetaTable):
     # Column names in this list are not retrieved nor saved to file
     ignored_columns = []
 
-    def __init__(self, index="file_pat index="file_path", csv_support_path=None, column_to_properties=None):
+    def __init__(self, index="file_path", csv_support_path=None, column_to_properties=None):
         """
         :param index: column name or list of column names that will be
           used for indexing. Indices provided to self.get_df must be
