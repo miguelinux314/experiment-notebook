@@ -46,7 +46,7 @@ def read(*filenames, **kwargs):
 setup(
     # Meta
     name='enb',
-    version="0.2.6-dev",
+    version="0.2.6",
     url='https://github.com/miguelinux314/experiment-notebook',
     # download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.6.tar.gz",
     license='MIT',
@@ -79,5 +79,6 @@ setup(
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
         'sphinx_rtd_theme', 'numpngw'],
     packages=find_packages(),
-    # include_package_data=True,
+
+    include_package_data=True,
 )

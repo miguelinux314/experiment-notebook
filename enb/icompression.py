@@ -372,7 +372,8 @@ class PNGWrapperCodec(WrapperCodec):
         
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
             numpngw.write_png(tmp_file.name, img)
-            compression_results = super().compress(original_path=tmp_file.name,
+            compression_results = super().compress(
+                             original_path=tmp_file.name,
                              compressed_path=compressed_path,
                              original_file_info=original_file_info)
             cr = self.compression_results_from_paths(
