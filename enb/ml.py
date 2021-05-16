@@ -1,3 +1,4 @@
+import inspect
 import os
 import time
 import torch
@@ -6,6 +7,7 @@ import numpy as np
 
 import enb
 from enb import experiment
+from enb import sets
 from enb.config import get_options
 from enb.atable import indices_to_internal_loc
 
@@ -83,6 +85,7 @@ class MachineLearningExperiment(experiment.Experiment):
             return item in self.row
 
     def __init__(self, models,
+                 test_set,
                  dataset_paths=None,
                  csv_experiment_path=None,
                  csv_dataset_path=None,
@@ -112,6 +115,8 @@ class MachineLearningExperiment(experiment.Experiment):
         :param parallel_dataset_property_processing: if not None, it determines whether file properties
           are to be obtained in parallel. If None, it is given by not options.sequential.
         """
+        self.test_set = test_set
+        # TODO: if no dataset object use default dataset class using the provided path
         table_class = type(dataset_info_table) if dataset_info_table is not None \
             else self.default_file_properties_table_class
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
@@ -121,19 +126,79 @@ class MachineLearningExperiment(experiment.Experiment):
 
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
             else f"{dataset_info_table.__class__.__name__}_persistence.csv"
-        super().__init__(tasks=models,
-                         dataset_paths=dataset_paths,
-                         csv_experiment_path=csv_experiment_path,
-                         csv_dataset_path=csv_dataset_path,
-                         dataset_info_table=imageinfo_table,
-                         overwrite_file_properties=overwrite_file_properties,
-                         parallel_dataset_property_processing=parallel_dataset_property_processing)
+        # super().__init__(tasks=models,
+        #                  dataset_paths=dataset_paths,
+        #                  csv_experiment_path=csv_experiment_path,
+        #                  csv_dataset_path=csv_dataset_path,
+        #                  dataset_info_table=imageinfo_table,
+        #                  overwrite_file_properties=overwrite_file_properties,
+        #                  parallel_dataset_property_processing=parallel_dataset_property_processing)
 
-    @property
-    def models_by_name(self):
-        """Alias for :py:attr:`tasks_by_name`
-        """
-        return self.tasks_by_name
+        verwrite_file_properties = overwrite_file_properties \
+            if overwrite_file_properties is not None else options.force
+
+        parallel_dataset_property_processing = parallel_dataset_property_processing \
+            if parallel_dataset_property_processing is not None else not options.sequential
+        self.tasks = list(models)
+
+        dataset_paths = dataset_paths if dataset_paths is not None \
+            else sets.get_all_test_files()
+
+        if csv_dataset_path is None:
+            csv_dataset_path = os.path.join(options.persistence_dir,
+                                            f"{dataset_info_table.__class__.__name__}_persistence.csv")
+        os.makedirs(os.path.dirname(csv_dataset_path), exist_ok=True)
+
+        if dataset_info_table is None:
+            dataset_info_table = self.default_file_properties_table_class(csv_support_path=csv_dataset_path)
+        else:
+            if inspect.isclass(dataset_info_table):
+                dataset_info_table = dataset_info_table(csv_support_path=csv_dataset_path)
+        self.dataset_info_table = dataset_info_table
+
+        self.dataset_info_table.ignored_columns = \
+            set(self.dataset_info_table.ignored_columns + self.ignored_columns)
+
+        assert len(self.dataset_info_table.indices) == 1, \
+            f"dataset_info_table is expected to have a single index"
+
+        # if options.verbose > 1:
+        #     print(f"Obtaining properties of {len(dataset_paths)} files... "
+        #           f"[dataset info: {type(self.dataset_info_table).__name__}]")
+        # self.dataset_table_df = self.dataset_info_table.get_df(target_indices=dataset_paths,
+        #                                                        overwrite=overwrite_file_properties,
+        #                                                        parallel_row_processing=(
+        #                                                            parallel_dataset_property_processing
+        #                                                            if parallel_dataset_property_processing is not None
+        #                                                            else not options.sequential))
+
+        self.target_file_paths = dataset_paths
+
+        if csv_experiment_path is None:
+            csv_experiment_path = os.path.join(options.persistence_dir,
+                                               f"{self.__class__.__name__}_persistence.csv")
+
+        os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
+        # super().__init__(csv_support_path=csv_experiment_path,
+        #                  index=self.dataset_info_table.indices + [self.task_name_column])
+
+    def get_df(self, target_indices=None, target_columns=None,
+               fill=True, overwrite=None, parallel_row_processing=None,
+               chunk_size=None):
+        print("Testing...")
+
+        test_loader = torch.utils.data.DataLoader(self.test_set, batch_size=512, shuffle=False, num_workers=2)
+
+        for model in self.tasks:
+            testing_results = model.test(test_loader)
+
+        print(testing_results)
+
+    # @property
+    # def models_by_name(self):
+    #     """Alias for :py:attr:`tasks_by_name`
+    #     """
+    #     return self.tasks_by_name
 
     def process_row(self, index, column_fun_tuples, row, overwrite, fill):
         # Right now we are using file_path as testing_dataset_path maybe we will need to also add training_dataset_path
