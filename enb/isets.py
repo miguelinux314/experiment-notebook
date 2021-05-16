@@ -268,6 +268,10 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     if dtype is not None and array.dtype != dtype:
         array = array.astype(dtype)
 
+    # Expand 2D arrays to 3D trivially
+    if len(array.shape) == 2:
+        array = np.expand_dims(array, 2)
+
     array = array.swapaxes(0, 2)
     array.tofile(file_or_path)
 
