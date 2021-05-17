@@ -458,7 +458,7 @@ class FITSWrapperCodec(WrapperCodec):
         
         with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             
-            params = file[7:-4].split("-")
+            params = original_path[7:-4].split("-")
             dimensions=params[-1].split('x')
             frames=int(dimensions[-3])
             columns=int(dimensions[-2])
@@ -473,7 +473,7 @@ class FITSWrapperCodec(WrapperCodec):
             extension=params[-3]
             img=np.fromfile(open(file), dtype = f'{astype}',  count = -1)
             array=np.reshape(img,(frames,columns,rows))
-            hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{file[0:-4]}-fits_header.txt',sep='\n', endcard=False,padding=False))
+            hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{original_path[0:-4]}-fits_header.txt',sep='\n', endcard=False,padding=False))
             hdu.writeto(f'./fits/{name[0:-2]}_img{extension}.fits')
             
             compression_results = super().compress(original_path=tmp_file.name,
@@ -507,8 +507,7 @@ class FITSWrapperCodec(WrapperCodec):
                     enb_type_name = f"f{-header['BITPIX']}"
                 elif header['BITPIX'] > 0:
                     name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                    #dtype_name = f'>u{header["BITPIX"] // 8}'
-                    dtype_name = f'uint{header["BITPIX"] }'
+                    dtype_name = f'<u{header["BITPIX"] // 8}'
                     enb_type_name = f"u{header['BITPIX']}be"
                 else:
                     raise ValueError(f"Invalid bitpix {header['BITPIX']}")
@@ -521,7 +520,7 @@ class FITSWrapperCodec(WrapperCodec):
                     enb_type_name = f"f{-header['BITPIX']}"
                 elif header['BITPIX'] > 0:
                     name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                    dtype_name = f'uint{header["BITPIX"]}'
+                    dtype_name = f'<u{header["BITPIX"] // 8}'
                     enb_type_name = f"u{header['BITPIX']}be"
                 else:
                     raise ValueError(f"Invalid bitpix {header['BITPIX']}")
