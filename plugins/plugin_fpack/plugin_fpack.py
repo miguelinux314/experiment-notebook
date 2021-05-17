@@ -14,7 +14,7 @@ import enb
 
 
 
-class ImageFpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
+class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
     """Wrapper for the imageMarlin codec
     """
     def __init__(self,
