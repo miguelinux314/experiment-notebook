@@ -19,6 +19,8 @@ import numpy as np
 import imageio
 import subprocess
 import numpngw
+from astropy.io import fits
+from astropy.io.fits import Header
 
 import enb
 from enb import atable
