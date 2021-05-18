@@ -18,20 +18,20 @@ class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
     """Wrapper for the imageMarlin codec
     """
     def __init__(self,
-                 compression_method='-r',
-                 fpack_binary=os.path.join(os.path.dirname(__file__), "fpack")):
-        super().__init__(compressor_path=fpack_binary,
-                         decompressor_path=fpack_binary.replace("fpack", "funpack"),
+                 bin_dir=None,
+                 compression_method='-r'):
+                 
+        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        super().__init__(compressor_path=os.path.join(bin_dir, "fpack"),
+                         decompressor_path=os.path.join(bin_dir, "funpack"),
                          param_dict=dict(compression_method=compression_method)) 
-        self.fpack_binary = fpack_binary
-
-        assert os.path.isfile(fpack_binary)
 
     @property
     def name(self):
         """Don't include the binary signature
         """
         name = f"{self.__class__.__name__}"
+        return name
 
     @property
     def label(self):
