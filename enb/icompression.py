@@ -460,7 +460,7 @@ class FITSWrapperCodec(WrapperCodec):
         
         with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             
-            params = original_path[7:-4].split("-")
+            params = os.path.basename(original_path)[0:-4].split("-")
             dimensions=params[-1].split('x')
             frames=int(dimensions[-3])
             columns=int(dimensions[-2])
@@ -473,10 +473,10 @@ class FITSWrapperCodec(WrapperCodec):
                 astype=astype.replace('be', '')  
             name=params[0]
             extension=params[-3]
-            img=np.fromfile(open(file), dtype = f'{astype}',  count = -1)
+            img=np.fromfile(open(original_path), dtype = f'{astype}',  count = -1)
             array=np.reshape(img,(frames,columns,rows))
             hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{original_path[0:-4]}-fits_header.txt',sep='\n', endcard=False,padding=False))
-            hdu.writeto(f'./fits/{name[0:-2]}_img{extension}.fits')
+            hdu.writeto(tmp.file_name)
             
             compression_results = super().compress(original_path=tmp_file.name,
                              compressed_path=compressed_path,
