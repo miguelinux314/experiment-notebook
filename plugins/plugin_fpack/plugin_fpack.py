@@ -19,7 +19,7 @@ class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
     """
     def __init__(self,
                  bin_dir=None,
-                 compression_method='-r'):
+                 compression_method='r'):
                  
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
         super().__init__(compressor_path=os.path.join(bin_dir, "fpack"),
