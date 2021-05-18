@@ -39,8 +39,8 @@ class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
 
-        return f"fpack -{self.param_dict['compression_method']}   " \
+        return f" -{self.param_dict['compression_method']}   " \
                f"-O {compressed_path} {original_path}  "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"funpack -O {reconstructed_path} {compressed_path} "
+        return f" -O {reconstructed_path} {compressed_path} "
