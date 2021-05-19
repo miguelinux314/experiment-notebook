@@ -36,10 +36,6 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
         return indices
 
     def original_to_versioned_path(self, original_path):
-        # TODO: double check whether NAXIS1 is the width and NAXIS2 the height or
-        # if there is any transposition. Double check that
-        hdul = fits.open(original_path)
-
         if original_path.lower().endswith(".fit"):
             input_ext = "fit"
         elif original_path.lower().endswith(".fits"):
@@ -115,9 +111,10 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
             if options.verbose > 2:
                 print(f"Dumping FITS->raw ({effective_output_path}) from hdu_index={hdu_index}")
             enb.isets.dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
-            fits_header_path = effective_output_path.replace(
-                os.path.abspath(self.version_base_dir), f"{os.path.abspath(self.version_base_dir)}_headers").replace(
-                '.raw', '')  + "-fits_header.txt"
+            fits_header_path = os.path.join(os.path.dirname(os.path.abspath(effective_output_path)).replace(
+                os.path.abspath(self.version_base_dir),
+                f"{os.path.abspath(self.version_base_dir)}_headers"),
+                os.path.basename(effective_output_path).replace('.raw', '') + "-fits_header.txt")
             os.makedirs(os.path.dirname(fits_header_path), exist_ok=True)
             print(f"[watch] fits_header_path={fits_header_path}")
             if os.path.exists(fits_header_path):

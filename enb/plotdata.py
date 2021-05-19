@@ -8,6 +8,7 @@ __date__ = "10/09/2019"
 import numpy as np
 import collections
 import matplotlib
+from scipy.stats import norm
 
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
@@ -16,6 +17,7 @@ from matplotlib import pyplot as plt
 class PlottableData:
     alpha = 0.75
     legend_column_count = 1
+    color = None
 
     def __init__(self, data=None, axis_labels=None, label=None,
                  extra_kwargs=None, alpha=None, legend_column_count=None):
@@ -40,6 +42,9 @@ class PlottableData:
         """
         raise NotImplementedError()
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}(color={repr(self.color)})"
+
 
 class PlottableData2D(PlottableData):
     """Plot 2D data using plt.plot()
@@ -61,7 +66,11 @@ class PlottableData2D(PlottableData):
             found_pairs = collections.OrderedDict()
             for x, y in zip(x_values, y_values):
                 found_pairs[(x, y)] = (x, y)
-            x_values, y_values = zip(*found_pairs.values())
+            if found_pairs:
+                x_values, y_values = zip(*found_pairs.values())
+            else:
+                x_values = []
+                y_values = []
 
         super().__init__(data=(x_values, y_values), axis_labels=(x_label, y_label),
                          label=label, extra_kwargs=extra_kwargs, alpha=alpha,
@@ -101,12 +110,20 @@ class PlottableData2D(PlottableData):
 
 
 class LineData(PlottableData2D):
+    marker_size = 5
+
+    def __init__(self, marker_size=None, **kwargs):
+        self.marker_size = marker_size if marker_size is not None else self.marker_size
+        super().__init__(**kwargs)
+
     def render(self, axes=None):
         """Plot 2D data using plt.plot()
 
         :param axes: if not None, those axes are used for plotting instead of plt
         """
         axes.plot(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
+                  marker="o",
+                  ms=self.marker_size,
                   **self.extra_kwargs)
         axes = plt if axes is None else axes
         self.render_axis_labels(axes=axes)
@@ -213,3 +230,52 @@ class ErrorLines(PlottableData2D):
                           **self.extra_kwargs)
 
         assert len(self.x_values) == len(self.y_values)
+
+
+class HorizontalBand(PlottableData2D):
+    alpha = 0.5
+    degradation_band_count = 25
+    show_bounding_lines = False
+
+    def __init__(self, x_values, y_values, pos_width_values, neg_width_values,
+                 show_bounding_lines=None,
+                 degradation_band_count=None, **kwargs):
+        super().__init__(x_values=x_values, y_values=y_values, **kwargs)
+        self.pos_width_values = np.array(pos_width_values)
+        self.neg_width_values = np.array(neg_width_values)
+        self.show_bounding_lines = show_bounding_lines if show_bounding_lines is not None else self.show_bounding_lines
+        self.degradation_band_count = degradation_band_count if degradation_band_count is not None \
+            else self.degradation_band_count
+
+    def render(self, axes=None):
+        for i in range(self.degradation_band_count):
+            band_fraction = i / self.degradation_band_count
+            next_band_fraction = (i+1) / self.degradation_band_count
+            band_probability = 1-(norm.cdf(band_fraction) - norm.cdf(-band_fraction))
+
+            # Fill top
+            axes.fill_between(
+                self.x_values,
+                self.y_values + self.pos_width_values * band_fraction,
+                self.y_values + self.pos_width_values * next_band_fraction,
+                alpha=self.alpha * band_probability,
+                color=self.color, edgecolor=None, facecolor=self.color, ls="solid", lw=0)
+            # Fill bottom
+            axes.fill_between(
+                self.x_values,
+                self.y_values - self.neg_width_values * next_band_fraction,
+                self.y_values - self.neg_width_values * band_fraction,
+                alpha=self.alpha * band_probability,
+                color=self.color, edgecolor=None, facecolor=self.color, ls="solid", lw=0)
+
+        if self.show_bounding_lines:
+            axes.plot(self.x_values, self.y_values - self.neg_width_values,
+                      linewidth=0.5, alpha=0.68*self.alpha, color=self.color)
+            axes.plot(self.x_values, self.y_values + self.pos_width_values,
+                      linewidth=0.5, alpha=0.68*self.alpha, color=self.color)
+
+        axes = plt if axes is None else axes
+        self.render_axis_labels(axes=axes)
+        if self.label is not None and self.legend_column_count != 0:
+            plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                       ncol=self.legend_column_count)
