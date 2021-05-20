@@ -292,11 +292,10 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-        
+
         if options.verbose > 2:
             print(f"[watch] WrapperCodec:decompress: invocation={invocation}")
-            
-        
+
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation)
             if options.verbose > 3:
@@ -363,118 +362,84 @@ class WrapperCodec(AbstractCodec):
             name += "__" + "_".join(f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
 
+
 class FITSWrapperCodec(WrapperCodec):
     """Raw images are coded into FITS before compression with the wrapper,
     and FITS is decoded to raw after decompression.
     """
+
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
         print(original_file_info['big_endian'])
-        with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file: 
+        with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             os.remove(tmp_file.name)
-            print('COMPRESSSO', img.shape)
-            print(original_path)
-            params = os.path.basename(original_path)[0:-4].split("-")
-            dimensions=params[-1].split('x')
-            frames=int(dimensions[-3])
-            columns=int(dimensions[-2])
-            rows=int(dimensions[-1])
-            astype=params[-2]
-            if astype[0:1]=='f':
-                astype=astype.replace('f','float')
-            elif astype[0:1]=='u':
-                astype=astype.replace('u', 'uint')
-                astype=astype.replace('be', '')  
-            name=params[0]
-            extension=params[-3]
-            array=img.swapaxes(0,2)
-            print('ARRRRRAYOOO', array.shape, name, f'{original_path[0:-4]}-fits_header.txt',astype)
-            hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{original_path[0:-4]}-fits_header.txt',sep='\n', endcard=False,padding=False))
-            #hdu.writeto(f'./fits/{name[0:-2]}_img{extension}.fits')
+            array = img.swapaxes(0, 2)
+            hdu = fits.PrimaryHDU(array, header=Header.fromfile(
+                f'{original_path[0:-4].replace("RAW", "RAW_HEADERS")}-fits_header.txt',
+                sep='\n', endcard=False, padding=False))
             hdu.writeto(tmp_file.name)
-            print('FALLOOOOO',tmp_file.name,compressed_path[0:-9])
-            #hdu.writeto(f'/home/deic/DoctoradoUAB/experiment-notebook-master/templates/lossless_compression_example/cosa.fits', overwrite=True)
-            
-            #compression_results = super().compress(original_path=f'/home/deic/DoctoradoUAB/experiment-notebook-master/templates/lossless_compression_example/cosa.fits',
-            os.remove(compressed_path)
+
+            if os.path.exists(compressed_path):
+                os.remove(compressed_path)
             compression_results = super().compress(original_path=tmp_file.name,
-                             compressed_path=compressed_path,
-                             original_file_info=original_file_info)
+                                                   compressed_path=compressed_path,
+                                                   original_file_info=original_file_info)
             cr = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(
-                0, compression_results.compression_time_seconds)
-            print('CRRRRRRRRRR7 SIIIIU')
+            cr.compression_time_seconds = max(0, compression_results.compression_time_seconds)
             return cr
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-        
+
         with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             os.remove(tmp_file.name)
-            print('DECOMPRESSO')
             decompression_results = super().decompress(
                 compressed_path=compressed_path, reconstructed_path=tmp_file.name)
-            print('4444444444444444444444444444444')
-            invocation = f"file {tmp_file.name}"
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
-                    
-            hdul = fits.open(tmp_file.name)    
+
+            hdul = fits.open(tmp_file.name)
             assert len(hdul) == 1
             data = hdul[0].data.transpose()
             header = hdul[0].header
-            print('33333333333333333333333333333333333333', data.shape)
 
             if header['NAXIS'] == 2:
                 if header['BITPIX'] < 0:
-                    name_label = f'-f{-header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
                     dtype_name = f'float{-header["BITPIX"]}'
-                    enb_type_name = f"f{-header['BITPIX']}"
                 elif header['BITPIX'] > 0:
-                    name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
                     dtype_name = f'>u{header["BITPIX"] // 8}'
-                    enb_type_name = f"u{header['BITPIX']}be"
                 else:
                     raise ValueError(f"Invalid bitpix {header['BITPIX']}")
-
-                data = np.expand_dims(data, axis=2)
             elif header['NAXIS'] == 3:
                 if header['BITPIX'] < 0:
-                    name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
                     dtype_name = f'float{-header["BITPIX"]}'
-                    enb_type_name = f"f{-header['BITPIX']}"
                 elif header['BITPIX'] > 0:
-                    name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
                     dtype_name = f'>u{header["BITPIX"] // 8}'
-                    enb_type_name = f"u{header['BITPIX']}be"
                 else:
                     raise ValueError(f"Invalid bitpix {header['BITPIX']}")
             else:
                 raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
 
-            print('22222222222222222222', reconstructed_path)
-
             enb.isets.dump_array_bsq(array=data, file_or_path=reconstructed_path, dtype=dtype_name)
+            decompression_results.compressed_path = compressed_path
+            decompression_results.reconstructed_path = reconstructed_path
+            return decompression_results
 
-            
-            
+
 class PNGWrapperCodec(WrapperCodec):
     """Raw images are coded into PNG before compression with the wrapper,
     and PNG is decoded to raw after decompression.
     """
+
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
-        
+
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
             numpngw.write_png(tmp_file.name, img)
             compression_results = super().compress(
-                             original_path=tmp_file.name,
-                             compressed_path=compressed_path,
-                             original_file_info=original_file_info)
+                original_path=tmp_file.name,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info)
             cr = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
             cr.compression_time_seconds = max(
@@ -530,10 +495,9 @@ class PGMWrapperCodec(WrapperCodec):
                                      f"{255 if original_file_info['bytes_per_sample'] == 1 else 65535}\n"))
                 tmp_file.write(contents)
 
-
             compression_results = super().compress(original_path=tmp_file.name,
-                             compressed_path=compressed_path,
-                             original_file_info=original_file_info)
+                                                   compressed_path=compressed_path,
+                                                   original_file_info=original_file_info)
             cr = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
             cr.compression_time_seconds = max(
@@ -675,7 +639,8 @@ class CompressionExperiment(experiment.Experiment):
 
                         if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
                                 self._decompression_results.reconstructed_path) == 0:
-                            print('1111111111111', tmp_reconstructed_path, self._decompression_results.reconstructed_path)
+                            print('1111111111111', tmp_reconstructed_path,
+                                  self._decompression_results.reconstructed_path)
                             print(os.path.getsize(
                                 self._decompression_results.reconstructed_path))
                             raise CompressionException(
@@ -699,7 +664,7 @@ class CompressionExperiment(experiment.Experiment):
         def numpy_dtype(self):
             """Get the numpy dtype corresponding to the original image's data format
             """
-            
+
             return isets.iproperties_row_to_numpy_dtype(self.image_info_row)
 
         def __getitem__(self, item):
@@ -978,16 +943,22 @@ class LossyCompressionExperiment(CompressionExperiment):
     def set_PSNR_nominal(self, index, row):
         """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
         """
-        max_error = (2 ** (8 * row.image_info_row["bytes_per_sample"])) - 1
-        row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
-            if row["mse"] > 0 else float("inf")
+        path, task = self.index_to_path_task(index)
+
+        if row.image_info_row["float"]:
+            # TODO: use the float type dynamic range?
+            row[_column_name] = float("inf")
+        else:
+            max_error = (2 ** (8 * row.image_info_row["bytes_per_sample"])) - 1
+            row[_column_name] = (20 * math.log10((max_error) / math.sqrt(row["mse"]))) \
+                if row["mse"] > 0 else float("inf")
 
     @atable.column_function("psnr_dr", label="PSNR (dB)", plot_min=0)
     def set_PSNR_dynamic_range(self, index, row):
         """Set the PSNR assuming dynamic range given by dynamic_range_bits.
         """
         max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
-        row[_column_name] = 10 * math.log10((max_error ** 2) / row["mse"]) \
+        row[_column_name] = 20 * math.log10(max_error / math.sqrt(row["mse"])) \
             if row["mse"] > 0 else float("inf")
 
 
@@ -1020,7 +991,6 @@ class StructuralSimilarity(CompressionExperiment):
 
         row["ssim"] = self.compute_SSIM(original_array, reconstructed_array)
         row["ms_ssim"] = self.cumpute_MSSIM(original_array, reconstructed_array)
-
 
     def cumpute_MSSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, weights=None):
         """Return the MS-SSIM score between `img1` and `img2`.
@@ -1160,6 +1130,7 @@ class StructuralSimilarity(CompressionExperiment):
         g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2)))
         return g / g.sum()
 
+
 class SpectralAngleTable(LossyCompressionExperiment):
     """Lossy compression experiment that computes spectral angle "distance"
     measures between the compressed and the reconstructed images.
@@ -1221,4 +1192,3 @@ class SpectralAngleTable(LossyCompressionExperiment):
 
         row["mean_spectral_angle_deg"] = sum(spectral_angles) / len(spectral_angles)
         row["max_spectral_angle_deg"] = max(spectral_angles)
-

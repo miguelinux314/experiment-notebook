@@ -41,8 +41,19 @@ class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
 
 
 if __name__ == '__main__':
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    # options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "/data/research-materials/astronomical_data/RAW")
     exp = enb.icompression.LossyCompressionExperiment(codecs=[Fpack()])
-    # df = exp.get_df()
-    # print(f"[watch] len(df)={len(df)}")
-    
+
+    df = exp.get_df()
+
+    enb.aanalysis.ScalarDistributionAnalyzer().analyze_df(
+        full_df=df,
+        column_to_properties=exp.column_to_properties,
+        target_columns=["bpppc", "compression_ratio"],
+        group_by="corpus", show_global=True)
+
+    enb.aanalysis.TwoColumnScatterAnalyzer().analyze_df(
+        full_df=df,
+        column_to_properties=exp.column_to_properties,
+        target_columns=[("bpppc", "mse")])

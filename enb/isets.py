@@ -147,7 +147,7 @@ class ImagePropertiesTable(ImageGeometryTable):
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
         if row["float"] == True:
-            range_len = (row["sample_max"]) - (row["sample_min"])
+            range_len = 8*row["bytes_per_sample"]
         else:
             range_len = int(row["sample_max"]) - int(row["sample_min"])
         assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
