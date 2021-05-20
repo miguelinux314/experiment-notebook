@@ -86,7 +86,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("f16", "f32", "f64")):
             row[_column_name] = True
         else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+            raise sets.UnkownPropertiesException(f"Unknown {_column_name} from {file_path}")
 
     @atable.column_function("signed", label="Signed samples")
     def set_signed(self, file_path, row):
