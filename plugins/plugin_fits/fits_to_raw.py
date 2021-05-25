@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -7,7 +11,11 @@ from astropy.io import fits
 import os
 
 import enb.isets
+<<<<<<< HEAD
 import enb.sets as sets
+=======
+import sets
+>>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
 import enb.isets as isets
 from enb.config import options
 
@@ -82,7 +90,11 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                     enb_type_name = f"f{-header['BITPIX']}"
                 elif header['BITPIX'] > 0:
                     name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+<<<<<<< HEAD
                     dtype_name = f'>u{header["BITPIX"] // 8}'
+=======
+                    dtype_name = f'<u{header["BITPIX"] // 8}'
+>>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
                     enb_type_name = f"u{header['BITPIX']}be"
                 else:
                     raise ValueError(f"Invalid bitpix {header['BITPIX']}")
@@ -96,7 +108,11 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                     enb_type_name = f"f{-header['BITPIX']}"
                 elif header['BITPIX'] > 0:
                     name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+<<<<<<< HEAD
                     dtype_name = f'>u{header["BITPIX"] // 8}'
+=======
+                    dtype_name = f'<u{header["BITPIX"] // 8}'
+>>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
                     enb_type_name = f"u{header['BITPIX']}be"
                 else:
                     raise ValueError(f"Invalid bitpix {header['BITPIX']}")
