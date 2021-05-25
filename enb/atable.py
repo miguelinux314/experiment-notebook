@@ -208,7 +208,10 @@ class MetaTable(type):
         # function name without it being decorated as column function
         # (unexpected behavior)
         for column, properties in subclass.column_to_properties.items():
-            defining_class_name = get_class_that_defined_method(properties.fun).__name__
+            try:
+                defining_class_name = get_class_that_defined_method(properties.fun).__name__
+            except AttributeError:
+                defining_class_name = None
             if defining_class_name != subclass.__name__:
                 ctp_fun = properties.fun
                 try:
