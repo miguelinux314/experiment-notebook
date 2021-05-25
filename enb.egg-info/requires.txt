@@ -11,3 +11,4 @@ imageio
 redis
 sphinx_rtd_theme
 numpngw
+astropy
