@@ -161,7 +161,8 @@ class FileVersionTable(FilePropertiesTable):
     def __init__(self, version_base_dir, version_name,
                  original_properties_table=None,
                  original_base_dir=None,
-                 csv_support_path=None):
+                 csv_support_path=None,
+                 check_generated_files=True):
         """
         :param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
@@ -178,8 +179,10 @@ class FileVersionTable(FilePropertiesTable):
 
         :param csv_support_path: path to the file where results (of the versioned data) are to be
           long-term stored. If None, one is assigned by default based on options.persistence_dir.
-        """
 
+        :param check_generated_files: if True, the table checks that each call to version() produces
+          a file to output_path. Set to false to create arbitrarily named output files.
+        """
         self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir)) \
             if original_base_dir is not None else options.base_dataset_dir
 
@@ -193,10 +196,11 @@ class FileVersionTable(FilePropertiesTable):
         self.original_properties_table = original_properties_table \
             if original_properties_table is not None \
             else default_class(base_dir=self.original_base_dir)
-
         self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
         self.version_name = version_name
         self.current_run_version_times = {}
+        self.check_generated_files = check_generated_files
+
         assert self.version_base_dir is not None
         os.makedirs(self.version_base_dir, exist_ok=True)
         FilePropertiesTable.__init__(self, csv_support_path=csv_support_path, base_dir=original_base_dir)
@@ -221,7 +225,7 @@ class FileVersionTable(FilePropertiesTable):
         This function will replicate the folder structure within self.original_base_dir.
         """
         parts = os.path.abspath(original_path).split(os.sep)[1:]
-        for used_parts in range(1,len(parts)+1):
+        for used_parts in range(1, len(parts) + 1):
             if os.path.exists(os.path.join(self.original_base_dir, *parts[-used_parts:])):
                 versioned_path = os.path.join(self.version_base_dir, *parts[-used_parts:])
                 break
@@ -276,7 +280,9 @@ class FileVersionTable(FilePropertiesTable):
                 versioning_result_ids.append(ray_version_one_path.remote(
                     version_fun=version_fun_id, input_path=input_path_id,
                     output_path=output_path_id, overwrite=overwrite_id,
-                    original_info_df=original_df_id, options=options_id))
+                    original_info_df=original_df_id,
+                    check_generated_files=ray.put(self.check_generated_files),
+                    options=options_id))
             for output_file_path, time_list in ray.get(versioning_result_ids):
                 self.current_run_version_times[output_file_path] = time_list
         else:
@@ -286,8 +292,13 @@ class FileVersionTable(FilePropertiesTable):
                         version_fun=self.version, input_path=original_path,
                         output_path=version_path, overwrite=overwrite,
                         original_info_df=original_df,
+                        check_generated_files=self.check_generated_files,
                         options=options)
                 assert reported_index == version_path, (reported_index, version_path)
+
+        if not self.check_generated_files:
+            version_indices = [f for f in glob.glob(os.path.join(self.version_base_dir, "**", "*"), recursive=True)
+                               if os.path.isfile(f)]
 
         # Get the parent classes that define get_df methods different from this
         base_classes = self.__class__.__bases__
@@ -308,7 +319,10 @@ class FileVersionTable(FilePropertiesTable):
                 break
             previous_base_classes = filtered_classes
             base_classes = filtered_classes
+            
+        print(f"[watch] version_indices={version_indices}")
         
+
         filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
         return filtered_type.get_df(
             self, target_indices=version_indices, parallel_row_processing=parallel_row_processing,
@@ -341,6 +355,11 @@ class FileVersionTable(FilePropertiesTable):
                                              f"but it was not versioned in this run.")
         row[_column_name] = len(version_time_list)
 
+    def column_version_name(self, file_path, row):
+        """Automatically add the version name as a column
+        """
+        return self.version_name
+
     @atable.redefines_column
     def set_corpus(self, file_path, row):
         file_path = os.path.abspath(os.path.realpath(file_path))
@@ -359,14 +378,16 @@ class FileVersionTable(FilePropertiesTable):
 
 @ray.remote
 @config.propagates_options
-def ray_version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, options):
+def ray_version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, check_generated_files, options):
     """Run the versioning of one path.
     """
     return version_one_path_local(version_fun=version_fun, input_path=input_path, output_path=output_path,
-                                  overwrite=overwrite, original_info_df=original_info_df, options=options)
+                                  overwrite=overwrite, original_info_df=original_info_df,
+                                  check_generated_files=check_generated_files, options=options)
 
 
-def version_one_path_local(version_fun, input_path, output_path, overwrite, original_info_df, options):
+def version_one_path_local(version_fun, input_path, output_path, overwrite,
+                           original_info_df, check_generated_files, options):
     """Version input_path into output_path using version_fun.
     
     :return: a tuple ``(output_path, l)``, where output_path is the selected otuput path and
@@ -378,9 +399,10 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
     :param input_path: path of the file to be versioned
     :param output_path: path where the versioned file is to be stored
     :param overwrite: if True, the version is calculated even if output_path already exists
-    :param options: additional runtime options
     :param original_info_df: DataFrame produced by a FilePropertiesTable instance that contains
       an entry for :meth:`atable.indices_to_internal_loc`.
+    :param check_generated_files: flag indicating whether failing to produce output_path must raise an exception.
+    :param options: additional runtime options
     """
     time_measurements = []
 
@@ -399,7 +421,8 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite, orig
             time_before = time.time()
             versioning_time = version_fun(
                 input_path=input_path, output_path=output_path, row=row)
-            if not os.path.exists(output_path) or os.path.getsize(output_path) == 0:
+            if check_generated_files and \
+                    (not os.path.exists(output_path) or os.path.getsize(output_path) == 0):
                 raise VersioningFailedException(
                     f"Function {version_fun} did not produce a versioned path {input_path}->{output_path}")
             versioning_time = versioning_time if versioning_time is not None \

@@ -1,11 +1,24 @@
-# (under development) v0.2.6
+# 2021/05/13 v0.2.6
 
-- Added ScalarToScalarAnalyzer to plot dictionary cell data
-- Improved HEVC and VVC compilation scripts
-- Improved default wrapper codec names when no hexdump signature is desired 
-- Several minor fix-ups to plot rendering and general stability
-- Improved support for datasets consisting of symbolic links to a single copy of the dataset
-- Docs displayed on the public site automatically point to the dev branch now
+* New functions:
+  
+  - FileVersionTable subclasses now can choose not to check the expected output files and use all produced
+    files in the versioned dir instead.
+  - Added FITS to raw version table
+  
+* Function improvements:
+  
+  - Improved HEVC and VVC compilation scripts
+  - Improved support for datasets consisting of symbolic links to a single copy of the dataset
+  - Improved default wrapper codec names when no hexdump signature is desired
+  
+* Plotting improvements:
+  
+  - Improved the general plot function to increase control over displayed colors.
+  - Added ScalarToScalarAnalyzer to plot dictionary cell data. Shadowed bands based on std can now be depicted.
+  - Several minor fix-ups to plot rendering and general stability
+
+* Docs are now displayed on the public site automatically point to the dev banch
 
 # 2021/04/27 v0.2.5
 
