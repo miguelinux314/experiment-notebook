@@ -77,7 +77,11 @@ setup(
     install_requires=[
         'wheel', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
+<<<<<<< HEAD
         'sphinx_rtd_theme', 'numpngw'],
+=======
+        'sphinx_rtd_theme', 'numpngw', 'astropy'],
+>>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
     packages=find_packages(),
 
     include_package_data=True,
