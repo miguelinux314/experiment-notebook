@@ -1243,11 +1243,10 @@ class ScalarDictAnalyzer(Analyzer):
         """
         target_columns = target_columns if not isinstance(target_columns, str) else [target_columns]
         output_plot_dir = output_plot_dir if output_plot_dir is not None else options.plot_dir
-<<<<<<< HEAD
-=======
+
         output_csv_file = output_csv_file if output_csv_file is not None else os.path.join(
             options.analysis_dir, f"{self.__class__.__name__}.csv")
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
+
 
         if combine_keys is not None:
             full_df = full_df.copy()
@@ -1255,10 +1254,7 @@ class ScalarDictAnalyzer(Analyzer):
         enb.ray_cluster.init_ray()
 
         keys_by_column = {}
-<<<<<<< HEAD
-=======
         key_to_x_by_column = {}
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         column_to_properties = dict() if column_to_properties is None else dict(column_to_properties)
         for column in target_columns:
             if column not in column_to_properties:
@@ -1269,21 +1265,11 @@ class ScalarDictAnalyzer(Analyzer):
             if combine_keys is not None:
                 full_df[column] = full_df[column].apply(combine_keys)
             keys_by_column[column] = \
-<<<<<<< HEAD
-                set(full_df[column].apply(lambda d: list(d.keys())).sum())
-
-        if key_list is None:
-            all_keys = sorted(set(itertools.chain(*keys_by_column.values())))
-        else:
-            all_keys = list(key_list)
-        key_to_x = {k: i for i, k in enumerate(all_keys)}
-
-=======
                 sorted(set(full_df[column].apply(lambda d: list(d.keys())).sum()))
             key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))}
 
         # Generate the plottable data
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
+
         column_to_id_by_group = collections.defaultdict(dict)
         column_to_pds_by_group = collections.defaultdict(dict)
         if group_by is not None:
@@ -1294,11 +1280,7 @@ class ScalarDictAnalyzer(Analyzer):
                         df=df_id, column=ray.put(column),
                         column_properties=ray.put(column_to_properties[column]),
                         group_label=ray.put(group_name),
-<<<<<<< HEAD
-                        key_to_x=ray.put(key_to_x),
-=======
                         key_to_x=ray.put(key_to_x_by_column[column]),
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
                         show_std_bar=ray.put(show_std_bar),
                         show_std_band=ray.put(show_std_band),
                         show_individual_results=ray.put(show_individual_results))
@@ -1309,40 +1291,24 @@ class ScalarDictAnalyzer(Analyzer):
                     df=df_id, column=ray.put(column),
                     column_properties=ray.put(column_to_properties[column]),
                     group_label=ray.put("all"),
-<<<<<<< HEAD
-                    key_to_x=ray.put(key_to_x),
-=======
                     key_to_x=ray.put(key_to_x_by_column[column]),
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
                     show_std_bar=ray.put(show_std_bar),
                     show_std_band=ray.put(show_std_band),
                     show_individual_results=ray.put(show_individual_results))
 
-<<<<<<< HEAD
-=======
         # Retrieve data produced in a parallel way and fix labels, colors, etc
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         group_names = set()
         for column, group_to_id in column_to_id_by_group.items():
             for group_name, id in group_to_id.items():
                 column_to_pds_by_group[column][group_name] = ray.get(id)
                 group_names.add(group_name)
-<<<<<<< HEAD
-
         group_names = sorted(str(n) for n in group_names)
-
-=======
-        group_names = sorted(str(n) for n in group_names)
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         for column, pds_by_group in column_to_pds_by_group.items():
             for group_name, pds in pds_by_group.items():
                 for pld in pds:
                     pld.color = color_cycle[group_names.index(str(pld.label)) % len(color_cycle)]
                     if not combine_groups or not isinstance(pld, plotdata.LineData):
                         pld.label = None
-
-<<<<<<< HEAD
-=======
         # Produce the analysis csv based on the gathered information
         os.makedirs(os.path.dirname(os.path.abspath(output_csv_file)), exist_ok=True)
         with open(output_csv_file, "w") as csv_file:
@@ -1358,7 +1324,6 @@ class ScalarDictAnalyzer(Analyzer):
                                         for k in keys_by_column[column]))
                 csv_file.write("\n\n")
 
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         render_ids = []
         for column, pds_by_group in column_to_pds_by_group.items():
             output_plot_path = os.path.join(output_plot_dir, f"scalar_dict_{column}.pdf")
@@ -1371,11 +1336,7 @@ class ScalarDictAnalyzer(Analyzer):
 
             try:
                 original_fig_width = options.fig_width
-<<<<<<< HEAD
-                options.fig_width = max(options.fig_width, len(all_keys) / 5)
-=======
                 options.fig_width = max(options.fig_width, len(keys_by_column[column]) / 5)
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
 
                 if not options.sequential:
                     render_ids.append(ray_render_plds_by_group.remote(
@@ -1384,13 +1345,8 @@ class ScalarDictAnalyzer(Analyzer):
                         column_properties=ray.put(column_to_properties[column]),
                         global_x_label=ray.put(global_x_label),
                         global_y_label=ray.put(""),
-<<<<<<< HEAD
-                        x_tick_list=ray.put([key_to_x[k] for k in all_keys]),
-                        x_tick_label_list=ray.put(all_keys),
-=======
                         x_tick_list=ray.put([key_to_x_by_column[column][k] for k in keys_by_column[column]]),
                         x_tick_label_list=ray.put(keys_by_column[column]),
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
                         x_tick_label_angle=ray.put(x_tick_label_angle),
                         horizontal_margin=ray.put(0.1),
                         x_min=ray.put(x_min), x_max=ray.put(x_max),
@@ -1405,13 +1361,8 @@ class ScalarDictAnalyzer(Analyzer):
                                          column_properties=column_to_properties[column],
                                          global_x_label=global_x_label,
                                          global_y_label="",
-<<<<<<< HEAD
-                                         x_tick_list=[key_to_x[k] for k in all_keys],
-                                         x_tick_label_list=all_keys,
-=======
                                          x_tick_list=[key_to_x_by_column[column][k] for k in keys_by_column[column]],
                                          x_tick_label_list=keys_by_column[column],
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
                                          x_tick_label_angle=x_tick_label_angle,
                                          x_min=x_min, x_max=x_max,
                                          y_min=y_min, y_max=y_max,
@@ -1434,11 +1385,7 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
     finite_data_by_column = dict()
     for k in key_to_x.keys():
         column_data = df[column].apply(lambda d: d[k] if k in d else float("inf"))
-<<<<<<< HEAD
-        finite_data_by_column[column] = column_data[column_data.apply(lambda v : math.isfinite(v))]
-=======
         finite_data_by_column[column] = column_data[column_data.apply(lambda v: math.isfinite(v))]
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         description = finite_data_by_column[column].describe()
         if len(finite_data_by_column[column]) > 0:
             key_to_stats[k] = dict(min=description["min"],

@@ -295,18 +295,8 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-<<<<<<< HEAD
-        
         if options.verbose > 2:
             print(f"[watch] WrapperCodec:decompress: invocation={invocation}")
-            
-        
-=======
-
-        if options.verbose > 2:
-            print(f"[watch] WrapperCodec:decompress: invocation={invocation}")
-
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation)
             if options.verbose > 3:
@@ -448,15 +438,9 @@ class PNGWrapperCodec(WrapperCodec):
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
             numpngw.write_png(tmp_file.name, img)
             compression_results = super().compress(
-<<<<<<< HEAD
-                             original_path=tmp_file.name,
-                             compressed_path=compressed_path,
-                             original_file_info=original_file_info)
-=======
                 original_path=tmp_file.name,
                 compressed_path=compressed_path,
                 original_file_info=original_file_info)
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
             cr = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
             cr.compression_time_seconds = max(
@@ -1009,10 +993,6 @@ class StructuralSimilarity(CompressionExperiment):
         row["ssim"] = self.compute_SSIM(original_array, reconstructed_array)
         row["ms_ssim"] = self.cumpute_MSSIM(original_array, reconstructed_array)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
     def cumpute_MSSIM(self, img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03, weights=None):
         """Return the MS-SSIM score between `img1` and `img2`.
 
@@ -1151,10 +1131,6 @@ class StructuralSimilarity(CompressionExperiment):
         g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2)))
         return g / g.sum()
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
 class SpectralAngleTable(LossyCompressionExperiment):
     """Lossy compression experiment that computes spectral angle "distance"
     measures between the compressed and the reconstructed images.
