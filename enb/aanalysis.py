@@ -1315,8 +1315,10 @@ class ScalarDictAnalyzer(Analyzer):
                 line_data = tuple(column_to_pds_by_group[column].values())[0][0]
                 assert isinstance(line_data, plotdata.LineData)
                 csv_file.write(f"{column},")
+
                 csv_file.write(','.join(str(line_data.y_values[key_to_x_by_column[column][k]])
-                                        if k in key_to_x_by_column[column] else ''
+                                        if k in key_to_x_by_column[column]
+                                           and len(line_data.y_values) > key_to_x_by_column[column][k] else ''
                                         for k in keys_by_column[column]))
                 csv_file.write("\n\n")
 
