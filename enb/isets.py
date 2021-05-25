@@ -75,19 +75,6 @@ class ImageGeometryTable(sets.FilePropertiesTable):
             row[_column_name] = 4
         elif any(s in file_path for s in ("f64")):
             row[_column_name] = 8
-<<<<<<< HEAD
-        else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
-
-    @atable.column_function("float", label="Floating point data?")
-    def set_float(self, file_path, row):
-        if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
-                                        "u32be", "u32le", "s32be", "s32le")):
-            row[_column_name] = False
-        elif any(s in file_path for s in ("f16", "f32", "f64")):
-            row[_column_name] = True
-=======
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
@@ -160,11 +147,7 @@ class ImagePropertiesTable(ImageGeometryTable):
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
         if row["float"] == True:
-<<<<<<< HEAD
-            range_len = (row["sample_max"]) - (row["sample_min"])
-=======
             range_len = 8*row["bytes_per_sample"]
->>>>>>> e1140cad623366183ba5d7756b2ed359eddf1426
         else:
             range_len = int(row["sample_max"]) - int(row["sample_min"])
         assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
