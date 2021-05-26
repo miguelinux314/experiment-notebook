@@ -6,20 +6,15 @@
 import os
 import enb
 from enb.config import options
-from astropy.io import fits
 
-# TODO: document the new class: at the very least, the compression_method parameter
-
-class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
+class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
     """Wrapper for the fpzip codec
     """
-    
     def __init__(self, fpzip_binary=os.path.join(os.path.dirname(__file__), "fpzip")):
 
         super().__init__(compressor_path=fpzip_binary,
                          decompressor_path=fpzip_binary,
                          param_dict=dict())    
-    
     @property
     def name(self):
         """Don't include the binary signature
@@ -33,21 +28,18 @@ class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
         return "fpzip"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        hdul=fits.open(original_path)
-        hdr = hdul[0].header
-        
-        dimensions = hdr['NAXIS']
-        x = hdr['NAXIS1']
-        y = hdr['NAXIS2']
-        z = hdr['NAXIS3']
-        print(dimensions,x,y,z)
-        print(f"-i {original_path}  -o {compressed_path} -{dimensions} {x} {y} {z} ")
-        return f"-i {original_path}  -o {compressed_path}" \
-               f"-{dimensions} {x} {y} {z} "
+             
+        dimensions = 1
+        x = original_file_info.samples
+
+
+        return f"-i {original_path}  -o {compressed_path} -{dimensions} {x} "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-d -i {compressed_path} -o {reconstructed_path} " \
-            f"-{dimensions} {x} {y} {z}  "
+        dimensions=1
+        x=original_file_info.samples
+
+        return f"-d -i {compressed_path} -o {reconstructed_path} -{dimensions} {x} "
 
 
 if __name__ == '__main__':
