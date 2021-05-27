@@ -186,7 +186,8 @@ class MetaTable(type):
     pendingdefs_classname_fun_columnproperties_kwargs = []
 
     def __new__(cls, name, bases, dct):
-        assert MetaTable not in bases, f"Use ATable, not MetaTable, for subclassing"
+        if MetaTable in bases:
+            raise SyntaxError(f"Use ATable, not MetaTable, for subclassing.") 
         for base in bases:
             try:
                 _ = base.column_to_properties
@@ -247,7 +248,11 @@ class MetaTable(type):
 
         for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
             ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
-
+            
+            
+        # Column-defining functions are added to a list while the class is being defined.
+        # After that, the subclass' column_to_properties attribute is updated according 
+        # to the column definitions.
         funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
         for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
             try:
@@ -275,9 +280,12 @@ class MetaTable(type):
 
 
 def get_auto_column_wrapper(fun):
+    """Method internal to this module that allows automatic recognition of column_* function
+    in ATable subclasses.
+    """
     # Function is not decorated: add wrapper if starts with column_*
     def wrapper(self, index, row):
-        f"""Column wrapper{fun.__name__}"""
+        f"""Column wrapper for {fun.__name__}"""
         row[_column_name] = fun(self, index, row)
 
     return wrapper

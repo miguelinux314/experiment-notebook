@@ -210,7 +210,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         if semilog_y:
             base_y = column_properties.semilog_y_base if column_properties is not None else 10
-            group_axes.semilogy(basey=base_y)
+            group_axes.semilogy(base=base_y)
             if combine_groups or len(sorted_group_names) <= 2:
                 numticks = 11
             elif len(sorted_group_names) <= 5:
