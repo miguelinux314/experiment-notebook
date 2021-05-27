@@ -677,6 +677,8 @@ class ATable(metaclass=MetaTable):
         called_functions = set()
         for column, fun in column_fun_tuples:
             if fun in called_functions:
+                if row[column] is None:
+                    raise ValueError(f"[F]unction {fun} failed to fill column {column}")
                 if options.verbose > 2:
                     print(f"[A]lready called function {fun.__name__} <{self.__class__.__name__}>")
                 continue
