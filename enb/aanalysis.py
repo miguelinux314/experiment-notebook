@@ -1243,8 +1243,10 @@ class ScalarDictAnalyzer(Analyzer):
         """
         target_columns = target_columns if not isinstance(target_columns, str) else [target_columns]
         output_plot_dir = output_plot_dir if output_plot_dir is not None else options.plot_dir
+
         output_csv_file = output_csv_file if output_csv_file is not None else os.path.join(
             options.analysis_dir, f"{self.__class__.__name__}.csv")
+
 
         if combine_keys is not None:
             full_df = full_df.copy()
@@ -1267,6 +1269,7 @@ class ScalarDictAnalyzer(Analyzer):
             key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))}
 
         # Generate the plottable data
+
         column_to_id_by_group = collections.defaultdict(dict)
         column_to_pds_by_group = collections.defaultdict(dict)
         if group_by is not None:
@@ -1306,7 +1309,6 @@ class ScalarDictAnalyzer(Analyzer):
                     pld.color = color_cycle[group_names.index(str(pld.label)) % len(color_cycle)]
                     if not combine_groups or not isinstance(pld, plotdata.LineData):
                         pld.label = None
-
         # Produce the analysis csv based on the gathered information
         os.makedirs(os.path.dirname(os.path.abspath(output_csv_file)), exist_ok=True)
         with open(output_csv_file, "w") as csv_file:

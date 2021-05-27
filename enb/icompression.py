@@ -25,6 +25,9 @@ from astropy.io.fits import Header
 from scipy import signal
 from scipy.ndimage.filters import convolve
 
+from scipy import signal
+from scipy.ndimage.filters import convolve
+
 import enb
 from enb import atable
 from enb import experiment
@@ -292,10 +295,8 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-
         if options.verbose > 2:
             print(f"[watch] WrapperCodec:decompress: invocation={invocation}")
-
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation)
             if options.verbose > 3:
@@ -1129,7 +1130,6 @@ class StructuralSimilarity(CompressionExperiment):
         assert len(x) == size
         g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2)))
         return g / g.sum()
-
 
 class SpectralAngleTable(LossyCompressionExperiment):
     """Lossy compression experiment that computes spectral angle "distance"
