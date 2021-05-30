@@ -9,11 +9,18 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 
 
 class script_generator:
+    """
+
+    """
     __template_json = None
     __template = None
     __script = None
 
     def __init__(self, a_template):
+        """
+
+        :param a_template:
+        """
         self.__template_json = a_template.get_template()
         self.__script = ""
         print(self.__template_json)
@@ -21,6 +28,10 @@ class script_generator:
         self.generate_script()
 
     def scan_for_plugins(self):
+        """
+
+        :return:
+        """
         plugins_dict = {}
         modules = []
 
@@ -49,6 +60,10 @@ class script_generator:
         self.__template_json["plugins"]["plugins_dict"] = plugins_dict
 
     def generate_script(self):
+        """
+
+        :return:
+        """
         env = Environment(
             loader=jinja2.PackageLoader('template_generator'),
             autoescape=select_autoescape()

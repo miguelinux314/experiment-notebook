@@ -48,21 +48,25 @@ class ExecutionOptions(singleton_cli.GlobalOptions):
         pass
 
     @cli_property("c",
-                  help="List of selected column names for computation. If one or more column names are provided, "
-                       "all others are ignored. Multiple columns can be expressed, separated by spaces.",
+                  help="List of selected column names for computation. If one or"
+                        + "more column names are provided, "
+                        + "all others are ignored. Multiple columns can be expressed,"
+                        + "separated by spaces.",
                   default=None,
                   nargs="+",
                   type=str)
     def columns(self):
         pass
 
-    @cli_property(help="If True, any exception when processing rows aborts the program.", action="store_true",
-                  default=True)
+    @cli_property(help="If True, any exception when processing rows aborts the program.",
+                    action="store_true",
+                    default=True)
     def exit_on_error(self):
         pass
 
-    @cli_property(help="Discard partial results when an error is found running the experiment? "
-                       "Otherwise, they are output to persistent storage.",
+    @cli_property(help="Discard partial results when an error is found running the"
+                        + "experiment? "
+                        + "Otherwise, they are output to persistent storage.",
                   action="store_true")
     def discard_partial_results(self):
         pass
@@ -89,11 +93,13 @@ class RenderingOptions(singleton_cli.GlobalOptions):
     def no_render(self):
         pass
 
-    @cli_property("fw", help="Figure width. Larger values make text look smaller.", default=5, type=float)
+    @cli_property("fw", help="Figure width. Larger values make text look smaller.",
+                default=5, type=float)
     def fig_width(self):
         pass
 
-    @cli_property("fig_height", help="Figure height. Larger values make text look smaller.",
+    @cli_property("fig_height", help="Figure height. Larger values make text look"
+                + "smaller.",
                   default=4, type=float)
     def fig_height(self):
         pass
@@ -264,7 +270,8 @@ class TemplateOptions(singleton_cli.GlobalOptions):
 
     @cli_parsers_builder(""
                          , title="Subcommands"
-                         , description="Allows you to add either en Experiment, an Analysis or a step."
+                         , description="Allows you to add either en Experiment, an"
+                         + " Analysis or a step."
                          , new_parser=True
                          , parser_parent="template"
                          , parser_alias="add")
@@ -276,7 +283,8 @@ class TemplateOptions(singleton_cli.GlobalOptions):
                          , parser_parent="template"
                          , default="./"
                          , type=str
-                         , help="Let's see if this works."
+                         , help="Controller that allows you to define the operation to"
+                         + " be exacted over a template."
                          , action=singleton_cli.WritableDirAction
                          , required=False)
     def working_dir(self):
