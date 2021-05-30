@@ -77,7 +77,10 @@ setup(
     install_requires=[
         'wheel', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw'],
+        'sphinx_rtd_theme', 'numpngw', 'jinja2'],
     packages=find_packages(),
-    # include_package_data=True,
+    include_package_data=True,
+    package_data={
+        "template_generator": ["templates/*"]
+    }
 )

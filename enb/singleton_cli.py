@@ -17,6 +17,7 @@ __date__ = "06/02/2021"
 import os
 import argparse
 
+
 class ValidationAction(argparse.Action):
     """Base class for defining custom parser validation actions.
     """
@@ -44,9 +45,25 @@ class ValidationAction(argparse.Action):
         except Exception as ex:
             parser.print_help()
             print()
-            print(f"PARAMETER ERROR [{option_string}]: {ex}")
+            print(f"PARAMETER ERROR [{option_string}]: {ex} WITH VALUE [{value}]")
             parser.exit()
         setattr(namespace, self.dest, value)
+
+
+class ValidationTemplateNameAction(ValidationAction):
+    """Validate that a name for a template is propper
+    """
+
+    @classmethod
+    def assert_valid_value(cls, value):
+        assert value, f"Cannot name template {value}"
+
+
+class ListAddOptionsAction(ValidationAction):
+    @classmethod
+    def assert_valid_value(cls, value):
+        print(cls._subparsers_template)
+        assert True, ""
 
 
 class PathAction(ValidationAction):
@@ -132,6 +149,7 @@ class Singleton(type):
     """Classes with this metaclass can only be defined once.
     """
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -155,6 +173,20 @@ class SingletonCLI(metaclass=Singleton):
             self._parsed_properties = self._argparser.parse_known_args()[0].__dict__
         except AttributeError:
             self._parsed_properties = {}
+
+        try:
+            self._parsers["template"]
+        except KeyError:
+            print("Dictionary 'self.__parsers[template]' does not seem to exist.")
+
+        self._parsed_properties["template_params"] = {}
+
+        for k, v in self._parsers.items():
+            if k is "enb":
+                self._parsed_properties["enb"] = v["parser"].parse_known_args()[0].__dict__
+            else:
+                self._parsed_properties["template_params"][k] = v["parser"].parse_known_args()[0].__dict__
+
         for k, v in self._parsed_properties.items():
             self.__setattr__(k, v)
 
@@ -179,6 +211,9 @@ class SingletonCLI(metaclass=Singleton):
           for detailed help on what parameters there are and how to use
           them. (Note that help is taken from the doctstring if not provided)
         """
+
+        # TODO: Add subparser as "cls._subparser"
+
         try:
             cls._cli_properties
         except AttributeError:
@@ -223,6 +258,136 @@ class SingletonCLI(metaclass=Singleton):
 
         return wrapper
 
+    @classmethod
+    def parsers_builder(cls, *alias, group_name=None, positional=False, new_parser=False, parser_alias=None,
+                        parser_parent=None, mutually_exclusive=False, title="Subcommands", description="",
+                        epilog="", **kwargs):
+        """
+
+        :param alias:
+        :param group_name:
+        :param positional:
+        :param new_parser:
+        :param parser_alias:
+        :param parser_parent:
+        :param mutually_exclusive:
+        :param title:
+        :param description:
+        :param epilog:
+        :param kwargs:
+        :return:
+        """
+
+        def empty_wrapper(argument):
+            """
+
+            :param argument:
+            :return:
+            """
+            pass
+
+        try:
+            cls._parsers
+        except AttributeError:
+            cls._parsers = {}
+            cls._parsers["enb"] = {
+                "parser_parent": None,
+                "parser": cls._argparser,
+                "subparsers_aliases": [],
+                "current_group": None,
+                "groups": {},
+                "subparsers": cls._argparser.add_subparsers(title=title, description=description)
+            }
+
+        if new_parser:
+            if parser_alias is not None:
+                if parser_parent is not None:
+                    try:
+                        cls._parsers[parser_parent]
+                    except KeyError:
+                        print("'parser_parent' provided does not exist")
+                else:
+                    parser_parent = "enb"
+
+                if cls._parsers[parser_parent]["subparsers"] is None:
+                    cls._parsers[parser_parent]["subparsers"] = cls._parsers[parser_parent]["parser"] \
+                        .add_subparsers(title=title, description=description)
+
+                cls._parsers[parser_alias] = {}
+                cls._parsers[parser_alias]["parent_parser"] = parser_parent
+                cls._parsers[parser_alias]["subparsers"] = None
+                cls._parsers[parser_alias]["subparsers_aliases"] = []
+                cls._parsers[parser_alias]["current_group"] = None
+                cls._parsers[parser_alias]["groups"] = {}
+                cls._parsers[parser_alias]["parser"] = cls._parsers[parser_parent]["subparsers"] \
+                    .add_parser(parser_alias, epilog="this is an epilog", help="")
+                cls._parsers[parser_parent]["subparsers_aliases"].append(parser_alias)
+            else:
+                print("'parser_alias' must be different than 'None' if new parser is going to be added")
+
+            return empty_wrapper
+        elif parser_parent is not None and not mutually_exclusive:
+            try:
+                cls._parsers[parser_parent]
+            except AttributeError:
+                print("Parser does not exist")
+                print(cls._parsers)
+
+            try:
+                cls._parsers[parser_parent]["parser"]
+            except AttributeError:
+                print("Seems like that parser is not initialized, sorry")
+
+            try:
+                cls._parsers[parser_parent]["current_group"]
+            except AttributeError:
+                cls._parsers[parser_parent]["current_group"] = "General Options"
+            cls._parsers[parser_parent]["current_group"] = cls._parsers[parser_parent]["current_group"] \
+                if group_name is None else group_name
+
+            try:
+                cls._parsers[parser_parent]["groups"]
+            except AttributeError:
+                cls._parsers[parser_parent]["groups"] = {}
+
+            try:
+                arg_group = cls._parsers[parser_parent]["groups"][cls._parsers[parser_parent]["current_group"]]
+            except KeyError:
+                cls._parsers[parser_parent]["groups"][cls._parsers[parser_parent]["current_group"]] = \
+                    cls._parsers[parser_parent]["parser"].add_argument_group(
+                        cls._parsers[parser_parent]["current_group"])
+            arg_group = cls._parsers[parser_parent]["groups"][cls._parsers[parser_parent]["current_group"]]
+
+            kwargs = dict(kwargs)
+
+            def wrapper(decorated_method):
+                """
+
+                :param decorated_method:
+                :return:
+                """
+                argparse_kwargs = dict(help=decorated_method.__doc__)
+                if not positional:
+                    alias_with_dashes = [f"--{decorated_method.__name__}"]
+
+                    for a in alias:
+                        if len(a) == 1:
+                            alias_with_dashes.append(f"-{a}")
+                        else:
+                            alias_with_dashes.append(f"--{a}")
+                    argparse_kwargs.update(**kwargs)
+                    try:
+                        arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
+                    except argparse.ArgumentError:
+                        pass
+                else:
+                    arg_group.add_argument(*alias, **argparse_kwargs)
+
+            return wrapper
+        else:
+            print("'parser_alias' must be provided in order to add arguments to a parser")
+            return empty_wrapper
+
     def print_help(self):
         return self._argparser.print_help()
 
@@ -241,10 +406,10 @@ class SingletonCLI(metaclass=Singleton):
 
     def __iter__(self):
         return self._parsed_properties.__iter__()
-    
+
     def __str__(self):
         return f"Options({str(self._parsed_properties)})"
-    
+
     def __repr__(self):
         return f"Options({repr(self._parsed_properties)})"
 
@@ -263,6 +428,8 @@ class GlobalOptions(SingletonCLI):
 
 
 if __name__ == '__main__':
+    from . import icompression
+
     options = GlobalOptions()
     print(f"[watch] options={options}")
 
