@@ -263,26 +263,50 @@ class SingletonCLI(metaclass=Singleton):
                         parser_parent=None, mutually_exclusive=False, title="Subcommands", description="",
                         epilog="", **kwargs):
         """
+        Decorator for properties that can be automatically
+        parsed in the case of creating a new parameter for
+        a given parser. The parameters given can be either
+        positional or not positional.
+        Note that, in the event of creating a parser, if
+        said parser's parent parser equals None, 'enb' parser
+        will be considered the parent.
+        On other note, we create an entry in the dictionary
+        for the parser previously created 'enb' in order to
+        make it easier for the dynamic creation of parsers
+        and automatic recollection o values.
 
-        :param alias:
-        :param group_name:
-        :param positional:
-        :param new_parser:
-        :param parser_alias:
-        :param parser_parent:
-        :param mutually_exclusive:
-        :param title:
-        :param description:
-        :param epilog:
-        :param kwargs:
-        :return:
+        :param alias: a series of nicknames to be assigned to
+            be assigned to a parameter.
+        :param group_name: the name of the group to be used, used the general section
+            if the value is None.
+        :param positional: boolean variable, set as false as default, that indicates
+            whether or not the argument to be created is to be positional (True) or not
+            (False).
+        :param new_parser:boolean variable, set as False as default, that indicates
+            whether or not we want to create a new parser (True) or not (False).
+        :param parser_alias: a single string that indicates the name of the parser we
+            want to either create or modify.
+        :param parser_parent: a single string that indicates the name of the parser
+            in which we want to create a subparser.
+        :param mutually_exclusive: variable yet to be used. Added with the intention
+            to use it in the addition of mutually exclussive groups.
+        :param title: a single string to be added as a title for a group of subparsers.
+        :param description: a single string to be added as a description for a group
+            of subparsers.
+        :param epilog: a single string to be added as a means of description for a
+            concrete subparser.
+        :param kwargs: remaining arguments to be passed to this class.
+        :return: 'wrapper' method that decorates other methods in order to add the names
+            of these as a long name of a non-positional argument.
         """
 
         def empty_wrapper(argument):
             """
+            Used as a decoy wrapper for when there's no need nor desire to include a
+            parameter in a parser.
 
-            :param argument:
-            :return:
+            :param argument: None
+            :return: None
             """
             pass
 
@@ -361,11 +385,6 @@ class SingletonCLI(metaclass=Singleton):
             kwargs = dict(kwargs)
 
             def wrapper(decorated_method):
-                """
-
-                :param decorated_method:
-                :return:
-                """
                 argparse_kwargs = dict(help=decorated_method.__doc__)
                 if not positional:
                     alias_with_dashes = [f"--{decorated_method.__name__}"]
