@@ -35,7 +35,7 @@ if __name__ == '__main__':
             analyzer = cls()
             analyzer.analyze_df(full_df=df, target_columns=target_columns,
                                 group_by=group_by, output_plot_dir=dir, **extra_kwargs)
-
+TaskFamily
 
     # Line plots - using a real compression example
     base_dir = os.path.join(os.path.dirname(__file__), "lossy_persistence_example")
