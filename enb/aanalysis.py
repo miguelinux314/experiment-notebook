@@ -1512,11 +1512,12 @@ class ScalarDictAnalyzer(Analyzer):
             x_min, x_max = column_to_xmin_xmax[column]
             print(f"[watch] x_min, x_max={x_min, x_max}")
 
-            margin = max(key_to_x.values()) / (10 * len(key_to_x)) if key_to_x else 0
+            margin = max(key_to_x_by_column[column].values()) / (10 * len(key_to_x_by_column[column])) \
+                if key_to_x_by_column[column] else 0
             if x_min is None:
-                x_min = min(key_to_x.values()) - margin
+                x_min = min(key_to_x_by_column[column].values()) - margin if key_to_x_by_column[column] else None
             if x_max is None:
-                x_max = max(key_to_x.values()) + margin if key_to_x else None
+                x_max = max(key_to_x_by_column[column].values()) + margin if key_to_x_by_column[column] else None
             y_min = column_to_properties[column].plot_min
             y_max = column_to_properties[column].plot_max
 
