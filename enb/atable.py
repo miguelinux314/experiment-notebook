@@ -187,12 +187,18 @@ class MetaTable(type):
 
     def __new__(cls, name, bases, dct):
         if MetaTable in bases:
-            raise SyntaxError(f"Use ATable, not MetaTable, for subclassing.") 
+            raise SyntaxError(f"Use ATable, not MetaTable, for subclassing.")
+        unique_bases = []
         for base in bases:
+            if base in unique_bases:
+                continue
             try:
                 _ = base.column_to_properties
             except AttributeError:
                 base.column_to_properties = collections.OrderedDict()
+            unique_bases.append(base)
+        bases = tuple(unique_bases)
+
         dct.setdefault("column_to_properties", collections.OrderedDict())
         subclass = super().__new__(cls, name, bases, dct)
 
