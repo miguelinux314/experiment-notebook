@@ -8,6 +8,7 @@ from enb.config import options
 
 class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
     """Wrapper for the fpzip codec
+    Allowed data type to be compressed: float 32
     """
 
     def __init__(self, fpzip_binary=os.path.join(os.path.dirname(__file__), "fpzip")):
