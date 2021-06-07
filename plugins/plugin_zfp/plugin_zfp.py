@@ -9,6 +9,7 @@ from enb.config import options
 
 class Zfp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
     """Wrapper for the zfp codec
+    Allowed data type to be compressed: integer 32 & 64 , float 32 & 64
     """
     def __init__(self,dtype='f32', zfp_binary=os.path.join(os.path.dirname(__file__), "zfp")):
         """
