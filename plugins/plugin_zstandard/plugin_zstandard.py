@@ -13,8 +13,8 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
     All data types integer and float 16, 32, 64can be compressed 
     """
 
-    def __init__(self, compresion_level='19',zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
-        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(os.path.abspath(__file__))
+    def __init__(self, compresion_level='19', zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
+
         super().__init__(compressor_path=zstd_binary,
                          decompressor_path=zstd_binary,
                          param_dict=dict(compression_level=compression_level))
