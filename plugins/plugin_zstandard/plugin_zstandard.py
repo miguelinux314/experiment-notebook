@@ -10,7 +10,7 @@ from enb.config import options
 
 class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
     """Wrapper for the Zstandard codec
-    All data types integer and float 16, 32, 64can be compressed 
+    All data types integer and float 16, 32, 64 can be compressed 
     """
 
     def __init__(self, compresion_level='19', zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
