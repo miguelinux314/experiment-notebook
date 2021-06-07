@@ -30,7 +30,7 @@ class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
         return "fpzip"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-                     
+        assert original_file_info["dynamic_range_bits"] == 6, 'data type must be float 32'             
         dimensions = 1
         x = original_file_info.samples
         
