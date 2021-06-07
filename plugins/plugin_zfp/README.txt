@@ -63,6 +63,7 @@ COMMANDS
 --------
 
 zfp version 0.5.5 (May 5, 2019)
+Allowed data type to be compressed: integer 32 & 64 , float 32 & 64
 Usage: zfp <options>
 General options:
   -h : read/write array and compression parameters from/to compressed header
