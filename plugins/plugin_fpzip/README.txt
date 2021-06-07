@@ -1,4 +1,5 @@
 fpzip version 1.3.0 (December 20, 2019)
+Allowed data type to be compressed: float 32
 Usage: fpzip [options] [<infile] [>outfile]
 Options:
   -d : decompress
