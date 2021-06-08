@@ -238,7 +238,7 @@ class Experiment(atable.ATable):
         Note that thos index is the same used in every ATable row column signature,
         e.g., (self, index, row).
         """
-        return index
+        return index[0], self.tasks_by_name[index[1]]
 
     def get_dataset_info_row(self, file_path):
         """Get the dataset info table row for the file path given as argument.

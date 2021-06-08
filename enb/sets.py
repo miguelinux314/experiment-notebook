@@ -218,19 +218,24 @@ class FileVersionTable(FilePropertiesTable):
         raise NotImplementedError()
 
     def get_default_target_indices(self):
-        return get_all_test_files(base_dataset_dir=self.original_base_dir)
+        return get_all_test_files(base_dataset_dir=self.original_base_dir,
+                                  ext=self.default_extension)
 
     def original_to_versioned_path(self, original_path):
         """Get the path of the versioned file corresponding to original_path.
         This function will replicate the folder structure within self.original_base_dir.
         """
-        parts = os.path.abspath(original_path).split(os.sep)[1:]
-        for used_parts in range(1, len(parts) + 1):
-            if os.path.exists(os.path.join(self.original_base_dir, *parts[-used_parts:])):
-                versioned_path = os.path.join(self.version_base_dir, *parts[-used_parts:])
-                break
-        else:
-            raise Exception(f"Original path {original_path} not found in {self.original_base_dir}")
+        versioned_path = os.path.abspath(original_path).replace(
+            os.path.abspath(self.original_base_dir), os.path.abspath(self.version_base_dir))
+
+        if os.path.islink(original_path):
+            parts = os.path.abspath(original_path).split(os.sep)[1:]
+            for used_parts in range(1, len(parts) + 1):
+                if os.path.exists(os.path.join(self.original_base_dir, *parts[-used_parts:])):
+                    versioned_path = os.path.join(self.version_base_dir, *parts[-used_parts:])
+                    break
+            else:
+                raise Exception(f"Original path {original_path} not found in {self.original_base_dir}")
 
         if options.verbose > 2:
             print(f"[W]ill version {original_path} -> {versioned_path}")
@@ -306,8 +311,6 @@ class FileVersionTable(FilePropertiesTable):
         while True:
             filtered_classes = []
             for b in base_classes:
-                if b is FileVersionTable:
-                    continue
                 try:
                     if b.get_df == FileVersionTable.get_df:
                         filtered_classes.extend(b.__bases__)
@@ -319,9 +322,12 @@ class FileVersionTable(FilePropertiesTable):
                 break
             previous_base_classes = filtered_classes
             base_classes = filtered_classes
+
         filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
+        
         return filtered_type.get_df(
-            self, target_indices=version_indices, parallel_row_processing=parallel_row_processing,
+            self, target_indices=version_indices,
+            parallel_row_processing=parallel_row_processing,
             target_columns=target_columns, overwrite=overwrite)
 
     @atable.column_function("original_file_path")
@@ -330,7 +336,18 @@ class FileVersionTable(FilePropertiesTable):
 
     @atable.column_function("version_time", label="Versioning time (s)")
     def set_version_time(self, file_path, row):
-        version_time_list = self.current_run_version_times[file_path]
+        try:
+            version_time_list = self.current_run_version_times[file_path]
+        except KeyError:
+            if options.verbose > 1:
+                print(f"[W]arning: no valid version time was found for {repr(file_path)}. "
+                      f"This is probably due to the versioning table changing the name of the"
+                      f"output files. If the actual versioning time is needed, "
+                      f"you can ovewrite set_version_time in {self.__class__} "
+                      f"looking at the appropriate values in self.current_run_version_times.")
+            version_time_list = [0]
+
+
         if any(t < 0 for t in version_time_list):
             raise atable.CorruptedTableError(
                 "A negative versioning time measurement was found "
@@ -345,11 +362,15 @@ class FileVersionTable(FilePropertiesTable):
 
     @atable.column_function("version_time_repetitions", label="Repetitions for obtaining versioning time")
     def set_version_repetitions(self, file_path, row):
-        version_time_list = self.current_run_version_times[file_path]
-        if not version_time_list:
-            raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
-                                             f"but it was not versioned in this run.")
-        row[_column_name] = len(version_time_list)
+        try:
+            version_time_list = self.current_run_version_times[file_path]
+            if not version_time_list:
+                raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
+                                                 f"but it was not versioned in this run.")
+            row[_column_name] = len(version_time_list)
+        except KeyError:
+            # This is how we signal that no data has been gathered (see set_version_time)
+            row[_column_name] = 0
 
     def column_version_name(self, file_path, row):
         """Automatically add the version name as a column
