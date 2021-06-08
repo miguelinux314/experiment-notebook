@@ -186,12 +186,19 @@ class MetaTable(type):
     pendingdefs_classname_fun_columnproperties_kwargs = []
 
     def __new__(cls, name, bases, dct):
-        assert MetaTable not in bases, f"Use ATable, not MetaTable, for subclassing"
+        if MetaTable in bases:
+            raise SyntaxError(f"Use ATable, not MetaTable, for subclassing.")
+        unique_bases = []
         for base in bases:
+            if base in unique_bases:
+                continue
             try:
                 _ = base.column_to_properties
             except AttributeError:
                 base.column_to_properties = collections.OrderedDict()
+            unique_bases.append(base)
+        bases = tuple(unique_bases)
+
         dct.setdefault("column_to_properties", collections.OrderedDict())
         subclass = super().__new__(cls, name, bases, dct)
 
@@ -247,7 +254,11 @@ class MetaTable(type):
 
         for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
             ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
-
+            
+            
+        # Column-defining functions are added to a list while the class is being defined.
+        # After that, the subclass' column_to_properties attribute is updated according 
+        # to the column definitions.
         funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
         for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
             try:
@@ -275,9 +286,12 @@ class MetaTable(type):
 
 
 def get_auto_column_wrapper(fun):
+    """Method internal to this module that allows automatic recognition of column_* function
+    in ATable subclasses.
+    """
     # Function is not decorated: add wrapper if starts with column_*
     def wrapper(self, index, row):
-        f"""Column wrapper{fun.__name__}"""
+        f"""Column wrapper for {fun.__name__}"""
         row[_column_name] = fun(self, index, row)
 
     return wrapper
@@ -677,6 +691,8 @@ class ATable(metaclass=MetaTable):
         called_functions = set()
         for column, fun in column_fun_tuples:
             if fun in called_functions:
+                if row[column] is None:
+                    raise ValueError(f"[F]unction {fun} failed to fill column {column}")
                 if options.verbose > 2:
                     print(f"[A]lready called function {fun.__name__} <{self.__class__.__name__}>")
                 continue

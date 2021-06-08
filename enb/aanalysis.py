@@ -11,6 +11,7 @@ import math
 import collections
 import sortedcontainers
 import matplotlib
+import re
 from matplotlib.ticker import (AutoMinorLocator, MaxNLocator, LogLocator)
 
 matplotlib.use('Agg')
@@ -144,7 +145,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     fig, group_axis_list = plt.subplots(
         nrows=len(sorted_group_names) if not combine_groups else 1,
         ncols=1, sharex=True, sharey=combine_groups,
-        figsize=(fig_width, fig_height))
+        figsize=(fig_width, max(3, 0.5 * len(sorted_group_names))))
 
     if combine_groups:
         group_axis_list = [group_axis_list]
@@ -210,10 +211,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         if semilog_y:
             base_y = column_properties.semilog_y_base if column_properties is not None else 10
-            group_axes.semilogy(basey=base_y)
+            group_axes.semilogy(base=base_y)
             if combine_groups or len(sorted_group_names) <= 2:
                 numticks = 11
-            elif len(sorted_group_names) <= 5:
+            elif len(sorted_group_names) <= 5 and not column_properties.semilog_y:
                 numticks = 6
             elif len(sorted_group_names) <= 10:
                 numticks = 4
@@ -248,12 +249,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     xlim[0] = xlim[0] if x_min is None else x_min
     xlim[1] = xlim[1] if x_max is None else x_max
     plt.xlim(*xlim)
-    if len(sorted_group_names) > 15:
-        plt.subplots_adjust(hspace=1)
-    if len(sorted_group_names) > 8:
-        plt.subplots_adjust(hspace=0.75)
-    elif len(sorted_group_names) > 5:
-        plt.subplots_adjust(hspace=0.3)
+    if len(sorted_group_names) > 3:
+        plt.subplots_adjust(hspace=0.5)
 
     if x_tick_list is not None:
         if not x_tick_label_list:
@@ -622,6 +619,10 @@ class HistogramDistributionAnalyzer(Analyzer):
         :param show_count: determines whether the number of element per group should be shown in the group label
         :param version_name: if not None, a string identifying the file version that produced full_df.
         """
+        if options.verbose:
+            print(f"[D]eprecated class {self.__class__.__name__}. "
+                  f"Please use {ScalarDictAnalyzer.__class__.__name__} instead.")
+
         output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         full_df = pd.DataFrame(full_df)
         column_to_properties = collections.defaultdict(
@@ -1212,25 +1213,114 @@ class TwoColumnLineAnalyzer(Analyzer):
                 group_name_order=[f.label for f in group_by])
 
 
+class HistogramKeyBinner:
+    """When called, bin a dictionary that represents a probability distribution or frequency count,
+    and store the binned dict. The binning
+    process consists in adding all values included in the dictionary.
+
+    It can be used as parameter for combine_keys in ScalarDictAnalyzer.analyze_df.
+    """
+
+    def __init__(self, min_value, max_value, bin_count, normalize=False):
+        """
+        :param min_value: minimum expected key value
+        :param max_value:
+        :param bin_count:
+        :param normalize:
+        """
+        self.min_value = min_value
+        self.max_value = max_value
+        self.bin_count = bin_count
+        assert self.bin_count > 0
+        self.bin_width = (max_value - min_value) / self.bin_count
+        self.intervals = [(min_value, min(min_value + self.bin_width, max_value))
+                          for min_value in np.linspace(min_value, max_value, self.bin_count, endpoint=False)]
+
+        self.binned_keys = []
+        for i, interval in enumerate(self.intervals):
+            s = "["
+            s += ",".join(f"{v:.2f}" if int(v) != v else str(v) for v in interval)
+            s += ")" if i < len(self.intervals) - 1 else "]"
+            self.binned_keys.append(s)
+        self.normalize = normalize
+
+    def __call__(self, input_dict):
+        """Combine the keys of input_dict. See the class' docstring for rationale and usage.
+        """
+        index_to_sum = [0] * len(self.binned_keys)
+        total_sum = 0
+        ignored_sum = 0
+        for k, v in input_dict.items():
+            try:
+                index_to_sum[math.floor((k - self.min_value) / self.bin_width)] += v
+            except IndexError as ex:
+                if k == self.max_value:
+                    index_to_sum[-1] += v
+                else:
+                    ignored_sum += v
+            total_sum += v
+
+        if ignored_sum > 0 and options.verbose > 1:
+            print(f"[W]arning: {self.__class__.__name__} ignorning {100 * ignored_sum / total_sum:.6f}% "
+                  f"of the values, which lie outside {self.min_value, self.max_value}. This is OK if "
+                  f"you specified x_min or x_max when using ScalarDictAnalyzer.get_df()")
+
+        output_dict = collections.OrderedDict()
+        for i, k in enumerate(self.binned_keys):
+            output_dict[k] = index_to_sum[i] / (total_sum if self.normalize else 1)
+
+        return output_dict
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({','.join(f'{k}={v}' for k, v in self.__dict__.items())})"
+
+
 class ScalarDictAnalyzer(Analyzer):
     """Analyzer to plot columns that contain dictionary data with scalar entries.
     """
+    #
+    default_bin_count = 16
 
-    def analyze_df(self, full_df, target_columns, combine_keys=None,
+    def analyze_df(self, full_df, target_columns, output_plot_path=None, combine_keys=None,
+                   x_min=None, x_max=None, mass_fraction=None, epsilon=0.0001, width_fraction=1,
                    key_to_x=None, key_list=None, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   show_std_bar=True, show_std_band=False,
-                   show_individual_results=False,
-                   x_tick_label_angle=90, show_grid=True,
-                   combine_groups=False):
+                   show_std_bar=True, show_std_band=False, show_individual_results=False,
+                   x_tick_label_angle=90, show_grid=True, combine_groups=False):
         """For each target column, analyze dictionary values stored in each cell.
         Scalar analysis is applied on each key found in the dictionaries.
+
+        See @a combine_keys on how to automatically plot columns containing float to float data (integers allowed, too).
 
         :param full_df: df to be analyzer
         :param target_columns: either a string with the name of a column, or a list of column names. In either case,
           all referenced columns must contain dictionary data with scalar (integer, float, etc) values.
-        :param combine_keys: if not None, it must be a callable that takes an input dictionary and returns another one.
-          This can be used to combine groups of keys into a single one before analysis.
+        :param output_plot_path: if provided, this will be used for plots generated by this call, after adding the
+          column of interest to the name.
+        :param combine_keys: if not None, it can be either
+            - a callable that takes an input dictionary and returns another one. This can be used to combine groups of
+              keys into a single one before analysis in an arbitrary way.
+            - a string with format 'histogram' or 'histogram(\d+)col'. This case expects dictionaries with
+              numeric (float or integer) keys and entries. When used, keys are binned in regular intervals
+              that conform a partition of the range between the minimum and maximum found keys
+              (in all columns of the table). The number of bins is default_bin_count if 'histogram' is passed
+              as value of this argument, or the positive integer specified in the second format.
+              Note that this key combination is only applied when the number of different keys is larger than
+              the selected number of bins.
+            - None. In this keys table cell keys are not modified before the analysis.
+        :param x_min, x_max: if not None, they define the minimum and maximum values that are considered. This
+          applies only to the case where combine_keys indicates an histogram binning.
+        :param mass_fraction: if an histogram combiner is used, and if both x_min and x_max are None, then this
+          parameter sets the mass fraction that is actually used in the plot. To do this, the mass center is computed
+          for each image, and values are removed around it while the sum of the removed values is below the
+          total sum times mass_fraction. If width_fraction is used, this parameter must be 1 or None.
+        :param epsilon: when mass_fraction < 1, epsilon determines how finely x keys are searched for. The original
+          interval width is multiplied by this value, and the result is used as each search step. The default should
+          sufffice in most cases, but values closer to 1 will result in faster rendering.
+        :param width_fraction: if both x_min and x_max are None and histogram rendering is selected,
+          this parameter allows to control the fraction of the original x-axis interval that is considered
+          for analysis. For instance, a value of 0.25 will consider 25% of the original range, centered around
+          the mass centroid. If mass_fraction is to be used, this value must be set to None or 1
         :param key_to_x: if None, found keys are sorted alphabetically and placed at 0, 1, ..., etc.
           If not None, if must be a dictionary so that dictionary keys (after applying @a combine_keys, if present),
           are all present in key_to_x, and values are real values (typically a permutation of the default key_to_x).
@@ -1247,29 +1337,99 @@ class ScalarDictAnalyzer(Analyzer):
         output_csv_file = output_csv_file if output_csv_file is not None else os.path.join(
             options.analysis_dir, f"{self.__class__.__name__}.csv")
 
-
+        histogram_combination = False
+        bin_count = None
         if combine_keys is not None:
+            if not callable(combine_keys):
+                if combine_keys.startswith("histogram"):
+                    if combine_keys == "histogram":
+                        bin_count = self.default_bin_count
+                    else:
+                        bin_count = int(re.match(r"histogram(\d+)col", combine_keys).group(1))
+                    if bin_count <= 0:
+                        raise ValueError(f"Invalid value for combine_keys: {combine_keys}")
+                    # We cannot instantiate a HistogramKeyBinner here yet, because the minimum
+                    # and maximum key values are not (yet) known.
+                    histogram_combination = True
+                else:
+                    raise ValueError(f"Invalid value for combine_keys: {combine_keys}")
+
             full_df = full_df.copy()
 
         enb.ray_cluster.init_ray()
 
         keys_by_column = {}
         key_to_x_by_column = {}
+        column_to_xmin_xmax = {}
         column_to_properties = dict() if column_to_properties is None else dict(column_to_properties)
         for column in target_columns:
+            column_to_xmin_xmax[column] = (x_min, x_max)
+
             if column not in column_to_properties:
                 column_to_properties[column] = enb.atable.ColumnProperties(name=column, has_dict_values=True)
             if not column_to_properties[column].has_dict_values:
                 raise Exception(f"Not possible to plot column {column}, has_dict_values was not set to True")
 
+            if histogram_combination:
+                keys_by_column[column] = \
+                    sorted(set(full_df[column].apply(lambda d: list(d.keys())).sum()))
+
+                column_x_min = x_min if x_min is not None else keys_by_column[column][0]
+                column_x_max = x_max if x_max is not None else keys_by_column[column][-1]
+                interval_width = max(1e-10, column_x_max - column_x_min)
+
+                # The user may select a mass fraction around the mass centroid where the plot is to be analyzed
+                # (note that some data may be discarded this way).
+                mass_fraction = mass_fraction if mass_fraction is not None else 1
+                width_fraction = width_fraction if width_fraction is not None else 1
+                if mass_fraction != 1 or width_fraction != 1:
+                    assert 0 < mass_fraction <= 1, f"Invalid mass fraction {mass_fraction}"
+                    absolute_mass = 0
+                    x_centroid = 0
+                    for d in full_df[column]:
+                        for x_value, mass in d.items():
+                            absolute_mass += mass
+                            x_centroid += mass * x_value
+                    x_centroid /= absolute_mass
+
+                    if mass_fraction != 1:
+                        assert width_fraction == 1, f"Cannot set mass_fraction and width_fraction at the same time."
+                        assert 0 < mass_fraction < 1
+                        def get_x_interval_width(a, b):
+                            """Compute the mass of all x values in [a,b].
+                            """
+                            for d in full_df[column]:
+                                interval_mass = 0
+                                for x_value, mass in d.items():
+                                    if a <= x_value <= b:
+                                        interval_mass += mass
+                            return interval_mass
+
+                        column_x_min = x_centroid
+                        column_x_max = x_centroid
+                        interval_width = keys_by_column[column][-1] - keys_by_column[column][0]
+                        while get_x_interval_width(column_x_min, column_x_max) < absolute_mass * mass_fraction:
+                            column_x_min -= interval_width * epsilon
+                            column_x_max += interval_width * epsilon
+                    else:
+                        assert 0 < width_fraction < 1
+                        column_x_min = x_centroid - interval_width * 0.5 * width_fraction
+                        column_x_max = x_centroid + interval_width * 0.5 * width_fraction
+
+                combine_keys = HistogramKeyBinner(
+                    min_value=column_x_min, max_value=column_x_max, bin_count=bin_count)
+
             if combine_keys is not None:
                 full_df[column] = full_df[column].apply(combine_keys)
+                if histogram_combination:
+                    column_to_xmin_xmax[column] = (0, len(combine_keys.binned_keys))
             keys_by_column[column] = \
-                sorted(set(full_df[column].apply(lambda d: list(d.keys())).sum()))
-            key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))}
+                sorted(set(full_df[column].apply(
+                    lambda d: list(d.keys())).sum())) if combine_keys is None else combine_keys.binned_keys
+            key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))} \
+                if combine_keys is None else {k: i for i, k in enumerate(combine_keys.binned_keys)}
 
         # Generate the plottable data
-
         column_to_id_by_group = collections.defaultdict(dict)
         column_to_pds_by_group = collections.defaultdict(dict)
         if group_by is not None:
@@ -1325,12 +1485,39 @@ class ScalarDictAnalyzer(Analyzer):
                 csv_file.write("\n\n")
 
         render_ids = []
+        original_output_plot_path = output_plot_path
         for column, pds_by_group in column_to_pds_by_group.items():
-            output_plot_path = os.path.join(output_plot_dir, f"scalar_dict_{column}.pdf")
+            if original_output_plot_path is not None:
+                output_plot_path = original_output_plot_path.replace(".pdf", "") + f"_{column}.pdf"
+            else:
+                name = f"{self.__class__.__name__}"
+                if group_by:
+                    name += f"_group-{group_by}"
+                if column in column_to_properties and column_to_properties[column].semilog_y:
+                    name += "_semilogY"
+                if combine_groups:
+                    name += "_combine"
+                    if histogram_combination:
+                        name += f"_hist{bin_count}"
+                    if mass_fraction != 1:
+                        name += f"_massfrac{mass_fraction:.6f}"
+                    if width_fraction != 1:
+                        name += f"_widthfrac{width_fraction:.6f}"
+
+                name += f"_{column}.pdf"
+
+                output_plot_path = os.path.join(output_plot_dir, name)
+
             global_x_label = f"{column_to_properties[column].label}"
-            margin = max(key_to_x.values()) / (10 * len(key_to_x)) if key_to_x else 0
-            x_min = -margin
-            x_max = max(key_to_x.values()) + margin if key_to_x else None
+            x_min, x_max = column_to_xmin_xmax[column]
+            print(f"[watch] x_min, x_max={x_min, x_max}")
+
+            margin = max(key_to_x_by_column[column].values()) / (10 * len(key_to_x_by_column[column])) \
+                if key_to_x_by_column[column] else 0
+            if x_min is None:
+                x_min = min(key_to_x_by_column[column].values()) - margin if key_to_x_by_column[column] else None
+            if x_max is None:
+                x_max = max(key_to_x_by_column[column].values()) + margin if key_to_x_by_column[column] else None
             y_min = column_to_properties[column].plot_min
             y_max = column_to_properties[column].plot_max
 
