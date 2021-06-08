@@ -83,6 +83,7 @@ class FAPEC_NP(FAPEC_Abstract):
     def label(self):
         return "FAPEC-NP"
 
+
 class FAPEC_SPA(FAPEC_Abstract):
     """Wrapper for FAPEC with only spatial decorrelation (Delta)
     """
@@ -93,6 +94,7 @@ class FAPEC_SPA(FAPEC_Abstract):
     @property
     def label(self):
         return "FAPEC-SPA"
+
 
 class FAPEC_MB(FAPEC_Abstract):
     """Wrapper for FAPEC with no preprocessing (-np option).
@@ -144,6 +146,7 @@ class FAPEC_LP(FAPEC_Abstract):
 class FAPEC_DWT(FAPEC_Abstract):
     """Run FAPEC with the spectral+spatial IWT (-dwt flag).
     """
+
     def __init__(self, dwt_losses=0,
                  bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
@@ -170,11 +173,13 @@ class FAPEC_DWT(FAPEC_Abstract):
                         f"{original_file_info['component_count']} "
                         f"{self.dwt_losses} "
                         f"{original_file_info['dynamic_range_bits']} "
-                        f"{2}") # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
+                        f"{2}")  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
+
 
 class FAPEC_CILLIC(FAPEC_Abstract):
     """Run fapec with the CILLIC option.
     """
+
     def __init__(self, losses=0, multiband_levels=6,
                  bin_dir=None, chunk_size_str="128M", threads=1,
                  lsb_discard_count=0,
@@ -198,11 +203,11 @@ class FAPEC_CILLIC(FAPEC_Abstract):
 
     def get_transform_dict_params(self, original_file_info):
         return dict(cillic=f"{original_file_info['width']} "
-                        f"{original_file_info['height']} "
-                        f"{original_file_info['component_count']} "
-                        f"{self.losses} "
-                        f"{original_file_info['dynamic_range_bits']} "
-                        f"{2}", # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
+                           f"{original_file_info['height']} "
+                           f"{original_file_info['component_count']} "
+                           f"{self.losses} "
+                           f"{original_file_info['dynamic_range_bits']} "
+                           f"{2}",  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
                     lev=self.multiband_levels)
 
 
@@ -235,7 +240,6 @@ class FAPEC_2DDWT(FAPEC_DWT):
             return dict()
 
 
-
 class FAPEC_HPA(FAPEC_Abstract):
     def __init__(self, hpa_losses=0,
                  bin_dir=None, chunk_size_str="128M", threads=1,
@@ -263,4 +267,30 @@ class FAPEC_HPA(FAPEC_Abstract):
                         f"{original_file_info['component_count']} "
                         f"{self.hpa_losses} "
                         f"{original_file_info['dynamic_range_bits']} "
-                        f"{2}") # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
+                        f"{2}")  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
+
+
+class FAPEC_FITS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
+    def __init__(self,
+                 bin_dir=None):
+        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        super().__init__(compressor_path=os.path.join(bin_dir, "fapec"),
+                         decompressor_path=os.path.join(bin_dir, "unfapec"),
+                         param_dict=dict())
+
+    @property
+    def name(self):
+        """Don't include the binary signature
+        """
+        name = f"{self.__class__.__name__}"
+        return name
+
+    @property
+    def label(self):
+        return "FAPEC-FITS"
+
+    def get_compression_params(self, original_path, compressed_path, original_file_info):
+        return f"-o {compressed_path} -ow {original_path}  "
+
+    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        return f" -o {reconstructed_path} -ow {compressed_path} "
