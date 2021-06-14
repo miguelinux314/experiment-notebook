@@ -192,6 +192,8 @@ class MetaTable(type):
         for base in bases:
             if base in unique_bases:
                 continue
+            # if any(issubclass(base, seen) for seen in unique_bases):
+            #     continue
             try:
                 _ = base.column_to_properties
             except AttributeError:
@@ -254,8 +256,8 @@ class MetaTable(type):
 
         for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
             ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
-            
-            
+
+
         # Column-defining functions are added to a list while the class is being defined.
         # After that, the subclass' column_to_properties attribute is updated according 
         # to the column definitions.
