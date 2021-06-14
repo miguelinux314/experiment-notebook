@@ -9,6 +9,7 @@ __date__ = "25/05/2020"
 
 import os
 
+import enb
 from enb import icompression
 from enb.config import get_options
 
