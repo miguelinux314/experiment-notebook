@@ -38,6 +38,10 @@ from plugins import plugin_jpeg_xl
 from plugins import plugin_hevc
 from plugins import plugin_kakadu
 from plugins import plugin_vvc
+from plugins import plugin_fpack
+from plugins import plugin_zstandard
+from plugins import plugin_fpzip
+from plugins import plugin_zfp
 
 if __name__ == '__main__':
     all_codecs = []
@@ -164,9 +168,32 @@ if __name__ == '__main__':
         all_codecs.append(c)
         family.add_task(c.name, c.label)
         all_families.append(family)
-
-
-
+        
+    fpack_family = enb.aanalysis.TaskFamily(label="Fpack")
+    for c in (plugin_fpack.fpack_codec.Fpack(),):
+        all_codecs.append(c)
+    fpack_family.add_task(c.name, f"{c.label}")
+    all_families.append(fpack_family)
+    
+    zstandard_family = enb.aanalysis.TaskFamily(label="Zstandard")
+    for c in (plugin_zstandard.zstandard_codec.Zstandard(),):
+        all_codecs.append(c)
+    zstandard_family.add_task(c.name, f"{c.label}")
+    all_families.append(zstandard_family)
+    
+    fpzip_family = enb.aanalysis.TaskFamily(label="Fpzip")
+    for c in (plugin_fpzip.fpzip_codec.Fpzip(),):
+        all_codecs.append(c)
+    fpzip_family.add_task(c.name, f"{c.label}")
+    all_families.append(fpzip_family)
+      
+    zfp_family = enb.aanalysis.TaskFamily(label="Zfp")
+    for c in (plugin_zfp.zfp_codec.Zfp(),):
+        all_codecs.append(c)
+    zfp_family.add_task(c.name, f"{c.label}")
+    all_families.append(zfp_family)
+    
+    
     label_by_group_name = dict()
     for family in all_families:
         label_by_group_name.update(family.name_to_label)
