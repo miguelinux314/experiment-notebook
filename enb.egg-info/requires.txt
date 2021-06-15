@@ -1,5 +1,7 @@
+wheel
 pandas
-ray
+psutil
+ray[default]
 matplotlib
 numpy
 scipy
@@ -9,3 +11,4 @@ imageio
 redis
 sphinx_rtd_theme
 numpngw
+astropy

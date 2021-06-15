@@ -11,6 +11,7 @@ import collections
 import copy
 import imageio
 
+import enb.sets
 from enb.config import get_options
 
 options = get_options(from_main=False)
@@ -146,8 +147,8 @@ class ImagePropertiesTable(ImageGeometryTable):
 
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
-        if row["float"] == True:
-            range_len = 8*row["bytes_per_sample"]
+        if row["float"] is True:
+            range_len = 8 * row["bytes_per_sample"]
         else:
             range_len = int(row["sample_max"]) - int(row["sample_min"])
         assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
@@ -180,6 +181,16 @@ class ImagePropertiesTable(ImageGeometryTable):
         row["byte_value_avg"] = contents.mean()
         row["byte_value_std"] = contents.std()
 
+class SampleDistributionTable(ImageGeometryTable):
+    @enb.atable.column_function(
+        [enb.atable.ColumnProperties("sample_distribution",
+                                     label="Sample probability distribution",
+                                     plot_min=0, plot_max=1, has_dict_values=True)])
+    def set_sample_distribution(self, file_path, row):
+        image = enb.isets.load_array_bsq(file_or_path=file_path, image_properties_row=row)
+        unique, counts = np.unique(image, return_counts=True)
+        row[_column_name] = dict(zip(unique, counts / image.size))
+
 
 class HistogramFullnessTable1Byte(atable.ATable):
     @atable.column_function(
@@ -193,6 +204,7 @@ class HistogramFullnessTable1Byte(atable.ATable):
             file_path, dtype=np.uint8)).size / (2 ** 8)
         assert 0 <= row[_column_name] <= 1
 
+
 class HistogramFullnessTable2Bytes(atable.ATable):
     @atable.column_function(
         "histogram_fullness_2bytes", label="Histogram usage fraction (2 bytes)",
@@ -204,6 +216,7 @@ class HistogramFullnessTable2Bytes(atable.ATable):
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint16)).size / (2 ** 16)
         assert 0 <= row[_column_name] <= 1
+
 
 class HistogramFullnessTable4Bytes(atable.ATable):
     @atable.column_function(
@@ -284,7 +297,7 @@ def iproperties_row_to_numpy_dtype(image_properties_row):
     to represent an image with properties as defined in
     image_properties_row
     """
-    if image_properties_row["float"] == True:
+    if "float" in image_properties_row and image_properties_row["float"] is True:
         return "f" + str(image_properties_row["bytes_per_sample"])
     else:
         return ((">" if image_properties_row["big_endian"] else "<")
@@ -326,7 +339,8 @@ def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_pe
     return f"{iproperties_row_to_sample_type_tag(row)}" \
            f"-{iproperties_row_to_geometry_tag(row)}"
 
+
 def raw_path_to_png(raw_path, image_properties_row, png_path):
     img = load_array_bsq(file_or_path=raw_path, image_properties_row=image_properties_row)
     os.makedirs(os.path.dirname(png_path), exist_ok=True)
-    imageio.imwrite(png_path, img.swapaxes(0,1), format="png")
+    imageio.imwrite(png_path, img.swapaxes(0, 1), format="png")
