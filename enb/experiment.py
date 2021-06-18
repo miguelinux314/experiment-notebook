@@ -10,6 +10,7 @@ import collections
 import itertools
 import inspect
 
+import enb.atable
 import enb.sets
 from enb import atable
 from enb import sets
@@ -85,7 +86,6 @@ class Experiment(atable.ATable):
     """
     task_name_column = "task_name"
     task_label_column = "task_label"
-    default_extension = "raw"
     default_file_properties_table_class = sets.FilePropertiesTable
 
     def __init__(self, tasks,
@@ -131,7 +131,7 @@ class Experiment(atable.ATable):
         self.tasks = list(tasks)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else sets.get_all_test_files()
+            else enb.atable.get_all_test_files()
 
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,
@@ -166,7 +166,7 @@ class Experiment(atable.ATable):
         if csv_experiment_path is None:
             csv_experiment_path = os.path.join(options.persistence_dir,
                                                f"{self.__class__.__name__}_persistence.csv")
-        
+
         os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
@@ -199,8 +199,8 @@ class Experiment(atable.ATable):
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
         df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
-            parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
-        
+                            parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
+
         # Add dataset columns
         rsuffix = "__redundant__index"
         df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
@@ -211,8 +211,7 @@ class Experiment(atable.ATable):
             if redundant_columns:
                 print("[W]arning: redundant dataset/experiment column(s): " +
                       ', '.join(redundant_columns) + ".")
-                
-        
+
         # Add columns based on task parameters
         if len(df) > 0:
             task_param_names = set()
@@ -227,8 +226,9 @@ class Experiment(atable.ATable):
                         return task.param_dict[param_name]
                     except KeyError as ex:
                         return None
+
                 df[param_name] = df.apply(get_param_row, axis=1)
-                
+
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 
     def index_to_path_task(self, index):

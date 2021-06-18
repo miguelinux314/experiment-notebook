@@ -40,6 +40,7 @@
 
   * See ScalarDistributionAnalyzer for automatic reports using ATable
 """
+import glob
 from builtins import hasattr
 
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
@@ -60,11 +61,10 @@ import traceback
 import ray
 import ast
 
-from enb.config import get_options
+import enb
 from enb import config
 from enb import ray_cluster
-
-options = get_options()
+from enb.config import options
 
 
 class CorruptedTableError(Exception):
@@ -257,7 +257,6 @@ class MetaTable(type):
         for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
             ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
 
-
         # Column-defining functions are added to a list while the class is being defined.
         # After that, the subclass' column_to_properties attribute is updated according 
         # to the column definitions.
@@ -291,6 +290,7 @@ def get_auto_column_wrapper(fun):
     """Method internal to this module that allows automatic recognition of column_* function
     in ATable subclasses.
     """
+
     # Function is not decorated: add wrapper if starts with column_*
     def wrapper(self, index, row):
         f"""Column wrapper for {fun.__name__}"""
@@ -303,6 +303,9 @@ class ATable(metaclass=MetaTable):
     """Automatic table, that allows decorating functions to fill dependent variable
     columns
     """
+    # Default input sample extension. Make sure to update in subclasses as needed
+    default_extension = "raw"
+
     # Name of the index used internally
     private_index_column = "__atable_index"
     # Column names in this list are not retrieved nor saved to file
@@ -491,6 +494,8 @@ class ATable(metaclass=MetaTable):
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
             else not options.sequential
         target_indices = list(target_indices)
+        if not target_indices:
+            target_indices = get_all_test_files(ext=self.default_extension)
         assert len(target_indices) > 0, "At least one index must be provided"
 
         chunk_size = chunk_size if chunk_size is not None else options.chunk_size
@@ -642,7 +647,7 @@ class ATable(metaclass=MetaTable):
 
         return table_df
 
-    def write_persistence(self, df : pd.DataFrame, output_csv=None):
+    def write_persistence(self, df: pd.DataFrame, output_csv=None):
         """Dump a dataframe produced by this table.
 
         :param output_csv: if None, self.csv_support_path is used as the output path.
@@ -964,3 +969,36 @@ def get_class_that_defined_method(meth):
         if isinstance(cls, type):
             return cls
     return getattr(meth, '__objclass__', None)
+
+
+def get_all_test_files(ext="raw", base_dataset_dir=None):
+    """Get a list of all set files contained in the data dir.
+
+    :param ext: if not None, only files with that extension (without dot)
+      are returned by this method.
+    :param base_dataset_dir: if not None, the dir where test files are searched
+      for recursively. If None, options.base_dataset_dir is used instead.
+    """
+    base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
+    if base_dataset_dir is None:
+        if options.verbose > 1:
+            print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
+        return [get_canonical_path(sys.argv[0])]
+
+    assert os.path.isdir(base_dataset_dir), \
+        f"Nonexistent dataset dir {base_dataset_dir}"
+    sorted_path_list = sorted(
+        (get_canonical_path(p) for p in glob.glob(
+            os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
+            recursive=True)
+         if os.path.isfile(p)),
+        # key=lambda p: os.path.getsize(p))
+        key=lambda p: get_canonical_path(p).lower())
+    return sorted_path_list if not options.quick else sorted_path_list[:options.quick]
+
+
+def get_canonical_path(file_path):
+    """:return: the canonical path to be stored in the database.
+    """
+    file_path = os.path.abspath(os.path.realpath(file_path))
+    return file_path

@@ -6,6 +6,7 @@ import fitsio
 from astropy.io import fits
 import os
 
+import enb.atable
 import enb.isets
 import sets
 import enb.isets as isets
@@ -31,7 +32,7 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
     def get_default_target_indices(self):
         indices = []
         for ext in self.allowed_extensions:
-            indices.extend(sets.get_all_test_files(
+            indices.extend(enb.atable.get_all_test_files(
                 ext=ext, base_dataset_dir=self.original_base_dir))
         return indices
 

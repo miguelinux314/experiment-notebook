@@ -59,9 +59,11 @@ if __name__ == '__main__':
     all_families.append(mcalic_family)
 
     ccsds122_family = enb.aanalysis.TaskFamily(label="CCSDS 122")
-    for c in (plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
-              plugin_ccsds122.ccsds122_codec.MHDC_ID(),
-              plugin_ccsds122.ccsds122_codec.MHDC_POT()):
+    for c in [
+            plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
+            # plugin_ccsds122.ccsds122_codec.MHDC_ID(),
+            # plugin_ccsds122.ccsds122_codec.MHDC_POT()
+    ]:
         all_codecs.append(c)
         ccsds122_family.add_task(c.name, f"{c.label}")
     all_families.append(ccsds122_family)
@@ -78,28 +80,27 @@ if __name__ == '__main__':
     # all_families.append(fapec_family)
 
     flif_family = enb.aanalysis.TaskFamily(label="FLIF")
-    for c in (plugin_flif.flif_codec.FLIF(),):
+    for c in [plugin_flif.flif_codec.FLIF()]:
         all_codecs.append(c)
         flif_family.add_task(c.name, f"{c.label}")
     all_families.append(flif_family)
 
     fse_family = enb.aanalysis.TaskFamily(label="FSE")
-    for c in (plugin_fse_huffman.fse_codec.FSE(),):
+    for c in [plugin_fse_huffman.fse_codec.FSE()]:
         all_codecs.append(c)
         fse_family.add_task(c.name, f"{c.label}")
     all_families.append(fse_family)
 
     huffman_family = enb.aanalysis.TaskFamily(label="Huffman")
-    for c in (plugin_fse_huffman.huffman_codec.Huffman(),):
+    for c in [plugin_fse_huffman.huffman_codec.Huffman()]:
         all_codecs.append(c)
         huffman_family.add_task(c.name, f"{c.label}")
     all_families.append(huffman_family)
 
     lcnl_family = enb.aanalysis.TaskFamily(label="LCNL")
-    for c in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=ec)
-              for ec in (plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID,
-                         plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE,
-                         plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE)):
+    # plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE,
+    # plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE
+    for c in [plugin_lcnl.lcnl_codecs.CCSDS_LCNL(entropy_coder_type=plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID)]:
         all_codecs.append(c)
         lcnl_family.add_task(c.name, f"{c.label}")
     all_families.append(lcnl_family)
@@ -113,7 +114,7 @@ if __name__ == '__main__':
     zip_family = enb.aanalysis.TaskFamily(label="*Zip")
     for c in (plugin_zip.zip_codecs.LZ77Huffman(),
               plugin_zip.zip_codecs.BZIP2(),
-              plugin_zip.zip_codecs.LZMA()):
+              plugin_zip.zip_codecs.LZMA(),):
         all_codecs.append(c)
         zip_family.add_task(c.name, f"{c.label}")
     all_families.append(zip_family)
@@ -125,42 +126,34 @@ if __name__ == '__main__':
                                 f"{c.label} {c.param_dict['quality_0_to_100']} {c.param_dict['compression_level']}")
     all_families.append(jpeg_xl_family)
 
-    for ht in [True, False]:
-        for lossless in [True, False]:
-            kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}"
-                                                           + f"{'lossless' if lossless else 'lossy'}")
-            if lossless:
-                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless)
-            else:
-                c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless, quality_factor=75)
-            all_codecs.append(c)
-            kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
-                                   + f"{'lossless' if lossless else 'lossy'}",
-                                   f"{c.label} HT {c.param_dict['ht']} Quality Factor {c.param_dict['quality_factor']}")
-            all_families.append(kakadu_family)
-
-            kakadu_mct_family = enb.aanalysis.TaskFamily(label="Kakadu MCT {'HT' if ht else ''}"
-                                                               + f"{'lossless' if lossless else 'lossy'}")
-            if lossless:
-                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless)
-            else:
-                c = plugin_kakadu.kakadu_codec.Kakadu_MCT(ht=ht, lossless=lossless, quality_factor=75)
-            all_codecs.append(c)
-            kakadu_mct_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
-                                       + f"{'lossless' if lossless else 'lossy'}",
-                                       f"{c.label} HT {c.param_dict['ht']}")
-            all_families.append(kakadu_mct_family)
+    ht = False
+    lossless = True
+    # for ht in [True, False]:
+    #     for lossless in [True, False]:
+    kakadu_family = enb.aanalysis.TaskFamily(label=f"Kakadu {'HT' if ht else ''}"
+                                                   + f"{'lossless' if lossless else 'lossy'}")
+    if lossless:
+        c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless)
+    else:
+        c = plugin_kakadu.kakadu_codec.Kakadu(ht=ht, lossless=lossless, quality_factor=75)
+    all_codecs.append(c)
+    kakadu_family.add_task(c.name + f"{' HT' if c.param_dict['ht'] else ''}"
+                           + f"{'lossless' if lossless else 'lossy'}",
+                           f"{c.label} HT {c.param_dict['ht']} Quality Factor {c.param_dict['quality_factor']}")
+    all_families.append(kakadu_family)
 
     for label, c in [("HEVC lossless", plugin_hevc.hevc_codec.HEVC_lossless()),
-                     ("HEVC lossy QP25", plugin_hevc.hevc_codec.HEVC_lossy(qp=25)),
-                     ("HEVC lossy 0.25bps", plugin_hevc.hevc_codec.HEVC_lossy(bit_rate=0.25))]:
+                     # ("HEVC lossy QP25", plugin_hevc.hevc_codec.HEVC_lossy(qp=25)),
+                     # ("HEVC lossy 0.25bps", plugin_hevc.hevc_codec.HEVC_lossy(bit_rate=0.25))
+                     ]:
         family = enb.aanalysis.TaskFamily(label=label)
         all_codecs.append(c)
         family.add_task(c.name, c.label)
         all_families.append(family)
 
-    for label, c in [("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
-                     ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
+    for label, c in [
+                     ("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
+                     # ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
                      # ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25)),
                      ]:
         family = enb.aanalysis.TaskFamily(label=label)
@@ -168,29 +161,29 @@ if __name__ == '__main__':
         family.add_task(c.name, c.label)
         all_families.append(family)
         
-    fpack_family = enb.aanalysis.TaskFamily(label="Fpack")
-    for c in (plugin_fpack.fpack_codec.Fpack(),):
-        all_codecs.append(c)
-        fpack_family.add_task(c.name, f"{c.label}")
-    all_families.append(fpack_family)
+    # fpack_family = enb.aanalysis.TaskFamily(label="Fpack")
+    # for c in [plugin_fpack.fpack_codec.Fpack()]:
+    #     all_codecs.append(c)
+    #     fpack_family.add_task(c.name, f"{c.label}")
+    # all_families.append(fpack_family)
     
-    zstandard_family = enb.aanalysis.TaskFamily(label="Zstandard")
-    for c in (plugin_zstandard.zstd_codec.Zstandard(),):
-        all_codecs.append(c)
-        zstandard_family.add_task(c.name, f"{c.label}")
-    all_families.append(zstandard_family)
+    # zstandard_family = enb.aanalysis.TaskFamily(label="Zstandard")
+    # for c in [plugin_zstandard.zstd_codec.Zstandard()]:
+    #     all_codecs.append(c)
+    #     zstandard_family.add_task(c.name, f"{c.label}")
+    # all_families.append(zstandard_family)
     
-    fpzip_family = enb.aanalysis.TaskFamily(label="Fpzip")
-    for c in (plugin_fpzip.fpzip_codec.Fpzip(),):
-        all_codecs.append(c)
-        fpzip_family.add_task(c.name, f"{c.label}")
-    all_families.append(fpzip_family)
+    # fpzip_family = enb.aanalysis.TaskFamily(label="Fpzip")
+    # for c in [plugin_fpzip.fpzip_codec.Fpzip()]:
+    #     all_codecs.append(c)
+    #     fpzip_family.add_task(c.name, f"{c.label}")
+    # all_families.append(fpzip_family)
       
-    zfp_family = enb.aanalysis.TaskFamily(label="Zfp")
-    for c in (plugin_zfp.zfp_codec.Zfp(),):
-        all_codecs.append(c)
-        zfp_family.add_task(c.name, f"{c.label}")
-    all_families.append(zfp_family)
+    # zfp_family = enb.aanalysis.TaskFamily(label="Zfp")
+    # for c in [plugin_zfp.zfp_codec.Zfp()]:
+    #     all_codecs.append(c)
+    #     zfp_family.add_task(c.name, f"{c.label}")
+    # all_families.append(zfp_family)
 
     label_by_group_name = dict()
     for family in all_families:

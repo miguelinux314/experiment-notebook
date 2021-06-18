@@ -12,11 +12,12 @@ import os
 import numpy as np
 import shutil
 
+import enb.atable
 import test_all
 import enb.sets as sets
 from enb.config import options
 
-target_indices = [sets.get_canonical_path(f)
+target_indices = [enb.atable.get_canonical_path(f)
                   for f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*.py"), recursive=False)
                   if os.path.isfile(f) and os.path.getsize(f)]
 
