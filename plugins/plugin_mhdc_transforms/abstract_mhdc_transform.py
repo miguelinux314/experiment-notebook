@@ -10,6 +10,7 @@ import tempfile
 import filecmp
 import shutil
 
+import enb.atable
 from enb.config import get_options
 
 options = get_options(from_main=False)
@@ -253,7 +254,7 @@ def apply_transform(
 
         enb.ray_cluster.init_ray()
 
-        original_target_files = enb.sets.get_all_test_files()
+        original_target_files = enb.atable.get_all_test_files()
 
         if options.verbose:
             print(f"[F]orward MHDC<{forward_class.__name__}> to {len(original_target_files)} images")
@@ -268,7 +269,7 @@ def apply_transform(
 
         if options.verbose:
             print(f"[I]nverse MHDC<{inverse_class.__name__}> to {len(original_target_files)} images")
-        transformed_target_files = enb.sets.get_all_test_files(base_dataset_dir=options.base_version_dataset_dir)
+        transformed_target_files = enb.atable.get_all_test_files(base_dataset_dir=options.base_version_dataset_dir)
         with tempfile.NamedTemporaryFile(dir=tmp_dir) as tmp_csv_support:
             shutil.copy(forward_table.csv_support_path, tmp_csv_support.name)
             fwd_ig_table = enb.isets.ImageGeometryTable(csv_support_path=tmp_csv_support.name)

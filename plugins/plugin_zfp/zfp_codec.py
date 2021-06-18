@@ -32,7 +32,7 @@ class Zfp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
     @property
     def label(self):
         # TODO: fix this
-        return "fpzip"
+        return "Zfp"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["dynamic_range_bits"] != 16, 'data type can not be 16 bpp'
