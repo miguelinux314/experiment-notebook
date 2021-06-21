@@ -32,7 +32,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
 
     @property
     def label(self):
-        return "fpzip"
+        return "zstandard"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f" -{self.param_dict['compression_level']} -f {original_path}  -o {compressed_path}" 
