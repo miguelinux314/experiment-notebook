@@ -640,8 +640,6 @@ class CompressionExperiment(experiment.Experiment):
 
                         if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
                                 self._decompression_results.reconstructed_path) == 0:
-                            print('1111111111111', tmp_reconstructed_path,
-                                  self._decompression_results.reconstructed_path)
                             print(os.path.getsize(
                                 self._decompression_results.reconstructed_path))
                             raise CompressionException(
