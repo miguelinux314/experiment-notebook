@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,10 +31,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -54,7 +56,7 @@
           
 
           
-            <a href="contents.html" class="icon icon-home"> Experiment Notebook
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -90,6 +92,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression</a></li>
@@ -116,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="contents.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook</a>
         
       </nav>
 
@@ -147,7 +150,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="contents.html">Contents</a> &raquo;</li>
         
           <li><a href="analyzing_data.html">Analyzing data</a> &raquo;</li>
         
@@ -179,17 +184,15 @@ which produce their results by invoking the <a class="reference internal" href="
 The main inputs to these subclasses’ methods are:</p>
 <blockquote>
 <div><ul>
-<li><p class="first"><cite>full_df</cite>: a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+1126.g05a0e98adf)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, typically produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p>
-</li>
-<li><p class="first"><cite>target_columns</cite>: normally a list of column names (or pairs of column names) present in the DataFrame.
-These are the ones for which figures are produced. Syntax can vary between analyzer classes.</p>
-</li>
-<li><p class="first"><cite>column_to_properties</cite>: although optional, this argument (a dict-like instance) provides information
+<li><p><cite>full_df</cite>: a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+56.g648eb40abc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, typically produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
+<li><p><cite>target_columns</cite>: normally a list of column names (or pairs of column names) present in the DataFrame.
+These are the ones for which figures are produced. Syntax can vary between analyzer classes.</p></li>
+<li><p><cite>column_to_properties</cite>: although optional, this argument (a dict-like instance) provides information
 to the analyzer about how to display the results. Good news is, your <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> instance
 automatically contains  this dict-like object in the <cite>.column_to_properties</cite>.</p>
 <p>For instance, the folowing column definition guarantees that
 the default plot range for this dimension starts in zero:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@atable.column_function</span><span class="p">(</span><span class="s2">&quot;bpppc&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Compressed data rate (bpppc)&quot;</span><span class="p">,</span> <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="s2">&quot;bpppc&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Compressed data rate (bpppc)&quot;</span><span class="p">,</span> <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
      <span class="k">def</span> <span class="nf">set_bpppc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
          <span class="c1"># _column_name equals &quot;bpppc&quot;, or whatever label is passed to @atable.column_function</span>
          <span class="n">row</span><span class="p">[</span><span class="n">_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span>
@@ -200,9 +203,8 @@ also provide the <cite>.joined_column_to_properties</cite> property. This is con
 the properties of your dataset with the results you obtained (e.g., to measure relative efficiency).
 See <a class="reference internal" href="lossless_compression_example.html"><span class="doc">Lossless Compression Experiment</span></a> for a full working example of data analysis using an experiment.</p>
 </li>
-<li><p class="first"><cite>group_by</cite>: a column name is typically used by the analyzer to split all data in <cite>full_df</cite> into subgroups
-based on the value of one or more columns.</p>
-</li>
+<li><p><cite>group_by</cite>: a column name is typically used by the analyzer to split all data in <cite>full_df</cite> into subgroups
+based on the value of one or more columns.</p></li>
 </ul>
 </div></blockquote>
 </div>
