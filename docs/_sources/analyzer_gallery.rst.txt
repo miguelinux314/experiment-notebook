@@ -72,7 +72,7 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
   multiple results will typically be present (one per element of the input dataset).
   This **analyzer obtains the average** within each column being considered **for that specific configuration**.
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_psnr_dr.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png
 
 **Interesting parameters** to the :meth:`enb.aanalysis.TwoColumnLineAnalyzer.analyze_df()` method:
 
@@ -101,11 +101,6 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
 * `show_v_std_bar`, `show_h_std_bar`: if True, vertical or horizontal bars will be added to each data point
   to signal plus/minus 1 standard deviation (std).
 
-Another example with horizontal range and plus/minus +1 std (taken from :doc:`lossy_compression_example`)
-is shown next:
-
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png
-
 
 Key-value (dict) data analysis
 ******************************
@@ -114,7 +109,7 @@ Sometimes it is useful to store a dictionary of results in the cells of a column
 Example applications include histograms (e.g., sample value distributions, or any other
 variable split in classes).
 
-
+An example of direct application of this analyzer is shown next.
 
 The :class:`enb.aanalysis.ScalarDictAnalyzer` class provides tools to automatically plot
 columns of this type. Note that:
@@ -136,6 +131,6 @@ columns of this type. Note that:
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png
 
-
+An example of using combine_keys="histogram8col" is shown next:
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png

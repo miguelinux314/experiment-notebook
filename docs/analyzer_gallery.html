@@ -240,7 +240,7 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
 multiple results will typically be present (one per element of the input dataset).
 This <strong>analyzer obtains the average</strong> within each column being considered <strong>for that specific configuration</strong>.</p>
 </div>
-<img alt="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_psnr_dr.png" src="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_psnr_dr.png" />
+<img alt="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" src="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" />
 <p><strong>Interesting parameters</strong> to the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer.analyze_df()</span></code></a> method:</p>
 <ul>
 <li><p><cite>group_by</cite>: instead of column names, this argument must be a list of <a class="reference internal" href="api/enb.html#enb.aanalysis.TaskFamily" title="enb.aanalysis.TaskFamily"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TaskFamily</span></code></a> instances.
@@ -264,9 +264,6 @@ to signal the full span of your data</p></li>
 <li><p><cite>show_v_std_bar</cite>, <cite>show_h_std_bar</cite>: if True, vertical or horizontal bars will be added to each data point
 to signal plus/minus 1 standard deviation (std).</p></li>
 </ul>
-<p>Another example with horizontal range and plus/minus +1 std (taken from <a class="reference internal" href="lossy_compression_example.html"><span class="doc">Lossy Compression Experiment</span></a>)
-is shown next:</p>
-<img alt="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" src="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" />
 </div>
 </div>
 <div class="section" id="key-value-dict-data-analysis">
@@ -274,6 +271,7 @@ is shown next:</p>
 <p>Sometimes it is useful to store a dictionary of results in the cells of a column.
 Example applications include histograms (e.g., sample value distributions, or any other
 variable split in classes).</p>
+<p>An example of direct application of this analyzer is shown next.</p>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDictAnalyzer" title="enb.aanalysis.ScalarDictAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDictAnalyzer</span></code></a> class provides tools to automatically plot
 columns of this type. Note that:</p>
 <blockquote>
@@ -292,6 +290,7 @@ are sorted by default.</p></li>
 </ul>
 </div></blockquote>
 <img alt="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png" src="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png" />
+<p>An example of using combine_keys=”histogram8col” is shown next:</p>
 <img alt="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png" src="https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png" />
 </div>
 </div>
