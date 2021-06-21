@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,10 +31,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -54,7 +56,7 @@
           
 
           
-            <a href="contents.html" class="icon icon-home"> Experiment Notebook
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -90,6 +92,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression</a><ul class="current">
@@ -130,7 +133,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="contents.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook</a>
         
       </nav>
 
@@ -161,7 +164,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="contents.html">Contents</a> &raquo;</li>
         
           <li><a href="image_compression.html">Image compression</a> &raquo;</li>
         
@@ -189,8 +194,8 @@
 <p>This page explains the general dynamics of using the <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> class.
 This class is a subclass of <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
+<p class="admonition-title">Note</p>
+<p>This example assumes you have understood the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example, and that you have successfully
 followed the installation instructions in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
 </div>
 <div class="section" id="lossless-experiment-setup">
@@ -215,22 +220,20 @@ where you are running the experiment (.). The following code will do the trick:<
 <p>For image compression experiments, it is needed that:</p>
 <blockquote>
 <div><ul>
-<li><p class="first">Images are in RAW (uncompressed) format, preferably with ‘.raw’ extension,
-in BSQ in case more than one component is present.</p>
-</li>
-<li><p class="first">Images contain a tag such as ‘u8be-3x600x800’ in their name.</p>
+<li><p>Images are in RAW (uncompressed) format, preferably with ‘.raw’ extension,
+in BSQ in case more than one component is present.</p></li>
+<li><p>Images contain a tag such as ‘u8be-3x600x800’ in their name.</p>
 <blockquote>
 <div><ul class="simple">
-<li><em>u</em> or <em>s</em> should be used for unsigned or signed data</li>
-<li><em>8</em>, <em>16</em> or <em>32</em> indicate the bitdepth in bits of each sample</li>
-<li>the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
-the images width, height and number of components (bands).</li>
+<li><p><em>u</em> or <em>s</em> should be used for unsigned or signed data</p></li>
+<li><p><em>8</em>, <em>16</em> or <em>32</em> indicate the bitdepth in bits of each sample</p></li>
+<li><p>the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
+the images width, height and number of components (bands).</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">Images can be organized in subfolders. This is not mandatory, and it is not used in the current
-example.</p>
-</li>
+<li><p>Images can be organized in subfolders. This is not mandatory, and it is not used in the current
+example.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -254,7 +257,7 @@ is documented and (hopefully) self-explanatory.</p>
 <p>The initialization is straightforward. Note how the plugin’s main module needs to be imported.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">enb.config</span> <span class="kn">import</span> <span class="n">get_options</span>
-<span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="n">from_main</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">(</span><span class="n">from_main</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">enb</span> <span class="kn">import</span> <span class="n">icompression</span>
 <span class="kn">from</span> <span class="nn">enb</span> <span class="kn">import</span> <span class="n">aanalysis</span>
 <span class="kn">import</span> <span class="nn">plugin_jpeg.jpeg_codecs</span>
@@ -265,8 +268,8 @@ is documented and (hopefully) self-explanatory.</p>
 <h3>Lossless: setup<a class="headerlink" href="#lossless-setup" title="Permalink to this headline">¶</a></h3>
 <p>A minimal setup is needed so that the experiment can be created and can locate the data of interest.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <cite>codecs</cite> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>
+<p class="admonition-title">Note</p>
+<p>The <cite>codecs</cite> list here can contain any number of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>
 instances. See <a class="reference internal" href="defining_new_compressors.html"><span class="doc">Defining new codecs</span></a> for further information.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup global options</span>
@@ -281,7 +284,7 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 <div class="section" id="lossless-experiment-running">
 <h3>Lossless: experiment running<a class="headerlink" href="#lossless-experiment-running" title="Permalink to this headline">¶</a></h3>
 <p>The lossless compression experiment can now be created, and used to generate a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.0.dev0+1126.g05a0e98adf)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+56.g648eb40abc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment</span>
 <span class="n">exp</span> <span class="o">=</span> <span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCompressionExperiment</span><span class="p">(</span><span class="n">codecs</span><span class="o">=</span><span class="n">codecs</span><span class="p">)</span>
 
@@ -292,14 +295,14 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <cite>compression_ratio_dr`</cite>. <cite>bpppc</cite> and <cite>compression_time_seconds</cite> columns
+<p class="admonition-title">Note</p>
+<p>The <cite>compression_ratio_dr`</cite>. <cite>bpppc</cite> and <cite>compression_time_seconds</cite> columns
 are automatically created by the LosslessCompressionExperiment class. You can
 extend this class with new columns, as described in the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow</span></a> example.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Of course, custom analysis of the dataframe is possible for maximum control.</p>
+<p class="admonition-title">Note</p>
+<p>Of course, custom analysis of the dataframe is possible for maximum control.</p>
 </div>
 </div>
 </div>
@@ -322,7 +325,7 @@ and any of the other classes in that module.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>An example output is available <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossless_compression_example/plots/distribution_compression_ratio_dr.pdf">here</a></p>
+<p>An example output is available <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossless_compression_example/plots/distribution_compression_ratio_dr.pdf">here</a></p>
 </div>
 </div>
 

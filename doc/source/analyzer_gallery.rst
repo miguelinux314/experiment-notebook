@@ -10,6 +10,12 @@ for full details on all Analyzer subclasses.
 Scalar data analysis
 ********************
 
+Scalar data analysis can be applied whenever columns contain numeric values (integers, floats, etc).
+Several analysis types are available off the box:
+
+Single column analysis
+++++++++++++++++++++++
+
 The :class:`enb.aanalysis.ScalarDistributionAnalyzer` class produces one or more histograms, stacked along the y axis.
 Each histogram contains a marker for the average value, and a bar for +/- 1 standard deviation.
 
@@ -33,7 +39,7 @@ The following example shows the distribution of sepal lengths by Iris class:
 
 
 Two columns: 2D Scatter
-***********************
++++++++++++++++++++++++
 
 A 2D scatter of plots can be used to analyze two columns jointly.
 
@@ -53,7 +59,7 @@ The following example shows the distribution of two columns of the set.
   of each class is shown.
 
 Two columns and one parameter: line plot
-****************************************
+++++++++++++++++++++++++++++++++++++++++
 
 Often, we want to analyze the behavior of a method that accepts one or more parameters.
 The goal is to jointly analyze two data columns, combining
@@ -100,3 +106,34 @@ is shown next:
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png
 
+
+Key-value (dict) data analysis
+******************************
+
+Sometimes it is useful to store a dictionary of results in the cells of a column.
+Example applications include histograms (e.g., sample value distributions, or any other
+variable split in classes).
+
+
+
+The :class:`enb.aanalysis.ScalarDictAnalyzer` class provides tools to automatically plot
+columns of this type. Note that:
+
+    - String keys are supported. In this case, they are assumed to be class names, and are shown by default
+      as elements across the x_axis.
+
+    - Number to number mappings are also supported. Typical examples are
+      histograms, probability mass functions (PMFs/discrete PDFs), and cumulative distribution functions (CDFs).
+      These can be expressed as a dict-like object mapping x to P(x).
+
+    - The `combine_keys` argument can be used to easily plot PMFs/PDFs as histograms, rebin existing histrograms,
+      or regroup class names (e.g., one could have data for `arms`, `head`, `legs`, `feet`
+      as class names (dictionary key values), and easily combine them into `upper_body` and `lower_body` before
+      analysis.
+
+    - More generally, any object that supports the comparison interface can be used for the key values, as these
+      are sorted by default.
+
+.. image:: https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png
+
+.. image:: https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png

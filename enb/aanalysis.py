@@ -44,7 +44,8 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                              group_name_order=None, fig_width=None, fig_height=None,
                              global_y_label_pos=None, legend_column_count=None,
                              show_grid=None,
-                             x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0):
+                             x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
+                             semilog_y=None, semilog_y_base=10):
     """Ray wrapper for render_plds_by_group"""
     # (options automatically propagated)
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
@@ -61,7 +62,8 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 show_grid=show_grid,
                                 x_tick_list=x_tick_list,
                                 x_tick_label_list=x_tick_label_list,
-                                x_tick_label_angle=x_tick_label_angle)
+                                x_tick_label_angle=x_tick_label_angle,
+                                semilog_y=semilog_y, semilog_y_base=semilog_y_base)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
@@ -72,7 +74,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          combine_groups=False, semilog_hist_min=1e-10,
                          group_name_order=None,
                          fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
-                         show_grid=None, x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0):
+                         show_grid=None, x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
+                         semilog_y=None, semilog_y_base=10):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -110,7 +113,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
 
     fig_width = options.fig_width if fig_width is None else fig_width
-    fig_height = options.fig_height if fig_height is None else fig_height
     global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
 
     legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
@@ -120,8 +122,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 pld.legend_column_count = legend_column_count
 
     y_min = column_properties.hist_min if y_min is None else y_min
-    y_min = max(semilog_hist_min,
-                y_min if y_min is not None else 0) if column_properties is not None and column_properties.semilog_y else y_min
+    y_min = max(semilog_hist_min, y_min if y_min is not None else 0) \
+        if ((column_properties is not None and column_properties.semilog_y) or semilog_y) else y_min
     y_max = column_properties.hist_max if y_max is None else y_max
 
     if group_name_order is None:
@@ -145,14 +147,14 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     fig, group_axis_list = plt.subplots(
         nrows=len(sorted_group_names) if not combine_groups else 1,
         ncols=1, sharex=True, sharey=combine_groups,
-        figsize=(fig_width, max(3, 0.5 * len(sorted_group_names))))
+        figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
 
     if combine_groups:
         group_axis_list = [group_axis_list]
     elif len(sorted_group_names) == 1:
         group_axis_list = [group_axis_list]
 
-    semilog_x, semilog_y = False, False
+    semilog_x, semilog_y = False, semilog_y if semilog_y is not None else semilog_y
 
     if combine_groups:
         assert len(group_axis_list) == 1
@@ -196,7 +198,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             except Exception as ex:
                 raise Exception(f"Error rendering {pld} -- {group_name} -- {output_plot_path}") from ex
             semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
-            semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False)
+            semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
 
     for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
         group_axes.set_ylim(y_min, y_max)
@@ -909,7 +911,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
             y_label = clean_column_name(column_y) if y_label is None else y_label
             if group_by is not None:
                 try:
-                    assert all(isinstance(t, TaskFamily) for t in group_by)
+                    assert all(issubclass(t, TaskFamily) for t in group_by), group_by
                     group_column = "task_name"
                     group_by_families = True
                 except TypeError:
@@ -1234,7 +1236,8 @@ class HistogramKeyBinner:
         assert self.bin_count > 0
         self.bin_width = (max_value - min_value) / self.bin_count
         self.intervals = [(min_value, min(min_value + self.bin_width, max_value))
-                          for min_value in np.linspace(min_value, max_value, self.bin_count, endpoint=False)]
+                          for min_value in np.linspace(min_value, max(min_value, max_value - self.bin_width),
+                                                       self.bin_count, endpoint=True)]
 
         self.binned_keys = []
         for i, interval in enumerate(self.intervals):
@@ -1286,7 +1289,10 @@ class ScalarDictAnalyzer(Analyzer):
                    key_to_x=None, key_list=None, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    show_std_bar=True, show_std_band=False, show_individual_results=False,
-                   x_tick_label_angle=90, show_grid=True, combine_groups=False):
+                   x_tick_label_angle=90, show_grid=True, combine_groups=False,
+                   fig_height=None, fig_width=None,
+                   semilog_y=False, semilog_y_base=10, show_h_bars=False,
+                   global_y_label=""):
         """For each target column, analyze dictionary values stored in each cell.
         Scalar analysis is applied on each key found in the dictionaries.
 
@@ -1297,7 +1303,8 @@ class ScalarDictAnalyzer(Analyzer):
           all referenced columns must contain dictionary data with scalar (integer, float, etc) values.
         :param output_plot_path: if provided, this will be used for plots generated by this call, after adding the
           column of interest to the name.
-        :param combine_keys: if not None, it can be either
+        :param combine_keys: if not None, it can be either:
+
             - a callable that takes an input dictionary and returns another one. This can be used to combine groups of
               keys into a single one before analysis in an arbitrary way.
             - a string with format 'histogram' or 'histogram(\d+)col'. This case expects dictionaries with
@@ -1308,6 +1315,7 @@ class ScalarDictAnalyzer(Analyzer):
               Note that this key combination is only applied when the number of different keys is larger than
               the selected number of bins.
             - None. In this keys table cell keys are not modified before the analysis.
+
         :param x_min, x_max: if not None, they define the minimum and maximum values that are considered. This
           applies only to the case where combine_keys indicates an histogram binning.
         :param mass_fraction: if an histogram combiner is used, and if both x_min and x_max are None, then this
@@ -1328,8 +1336,13 @@ class ScalarDictAnalyzer(Analyzer):
         :param show_std_bar: if True, vertical error bars are shown centered on each average point, plus/minus one
           standard deviation.
         :param show_std_band: if True, a band of width 2*sigma is added to each line.
+        :param fig_height, fig_width: absolute image size. Affects rendered font size.
+        :param semilog_y: use a logarithmic scale for the y axis?
+        :param semilog_y_base: use this base if semilog_y is True.
+        :param show_h_bars: if True, +/- 0.5 horizontal bars are shown at each data point.
+          Useful for coarsely classified data.
 
-        All remaining parameters are as defined in :class:`Analyzer` or :ref:`render_plds_by_group`.
+        All remaining parameters are as defined in :class:`Analyzer` or :func:`enb.aanalysis.render_plds_by_group`.
         """
         target_columns = target_columns if not isinstance(target_columns, str) else [target_columns]
         output_plot_dir = output_plot_dir if output_plot_dir is not None else options.plot_dir
@@ -1345,7 +1358,13 @@ class ScalarDictAnalyzer(Analyzer):
                     if combine_keys == "histogram":
                         bin_count = self.default_bin_count
                     else:
-                        bin_count = int(re.match(r"histogram(\d+)col", combine_keys).group(1))
+                        try:
+                            bin_count = int(re.match(r"histogram(\d+)col", combine_keys).group(1))
+                        except AttributeError:
+                            bin_count = self.default_bin_count
+                            if options.verbose > 1:
+                                print(
+                                    f"[W]arning: combine_keys {repr(combine_keys)} not recognized. Using default: {bin_count}")
                     if bin_count <= 0:
                         raise ValueError(f"Invalid value for combine_keys: {combine_keys}")
                     # We cannot instantiate a HistogramKeyBinner here yet, because the minimum
@@ -1395,6 +1414,7 @@ class ScalarDictAnalyzer(Analyzer):
                     if mass_fraction != 1:
                         assert width_fraction == 1, f"Cannot set mass_fraction and width_fraction at the same time."
                         assert 0 < mass_fraction < 1
+
                         def get_x_interval_width(a, b):
                             """Compute the mass of all x values in [a,b].
                             """
@@ -1419,7 +1439,7 @@ class ScalarDictAnalyzer(Analyzer):
                 combine_keys = HistogramKeyBinner(
                     min_value=column_x_min, max_value=column_x_max, bin_count=bin_count)
 
-            if combine_keys is not None:
+            if combine_keys is not None or histogram_combination:
                 full_df[column] = full_df[column].apply(combine_keys)
                 if histogram_combination:
                     column_to_xmin_xmax[column] = (0, len(combine_keys.binned_keys))
@@ -1432,6 +1452,8 @@ class ScalarDictAnalyzer(Analyzer):
         # Generate the plottable data
         column_to_id_by_group = collections.defaultdict(dict)
         column_to_pds_by_group = collections.defaultdict(dict)
+
+
         if group_by is not None:
             for group_name, group_df in full_df.groupby(group_by):
                 df_id = ray.put(group_df)
@@ -1443,7 +1465,8 @@ class ScalarDictAnalyzer(Analyzer):
                         key_to_x=ray.put(key_to_x_by_column[column]),
                         show_std_bar=ray.put(show_std_bar),
                         show_std_band=ray.put(show_std_band),
-                        show_individual_results=ray.put(show_individual_results))
+                        show_individual_results=ray.put(show_individual_results),
+                        std_band_add_xmargin=ray.put(combine_keys is not None or histogram_combination))
         if group_by is None or show_global is True:
             df_id = ray.put(full_df)
             for column in target_columns:
@@ -1454,7 +1477,8 @@ class ScalarDictAnalyzer(Analyzer):
                     key_to_x=ray.put(key_to_x_by_column[column]),
                     show_std_bar=ray.put(show_std_bar),
                     show_std_band=ray.put(show_std_band),
-                    show_individual_results=ray.put(show_individual_results))
+                    show_individual_results=ray.put(show_individual_results),
+                    std_band_add_xmargin=(combine_keys is not None or histogram_combination))
 
         # Retrieve data produced in a parallel way and fix labels, colors, etc
         group_names = set()
@@ -1478,9 +1502,9 @@ class ScalarDictAnalyzer(Analyzer):
                 assert isinstance(line_data, plotdata.LineData)
                 csv_file.write(f"{column},")
 
-                csv_file.write(','.join(str(line_data.y_values[key_to_x_by_column[column][k]])
+                csv_file.write(','.join(str(line_data.y_values[math.floor(key_to_x_by_column[column][k])])
                                         if k in key_to_x_by_column[column]
-                                           and len(line_data.y_values) > key_to_x_by_column[column][k] else ''
+                                           and len(line_data.y_values) > math.floor(key_to_x_by_column[column][k]) else ''
                                         for k in keys_by_column[column]))
                 csv_file.write("\n\n")
 
@@ -1513,12 +1537,38 @@ class ScalarDictAnalyzer(Analyzer):
 
             margin = max(key_to_x_by_column[column].values()) / (10 * len(key_to_x_by_column[column])) \
                 if key_to_x_by_column[column] else 0
+            if combine_keys or histogram_combination:
+                margin = 0
             if x_min is None:
                 x_min = min(key_to_x_by_column[column].values()) - margin if key_to_x_by_column[column] else None
             if x_max is None:
                 x_max = max(key_to_x_by_column[column].values()) + margin if key_to_x_by_column[column] else None
             y_min = column_to_properties[column].plot_min
             y_max = column_to_properties[column].plot_max
+
+            # Add a 0.5 offset and x margin when combining keys
+            if histogram_combination:
+                columns = list(key_to_x_by_column.keys())
+                for c in columns:
+                    key_to_x_by_column[c] = {k: x + 0.5 for k, x in key_to_x_by_column[c].items()}
+                    for group, pds in pds_by_group.items():
+                        for plottable_data in pds:
+                            plottable_data.x_values = [x + 0.5 for x in plottable_data.x_values]
+                        if show_h_bars:
+                            pds.append(plotdata.ErrorLines(
+                                x_values=plottable_data.x_values, y_values=plottable_data.y_values,
+                                err_neg_values=[0.5]*len(plottable_data.x_values),
+                                err_pos_values=[0.5]*len(plottable_data.x_values),
+                                vertical=False, cap_size=0, marker_size=0))
+                            pds[-1].color = pds[-2].color
+
+                print(f"[watch] x_min={x_min}")
+                print(f"[watch] x_max={x_max}")
+
+
+            x_tick_list = [key_to_x_by_column[column][k] for k in keys_by_column[column]]
+            print(f"[watch] x_tick_list={x_tick_list}")
+            
 
             try:
                 original_fig_width = options.fig_width
@@ -1530,8 +1580,8 @@ class ScalarDictAnalyzer(Analyzer):
                         output_plot_path=ray.put(output_plot_path),
                         column_properties=ray.put(column_to_properties[column]),
                         global_x_label=ray.put(global_x_label),
-                        global_y_label=ray.put(""),
-                        x_tick_list=ray.put([key_to_x_by_column[column][k] for k in keys_by_column[column]]),
+                        global_y_label=ray.put(global_y_label),
+                        x_tick_list=ray.put(x_tick_list),
                         x_tick_label_list=ray.put(keys_by_column[column]),
                         x_tick_label_angle=ray.put(x_tick_label_angle),
                         horizontal_margin=ray.put(0.1),
@@ -1540,21 +1590,29 @@ class ScalarDictAnalyzer(Analyzer):
                         show_grid=ray.put(show_grid),
                         combine_groups=ray.put(combine_groups),
                         overwrite_colors=ray.put(False),
-                        options=ray.put(options)))
+                        options=ray.put(options),
+                        fig_height=ray.put(fig_height),
+                        fig_width=ray.put(fig_width),
+                        semilog_y=ray.put(semilog_y),
+                        group_name_order=ray.put(group_name_order)))
                 else:
                     render_plds_by_group(pds_by_group_name=pds_by_group,
                                          output_plot_path=output_plot_path,
                                          column_properties=column_to_properties[column],
                                          global_x_label=global_x_label,
-                                         global_y_label="",
-                                         x_tick_list=[key_to_x_by_column[column][k] for k in keys_by_column[column]],
+                                         global_y_label=global_y_label,
+                                         x_tick_list=x_tick_list,
                                          x_tick_label_list=keys_by_column[column],
                                          x_tick_label_angle=x_tick_label_angle,
                                          x_min=x_min, x_max=x_max,
                                          y_min=y_min, y_max=y_max,
                                          combine_groups=combine_groups,
                                          overwrite_colors=False,
-                                         show_grid=show_grid)
+                                         show_grid=show_grid,
+                                         fig_height=fig_height,
+                                         fig_width=fig_width,
+                                         semilog_y=semilog_y,
+                                         group_name_order=group_name_order)
 
                 _ = [ray.get(id) for id in render_ids]
 
@@ -1566,7 +1624,22 @@ class ScalarDictAnalyzer(Analyzer):
 def scalar_dict_to_pds(df, column, column_properties, key_to_x,
                        group_label=None,
                        show_std_bar=True, show_std_band=False,
-                       show_individual_results=False):
+                       show_individual_results=False, std_band_add_xmargin=False):
+    """
+    See :class:`enb.aanalysis.ScalarDictAnalyzer`
+
+    :param df: df to be transformed into plotdata.* instances
+    :param column: column to be analized
+    :param column_properties: :class:`enb.atable.ColumnProperties instance`, if known
+    :param key_to_x: see :class:`enb.aanalysis.ScalarDictAnalyzer`
+    :param group_label: see :class:`enb.aanalysis.ScalarDictAnalyzer`
+    :param show_std_bar: see :class:`enb.aanalysis.ScalarDictAnalyzer`
+    :param show_std_band: see :class:`enb.aanalysis.ScalarDictAnalyzer`
+    :param show_individual_results: see :class:`ScalarDictAnalyzer`
+    :param std_band_add_xmargin: if True, if is assumed that keys were combined and a +/- 0.5 margin should be assumed
+      for std band
+    :return: the list of pds generated
+    """
     key_to_stats = dict()
     finite_data_by_column = dict()
     for k in key_to_x.keys():
@@ -1593,8 +1666,9 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
         plot_data_list.append(plotdata.HorizontalBand(
             x_values=avg_x_values,
             y_values=avg_y_values,
-            pos_width_values=std_values,
-            neg_width_values=std_values))
+            pos_height_values=std_values,
+            neg_height_values=std_values,
+            std_band_add_xmargin=std_band_add_xmargin))
 
     if show_std_bar:
         plot_data_list.append(plotdata.ErrorLines(

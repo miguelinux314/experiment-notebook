@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   
@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,10 +31,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -54,7 +56,7 @@
           
 
           
-            <a href="contents.html" class="icon icon-home"> Experiment Notebook
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
           
 
           
@@ -90,6 +92,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="contents.html">Contents</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#windows-and-macos">Windows and MacOS</a></li>
@@ -116,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="contents.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook</a>
         
       </nav>
 
@@ -147,7 +150,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="contents.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="contents.html">Contents</a> &raquo;</li>
         
       <li>Installation</li>
     
@@ -188,18 +193,17 @@
 <p>You will typically need to follow these steps to have <cite>enb</cite> working on your box:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first"><a class="reference external" href="https://docs.ray.io/en/master/installation.html">Download</a> the <cite>ray</cite> python library
+<li><p><a class="reference external" href="https://docs.ray.io/en/master/installation.html">Download</a> the <cite>ray</cite> python library
 <em>for the python version you want to use</em> (a <cite>.whl</cite> file).
-(a dependency of the library).</p>
-</li>
-<li><p class="first">Install the ray library, e.g.,</p>
+(a dependency of the library).</p></li>
+<li><p>Install the ray library, e.g.,</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pìp install -U ray-2.0.0.dev0-cp38-cp38-macosx_10_13_x86_64.whl
 </pre></div>
 </div>
 </div></blockquote>
 </li>
-<li><p class="first">Install <cite>enb</cite> via pip, e.g.,</p>
+<li><p>Install <cite>enb</cite> via pip, e.g.,</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb --user
 </pre></div>
@@ -210,10 +214,10 @@
 </div></blockquote>
 <p>The pip command must correspond to the python version for which ray was installed.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>If you are developing for enb, it is highly recommended to used a virtual environment.
 To do so, for instance for python3.8, the complete setup would be:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/usr/bin/python3.8 -m venv venv <span class="c1"># run only once</span>
 <span class="nb">source</span> venv/bin/active          <span class="c1"># run once per session</span>
 pip install -U ray-2.0.0.whl    <span class="c1"># run once</span>
@@ -223,8 +227,8 @@ pip install enb                 <span class="c1"># run once. Applies to this ven
 </div></blockquote>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Initialization of the <cite>ray</cite> library (used for parallelization) can take a few
+<p class="admonition-title">Note</p>
+<p>Initialization of the <cite>ray</cite> library (used for parallelization) can take a few
 seconds on Windows machines. Actual execution of <cite>enb</cite> code typically takes about the
 same time on all platforms.</p>
 </div>

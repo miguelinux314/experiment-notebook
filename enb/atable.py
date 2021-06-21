@@ -12,9 +12,8 @@
 * The ATable.get_df method can be invoked to obtain the df for any given set of indices
 
 
-* For example
+For example::
 
-  ::
         import enb
 
         class Subclass(enb.atable.ATable):
@@ -25,9 +24,8 @@
         df = sc.get_df(target_indices=["a"*i for i in range(10)])
         print(df.head())
 
-  Should return:
 
-  ::
+Should return::
 
                            index index_length
         __atable_index
@@ -38,7 +36,7 @@
         ('aaaa',)       aaaa            4
 
 
-  * See ScalarDistributionAnalyzer for automatic reports using ATable
+See ScalarDistributionAnalyzer for automatic reports using ATable
 """
 import glob
 from builtins import hasattr
