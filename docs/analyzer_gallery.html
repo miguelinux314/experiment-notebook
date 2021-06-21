@@ -199,7 +199,7 @@ Several analysis types are available off the box:</p>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer" title="enb.aanalysis.ScalarDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarDistributionAnalyzer</span></code></a> class produces one or more histograms, stacked along the y axis.
 Each histogram contains a marker for the average value, and a bar for +/- 1 standard deviation.</p>
 <p>The following example shows the distribution of sepal lengths by Iris class:</p>
-<img alt="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" src="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" />
+<img alt="https://github.com/miguelinux314/experiment-notebook/dev/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" src="https://github.com/miguelinux314/experiment-notebook/dev/templates/analysis_gallery_example/png_plots/groupby_class/ScalarDistributionAnalyzer/distribution_sepal_length.png" />
 <p><strong>Interesting parameters</strong> to the <cite>analyze_df()</cite> method:</p>
 <ul class="simple">
 <li><p><cite>output_csv_file</cite>: if given, a CSV with basic statistics about the columns of interest is provided.
@@ -218,7 +218,7 @@ of its plot. If False, histograms are not scaled.</p></li>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer" title="enb.aanalysis.TwoColumnScatterAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer</span></code></a> class produces a single scatter plot given two target
 columns as an input.</p>
 <p>The following example shows the distribution of two columns of the set.</p>
-<img alt="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png" src="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png" />
+<img alt="https://github.com/miguelinux314/experiment-notebook/dev/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png" src="https://github.com/miguelinux314/experiment-notebook/dev/templates/analysis_gallery_example/png_plots/groupby_class/TwoColumnScatterAnalyzer/twocolumns_scatter_sepal_length_VS_petal_width.png" />
 <p><strong>Interesting parameters</strong> to the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df()</span></code></a> method:</p>
 <ul class="simple">
 <li><p><cite>group_by</cite>: It allows distinguishing data points based on the value of the given column.
@@ -240,7 +240,7 @@ It is very natural to group JPEG-LS results for different PAE parameters, as in 
 multiple results will typically be present (one per element of the input dataset).
 This <strong>analyzer obtains the average</strong> within each column being considered <strong>for that specific configuration</strong>.</p>
 </div>
-<img alt="https://raw.githubusercontent.com/miguelinux314/experiment-notebook/master/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" src="https://raw.githubusercontent.com/miguelinux314/experiment-notebook/master/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" />
+<img alt="https://raw.githubusercontent.com/miguelinux314/experiment-notebook/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" src="https://raw.githubusercontent.com/miguelinux314/experiment-notebook/dev/templates/analysis_gallery_example/png_plots/plot_line_bpppc_pae.png" />
 <p><strong>Interesting parameters</strong> to the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.TwoColumnLineAnalyzer.analyze_df()</span></code></a> method:</p>
 <ul>
 <li><p><cite>group_by</cite>: instead of column names, this argument must be a list of <a class="reference internal" href="api/enb.html#enb.aanalysis.TaskFamily" title="enb.aanalysis.TaskFamily"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TaskFamily</span></code></a> instances.
@@ -266,7 +266,7 @@ to signal plus/minus 1 standard deviation (std).</p></li>
 </ul>
 <p>Another example with horizontal range and plus/minus +1 std (taken from <a class="reference internal" href="lossy_compression_example.html"><span class="doc">Lossy Compression Experiment</span></a>)
 is shown next:</p>
-<img alt="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png" src="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png" />
+<img alt="https://github.com/miguelinux314/experiment-notebook/dev/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png" src="https://github.com/miguelinux314/experiment-notebook/dev/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png" />
 </div>
 </div>
 <div class="section" id="key-value-dict-data-analysis">
@@ -291,8 +291,8 @@ analysis.</p></li>
 are sorted by default.</p></li>
 </ul>
 </div></blockquote>
-<img alt="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png" src="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png" />
-<img alt="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png" src="https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossy_compression_experiment/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png" />
+<img alt="https://github.com/miguelinux314/experiment-notebook/dev/templates/lossy_compression_experiment/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png" src="https://github.com/miguelinux314/experiment-notebook/dev/templates/lossy_compression_experiment/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png" />
+<img alt="https://github.com/miguelinux314/experiment-notebook/dev/templates/lossy_compression_experiment/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png" src="https://github.com/miguelinux314/experiment-notebook/dev/templates/lossy_compression_experiment/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png" />
 </div>
 </div>
 
