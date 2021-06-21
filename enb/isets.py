@@ -245,15 +245,35 @@ class BandEntropyTable(ImageGeometryTable):
                              for i in range(row["component_count"])}
 
 
-def load_array_bsq(file_or_path, image_properties_row):
+def load_array_bsq(file_or_path, image_properties_row,
+                   width=None, height=None, component_count=None, dtype=None):
     """Load a numpy array indexed by [x,y,z] from file_or_path using
     the geometry information in image_properties_row.
+
+    :param file_or_path: either a string with the path to the input file,
+      or a file open for reading (typically with "b" mode).
+    :param image_properties_row: if not None, it shall be a dict-like object. The
+      width, height, component_count, bytes_per_sample, signed, big_endian and float
+      keys should be present to determine the read parameters. The remaining arguments overwrite
+      those defined in image_properties_row (if image_properties_row is not None and if present).
+      If None, none of the remaining parameters can be None.
+    :param width: if not None, force the read to assume this image width
+    :param height: if not None, force the read to assume this image height
+    :param component_count: if not None, force the read to assume this number of components (bands)
+    :param dtype: if not None, it must by a valid argument for dtype in numpy, and will be used for reading. In
+      this case, the bytes_per_sample, signed, big_endian and float keys are not accessed in image_properties_row.
+    :return: a 3-D numpy array with the image data, which can be indexed as [x,y,z].
     """
-    return np.fromfile(file_or_path,
-                       dtype=iproperties_row_to_numpy_dtype(image_properties_row)).reshape(
-        (image_properties_row["component_count"],
-         image_properties_row["height"],
-         image_properties_row["width"])).swapaxes(0, 2)
+    if image_properties_row is None:
+        assert not any(v is None for v in (width, height, component_count, dtype)), \
+            f"image_properties_row={image_properties_row} but some None in " \
+            f"(width, height, component_count, dtype): {(width, height, component_count, dtype)}."
+    width = width if width is not None else image_properties_row["width"]
+    height = height if height is not None else image_properties_row["height"]
+    component_count = component_count if component_count is not None else image_properties_row["component_count"]
+    dtype = dtype if dtype is not None else iproperties_row_to_numpy_dtype(image_properties_row)
+
+    return np.fromfile(file_or_path, dtype=dtype).reshape(component_count, height, width).swapaxes(0, 2)
 
 
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):

@@ -1510,7 +1510,6 @@ class ScalarDictAnalyzer(Analyzer):
 
             global_x_label = f"{column_to_properties[column].label}"
             x_min, x_max = column_to_xmin_xmax[column]
-            print(f"[watch] x_min, x_max={x_min, x_max}")
 
             margin = max(key_to_x_by_column[column].values()) / (10 * len(key_to_x_by_column[column])) \
                 if key_to_x_by_column[column] else 0

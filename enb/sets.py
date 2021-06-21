@@ -186,10 +186,6 @@ class FileVersionTable(FilePropertiesTable):
         raise NotImplementedError()
 
     def get_default_target_indices(self):
-        print(f"[watch--get_default_target_indices] self={self}")
-        print(f"[watch] self.original_base_dir={self.original_base_dir}")
-        print(f"[watch] self.default_extension={self.default_extension}")
-
         return enb.atable.get_all_test_files(
             base_dataset_dir=self.original_base_dir, ext=self.default_extension)
 
@@ -312,8 +308,7 @@ class FileVersionTable(FilePropertiesTable):
             filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
             filtered_type.default_extension = self.default_extension
         except TypeError as ex:
-            print(f"[watch] base_clases={base_classes}")
-            raise ex
+            raise ValueError(f"Invalid base classes: {base_classes}") from ex
 
         return filtered_type.get_df(
             self, target_indices=version_indices,
