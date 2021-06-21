@@ -84,8 +84,7 @@ if __name__ == '__main__':
             group_by="block_size", show_h_bars=True,
             show_std_band=combine_keys is not None,
             show_std_bar=False,
-            global_y_label="CUs using this mode",
-            fig_height=5 if combine_keys != "histogram8col" else 4)
+            global_y_label="CUs using this mode")
 
 
     # Make a png mirror of all the PDF files (not within enb, yet)
