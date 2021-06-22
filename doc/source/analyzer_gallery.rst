@@ -131,6 +131,6 @@ columns of this type. Note that:
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_None/ScalarDictAnalyzer_group-block_size_mode_count.png
 
-An example of using combine_keys="histogram8col" is shown next:
+An example of using `combine_keys="histogram8col"` is shown next:
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png
