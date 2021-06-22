@@ -8,7 +8,6 @@ import math
 import numpy as np
 import re
 import collections
-import copy
 import imageio
 
 import enb.sets
