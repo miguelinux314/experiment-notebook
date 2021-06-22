@@ -13,16 +13,17 @@ to know what files the experiment should be run on.
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "18/09/2019"
 
-import sys
 import os
 import glob
 import hashlib
 import ray
 import time
+import deprecation
 
 import enb
 from enb import atable
 from enb import config
+from enb.atable import get_canonical_path
 
 options = enb.config.options
 
@@ -33,38 +34,6 @@ hash_algorithm = "sha256"
 
 
 # -------------------------- End configurable part
-
-def get_all_test_files(ext="raw", base_dataset_dir=None):
-    """Get a list of all set files contained in the data dir.
-
-    :param ext: if not None, only files with that extension (without dot)
-      are returned by this method.
-    :param base_dataset_dir: if not None, the dir where test files are searched
-      for recursively. If None, options.base_dataset_dir is used instead.
-    """
-    base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
-    if base_dataset_dir is None:
-        if options.verbose > 1:
-            print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
-        return [get_canonical_path(sys.argv[0])]
-
-    assert os.path.isdir(base_dataset_dir), \
-        f"Nonexistent dataset dir {base_dataset_dir}"
-    sorted_path_list = sorted(
-        (get_canonical_path(p) for p in glob.glob(
-            os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
-            recursive=True)
-         if os.path.isfile(p)),
-        # key=lambda p: os.path.getsize(p))
-        key=lambda p: get_canonical_path(p).lower())
-    return sorted_path_list if not options.quick else sorted_path_list[:options.quick]
-
-
-def get_canonical_path(file_path):
-    """:return: the canonical path to be stored in the database.
-    """
-    file_path = os.path.abspath(os.path.realpath(file_path))
-    return file_path
 
 
 class UnkownPropertiesException(Exception):
@@ -81,7 +50,6 @@ class FilePropertiesTable(atable.ATable):
     version_name = "original"
     hash_field_name = f"{hash_algorithm}"
     index_name = "file_path"
-    default_extension = "raw"
     base_dir = None
 
     def __init__(self, csv_support_path=None, base_dir=None):
@@ -94,7 +62,8 @@ class FilePropertiesTable(atable.ATable):
                fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
         target_indices = target_indices if target_indices is not None \
-            else get_all_test_files(ext=self.default_extension, base_dataset_dir=self.base_dir)
+            else enb.atable.get_all_test_files(ext=self.default_extension, base_dataset_dir=self.base_dir)
+
         return super().get_df(target_indices=target_indices,
                               target_columns=target_columns,
                               fill=fill, overwrite=overwrite,
@@ -218,7 +187,7 @@ class FileVersionTable(FilePropertiesTable):
         raise NotImplementedError()
 
     def get_default_target_indices(self):
-        return get_all_test_files(
+        return enb.atable.get_all_test_files(
             base_dataset_dir=self.original_base_dir, ext=self.default_extension)
 
     def original_to_versioned_path(self, original_path):
@@ -257,7 +226,7 @@ class FileVersionTable(FilePropertiesTable):
 
         :param overwrite: if True, version files are written even if they exist
         :param target_indices: list of indices that are to be contained in the table,
-            or None to use the list of files returned by sets.get_all_test_files()
+            or None to use the list of files returned by enb.atable.get_all_test_files()
         :param parallel_versioning: if True, files are versioned in parallel if needed
         :param parallel_row_processing: if True, file properties are gathered in parallel
         :param target_columns: if not None, the list of columns that are considered for computation
@@ -338,9 +307,9 @@ class FileVersionTable(FilePropertiesTable):
 
         try:
             filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
+            filtered_type.default_extension = self.default_extension
         except TypeError as ex:
-            print(f"[watch] base_clases={base_classes}")
-            raise ex
+            raise ValueError(f"Invalid base classes: {base_classes}") from ex
 
         return filtered_type.get_df(
             self, target_indices=version_indices,
@@ -477,3 +446,21 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
             raise ex
 
     return output_path, time_measurements
+
+
+@deprecation.deprecated(deprecated_in="v0.2.7",
+                        removed_in="v0.3.0",
+                        details="Please use atable.get_all_test_files() instead.")
+def get_all_test_files(*args, **kwargs):
+    """Deprecated - for backwards compatibility only.
+    """
+    return atable.get_all_test_files(*args, **kwargs)
+
+
+@deprecation.deprecated(deprecated_in="v0.2.7",
+                        removed_in="v0.3.0",
+                        details="Please use atable.get_canonical_path() instead.")
+def get_canonical_path(*args, **kwargs):
+    """Deprecated - for backwards compatibility only.
+    """
+    return atable.get_canonical_path(*args, **kwargs)

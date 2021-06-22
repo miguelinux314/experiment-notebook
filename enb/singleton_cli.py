@@ -17,6 +17,7 @@ __date__ = "06/02/2021"
 import os
 import argparse
 
+
 class ValidationAction(argparse.Action):
     """Base class for defining custom parser validation actions.
     """
@@ -132,6 +133,7 @@ class Singleton(type):
     """Classes with this metaclass can only be defined once.
     """
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -241,10 +243,10 @@ class SingletonCLI(metaclass=Singleton):
 
     def __iter__(self):
         return self._parsed_properties.__iter__()
-    
+
     def __str__(self):
         return f"Options({str(self._parsed_properties)})"
-    
+
     def __repr__(self):
         return f"Options({repr(self._parsed_properties)})"
 
@@ -260,11 +262,3 @@ class GlobalOptions(SingletonCLI):
     def verbose(self):
         """Be verbose? Repeat for more."""
         pass
-
-
-if __name__ == '__main__':
-    options = GlobalOptions()
-    print(f"[watch] options={options}")
-
-    for k, v in options.items():
-        print(f"[watch] (k,v)={(k, v)}")
