@@ -14,13 +14,12 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
     """
 
     def __init__(self, compression_level='19', zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
-
+        """
+        :param compression_level: 1-19, being 19 the maximum data reduction
+        """
         super().__init__(compressor_path=zstd_binary,
                          decompressor_path=zstd_binary,
                          param_dict=dict(compression_level=compression_level))
-        """
-        :param compression_level: 1-19, being 19 the maximum data reduction       
-        """
 
     @property
     def name(self):
@@ -35,7 +34,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
         return "zstandard"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f" -{self.param_dict['compression_level']} -f {original_path}  -o {compressed_path}" 
+        return f"-{self.param_dict['compression_level']} -f {original_path}  -o {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-d -f {compressed_path} -o {reconstructed_path}"

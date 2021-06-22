@@ -155,5 +155,5 @@ and any of the other classes in that module.
     )
    
 
-An example output is available `here <https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossless_compression_example/plots/distribution_compression_ratio_dr.pdf>`_
+An example output is available `here <https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossless_compression_example/plots/distribution_compression_ratio_dr.pdf>`_
 
