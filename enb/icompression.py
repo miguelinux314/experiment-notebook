@@ -376,9 +376,7 @@ class FITSWrapperCodec(WrapperCodec):
         with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             os.remove(tmp_file.name)
             array = img.swapaxes(0, 2)
-            hdu = fits.PrimaryHDU(array, header=Header.fromfile(
-                f'{original_path[0:-4].replace("RAW", "RAW_HEADERS")}-fits_header.txt',
-                sep='\n', endcard=False, padding=False))
+            hdu = fits.PrimaryHDU(array)
             hdu.writeto(tmp_file.name)
 
             if os.path.exists(compressed_path):
