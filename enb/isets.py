@@ -180,6 +180,7 @@ class ImagePropertiesTable(ImageGeometryTable):
         row["byte_value_avg"] = contents.mean()
         row["byte_value_std"] = contents.std()
 
+
 class SampleDistributionTable(ImageGeometryTable):
     @enb.atable.column_function(
         [enb.atable.ColumnProperties("sample_distribution",
@@ -242,6 +243,42 @@ class BandEntropyTable(ImageGeometryTable):
         array = load_array_bsq(file_or_path=file_path, image_properties_row=row)
         row[_column_name] = {i: entropy(array[:, :, i].flatten())
                              for i in range(row["component_count"])}
+
+
+class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
+
+    def __init__(self, version_base_dir, version_name,
+                 original_base_dir=None, csv_support_path=None, check_generated_files=True,
+                 original_properties_table=None):
+        original_properties_table = ImageGeometryTable() if original_properties_table is None else original_properties_table
+
+        super().__init__(version_base_dir=version_base_dir,
+                         version_name=version_name,
+                         original_properties_table=original_properties_table,
+                         original_base_dir=original_base_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=check_generated_files)
+
+
+class QuantizedImageVersion(ImageVersionTable):
+    def __init__(self, version_base_dir, qstep,
+                 original_base_dir=None, csv_support_path=None, check_generated_files=True,
+                 original_properties_table=None):
+        assert qstep == int(qstep)
+        assert 1 <= qstep <= 65535
+        qstep = int(qstep)
+        super().__init__(version_base_dir=version_base_dir,
+                         version_name=f"{self.__class__.__name__}_qstep{qstep}",
+                         original_base_dir=original_base_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=check_generated_files,
+                         original_properties_table=original_properties_table)
+        self.qstep = qstep
+
+    def version(self, input_path, output_path, row):
+        img = load_array_bsq(file_or_path=input_path, image_properties_row=row)
+        img //= self.qstep
+        dump_array_bsq(array=img, file_or_path=output_path)
 
 
 def load_array_bsq(file_or_path, image_properties_row,

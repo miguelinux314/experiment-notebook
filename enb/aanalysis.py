@@ -1445,14 +1445,16 @@ class ScalarDictAnalyzer(Analyzer):
                     column_to_xmin_xmax[column] = (0, len(combine_keys.binned_keys))
             keys_by_column[column] = \
                 sorted(set(full_df[column].apply(
-                    lambda d: list(d.keys())).sum())) if combine_keys is None else combine_keys.binned_keys
+                    lambda d: list(d.keys())).sum())) \
+                    if combine_keys is None or not histogram_combination \
+                    else combine_keys.binned_keys
             key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))} \
-                if combine_keys is None else {k: i for i, k in enumerate(combine_keys.binned_keys)}
+                if combine_keys is None or not histogram_combination \
+                else {k: i for i, k in enumerate(combine_keys.binned_keys)}
 
         # Generate the plottable data
         column_to_id_by_group = collections.defaultdict(dict)
         column_to_pds_by_group = collections.defaultdict(dict)
-
 
         if group_by is not None:
             for group_name, group_df in full_df.groupby(group_by):
@@ -1504,7 +1506,8 @@ class ScalarDictAnalyzer(Analyzer):
 
                 csv_file.write(','.join(str(line_data.y_values[math.floor(key_to_x_by_column[column][k])])
                                         if k in key_to_x_by_column[column]
-                                           and len(line_data.y_values) > math.floor(key_to_x_by_column[column][k]) else ''
+                                           and len(line_data.y_values) > math.floor(
+                    key_to_x_by_column[column][k]) else ''
                                         for k in keys_by_column[column]))
                 csv_file.write("\n\n")
 
@@ -1557,18 +1560,12 @@ class ScalarDictAnalyzer(Analyzer):
                         if show_h_bars:
                             pds.append(plotdata.ErrorLines(
                                 x_values=plottable_data.x_values, y_values=plottable_data.y_values,
-                                err_neg_values=[0.5]*len(plottable_data.x_values),
-                                err_pos_values=[0.5]*len(plottable_data.x_values),
+                                err_neg_values=[0.5] * len(plottable_data.x_values),
+                                err_pos_values=[0.5] * len(plottable_data.x_values),
                                 vertical=False, cap_size=0, marker_size=0))
                             pds[-1].color = pds[-2].color
 
-                print(f"[watch] x_min={x_min}")
-                print(f"[watch] x_max={x_max}")
-
-
             x_tick_list = [key_to_x_by_column[column][k] for k in keys_by_column[column]]
-            print(f"[watch] x_tick_list={x_tick_list}")
-            
 
             try:
                 original_fig_width = options.fig_width
@@ -1644,7 +1641,7 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
     finite_data_by_column = dict()
     for k in key_to_x.keys():
         column_data = df[column].apply(lambda d: d[k] if k in d else float("inf"))
-        finite_data_by_column[column] = column_data[column_data.apply(lambda v: math.isfinite(v))]
+        finite_data_by_column[column] = column_data[column_data.apply(lambda v: math.isfinite(v))].copy()
         description = finite_data_by_column[column].describe()
         if len(finite_data_by_column[column]) > 0:
             key_to_stats[k] = dict(min=description["min"],
@@ -1668,7 +1665,8 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
             y_values=avg_y_values,
             pos_height_values=std_values,
             neg_height_values=std_values,
-            std_band_add_xmargin=std_band_add_xmargin))
+            std_band_add_xmargin=std_band_add_xmargin,
+            line_style="", line_width=0))
 
     if show_std_bar:
         plot_data_list.append(plotdata.ErrorLines(
@@ -1683,8 +1681,9 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
             plot_data_list.append(plotdata.ScatterData(
                 x_values=[key_to_x[k]] * len(finite_data_by_column[column]),
                 y_values=finite_data_by_column[column],
-                alpha=0.8))
-            plot_data_list[-1].marker_size = 5
+                alpha=0.3))
+            plot_data_list[-1].marker_size = 10
+            plot_data_list[-1].extra_kwargs["marker"] = "x"
 
     # This is used in ScalarDictAnalyzer.analyze_df to set the right colors
     for pld in plot_data_list:

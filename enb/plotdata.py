@@ -266,7 +266,8 @@ class HorizontalBand(PlottableData2D):
                  degradation_band_count=None,
                  std_band_add_xmargin=False,
                  **kwargs):
-        super().__init__(x_values=x_values, y_values=y_values, **kwargs)
+        super().__init__(x_values=x_values, y_values=y_values, extra_kwargs=kwargs)
+        self.extra_kwargs["lw"] = 0
         self.pos_height_values = np.array(pos_height_values)
         self.neg_height_values = np.array(neg_height_values)
         self.show_bounding_lines = show_bounding_lines if show_bounding_lines is not None else self.show_bounding_lines
@@ -305,14 +306,14 @@ class HorizontalBand(PlottableData2D):
                 band_y_values + pos_height_values * band_fraction,
                 band_y_values + pos_height_values * next_band_fraction,
                 alpha=self.alpha * band_probability,
-                color=self.color, edgecolor=None, facecolor=self.color, ls="solid", lw=0)
+                color=self.color, edgecolor=None, facecolor=self.color, lw=0)
             # Fill bottom
             axes.fill_between(
                 band_x_values,
                 band_y_values - neg_height_values * next_band_fraction,
                 band_y_values - neg_height_values * band_fraction,
                 alpha=self.alpha * band_probability,
-                color=self.color, edgecolor=None, facecolor=self.color, ls="solid", lw=0)
+                color=self.color, edgecolor=None, facecolor=self.color, lw=0)
 
         if self.show_bounding_lines:
             axes.plot(self.x_values, self.y_values + pos_height_values,
