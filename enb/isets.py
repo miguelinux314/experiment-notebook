@@ -277,7 +277,14 @@ class QuantizedImageVersion(ImageVersionTable):
 
     def version(self, input_path, output_path, row):
         img = load_array_bsq(file_or_path=input_path, image_properties_row=row)
-        img //= self.qstep
+        if math.log2(self.qstep) == int(math.log2(self.qstep)):
+            if options.verbose > 2:
+                print("[V]ersioning with shift")
+            img >>= int(math.log2(self.qstep))
+        else:
+            if options.verbose > 2:
+                print("[V]ersioning with division")
+            img //= self.qstep
         dump_array_bsq(array=img, file_or_path=output_path)
 
 
