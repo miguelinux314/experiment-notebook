@@ -25,9 +25,9 @@ __date__ = "01/04/2020"
 def entropy(data):
     """Compute the zero-order entropy of the provided data
     """
-    counter = collections.Counter(np.array(data, copy=False).flatten())
-    total_sum = sum(counter.values())
-    probabilities = (count / total_sum for value, count in counter.items())
+    values, count = np.unique(data, return_counts=True)
+    total_sum = sum(count)
+    probabilities = (count / total_sum for value, count in zip(values, count))
     return -sum(p * math.log2(p) for p in probabilities)
 
 
