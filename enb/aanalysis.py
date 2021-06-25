@@ -1238,7 +1238,7 @@ class HistogramKeyBinner:
         self.max_value = max_value
         self.bin_count = bin_count
         assert self.bin_count > 0
-        self.bin_width = (max_value - min_value) / self.bin_count
+        self.bin_width = max(1e-10, (max_value - min_value) / self.bin_count)
         self.intervals = [(min_value, min(min_value + self.bin_width, max_value))
                           for min_value in np.linspace(min_value, max(min_value, max_value - self.bin_width),
                                                        self.bin_count, endpoint=True)]
@@ -1436,7 +1436,7 @@ class ScalarDictAnalyzer(Analyzer):
                             column_x_min -= interval_width * epsilon
                             column_x_max += interval_width * epsilon
                     else:
-                        assert 0 < width_fraction < 1
+                        assert 0 < width_fraction <= 1
                         column_x_min = x_centroid - interval_width * 0.5 * width_fraction
                         column_x_max = x_centroid + interval_width * 0.5 * width_fraction
 
