@@ -362,6 +362,8 @@ class ScalarDistributionAnalyzer(Analyzer):
         lengths_by_group_name = {}
         if group_by:
             for group_name, group_df in full_df.groupby(group_by):
+                group_name = str(group_name) if isinstance(group_name, bool) else group_name
+
                 pool_scalar_into_analysis_df(analysis_df=analysis_df, analysis_label=group_name, data_df=group_df,
                                              pooler_suffix_tuples=pooler_suffix_tuples, columns=target_columns)
                 analysis_df.at[group_name, "count"] = len(group_df)
@@ -527,6 +529,8 @@ def pool_scalar_into_analysis_df(analysis_df, analysis_label, data_df, pooler_su
     """Pull columns into analysis using the poolers in pooler_suffix_tuples, with the specified
     suffixes.
     """
+    analysis_label = analysis_label if not isinstance(analysis_label, bool) else str(analysis_label)
+
     for column in columns:
         for pool_fun, suffix in pooler_suffix_tuples:
             analysis_df.at[analysis_label, f"{column}_{suffix}"] = pool_fun(data_df[column])
