@@ -1267,7 +1267,7 @@ class HistogramKeyBinner:
                     ignored_sum += v
             total_sum += v
 
-        if ignored_sum > 0 and options.verbose > 1:
+        if ignored_sum > 0 and options.verbose > 2:
             print(f"[W]arning: {self.__class__.__name__} ignorning {100 * ignored_sum / total_sum:.6f}% "
                   f"of the values, which lie outside {self.min_value, self.max_value}. This is OK if "
                   f"you specified x_min or x_max when using ScalarDictAnalyzer.get_df()")
