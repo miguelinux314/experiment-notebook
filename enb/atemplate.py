@@ -13,6 +13,10 @@ class ATemplate:
     __template = None
 
     def __init__(self, args=None):
+        if args is not None:
+            self.__args = args
+            self.arg_handler()
+
         """
         spec = importlib.util.spec_from_file_location("plugin_fits",
                                                       "~/Documents/UAB/2021/TFG/experiment-notebook/plugins/")
@@ -21,6 +25,7 @@ class ATemplate:
         """
 
     def arg_handler(self):
+
         if self.__args["operation"] is "new_template":
             print("Here: ")
             print(self.__args)

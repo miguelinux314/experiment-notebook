@@ -259,6 +259,15 @@ class TemplateOptions(singleton_cli.GlobalOptions):
         pass
     """
 
+    @cli_parsers_builder("c",
+                         group_name="General Options"
+                         , parser_parent="template"
+                         , default=False
+                         , action="store_true"
+                         , help="To create a new template.")
+    def create_new_template(self):
+        pass
+
     @cli_parsers_builder("l",
                          group_name="General Options"
                          , parser_parent="template"
