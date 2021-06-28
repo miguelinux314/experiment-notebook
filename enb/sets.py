@@ -143,8 +143,9 @@ class FileVersionTable(FilePropertiesTable):
           (it must contain all indices requested later with self.get_df()).
           If None, options.base_datset_dir is used
 
-        :param original_properties_table: instance of the file properties table (or subclass)
-          to be used. If None, a FilePropertiesTable is instanced automatically.
+        :param original_properties_table: instance of the file properties subclass
+          to be used when reading the original data to be versioned.
+          If None, a FilePropertiesTable is instanced automatically.
 
         :param csv_support_path: path to the file where results (of the versioned data) are to be
           long-term stored. If None, one is assigned by default based on options.persistence_dir.
@@ -155,16 +156,28 @@ class FileVersionTable(FilePropertiesTable):
         self.original_base_dir = os.path.abspath(os.path.realpath(original_base_dir)) \
             if original_base_dir is not None else options.base_dataset_dir
 
-        for base_class in self.__class__.__bases__:
-            if base_class is not FileVersionTable and issubclass(base_class, FilePropertiesTable):
-                default_class = base_class
-                break
-        else:
-            default_class = FilePropertiesTable
-
-        self.original_properties_table = original_properties_table \
-            if original_properties_table is not None \
-            else default_class(base_dir=self.original_base_dir)
+        # if original_properties_table is None:
+        #     # Filter base classes so that get_df is not invoked from any of the FileVersionTable.get_df hierarchy
+        #     filtered_classes = [self.__class__]
+        #     while filtered_classes and not issubclass(filtered_classes[0], FileVersionTable):
+        #         new_classes = [c for c in filtered_classes if not c.get_df is FileVersionTable.get_df]
+        #         filtered_classes = []
+        #         for new_class in new_classes:
+        #             if issubclass(new_class, FileVersionTable):
+        #                 filtered_classes.extend(new_class.__bases__)
+        #             else:
+        #                 filtered_classes.append(new_class)
+        #         print(f"[watch] filtered_classes={filtered_classes}")
+        #     if not filtered_classes:
+        #         raise SyntaxError(
+        #             f"Could not determine a non-FileVersionTable for original_properties_table = {original_properties_table}")
+        #     print(f"[watch] filtered_classes[0]={filtered_classes[0]}")
+        #
+        #     self.original_properties_table = filtered_classes[0](base_dir=self.original_base_dir)
+        # else:
+        #     self.original_properties_table = original_properties_table
+        self.original_properties_table = FilePropertiesTable(base_dir=self.original_base_dir) \
+            if original_properties_table is None else original_properties_table
         self.version_base_dir = os.path.abspath(os.path.realpath(version_base_dir))
         self.version_name = version_name
         self.current_run_version_times = {}
@@ -172,7 +185,9 @@ class FileVersionTable(FilePropertiesTable):
 
         assert self.version_base_dir is not None
         os.makedirs(self.version_base_dir, exist_ok=True)
-        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path, base_dir=original_base_dir)
+
+        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path,
+                                     base_dir=version_base_dir)
 
     def version(self, input_path, output_path, row):
         """Create a version of input_path and write it into output_path.
@@ -273,37 +288,20 @@ class FileVersionTable(FilePropertiesTable):
                         options=options)
                 assert reported_index == version_path, (reported_index, version_path)
 
-        # If check_generated_files was False, then the user may add as many files as desired
-        if not self.check_generated_files:
-            version_indices = [f for f in glob.glob(os.path.join(self.version_base_dir, "**", "*"), recursive=True)
-                               if os.path.isfile(f)]
-
         # Get the parent classes that define get_df methods different from this
-        base_classes = self.__class__.__bases__
-        previous_base_classes = []
-        while True:
+        base_classes = [self.__class__]
+        while base_classes and issubclass(base_classes[0], FileVersionTable):
             unique_classes = []
             for b in base_classes:
-                if b in unique_classes:
+                if b in unique_classes or b.get_df is FileVersionTable.get_df:
                     continue
-                try:
-                    if b.get_df == FileVersionTable.get_df:
-                        unique_classes.extend(b.__bases__)
-                    else:
-                        unique_classes.append(b)
-                except AttributeError:
-                    pass
-            if unique_classes == previous_base_classes:
-                break
-            unique_classes = [c for c in unique_classes if not c.get_df == FileVersionTable.get_df]
-
-            filtered_classes = []
-            for i, cls in enumerate(unique_classes):
-                if not any(issubclass(c, cls) for c in unique_classes[i + 1:]):
-                    filtered_classes.append(cls)
-
-            previous_base_classes = filtered_classes
-            base_classes = filtered_classes
+                elif issubclass(b, FileVersionTable):
+                    unique_classes.extend(b.__bases__)
+                elif hasattr(b, "get_df"):
+                    unique_classes.append(b)
+            base_classes = list(unique_classes)
+        if not base_classes:
+            base_classes = [FilePropertiesTable]
 
         try:
             filtered_type = type(f"filtered_{self.__class__.__name__}", tuple(base_classes), {})
@@ -311,6 +309,8 @@ class FileVersionTable(FilePropertiesTable):
         except TypeError as ex:
             raise ValueError(f"Invalid base classes: {base_classes}") from ex
 
+        version_indices = [f for f in glob.glob(os.path.join(self.version_base_dir, "**", "*.raw"), recursive=True)
+                           if os.path.isfile(f)]
         return filtered_type.get_df(
             self, target_indices=version_indices,
             parallel_row_processing=parallel_row_processing,
