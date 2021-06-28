@@ -555,14 +555,20 @@ def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
         if min_max_by_column[column][0] is None:
             min_max_by_column[column][0] = df[column].min()
             if math.isinf(min_max_by_column[column][0]) or math.isnan(min_max_by_column[column][0]):
-                min_max_by_column[column][0] = min(v for v in d[column]
-                                                   if not math.isinf(v) and not math.isnan(v))
+                try:
+                    min_max_by_column[column][0] = min(v for v in df[column]
+                                                       if not math.isinf(v) and not math.isnan(v))
+                except ValueError:
+                    min_max_by_column[column][0] = 0
 
         if min_max_by_column[column][1] is None:
             min_max_by_column[column][1] = df[column].max()
             if math.isinf(min_max_by_column[column][1]) or math.isnan(min_max_by_column[column][1]):
-                min_max_by_column[column][1] = max(v for v in d[column]
-                                                   if not math.isinf(v) and not math.isnan(v))
+                try:
+                    min_max_by_column[column][1] = max(v for v in df[column]
+                                                       if not math.isinf(v) and not math.isnan(v))
+                except ValueError:
+                    min_max_by_column[column][1] = 1
 
         if min_max_by_column[column][1] > 1:
             if column not in column_to_properties or column_to_properties[column].plot_min is None:
