@@ -109,7 +109,8 @@ class ColumnProperties:
     about rendering options.
     """
 
-    def __init__(self, name, fun=None, label=None, plot_min=None, plot_max=None,
+    def __init__(self, name, fun=None, label=None,
+                 plot_min=None, plot_max=None,
                  semilog_x=False, semilog_y=False,
                  semilog_x_base=10, semilog_y_base=10,
                  hist_label=None, hist_min=None, hist_max=None,

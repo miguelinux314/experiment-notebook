@@ -1,4 +1,4 @@
-# 2021/06/21 v0.2.7
+# 2021/06/30 v0.2.7
 
 * New functions:
   
@@ -24,8 +24,10 @@
       - Added Fpack, Fpzip, zfp codecs for FITs data.
       - Added standalone Zstandard codec.
   
-  * iset-based tables can now inherit from enb.isets.SampleDistributionTable to automatically compute dictionaries
+  * enb.iset-based tables can now inherit from enb.isets.SampleDistributionTable to automatically compute dictionaries
     containing probability mass functions.
+    
+  * Disabled ray's dashboard by default to speed up script startup and termination time.
     
 * Bug fixes:
       
