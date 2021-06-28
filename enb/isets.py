@@ -250,7 +250,8 @@ class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
     def __init__(self, version_base_dir, version_name,
                  original_base_dir=None, csv_support_path=None, check_generated_files=True,
                  original_properties_table=None):
-        original_properties_table = ImageGeometryTable() if original_properties_table is None else original_properties_table
+        original_properties_table = ImageGeometryTable(
+            base_dir=original_base_dir) if original_properties_table is None else original_properties_table
 
         super().__init__(version_base_dir=version_base_dir,
                          version_name=version_name,
@@ -267,7 +268,7 @@ class QuantizedImageVersion(ImageVersionTable):
         assert qstep == int(qstep)
         assert 1 <= qstep <= 65535
         qstep = int(qstep)
-        super().__init__(version_base_dir=version_base_dir,
+        ImageVersionTable.__init__(self, version_base_dir=version_base_dir,
                          version_name=f"{self.__class__.__name__}_qstep{qstep}",
                          original_base_dir=original_base_dir,
                          csv_support_path=csv_support_path,
