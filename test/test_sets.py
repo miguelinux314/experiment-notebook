@@ -72,22 +72,25 @@ class TestSets(unittest.TestCase):
                     """Trivial FileVersionTable that makes an identical copy of the original
                     """
                     version_name = "TrivialCopy"
+                    default_extension = "py"
 
-                    def __init__(self, original_properties_table):
+                    def __init__(self):
                         super().__init__(version_name=self.version_name,
                                          original_base_dir=os.path.dirname(os.path.abspath(__file__)),
-                                         original_properties_table=original_properties_table,
                                          version_base_dir=tmp_dir)
+                        self.default_extension = "py"
 
                     def version(self, input_path, output_path, row):
                         shutil.copy(input_path, output_path)
                         assert os.path.getsize(input_path) == os.path.getsize(output_path)
 
                 fpt = sets.FilePropertiesTable()
-                fpt_df = fpt.get_df(target_indices=target_indices)
+                fpt.default_extension = "py"
+                fpt_df = fpt.get_df()
                 fpt_df["original_file_path"] = fpt_df["file_path"]
-                tvt = TrivialVersionTable(original_properties_table=fpt)
-                tvt_df = tvt.get_df(target_indices=target_indices)
+                tvt = TrivialVersionTable()
+                tvt.default_extension = "py"
+                tvt_df = tvt.get_df()
 
                 lsuffix = "_original"
                 rsuffix = f"_{tvt.version_name}"
@@ -105,6 +108,7 @@ class TestSets(unittest.TestCase):
                         assert np.all(joint_df[column] == joint_df[version_column]), \
                             f"Columns {column} and {version_column} differ: " \
                             f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
+
             finally:
                 shutil.rmtree(tmp_dir)
 
