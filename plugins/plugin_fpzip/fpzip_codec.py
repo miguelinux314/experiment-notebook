@@ -31,7 +31,7 @@ class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
         return "fpzip"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        assert original_file_info["dynamic_range_bits"] == 6, 'data type must be float 32'
+        assert original_file_info["bytes_per_sample"] == 4 and original_file_info["float"] == True,'data type must be float 32'
         dimensions = 1
 
         return f"-i {os.path.abspath(original_path)} " \
