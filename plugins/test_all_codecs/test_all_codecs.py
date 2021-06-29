@@ -236,9 +236,16 @@ if __name__ == '__main__':
                                      reconstructed_path=tmp_reconstructed.name,
                                      original_file_info=row_info)
 
-                        match = re.search(r"(u|s)(\d+)be", os.path.basename(os.path.dirname(input_path)))
-                        signed = match.group(1) == "s"
-                        bits_per_sample = int(match.group(2))
+                        print(f"[watch] column_name={column_name}")
+                        
+                        match = re.search(r"(u|s)(\d+)be", column_name)
+                        if match:
+                            signed = match.group(1) == "s"
+                            bits_per_sample = int(match.group(2))
+                        else:
+                            match = re.search(r"f(\d+)", column_name)
+                            signed = True
+                            bits_per_sample = int(match.group(1))
 
                         min_compression_ratio_by_name[c.label] = min(
                             min_compression_ratio_by_name[c.label],
