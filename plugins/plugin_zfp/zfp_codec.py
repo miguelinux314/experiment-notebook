@@ -19,7 +19,7 @@ class Zfp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
         """
         super().__init__(compressor_path=zfp_binary,
                          decompressor_path=zfp_binary,
-                         param_dict=dict(dtype=dtype))
+                         param_dict=dict())
 
     @property
     def name(self):
@@ -35,22 +35,35 @@ class Zfp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
         return "zfp"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        assert original_file_info["dynamic_range_bits"] != 16, 'data type can not be 16 bpp'
+        assert original_file_info["bytes_per_sample"] != 2, 'data type can not be 16 bpp'
         dimensions = 1
 
-        return f"-i {os.path.abspath(original_path)} " \
-               f"-z {os.path.abspath(compressed_path)} " \
-               f"-t {self.param_dict['dtype']} " \
-               f"-{dimensions} {original_file_info.samples} -R"
+        if original_file_info.float == True:
+            return f"-i {os.path.abspath(original_path)} " \
+                   f"-z {os.path.abspath(compressed_path)} " \
+                   f"-t f{original_file_info.bytes_per_sample*8} " \
+                   f"-{dimensions} {original_file_info.samples} -R"
+        
+        if original_file_info.float == False:
+            return f"-i {os.path.abspath(original_path)} " \
+                   f"-z {os.path.abspath(compressed_path)} " \
+                   f"-t i{original_file_info.bytes_per_sample*8} " \
+                   f"-{dimensions} {original_file_info.samples} -R"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         dimensions = 1
         # TODO: include {original_file_info.samples} instead of defining a dummy variable (here and everywhere else)
-
-        return f" -z {os.path.abspath(compressed_path)} " \
-               f"-o {os.path.abspath(reconstructed_path)}  " \
-               f"-t {self.param_dict['dtype']} " \
-               f"-{dimensions} {original_file_info.samples} -R"
+        if original_file_info.float == True:
+            return f" -z {os.path.abspath(compressed_path)} " \
+                   f"-o {os.path.abspath(reconstructed_path)}  " \
+                   f"-t f{original_file_info.bytes_per_sample*8} " \
+                   f"-{dimensions} {original_file_info.samples} -R"
+        
+        if original_file_info.float == False:
+            return f" -z {os.path.abspath(compressed_path)} " \
+                   f"-o {os.path.abspath(reconstructed_path)}  " \
+                   f"-t i{original_file_info.bytes_per_sample*8} " \
+                   f"-{dimensions} {original_file_info.samples} -R"
 
 
 if __name__ == '__main__':
