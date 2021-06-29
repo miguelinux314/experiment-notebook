@@ -26,9 +26,6 @@ from setuptools import setup, find_packages
 import io
 import codecs
 import os
-import sys
-import glob
-import subprocess
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -46,9 +43,9 @@ def read(*filenames, **kwargs):
 setup(
     # Meta
     name='enb',
-    version="0.2.6",
+    version="0.2.7",
     url='https://github.com/miguelinux314/experiment-notebook',
-    # download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.6.tar.gz",
+    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.7.tar.gz",
     license='MIT',
     author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
     author_email='miguel.hernandez@uab.cat',
@@ -73,11 +70,11 @@ setup(
     },
 
     # Setup config
-    setup_requires=['wheel'],
+    setup_requires=['wheel', 'deprecation'],
     install_requires=[
-        'wheel', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
+        'wheel', 'deprecation', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw', 'astropy'],
+        'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation'],
     packages=find_packages(),
 
     include_package_data=True,

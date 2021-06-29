@@ -8,7 +8,6 @@ import math
 import numpy as np
 import re
 import collections
-import copy
 import imageio
 
 import enb.sets
@@ -26,9 +25,9 @@ __date__ = "01/04/2020"
 def entropy(data):
     """Compute the zero-order entropy of the provided data
     """
-    counter = collections.Counter(np.array(data, copy=False).flatten())
-    total_sum = sum(counter.values())
-    probabilities = (count / total_sum for value, count in counter.items())
+    values, count = np.unique(data, return_counts=True)
+    total_sum = sum(count)
+    probabilities = (count / total_sum for value, count in zip(values, count))
     return -sum(p * math.log2(p) for p in probabilities)
 
 
@@ -181,6 +180,7 @@ class ImagePropertiesTable(ImageGeometryTable):
         row["byte_value_avg"] = contents.mean()
         row["byte_value_std"] = contents.std()
 
+
 class SampleDistributionTable(ImageGeometryTable):
     @enb.atable.column_function(
         [enb.atable.ColumnProperties("sample_distribution",
@@ -245,15 +245,79 @@ class BandEntropyTable(ImageGeometryTable):
                              for i in range(row["component_count"])}
 
 
-def load_array_bsq(file_or_path, image_properties_row):
+class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
+
+    def __init__(self, version_base_dir, version_name,
+                 original_base_dir=None, csv_support_path=None, check_generated_files=True,
+                 original_properties_table=None):
+        original_properties_table = ImageGeometryTable(
+            base_dir=original_base_dir) if original_properties_table is None else original_properties_table
+
+        super().__init__(version_base_dir=version_base_dir,
+                         version_name=version_name,
+                         original_properties_table=original_properties_table,
+                         original_base_dir=original_base_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=check_generated_files)
+
+
+class QuantizedImageVersion(ImageVersionTable):
+    def __init__(self, version_base_dir, qstep,
+                 original_base_dir=None, csv_support_path=None, check_generated_files=True,
+                 original_properties_table=None):
+        assert qstep == int(qstep)
+        assert 1 <= qstep <= 65535
+        qstep = int(qstep)
+        ImageVersionTable.__init__(self, version_base_dir=version_base_dir,
+                         version_name=f"{self.__class__.__name__}_qstep{qstep}",
+                         original_base_dir=original_base_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=check_generated_files,
+                         original_properties_table=original_properties_table)
+        self.qstep = qstep
+
+    def version(self, input_path, output_path, row):
+        img = load_array_bsq(file_or_path=input_path, image_properties_row=row)
+        if math.log2(self.qstep) == int(math.log2(self.qstep)):
+            if options.verbose > 3:
+                print("[V]ersioning with shift")
+            img >>= int(math.log2(self.qstep))
+        else:
+            if options.verbose > 3:
+                print("[V]ersioning with division")
+            img //= self.qstep
+        dump_array_bsq(array=img, file_or_path=output_path)
+
+
+def load_array_bsq(file_or_path, image_properties_row,
+                   width=None, height=None, component_count=None, dtype=None):
     """Load a numpy array indexed by [x,y,z] from file_or_path using
     the geometry information in image_properties_row.
+
+    :param file_or_path: either a string with the path to the input file,
+      or a file open for reading (typically with "b" mode).
+    :param image_properties_row: if not None, it shall be a dict-like object. The
+      width, height, component_count, bytes_per_sample, signed, big_endian and float
+      keys should be present to determine the read parameters. The remaining arguments overwrite
+      those defined in image_properties_row (if image_properties_row is not None and if present).
+      If None, none of the remaining parameters can be None.
+    :param width: if not None, force the read to assume this image width
+    :param height: if not None, force the read to assume this image height
+    :param component_count: if not None, force the read to assume this number of components (bands)
+    :param dtype: if not None, it must by a valid argument for dtype in numpy, and will be used for reading. In
+      this case, the bytes_per_sample, signed, big_endian and float keys are not accessed in image_properties_row.
+    :return: a 3-D numpy array with the image data, which can be indexed as [x,y,z].
     """
-    return np.fromfile(file_or_path,
-                       dtype=iproperties_row_to_numpy_dtype(image_properties_row)).reshape(
-        (image_properties_row["component_count"],
-         image_properties_row["height"],
-         image_properties_row["width"])).swapaxes(0, 2)
+    if image_properties_row is None:
+        assert not any(v is None for v in (width, height, component_count, dtype)), \
+            f"image_properties_row={image_properties_row} but some None in " \
+            f"(width, height, component_count, dtype): {(width, height, component_count, dtype)}."
+    width = width if width is not None else image_properties_row["width"]
+    height = height if height is not None else image_properties_row["height"]
+    component_count = component_count if component_count is not None else image_properties_row["component_count"]
+    dtype = dtype if dtype is not None else iproperties_row_to_numpy_dtype(image_properties_row)
+
+    return np.fromfile(file_or_path, dtype=dtype).reshape(component_count, height, width).swapaxes(0, 2)
 
 
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):

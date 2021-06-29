@@ -6,6 +6,7 @@ import torch.nn as nn
 import numpy as np
 
 import enb
+import enb.atable
 from enb import experiment
 from enb import sets
 from enb.config import get_options
@@ -143,7 +144,7 @@ class MachineLearningExperiment(experiment.Experiment):
         self.tasks = list(models)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else sets.get_all_test_files()
+            else enb.atable.get_all_test_files()
 
         self.dataset_paths = dataset_paths  # TODO: remove this
 
