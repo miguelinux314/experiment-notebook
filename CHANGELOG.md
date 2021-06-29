@@ -1,3 +1,42 @@
+# 2021/06/30 v0.2.7
+
+* New functions:
+  
+  * Added support to plot columns that contain dictionaries with numeric values (see enb.aanalysis.ScalarDictAnalyzer): 
+    
+    - String keys are supported. In this case, they are assumed to be class names, and are shown by default 
+      as elements across the x_axis.
+      
+    - Number to number mappings are also supported. Typical examples are 
+      histograms, probability mass functions (PMFs/discrete PDFs), and cumulative distribution functions (CDFs). 
+      These can be expressed as a dict-like object mapping x to P(x). 
+      
+    - The `combine_keys` argument can be used to easily plot PMFs/PDFs as histograms, rebin existing histrograms,
+      or regroup class names (e.g., one could have data for `arms`, `head`, `legs`, `feet` 
+      as class names (dictionary key values), and easily combine them into `upper_body` and `lower_body` before
+      analysis.
+      
+    - More generally, any object that supports the comparison interface can be used for the key values, as these
+      are sorted by default.
+      
+  * Added a codec support:
+      - enb.isets.FITSWrapper can now be used to easily define codecs that need .fit/.fits files as an input.
+      - Added Fpack, Fpzip, zfp codecs for FITs data.
+      - Added standalone Zstandard codec.
+  
+  * enb.iset-based tables can now inherit from enb.isets.SampleDistributionTable to automatically compute dictionaries
+    containing probability mass functions.
+    
+  * Disabled ray's dashboard by default to speed up script startup and termination time.
+    
+* Bug fixes:
+      
+  - Fixed potential problems when defining subclasses of enb.sets.FileVersionTable. One should now be able to freely
+    mix and match versioning tables without syntax errors.
+    
+  - Fixed FITS codec endianness
+  
+
 # 2021/05/13 v0.2.6
 
 * New functions:
