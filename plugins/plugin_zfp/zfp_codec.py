@@ -13,7 +13,7 @@ class Zfp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
     Allowed data type to be compressed: integer 32 & 64 , float 32 & 64
     """
 
-    def __init__(self, dtype='f32', zfp_binary=os.path.join(os.path.dirname(__file__), "zfp")):
+    def __init__(self, zfp_binary=os.path.join(os.path.dirname(__file__), "zfp")):
         """
         param:dtype: valid types in zfp are f32, f64, i32 and i64
         """
