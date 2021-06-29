@@ -184,11 +184,11 @@ and :class:`enb.aanalysis.TwoColumnLineAnalyzer`, as well as other classes in th
    
 The promised line plot with error range
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/lossy_compression_experiment/png_plots/plot_line_bpppc_pae.png
 
 Another plot showing the histogram of efficiencies (based on 2-byte zero-order entropy)
 for the JPEG-LS and M-CALIC codecs is shown below as well:
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/master/templates/lossy_compression_experiment/png_plots/distribution_compression_efficiency_2byte_entropy.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/lossy_compression_experiment/png_plots/distribution_compression_efficiency_2byte_entropy.png
 
 

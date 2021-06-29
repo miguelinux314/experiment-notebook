@@ -30,9 +30,10 @@ def init_ray(force=False):
                 if options.verbose:
                     print(f"Joining cluster [config: {address_line}] "
                           f"[CPUlimit={options.ray_cpu_limit}]...")
-                ray.init(address=address_line, num_cpus=options.ray_cpu_limit)
+                ray.init(address=address_line, num_cpus=options.ray_cpu_limit,
+                         include_dashboard=False)
         else:
             if options.verbose:
                 print("Making new cluster...")
 
-            ray.init(num_cpus=options.ray_cpu_limit)
+            ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False)

@@ -256,7 +256,7 @@ class WrapperCodec(AbstractCodec):
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
         if options.verbose > 2:
-            print(f"[watch] WrapperCodec:compress: invocation={invocation}")
+            print(f"[{self.name}] Invocation: '{invocation}'")
 
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
@@ -638,8 +638,6 @@ class CompressionExperiment(experiment.Experiment):
 
                         if not os.path.isfile(tmp_reconstructed_path) or os.path.getsize(
                                 self._decompression_results.reconstructed_path) == 0:
-                            print('1111111111111', tmp_reconstructed_path,
-                                  self._decompression_results.reconstructed_path)
                             print(os.path.getsize(
                                 self._decompression_results.reconstructed_path))
                             raise CompressionException(
