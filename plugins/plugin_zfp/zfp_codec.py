@@ -38,13 +38,19 @@ class Zfp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
         assert original_file_info["dynamic_range_bits"] != 16, 'data type can not be 16 bpp'
         dimensions = 1
 
-        return f"-i {original_path}  -z {compressed_path} -t {self.param_dict['dtype']} -{dimensions} {original_file_info.samples} -R"
+        return f"-i {os.path.abspath(original_path)} " \
+               f"-z {os.path.abspath(compressed_path)} " \
+               f"-t {self.param_dict['dtype']} " \
+               f"-{dimensions} {original_file_info.samples} -R"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         dimensions = 1
         # TODO: include {original_file_info.samples} instead of defining a dummy variable (here and everywhere else)
 
-        return f" -z {compressed_path} -o {reconstructed_path}  -t {self.param_dict['dtype']} -{dimensions} {original_file_info.samples} -R"
+        return f" -z {os.path.abspath(compressed_path)} " \
+               f"-o {os.path.abspath(reconstructed_path)}  " \
+               f"-t {self.param_dict['dtype']} " \
+               f"-{dimensions} {original_file_info.samples} -R"
 
 
 if __name__ == '__main__':
