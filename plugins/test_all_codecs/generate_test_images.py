@@ -50,7 +50,7 @@ if __name__ == '__main__':
                     with open(output_path, "wb") as output_file:
                         output_file.write(bytes(samples.astype(dtype)))
                         
-            for bytes_per_sample in [2,4,8]:
+            for bytes_per_sample in [2,4]:
                 if signed and bytes_per_sample == 1:
                     continue
 
