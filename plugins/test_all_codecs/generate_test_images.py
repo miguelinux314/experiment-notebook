@@ -68,12 +68,32 @@ if __name__ == '__main__':
                     output_path = os.path.join(output_dir, f"sample_{type}-{geometry}.raw")
 
                     total_samples = width*height*component_count
-                    if signed:
-                        min_sample_value = np.finfo('f').min
-                        max_sample_value = np.finfo('f').max
-                    else:
-                        min_sample_value = np.finfo('f').min
-                        max_sample_value = np.finfo('f').max
+                    
+                    if bytes_per_sample == 2:
+                        if signed:
+                            min_sample_value = np.finfo(np.float16).min
+                            max_sample_value = np.finfo(np.float16).max
+                        else:
+                            min_sample_value = np.finfo(np.float16).min
+                            max_sample_value = np.finfo(np.float16).max
+                        
+                    if bytes_per_sample == 4:
+                        if signed:
+                            min_sample_value = np.finfo(np.float32).min
+                            max_sample_value = np.finfo(np.float32).max
+                        else:
+                            min_sample_value = np.finfo(np.float32).min
+                            max_sample_value = np.finfo(np.float32).max
+                        
+                    if bytes_per_sample == 8:
+                        if signed:
+                            min_sample_value = np.finfo(np.float64).min
+                            max_sample_value = np.finfo(np.float64).max
+                        else:
+                            min_sample_value = np.finfo(np.float64).min
+                            max_sample_value = np.finfo(np.float64).max
+                        
+                        
                     samples = np.zeros(total_samples)
                     for i in range(total_samples):
                         samples[i] = min_sample_value + i % (max_sample_value - min_sample_value + 1)
