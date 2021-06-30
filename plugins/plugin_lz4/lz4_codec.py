@@ -32,7 +32,7 @@ class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
 
     @property
     def label(self):
-        return "lz4"
+        return "LZ4"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f" -{self.param_dict['compression_level']} -k {original_path}  {compressed_path}" 

@@ -49,9 +49,10 @@ class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
         return "FPACK"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f" -{self.param_dict['compression_method']}   " \
-               f" -q {self.param_dict['quantization']} -s {self.param_dict['scale']}" \
-               f"-O {compressed_path} {original_path}  "
+        return f" -{self.param_dict['compression_method']} " + \
+               (f" -q {self.param_dict['quantization']} " if self.param_dict["compression_method"] == "g" else " ") + \
+               f" -s {self.param_dict['scale']} " \
+               f" -O {compressed_path} {original_path} "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -O {reconstructed_path} {compressed_path} "
@@ -59,6 +60,7 @@ class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
 
 if __name__ == '__main__':
     from enb.config import options
+
     # options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                             "/data/research-materials/astronomical_data/RAW")
