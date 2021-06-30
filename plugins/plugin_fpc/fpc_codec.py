@@ -32,11 +32,11 @@ class Fpc(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
 
     @property
     def label(self):
-        return "fpc"
+        return "FPC"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f" {self.param_dict['compression_level']} <{original_path}>  {compressed_path}" 
 
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f" <{compressed_path}> {reconstructed_path} " 
+        return f" < {compressed_path} > {reconstructed_path} "
