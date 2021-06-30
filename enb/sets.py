@@ -251,11 +251,11 @@ class FileVersionTable(FilePropertiesTable):
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None else not options.sequential
         overwrite = overwrite if overwrite is not None else options.force
 
-        assert all(index == get_canonical_path(index) for index in target_indices)
+        assert all(index == enb.atable.get_canonical_path(index) for index in target_indices)
         original_df = self.original_properties_table.get_df(target_indices=target_indices,
                                                             target_columns=target_columns)
 
-        target_indices = [get_canonical_path(index)
+        target_indices = [enb.atable.get_canonical_path(index)
                           for index in target_indices]
         version_indices = [self.original_to_versioned_path(index)
                            for index in target_indices]
