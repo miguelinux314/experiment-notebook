@@ -41,6 +41,9 @@ from plugins import plugin_fpack
 from plugins import plugin_zstandard
 from plugins import plugin_fpzip
 from plugins import plugin_zfp
+from plugins import plugin_fpc
+from plugins import plugin_spdp
+from plugins import plugin_lz4
 
 if __name__ == '__main__':
     all_codecs = []
@@ -184,7 +187,25 @@ if __name__ == '__main__':
         all_codecs.append(c)
         zfp_family.add_task(c.name, f"{c.label}")
     all_families.append(zfp_family)
-
+    
+    fpc_family = enb.aanalysis.TaskFamily(label="FPC")
+    for c in (plugin_fpc.fpc_codec.Fpc(),):
+        all_codecs.append(c)
+        fpc_family.add_task(c.name, f"{c.label}")
+    all_families.append(fpc_family)
+    
+    spdp_family = enb.aanalysis.TaskFamily(label="SPDP")
+    for c in (plugin_spdp.spdp_codec.Spdp(),):
+        all_codecs.append(c)
+        spdp_family.add_task(c.name, f"{c.label}")
+    all_families.append(spdp_family)
+     
+    lz4_family = enb.aanalysis.TaskFamily(label="LZ$")
+    for c in (plugin_lz4.lz4_codec.Lz4(),):
+        all_codecs.append(c)
+        lz4_family.add_task(c.name, f"{c.label}")
+    all_families.append(lz4_family)
+   
     label_by_group_name = dict()
     for family in all_families:
         label_by_group_name.update(family.name_to_label)
