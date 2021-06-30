@@ -57,12 +57,12 @@ if __name__ == '__main__':
                 for missing_bits in range(8):
                     bits_per_sample = 8 * bytes_per_sample - missing_bits
 
-                    output_dir = os.path.join(base_dir, f"{label}_{'s' if signed else 'u' and 'f'}{bits_per_sample}be")
+                    output_dir = os.path.join(base_dir, f"{label}_{'s' if signed else 'f'}{bits_per_sample}be")
                     shutil.rmtree(output_dir, ignore_errors=True)
                     os.makedirs(output_dir)
                     
-                    type = f"{'s' if signed else 'u' and 'f'}{8 * bytes_per_sample}be"
-                    dtype = f"{'>i' if signed else '>u' and 'f'}{bytes_per_sample}"
+                    type = f"{'s' if signed else 'f'}{8 * bytes_per_sample}be"
+                    dtype = f"{'>i' if signed else 'f'}{bytes_per_sample}"
                     
                     geometry = f"{component_count}x{height}x{width}"
                     output_path = os.path.join(output_dir, f"sample_{type}-{geometry}.raw")
@@ -72,8 +72,8 @@ if __name__ == '__main__':
                         min_sample_value = - (2 ** (bits_per_sample-1))
                         max_sample_value = 2 ** (bits_per_sample-1) - 1
                     else:
-                        min_sample_value = 0
-                        max_sample_value = 2**bits_per_sample - 1
+                        min_sample_value = np.finfo('f').min
+                        max_sample_value = np.finfo('f').max
                     samples = np.zeros(total_samples)
                     for i in range(total_samples):
                         samples[i] = min_sample_value + i % (max_sample_value - min_sample_value + 1)
