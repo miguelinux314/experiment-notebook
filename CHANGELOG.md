@@ -19,9 +19,9 @@
     - More generally, any object that supports the comparison interface can be used for the key values, as these
       are sorted by default.
       
-  * Added a codec support:
+  * Added codec support:
       - enb.isets.FITSWrapper can now be used to easily define codecs that need .fit/.fits files as an input.
-      - Added Fpack, Fpzip, zfp codecs for FITs data.
+      - Added FPACK, FPZIP, ZFP, Zstandard codecs for FITS (potentially float) data.
       - Added standalone Zstandard codec.
   
   * enb.iset-based tables can now inherit from enb.isets.SampleDistributionTable to automatically compute dictionaries

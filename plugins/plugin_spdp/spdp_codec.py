@@ -32,11 +32,11 @@ class Spdp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, e
 
     @property
     def label(self):
-        return "spdp"
+        return "SPDP"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f" {self.param_dict['compression_level']} <{original_path}>  {compressed_path}" 
 
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f" <{compressed_path}> {reconstructed_path} " 
+        return f" < {compressed_path} > {reconstructed_path} "
