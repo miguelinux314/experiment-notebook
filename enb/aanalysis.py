@@ -484,7 +484,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
         range = None
     if range is not None:
         if range[0] == range[1]:
-            range[1] = range[0] + 1
+            range = (range[0], range[0] + 1)
 
     hist_y_values, bin_edges = np.histogram(
         column_df.values, bins=hist_bin_count, range=range, density=False)
