@@ -450,12 +450,14 @@ class ScalarDistributionAnalyzer(Analyzer):
                     except KeyError:
                         y_labels_by_group_name[group] = f"{group} ({length})" if show_count else f"{group}"
 
+            group_str = f"_groupby-{group_by}" if group_by is not None else ""
+
             expected_return_ids.append(
                 ray_render_plds_by_group.remote(
                     options=ray.put(options),
                     pds_by_group_name=ray.put(pds_by_group_name),
                     output_plot_path=ray.put(os.path.join(output_plot_dir,
-                                                          f"distribution_{column_name}.pdf")),
+                                                          f"distribution{group_str}_{column_name}.pdf")),
                     column_properties=ray.put(column_to_properties[column_name]
                                               if column_name in column_to_properties else None),
                     horizontal_margin=ray.put(histogram_bin_width),
