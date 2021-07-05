@@ -329,6 +329,11 @@ if __name__ == '__main__':
     all_target_dir_names = ["mono_u8be", "rgb_u8be", "multi_u8be",
                             "mono_u16be", "rgb_u16be", "multi_u16be",
                             "mono_s16be", "rgb_s16be", "multi_s16be",
+                            "mono_u32be", "rgb_u32be", "multi_u32be",
+                            "mono_s32be", "rgb_s32be", "multi_s32be",
+                            "mono_f16", "rgb_f16", "multi_f16",
+                            "mono_f32", "rgb_f32", "multi_f32",
+                            "mono_f64", "rgb_f64", "multi_f64",
                             "codec_name",
                             "lossless_range", "cr_range"]
 
@@ -336,13 +341,19 @@ if __name__ == '__main__':
         "8bit Mono", "8bit RGB", "8bit Multi",
         "16bit Mono", "16bit RGB", "16bit Multi",
         "Sig. 16bit Mono", "Sig. 16bit RGB", "Sig. 16bit Multi",
+        "32bit Mono", "32bit RGB", "32bit Multi",
+        "Sig. 32bit Mono", "Sig. 32bit RGB", "Sig. 32bit Multi",
+        "f16bit Mono", "f16bit RGB", "f16bit Multi",
+        "f32bit Mono", "f32bit RGB", "f32bit Multi",
+        "f32bit Mono", "f32bit RGB", "f32bit Multi",
         "Lossless range", "CR range"
     ]
 
     full_df = df_capabilities.copy()
-    for i, group_name in enumerate(["u8be", "u16be", "s16be"]):
-        old_col_names = all_target_dir_names[i * 3:(i + 1) * 3] + all_target_dir_names[-2:]
-        new_col_names = all_column_names[i * 3:(i + 1) * 3] + all_column_names[-2:]
+    for i, group_name in enumerate(["u8be", "u16be", "s16be", "u32be", "s32be",  "f16", "f32", "f64", "Range"]):
+        groups = max(enumerate(["u8be", "u16be", "s16be",  "u32be", "s32be",  "f16", "f32", "f64", "Range"]))[0]
+        old_col_names = (all_target_dir_names[i * 3:(i + 1) * 3])*(1-math.floor(i/groups))+ all_target_dir_names[-2:]*math.floor(i/groups)
+        new_col_names = (all_column_names[i * 3:(i + 1) * 3])*(1-math.floor(i/groups)) + all_column_names[-2:]*math.floor(i/groups)
         df_capabilities = full_df.copy()
 
         df_colors = df_capabilities.copy()
