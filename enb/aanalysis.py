@@ -112,6 +112,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
 
+    if len(pds_by_group_name) < 1:
+        if options.verbose > 1:
+            print("[W]arning: trying to render an empty pds_by_group_name dict. "
+                  f"output_plot_path={output_plot_path}, column_properties={column_properties}. "
+                  f"No analysis is performed.")
+        return
+
     fig_width = options.fig_width if fig_width is None else fig_width
     global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
 
@@ -130,11 +137,20 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         sorted_group_names = sorted(pds_by_group_name.keys(),
                                     key=lambda s: "" if s == "all" else str(s).strip().lower())
     else:
+        sorted_group_names = []
         for group_name in group_name_order:
-            assert group_name in pds_by_group_name, \
-                f"The provided list group_name_order contains the group name {group_name}, " \
-                f"which is not contained in the provided groups ({pds_by_group_name})."
-        sorted_group_names = list(group_name_order)
+            if group_name not in pds_by_group_name:
+                if options.verbose > 2:
+                    print(f"[W]arning: {group_name} was provided in group_name_order but is not one of the "
+                          f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Ignoring.")
+            else:
+                sorted_group_names.append(group_name)
+        for g in pds_by_group_name.keys():
+            if g not in sorted_group_names:
+                if options.verbose > 2:
+                    print(f"[W]arning: {g} was not provided in group_name_order but is one of the "
+                          f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
+                sorted_group_names.append(g)
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
@@ -145,7 +161,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if os.path.dirname(output_plot_path):
         os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
     fig, group_axis_list = plt.subplots(
-        nrows=len(sorted_group_names) if not combine_groups else 1,
+        nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
         ncols=1, sharex=True, sharey=combine_groups,
         figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
 
@@ -480,10 +496,15 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     """
     column_df = df[column]
     range = tuple(min_max_by_column[column])
+    if range == (None, None):
+        range = None
+    if range is not None:
+        if range[0] == range[1]:
+            range = (range[0], range[0] + 1)
 
     hist_y_values, bin_edges = np.histogram(
         column_df.values, bins=hist_bin_count, range=range, density=False)
-    hist_y_values = hist_y_values / len(column_df)
+    hist_y_values = hist_y_values / len(column_df) if len(column_df) > 0 else hist_y_values
 
     if abs(sum(hist_y_values) - 1) > 1e-10:
         if math.isinf(df[column].max()) or math.isinf(df[column].min()):
@@ -498,7 +519,9 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                       f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
                       f"Note that plot_min and plot_max column properties might be affecting this range.")
 
-    hist_y_values = hist_y_values / hist_y_values.sum() if hist_y_values else hist_y_values
+    hist_y_values = hist_y_values / hist_y_values.sum() \
+        if hist_y_values.sum() > 0 and len(hist_y_values) > 0 and np.isfinite(hist_y_values / hist_y_values.sum()).all() \
+        else hist_y_values
 
     x_label = column if (properties is None or not properties.label) else properties.label
 
