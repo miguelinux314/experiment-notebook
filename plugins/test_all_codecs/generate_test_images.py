@@ -63,7 +63,7 @@ if __name__ == '__main__':
                             shutil.rmtree(output_dir, ignore_errors=True)
                             os.makedirs(output_dir)
 
-                            type = f"{'s' if signed else 'u'}{8 * bytes_per_sample}"
+                            type = f"{'s' if signed else 'u'}{8 * bytes_per_sample}be"
                             dtype = f">{'i' if signed else 'u'}{bytes_per_sample}"
                             geometry = f"{component_count}x{height}x{width}"
                             output_path = os.path.join(output_dir, f"sample_{type}-{geometry}.raw")
