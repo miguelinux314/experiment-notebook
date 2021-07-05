@@ -1,4 +1,5 @@
 wheel
+deprecation
 pandas
 psutil
 ray[default]
@@ -12,3 +13,4 @@ redis
 sphinx_rtd_theme
 numpngw
 astropy
+deprecation
