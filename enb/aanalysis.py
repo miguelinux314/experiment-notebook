@@ -45,7 +45,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                              global_y_label_pos=None, legend_column_count=None,
                              show_grid=None,
                              x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
-                             semilog_y=None, semilog_y_base=10, **kwargs):
+                             semilog_y=None, semilog_y_base=10):
     """Ray wrapper for render_plds_by_group"""
     # (options automatically propagated)
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
@@ -63,7 +63,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 x_tick_list=x_tick_list,
                                 x_tick_label_list=x_tick_label_list,
                                 x_tick_label_angle=x_tick_label_angle,
-                                semilog_y=semilog_y, semilog_y_base=semilog_y_base, **kwargs)
+                                semilog_y=semilog_y, semilog_y_base=semilog_y_base)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
@@ -75,8 +75,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          group_name_order=None,
                          fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
                          show_grid=None, x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
-                         semilog_y=None, semilog_y_base=10,
-                         **kwargs):
+                         semilog_y=None, semilog_y_base=10):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
     for all groups for easier comparison.
@@ -109,9 +108,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param x_tick_list: if not None, these ticks will be displayed
     :param x_tick_label_list: if not None, these labels will be displayed. Only used when x_tick_list is not None.
     :param x_tick_label_angle: when label ticks are specified, they will be rotated to this angle
-
-    :param kwargs: no additional keyword arguments are recognized. Any element present in kwargs will be reported
-      in a warning.
     """
     if options.verbose > 1:
         for k, v in kwargs.items():
@@ -1317,8 +1313,7 @@ class ScalarDictAnalyzer(Analyzer):
                    x_tick_label_angle=90, show_grid=True, combine_groups=False,
                    fig_height=None, fig_width=None,
                    semilog_y=False, semilog_y_base=10, show_h_bars=False,
-                   global_y_label="",
-                   **kwargs):
+                   global_y_label=""):
         """For each target column, analyze dictionary values stored in each cell.
         Scalar analysis is applied on each key found in the dictionaries.
 
@@ -1367,7 +1362,6 @@ class ScalarDictAnalyzer(Analyzer):
         :param semilog_y_base: use this base if semilog_y is True.
         :param show_h_bars: if True, +/- 0.5 horizontal bars are shown at each data point.
           Useful for coarsely classified data.
-        :param kwargs: any additional keyword arguments are passed directly to render_plds_by_group
 
         All remaining parameters are as defined in :class:`Analyzer` or :func:`enb.aanalysis.render_plds_by_group`.
         """
@@ -1618,8 +1612,7 @@ class ScalarDictAnalyzer(Analyzer):
                         fig_height=ray.put(fig_height),
                         fig_width=ray.put(fig_width),
                         semilog_y=ray.put(semilog_y),
-                        group_name_order=ray.put(group_name_order),
-                        kwargs=ray.put(kwargs)))
+                        group_name_order=ray.put(group_name_order)))
                 else:
                     render_plds_by_group(pds_by_group_name=pds_by_group,
                                          output_plot_path=output_plot_path,
@@ -1637,8 +1630,7 @@ class ScalarDictAnalyzer(Analyzer):
                                          fig_height=fig_height,
                                          fig_width=fig_width,
                                          semilog_y=semilog_y,
-                                         group_name_order=group_name_order,
-                                         **kwargs)
+                                         group_name_order=group_name_order)
 
                 _ = [ray.get(id) for id in render_ids]
 
