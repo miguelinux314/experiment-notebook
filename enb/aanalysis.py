@@ -205,7 +205,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         if semilog_x:
             x_base = column_properties.semilog_x_base if column_properties is not None else 10
-            group_axes.semilogx(basex=x_base)
+            group_axes.semilogx(base=x_base)
             group_axes.get_xaxis().set_major_locator(LogLocator(base=x_base))
         else:
             group_axes.get_xaxis().set_major_locator(MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
