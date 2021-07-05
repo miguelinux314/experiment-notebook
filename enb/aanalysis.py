@@ -1618,8 +1618,8 @@ class ScalarDictAnalyzer(Analyzer):
                         fig_height=ray.put(fig_height),
                         fig_width=ray.put(fig_width),
                         semilog_y=ray.put(semilog_y),
-                        group_name_order=ray.put(group_name_order)),
-                        kwargs=ray.put(kwargs))
+                        group_name_order=ray.put(group_name_order),
+                        kwargs=ray.put(kwargs)))
                 else:
                     render_plds_by_group(pds_by_group_name=pds_by_group,
                                          output_plot_path=output_plot_path,
