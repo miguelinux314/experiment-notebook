@@ -41,6 +41,9 @@ from plugins import plugin_fpack
 from plugins import plugin_zstandard
 from plugins import plugin_fpzip
 from plugins import plugin_zfp
+from plugins import plugin_fpc
+from plugins import plugin_spdp
+from plugins import plugin_lz4
 
 if __name__ == '__main__':
     all_codecs = []
@@ -184,7 +187,25 @@ if __name__ == '__main__':
         all_codecs.append(c)
         zfp_family.add_task(c.name, f"{c.label}")
     all_families.append(zfp_family)
-
+    
+    fpc_family = enb.aanalysis.TaskFamily(label="FPC")
+    for c in (plugin_fpc.fpc_codec.Fpc(),):
+        all_codecs.append(c)
+        fpc_family.add_task(c.name, f"{c.label}")
+    all_families.append(fpc_family)
+    
+    spdp_family = enb.aanalysis.TaskFamily(label="SPDP")
+    for c in (plugin_spdp.spdp_codec.Spdp(),):
+        all_codecs.append(c)
+        spdp_family.add_task(c.name, f"{c.label}")
+    all_families.append(spdp_family)
+     
+    lz4_family = enb.aanalysis.TaskFamily(label="LZ4")
+    for c in (plugin_lz4.lz4_codec.Lz4(),):
+        all_codecs.append(c)
+        lz4_family.add_task(c.name, f"{c.label}")
+    all_families.append(lz4_family)
+   
     label_by_group_name = dict()
     for family in all_families:
         label_by_group_name.update(family.name_to_label)
@@ -235,8 +256,6 @@ if __name__ == '__main__':
                         c.decompress(compressed_path=tmp_compressed.name,
                                      reconstructed_path=tmp_reconstructed.name,
                                      original_file_info=row_info)
-
-                        print(f"[watch] column_name={column_name}")
                         
                         match = re.search(r"(u|s)(\d+)be", column_name)
                         if match:
@@ -304,12 +323,6 @@ if __name__ == '__main__':
 
     df_capabilities.to_csv("full_df_capabilitites.csv")
 
-    import pprint
-
-    pprint.pprint(min_lossless_bitdepth_by_name)
-    pprint.pprint(max_lossless_bitdepth_by_name)
-
-    print(f"[watch] df_capabilities.iloc[0]={df_capabilities.iloc[0]}")
     print(f"[watch] df_capabilities={df_capabilities}")
 
     all_dir_names = list(target_dir_names)
@@ -349,8 +362,6 @@ if __name__ == '__main__':
                 df_colors[new] = df_colors[old]
                 del df_colors[old]
 
-        print(f"[watch] new_col_names={new_col_names}")
-
         df_capabilities = df_capabilities[new_col_names + ["codec_name"]]
         df_colors = df_colors[[*new_col_names]]
 
@@ -358,10 +369,7 @@ if __name__ == '__main__':
         fig, ax = plt.subplots(1, 1)
         ax.axis("off")
 
-        print(f"[watch] df_capabilities.columns={df_capabilities.columns}")
-
         df_capabilities.set_index("codec_name")
-        print(f"[watch] column_names={new_col_names}")
 
         table = pdpt.table(ax, df_capabilities[new_col_names],
                            loc="center",
