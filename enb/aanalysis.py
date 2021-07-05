@@ -480,6 +480,8 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     """
     column_df = df[column]
     range = tuple(min_max_by_column[column])
+    if range == (None, None):
+        range = None
 
     hist_y_values, bin_edges = np.histogram(
         column_df.values, bins=hist_bin_count, range=range, density=False)
