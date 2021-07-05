@@ -109,10 +109,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param x_tick_label_list: if not None, these labels will be displayed. Only used when x_tick_list is not None.
     :param x_tick_label_angle: when label ticks are specified, they will be rotated to this angle
     """
-    if options.verbose > 1:
-        for k, v in kwargs.items():
-            print(f"[W]arning: unrecognized {k}={v} argument in **kwargs for render_plds_by_group. Will be ignored.")
-
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
 
