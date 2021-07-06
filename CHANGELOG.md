@@ -1,3 +1,7 @@
+# Under development v0.2.8
+
+* Improved stability to different parts of aanalysis.py
+
 # 2021/06/30 v0.2.7
 
 * New functions:
