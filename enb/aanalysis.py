@@ -130,11 +130,20 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         sorted_group_names = sorted(pds_by_group_name.keys(),
                                     key=lambda s: "" if s == "all" else str(s).strip().lower())
     else:
+        sorted_group_names = []
         for group_name in group_name_order:
-            assert group_name in pds_by_group_name, \
-                f"The provided list group_name_order contains the group name {group_name}, " \
-                f"which is not contained in the provided groups ({pds_by_group_name})."
-        sorted_group_names = list(group_name_order)
+            if group_name not in pds_by_group_name:
+                if options.verbose > 2:
+                    print(f"[W]arning: {group_name} was provided in group_name_order but is not one of the "
+                          f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Ignoring.")
+            else:
+                sorted_group_names.append(group_name)
+        for g in pds_by_group_name.keys():
+            if g not in sorted_group_names:
+                if options.verbose > 2:
+                    print(f"[W]arning: {g} was not provided in group_name_order but is one of the "
+                          f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
+                sorted_group_names.append(g)
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
