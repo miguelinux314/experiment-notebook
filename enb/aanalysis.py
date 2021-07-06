@@ -115,7 +115,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if len(pds_by_group_name) < 1:
         if options.verbose > 1:
             print("[W]arning: trying to render an empty pds_by_group_name dict. "
-                  f"output_plot_path={output_plot_path}, column_properties={column_properties}")
+                  f"output_plot_path={output_plot_path}, column_properties={column_properties}. "
+                  f"No analysis is performed.")
+        return
 
     fig_width = options.fig_width if fig_width is None else fig_width
     global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
