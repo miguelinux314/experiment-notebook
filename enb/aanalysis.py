@@ -112,6 +112,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if options and options.verbose > 1:
         print(f"[R]endering groupped Y plot to {output_plot_path} ...")
 
+    if len(pds_by_group_name) < 1:
+        if options.verbose > 1:
+            print("[W]arning: trying to render an empty pds_by_group_name dict. "
+                  f"output_plot_path={output_plot_path}, column_properties={column_properties}")
+
     fig_width = options.fig_width if fig_width is None else fig_width
     global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
 
@@ -144,10 +149,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     print(f"[W]arning: {g} was not provided in group_name_order but is one of the "
                           f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
                 sorted_group_names.append(g)
-
-    print(f"[watch] pds_by_group_name.keys()={list(pds_by_group_name.keys())}")
-    print(f"[watch] sorted_group_names={sorted_group_names}")
-
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
