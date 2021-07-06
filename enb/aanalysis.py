@@ -512,7 +512,9 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                       f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
                       f"Note that plot_min and plot_max column properties might be affecting this range.")
 
-    hist_y_values = hist_y_values / hist_y_values.sum() if len(hist_y_values) > 0 else hist_y_values
+    hist_y_values = hist_y_values / hist_y_values.sum() \
+        if hist_y_values.sum() > 0 and len(hist_y_values) > 0 and np.isfinite(hist_y_values / hist_y_values.sum()).all() \
+        else hist_y_values
 
     x_label = column if (properties is None or not properties.label) else properties.label
 
