@@ -145,6 +145,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                           f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
                 sorted_group_names.append(g)
 
+    print(f"[watch] pds_by_group_name.keys()={list(pds_by_group_name.keys())}")
+    print(f"[watch] sorted_group_names={sorted_group_names}")
+
+
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
     if color_by_group_name is None:
