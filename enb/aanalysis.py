@@ -154,7 +154,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if os.path.dirname(output_plot_path):
         os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
     fig, group_axis_list = plt.subplots(
-        nrows=len(sorted_group_names) if not combine_groups else 1,
+        nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
         ncols=1, sharex=True, sharey=combine_groups,
         figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
 
