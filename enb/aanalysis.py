@@ -497,7 +497,7 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
 
     hist_y_values, bin_edges = np.histogram(
         column_df.values, bins=hist_bin_count, range=range, density=False)
-    hist_y_values = hist_y_values / len(column_df)
+    hist_y_values = hist_y_values / len(column_df) if len(column_df) > 0 else hist_y_values
 
     if abs(sum(hist_y_values) - 1) > 1e-10:
         if math.isinf(df[column].max()) or math.isinf(df[column].min()):
