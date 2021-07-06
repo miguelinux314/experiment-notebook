@@ -526,10 +526,10 @@ class ATable(metaclass=MetaTable):
         ray_cluster.init_ray()
 
         if options.verbose > 2:
-            print("Loading data and/or defaults...")
+            print("[I]nfo: Loading data and/or defaults...")
         table_df = self._load_saved_df()
         if options.verbose > 2:
-            print("... loaded data and/or defaults!")
+            print("[I]nfo: ... loaded data and/or defaults!")
 
         if not options.no_new_results:
             # Parallel read of current and/or default (with fields set to None) rows
@@ -592,7 +592,7 @@ class ATable(metaclass=MetaTable):
                         else:
                             msg = "No ETA available"
 
-                        print(f"{len(ids_ready)} / {len(processed_row_ids)} ready @ {datetime.datetime.now()}. {msg}")
+                        print(f"[I]nfo: {len(ids_ready)} / {len(processed_row_ids)} ready @ {datetime.datetime.now()}. {msg}")
                 returned_values = ray.get(processed_row_ids)
 
             unpacked_target_indices = list(indices_to_internal_loc(unpack_index_value(target_index))
@@ -735,7 +735,7 @@ class ATable(metaclass=MetaTable):
                 if options.exit_on_error:
                     print(f"{self} ------------------------------------------------- [START]")
                     traceback.print_exc()
-                    print(f"Exiting because options.exit_on_error = {options.exit_on_error}")
+                    print(f"[E]rror: Exiting because options.exit_on_error = {options.exit_on_error}")
                     print(f"{self} ------------------------------------------------- [END]")
                     sys.exit(-1)
                 else:
@@ -779,7 +779,7 @@ class ATable(metaclass=MetaTable):
                 if options.verbose > 2:
                     print(f"[I]nfo: no csv persistence support.")
             elif options.verbose:
-                print(f"ATable supporting file {self.csv_support_path} could not be loaded " +
+                print(f"[W]arning: ATable supporting file {self.csv_support_path} could not be loaded " +
                       (f"({ex.__class__.__name__}) " if options.verbose > 1 else '') +
                       f"- creating an empty one")
             loaded_df = pd.DataFrame(columns=self.indices_and_columns)
@@ -794,7 +794,7 @@ class ATable(metaclass=MetaTable):
         try:
             check_unique_indices(loaded_df)
         except CorruptedTableError as ex:
-            print(f"Error loading table from {self.csv_support_path}")
+            print(f"[E]rror loading table from {self.csv_support_path}")
             raise ex
         return loaded_df
 
