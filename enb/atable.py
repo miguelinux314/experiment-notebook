@@ -552,8 +552,7 @@ class ATable(metaclass=MetaTable):
                 column_fun_tuples = [t for t in column_fun_tuples if t[0] in target_columns]
                 assert column_fun_tuples, (target_columns, sorted(self.column_to_properties.keys()))
                 if options.verbose:
-                    print(
-                        f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
+                    print(f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
 
             if not parallel_row_processing:
                 # Serial computation, e.g., to favor accurate time measurements
@@ -731,12 +730,13 @@ class ATable(metaclass=MetaTable):
                                      f"the associated '{column}' column ({column}:{row[column]})")
             except Exception as ex:
                 if options.verbose:
-                    print(repr(ex))
+                    print(f"[E]rror while obtaining {column} with {fun}: {repr(ex)}")
                 ex = ColumnFailedError(atable=self, index=index, column=column, ex=ex)
                 if options.exit_on_error:
+                    print(f"{self} ------------------------------------------------- [START]")
                     traceback.print_exc()
-                    print()
                     print(f"Exiting because options.exit_on_error = {options.exit_on_error}")
+                    print(f"{self} ------------------------------------------------- [END]")
                     sys.exit(-1)
                 else:
                     return ex
