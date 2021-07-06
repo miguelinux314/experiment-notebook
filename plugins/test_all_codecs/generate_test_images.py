@@ -59,11 +59,11 @@ if __name__ == '__main__':
                         for missing_bits in range(8):
                             bits_per_sample = 8 * bytes_per_sample - missing_bits
 
-                            output_dir = os.path.join(base_dir, f"{label}_{'s' if signed else 'u'}{bits_per_sample}")
+                            output_dir = os.path.join(base_dir, f"{label}_{'s' if signed else 'u'}{bits_per_sample}be")
                             shutil.rmtree(output_dir, ignore_errors=True)
                             os.makedirs(output_dir)
 
-                            type = f"{'s' if signed else 'u'}{8 * bytes_per_sample}"
+                            type = f"{'s' if signed else 'u'}{8 * bytes_per_sample}be"
                             dtype = f">{'i' if signed else 'u'}{bytes_per_sample}"
                             geometry = f"{component_count}x{height}x{width}"
                             output_path = os.path.join(output_dir, f"sample_{type}-{geometry}.raw")
