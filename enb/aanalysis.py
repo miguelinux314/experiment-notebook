@@ -1384,6 +1384,7 @@ class ScalarDictAnalyzer(Analyzer):
 
         output_csv_file = output_csv_file if output_csv_file is not None else os.path.join(
             options.analysis_dir, f"{self.__class__.__name__}.csv")
+        os.makedirs(os.path.dirname(os.path.abspath(output_csv_file)), exist_ok=True)
 
         histogram_combination = False
         bin_count = None
