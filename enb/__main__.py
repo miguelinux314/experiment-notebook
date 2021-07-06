@@ -5,21 +5,9 @@ import enb.config as config
 
 
 def enb():
-    #print(config.options["template_params"])
-    #path = "/home/alys/Documents/UAB/2021/TFG/tests/MyThingy/"
-
-
     template = atemplate.ATemplate()
     template.load_template("/home/alys/Documents/UAB/2021/TFG/tests/MyThingy/", "MyThingy")
+
     template_generator.template_scripts.script_generator(template)
-
-
-    #for element in config.options.items():
-    #    print(element)
-
-    """
-    if isdir(path):
-        params.ParameterHandler(path)
-    """
 
 
