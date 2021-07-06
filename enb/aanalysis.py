@@ -291,7 +291,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
     plt.close()
     if options.verbose:
-        print(f"Saved plot to {output_plot_path}")
+        print(f"[S]aved plot to {output_plot_path}")
 
 
 class Analyzer:
