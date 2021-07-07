@@ -22,8 +22,6 @@ class RawToFits(sets.FileVersionTable, sets.FilePropertiesTable):
             file=RAWS[i]
             params = file[7:-4].split("-")
             dimensions=params[-1].split('x')
-            print(params)
-            print(dimensions)
             frames=int(dimensions[-3])
             columns=int(dimensions[-2])
             rows=int(dimensions[-1])
@@ -32,7 +30,6 @@ class RawToFits(sets.FileVersionTable, sets.FilePropertiesTable):
             extension=params[-4]
             
             img=np.fromfile(open(file), dtype = f'{astype}',  count = -1)
-            print(img.shape)
             array=np.reshape(img,(frames,columns,rows))
 
             hdu = fits.PrimaryHDU(array, header=Header.fromfile(f'{file[0:-4]}.txt',sep='\n', endcard=False,padding=False))

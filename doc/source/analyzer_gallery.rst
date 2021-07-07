@@ -1,4 +1,4 @@
-Analyzer gallery
+    Analyzer gallery
 ----------------
 
 All figures are produced by the code example in the

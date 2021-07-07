@@ -54,7 +54,7 @@ class ValueCounter:
         """
         total_sum = sum(self.value_to_count.values())
         if total_sum == 0:
-            raise ValueError(f"Cannot compute entropy of context {self}: total count is 0")
+            raise ValueError(f"[E]rror: cannot compute entropy of context {self}: total count is 0")
         probabilities = [c / total_sum for c in self.value_to_count.values()]
         assert abs(sum(probabilities) - 1) < 1e-12, sum(probabilities)
         return - sum(p * math.log2(p) if p != 0 else 0 for p in probabilities)
@@ -85,7 +85,7 @@ class ContextGroup:
                            for context, count in context_to_prob.items()
                            if count > 0}
         if not context_to_prob:
-            raise ValueError(f"Cannot compute entropy for group {self}: no value was added")
+            raise ValueError(f"[E]rror: cannot compute entropy for group {self}: no value was added")
         assert abs(sum(context_to_prob.values()) - 1) < 1e-10, sum(context_to_prob.values())
 
         return sum(context_to_prob[context] * counter.entropy
