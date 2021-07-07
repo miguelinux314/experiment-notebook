@@ -29,7 +29,7 @@ class Ndzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
 
     @property
     def label(self):
-        return "spdp"
+        return "ndzip"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["float"] == True, 'data type must be float or double'
