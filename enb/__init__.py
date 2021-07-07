@@ -1,6 +1,7 @@
 from . import singleton_cli
 from . import atable
 from . import aanalysis
+from . import experiment
 from . import sets
 from . import isets
 from . import icompression

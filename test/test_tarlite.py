@@ -20,7 +20,8 @@ import enb.tarlite as tarlite
 class TestTarlite(unittest.TestCase):
     def test_read_write(self):
         with tempfile.NamedTemporaryFile() as tmp_tarlite_file:
-            input_paths = glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "*.py"))
+            input_paths = [p for p in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), "*.py"))
+                           if os.path.isfile(p)]
             tw = tarlite.TarliteWriter(initial_input_paths=input_paths)
             tw.write(output_path=tmp_tarlite_file.name)
 

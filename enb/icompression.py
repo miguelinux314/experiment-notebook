@@ -372,7 +372,6 @@ class FITSWrapperCodec(WrapperCodec):
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
-        print(original_file_info['big_endian'])
         with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             os.remove(tmp_file.name)
             array = img.swapaxes(0, 2)
