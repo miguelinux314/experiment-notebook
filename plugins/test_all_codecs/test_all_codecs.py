@@ -44,6 +44,7 @@ from plugins import plugin_zfp
 from plugins import plugin_fpc
 from plugins import plugin_spdp
 from plugins import plugin_lz4
+from plugins import plugin_ndzip
 
 if __name__ == '__main__':
     all_codecs = []
@@ -205,6 +206,12 @@ if __name__ == '__main__':
         all_codecs.append(c)
         lz4_family.add_task(c.name, f"{c.label}")
     all_families.append(lz4_family)
+    
+    ndzip_family = enb.aanalysis.TaskFamily(label="Ndzip")
+    for c in (plugin_ndzip.ndzip_codec.Ndzip(),):
+        all_codecs.append(c)
+        ndzip_family.add_task(c.name, f"{c.label}")
+    all_families.append(ndzip_family)
 
     label_by_group_name = dict()
     for family in all_families:
