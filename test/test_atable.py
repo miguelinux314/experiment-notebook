@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
+import glob
 import unittest
-
 import test_all
+
+import enb.atable
 import enb.atable as atable
 
 
@@ -12,9 +15,11 @@ class Subclass(atable.ATable):
     def set_index_length(self, index, row):
         row["index_length"] = len(index)
 
+
 class DefinitionModesTable(atable.ATable):
     """Example ATable subclass that exemplifies multiple ways of defining columns.
     """
+
     def column_a(self, index, row):
         """Methods that start with column_* are automatically recognized as column definitions.
         The returned value is the value set into the appropriate column of row.
@@ -95,6 +100,22 @@ class TestATable(unittest.TestCase):
         assert len(df) == 1, len(df)
         for i, c in enumerate((chr(o) for o in range(ord("a"), ord("f") + 1)), start=1):
             assert df.iloc[0][c] == i
+
+
+class TestSummaryTable(unittest.TestCase):
+    def test_summary_table(self):
+        base_table = enb.sets.FilePropertiesTable()
+
+        target_paths = [
+            p for p in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*"))
+            if os.path.isfile(p)]
+
+        base_df = base_table.get_df(target_indices=target_paths)
+
+        summary_table = enb.atable.SummaryTable(reference_df=base_df)
+        summary_df = summary_table.get_df()
+        assert summary_df.iloc[0]["group_label"] == "all"
+        assert summary_df.iloc[0]["group_size"] == len(target_paths)
 
 
 if __name__ == '__main__':

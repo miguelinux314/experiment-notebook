@@ -802,6 +802,83 @@ class ATable(metaclass=MetaTable):
     def name(self):
         return f"{self.__class__.__name__}"
 
+class SummaryTable(ATable):
+    """Summary tables allow to define custom group rows of dataframes, e.g., produced by ATable subclasses,
+    and to define new columns (measurements) for each of those groups.
+
+    Column functions can be defined in the same way as for any ATable. In this case, the index elements
+    passed to the column functions are the group labels returned by split_groups(). Column functions can then
+    access the corresponding dataframe with self.label_to_df[label].
+
+    Note that this behaviour is not unlike the groupby() method of pandas. The main differences are:
+
+        - Grouping can be fully customized, instead of only allowing splitting by one or more column values
+
+        - The newly defined columns can aggregate data in the group in any arbitrary way. This is of course
+          true for pandas, but SummaryTable tries to gracefully integrate that process into enb, allowing
+          automatic persistence, easy plotting, etc.
+
+    SummaryTable can be particularly useful as an intermediate step between a complex table's (or enb.Experiment's)
+    get_df and the analyze_df method of analyzers en :mod:`enb.aanalysis`.
+    """
+    def __init__(self, reference_df, reference_column_to_properties=None, copy_df=False,
+                 csv_support_path=None):
+        """
+        Initialize a summary table. Group splitting is not invoked until needed by calling self.get_df().
+
+        :param reference_df: reference pandas dataframe to be summarized
+        :param reference_column_to_properties: if not None, it should be the column_to_properties attribute
+          of the table that produced reference_df.
+        :param copy_df: if not True, a pointer to the original reference_df is used. Otherwise, a copy is made.
+          Note that reference_df is typically evaluated each time split_groups() is called.
+        :param csv_support_path: if not None, a CSV file is used at that for persistence
+        """
+        super().__init__(csv_support_path=csv_support_path, index="group_label")
+        self.reference_df = reference_df if copy_df is not True else pd.DataFrame.copy(reference_df)
+        self.reference_column_to_properties = reference_column_to_properties
+        self.copied_df = copy_df
+
+    def split_groups(self, reference_df=None):
+        """Split the reference dataframe into an iterable of (label, dataframe) tuples. By default, no splitting is
+        performed and a single group with label "all" and the full df is returned.
+
+        Subclasses can easily overwrite this behavior.
+        Labels are arbitrary, but must be unique. Dataframes are also arbitrary, but it is
+        recommended that at least all columns of the reference dataframe are maintained.
+
+        :param reference_df: if not None, a reference dataframe to split. If None, self.reference_df is employed.
+        :return: an iterable of (label, dataframe) tuples.
+        """
+        return [("all", reference_df if reference_df is not None else self.reference_df)]
+
+
+    def get_df(self, reference_df=None):
+        """
+        Get the summary dataframe.
+
+        :param reference_df: if not None, the dataframe to be used as reference for the summary. If None,
+          the one provided at initialization is used.
+
+        :return: the summary dataframe
+        """
+        if hasattr(self, "label_to_df"):
+            raise RuntimeError("self.label_to_df should not be defined externally")
+        self.label_to_df = collections.OrderedDict()
+        try:
+            for label, df in self.split_groups(reference_df=reference_df):
+                if label in self.label_to_df:
+                    raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
+                                     f"Group labels must be unique.")
+                self.label_to_df[label] = df
+            return super().get_df(target_indices=list(self.label_to_df.keys()))
+        finally:
+            try:
+                del self.label_to_df
+            except AttributeError:
+                pass
+
+    def column_group_size(self, index, row):
+        return len(self.label_to_df[index])
 
 def string_or_float(cell_value):
     """Takes the input value from an ATable cell and returns either
