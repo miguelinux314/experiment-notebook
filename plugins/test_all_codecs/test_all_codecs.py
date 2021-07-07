@@ -41,7 +41,7 @@ class AvailabilityExperiment(enb.experiment.Experiment):
     @enb.atable.column_function([
         enb.atable.ColumnProperties("is_working", label="Does the codec work for this input?"),
         enb.atable.ColumnProperties("is_lossless", label="Was compression lossless?"),
-        enb.atable.ColumnProperties("cr_dr", label="Compression ratio respect to the dynamic range."),
+        enb.atable.ColumnProperties("cr_dr", label="Compression ratio respect to the dynamic range.")
     ])
     def set_availability_columns(self, index, row):
         file_path, codec = self.index_to_path_task(index)
@@ -71,13 +71,51 @@ class AvailabilityExperiment(enb.experiment.Experiment):
             row["cr_dr"] = 0
 
 
+class CodecSummaryTable(enb.atable.SummaryTable):
+    UNAVAILABLE, NOT_LOSSLESS, LOSSLESS, AVAILABILITY_MODE_COUNT = range(4)
+
+    def split_groups(self, reference_df=None):
+        reference_df = reference_df if reference_df is not None else self.reference_df
+        return reference_df.groupby("task_label")
+
+    @enb.atable.column_function("type_to_availability", label="Data type to availability", has_dict_values=True,
+                                plot_min=UNAVAILABLE - 0.3, plot_max=AVAILABILITY_MODE_COUNT - 1 + 0.3)
+    def set_type_to_availability(self, index, row):
+        local_df = self.label_to_df[index]
+        type_to_availability = dict()
+        for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
+            key = f"{type_name} {component_count}"
+
+            if not type_df["is_working"].all():
+                type_to_availability[key] = CodecSummaryTable.UNAVAILABLE
+            elif type_df["is_lossless"].all():
+                type_to_availability[key] = CodecSummaryTable.LOSSLESS
+            else:
+                type_to_availability[key] = CodecSummaryTable.NOT_LOSSLESS
+        row[_column_name] = type_to_availability
+
+
 if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
-    base_classes = set([enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec])
-    codec_classes = set(itertools.chain(*([c for c in cls.__subclasses__() if "abstract" not in c.__name__.lower()]
+    base_classes = {enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec}
+    codec_classes = set(itertools.chain(*([c for c in cls.__subclasses__()
+                                           if "abstract" not in c.__name__.lower()]
                                           for cls in base_classes)))
     codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
 
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
-    df = exp.get_df()
+    full_availability_df = exp.get_df()
+
+    df = CodecSummaryTable(
+        csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary.csv"),
+        reference_df=full_availability_df).get_df()
+
+    enb.aanalysis.ScalarDictAnalyzer().analyze_df(
+        full_df=df,
+        target_columns=["type_to_availability"],
+        column_to_properties=CodecSummaryTable.column_to_properties,
+        group_by="group_label",
+        y_tick_list=[CodecSummaryTable.UNAVAILABLE, CodecSummaryTable.NOT_LOSSLESS, CodecSummaryTable.LOSSLESS],
+        y_tick_label_list=["Unavailable", "Not lossless", "Lossless"],
+        show_global=False)

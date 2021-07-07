@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
-    for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 10)]:
+    for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 9)]:
         for bytes_per_sample in [1, 2, 4, 8]:
             for signed in [True, False]:
                 for big_endian in [True, False]:
