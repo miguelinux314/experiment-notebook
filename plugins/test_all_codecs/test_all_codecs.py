@@ -63,9 +63,9 @@ if __name__ == '__main__':
 
     ccsds122_family = enb.aanalysis.TaskFamily(label="CCSDS 122")
     for c in [
-            plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
-            # plugin_ccsds122.ccsds122_codec.MHDC_ID(),
-            # plugin_ccsds122.ccsds122_codec.MHDC_POT()
+        plugin_ccsds122.ccsds122_codec.MHDC_IWT(),
+        # plugin_ccsds122.ccsds122_codec.MHDC_ID(),
+        # plugin_ccsds122.ccsds122_codec.MHDC_POT()
     ]:
         all_codecs.append(c)
         ccsds122_family.add_task(c.name, f"{c.label}")
@@ -155,57 +155,57 @@ if __name__ == '__main__':
         all_families.append(family)
 
     for label, c in [
-                     ("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
-                     # ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
-                     # ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25)),
-                     ]:
+        ("VVC lossless", plugin_vvc.vvc_codec.VVC_lossless()),
+        # ("VVC lossy QP25", plugin_vvc.vvc_codec.VVC_lossy(qp=25)),
+        # ("VVC lossy 0.25bps", plugin_vvc.vvc_codec.VVC_lossy(bit_rate=0.25)),
+    ]:
         family = enb.aanalysis.TaskFamily(label=label)
         all_codecs.append(c)
         family.add_task(c.name, c.label)
         all_families.append(family)
-        
+
     fpack_family = enb.aanalysis.TaskFamily(label="Fpack")
     for c in [plugin_fpack.fpack_codec.Fpack()]:
         all_codecs.append(c)
         fpack_family.add_task(c.name, f"{c.label}")
     all_families.append(fpack_family)
-    
+
     zstandard_family = enb.aanalysis.TaskFamily(label="Zstandard")
     for c in [plugin_zstandard.zstd_codec.Zstandard()]:
         all_codecs.append(c)
         zstandard_family.add_task(c.name, f"{c.label}")
     all_families.append(zstandard_family)
-    
+
     fpzip_family = enb.aanalysis.TaskFamily(label="Fpzip")
     for c in [plugin_fpzip.fpzip_codec.Fpzip()]:
         all_codecs.append(c)
         fpzip_family.add_task(c.name, f"{c.label}")
     all_families.append(fpzip_family)
-      
+
     zfp_family = enb.aanalysis.TaskFamily(label="Zfp")
     for c in [plugin_zfp.zfp_codec.Zfp()]:
         all_codecs.append(c)
         zfp_family.add_task(c.name, f"{c.label}")
     all_families.append(zfp_family)
-    
+
     fpc_family = enb.aanalysis.TaskFamily(label="FPC")
     for c in (plugin_fpc.fpc_codec.Fpc(),):
         all_codecs.append(c)
         fpc_family.add_task(c.name, f"{c.label}")
     all_families.append(fpc_family)
-    
+
     spdp_family = enb.aanalysis.TaskFamily(label="SPDP")
     for c in (plugin_spdp.spdp_codec.Spdp(),):
         all_codecs.append(c)
         spdp_family.add_task(c.name, f"{c.label}")
     all_families.append(spdp_family)
-     
+
     lz4_family = enb.aanalysis.TaskFamily(label="LZ4")
     for c in (plugin_lz4.lz4_codec.Lz4(),):
         all_codecs.append(c)
         lz4_family.add_task(c.name, f"{c.label}")
     all_families.append(lz4_family)
-   
+
     label_by_group_name = dict()
     for family in all_families:
         label_by_group_name.update(family.name_to_label)
@@ -256,7 +256,7 @@ if __name__ == '__main__':
                         c.decompress(compressed_path=tmp_compressed.name,
                                      reconstructed_path=tmp_reconstructed.name,
                                      original_file_info=row_info)
-                        
+
                         match = re.search(r"(u|s)(\d+)be", column_name)
                         if match:
                             signed = match.group(1) == "s"
@@ -326,34 +326,55 @@ if __name__ == '__main__':
     print(f"[watch] df_capabilities={df_capabilities}")
 
     all_dir_names = list(target_dir_names)
-    all_target_dir_names = ["mono_u8be", "rgb_u8be", "multi_u8be",
-                            "mono_u16be", "rgb_u16be", "multi_u16be",
-                            "mono_s16be", "rgb_s16be", "multi_s16be",
-                            "mono_u32be", "rgb_u32be", "multi_u32be",
-                            "mono_s32be", "rgb_s32be", "multi_s32be",
-                            "mono_f16", "rgb_f16", "multi_f16",
-                            "mono_f32", "rgb_f32", "multi_f32",
-                            "mono_f64", "rgb_f64", "multi_f64",
-                            "codec_name",
-                            "lossless_range", "cr_range"]
+    all_target_dir_names = [  # be
+        "mono_u8be", "rgb_u8be", "multi_u8be",
+        "mono_u16be", "rgb_u16be", "multi_u16be",
+        "mono_s16be", "rgb_s16be", "multi_s16be",
+        "mono_u32be", "rgb_u32be", "multi_u32be",
+        "mono_s32be", "rgb_s32be", "multi_s32be",
+        # le
+        "mono_u16le", "rgb_u16le", "multi_u16le",
+        "mono_s16le", "rgb_s16le", "multi_s16le",
+        "mono_u32le", "rgb_u32le", "multi_u32le",
+        "mono_s32le", "rgb_s32le", "multi_s32le",
+        # float
+        "mono_f16", "rgb_f16", "multi_f16",
+        "mono_f32", "rgb_f32", "multi_f32",
+        "mono_f64", "rgb_f64", "multi_f64",
+        # global statis
+        "lossless_range", "cr_range"]
 
     all_column_names = [
-        "8bit Mono", "8bit RGB", "8bit Multi",
-        "16bit Mono", "16bit RGB", "16bit Multi",
-        "Sig. 16bit Mono", "Sig. 16bit RGB", "Sig. 16bit Multi",
-        "32bit Mono", "32bit RGB", "32bit Multi",
-        "Sig. 32bit Mono", "Sig. 32bit RGB", "Sig. 32bit Multi",
-        "f16bit Mono", "f16bit RGB", "f16bit Multi",
-        "f32bit Mono", "f32bit RGB", "f32bit Multi",
-        "f32bit Mono", "f32bit RGB", "f32bit Multi",
-        "Lossless range", "CR range"
+        "u8be: Mono", "u8be: RGB", "u8be: Multi",
+        "u16be: Mono", "u16be: RGB", "u16be: Multi",
+        "s16be: Mono", "s16be: RGB", "s16be: Multi",
+        "u32be: Mono", "u32be: RGB", "u32be: Multi",
+        "s32be: Mono", "s32be: RGB", "s32be: Multi",
+        #
+        "u16le: Mono", "u16le: RGB", "u16le: Multi",
+        "s16le: Mono", "s16le: RGB", "s16le: Multi",
+        "u32le: Mono", "u32le: RGB", "u32le: Multi",
+        "s32le: Mono", "s32le: RGB", "s32le: Multi",
+        #
+        "Float, 16 bits: Mono", "Float, 16 bits: RGB", "Float, 16 bits: Multi",
+        "Float, 32 bits: Mono", "Float, 32 bits: RGB", "Float, 32 bits: Multi",
+        "Float, 64 bits: Mono", "Float, 64 bits: RGB", "Float, 64 bits: Multi",
+        #
+        "Lossless bitdepth range", "Compression ratio range"
     ]
 
     full_df = df_capabilities.copy()
-    for i, group_name in enumerate(["u8be", "u16be", "s16be", "u32be", "s32be",  "f16", "f32", "f64", "Range"]):
-        groups = max(enumerate(["u8be", "u16be", "s16be",  "u32be", "s32be",  "f16", "f32", "f64", "Range"]))[0]
-        old_col_names = (all_target_dir_names[i * 3:(i + 1) * 3])*(1-math.floor(i/groups))+ all_target_dir_names[-2:]*math.floor(i/groups)
-        new_col_names = (all_column_names[i * 3:(i + 1) * 3])*(1-math.floor(i/groups)) + all_column_names[-2:]*math.floor(i/groups)
+    group_list = ["u8be", "u16be", "s16be", "u32be", "s32be",
+                  "u16le", "s16le", "u32le", "s32le",
+                  "f16", "f32", "f64",
+                  "Range"]
+    for i, group_name in enumerate(group_list):
+        old_col_names = (all_target_dir_names[i * 3:(i + 1) * 3]) \
+                        * (1 - math.floor(i / len(group_list))) \
+                        + all_target_dir_names[-2:] * math.floor(i / len(group_list))
+        new_col_names = (all_column_names[i * 3:(i + 1) * 3]) \
+                        * (1 - math.floor(i / len(group_list))) \
+                        + all_column_names[-2:] * math.floor(i / len(group_list))
         df_capabilities = full_df.copy()
 
         df_colors = df_capabilities.copy()
