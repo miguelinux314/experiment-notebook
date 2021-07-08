@@ -9,11 +9,9 @@ import os
 import shutil
 import numpy as np
 
-if __name__ == '__main__':
+def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")):
     width = 128
     height = 128
-
-    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
     for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 9)]:
         for bytes_per_sample in [1, 2, 4, 8]:
@@ -90,3 +88,6 @@ if __name__ == '__main__':
                                 samples[1] = max_sample_value
                                 with open(output_path, "wb") as output_file:
                                     output_file.write(bytes(samples.astype(dtype)))
+
+if __name__ == '__main__':
+    generate_test_images()
