@@ -9,6 +9,7 @@ import os
 import tempfile
 import filecmp
 import itertools
+import re
 
 import enb
 from enb.config import options
@@ -72,20 +73,28 @@ class AvailabilityExperiment(enb.experiment.Experiment):
 
 
 class CodecSummaryTable(enb.atable.SummaryTable):
-    UNAVAILABLE, NOT_LOSSLESS, LOSSLESS, AVAILABILITY_MODE_COUNT = range(4)
+    # These are the availability levels supported so far
+    UNAVAILABLE, NOT_LOSSLESS, LOSSLESS = range(3)
+    availability_to_label = {
+        UNAVAILABLE: "Unavailable",
+        NOT_LOSSLESS: "Not lossless",
+        LOSSLESS: "Lossless",
+    }
+    availability_modes = [UNAVAILABLE, NOT_LOSSLESS, LOSSLESS]
 
     def split_groups(self, reference_df=None):
+        """Each row of the table corresponds to a single codec (label)."""
         reference_df = reference_df if reference_df is not None else self.reference_df
         return reference_df.groupby("task_label")
 
     @enb.atable.column_function("type_to_availability", label="Data type to availability", has_dict_values=True,
-                                plot_min=UNAVAILABLE - 0.3, plot_max=AVAILABILITY_MODE_COUNT - 1 + 0.3)
-    def set_type_to_availability(self, index, row):
+                                plot_min=min(availability_modes) - 0.2,
+                                plot_max=max(availability_modes) + 0.2)
+    def set_type_bands_to_availability(self, index, row):
         local_df = self.label_to_df[index]
         type_to_availability = dict()
         for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
-            key = f"{type_name} {component_count}"
-
+            key = f"{type_name} {component_count} bands"
             if not type_df["is_working"].all():
                 type_to_availability[key] = CodecSummaryTable.UNAVAILABLE
             elif type_df["is_lossless"].all():
@@ -96,26 +105,82 @@ class CodecSummaryTable(enb.atable.SummaryTable):
 
 
 if __name__ == '__main__':
+    # Make sure data are ready
+    from generate_test_images import generate_test_images
+
+    generate_test_images()
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
+    # This part searches for all defined codecs so far. Import new codecs to make them appear in the list
     base_classes = {enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec}
     codec_classes = set(itertools.chain(*([c for c in cls.__subclasses__()
                                            if "abstract" not in c.__name__.lower()]
                                           for cls in base_classes)))
+    # Remove any unwanted classes from the analysis
+    forbidden_classes = set(base_classes)
     codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
 
+    # Run the experiment
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
 
-    df = CodecSummaryTable(
-        csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary.csv"),
-        reference_df=full_availability_df).get_df()
 
-    enb.aanalysis.ScalarDictAnalyzer().analyze_df(
-        full_df=df,
-        target_columns=["type_to_availability"],
-        column_to_properties=CodecSummaryTable.column_to_properties,
-        group_by="group_label",
-        y_tick_list=[CodecSummaryTable.UNAVAILABLE, CodecSummaryTable.NOT_LOSSLESS, CodecSummaryTable.LOSSLESS],
-        y_tick_label_list=["Unavailable", "Not lossless", "Lossless"],
-        show_global=False)
+    # A little pre-plotting embellishment
+    def save_availability_plot(summary_df, output_plot_path):
+        """Allows plotting of different subsets of the full df.
+        """
+
+        def type_to_key(a):
+            """Used to consistently sort typenames, e.g., u8be < s16le"""
+            type_list = ["u", "s", "f"]
+            type_code = type_list.index(a[0])
+            bps_code = int(re.search(r'(\d+)', a).group(1))
+            band_count = int(re.search('(\d+) bands', a).group(1))
+            return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:05d}_{a}"
+
+        # Define the x tick positions
+        all_keys = set()
+        for d in summary_df["type_to_availability"]:
+            all_keys.update(d.keys())
+        all_keys = sorted(all_keys, key=type_to_key)
+        key_to_x = {k: i for i, k in enumerate(all_keys)}
+        offset = 0
+        last_key = all_keys[0]
+        for k in all_keys:
+            if k[:3] != last_key[:3]:
+                offset += 1.2
+            elif ("be" in last_key and "le" in k) or ("le" in last_key and "be" in k):
+                offset += 0.3
+            last_key = k
+            key_to_x[k] += offset
+
+        enb.aanalysis.ScalarDictAnalyzer().analyze_df(
+            full_df=summary_df,
+            target_columns=["type_to_availability"],
+            column_to_properties=CodecSummaryTable.column_to_properties,
+            group_by="group_label",
+            y_tick_list=CodecSummaryTable.availability_modes,
+            y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
+                               CodecSummaryTable.availability_modes],
+            key_to_x=key_to_x,
+            fig_height=0.75*len(codec_classes),
+            output_plot_path=output_plot_path,
+            show_global=False)
+
+
+    # Generate the plots for different subsets of the full results table
+    integer_df = full_availability_df[full_availability_df["float"] == False]
+    signed_df = integer_df[integer_df["signed"] == True]
+    unsigned_df = integer_df[integer_df["signed"] == False]
+    float_df = full_availability_df[full_availability_df["float"] == True]
+
+    options.no_new_results = False
+    for label, full_df in (
+            ("general", full_availability_df),
+            ("unsigned", unsigned_df),
+            ("signed", signed_df),
+            ("float", float_df)):
+        summary_df = CodecSummaryTable(
+            csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary_{label}.csv"),
+            reference_df=full_df).get_df()
+        save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability_{label}.pdf"))
