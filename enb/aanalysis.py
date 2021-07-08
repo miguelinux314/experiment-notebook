@@ -9,9 +9,14 @@ import os
 import itertools
 import math
 import collections
+
+import pdf2image
 import sortedcontainers
 import matplotlib
 import re
+import glob
+
+import pdf2image
 from matplotlib.ticker import (AutoMinorLocator, MaxNLocator, LogLocator)
 
 matplotlib.use('Agg')
@@ -77,7 +82,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          combine_groups=False, semilog_hist_min=1e-10,
                          group_name_order=None,
                          fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
-                         show_grid=None, 
+                         show_grid=None,
                          x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
                          y_tick_list=None, y_tick_label_list=None,
                          semilog_y=None, semilog_y_base=10):
@@ -1510,7 +1515,6 @@ class ScalarDictAnalyzer(Analyzer):
                     if combine_keys is None or not histogram_combination \
                     else {k: i for i, k in enumerate(combine_keys.binned_keys)}
 
-
         # Generate the plottable data
         column_to_id_by_group = collections.defaultdict(dict)
         column_to_pds_by_group = collections.defaultdict(dict)
@@ -1813,3 +1817,24 @@ def clean_column_name(column_name):
     """Return a cleaned version of the column name, more indicated for display.
     """
     return column_name.replace("_", " ").strip()
+
+
+def pdf_to_png(input_dir, output_dir, **kwargs):
+    """Take all .pdf files in input dir and save them as .png files into output_dir,
+    maintining the relative folder structure.
+
+    It is perfectly valid for input_dir and output_dir
+    to point to the same location, but input_dir must exist beforehand.
+
+    :param kwargs: other parameters directly passed to pdf2image.convert_from_path. Refer to their
+      documentation for more information: https://github.com/Belval/pdf2image,
+      https://pdf2image.readthedocs.io/en/latest/reference.html#functions
+    """
+    input_dir = os.path.abspath(input_dir)
+    output_dir = os.path.abspath(output_dir)
+    assert os.path.isdir(input_dir)
+    for input_path in glob.glob(os.path.join(input_dir, "**", "*.pdf"), recursive=True):
+        output_path = f"{input_path.replace(input_dir, output_dir)[:-4]}.png"
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        kwargs["fmt"] = "png"
+        _ = [img.save(output_path) for img in pdf2image.convert_from_path(pdf_path=input_path, **kwargs)]

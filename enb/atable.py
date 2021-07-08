@@ -871,8 +871,6 @@ class SummaryTable(ATable):
                                      f"Group labels must be unique.")
                 self.label_to_df[label] = df
             target_indices = list(self.label_to_df.keys())
-            import pprint
-            pprint.pprint(target_indices)
             return super().get_df(target_indices=target_indices)
         finally:
             try:

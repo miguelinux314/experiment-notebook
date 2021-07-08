@@ -1,6 +1,17 @@
-# Under development v0.2.8
+# Under development v0.2.8-dev
 
-* Improved stability to different parts of aanalysis.py
+* New functions:
+  
+  - Added `enb.atable.SummaryTable` as a way to arbitrarily group dataframe rows and compute aggregated columns
+    on them.
+    
+  - Added several new codecs with floating point support. The `test_all_codecs.py` script has been revamped to 
+    more easily describe codec availability of each data format class.
+    
+  - Added `enb.aanalysis.pdf_to_png` to easily convert folders with pdf figures into folders with png figures
+    (source and origin folders may be the same).
+
+* Improved general stability to different parts of `aanalysis.py`
 
 # 2021/06/30 v0.2.7
 
@@ -24,7 +35,7 @@
       are sorted by default.
       
   * Added codec support:
-      - enb.isets.FITSWrapper can now be used to easily define codecs that need .fit/.fits files as an input.
+      - enb.isets.FITSWrapper can now be used to easily define codecs that need `.fit`/`.fits` files as an input.
       - Added FPACK, FPZIP, ZFP, Zstandard codecs for FITS (potentially float) data.
       - Added standalone Zstandard codec.
   
@@ -58,7 +69,7 @@
 * Plotting improvements:
   
   - Improved the general plot function to increase control over displayed colors.
-  - Added ScalarToScalarAnalyzer to plot dictionary cell data. Shadowed bands based on std can now be depicted.
+  - Added `enb.aanalysis.ScalarToScalarAnalyzer` to plot dictionary cell data. Shadowed bands based on std can now be depicted.
   - Several minor fix-ups to plot rendering and general stability
 
 * Docs are now displayed on the public site automatically point to the dev banch
