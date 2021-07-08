@@ -870,7 +870,10 @@ class SummaryTable(ATable):
                     raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
                                      f"Group labels must be unique.")
                 self.label_to_df[label] = df
-            return super().get_df(target_indices=list(self.label_to_df.keys()))
+            target_indices = list(self.label_to_df.keys())
+            import pprint
+            pprint.pprint(target_indices)
+            return super().get_df(target_indices=target_indices)
         finally:
             try:
                 del self.label_to_df

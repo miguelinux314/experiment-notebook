@@ -65,6 +65,8 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
 
+    # Data type columns
+
     @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
     def set_bytes_per_sample(self, file_path, row):
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
@@ -107,6 +109,28 @@ class ImageGeometryTable(sets.FilePropertiesTable):
             row[_column_name] = True
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+
+    @atable.column_function("dtype", label="Numpy dtype")
+    def set_column_dtype(self, file_path, row):
+        """Set numpy's dtype string
+        """
+        if row["float"]:
+            row[_column_name] = f"f{8 * row['bytes_per_sample']}"
+        else:
+            row[
+                _column_name] = f"{'>' if row['big_endian'] else '<'}{'i' if row['signed'] else 'u'}{row['bytes_per_sample']}"
+
+    @atable.column_function("type_name", label="Type name usable in file names")
+    def set_type_name(self, file_path, row):
+        """Set the type name usable in file names
+        """
+        if row["float"]:
+            row[_column_name] = f"f{8 * row['bytes_per_sample']}"
+        else:
+            row[
+                _column_name] = f"{'s' if row['signed'] else 'u'}{8 * row['bytes_per_sample']}{'be' if row['big_endian'] else 'le'}"
+
+    # Image dimension columns
 
     @atable.column_function("samples", label="Sample count", plot_min=0)
     def set_samples(self, file_path, row):
@@ -269,11 +293,11 @@ class QuantizedImageVersion(ImageVersionTable):
         assert 1 <= qstep <= 65535
         qstep = int(qstep)
         ImageVersionTable.__init__(self, version_base_dir=version_base_dir,
-                         version_name=f"{self.__class__.__name__}_qstep{qstep}",
-                         original_base_dir=original_base_dir,
-                         csv_support_path=csv_support_path,
-                         check_generated_files=check_generated_files,
-                         original_properties_table=original_properties_table)
+                                   version_name=f"{self.__class__.__name__}_qstep{qstep}",
+                                   original_base_dir=original_base_dir,
+                                   csv_support_path=csv_support_path,
+                                   check_generated_files=check_generated_files,
+                                   original_properties_table=original_properties_table)
         self.qstep = qstep
 
     def version(self, input_path, output_path, row):

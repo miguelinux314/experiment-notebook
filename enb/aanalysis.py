@@ -45,6 +45,7 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                              global_y_label_pos=None, legend_column_count=None,
                              show_grid=None,
                              x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
+                             y_tick_list=None, y_tick_label_list=None,
                              semilog_y=None, semilog_y_base=10):
     """Ray wrapper for render_plds_by_group"""
     # (options automatically propagated)
@@ -63,6 +64,8 @@ def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_propert
                                 x_tick_list=x_tick_list,
                                 x_tick_label_list=x_tick_label_list,
                                 x_tick_label_angle=x_tick_label_angle,
+                                y_tick_list=y_tick_list,
+                                y_tick_label_list=y_tick_label_list,
                                 semilog_y=semilog_y, semilog_y_base=semilog_y_base)
 
 
@@ -74,7 +77,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          combine_groups=False, semilog_hist_min=1e-10,
                          group_name_order=None,
                          fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
-                         show_grid=None, x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
+                         show_grid=None, 
+                         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
+                         y_tick_list=None, y_tick_label_list=None,
                          semilog_y=None, semilog_y_base=10):
     """Render lists of plotdata.PlottableData instances indexed by group name,
     each group in a row, with a shared X axis, which is set automatically in common
@@ -228,7 +233,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             group_axes.get_xaxis().set_minor_locator(AutoMinorLocator())
 
         if semilog_y:
-            base_y = column_properties.semilog_y_base if column_properties is not None else 10
+            base_y = column_properties.semilog_y_base if column_properties is not None else semilog_y_base
             group_axes.semilogy(base=base_y)
             if combine_groups or len(sorted_group_names) <= 2:
                 numticks = 11
@@ -278,6 +283,17 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         plt.minorticks_off()
     if x_tick_label_list is not None:
         assert x_tick_list is not None
+
+    for group_axes in group_axis_list:
+        plt.sca(group_axes)
+        if y_tick_list is not None:
+            if not y_tick_label_list:
+                plt.yticks(y_tick_list)
+            else:
+                plt.yticks(y_tick_list, y_tick_label_list)
+            group_axes.minorticks_off()
+        if y_tick_label_list is not None:
+            assert y_tick_list is not None
 
     show_grid = options.show_grid if show_grid is None else show_grid
 
@@ -1324,6 +1340,7 @@ class ScalarDictAnalyzer(Analyzer):
                    key_to_x=None, key_list=None, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    show_std_bar=True, show_std_band=False, show_individual_results=False,
+                   y_tick_list=None, y_tick_label_list=None, y_tick_label_angle=0,
                    x_tick_label_angle=90, show_grid=True, combine_groups=False,
                    fig_height=None, fig_width=None,
                    semilog_y=False, semilog_y_base=10, show_h_bars=False,
@@ -1366,7 +1383,8 @@ class ScalarDictAnalyzer(Analyzer):
           the mass centroid. If mass_fraction is to be used, this value must be set to None or 1
         :param key_to_x: if None, found keys are sorted alphabetically and placed at 0, 1, ..., etc.
           If not None, if must be a dictionary so that dictionary keys (after applying @a combine_keys, if present),
-          are all present in key_to_x, and values are real values (typically a permutation of the default key_to_x).
+          are all present in key_to_x, and values are real values
+          (typically a permutation of the default 0, 1, ..., N sequence).
         :param key_list: if not None, it must be a list of the dictionary keys to be displayed, with the desired order.
         :param show_std_bar: if True, vertical error bars are shown centered on each average point, plus/minus one
           standard deviation.
@@ -1376,6 +1394,7 @@ class ScalarDictAnalyzer(Analyzer):
         :param semilog_y_base: use this base if semilog_y is True.
         :param show_h_bars: if True, +/- 0.5 horizontal bars are shown at each data point.
           Useful for coarsely classified data.
+        :param y_tick_list, y_tick_label_list: passed directly to render_render_plds_by_group()
 
         All remaining parameters are as defined in :class:`Analyzer` or :func:`enb.aanalysis.render_plds_by_group`.
         """
@@ -1484,9 +1503,13 @@ class ScalarDictAnalyzer(Analyzer):
                     lambda d: list(d.keys())).sum())) \
                     if combine_keys is None or not histogram_combination \
                     else combine_keys.binned_keys
-            key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))} \
-                if combine_keys is None or not histogram_combination \
-                else {k: i for i, k in enumerate(combine_keys.binned_keys)}
+            if key_to_x is not None:
+                key_to_x_by_column[column] = key_to_x
+            else:
+                key_to_x_by_column[column] = {k: i for i, k in enumerate(sorted(keys_by_column[column]))} \
+                    if combine_keys is None or not histogram_combination \
+                    else {k: i for i, k in enumerate(combine_keys.binned_keys)}
+
 
         # Generate the plottable data
         column_to_id_by_group = collections.defaultdict(dict)
@@ -1617,6 +1640,8 @@ class ScalarDictAnalyzer(Analyzer):
                         x_tick_list=ray.put(x_tick_list),
                         x_tick_label_list=ray.put(keys_by_column[column]),
                         x_tick_label_angle=ray.put(x_tick_label_angle),
+                        y_tick_list=ray.put(y_tick_list),
+                        y_tick_label_list=ray.put(y_tick_label_list),
                         horizontal_margin=ray.put(0.1),
                         x_min=ray.put(x_min), x_max=ray.put(x_max),
                         y_min=ray.put(y_min), y_max=ray.put(y_max),

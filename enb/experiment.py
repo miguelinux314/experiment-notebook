@@ -135,7 +135,7 @@ class Experiment(atable.ATable):
 
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,
-                                            f"{dataset_info_table.__class__.__name__}_persistence.csv")
+                                            f"{self.__class__.__name__}_dataset_persistence.csv")
         os.makedirs(os.path.dirname(csv_dataset_path), exist_ok=True)
 
         if dataset_info_table is None:
