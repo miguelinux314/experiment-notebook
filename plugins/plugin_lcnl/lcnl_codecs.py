@@ -60,6 +60,10 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
             decompressor_path=ldc_decoder_path, param_dict=param_dict)
         self.ldc_header_tool_path = ldc_header_tool_path
         self.output_header_dir = output_header_dir
+        
+    @property
+    def label(self):
+        return f"CCSDS 121.0-B-3 J{self.param_dict['large_j']}"
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         with tempfile.NamedTemporaryFile(

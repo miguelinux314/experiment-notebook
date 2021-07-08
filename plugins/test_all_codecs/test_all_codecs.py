@@ -87,14 +87,15 @@ class CodecSummaryTable(enb.atable.SummaryTable):
         reference_df = reference_df if reference_df is not None else self.reference_df
         return reference_df.groupby("task_label")
 
-    @enb.atable.column_function("type_to_availability", label="Data type to availability", has_dict_values=True,
+    @enb.atable.column_function("type_to_availability", label="\nCodec availability for different data types",
+                                has_dict_values=True,
                                 plot_min=min(availability_modes) - 0.2,
                                 plot_max=max(availability_modes) + 0.2)
     def set_type_bands_to_availability(self, index, row):
         local_df = self.label_to_df[index]
         type_to_availability = dict()
         for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
-            key = f"{type_name} {component_count} bands"
+            key = f"{type_name} {component_count} band{'s' if component_count != 1 else ''}"
             if not type_df["is_working"].all():
                 type_to_availability[key] = CodecSummaryTable.UNAVAILABLE
             elif type_df["is_lossless"].all():
@@ -105,7 +106,19 @@ class CodecSummaryTable(enb.atable.SummaryTable):
 
 
 if __name__ == '__main__':
+    if options.verbose:
+        print(f"{' [ Codec Availability Test Script ] ':=^100s}")
+        print()
+
+
+    def log_event(s):
+        if options.verbose:
+            s = f" {s}..."
+            print(f"\n{s:->100s}\n")
+
+
     # Make sure data are ready
+    log_event("Preparing test dataset")
     from generate_test_images import generate_test_images
 
     generate_test_images()
@@ -121,6 +134,7 @@ if __name__ == '__main__':
     codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
 
     # Run the experiment
+    log_event(f"Running the experiment on {len(codec_classes)} codecs. This might take some time...")
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
 
@@ -135,7 +149,7 @@ if __name__ == '__main__':
             type_list = ["u", "s", "f"]
             type_code = type_list.index(a[0])
             bps_code = int(re.search(r'(\d+)', a).group(1))
-            band_count = int(re.search('(\d+) bands', a).group(1))
+            band_count = int(re.search('(\d+) band', a).group(1))
             return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:05d}_{a}"
 
         # Define the x tick positions
@@ -163,17 +177,17 @@ if __name__ == '__main__':
             y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
                                CodecSummaryTable.availability_modes],
             key_to_x=key_to_x,
-            fig_height=0.75*len(codec_classes),
+            fig_height=0.7 * len(codec_classes),
             output_plot_path=output_plot_path,
             show_global=False)
 
 
     # Generate the plots for different subsets of the full results table
+    log_event("Experiment successfully run. Plotting availability analysis...")
     integer_df = full_availability_df[full_availability_df["float"] == False]
     signed_df = integer_df[integer_df["signed"] == True]
     unsigned_df = integer_df[integer_df["signed"] == False]
     float_df = full_availability_df[full_availability_df["float"] == True]
-
     options.no_new_results = False
     for label, full_df in (
             ("general", full_availability_df),
@@ -184,3 +198,7 @@ if __name__ == '__main__':
             csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary_{label}.csv"),
             reference_df=full_df).get_df()
         save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability_{label}.pdf"))
+
+    if options.verbose:
+        print(f"Saving PNG versions of the PDF files...")
+    enb.aanalysis.pdf_to_png(input_dir=options.plot_dir, output_dir=options.plot_dir)

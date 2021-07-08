@@ -43,9 +43,9 @@ def read(*filenames, **kwargs):
 setup(
     # Meta
     name='enb',
-    version="0.2.7",
+    version="0.2.8",
     url='https://github.com/miguelinux314/experiment-notebook',
-    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.7.tar.gz",
+    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.8.tar.gz",
     license='MIT',
     author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
     author_email='miguel.hernandez@uab.cat',
@@ -74,7 +74,7 @@ setup(
     install_requires=[
         'wheel', 'deprecation', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation'],
+        'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation', 'pdf2image'],
     packages=find_packages(),
 
     include_package_data=True,
