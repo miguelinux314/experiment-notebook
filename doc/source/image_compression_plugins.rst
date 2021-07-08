@@ -70,3 +70,11 @@ Availability tables:
 
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.png
+
+.. warning:: The following points are important to interpret these results:
+
+    - An `enb` codec not being available does not mean that the underlying algorithm is not capable
+      of handling a particular type of data.
+
+    - Conversely, a codec working for a data type does not imply that the associated
+      compression algorithm was created with that data type in mind.
