@@ -43,7 +43,8 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None),
+    'pandas': ('https://pandas.pydata.org/pandas-docs/dev', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
 }
 
 # Add any paths that contain templates here, relative to this directory.

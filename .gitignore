@@ -45,3 +45,7 @@ doc/build/
 
 
 enb.egg-info/
+.eggs
+
+/dist/
+/test/persistence_*

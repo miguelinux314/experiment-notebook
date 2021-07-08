@@ -134,3 +134,11 @@ columns of this type. Note that:
 An example of using `combine_keys="histogram8col"` is shown next:
 
 .. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/analysis_gallery_example/png_plots/combine_keys_histogram8col/ScalarDictAnalyzer_group-block_size_mode_count.png
+
+.. warning:: The following points are important to interpret these results:
+
+    - An `enb` codec not being available does not mean that the underlying algorithm is not capable
+      of handling a particular type of data.
+
+    - Conversely, a codec working for a data type does not imply that the associated
+      compression algorithm was created with that data type in mind.
