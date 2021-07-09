@@ -8,14 +8,13 @@ __date__ = "18/09/2019"
 import sys
 import os
 import tempfile
-import argparse
 import functools
-
 import enb
-
+import inspect
 
 singleton_cli = enb.singleton_cli
 cli_property = singleton_cli.SingletonCLI.property
+cli_parsers_builder = singleton_cli.SingletonCLI.parsers_builder
 calling_script_dir = os.path.realpath(os.path.dirname(os.path.abspath(sys.argv[0])))
 
 
@@ -49,21 +48,25 @@ class ExecutionOptions(singleton_cli.GlobalOptions):
         pass
 
     @cli_property("c",
-                  help="List of selected column names for computation. If one or more column names are provided, "
-                       "all others are ignored. Multiple columns can be expressed, separated by spaces.",
+                  help="List of selected column names for computation. If one or"
+                        + "more column names are provided, "
+                        + "all others are ignored. Multiple columns can be expressed,"
+                        + "separated by spaces.",
                   default=None,
                   nargs="+",
                   type=str)
     def columns(self):
         pass
 
-    @cli_property(help="If True, any exception when processing rows aborts the program.", action="store_true",
-                  default=True)
+    @cli_property(help="If True, any exception when processing rows aborts the program.",
+                    action="store_true",
+                    default=True)
     def exit_on_error(self):
         pass
 
-    @cli_property(help="Discard partial results when an error is found running the experiment? "
-                       "Otherwise, they are output to persistent storage.",
+    @cli_property(help="Discard partial results when an error is found running the"
+                        + "experiment? "
+                        + "Otherwise, they are output to persistent storage.",
                   action="store_true")
     def discard_partial_results(self):
         pass
@@ -90,11 +93,13 @@ class RenderingOptions(singleton_cli.GlobalOptions):
     def no_render(self):
         pass
 
-    @cli_property("fw", help="Figure width. Larger values make text look smaller.", default=5, type=float)
+    @cli_property("fw", help="Figure width. Larger values make text look smaller.",
+                default=5, type=float)
     def fig_width(self):
         pass
 
-    @cli_property("fig_height", help="Figure height. Larger values make text look smaller.",
+    @cli_property("fig_height", help="Figure height. Larger values make text look"
+                + "smaller.",
                   default=4, type=float)
     def fig_height(self):
         pass
@@ -224,8 +229,148 @@ class DirOptions(singleton_cli.GlobalOptions):
         pass
 
 
+class TemplateOptions(singleton_cli.GlobalOptions):
+    @cli_parsers_builder(""
+                         , title="Subcommands"
+                         , description="Allows you to either create or modify a template at will."
+                         , new_parser=True
+                         , parser_alias="template")
+    def template_parser(self):
+        pass
+
+    @cli_parsers_builder("n",
+                         group_name="General Options"
+                         , parser_parent="template"
+                         , action=singleton_cli.ValidationTemplateNameAction
+                         , help="Followed by a string defines the name of a template"
+                                + " to either be added, modified or deleted."
+                         , required=False)
+    def template_name(self):
+        pass
+
+    """
+    @cli_parsers_builder("template_name",
+                         parser_parent="template"
+        , positional=True
+        , group_name="General Options"
+        , type=str
+        , help="This should also work.")
+    def template_name(self):
+        pass
+    """
+
+    @cli_parsers_builder("c",
+                         group_name="General Options"
+                         , parser_parent="template"
+                         , default=False
+                         , action="store_true"
+                         , help="To create a new template.")
+    def create_new_template(self):
+        pass
+
+    @cli_parsers_builder("l",
+                         group_name="General Options"
+                         , parser_parent="template"
+                         , default=False
+                         , action="store_true"
+                         , help="To list all the actions one can do over a template.")
+    def list_template_options(self):
+        pass
+
+    @cli_parsers_builder(""
+                         , title="Subcommands"
+                         , description="Allows you to add either en Experiment, an"
+                         + " Analysis or a step."
+                         , new_parser=True
+                         , parser_parent="template"
+                         , parser_alias="add")
+    def add_parser(self):
+        pass
+
+    @cli_parsers_builder("w",
+                         group_name="General Options"
+                         , parser_parent="template"
+                         , default="./"
+                         , type=str
+                         , help="Controller that allows you to define the operation to"
+                         + " be exacted over a template."
+                         , action=singleton_cli.WritableDirAction
+                         , required=False)
+    def working_dir(self):
+        pass
+
+    @cli_parsers_builder("l",
+                         group_name="General Options"
+                         , parser_parent="add"
+                         , help="To list adding options."
+                         , default=False
+                         , action="store_true")
+    def list_adding_options(self):
+        pass
+
+    @cli_parsers_builder("",
+                         group_name="General Options"
+                         , new_parser=True
+                         , parser_parent="add"
+                         , parser_alias="experiment")
+    def experiment_parser(self):
+        pass
+
+    @cli_parsers_builder("l",
+                         group_name="General Options"
+                         , parser_parent="experiment"
+                         , help="To list all existing possible experiments."
+                         , default=False
+                         , action="store_true")
+    def list_experiments(self):
+        pass
+
+    @cli_parsers_builder("e",
+                         group_name="General Options"
+                         , parser_parent="experiment"
+                         , help="To define the experiment type we would like to add."
+                         , type=str
+                         , required=False)
+    def experiment_type(self):
+        pass
+
+    @cli_parsers_builder("",
+                         group_name="General Options"
+                        , new_parser=True
+                        , parser_parent="add"
+                        , parser_alias="analysis")
+    def analysis_parser(self):
+        pass
+
+    @cli_parsers_builder("l",
+                         group_name="General Options"
+                        , parser_parent="analysis"
+                        , help="To list all existing possible analysis."
+                        , default=False
+                        , action="store_true")
+    def list_analysis(self):
+        pass
+
+    @cli_parsers_builder("a",
+                         group_name="General Options"
+                        , parser_parent="analysis"
+                        , help="To define the analysis to add."
+                        , type=str
+                        , required=False)
+    def analysis_type(self):
+        pass
+
+    @cli_parsers_builder("",
+                         group_name="General Options"
+                        , new_parser=True
+                        , parser_parent="add"
+                        , parser_alias="step")
+    def step_parser(self):
+        pass
+
+
 def get_options(from_main=False):
-    """Deprecated - use enb.config.options isntead.
+    """Deprecated - use enb.config.options instead.
     """
     global options
     return options
@@ -254,7 +399,7 @@ def propagates_options(f):
     return wrapper
 
 
-class AllOptions(ExecutionOptions, RenderingOptions, RayOptions, DirOptions):
+class AllOptions(ExecutionOptions, RenderingOptions, RayOptions, DirOptions, TemplateOptions):
     """Compendium of options available by default in enb
     """
     pass

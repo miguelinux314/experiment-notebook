@@ -36,7 +36,7 @@ if __name__ == '__main__':
             analyzer = cls()
             analyzer.analyze_df(full_df=iris_df, target_columns=target_columns,
                                 group_by=group_by, output_plot_dir=dir, **extra_kwargs)
-
+TaskFamily
 
     # Line plots - using a real compression example, reusing persistence data
     base_dir = os.path.join(input_csv_dir, "lossy_persistence_example")
