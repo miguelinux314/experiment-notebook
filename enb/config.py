@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Configuration in enb is centralized through this module with these key aspects:
+"""
+Configuration in enb is centralized through this module.
 
-    - `enb.config.options` is a singleton :class:`argparse.Namespace`-like object, which
-       enables automatic access and change propagation of property=value pairs
-       across all enb modules and host enb code, i.e., your experiments.
+Several key aspects should be highlighted:
 
-       You can use `from enb.config import options`, to have a convenient `options` dict-like global in
-       your script, module or plugin.
+    - Properties (attributes) defined in `enb.config.options` are mostly employed for default argument
+      values in many `enb` modules. Host code (i.e., scripts using `enb`) may use and modify them in any desired way.
 
-    - Command-line interface (CLI) parsers are automatically created so that options can be set to values
-      different than the defaults by passing `-*` and `--*` arguments to the invocation of enb or any
-      enb host code. Run any script or enb with the '-h' flag and see all available options.
+    - Properties are accessed and modified with `options.property` and `options.property = value`, respectively.
 
-    - GlobalOptions (the class of `enb.config.options`) is defined so that no positional or otherwise mandatory
-      arguments.
+    - Command-line interface (CLI) parsers are automatically created and invoked once when the enb library is first
+      imported. Default option values can be set with `-*` and `--*` arguments to any host code or `enb` entry point.
 
+An important note should be made about the interaction between this module and ray.
+When ray spawns new (local or remote) processes to serve as workers, the Options singleton
+is initialized for each of those process, with the catch that ray uses different arguments.
+To mitigate this problem, one can:
+
+    1. Pass options as a parameter to remote functions, e.g., with ray.put(options)
+
+    2. Use the `@enb.config.propagates_options` decorator for local functions
+       that admit an `options` keyword argument. This way, the global `enb.confiog.options` singleton instance
+       is correctly set to the same values as the orchestrating process.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "18/09/2019"
@@ -313,21 +320,40 @@ class DirOptions:
         singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
 
+class Options(OptionsBase, GeneralGroup, ExecutionOptions, RenderingOptions, DirOptions):
+    """Global options for all modules, without any positional or required argument.
+
+    Classes wishing to expand the set of global options can be defined above,
+    using the `@OptionsBase.property` decorator for new properties.
+    Making :class:`Options` inherit from those classes is optional,
+    but allows IDEs to automatically
+    detect available properties in `enb.config.options`.
+
+    Parameters in this class should defined so that no positional or otherwise mandatory
+    arguments. This is due to interactions with ray for parallelization purposes, which
+    results in `sys.argv` differing in the orchestrating and host processes.
+    """
+    pass
+
+
+options = Options()
+# Sanity check: verify singleton instance
+assert options is Options(), f"The singleton property does not seem to be working ?!"
+
 @deprecation.deprecated(deprecated_in="0.2.7", removed_in="0.3.1")
 def get_options(from_main=False):
-    """Deprecated - use enb.config.options instead.
+    """Deprecated - use `from enb.config import options`.
     """
     global options
     return options
 
 
-@deprecation.deprecated(deprecated_in="0.2.7", removed_in="0.3.1")
-def set_options(new_options):
-    """Deprecated - use enb.config.options instead.
+def set_options(new_option_dict):
+    """Update global options with a dictionary of values
     """
     global options
-    if options is not new_options:
-        for k, v in new_options.__dict__.items():
+    if options is not new_option_dict:
+        for k, v in new_option_dict.__dict__.items():
             options.__setattr__(k, v)
 
 
@@ -343,16 +369,3 @@ def propagates_options(f):
         return f(*args, **kwargs)
 
     return wrapper
-
-
-class Options(OptionsBase, GeneralGroup, ExecutionOptions, RenderingOptions, DirOptions):
-    """Global options for all modules, without any positional or required argument.
-
-    This inheritage is useful so that IDEs automatically detect the available properties in enb.config.options
-    """
-    pass
-
-options = Options()
-
-# Verify singleton instance
-assert options is Options(), f"The singleton property does not seem to be working ?!"
