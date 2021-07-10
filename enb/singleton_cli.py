@@ -246,22 +246,24 @@ class SingletonCLI(metaclass=Singleton):
         the `@x.setter`-decorated function in the regular @property protocol, with the following important
         observations:
 
-            - Decorated functions are called whenever
-            `options.property_name = value` is used, where `options` is a SingletonCLI instance and `property_name` is one
-            of its defined properties.
+        - Decorated functions are called whenever
+          `options.property_name = value` is used, where `options` is a SingletonCLI instance and `property_name` is one
+          of its defined properties.
 
-            - The decorated functions' docstrings are used as help for those arguments.
+        - The decorated functions' docstrings are used as help for those arguments.
 
-            - If a None value is returned, the property is updated (e.g., defining a function
-            with a single `pass` line).
+        - If a None value is returned, the property is updated (e.g., defining a function
+          with a single `pass` line).
 
-            - If a non-None value is returned, that value is used instead.
-            To set a property value to `None`, `self._parsed_properties` dict must be updated manually by
-            the decorated function.
+        - If a non-None value is returned, that value is used instead.
+          To set a property value to `None`, `self._parsed_properties` dict must be updated manually by
+          the decorated function.
 
-            - Subclasses may choose to raise an exception if a read-only property is trying to be set.
+        - Subclasses may choose to raise an exception if a read-only property is trying to be set.
 
-            - CLI validation capabilities are provided by the argparse.Action subclasses defined above.
+        - CLI validation capabilities are provided by the argparse.Action subclasses defined above.
+
+        Note that modules and host code may choose to act differently than these options are intended.
 
         :param aliases: a list of aliases that can be used for the property in the command line.
 
