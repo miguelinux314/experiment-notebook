@@ -35,10 +35,10 @@ import functools
 import deprecation
 
 import enb
+from enb import singleton_cli
 
-singleton_cli = enb.singleton_cli
-cli_property = singleton_cli.SingletonCLI.property
 # cli_parsers_builder = singleton_cli.SingletonCLI.parsers_builder
+# Absolute, real path to the calling script's dir
 calling_script_dir = os.path.realpath(os.path.dirname(os.path.abspath(sys.argv[0])))
 
 
@@ -136,7 +136,7 @@ class ExecutionOptions:
         """
         return bool(value)
 
-    @cli_property("no_new_data", "render_only", action="store_true", default=False)
+    @OptionsBase.property("no_new_data", "render_only", action="store_true", default=False)
     def no_new_results(self, value):
         """If True, ATable's get_df method relies entirely on the loaded persistence data, no new rows are computed.
 
@@ -339,6 +339,7 @@ class Options(OptionsBase, GeneralGroup, ExecutionOptions, RenderingOptions, Dir
 options = Options()
 # Sanity check: verify singleton instance
 assert options is Options(), f"The singleton property does not seem to be working ?!"
+
 
 @deprecation.deprecated(deprecated_in="0.2.7", removed_in="0.3.1")
 def get_options(from_main=False):
