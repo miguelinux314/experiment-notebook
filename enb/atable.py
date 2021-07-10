@@ -1060,7 +1060,6 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
     if base_dataset_dir is None:
         if options.verbose > 1:
             print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
-            raise Exception(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
         return [get_canonical_path(sys.argv[0])]
 
     assert os.path.isdir(base_dataset_dir), \
