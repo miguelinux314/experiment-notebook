@@ -1,9 +1,7 @@
 import os
-from enb.config import get_options
+import enb
+from enb.config import options
 
-options = get_options(from_main=False)
-
-from enb import icompression, aanalysis
 import plugins
 
 if __name__ == '__main__':

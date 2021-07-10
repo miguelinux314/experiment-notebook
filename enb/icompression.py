@@ -799,12 +799,6 @@ class CompressionExperiment(experiment.Experiment):
                 if not os.path.exists(rendered_path) or options.force:
                     array = isets.load_array_bsq(file_or_path=row_wrapper.decompression_results.reconstructed_path,
                                                  image_properties_row=image_info_row).astype(np.int)
-                    if options.reconstructed_size is not None:
-                        width, height, _ = array.shape
-                        array = array[
-                                width // 2 - options.reconstructed_size // 2:width // 2 + options.reconstructed_size // 2,
-                                height // 2 - options.reconstructed_size // 2:height // 2 + options.reconstructed_size // 2,
-                                :]
                     cmin = array.min()
                     cmax = array.max()
                     array = np.round((255 * (array.astype(np.int) - cmin) / (cmax - cmin))).astype("uint8")

@@ -7,10 +7,7 @@ __date__ = "21/11/2019"
 
 import os
 import ray
-
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 def init_ray(force=False):
@@ -24,15 +21,7 @@ def init_ray(force=False):
       (generally problematic, specially if jobs are running)
     """
     if not ray.is_initialized() or force:
-        if os.path.exists(options.ray_config_file):
-            with open(options.ray_config_file, "r") as options_file:
-                address_line = options_file.readline().strip()
-                if options.verbose:
-                    print(f"[I]nfo: joining cluster [config: {address_line}, CPUlimit={options.ray_cpu_limit}]...")
-                ray.init(address=address_line, num_cpus=options.ray_cpu_limit,
-                         include_dashboard=False)
-        else:
-            if options.verbose:
-                print(f"[I]nfo: making new cluster [CPUlimit={options.ray_cpu_limit}]")
-
-            ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False)
+        if options.verbose:
+            print(f"[I]nfo: making new cluster [CPUlimit={options.ray_cpu_limit}]")
+        ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
+                 local_mode=options.sequential)
