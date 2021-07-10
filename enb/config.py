@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Configuration in enb is centralized through this module with two key aspects:
+"""Configuration in enb is centralized through this module with these key aspects:
 
-    - `enb.config.options` is a singleton, dict-like object that
-       enables automatic access and change propagation across all enb modules and host enb code,
-       i.e., your experiments.
-       The following line is typically used, `from enb.config import options`, to
-       have a convenient `options` dict-like global.
+    - `enb.config.options` is a singleton :class:`argparse.Namespace`-like object, which
+       enables automatic access and change propagation of property=value pairs
+       across all enb modules and host enb code, i.e., your experiments.
 
-    - command-line interface (CLI) parsers are automatically created so that options can be set to values
+       You can use `from enb.config import options`, to have a convenient `options` dict-like global in
+       your script, module or plugin.
+
+    - Command-line interface (CLI) parsers are automatically created so that options can be set to values
       different than the defaults by passing `-*` and `--*` arguments to the invocation of enb or any
       enb host code. Run any script or enb with the '-h' flag and see all available options.
+
+    - GlobalOptions (the class of `enb.config.options`) is defined so that no positional or otherwise mandatory
+      arguments.
 
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
