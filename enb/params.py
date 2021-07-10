@@ -107,11 +107,11 @@ class ParameterHandler:
         obj_to_exclude = None
         listed_stuff = []
 
-        if option is "template_options":
+        if option == "template_options":
             message = "You can execute the following operations on an existing template:\n" \
                    + "- add\n\n" \
                    + "For more information on this, consult the manual."
-        elif option is "add_elements":
+        elif option == "add_elements":
             message = "You can add to a template the following elements:\n" \
                    + "- Experiments\n" \
                    + "- Analysis\n" \
@@ -122,7 +122,8 @@ class ParameterHandler:
 
             for a_module in modules:
                 for name, obj in inspect.getmembers(a_module[1]):
-                    if inspect.isclass(obj) and issubclass(obj, experiment.Experiment if option is "experiments" else aanalysis.Analyzer) and name is not obj_to_exclude:
+                    if inspect.isclass(obj) and issubclass(obj, experiment.Experiment
+                    if option == "experiments" else aanalysis.Analyzer) and name is not obj_to_exclude:
                         listed_stuff.append(name)
 
             message = "You can add the following " + option + " to a template:\n\n"
