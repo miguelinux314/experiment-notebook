@@ -36,7 +36,6 @@ if __name__ == '__main__':
             analyzer = cls()
             analyzer.analyze_df(full_df=iris_df, target_columns=target_columns,
                                 group_by=group_by, output_plot_dir=dir, **extra_kwargs)
-TaskFamily
 
     # Line plots - using a real compression example, reusing persistence data
     base_dir = os.path.join(input_csv_dir, "lossy_persistence_example")
@@ -77,7 +76,7 @@ TaskFamily
             full_df=hevc_df,
             column_to_properties=column_to_properties,
             target_columns="mode_count",
-            group_name_order=[f"Block size {2**i}" for i in range(1, 7)],
+            group_name_order=[f"Block size {2 ** i}" for i in range(1, 7)],
             combine_keys=combine_keys,
             show_global=False,
             output_plot_dir=os.path.join(options.plot_dir, f"combine_keys_{combine_keys}"),
@@ -85,7 +84,6 @@ TaskFamily
             show_std_band=combine_keys is not None,
             show_std_bar=False,
             global_y_label="CUs using this mode")
-
 
     # Make a png mirror of all the PDF files (not within enb, yet)
     for pdf_path in glob.glob(os.path.join(options.plot_dir, "**", "*.pdf"), recursive=True):
