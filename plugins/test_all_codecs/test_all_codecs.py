@@ -178,6 +178,7 @@ if __name__ == '__main__':
                                CodecSummaryTable.availability_modes],
             key_to_x=key_to_x,
             fig_height=0.7 * len(codec_classes),
+            fig_width=4 + len(key_to_x) * 0.1,
             output_plot_path=output_plot_path,
             show_global=False)
 

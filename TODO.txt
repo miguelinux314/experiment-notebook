@@ -1,1 +1,13 @@
+-- update getitem
+-- update setitem
+- make -h a count and show the first line or everything depending
+# TODO: cleanup -- the idea is to have all options in a single file, not just Ray's
+
+- apply the actions verification / assertion?
+
+- verify property uniqueness (don't redefine)
+- trim docstrings nicely for the argument help
+
+- Make the property functions be the setter checker and tansformer
+
 - Add page about analyzer output configuration (colors, sizes, config--, etc)
