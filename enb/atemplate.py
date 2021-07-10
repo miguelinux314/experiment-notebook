@@ -31,11 +31,11 @@ class ATemplate:
 
     def arg_handler(self):
 
-        if self.__args["operation"] is "new_template":
+        if self.__args["operation"] == "new_template":
             print("Here: ")
             print(self.__args)
             self.new_template()
-        elif self.__args["operation"] is "add":
+        elif self.__args["operation"] == "add":
             print("Adding stuff:")
             self.add_element()
 
@@ -116,7 +116,7 @@ class ATemplate:
 
     def load_template(self, path, template_name=""):
         if isdir(path):
-            if template_name is not "":
+            if template_name:
                 template_name = template_name if template_name.endswith(".json") else template_name + ".json"
                 full_path = join(path, template_name)
 
