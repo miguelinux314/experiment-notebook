@@ -11,6 +11,147 @@ import importlib.util
 from plugins import *
 from os.path import isdir, join
 
+## Old code, potentially to be ported to config.py
+# class TemplateOptions(singleton_cli.GlobalOptions):
+#     @cli_parsers_builder(""
+#         , title="Subcommands"
+#         , description="Allows you to either create or modify a template at will."
+#         , new_parser=True
+#         , parser_alias="template")
+#     def template_parser(self, value):
+#         pass
+#
+#     @cli_parsers_builder("n",
+#                          group_name="General Options"
+#         , parser_parent="template"
+#         , action=singleton_cli.ValidationTemplateNameAction
+#         , help="Followed by a string defines the name of a template"
+#                + " to either be added, modified or deleted."
+#         , required=False)
+#     def template_name(self, value):
+#         pass
+#
+#     """
+#     @cli_parsers_builder("template_name",
+#                          parser_parent="template"
+#         , positional=True
+#         , group_name="General Options"
+#         , type=str
+#         , help="This should also work.")
+#     def template_name(self, value):
+#         pass
+#     """
+#
+#     @cli_parsers_builder("c",
+#                          group_name="General Options"
+#         , parser_parent="template"
+#         , default=False
+#         , action="store_true"
+#         , help="To create a new template.")
+#     def create_new_template(self, value):
+#         pass
+#
+#     @cli_parsers_builder("l",
+#                          group_name="General Options"
+#         , parser_parent="template"
+#         , default=False
+#         , action="store_true"
+#         , help="To list all the actions one can do over a template.")
+#     def list_template_options(self, value):
+#         pass
+#
+#     @cli_parsers_builder(""
+#         , title="Subcommands"
+#         , description="Allows you to add either en Experiment, an"
+#                       + " Analysis or a step."
+#         , new_parser=True
+#         , parser_parent="template"
+#         , parser_alias="add")
+#     def add_parser(self, value):
+#         pass
+#
+#     @cli_parsers_builder("w",
+#                          group_name="General Options"
+#         , parser_parent="template"
+#         , default="./"
+#         , type=str
+#         , help="Controller that allows you to define the operation to"
+#                + " be exacted over a template."
+#         , action=singleton_cli.WritableDirAction
+#         , required=False)
+#     def working_dir(self, value):
+#         pass
+#
+#     @cli_parsers_builder("l",
+#                          group_name="General Options"
+#         , parser_parent="add"
+#         , help="To list adding options."
+#         , default=False
+#         , action="store_true")
+#     def list_adding_options(self, value):
+#         pass
+#
+#     @cli_parsers_builder("",
+#                          group_name="General Options"
+#         , new_parser=True
+#         , parser_parent="add"
+#         , parser_alias="experiment")
+#     def experiment_parser(self, value):
+#         pass
+#
+#     @cli_parsers_builder("l",
+#                          group_name="General Options"
+#         , parser_parent="experiment"
+#         , help="To list all existing possible experiments."
+#         , default=False
+#         , action="store_true")
+#     def list_experiments(self, value):
+#         pass
+#
+#     @cli_parsers_builder("e",
+#                          group_name="General Options"
+#         , parser_parent="experiment"
+#         , help="To define the experiment type we would like to add."
+#         , type=str
+#         , required=False)
+#     def experiment_type(self, value):
+#         pass
+#
+#     @cli_parsers_builder("",
+#                          group_name="General Options"
+#         , new_parser=True
+#         , parser_parent="add"
+#         , parser_alias="analysis")
+#     def analysis_parser(self, value):
+#         pass
+#
+#     @cli_parsers_builder("l",
+#                          group_name="General Options"
+#         , parser_parent="analysis"
+#         , help="To list all existing possible analysis."
+#         , default=False
+#         , action="store_true")
+#     def list_analysis(self, value):
+#         pass
+#
+#     @cli_parsers_builder("a",
+#                          group_name="General Options"
+#         , parser_parent="analysis"
+#         , help="To define the analysis to add."
+#         , type=str
+#         , required=False)
+#     def analysis_type(self, value):
+#         pass
+#
+#     @cli_parsers_builder("",
+#                          group_name="General Options"
+#         , new_parser=True
+#         , parser_parent="add"
+#         , parser_alias="step")
+#     def step_parser(self, value):
+#         pass
+#
+#
 
 class ATemplate:
     __args = None
