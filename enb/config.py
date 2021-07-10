@@ -126,10 +126,12 @@ class ExecutionOptions:
 
     @cli_property("no_new_data", "render_only", action="store_true", default=False)
     def no_new_results(self, value):
-        """If True, no new data is computed in the get_df method of most ATable subclasses.
+        """If True, ATable's get_df method relies entirely on the loaded persistence data, no new rows are computed.
 
         This can be useful to speed up the rendering process, for instance to try different
-        aesthetic plotting options.
+        aesthetic plotting options. On the other hand, it might create errors in complex table
+        interactions -- if the source of the problem is not found, simply avoiding this flag should
+        prevent those errors.
         """
         return bool(value)
 
