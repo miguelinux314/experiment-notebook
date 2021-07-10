@@ -133,6 +133,7 @@ class WritableOrCreableDirAction(ExistingDirAction):
             ReadableDirAction.assert_valid_value(target_dir)
         except AssertionError:
             parent_dir = os.path.dirname(target_dir)
+            os.makedirs(parent_dir, exist_ok=True)
             WritableDirAction.assert_valid_value(parent_dir)
 
 
