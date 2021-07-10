@@ -35,16 +35,17 @@ cli_property = singleton_cli.SingletonCLI.property
 calling_script_dir = os.path.realpath(os.path.dirname(os.path.abspath(sys.argv[0])))
 
 
-class GlobalOptions(enb.singleton_cli.SingletonCLI):
-    """Global options available to all modules.
+class OptionsBase(enb.singleton_cli.SingletonCLI):
+    """Base class for the global options available to all modules. This is needed so that @OptionsBase.property
+    is properly defined.
 
-    New options can be added to this by decorating any function with `@GlobalOptions.property`.
+    New options can be added to this by decorating any (self,value) method with `@GlobalOptions.property`.
     """
     pass
 
 
 class GeneralGroup:
-    @GlobalOptions.property("v", action="count", default=0)
+    @OptionsBase.property("v", action="count", default=0)
     def verbose(self, value):
         """Be verbose? Repeat for more.
         """
@@ -52,17 +53,17 @@ class GeneralGroup:
 
 
 class ExecutionOptions:
-    @GlobalOptions.property("cpu_limit", "cpu_cunt",
-                            group_name="Execution Options",
-                            group_description="General execution options.",
-                            type=int, default=None)
+    @OptionsBase.property("cpu_limit", "cpu_cunt",
+                          group_name="Execution Options",
+                          group_description="General execution options.",
+                          type=int, default=None)
     def ray_cpu_limit(self, value):
         """Maximum number of virtual CPUs to use in the ray cluster.
         """
         return int(value)
 
-    @GlobalOptions.property("s", "not_parallel",
-                            action="store_true", default=False)
+    @OptionsBase.property("s", "not_parallel",
+                          action="store_true", default=False)
     def sequential(self, value):
         """Make computations sequentially instead of distributed?
 
@@ -76,7 +77,7 @@ class ExecutionOptions:
         """
         return bool(value)
 
-    @GlobalOptions.property("f", "overwrite", action="count", default=0)
+    @OptionsBase.property("f", "overwrite", action="count", default=0)
     def force(self, value):
         """Force calculation of pre-existing results, if available?
 
@@ -85,7 +86,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @GlobalOptions.property("q", "fast", action="count", default=0)
+    @OptionsBase.property("q", "fast", action="count", default=0)
     def quick(self, value):
         """Perform a quick test with a subset of the input samples?
 
@@ -94,7 +95,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @GlobalOptions.property("rep", "repetition_count", action=singleton_cli.PositiveIntegerAction, default=1, type=int)
+    @OptionsBase.property("rep", "repetition_count", action=singleton_cli.PositiveIntegerAction, default=1, type=int)
     def repetitions(self, value):
         """Number of repetitions when calculating execution times.
 
@@ -103,7 +104,7 @@ class ExecutionOptions:
         """
         singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
-    @GlobalOptions.property("c", "selected_columns", default=None, nargs="+", type=str)
+    @OptionsBase.property("c", "selected_columns", default=None, nargs="+", type=str)
     def columns(self, value):
         """List of selected column names for computation.
 
@@ -114,13 +115,13 @@ class ExecutionOptions:
         """
         assert value, f"At least one column must be defined"
 
-    @GlobalOptions.property(action="store_true", default=True)
+    @OptionsBase.property(action="store_true", default=True)
     def exit_on_error(self, value):
         """If True, any exception when processing rows aborts the program.
         """
         return bool(value)
 
-    @GlobalOptions.property(action="store_true", default=False)
+    @OptionsBase.property(action="store_true", default=False)
     def discard_partial_results(self, value):
         """Discard partial results when an error is found running the experiment?
 
@@ -133,13 +134,11 @@ class ExecutionOptions:
         """If True, ATable's get_df method relies entirely on the loaded persistence data, no new rows are computed.
 
         This can be useful to speed up the rendering process, for instance to try different
-        aesthetic plotting options. On the other hand, it might create errors in complex table
-        interactions -- if the source of the problem is not found, simply avoiding this flag should
-        prevent those errors.
+        aesthetic plotting options.
         """
         return bool(value)
 
-    @GlobalOptions.property("cs", default=None, type=int)
+    @OptionsBase.property("cs", default=None, type=int)
     def chunk_size(self, value):
         """Chunk size used when running ATable's get_df().
         Each processed chunk is made persistent before processing the next one.
@@ -152,17 +151,17 @@ class RenderingOptions:
     """Options affecting the rendering of figures.
     """
 
-    @GlobalOptions.property("nr", "norender",
-                            group_name="Rendering Options",
-                            group_description="Options affecting the rendering of figures.",
-                            action="store_true", default=False)
+    @OptionsBase.property("nr", "norender",
+                          group_name="Rendering Options",
+                          group_description="Options affecting the rendering of figures.",
+                          action="store_true", default=False)
     def no_render(self, value):
         """If set, some rendering options will be skipped.
         """
         return bool(value)
 
-    @GlobalOptions.property("fw", "width",
-                            default=5, type=float, action=singleton_cli.PositiveFloatAction)
+    @OptionsBase.property("fw", "width",
+                          default=5, type=float, action=singleton_cli.PositiveFloatAction)
     def fig_width(self, value):
         """Figure width.
 
@@ -170,8 +169,8 @@ class RenderingOptions:
         """
         singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
-    @GlobalOptions.property("fh", "height",
-                            default=4, type=float, action=singleton_cli.PositiveFloatAction)
+    @OptionsBase.property("fh", "height",
+                          default=4, type=float, action=singleton_cli.PositiveFloatAction)
     def fig_height(self, value):
         """Figure height.
 
@@ -179,7 +178,7 @@ class RenderingOptions:
         """
         singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
-    @GlobalOptions.property("ylpos", default=-0.01, type=float)
+    @OptionsBase.property("ylpos", default=-0.01, type=float)
     def global_y_label_pos(self, value):
         """Relative position of the global Y label.
 
@@ -188,19 +187,19 @@ class RenderingOptions:
         """
         return float(value)
 
-    @GlobalOptions.property("legend_count", default=2, type=int, action=singleton_cli.PositiveIntegerAction)
+    @OptionsBase.property("legend_count", default=2, type=int, action=singleton_cli.PositiveIntegerAction)
     def legend_column_count(self, value):
         """Number of columns used in plot legends.
         """
         singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
-    @GlobalOptions.property(action="store_true")
+    @OptionsBase.property(action="store_true")
     def show_grid(self, value):
         """Show axis grid lines?
         """
         return bool(value)
 
-    @GlobalOptions.property("title", "global_title", type=str, default=None)
+    @OptionsBase.property("title", "global_title", type=str, default=None)
     def displayed_title(self, value):
         """When this property is not None, displayed plots will typically include its value as the main title.
         """
@@ -213,11 +212,11 @@ class DirOptions:
     # Data dir
     default_base_dataset_dir = os.path.join(calling_script_dir, "datasets")
 
-    @GlobalOptions.property("d",
-                            group_name="Data paths",
-                            group_description="Options regarding default data directories.",
-                            default=default_base_dataset_dir if os.path.isdir(default_base_dataset_dir) else None,
-                            action=singleton_cli.ReadableDirAction)
+    @OptionsBase.property("d",
+                          group_name="Data paths",
+                          group_description="Options regarding default data directories.",
+                          default=default_base_dataset_dir if os.path.isdir(default_base_dataset_dir) else None,
+                          action=singleton_cli.ReadableDirAction)
     def base_dataset_dir(self, value):
         """Directory to be used as source of input files for indices in the get_df method
         of tables and experiments.
@@ -229,22 +228,22 @@ class DirOptions:
     # Persistence dir
     default_persistence_dir = os.path.join(calling_script_dir, f"persistence_{os.path.basename(sys.argv[0])}")
 
-    @GlobalOptions.property("persistence", default=default_persistence_dir,
-                            action=singleton_cli.WritableOrCreableDirAction)
+    @OptionsBase.property("persistence", default=default_persistence_dir,
+                          action=singleton_cli.WritableOrCreableDirAction)
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
         """
         singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Reconstructed version dir
-    @GlobalOptions.property("reconstructed", default=None, action=singleton_cli.WritableOrCreableDirAction)
+    @OptionsBase.property("reconstructed", default=None, action=singleton_cli.WritableOrCreableDirAction)
     def reconstructed_dir(self, value):
         """Base directory where reconstructed versions are to be stored.
         """
         singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Versioned data dir
-    @GlobalOptions.property("vd", "version_target_dir", action=singleton_cli.WritableOrCreableDirAction, default=None)
+    @OptionsBase.property("vd", "version_target_dir", action=singleton_cli.WritableOrCreableDirAction, default=None)
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
@@ -260,9 +259,9 @@ class DirOptions:
     else:
         default_tmp_dir = os.path.expanduser("~/enb_tmp")
 
-    @GlobalOptions.property("t", "tmp", "tmp_dir",
-                            action=singleton_cli.WritableOrCreableDirAction,
-                            default=default_tmp_dir)
+    @OptionsBase.property("t", "tmp", "tmp_dir",
+                          action=singleton_cli.WritableOrCreableDirAction,
+                          default=default_tmp_dir)
     def base_tmp_dir(self, value):
         """Temporary dir used for intermediate data storage.
 
@@ -279,8 +278,8 @@ class DirOptions:
     default_external_binary_dir = default_external_binary_dir \
         if singleton_cli.ReadableDirAction.check_valid_value(default_external_binary_dir) else None
 
-    @GlobalOptions.property(action=singleton_cli.ReadableDirAction, default=default_external_binary_dir,
-                            required=False)
+    @OptionsBase.property(action=singleton_cli.ReadableDirAction, default=default_external_binary_dir,
+                          required=False)
     def external_bin_base_dir(self, value):
         """External binary base dir.
 
@@ -293,7 +292,7 @@ class DirOptions:
     default_output_plots_dir = default_output_plots_dir \
         if singleton_cli.WritableOrCreableDirAction.check_valid_value(default_output_plots_dir) else None
 
-    @GlobalOptions.property(
+    @OptionsBase.property(
         action=singleton_cli.WritableOrCreableDirAction,
         default=default_output_plots_dir)
     def plot_dir(self, value):
@@ -306,8 +305,8 @@ class DirOptions:
     default_analysis_dir = default_analysis_dir \
         if singleton_cli.WritableOrCreableDirAction.check_valid_value(default_analysis_dir) else None
 
-    @GlobalOptions.property("analysis",
-                            action=singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
+    @OptionsBase.property("analysis",
+                          action=singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
     def analysis_dir(self, value):
         """Directory to store analysis results.
         """
@@ -346,8 +345,14 @@ def propagates_options(f):
     return wrapper
 
 
-# Modules should use config.options
-options = GlobalOptions()
+class Options(OptionsBase, GeneralGroup, ExecutionOptions, RenderingOptions, DirOptions):
+    """Global options for all modules, without any positional or required argument.
+
+    This inheritage is useful so that IDEs automatically detect the available properties in enb.config.options
+    """
+    pass
+
+options = Options()
 
 # Verify singleton instance
-assert options is GlobalOptions(), f"The singleton property does not seem to be working ?!"
+assert options is Options(), f"The singleton property does not seem to be working ?!"
