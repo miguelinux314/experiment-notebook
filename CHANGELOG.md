@@ -10,6 +10,8 @@
     
   - Added `enb.aanalysis.pdf_to_png` to easily convert folders with pdf figures into folders with png figures
     (source and origin folders may be the same).
+    
+  - Revamped the configuration module with an improved verifier/setter system, keeping a compatible interface.
 
 * Improved general stability to different parts of `aanalysis.py`
 
