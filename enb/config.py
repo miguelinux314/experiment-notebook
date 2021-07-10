@@ -40,12 +40,6 @@ class GlobalOptions(enb.singleton_cli.SingletonCLI):
 
 
 class GeneralGroup:
-    @GlobalOptions.property("h", group_description=GlobalOptions.__doc__, action="store_true")
-    def help(self, value):
-        """If this option is selected, a help menu is shown and no other action is performed.
-        """
-        pass
-
     @GlobalOptions.property("v", action="count", default=0)
     def verbose(self, value):
         """Be verbose? Repeat for more.
@@ -54,11 +48,31 @@ class GeneralGroup:
 
 
 class ExecutionOptions:
-    @GlobalOptions.property("f",
+    @GlobalOptions.property("cpu_limit", "cpu_cunt",
                             group_name="Execution Options",
                             group_description="General execution options.",
-                            action="count",
-                            default=0)
+                            type=int, default=None)
+    def ray_cpu_limit(self, value):
+        """Maximum number of virtual CPUs to use in the ray cluster.
+        """
+        return int(value)
+
+    @GlobalOptions.property("s", "not_parallel",
+                            action="store_true", default=False)
+    def sequential(self, value):
+        """Make computations sequentially instead of distributed?
+
+        When -s is set, local mode is use when initializing ray.
+
+        This can be VERY useful to detect what parts of your code may be causing
+        an exception while running a get_df() method.
+
+        Furthermore, it can also help to limit the memory consumption of an experiment,
+        which is also useful in case exceptions are due to lack of RAM.
+        """
+        return bool(value)
+
+    @GlobalOptions.property("f", "overwrite", action="count", default=0)
     def force(self, value):
         """Force calculation of pre-existing results, if available?
 
@@ -67,7 +81,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @GlobalOptions.property("q", action="count", default=0)
+    @GlobalOptions.property("q", "fast", action="count", default=0)
     def quick(self, value):
         """Perform a quick test with a subset of the input samples?
 
@@ -76,7 +90,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @GlobalOptions.property("rep", action=singleton_cli.PositiveIntegerAction, default=1, type=int)
+    @GlobalOptions.property("rep", "repetition_count", action=singleton_cli.PositiveIntegerAction, default=1, type=int)
     def repetitions(self, value):
         """Number of repetitions when calculating execution times.
 
@@ -85,7 +99,7 @@ class ExecutionOptions:
         """
         singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
-    @GlobalOptions.property("c", default=None, nargs="+", type=str)
+    @GlobalOptions.property("c", "selected_columns", default=None, nargs="+", type=str)
     def columns(self, value):
         """List of selected column names for computation.
 
@@ -110,7 +124,7 @@ class ExecutionOptions:
         """
         return bool(value)
 
-    @cli_property(action="store_true", default=False)
+    @cli_property("no_new_data", "render_only", action="store_true", default=False)
     def no_new_results(self, value):
         """If True, no new data is computed in the get_df method of most ATable subclasses.
 
@@ -132,7 +146,7 @@ class RenderingOptions:
     """Options affecting the rendering of figures.
     """
 
-    @GlobalOptions.property("nr",
+    @GlobalOptions.property("nr", "norender",
                             group_name="Rendering Options",
                             group_description="Options affecting the rendering of figures.",
                             action="store_true", default=False)
@@ -141,7 +155,8 @@ class RenderingOptions:
         """
         return bool(value)
 
-    @GlobalOptions.property("fw", default=5, type=float, action=singleton_cli.PositiveFloatAction)
+    @GlobalOptions.property("fw", "width",
+                            default=5, type=float, action=singleton_cli.PositiveFloatAction)
     def fig_width(self, value):
         """Figure width.
 
@@ -149,7 +164,8 @@ class RenderingOptions:
         """
         singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
-    @GlobalOptions.property("fh", default=4, type=float, action=singleton_cli.PositiveFloatAction)
+    @GlobalOptions.property("fh", "height",
+                            default=4, type=float, action=singleton_cli.PositiveFloatAction)
     def fig_height(self, value):
         """Figure height.
 
@@ -178,38 +194,11 @@ class RenderingOptions:
         """
         return bool(value)
 
-    @GlobalOptions.property("title", type=str, default=None)
+    @GlobalOptions.property("title", "global_title", type=str, default=None)
     def displayed_title(self, value):
         """When this property is not None, displayed plots will typically include its value as the main title.
         """
         return str(value)
-
-
-class RayOptions:
-    """Options related to ray cluster setup and operation.
-    """
-
-    @GlobalOptions.property(group_name="Ray Options",
-                            group_description="Options related to ray cluster setup and operation",
-                            type=int, default=None)
-    def ray_cpu_limit(self, value):
-        """Maximum number of virtual CPUs to use in the ray cluster.
-        """
-        return int(value)
-
-    @GlobalOptions.property("s", action="store_true", default=False)
-    def sequential(self, value):
-        """Make computations sequentially instead of distributed?
-
-        When -s is set, local mode is use when initializing ray.
-
-        This can be VERY useful to detect what parts of your code may be causing
-        an exception while running a get_df() method.
-
-        Furthermore, it can also help to limit the memory consumption of an experiment,
-        which is also useful in case exceptions are due to lack of RAM.
-        """
-        return bool(value)
 
 
 class DirOptions:
@@ -234,21 +223,21 @@ class DirOptions:
     # Persistence dir
     default_persistence_dir = os.path.join(calling_script_dir, f"persistence_{os.path.basename(sys.argv[0])}")
 
-    @GlobalOptions.property(default=default_persistence_dir, action=singleton_cli.WritableOrCreableDirAction)
+    @GlobalOptions.property("persistence", default=default_persistence_dir, action=singleton_cli.WritableOrCreableDirAction)
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
         """
         singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Reconstructed version dir
-    @GlobalOptions.property(default=None, action=singleton_cli.WritableOrCreableDirAction)
+    @GlobalOptions.property("reconstructed", default=None, action=singleton_cli.WritableOrCreableDirAction)
     def reconstructed_dir(self, value):
         """Base directory where reconstructed versions are to be stored.
         """
         singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Versioned data dir
-    @GlobalOptions.property("vd", action=singleton_cli.WritableOrCreableDirAction, default=None)
+    @GlobalOptions.property("vd", "version_target_dir", action=singleton_cli.WritableOrCreableDirAction, default=None)
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
@@ -264,7 +253,7 @@ class DirOptions:
     else:
         default_tmp_dir = os.path.expanduser("~/enb_tmp")
 
-    @GlobalOptions.property("t",
+    @GlobalOptions.property("t", "tmp", "tmp_dir",
                             action=singleton_cli.WritableOrCreableDirAction,
                             default=default_tmp_dir)
     def base_tmp_dir(self, value):
@@ -297,8 +286,9 @@ class DirOptions:
     default_output_plots_dir = default_output_plots_dir \
         if singleton_cli.WritableOrCreableDirAction.check_valid_value(default_output_plots_dir) else None
 
-    @GlobalOptions.property(action=singleton_cli.WritableOrCreableDirAction,
-                            default=default_output_plots_dir)
+    @GlobalOptions.property(
+        action=singleton_cli.WritableOrCreableDirAction,
+        default=default_output_plots_dir)
     def plot_dir(self, value):
         """Directory to store produced plots.
         """
@@ -309,7 +299,7 @@ class DirOptions:
     default_analysis_dir = default_analysis_dir \
         if singleton_cli.WritableOrCreableDirAction.check_valid_value(default_analysis_dir) else None
 
-    @GlobalOptions.property("analysis_dir",
+    @GlobalOptions.property("analysis",
                             action=singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
     def analysis_dir(self, value):
         """Directory to store analysis results.
@@ -464,6 +454,7 @@ def get_options(from_main=False):
     """
     global options
     return options
+
 
 @deprecation.deprecated(deprecated_in="0.2.7", removed_in="0.3.1")
 def set_options(new_options):
