@@ -59,10 +59,10 @@ import traceback
 import ray
 import ast
 
-import enb
 from enb import config
 from enb import ray_cluster
 from enb.config import options
+from enb.misc import get_defining_class_name
 
 
 class CorruptedTableError(Exception):
@@ -1025,10 +1025,6 @@ def redefines_column(f):
     """
     f._redefines_column = True
     return f
-
-
-def get_defining_class_name(f):
-    return f.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
 
 
 def get_class_that_defined_method(meth):
