@@ -17,6 +17,10 @@ __date__ = "06/02/2021"
 import os
 import argparse
 import itertools
+import inspect
+import re
+
+import enb.misc
 
 
 class ValidationAction(argparse.Action):
@@ -196,11 +200,15 @@ class SingletonCLI(metaclass=Singleton):
     # Setter functions for the properties
     _name_to_setter = {}
     # Default name for the first group if none is provided
-    _current_group_name = "General Options"
-    # Store group of parameters indexed by name
-    _group_by_name = {}
+    _general_options_name = "General Options"
+    _current_group_name = _general_options_name
+    _current_group_description = "Group of uncategorized options"
+    # Store group of parameters indexed by property name
+    _name_to_group = {}
     # Argument parser built dynamically as properties are defined
-    _argparser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    _argparser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        argument_default=None)
     # Set to True after initialization
     _custom_attribute_handler_active = False
 
@@ -215,23 +223,19 @@ class SingletonCLI(metaclass=Singleton):
         for k, v in self._argparser.parse_known_args()[0].__dict__.items():
             self._name_to_property[self._alias_to_name[k]] = v
         self._custom_attribute_handler_active = True
-        print("# TODO: add the templatization options")
 
-        # # Initialize templatization options
-        # # TODO: verify whether this should go into the global options class
-        # if "template" not in self._parsers:
-        #     raise SyntaxError(f"Expected to find 'template' in {self._parsers}. Did not.")
-        #
-        # self._parsed_properties["template_params"] = {}
-        #
-        # for k, v in self._parsers.items():
-        #     if k is "enb":
-        #         self._parsed_properties["enb"] = v["parser"].parse_known_args()[0].__dict__
-        #     else:
-        #         self._parsed_properties["template_params"][k] = v["parser"].parse_known_args()[0].__dict__
-        #
-        # for k, v in self._parsed_properties.items():
-        #     self.__setattr__(k, v)
+    @classmethod
+    def assert_setter_signature(cls, f):
+        """Assert that f has a valid setter signature, or raise a SyntaxError.
+        """
+        if not callable(f):
+            raise SyntaxError(f"{f} is not callable. Please see the {cls.property} decorator "
+                              f"for more information.")
+
+        if len(inspect.signature(f).parameters) != 2:
+            raise SyntaxError(f"{f} must have exactly two arguments, but "
+                              f"{repr(inspect.signature(f).parameters)} was found. "
+                              f"Please see the {cls.property} decorator for more information.")
 
     @classmethod
     def property(cls, *aliases, group_name=None, group_description=None, **kwargs):
@@ -267,41 +271,60 @@ class SingletonCLI(metaclass=Singleton):
 
         :param aliases: a list of aliases that can be used for the property in the command line.
 
-        :param group_name: the name of the group of parameters to be used. If None, the same group as
-          the previous property is assumed.
+        :param group_name: the name of the group of parameters to be used. If None, the defining classe's name
+          is adapted. If unavailable, the last employed group is assumed.
 
-        :param group_description: if not None, if describes the parameter group to which the property belongs.
-          note that this parameter should only be used once per group, to avoid hard-to-find inconsistencies.
+        :param group_name: the description of the group of parameters to be used. If None, the defining classe's
+          docstring is used. If unavailable, the last employed group is assumed.
+        :param group_description: description of the current group of parameters.
 
         :param kwargs: remaining arguments to be passed when initializing
           :class:`argparse.ArgumentParser` instances. See that class
           for detailed help on available parameters and usage.
         """
-        cls._current_group_name = cls._current_group_name if group_name is None else group_name
-
-        # Automatically define new groups when needed
-        try:
-            arg_group = cls._group_by_name[cls._current_group_name]
-            if group_description is not None and arg_group.description != group_description:
-                raise ValueError(f"Cannot change a group's description once it is set. "
-                                 f"Previous value: {arg_group.description}. "
-                                 f"New value: {group_description}.")
-        except KeyError:
-            cls._group_by_name[cls._current_group_name] = \
-                cls._argparser.add_argument_group(cls._current_group_name, group_description)
-            arg_group = cls._group_by_name[cls._current_group_name]
-
         # Make sure that the right reference is stored in the closure of property_setter_wrapper
-        closure_kwargs = dict(kwargs)
+        kwargs = dict(kwargs)
+        closure_group_name = group_name
+        closure_group_description = group_description
+        closure_cls = cls
 
         def property_setter_wrapper(decorated_method):
             """Wrapper that is executed when defining a new property.
             It performs the argparse and internal updates to actually keep track
             of definitions.
             """
+            cls.assert_setter_signature(decorated_method)
+
+            # Update argument group name and description
+            defining_class_name = enb.misc.get_defining_class_name(decorated_method)
+
+            if closure_group_name is None:
+                if defining_class_name is not None:
+                    # From https://www.geeksforgeeks.org/python-split-camelcase-string-to-individual-strings/
+                    group_name = " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', defining_class_name))
+                else:
+                    group_name = closure_cls._current_group_name
+            closure_cls._current_group_name = \
+                closure_cls._current_group_name if closure_group_name is None else closure_group_name
+            closure_cls._current_group_description = \
+                closure_cls._current_group_description if closure_group_description is None else closure_group_description
+
+            # Automatically define new groups when needed
+            try:
+                arg_group = closure_cls._name_to_group[closure_cls._current_group_name]
+                if closure_group_description is not None and arg_group.description != closure_group_description:
+                    raise ValueError(f"Cannot change a group's description once it is set. "
+                                     f"Previous value: {arg_group.description}. "
+                                     f"New value: {closure_group_description}.")
+            except KeyError:
+                closure_cls._name_to_group[closure_cls._current_group_name] = \
+                    closure_cls._argparser.add_argument_group(closure_cls._current_group_name,
+                                                              closure_group_description)
+                arg_group = closure_cls._name_to_group[closure_cls._current_group_name]
+
             # Handle alias management
-            if decorated_method.__name__ in cls._alias_to_name \
-                    or any(a in cls._alias_to_name for a in aliases):
+            if decorated_method.__name__ in closure_cls._alias_to_name \
+                    or any(a in closure_cls._alias_to_name for a in aliases):
                 raise SyntaxError(f"[E]rror: name redefinition for {repr(decorated_method.__name__)} "
                                   f"with aliases = {repr(aliases)}.")
 
@@ -315,7 +338,7 @@ class SingletonCLI(metaclass=Singleton):
                     alias_with_dashes.append(f"-{a}")
             alias_with_dashes = sorted(set(alias_with_dashes), key=len)
 
-            argparse_kwargs.update(**closure_kwargs)
+            argparse_kwargs.update(**kwargs)
             try:
                 arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
             except argparse.ArgumentError:
@@ -323,159 +346,15 @@ class SingletonCLI(metaclass=Singleton):
 
             for alias in itertools.chain((decorated_method.__name__,),
                                          (a.replace("-", "") for a in alias_with_dashes)):
-                cls._alias_to_name[alias] = decorated_method.__name__
-                cls._name_to_setter[alias] = decorated_method
+                closure_cls._alias_to_name[alias] = decorated_method.__name__
+                closure_cls._name_to_setter[alias] = decorated_method
+
+            # # Purposefully returning None so that properties are only accessed through the base class protocol
+            # return None
+
+            return decorated_method
 
         return property_setter_wrapper
-
-    # @classmethod
-    # def parsers_builder(cls, *alias, group_name=None, positional=False, new_parser=False, parser_alias=None,
-    #                     parser_parent=None, mutually_exclusive=False, title="Subcommands", description="",
-    #                     epilog="", **kwargs):
-    #     """
-    #     Decorator for properties that can be automatically
-    #     parsed in the case of creating a new parameter for
-    #     a given parser. The parameters given can be either
-    #     positional or not positional.
-    #     Note that, in the event of creating a parser, if
-    #     said parser's parent parser equals None, 'enb' parser
-    #     will be considered the parent.
-    #     On other note, we create an entry in the dictionary
-    #     for the parser previously created 'enb' in order to
-    #     make it easier for the dynamic creation of parsers
-    #     and automatic recollection o values.
-    #
-    #     :param alias: a series of nicknames to be assigned to
-    #         be assigned to a parameter.
-    #     :param group_name: the name of the group to be used, used the general section
-    #         if the value is None.
-    #     :param positional: boolean variable, set as false as default, that indicates
-    #         whether or not the argument to be created is to be positional (True) or not
-    #         (False).
-    #     :param new_parser:boolean variable, set as False as default, that indicates
-    #         whether or not we want to create a new parser (True) or not (False).
-    #     :param parser_alias: a single string that indicates the name of the parser we
-    #         want to either create or modify.
-    #     :param parser_parent: a single string that indicates the name of the parser
-    #         in which we want to create a subparser.
-    #     :param mutually_exclusive: variable yet to be used. Added with the intention
-    #         to use it in the addition of mutually exclussive groups.
-    #     :param title: a single string to be added as a title for a group of subparsers.
-    #     :param description: a single string to be added as a description for a group
-    #         of subparsers.
-    #     :param epilog: a single string to be added as a means of description for a
-    #         concrete subparser.
-    #     :param kwargs: remaining arguments to be passed to this class.
-    #     :return: 'wrapper' method that decorates other methods in order to add the names
-    #         of these as a long name of a non-positional argument.
-    #     """
-    #
-    #     def empty_wrapper(argument):
-    #         """
-    #         Used as a dummy wrapper for when there's no need nor desire to include a
-    #         parameter in a parser.
-    #
-    #         :param argument: None
-    #         :return: None
-    #         """
-    #         pass
-    #
-    #     try:
-    #         cls._parsers
-    #     except AttributeError:
-    #         cls._parsers = {}
-    #         cls._parsers["enb"] = {
-    #             "parser_parent": None,
-    #             "parser": cls._argparser,
-    #             "subparsers_aliases": [],
-    #             "current_group": None,
-    #             "groups": {},
-    #             "subparsers": cls._argparser.add_subparsers(title=title, description=description)
-    #         }
-    #
-    #     if new_parser:
-    #         if parser_alias is not None:
-    #             if parser_parent is not None:
-    #                 try:
-    #                     cls._parsers[parser_parent]
-    #                 except KeyError:
-    #                     print("'parser_parent' provided does not exist")
-    #             else:
-    #                 parser_parent = "enb"
-    #
-    #             if cls._parsers[parser_parent]["subparsers"] is None:
-    #                 cls._parsers[parser_parent]["subparsers"] = cls._parsers[parser_parent]["parser"] \
-    #                     .add_subparsers(title=title, description=description)
-    #
-    #             cls._parsers[parser_alias] = {}
-    #             cls._parsers[parser_alias]["parent_parser"] = parser_parent
-    #             cls._parsers[parser_alias]["subparsers"] = None
-    #             cls._parsers[parser_alias]["subparsers_aliases"] = []
-    #             cls._parsers[parser_alias]["current_group"] = None
-    #             cls._parsers[parser_alias]["groups"] = {}
-    #             cls._parsers[parser_alias]["parser"] = cls._parsers[parser_parent]["subparsers"] \
-    #                 .add_parser(parser_alias, epilog="this is an epilog", help="")
-    #             cls._parsers[parser_parent]["subparsers_aliases"].append(parser_alias)
-    #         else:
-    #             print("'parser_alias' must be different than 'None' if new parser is going to be added")
-    #
-    #         return empty_wrapper
-    #     elif parser_parent is not None and not mutually_exclusive:
-    #         try:
-    #             cls._parsers[parser_parent]
-    #         except AttributeError:
-    #             print("Parser does not exist")
-    #             print(cls._parsers)
-    #
-    #         try:
-    #             cls._parsers[parser_parent]["parser"]
-    #         except AttributeError:
-    #             print("Seems like that parser is not initialized, sorry")
-    #
-    #         try:
-    #             cls._parsers[parser_parent]["current_group"]
-    #         except AttributeError:
-    #             cls._parsers[parser_parent]["current_group"] = "General Options"
-    #         cls._parsers[parser_parent]["current_group"] = cls._parsers[parser_parent]["current_group"] \
-    #             if group_name is None else group_name
-    #
-    #         try:
-    #             cls._parsers[parser_parent]["groups"]
-    #         except AttributeError:
-    #             cls._parsers[parser_parent]["groups"] = {}
-    #
-    #         try:
-    #             arg_group = cls._parsers[parser_parent]["groups"][cls._parsers[parser_parent]["current_group"]]
-    #         except KeyError:
-    #             cls._parsers[parser_parent]["groups"][cls._parsers[parser_parent]["current_group"]] = \
-    #                 cls._parsers[parser_parent]["parser"].add_argument_group(
-    #                     cls._parsers[parser_parent]["current_group"])
-    #         arg_group = cls._parsers[parser_parent]["groups"][cls._parsers[parser_parent]["current_group"]]
-    #
-    #         kwargs = dict(kwargs)
-    #
-    #         def wrapper(decorated_method):
-    #             argparse_kwargs = dict(help=decorated_method.__doc__)
-    #             if not positional:
-    #                 alias_with_dashes = [f"--{decorated_method.__name__}"]
-    #
-    #                 for a in alias:
-    #                     if len(a) == 1:
-    #                         alias_with_dashes.append(f"-{a}")
-    #                     else:
-    #                         alias_with_dashes.append(f"--{a}")
-    #                 argparse_kwargs.update(**kwargs)
-    #                 try:
-    #                     arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
-    #                 except argparse.ArgumentError:
-    #                     pass
-    #             else:
-    #                 arg_group.add_argument(*alias, **argparse_kwargs)
-    #
-    #         return wrapper
-    #     else:
-    #         print("'parser_alias' must be provided in order to add arguments to a parser")
-    #         return empty_wrapper
 
     def print_help(self):
         return self._argparser.print_help()
@@ -483,8 +362,9 @@ class SingletonCLI(metaclass=Singleton):
     def items(self):
         return self._name_to_property.items()
 
-    # After initialization, attributes are handled as properties
     def __getattribute__(self, item):
+        """After initialization, attributes are handled as properties.
+        """
         if object.__getattribute__(self, "_custom_attribute_handler_active") is False:
             return object.__getattribute__(self, item)
         else:
@@ -497,6 +377,8 @@ class SingletonCLI(metaclass=Singleton):
                 return object.__getattribute__(self, item)
 
     def __setattr__(self, key, value):
+        """After initialization, attributes are handled as properties.
+        """
         if not object.__getattribute__(self, "_custom_attribute_handler_active"):
             object.__setattr__(self, key, value)
         else:
@@ -520,3 +402,66 @@ class SingletonCLI(metaclass=Singleton):
 
     def __repr__(self):
         return f"Options({repr(self._name_to_property)})"
+
+
+def property_class(base_option_cls: SingletonCLI):
+    """Decorator for classes solely intended to define new properties to base_option_cls.
+
+    Decorated classes can still make use of @base_option_cls.property normally. Properties defined like that
+    are regrouped into the appropriate argument groups.
+
+    Any non decorated method that accepts exactly one argument is assumed to be a property with None as default value.
+
+    :param base_option_cls: all properties defined in the decorated class are added or updated in the property
+      definition of this class
+    """
+
+    def property_assigner_wrapper(decorated_cls):
+        for k, v in decorated_cls.__dict__.items():
+            if not callable(v) or k.startswith("__"):
+                continue
+
+            try:
+                base_option_cls.assert_setter_signature(v)
+            except SyntaxError as ex:
+                raise SyntaxError(f"Class {decorated_cls} decorated with {enb.singleton_cli.property_class} "
+                                  f"contains method {repr(v.__name__)} with invalid signature. All methods "
+                                  f"should either be valid property setters with (self, value) arguments "
+                                  f"or have a name beginning with '__'.") from ex
+
+            method_name = v.__name__
+
+        return decorated_cls
+
+        # for g in base_option_cls._name_to_group.values():
+        #     # print(f"[watch] g_actions={g._actions}")
+        #     for k, v in g.__dict__.items():
+        #         print(f"[watch] k={k}")
+        #         print(f"[watch] v: {type(v)}, {repr(v)}")
+        #         import pprint
+        #         pprint.pprint(v)
+        #         print()
+        #         print()
+
+            # print(f"[watch] dir(g)={dir(g)}")
+            # sys.exit(0)
+
+            # print(f"[watch] g._name_parser_map={g._name_parser_map}")
+
+        # for k, v in decorated_cls.__dict__.items():
+        #     if not callable(v) or k.startswith("__"):
+        #         continue
+        #     method_name = v.__name__
+        #
+        #
+        #
+        #
+        #     print(f"[watch] method_name={method_name}")
+        #     # import pprint
+        #     # pprint.pprint(base_option_cls._name_to_group)
+        #     # print(f"[watch] decorated_cls._name_to_group[method_name]={base_option_cls._name_to_group[method_name]}")
+        #
+        # # for method in [getattr(decorated_cls, f) for f in dir(decorated_cls) if callable(getattr(decorated_cls, f))]:
+        # #     print(f"[watch] method={method}")
+
+    return property_assigner_wrapper

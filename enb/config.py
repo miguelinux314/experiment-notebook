@@ -41,7 +41,6 @@ from enb import singleton_cli
 # Absolute, real path to the calling script's dir
 calling_script_dir = os.path.realpath(os.path.dirname(os.path.abspath(sys.argv[0])))
 
-
 class OptionsBase(enb.singleton_cli.SingletonCLI):
     """Base class for the global options available to all modules. This is needed so that @OptionsBase.property
     is properly defined.
@@ -50,8 +49,10 @@ class OptionsBase(enb.singleton_cli.SingletonCLI):
     """
     pass
 
-
-class GeneralGroup:
+@enb.singleton_cli.property_class(OptionsBase)
+class GeneralOptions:
+    """Group of uncategorized options.
+    """
     @OptionsBase.property("v", action="count", default=0)
     def verbose(self, value):
         """Be verbose? Repeat for more.
@@ -320,7 +321,7 @@ class DirOptions:
         singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
 
-class Options(OptionsBase, GeneralGroup, ExecutionOptions, RenderingOptions, DirOptions):
+class Options(OptionsBase, GeneralOptions, ExecutionOptions, RenderingOptions, DirOptions):
     """Global options for all modules, without any positional or required argument.
 
     Classes wishing to expand the set of global options can be defined above,
