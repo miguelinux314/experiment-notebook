@@ -41,13 +41,12 @@ from enb import singleton_cli
 # Absolute, real path to the calling script's dir
 calling_script_dir = os.path.realpath(os.path.dirname(os.path.abspath(sys.argv[0])))
 
-class OptionsBase(enb.singleton_cli.SingletonCLI):
-    """Base class for the global options available to all modules. This is needed so that @OptionsBase.property
-    is properly defined.
 
-    New options can be added to this by decorating any (self,value) method with `@GlobalOptions.property`.
+class OptionsBase(enb.singleton_cli.SingletonCLI):
+    """Global options for all modules, without any positional or required argument.
     """
     pass
+
 
 @enb.singleton_cli.property_class(OptionsBase)
 class GeneralOptions:
@@ -60,18 +59,18 @@ class GeneralOptions:
         pass
 
 
+@enb.singleton_cli.property_class(OptionsBase)
 class ExecutionOptions:
-    @OptionsBase.property("cpu_limit", "cpu_cunt",
-                          group_name="Execution Options",
-                          group_description="General execution options.",
-                          type=int, default=None)
+    """General execution options.
+    """
+
+    @OptionsBase.property("cpu_limit", "cpu_cunt", type=int, default=None)
     def ray_cpu_limit(self, value):
         """Maximum number of virtual CPUs to use in the ray cluster.
         """
         return int(value)
 
-    @OptionsBase.property("s", "not_parallel",
-                          action="store_true", default=False)
+    @OptionsBase.property("s", "not_parallel", action="store_true", default=False)
     def sequential(self, value):
         """Make computations sequentially instead of distributed?
 
@@ -103,7 +102,8 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @OptionsBase.property("rep", "repetition_count", action=singleton_cli.PositiveIntegerAction, default=1, type=int)
+    @OptionsBase.property("rep", "repetition_count", "rep_count",
+                          action=singleton_cli.PositiveIntegerAction, default=1, type=int)
     def repetitions(self, value):
         """Number of repetitions when calculating execution times.
 
@@ -112,7 +112,8 @@ class ExecutionOptions:
         """
         singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
-    @OptionsBase.property("c", "selected_columns", default=None, nargs="+", type=str)
+    @OptionsBase.property("c", "selected_columns",
+                          default=None, nargs="+", type=str)
     def columns(self, value):
         """List of selected column names for computation.
 
@@ -155,21 +156,18 @@ class ExecutionOptions:
         pass
 
 
+@enb.singleton_cli.property_class(OptionsBase)
 class RenderingOptions:
     """Options affecting the rendering of figures.
     """
 
-    @OptionsBase.property("nr", "norender",
-                          group_name="Rendering Options",
-                          group_description="Options affecting the rendering of figures.",
-                          action="store_true", default=False)
+    @OptionsBase.property("nr", "norender", action="store_true", default=False)
     def no_render(self, value):
         """If set, some rendering options will be skipped.
         """
         return bool(value)
 
-    @OptionsBase.property("fw", "width",
-                          default=5, type=float, action=singleton_cli.PositiveFloatAction)
+    @OptionsBase.property("fw", "width", default=5, type=float, action=singleton_cli.PositiveFloatAction)
     def fig_width(self, value):
         """Figure width.
 
@@ -214,6 +212,7 @@ class RenderingOptions:
         return str(value)
 
 
+@enb.singleton_cli.property_class(OptionsBase)
 class DirOptions:
     """Options regarding default data directories.
     """
@@ -221,8 +220,6 @@ class DirOptions:
     default_base_dataset_dir = os.path.join(calling_script_dir, "datasets")
 
     @OptionsBase.property("d",
-                          group_name="Data paths",
-                          group_description="Options regarding default data directories.",
                           default=default_base_dataset_dir if os.path.isdir(default_base_dataset_dir) else None,
                           action=singleton_cli.ReadableDirAction)
     def base_dataset_dir(self, value):
@@ -325,7 +322,7 @@ class Options(OptionsBase, GeneralOptions, ExecutionOptions, RenderingOptions, D
     """Global options for all modules, without any positional or required argument.
 
     Classes wishing to expand the set of global options can be defined above,
-    using the `@OptionsBase.property` decorator for new properties.
+    using the @OptionsBase.property decorator for new properties.
     Making :class:`Options` inherit from those classes is optional,
     but allows IDEs to automatically
     detect available properties in `enb.config.options`.

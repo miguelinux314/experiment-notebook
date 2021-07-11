@@ -201,14 +201,18 @@ class SingletonCLI(metaclass=Singleton):
     _name_to_setter = {}
     # Default name for the first group if none is provided
     _general_options_name = "General Options"
+    _general_options_description = "Uncategorized options"
     _current_group_name = _general_options_name
-    _current_group_description = "Group of uncategorized options"
+    _current_group_description = _general_options_description
     # Store group of parameters indexed by property name
     _name_to_group = {}
     # Argument parser built dynamically as properties are defined
     _argparser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        argument_default=None)
+        argument_default=None,
+        description="A number of options can be set via the command line interface, then "
+                    "accessed via enb.config.options.property_name. All of them are optional, "
+                    "and may be interpreted differently by enb core modules and host code.")
     # Set to True after initialization
     _custom_attribute_handler_active = False
 
@@ -233,8 +237,8 @@ class SingletonCLI(metaclass=Singleton):
                               f"for more information.")
 
         if len(inspect.signature(f).parameters) != 2:
-            raise SyntaxError(f"{f} must have exactly two arguments, but "
-                              f"{repr(inspect.signature(f).parameters)} was found. "
+            raise SyntaxError(f"{f} must have exactly two arguments, "
+                              f"but {repr(tuple(inspect.signature(f).parameters.keys()))} was found instead. "
                               f"Please see the {cls.property} decorator for more information.")
 
     @classmethod
@@ -301,7 +305,7 @@ class SingletonCLI(metaclass=Singleton):
             if closure_group_name is None:
                 if defining_class_name is not None:
                     # From https://www.geeksforgeeks.org/python-split-camelcase-string-to-individual-strings/
-                    group_name = " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', defining_class_name))
+                    group_name = cls_name_to_group_name(defining_class_name)
                 else:
                     group_name = closure_cls._current_group_name
             closure_cls._current_group_name = \
@@ -319,7 +323,7 @@ class SingletonCLI(metaclass=Singleton):
             except KeyError:
                 closure_cls._name_to_group[closure_cls._current_group_name] = \
                     closure_cls._argparser.add_argument_group(closure_cls._current_group_name,
-                                                              closure_group_description)
+                                                              description=closure_cls._current_group_description)
                 arg_group = closure_cls._name_to_group[closure_cls._current_group_name]
 
             # Handle alias management
@@ -333,9 +337,10 @@ class SingletonCLI(metaclass=Singleton):
             for a in aliases:
                 if not a.strip():
                     raise SyntaxError(f"Cannot define empty aliases: {repr(a)}")
-                alias_with_dashes.append(f"--{a}")
                 if len(a) == 1:
                     alias_with_dashes.append(f"-{a}")
+                else:
+                    alias_with_dashes.append(f"--{a}")
             alias_with_dashes = sorted(set(alias_with_dashes), key=len)
 
             argparse_kwargs.update(**kwargs)
@@ -417,51 +422,54 @@ def property_class(base_option_cls: SingletonCLI):
     """
 
     def property_assigner_wrapper(decorated_cls):
-        for k, v in decorated_cls.__dict__.items():
-            if not callable(v) or k.startswith("__"):
+        # Process all defined methods and update base_option_cls' parsers and setters as necessary.
+        for method_name, method in decorated_cls.__dict__.items():
+            # Silently ignore any method not intended to be a property
+            if not callable(method) or method_name.startswith("__"):
                 continue
+            assert method_name == method.__name__, (method_name, method.__name__)
 
+            # Make sure that all methods in @property_class classes are well defined
             try:
-                base_option_cls.assert_setter_signature(v)
+                base_option_cls.assert_setter_signature(method)
             except SyntaxError as ex:
                 raise SyntaxError(f"Class {decorated_cls} decorated with {enb.singleton_cli.property_class} "
-                                  f"contains method {repr(v.__name__)} with invalid signature. All methods "
+                                  f"contains method {repr(method.__name__)} with invalid signature. All methods "
                                   f"should either be valid property setters with (self, value) arguments "
                                   f"or have a name beginning with '__'.") from ex
 
-            method_name = v.__name__
+            # Update an existing property or create it from scratch depending on whether
+            # the user had decorated the property method.
+            for action in base_option_cls._argparser._actions:
+                if method_name in [s.replace("-", "") for s in action.option_strings]:
+                    # Remove the option from the parser entirely
+                    enb.misc.remove_argparse_action(base_option_cls._argparser, action)
+
+                    # Add to an existing or new group
+                    try:
+                        group = base_option_cls._name_to_group[cls_name_to_group_name(decorated_cls.__name__)]
+                    except KeyError:
+                        group = base_option_cls._argparser.add_argument_group(
+                            cls_name_to_group_name(decorated_cls.__name__),
+                            description=decorated_cls.__doc__)
+                        base_option_cls._name_to_group[cls_name_to_group_name(decorated_cls.__name__)] = group
+                    group._add_action(action)
+
+                    # Only one matching property should exist
+                    break
+            else:
+                # The method was not decorated, adding it like this should suffice
+                base_option_cls.property(group_name=cls_name_to_group_name(base_option_cls.__name__),
+                                         group_description=base_option_cls.__doc__)(method)
+                # previous_action = None
+                pass
 
         return decorated_cls
 
-        # for g in base_option_cls._name_to_group.values():
-        #     # print(f"[watch] g_actions={g._actions}")
-        #     for k, v in g.__dict__.items():
-        #         print(f"[watch] k={k}")
-        #         print(f"[watch] v: {type(v)}, {repr(v)}")
-        #         import pprint
-        #         pprint.pprint(v)
-        #         print()
-        #         print()
-
-            # print(f"[watch] dir(g)={dir(g)}")
-            # sys.exit(0)
-
-            # print(f"[watch] g._name_parser_map={g._name_parser_map}")
-
-        # for k, v in decorated_cls.__dict__.items():
-        #     if not callable(v) or k.startswith("__"):
-        #         continue
-        #     method_name = v.__name__
-        #
-        #
-        #
-        #
-        #     print(f"[watch] method_name={method_name}")
-        #     # import pprint
-        #     # pprint.pprint(base_option_cls._name_to_group)
-        #     # print(f"[watch] decorated_cls._name_to_group[method_name]={base_option_cls._name_to_group[method_name]}")
-        #
-        # # for method in [getattr(decorated_cls, f) for f in dir(decorated_cls) if callable(getattr(decorated_cls, f))]:
-        # #     print(f"[watch] method={method}")
-
     return property_assigner_wrapper
+
+
+def cls_name_to_group_name(cls_name):
+    """Unified way of turning a camel-case class name into a parameter group name.
+    """
+    return " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', cls_name))
