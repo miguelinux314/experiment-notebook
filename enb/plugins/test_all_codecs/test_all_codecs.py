@@ -13,27 +13,6 @@ import re
 
 import enb
 from enb.config import options
-# Plugin import
-from plugins import plugin_jpeg, plugin_flif
-from plugins import plugin_mcalic
-from plugins import plugin_ccsds122
-# from plugins import plugin_fapec
-from plugins import plugin_fse_huffman
-from plugins import plugin_lcnl
-from plugins import plugin_marlin
-from plugins import plugin_zip
-from plugins import plugin_jpeg_xl
-from plugins import plugin_hevc
-from plugins import plugin_kakadu
-from plugins import plugin_vvc
-from plugins import plugin_fpack
-from plugins import plugin_zstandard
-from plugins import plugin_fpzip
-from plugins import plugin_zfp
-from plugins import plugin_fpc
-from plugins import plugin_spdp
-from plugins import plugin_lz4
-
 
 class AvailabilityExperiment(enb.experiment.Experiment):
     def __init__(self, codecs):
@@ -95,7 +74,8 @@ class CodecSummaryTable(enb.atable.SummaryTable):
         local_df = self.label_to_df[index]
         type_to_availability = dict()
         for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
-            key = f"{type_name} {component_count} band{'s' if component_count != 1 else ''}"
+            band_str = f"band{'s' if component_count != 1 else ''}"
+            key = f"{type_name:6s} {component_count:3d} {band_str:5s}"
             if not type_df["is_working"].all():
                 type_to_availability[key] = CodecSummaryTable.UNAVAILABLE
             elif type_df["is_lossless"].all():
@@ -108,7 +88,27 @@ class CodecSummaryTable(enb.atable.SummaryTable):
 if __name__ == '__main__':
     if options.verbose:
         print(f"{' [ Codec Availability Test Script ] ':=^100s}")
-        print()
+
+    # Plugin import -- these are mandatory so that they can be automatically loaded below
+    from enb.plugins import plugin_jpeg, plugin_flif
+    from enb.plugins import plugin_mcalic
+    from enb.plugins import plugin_ccsds122
+    # from enb.plugins import plugin_fapec
+    from enb.plugins import plugin_fse_huffman
+    from enb.plugins import plugin_lcnl
+    from enb.plugins import plugin_marlin
+    from enb.plugins import plugin_zip
+    from enb.plugins import plugin_jpeg_xl
+    from enb.plugins import plugin_hevc
+    from enb.plugins import plugin_kakadu
+    from enb.plugins import plugin_vvc
+    from enb.plugins import plugin_fpack
+    from enb.plugins import plugin_zstandard
+    from enb.plugins import plugin_fpzip
+    from enb.plugins import plugin_zfp
+    from enb.plugins import plugin_fpc
+    from enb.plugins import plugin_spdp
+    from enb.plugins import plugin_lz4
 
 
     def log_event(s):

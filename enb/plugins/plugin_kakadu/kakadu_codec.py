@@ -171,7 +171,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
     @property
     def label(self):
         return f"Kakadu {'HT' if self.param_dict['ht'] else ''}" \
-               f" {'lossless' if self.param_dict['lossless'] else 'lossy'}"
+               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}"
 
 
 class Kakadu_MCT(Kakadu):
@@ -206,5 +206,5 @@ class Kakadu_MCT(Kakadu):
 
     @property
     def label(self):
-        return f"Kakadu MCT {'HT' if self.param_dict['ht'] else ''}" \
-               f" {'lossless' if self.param_dict['lossless'] else 'lossy'}"
+        return f"Kakadu MCT {'HT ' if self.param_dict['ht'] else ''}" \
+               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}"
