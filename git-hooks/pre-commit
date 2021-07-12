@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../..
+
+echo "Automatic manifest updating..."
+rm -f MANIFEST.in
+git ls-files | grep -E '(enb/|LICENSE.txt|CHANGELOG.md)' | awk '{print "include", $1}' | sort > MANIFEST.in
+git add MANIFEST.in
+echo "... manifest updated with $(wc -l MANIFEST.in) elements!"
