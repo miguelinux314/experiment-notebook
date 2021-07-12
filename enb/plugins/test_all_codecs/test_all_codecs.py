@@ -75,7 +75,7 @@ class CodecSummaryTable(enb.atable.SummaryTable):
         type_to_availability = dict()
         for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
             band_str = f"band{'s' if component_count != 1 else ''}"
-            key = f"{type_name:6s} {component_count:3d} {band_str:5s}"
+            key = f"{type_name:>6s} {component_count:3d} {band_str:<5s}"
             if not type_df["is_working"].all():
                 type_to_availability[key] = CodecSummaryTable.UNAVAILABLE
             elif type_df["is_lossless"].all():
@@ -134,7 +134,11 @@ if __name__ == '__main__':
     codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
 
     # Run the experiment
-    log_event(f"Running the experiment on {len(codec_classes)} codecs. This might take some time...")
+    log_event(f"The following {len(codec_classes)} codecs have been found")
+    for c in codec_classes:
+        print(f"\t:: {c.__name__}")
+
+    log_event(f"Running the experiment. This might take some time...")
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
 
@@ -147,10 +151,10 @@ if __name__ == '__main__':
         def type_to_key(a):
             """Used to consistently sort typenames, e.g., u8be < s16le"""
             type_list = ["u", "s", "f"]
-            type_code = type_list.index(a[0])
+            type_code = type_list.index(a.strip()[0])
             bps_code = int(re.search(r'(\d+)', a).group(1))
             band_count = int(re.search('(\d+) band', a).group(1))
-            return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:05d}_{a}"
+            return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:2d}_{a}"
 
         # Define the x tick positions
         all_keys = set()
