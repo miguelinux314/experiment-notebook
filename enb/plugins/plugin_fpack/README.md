@@ -1,0 +1,1 @@
+Requires (debian): libcfitsio-bin
