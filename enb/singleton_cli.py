@@ -18,9 +18,9 @@ import os
 import argparse
 import itertools
 import inspect
-import re
 
 import enb.misc
+from enb.misc import split_camel_case
 
 
 class ValidationAction(argparse.Action):
@@ -216,10 +216,8 @@ class SingletonCLI(metaclass=Singleton):
     # Set to True after initialization
     _custom_attribute_handler_active = False
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """Initializer guaranteed to be called once thanks to the Singleton metaclass.
-
-        The *args and **kwargs parameters are ignored, but can be used freely by SingletonCLI subclasses.
         """
         super().__init__()
         # The _parsed_properties is the live dictionary of stored properties
@@ -305,7 +303,7 @@ class SingletonCLI(metaclass=Singleton):
             if closure_group_name is None:
                 if defining_class_name is not None:
                     # From https://www.geeksforgeeks.org/python-split-camelcase-string-to-individual-strings/
-                    group_name = cls_name_to_group_name(defining_class_name)
+                    group_name = split_camel_case(defining_class_name)
                 else:
                     group_name = closure_cls._current_group_name
             closure_cls._current_group_name = \
@@ -447,19 +445,19 @@ def property_class(base_option_cls: SingletonCLI):
 
                     # Add to an existing or new group
                     try:
-                        group = base_option_cls._name_to_group[cls_name_to_group_name(decorated_cls.__name__)]
+                        group = base_option_cls._name_to_group[split_camel_case(decorated_cls.__name__)]
                     except KeyError:
                         group = base_option_cls._argparser.add_argument_group(
-                            cls_name_to_group_name(decorated_cls.__name__),
+                            split_camel_case(decorated_cls.__name__),
                             description=decorated_cls.__doc__)
-                        base_option_cls._name_to_group[cls_name_to_group_name(decorated_cls.__name__)] = group
+                        base_option_cls._name_to_group[split_camel_case(decorated_cls.__name__)] = group
                     group._add_action(action)
 
                     # Only one matching property should exist
                     break
             else:
                 # The method was not decorated, adding it like this should suffice
-                base_option_cls.property(group_name=cls_name_to_group_name(base_option_cls.__name__),
+                base_option_cls.property(group_name=split_camel_case(base_option_cls.__name__),
                                          group_description=base_option_cls.__doc__)(method)
                 # previous_action = None
                 pass
@@ -467,9 +465,3 @@ def property_class(base_option_cls: SingletonCLI):
         return decorated_cls
 
     return property_assigner_wrapper
-
-
-def cls_name_to_group_name(cls_name):
-    """Unified way of turning a camel-case class name into a parameter group name.
-    """
-    return " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', cls_name))

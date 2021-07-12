@@ -8,6 +8,8 @@ may use misc tools at definition time.
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "11/07/2021"
 
+import re
+
 
 def get_defining_class_name(f):
     """Return the name of the class of which f is a method, or None if not bound to any class.
@@ -72,3 +74,9 @@ def remove_argparse_action(parser, action):
         for x in var_group_actions:
             if x.dest == arg:
                 var_group_actions.remove(x)
+
+
+def split_camel_case(camel_string):
+    """Split a camel case string like ThisIsAClass into a string like "This Is A Class".
+    """
+    return " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', camel_string))
