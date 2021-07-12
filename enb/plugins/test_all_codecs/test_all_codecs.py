@@ -14,6 +14,7 @@ import re
 import enb
 from enb.config import options
 
+
 class AvailabilityExperiment(enb.experiment.Experiment):
     def __init__(self, codecs):
         super().__init__(tasks=codecs, dataset_info_table=enb.isets.ImagePropertiesTable)
@@ -89,11 +90,11 @@ if __name__ == '__main__':
     if options.verbose:
         print(f"{' [ Codec Availability Test Script ] ':=^100s}")
 
-    # Plugin import -- these are mandatory so that they can be automatically loaded below
+    # Plugin import -- these are needed so that they can be automatically loaded below (ignore IDE non-usage warnings)
     from enb.plugins import plugin_jpeg, plugin_flif
     from enb.plugins import plugin_mcalic
     from enb.plugins import plugin_ccsds122
-    # from enb.plugins import plugin_fapec
+    from enb.plugins import plugin_fapec
     from enb.plugins import plugin_fse_huffman
     from enb.plugins import plugin_lcnl
     from enb.plugins import plugin_marlin
@@ -125,6 +126,7 @@ if __name__ == '__main__':
     options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
     # This part searches for all defined codecs so far. Import new codecs to make them appear in the list
+    # It also filters away any class with 'abstract' in the name.
     base_classes = {enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec}
     codec_classes = set(itertools.chain(*([c for c in cls.__subclasses__()
                                            if "abstract" not in c.__name__.lower()]

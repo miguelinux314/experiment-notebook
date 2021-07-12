@@ -152,13 +152,3 @@ class VVC_lossy(VVC, icompression.LossyCodec):
         else:
             s = f"VVC QP{self.param_dict['QP']}"
         return s
-
-if __name__ == '__main__':
-    print("This example compresses all .raw images in ./test_data/")
-    options.base_dataset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
-    exp = enb.icompression.LosslessCompressionExperiment(codecs=[VVC_lossless()])
-    enb.aanalysis.ScalarDistributionAnalyzer().analyze_df(
-        full_df=exp.get_df(),
-        column_to_properties=exp.column_to_properties)
-    print("Done!")
-    
