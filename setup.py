@@ -67,7 +67,7 @@ setup(
     # UI
     entry_points={
         # Main CLI entry point
-        "console_scripts": ["enb=enb.__main__:enb"]
+        "console_scripts": ["enb=enb.__main__:main"]
     },
 
     # Setup config
