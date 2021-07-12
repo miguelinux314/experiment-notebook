@@ -133,6 +133,14 @@ include enb/plugins/test_all_codecs/persistence_test_all_codecs.py/persistence_s
 include enb/plugins/test_all_codecs/persistence_test_all_codecs.py/persistence_summary_general.csv
 include enb/plugins/test_all_codecs/persistence_test_all_codecs.py/persistence_summary_signed.csv
 include enb/plugins/test_all_codecs/persistence_test_all_codecs.py/persistence_summary_unsigned.csv
+include enb/plugins/test_all_codecs/plots/codec_availability_float_type_to_availability.pdf
+include enb/plugins/test_all_codecs/plots/codec_availability_float_type_to_availability.png
+include enb/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.pdf
+include enb/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.png
+include enb/plugins/test_all_codecs/plots/codec_availability_signed_type_to_availability.pdf
+include enb/plugins/test_all_codecs/plots/codec_availability_signed_type_to_availability.png
+include enb/plugins/test_all_codecs/plots/codec_availability_unsigned_type_to_availability.pdf
+include enb/plugins/test_all_codecs/plots/codec_availability_unsigned_type_to_availability.png
 include enb/plugins/test_all_codecs/test_all_codecs.py
 include enb/ray_cluster.py
 include enb/sets.py

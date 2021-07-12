@@ -1,7 +1,7 @@
 """
 Wrappers for the Kakadu codec.
 For instructions on downloading and installing visit:
-https://github.com/miguelinux314/experiment-notebook/blob/master/plugins/plugin_kakadu/README.md
+https://github.com/miguelinux314/experiment-notebook/blob/master/enb/pluginsplugin_kakadu/README.md
 """
 import math
 import numpy as np
