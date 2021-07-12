@@ -10,7 +10,6 @@ include enb/isets.py
 include enb/__main__.py
 include enb/misc.py
 include enb/ml.py
-include enb/params.py
 include enb/pgm.py
 include enb/plotdata.py
 include enb/plugins/build_all_plugins.sh
@@ -149,4 +148,5 @@ include enb/tarlite.py
 include enb/tcall.py
 include enb/templates/experiment_template.py.enbt
 include enb/templates/__init__.py
+include enb/templates/params.py
 include enb/templates/templates.py
