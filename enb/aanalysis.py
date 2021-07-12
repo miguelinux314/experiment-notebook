@@ -29,9 +29,7 @@ import enb.atable
 from enb.atable import parse_dict_string
 from enb import plotdata
 from enb import config
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d", "<", ">", "x", "+"]
 color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
@@ -129,9 +127,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                   f"No analysis is performed.")
         return
 
-    fig_width = options.fig_width if fig_width is None else fig_width
-    global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
-
     legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
     if legend_column_count:
         for name, pds in pds_by_group_name.items():
@@ -170,6 +165,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             color_by_group_name[group_name] = color_cycle[i % len(color_cycle)]
     if os.path.dirname(output_plot_path):
         os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
+
+    fig_width = options.fig_width if fig_width is None else fig_width
+    fig_height = options.fig_height if fig_height is None else fig_height
+    global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
+
     fig, group_axis_list = plt.subplots(
         nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
         ncols=1, sharex=True, sharey=combine_groups,

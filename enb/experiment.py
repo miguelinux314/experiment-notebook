@@ -14,9 +14,7 @@ import enb.atable
 import enb.sets
 from enb import atable
 from enb import sets
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 class ExperimentTask:
@@ -156,6 +154,7 @@ class Experiment(atable.ATable):
                   f"[dataset info: {type(self.dataset_info_table).__name__}]")
         self.dataset_table_df = self.dataset_info_table.get_df(target_indices=dataset_paths,
                                                                overwrite=overwrite_file_properties,
+                                                               fill=True,
                                                                parallel_row_processing=(
                                                                    parallel_dataset_property_processing
                                                                    if parallel_dataset_property_processing is not None
