@@ -147,6 +147,6 @@ include enb/sets.py
 include enb/singleton_cli.py
 include enb/tarlite.py
 include enb/tcall.py
-include enb/template_scripts.py
 include enb/templates/experiment_template.py.enbt
 include enb/templates/__init__.py
+include enb/templates/templates.py
