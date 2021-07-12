@@ -1,4 +1,3 @@
-include CHANGELOG.md
 include enb/aanalysis.py
 include enb/atable.py
 include enb/bitstream.py
@@ -14,6 +13,7 @@ include enb/ml.py
 include enb/params.py
 include enb/pgm.py
 include enb/plotdata.py
+include enb/plugins/build_all_plugins.sh
 include enb/plugins/__init__.py
 include enb/plugins/plugin_ccsds122/ccsds122_codec.py
 include enb/plugins/plugin_ccsds122/.gitignore
@@ -150,4 +150,3 @@ include enb/tcall.py
 include enb/template_scripts.py
 include enb/templates/experiment_template.py.enbt
 include enb/templates/__init__.py
-include LICENSE.txt

@@ -1,10 +1,16 @@
 #!/bin/sh
+# Pre-commit git hook.
+# Generates a MANIFEST.in based on everything under enb/ included in the repository.
 
+# Go to the project's root
 cd $(dirname $0)
 cd ../..
 
+# Create a new manifest from scratch with every commit
 echo "Automatic manifest updating..."
 rm -f MANIFEST.in
-git ls-files | grep -E '(enb/|LICENSE.txt|CHANGELOG.md)' | awk '{print "include", $1}' | sort > MANIFEST.in
+
+# Add everything under enb that has been included in git
+git ls-files | grep "enb/" | awk '{print "include", $1}' | sort >> MANIFEST.in
 git add MANIFEST.in
 echo "... manifest updated with $(wc -l MANIFEST.in) elements!"
