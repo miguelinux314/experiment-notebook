@@ -88,6 +88,5 @@ setup(
         'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation', 'pdf2image'],
 
     packages=find_packages(),
-    # package_dir={"": "enb"},
     include_package_data=True,
 )
