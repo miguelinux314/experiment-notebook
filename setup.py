@@ -7,7 +7,7 @@
 # Author: Miguel Hernández Cabronero <miguel.hernandez@uab.cat>
 #
 # ---------------------------------------------
-# INSTALLATION
+# INSTALLATION (refer to the user manual for additional information)
 #
 # Option 1) from pip
 # 	pip install enb
@@ -21,13 +21,23 @@
 # Tip: use pip install -e . to install a live link so that changes are automatically applied to your environment.
 #
 # From https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
-
-from setuptools import setup, find_packages
-import io
-import codecs
 import os
 
-here = os.path.abspath(os.path.dirname(__file__))
+here = os.path.dirname(os.path.abspath(__file__))
+# try:
+#     # Try to use git tracking to decide what to include in the package
+#     from setuptools import setup, find_packages
+#     print("[U]sing git tracking for setup...")
+# except ImportError:
+#     # Falling back to regular installation without git tracking
+#     assert not os.path.isdir(os.path.join(here, ".git")), \
+#         f"The current source folder {here} contains a .git dir " \
+#         f"(indicating it is tracked by git) but could not import setuptools (try `pip install setuptools_git`)"
+#     from distutils.core import setup
+
+from setuptools import setup, find_packages
+
+import io
 
 
 def read(*filenames, **kwargs):
@@ -41,17 +51,18 @@ def read(*filenames, **kwargs):
 
 
 setup(
-    # Meta
+    # Metadata about the project
     name='enb',
-    version="0.2.8",
+    version="dev-0.2.8",
     url='https://github.com/miguelinux314/experiment-notebook',
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.8.tar.gz",
     license='MIT',
-    author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
+    author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona), et al.',
     author_email='miguel.hernandez@uab.cat',
-    description='Library to gather and disseminate computer-based experimental results.',
+    description='Automated experiment definition, execution and analysis based on a declarative paradigm.',
     long_description=read('README.md'),
     platforms='any',
+    python_requires=">=3.6",
     classifiers=[
         'Programming Language :: Python',
         'Development Status :: 4 - Beta',
@@ -63,10 +74,10 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering',
     ],
-
     # UI
     entry_points={
-        "console_scripts": ["enb=enb.__main__:enb"]
+        # Main CLI entry point
+        "console_scripts": ["enb=enb.__main__:main"]
     },
 
     # Setup config
@@ -75,7 +86,8 @@ setup(
         'wheel', 'deprecation', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
         'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation', 'pdf2image'],
-    packages=find_packages(),
 
+    packages=find_packages(),
+    # package_dir={"": "enb"},
     include_package_data=True,
 )

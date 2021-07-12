@@ -20,6 +20,14 @@ enb.atable module
    :undoc-members:
    :show-inheritance:
 
+enb.atemplate module
+--------------------
+
+.. automodule:: enb.atemplate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.bitstream module
 --------------------
 
@@ -72,6 +80,14 @@ enb.ml module
 -------------
 
 .. automodule:: enb.ml
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.params module
+-----------------
+
+.. automodule:: enb.params
    :members:
    :undoc-members:
    :show-inheritance:
