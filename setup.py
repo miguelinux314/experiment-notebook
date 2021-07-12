@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# ===================
-# Experiment Notebook setup
-# ===================
+# ================================
+# Experiment Notebook setup script
+# ================================
 #
 # Author: Miguel Hernández Cabronero <miguel.hernandez@uab.cat>
 #
@@ -16,21 +16,23 @@
 #  pip install .
 #
 # Option 3) install this and link to track any changes made to the code
-#  pip install .
+#  pip install -e .
 #
-# Tip: use pip install -e . to install a live link so that changes are automatically applied to your environment.
+# Tip: use virtual environments to make sure to have the right package configuration.
 #
-# From https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
+# Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
+#
 
-from setuptools import setup, find_packages
-import io
-import codecs
 import os
+import io
+from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
+here = os.path.dirname(os.path.abspath(__file__))
 
 
 def read(*filenames, **kwargs):
+    """Return the contents of one or more files.
+    """
     encoding = kwargs.get('encoding', 'utf-8')
     sep = kwargs.get('sep', '\n')
     buf = []
@@ -41,17 +43,18 @@ def read(*filenames, **kwargs):
 
 
 setup(
-    # Meta
+    # Metadata about the project
     name='enb',
-    version="0.2.8-dev",
+    version="dev-0.2.8",
     url='https://github.com/miguelinux314/experiment-notebook',
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.8.tar.gz",
     license='MIT',
-    author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
+    author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona), et al.',
     author_email='miguel.hernandez@uab.cat',
-    description='Library to gather and disseminate computer-based experimental results.',
+    description='Automated experiment definition, execution and analysis based on a declarative paradigm.',
     long_description=read('README.md'),
     platforms='any',
+    python_requires=">=3.6",
     classifiers=[
         'Programming Language :: Python',
         'Development Status :: 4 - Beta',
@@ -70,15 +73,16 @@ setup(
         "console_scripts": ["enb=enb.__main__:main"]
     },
 
-    # Setup config
+    # Dependencies
     setup_requires=['wheel', 'deprecation'],
     install_requires=[
         'wheel', 'deprecation', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
         'recordclass', 'sortedcontainers', 'imageio', 'redis',
         'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation', 'pdf2image'],
+
+    # This part determines the contents of the installed folder in your python's site-packages location.
+    # MANIFEST.in is assumed to have been updated, i.e., via git hooks.
+    # This allows core plugins and templates to be automatically included.
     packages=find_packages(),
     include_package_data=True,
-    package_data={
-        "template_generator": ["templates/*"],
-        "plugins": ["plugins/plugin_*"]},
 )

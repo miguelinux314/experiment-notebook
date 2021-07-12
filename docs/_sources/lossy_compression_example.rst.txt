@@ -35,7 +35,7 @@ The following code will do the trick:
 
 .. code-block:: bash
 
-   cp -r experiment-notebook-master/plugins/{plugin_jpeg, plugin_mcalic} .
+   cp -r experiment-notebook-master/enb/plugins{plugin_jpeg, plugin_mcalic} .
 
 This completes the setup of the experiment
 

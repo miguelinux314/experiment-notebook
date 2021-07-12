@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>enb.plugins.plugin_vvc package &mdash; Experiment Notebook MIT License documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="enb.plugins.plugin_zfp package" href="enb.plugins.plugin_zfp.html" />
+    <link rel="prev" title="enb.plugins.plugin_spdp package" href="enb.plugins.plugin_spdp.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Experiment Notebook
+          
+
+          
+            
+            <img src="../_static/img/enb_logo_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Analyzing data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_options.html">Command-line options</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="enb.html">enb package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="enb.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.aanalysis">enb.aanalysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.atable">enb.atable module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.bitstream">enb.bitstream module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.config">enb.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.context">enb.context module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.experiment">enb.experiment module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ray_cluster">enb.ray_cluster module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.sets">enb.sets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.singleton_cli">enb.singleton_cli module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tarlite">enb.tarlite module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tcall">enb.tcall module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../thanks.html">Thanks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Experiment Notebook</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../contents.html">Contents</a> &raquo;</li>
+        
+          <li><a href="../api.html">API</a> &raquo;</li>
+        
+          <li><a href="modules.html">enb</a> &raquo;</li>
+        
+          <li><a href="enb.html">enb package</a> &raquo;</li>
+        
+          <li><a href="enb.plugins.html">enb.plugins package</a> &raquo;</li>
+        
+      <li>enb.plugins.plugin_vvc package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/enb.plugins.plugin_vvc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="enb-plugins-plugin-vvc-package">
+<h1>enb.plugins.plugin_vvc package<a class="headerlink" href="#enb-plugins-plugin-vvc-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-enb.plugins.plugin_vvc.vvc_codec">
+<span id="enb-plugins-plugin-vvc-vvc-codec-module"></span><h2>enb.plugins.plugin_vvc.vvc_codec module<a class="headerlink" href="#module-enb.plugins.plugin_vvc.vvc_codec" title="Permalink to this headline">¶</a></h2>
+<p>Wrapper for the VVC codec, using the reference implementation from</p>
+<p><a class="reference external" href="https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master">https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_vvc.vvc_codec.</span></span><span class="sig-name descname"><span class="pre">VVC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chroma_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.WrapperCodec" title="enb.icompression.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code></a></p>
+<p>Base class for VVC coder</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC.default_qp">
+<span class="sig-name descname"><span class="pre">default_qp</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC.default_qp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC.get_compression_params">
+<span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC.get_compression_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string (shell style) with the parameters
+to be passed to the compressor.</p>
+<p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
+(e.g., geometry), or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC.get_decompression_params">
+<span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC.get_decompression_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string (shell style) with the parameters
+to be passed to the decompressor.
+Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
+(e.g., geometry), or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC.label">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
+By default, the original name is returned</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossless">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_vvc.vvc_codec.</span></span><span class="sig-name descname"><span class="pre">VVC_lossless</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chroma_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'400'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossless" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_vvc.vvc_codec.VVC" title="enb.plugins.plugin_vvc.vvc_codec.VVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_vvc.vvc_codec.VVC</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a></p>
+<p>VVC subclass for lossless compression</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossless.label">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossless.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
+By default, the original name is returned</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossy">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_vvc.vvc_codec.</span></span><span class="sig-name descname"><span class="pre">VVC_lossy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chroma_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'400'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bit_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_vvc.vvc_codec.VVC" title="enb.plugins.plugin_vvc.vvc_codec.VVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_vvc.vvc_codec.VVC</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a></p>
+<p>VVC subclass for lossy compression</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.get_compression_params">
+<span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.get_compression_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string (shell style) with the parameters
+to be passed to the compressor.</p>
+<p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
+(e.g., geometry), or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.get_decompression_params">
+<span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.get_decompression_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string (shell style) with the parameters
+to be passed to the decompressor.
+Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
+(e.g., geometry), or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.label">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
+By default, the original name is returned</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.rate_decimals">
+<span class="sig-name descname"><span class="pre">rate_decimals</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.rate_decimals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-enb.plugins.plugin_vvc">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins.plugin_vvc" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="enb.plugins.plugin_zfp.html" class="btn btn-neutral float-right" title="enb.plugins.plugin_zfp package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="enb.plugins.plugin_spdp.html" class="btn btn-neutral float-left" title="enb.plugins.plugin_spdp package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Miguel Hernández-Cabronero.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

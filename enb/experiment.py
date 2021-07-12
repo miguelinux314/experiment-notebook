@@ -14,9 +14,7 @@ import enb.atable
 import enb.sets
 from enb import atable
 from enb import sets
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 class ExperimentTask:

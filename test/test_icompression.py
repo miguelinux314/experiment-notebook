@@ -15,9 +15,7 @@ import numpy as np
 import shutil
 
 import test_all
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 from enb import icompression
 from enb import isets
