@@ -10,7 +10,7 @@ others publicly available.
 Using existing codecs
 +++++++++++++++++++++
 
-The `plugins <https://github.com/miguelinux314/experiment-notebook/tree/master/plugins>`_
+The `plugins <https://github.com/miguelinux314/experiment-notebook/tree/master/enb/plugins>`_
 folder of the library contains `enb`-compatible implementations of image compressors
 (typically wrappers for binary compressors/decompressors).
 
@@ -20,7 +20,7 @@ Two use any of the available plugins, you need to:
 
 2. (Sometimes) run `make` to build the plugin binaries for your platform.
 
-3. Import and use the defined codec classes. See `this script <https://github.com/miguelinux314/experiment-notebook/tree/master/plugins/test_all_codecs/test_all_codecs.py>`_ for a full example on how to do this.
+3. Import and use the defined codec classes. See `this script <https://github.com/miguelinux314/experiment-notebook/tree/master/enb/plugins/test_all_codecs/test_all_codecs.py>`_ for a full example on how to do this.
 
 
 .. note:: An automatization process is underway - expect this to become easier in the future.
@@ -34,7 +34,7 @@ Image Codec availability
 The following tables summarize the compression capabilities of many image codec families available in `enb`.
 
 All codecs are tested for the following data types
-(available `here <https://github.com/miguelinux314/experiment-notebook/tree/master/plugins/test_all_codecs/data>`_:
+(available `here <https://github.com/miguelinux314/experiment-notebook/tree/master/enb/plugins/test_all_codecs/data>`_:
 
 - Integer data:
 

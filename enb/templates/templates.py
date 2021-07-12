@@ -3,7 +3,7 @@ import importlib.util
 from os import makedirs
 from os.path import basename, join, exists
 from enb import icompression
-import plugins
+import enb.plugins as plugins
 import jinja2
 from jinja2 import Environment, PackageLoader, select_autoescape
 
