@@ -59,7 +59,7 @@
 
           
             
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+            <img src="_static/img/enb_logo_small.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -88,7 +88,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
@@ -177,6 +177,7 @@
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -189,12 +190,15 @@
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec">AbstractCodec (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec">AbstractZipCodec (class in enb.plugins.plugin_zip.zip_codecs)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ContextGroup.add">add() (enb.context.ContextGroup method)</a>
 
@@ -208,9 +212,9 @@
 </li>
       <li><a href="api/enb.html#enb.aanalysis.TaskFamily.add_task">add_task() (enb.aanalysis.TaskFamily method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.AllOptions">AllOptions (class in enb.config)</a>
-</li>
       <li><a href="api/enb.html#enb.context.ContextGroup.allowed_contexts">allowed_contexts (enb.context.ContextGroup property)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.allowed_extensions">allowed_extensions (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ContextGroup.allowed_values">allowed_values (enb.context.ContextGroup property)</a>
 
@@ -234,12 +238,12 @@
       </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.alpha_global">alpha_global (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.alpha_individual">alpha_individual (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.analysis_dir">analysis_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.analysis_dir">analysis_dir() (enb.config.DirOptions method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.analyze_df">analyze_df() (enb.aanalysis.Analyzer method)</a>
 
       <ul>
@@ -258,9 +262,15 @@
       </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer">Analyzer (class in enb.aanalysis)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI.assert_setter_signature">assert_setter_signature() (enb.singleton_cli.SingletonCLI class method)</a>
+</li>
       <li><a href="api/enb.html#enb.singleton_cli.ExistingDirAction.assert_valid_value">assert_valid_value() (enb.singleton_cli.ExistingDirAction class method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.singleton_cli.ListAddOptionsAction.assert_valid_value">(enb.singleton_cli.ListAddOptionsAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.singleton_cli.PositiveFloatAction.assert_valid_value">(enb.singleton_cli.PositiveFloatAction class method)</a>
+</li>
         <li><a href="api/enb.html#enb.singleton_cli.PositiveIntegerAction.assert_valid_value">(enb.singleton_cli.PositiveIntegerAction class method)</a>
 </li>
         <li><a href="api/enb.html#enb.singleton_cli.ReadableDirAction.assert_valid_value">(enb.singleton_cli.ReadableDirAction class method)</a>
@@ -268,6 +278,8 @@
         <li><a href="api/enb.html#enb.singleton_cli.ReadableFileAction.assert_valid_value">(enb.singleton_cli.ReadableFileAction class method)</a>
 </li>
         <li><a href="api/enb.html#enb.singleton_cli.ValidationAction.assert_valid_value">(enb.singleton_cli.ValidationAction class method)</a>
+</li>
+        <li><a href="api/enb.html#enb.singleton_cli.ValidationTemplateNameAction.assert_valid_value">(enb.singleton_cli.ValidationTemplateNameAction class method)</a>
 </li>
         <li><a href="api/enb.html#enb.singleton_cli.WritableDirAction.assert_valid_value">(enb.singleton_cli.WritableDirAction class method)</a>
 </li>
@@ -282,6 +294,14 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.BAND_FORMAT_BAYER">BAND_FORMAT_BAYER (enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.BAND_FORMAT_BIL">BAND_FORMAT_BIL (enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.BAND_FORMAT_BIP">BAND_FORMAT_BIP (enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.BAND_FORMAT_BSQ">BAND_FORMAT_BSQ (enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.BandEntropyTable">BandEntropyTable (class in enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.bar_alpha">bar_alpha (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
@@ -292,19 +312,21 @@
         <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.bar_width_fraction">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/enb.html#enb.plotdata.BarData">BarData (class in enb.plotdata)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.config.DirOptions.base_dataset_dir">base_dataset_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.plotdata.BarData">BarData (class in enb.plotdata)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.DirOptions.base_dataset_dir">base_dataset_dir() (enb.config.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable.base_dir">base_dir (enb.sets.FilePropertiesTable attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.base_tmp_dir">base_tmp_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.base_tmp_dir">base_tmp_dir() (enb.config.DirOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.base_version_dataset_dir">base_version_dataset_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.base_version_dataset_dir">base_version_dataset_dir() (enb.config.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.build_column_name_wrapper">build_column_name_wrapper() (enb.atable.ATable class method)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.BZIP2">BZIP2 (class in enb.plugins.plugin_zip.zip_codecs)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -314,13 +336,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.plotdata.ErrorLines.cap_size">cap_size (enb.plotdata.ErrorLines attribute)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL">CCSDS_LCNL (class in enb.plugins.plugin_lcnl.lcnl_codecs)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook">CCSDS_LCNL_AdjustedGreenBook (class in enb.plugins.plugin_lcnl.lcnl_codecs)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook">CCSDS_LCNL_GreenBook (class in enb.plugins.plugin_lcnl.lcnl_codecs)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC">CCSDS_LDC (class in enb.plugins.plugin_lcnl.lcnl_codecs)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.CompressionExperiment.check_lossless">check_lossless (enb.icompression.CompressionExperiment attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
 </li>
       <li><a href="api/enb.html#enb.singleton_cli.ValidationAction.check_valid_value">check_valid_value() (enb.singleton_cli.ValidationAction class method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.chunk_size">chunk_size (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.chunk_size">chunk_size() (enb.config.ExecutionOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.clean_column_name">clean_column_name() (in module enb.aanalysis)</a>
 </li>
@@ -393,6 +423,8 @@
 </li>
         <li><a href="api/enb.html#enb.ml.MachineLearningExperiment.column_to_properties">(enb.ml.MachineLearningExperiment attribute)</a>
 </li>
+        <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.column_to_properties">(enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable attribute)</a>
+</li>
         <li><a href="api/enb.html#enb.sets.FilePropertiesTable.column_to_properties">(enb.sets.FilePropertiesTable attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.sets.FileVersionTable.column_to_properties">(enb.sets.FileVersionTable attribute)</a>
@@ -406,7 +438,7 @@
 </li>
       <li><a href="api/enb.html#enb.atable.ColumnProperties">ColumnProperties (class in enb.atable)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.columns">columns (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.columns">columns() (enb.config.ExecutionOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec.compress">compress() (enb.icompression.AbstractCodec method)</a>
 
@@ -419,7 +451,25 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.compress">(enb.icompression.WrapperCodec method)</a>
 </li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS.compress">(enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.compress">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.compress">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.compress">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.compress">(enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.BZIP2.compress">(enb.plugins.plugin_zip.zip_codecs.BZIP2 method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.compress">(enb.plugins.plugin_zip.zip_codecs.LZ77Huffman method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZMA.compress">(enb.plugins.plugin_zip.zip_codecs.LZMA method)</a>
+</li>
       </ul></li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.compress_one">compress_one() (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.CompressionResults.compressed_path">compressed_path (enb.icompression.CompressionResults attribute)</a>
 
       <ul>
@@ -473,7 +523,25 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.decompress">(enb.icompression.WrapperCodec method)</a>
 </li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS.decompress">(enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.decompress">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.decompress">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.decompress">(enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.BZIP2.decompress">(enb.plugins.plugin_zip.zip_codecs.BZIP2 method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.decompress">(enb.plugins.plugin_zip.zip_codecs.LZ77Huffman method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZMA.decompress">(enb.plugins.plugin_zip.zip_codecs.LZMA method)</a>
+</li>
       </ul></li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.decompress_one">decompress_one() (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.decompress_short_names">decompress_short_names() (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.CompressionExperiment.RowWrapper.decompression_results">decompression_results (enb.icompression.CompressionExperiment.RowWrapper property)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec.decompression_results_from_paths">decompression_results_from_paths() (enb.icompression.AbstractCodec method)</a>
@@ -486,12 +554,16 @@
 </li>
       <li><a href="api/enb.html#enb.config.DirOptions.default_analysis_dir">default_analysis_dir (enb.config.DirOptions attribute)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.default_band_format">default_band_format (enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.config.DirOptions.default_base_dataset_dir">default_base_dataset_dir (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDictAnalyzer.default_bin_count">default_bin_count (enb.aanalysis.ScalarDictAnalyzer attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.DEFAULT_COMPRESSION_LEVEL">DEFAULT_COMPRESSION_LEVEL (enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_entropy_codec_type">default_entropy_codec_type (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.atable.ATable.default_extension">default_extension (enb.atable.ATable attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.config.DirOptions.default_external_binary_dir">default_external_binary_dir (enb.config.DirOptions attribute)</a>
@@ -502,13 +574,55 @@
         <li><a href="api/enb.html#enb.icompression.CompressionExperiment.default_file_properties_table_class">(enb.icompression.CompressionExperiment attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.default_format">default_format (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_0">default_gamma_0 (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_star">default_gamma_star (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_j">default_large_j (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.default_large_J">default_large_J (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_omega">default_large_omega (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_P">default_large_P (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_r">default_large_r (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_theta">default_large_theta (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_u_max">default_large_u_max (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_local_sum_type">default_local_sum_type (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_log_two_t_inc">default_log_two_t_inc (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.config.DirOptions.default_output_plots_dir">default_output_plots_dir (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.config.DirOptions.default_persistence_dir">default_persistence_dir (enb.config.DirOptions attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RayOptions.default_ray_config_file">default_ray_config_file (enb.config.RayOptions attribute)</a>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_phi_vector">default_phi_vector (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_prediction_mode">default_prediction_mode (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC.default_qp">default_qp (enb.plugins.plugin_hevc.hevc_codec.HEVC attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC.default_qp">(enb.plugins.plugin_vvc.vvc_codec.VVC attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_r">default_r (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_sample_encoding_order">default_sample_encoding_order (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_sample_representative_flag">default_sample_representative_flag (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.config.DirOptions.default_tmp_dir">default_tmp_dir (enb.config.DirOptions attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_v_min">default_v_min (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.HorizontalBand.degradation_band_count">degradation_band_count (enb.plotdata.HorizontalBand attribute)</a>
 </li>
@@ -516,9 +630,9 @@
 </li>
       <li><a href="api/enb.html#enb.config.DirOptions">DirOptions (class in enb.config)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.discard_partial_results">discard_partial_results (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.discard_partial_results">discard_partial_results() (enb.config.ExecutionOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.displayed_title">displayed_title (enb.config.RenderingOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.displayed_title">displayed_title() (enb.config.RenderingOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.dump_array_bsq">dump_array_bsq() (in module enb.isets)</a>
 </li>
@@ -594,6 +708,13 @@
 </li>
       </ul></li>
       <li>
+    enb.misc
+
+      <ul>
+        <li><a href="api/enb.html#module-enb.misc">module</a>
+</li>
+      </ul></li>
+      <li>
     enb.ml
 
       <ul>
@@ -607,13 +728,321 @@
         <li><a href="api/enb.html#module-enb.pgm">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plotdata
 
       <ul>
         <li><a href="api/enb.html#module-enb.plotdata">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins
+
+      <ul>
+        <li><a href="api/enb.plugins.html#module-enb.plugins">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_ccsds122
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_ccsds122.ccsds122_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122.ccsds122_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fapec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fapec.html#module-enb.plugins.plugin_fapec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fapec.fapec_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fapec.html#module-enb.plugins.plugin_fapec.fapec_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fits
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fits.html#module-enb.plugins.plugin_fits">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fits.fits_to_raw
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fits.html#module-enb.plugins.plugin_fits.fits_to_raw">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_flif
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_flif.html#module-enb.plugins.plugin_flif">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_flif.flif_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_flif.html#module-enb.plugins.plugin_flif.flif_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fpack
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fpack.fpack_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack.fpack_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fpc
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fpc.html#module-enb.plugins.plugin_fpc">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fpc.fpc_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fpc.html#module-enb.plugins.plugin_fpc.fpc_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fpzip
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#module-enb.plugins.plugin_fpzip">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fpzip.fpzip_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#module-enb.plugins.plugin_fpzip.fpzip_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fse_huffman
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#module-enb.plugins.plugin_fse_huffman">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fse_huffman.fse_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#module-enb.plugins.plugin_fse_huffman.fse_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_fse_huffman.huffman_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#module-enb.plugins.plugin_fse_huffman.huffman_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_hevc
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_hevc.html#module-enb.plugins.plugin_hevc">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_hevc.hevc_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_hevc.html#module-enb.plugins.plugin_hevc.hevc_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_jpeg
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#module-enb.plugins.plugin_jpeg">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_jpeg.jpeg_codecs
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#module-enb.plugins.plugin_jpeg.jpeg_codecs">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_jpeg_xl
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#module-enb.plugins.plugin_jpeg_xl">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    enb.plugins.plugin_jpeg_xl.jpegxl_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#module-enb.plugins.plugin_jpeg_xl.jpegxl_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_kakadu
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#module-enb.plugins.plugin_kakadu">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_kakadu.kakadu_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#module-enb.plugins.plugin_kakadu.kakadu_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_lcnl
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#module-enb.plugins.plugin_lcnl">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_lcnl.lcnl_codecs
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#module-enb.plugins.plugin_lcnl.lcnl_codecs">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_lz4
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_lz4.html#module-enb.plugins.plugin_lz4">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_lz4.lz4_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_lz4.html#module-enb.plugins.plugin_lz4.lz4_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_marlin
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_marlin.html#module-enb.plugins.plugin_marlin">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_marlin.marlin_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_marlin.html#module-enb.plugins.plugin_marlin.marlin_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_mcalic
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#module-enb.plugins.plugin_mcalic">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_mcalic.mcalic_codecs
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#module-enb.plugins.plugin_mcalic.mcalic_codecs">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_spdp
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_spdp.html#module-enb.plugins.plugin_spdp">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_spdp.spdp_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_spdp.html#module-enb.plugins.plugin_spdp.spdp_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_vvc
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_vvc.html#module-enb.plugins.plugin_vvc">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_vvc.vvc_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_vvc.html#module-enb.plugins.plugin_vvc.vvc_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_zfp
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_zfp.html#module-enb.plugins.plugin_zfp">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_zfp.zfp_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_zfp.html#module-enb.plugins.plugin_zfp.zfp_codec">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_zip
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_zip.html#module-enb.plugins.plugin_zip">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_zip.zip_codecs
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_zip.html#module-enb.plugins.plugin_zip.zip_codecs">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_zstandard
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#module-enb.plugins.plugin_zstandard">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_zstandard.zstd_codec
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#module-enb.plugins.plugin_zstandard.zstd_codec">module</a>
 </li>
       </ul></li>
       <li>
@@ -651,6 +1080,27 @@
         <li><a href="api/enb.html#module-enb.tcall">module</a>
 </li>
       </ul></li>
+      <li>
+    enb.templates
+
+      <ul>
+        <li><a href="api/enb.templates.html#module-enb.templates">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.templates.params
+
+      <ul>
+        <li><a href="api/enb.templates.html#module-enb.templates.params">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.templates.templates
+
+      <ul>
+        <li><a href="api/enb.templates.html#module-enb.templates.templates">module</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.context.ContextGroup.entropy">entropy (enb.context.ContextGroup property)</a>
 
       <ul>
@@ -658,6 +1108,12 @@
 </li>
       </ul></li>
       <li><a href="api/enb.html#enb.isets.entropy">entropy() (in module enb.isets)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE">ENTROPY_BLOCK_ADAPTIVE (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID">ENTROPY_HYBRID (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE">ENTROPY_SAMPLE_ADAPTIVE (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.errorbar_alpha">errorbar_alpha (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
@@ -667,13 +1123,13 @@
 </li>
       <li><a href="api/enb.html#enb.singleton_cli.ExistingDirAction">ExistingDirAction (class in enb.singleton_cli)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.exit_on_error">exit_on_error (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.exit_on_error">exit_on_error() (enb.config.ExecutionOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment">Experiment (class in enb.experiment)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.ExperimentTask">ExperimentTask (class in enb.experiment)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.external_bin_base_dir">external_bin_base_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.external_bin_base_dir">external_bin_base_dir() (enb.config.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.tarlite.TarliteReader.extract_all">extract_all() (enb.tarlite.TarliteReader method)</a>
 </li>
@@ -683,25 +1139,73 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.fig_height">fig_height (enb.config.RenderingOptions attribute)</a>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT">FAPEC_2DDWT (class in enb.plugins.plugin_fapec.fapec_codec)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.fig_width">fig_width (enb.config.RenderingOptions attribute)</a>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract">FAPEC_Abstract (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC">FAPEC_CILLIC (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT">FAPEC_DWT (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS">FAPEC_FITS (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA">FAPEC_HPA (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP">FAPEC_LP (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_MB">FAPEC_MB (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_NP">FAPEC_NP (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_SPA">FAPEC_SPA (class in enb.plugins.plugin_fapec.fapec_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_ABSOLUTE">FIDELITY_ABSOLUTE (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_BOTH">FIDELITY_BOTH (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_LOSSLESS">FIDELITY_LOSSLESS (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_RELATIVE">FIDELITY_RELATIVE (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.fig_height">fig_height() (enb.config.RenderingOptions method)</a>
+</li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.fig_width">fig_width() (enb.config.RenderingOptions method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.file_info_to_format_string">file_info_to_format_string() (in module enb.plugins.plugin_lcnl.lcnl_codecs)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.file_path_to_geometry_dict">file_path_to_geometry_dict() (in module enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable">FilePropertiesTable (class in enb.sets)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.sets.FileVersionTable">FileVersionTable (class in enb.sets)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.fits_extension">fits_extension (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable">FitsVersionTable (class in enb.plugins.plugin_fits.fits_to_raw)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.FITSWrapperCodec">FITSWrapperCodec (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_flif.html#enb.plugins.plugin_flif.flif_codec.FLIF">FLIF (class in enb.plugins.plugin_flif.flif_codec)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.flush">flush() (enb.bitstream.OutputBitStream method)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.flush_complete_bytes">flush_complete_bytes() (enb.bitstream.OutputBitStream method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.force">force (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.force">force() (enb.config.ExecutionOptions method)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.FORMAT_BIL">FORMAT_BIL (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.FORMAT_BSQ">FORMAT_BSQ (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.Fpack">Fpack (class in enb.plugins.plugin_fpack.fpack_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fpc.html#enb.plugins.plugin_fpc.fpc_codec.Fpc">Fpc (class in enb.plugins.plugin_fpc.fpc_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fpzip.html#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip">Fpzip (class in enb.plugins.plugin_fpzip.fpzip_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.fse_codec.FSE">FSE (class in enb.plugins.plugin_fse_huffman.fse_codec)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -709,6 +1213,10 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.config.GeneralOptions">GeneralOptions (class in enb.config)</a>
+</li>
+      <li><a href="api/enb.templates.html#enb.templates.templates.script_generator.generate_script">generate_script() (enb.templates.templates.script_generator method)</a>
+</li>
       <li><a href="api/enb.html#enb.atable.get_all_test_files">get_all_test_files() (in module enb.atable)</a>
 
       <ul>
@@ -730,14 +1238,124 @@
       <li><a href="api/enb.html#enb.atable.get_class_that_defined_method">get_class_that_defined_method() (in module enb.atable)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_compression_params">get_compression_params() (enb.icompression.WrapperCodec method)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract.get_compression_params">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract method)</a>
 </li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.get_compression_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS.get_compression_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_flif.html#enb.plugins.plugin_flif.flif_codec.FLIF.get_compression_params">(enb.plugins.plugin_flif.flif_codec.FLIF method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.Fpack.get_compression_params">(enb.plugins.plugin_fpack.fpack_codec.Fpack method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpc.html#enb.plugins.plugin_fpc.fpc_codec.Fpc.get_compression_params">(enb.plugins.plugin_fpc.fpc_codec.Fpc method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_compression_params">(enb.plugins.plugin_fpzip.fpzip_codec.Fpzip method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.fse_codec.FSE.get_compression_params">(enb.plugins.plugin_fse_huffman.fse_codec.FSE method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.huffman_codec.Huffman.get_compression_params">(enb.plugins.plugin_fse_huffman.huffman_codec.Huffman method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC.get_compression_params">(enb.plugins.plugin_hevc.hevc_codec.HEVC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy.get_compression_params">(enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS.get_compression_params">(enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL.get_compression_params">(enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.get_compression_params">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT.get_compression_params">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_compression_params">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_compression_params">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lz4.html#enb.plugins.plugin_lz4.lz4_codec.Lz4.get_compression_params">(enb.plugins.plugin_lz4.lz4_codec.Lz4 method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_marlin.html#enb.plugins.plugin_marlin.marlin_codec.ImageMarlin.get_compression_params">(enb.plugins.plugin_marlin.marlin_codec.ImageMarlin method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.get_compression_params">(enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_spdp.html#enb.plugins.plugin_spdp.spdp_codec.Spdp.get_compression_params">(enb.plugins.plugin_spdp.spdp_codec.Spdp method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC.get_compression_params">(enb.plugins.plugin_vvc.vvc_codec.VVC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.get_compression_params">(enb.plugins.plugin_vvc.vvc_codec.VVC_lossy method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zfp.html#enb.plugins.plugin_zfp.zfp_codec.Zfp.get_compression_params">(enb.plugins.plugin_zfp.zfp_codec.Zfp method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#enb.plugins.plugin_zstandard.zstd_codec.Zstandard.get_compression_params">(enb.plugins.plugin_zstandard.zstd_codec.Zstandard method)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.experiment.Experiment.get_dataset_info_row">get_dataset_info_row() (enb.experiment.Experiment method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_decompression_params">get_decompression_params() (enb.icompression.WrapperCodec method)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract.get_decompression_params">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract method)</a>
 </li>
-      <li><a href="api/enb.html#enb.sets.FileVersionTable.get_default_target_indices">get_default_target_indices() (enb.sets.FileVersionTable method)</a>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.get_decompression_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract method)</a>
 </li>
-      <li><a href="api/enb.html#enb.atable.get_defining_class_name">get_defining_class_name() (in module enb.atable)</a>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS.get_decompression_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_flif.html#enb.plugins.plugin_flif.flif_codec.FLIF.get_decompression_params">(enb.plugins.plugin_flif.flif_codec.FLIF method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.Fpack.get_decompression_params">(enb.plugins.plugin_fpack.fpack_codec.Fpack method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpc.html#enb.plugins.plugin_fpc.fpc_codec.Fpc.get_decompression_params">(enb.plugins.plugin_fpc.fpc_codec.Fpc method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_decompression_params">(enb.plugins.plugin_fpzip.fpzip_codec.Fpzip method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.fse_codec.FSE.get_decompression_params">(enb.plugins.plugin_fse_huffman.fse_codec.FSE method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.huffman_codec.Huffman.get_decompression_params">(enb.plugins.plugin_fse_huffman.huffman_codec.Huffman method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC.get_decompression_params">(enb.plugins.plugin_hevc.hevc_codec.HEVC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy.get_decompression_params">(enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS.get_decompression_params">(enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL.get_decompression_params">(enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.get_decompression_params">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT.get_decompression_params">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_decompression_params">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_decompression_params">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lz4.html#enb.plugins.plugin_lz4.lz4_codec.Lz4.get_decompression_params">(enb.plugins.plugin_lz4.lz4_codec.Lz4 method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_marlin.html#enb.plugins.plugin_marlin.marlin_codec.ImageMarlin.get_decompression_params">(enb.plugins.plugin_marlin.marlin_codec.ImageMarlin method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.get_decompression_params">(enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_spdp.html#enb.plugins.plugin_spdp.spdp_codec.Spdp.get_decompression_params">(enb.plugins.plugin_spdp.spdp_codec.Spdp method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC.get_decompression_params">(enb.plugins.plugin_vvc.vvc_codec.VVC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.get_decompression_params">(enb.plugins.plugin_vvc.vvc_codec.VVC_lossy method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zfp.html#enb.plugins.plugin_zfp.zfp_codec.Zfp.get_decompression_params">(enb.plugins.plugin_zfp.zfp_codec.Zfp method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#enb.plugins.plugin_zstandard.zstd_codec.Zstandard.get_decompression_params">(enb.plugins.plugin_zstandard.zstd_codec.Zstandard method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.get_default_target_indices">get_default_target_indices() (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.get_default_target_indices">(enb.sets.FileVersionTable method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.html#enb.misc.get_defining_class_name">get_defining_class_name() (in module enb.misc)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.get_df">get_df() (enb.atable.ATable method)</a>
 
@@ -753,12 +1371,20 @@
         <li><a href="api/enb.html#enb.sets.FileVersionTable.get_df">(enb.sets.FileVersionTable method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.ATable.get_df_one_chunk">get_df_one_chunk() (enb.atable.ATable method)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.get_dtype">get_dtype() (enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract method)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.get_histogram_dicts">get_histogram_dicts() (in module enb.aanalysis)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_image_params">get_image_params() (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL method)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook.get_image_params">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.get_image_params">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook method)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.atable.ATable.get_matlab_struct_str">get_matlab_struct_str() (enb.atable.ATable method)</a>
 </li>
       <li><a href="api/enb.html#enb.config.get_options">get_options() (in module enb.config)</a>
@@ -771,11 +1397,39 @@
 </li>
       <li><a href="api/enb.html#enb.tcall.get_status_output_time">get_status_output_time() (in module enb.tcall)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT.get_transform_dict_params">get_transform_dict_params() (enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT method)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_Abstract method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_MB.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_MB method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_NP.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_NP method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_SPA.get_transform_dict_params">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_SPA method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract.get_transform_params">get_transform_params() (enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract method)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_ID.get_transform_params">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_ID method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_IWT.get_transform_params">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_IWT method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_POT.get_transform_params">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_POT method)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.bitstream.InputBitStream.get_unsigned_value">get_unsigned_value() (enb.bitstream.InputBitStream method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.global_y_label_pos">global_y_label_pos (enb.config.RenderingOptions attribute)</a>
-</li>
-      <li><a href="api/enb.html#enb.singleton_cli.GlobalOptions">GlobalOptions (class in enb.singleton_cli)</a>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.global_y_label_pos">global_y_label_pos() (enb.config.RenderingOptions method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -784,6 +1438,12 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable.hash_field_name">hash_field_name (enb.sets.FilePropertiesTable attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC">HEVC (class in enb.plugins.plugin_hevc.hevc_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossless">HEVC_lossless (class in enb.plugins.plugin_hevc.hevc_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy">HEVC_lossy (class in enb.plugins.plugin_hevc.hevc_codec)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.hist_bin_count">hist_bin_count (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
@@ -795,14 +1455,14 @@
 </li>
       <li><a href="api/enb.html#enb.aanalysis.histogram_dist_column_to_pds">histogram_dist_column_to_pds() (in module enb.aanalysis)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.histogram_margin">histogram_margin (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
 
       <ul>
         <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.histogram_margin">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.aanalysis.histogram_overlap_column_to_pds">histogram_overlap_column_to_pds() (in module enb.aanalysis)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer">HistogramDistributionAnalyzer (class in enb.aanalysis)</a>
@@ -817,6 +1477,8 @@
 </li>
       <li><a href="api/enb.html#enb.plotdata.HorizontalBand">HorizontalBand (class in enb.plotdata)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.huffman_codec.Huffman">Huffman (class in enb.plugins.plugin_fse_huffman.huffman_codec)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -826,6 +1488,8 @@
       <li><a href="api/enb.html#enb.atable.ATable.ignored_columns">ignored_columns (enb.atable.ATable attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable">ImageGeometryTable (class in enb.isets)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_marlin.html#enb.plugins.plugin_marlin.marlin_codec.ImageMarlin">ImageMarlin (class in enb.plugins.plugin_marlin.marlin_codec)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.ImagePropertiesTable">ImagePropertiesTable (class in enb.isets)</a>
 </li>
@@ -868,6 +1532,24 @@
       <li><a href="api/enb.html#enb.experiment.Experiment.joined_column_to_properties">joined_column_to_properties (enb.experiment.Experiment property)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS">JPEG_LS (class in enb.plugins.plugin_jpeg.jpeg_codecs)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_jpeg_xl.html#enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL">JPEG_XL (class in enb.plugins.plugin_jpeg_xl.jpegxl_codec)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu">Kakadu (class in enb.plugins.plugin_kakadu.kakadu_codec)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT">Kakadu_MCT (class in enb.plugins.plugin_kakadu.kakadu_codec)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
@@ -878,15 +1560,93 @@
       <ul>
         <li><a href="api/enb.html#enb.icompression.AbstractCodec.label">(enb.icompression.AbstractCodec property)</a>
 </li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_ID.label">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_ID property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_IWT.label">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_IWT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_POT.label">(enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_POT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_MB.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_MB property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_NP.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_NP property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_SPA.label">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_SPA property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_flif.html#enb.plugins.plugin_flif.flif_codec.FLIF.label">(enb.plugins.plugin_flif.flif_codec.FLIF property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.Fpack.label">(enb.plugins.plugin_fpack.fpack_codec.Fpack property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpc.html#enb.plugins.plugin_fpc.fpc_codec.Fpc.label">(enb.plugins.plugin_fpc.fpc_codec.Fpc property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.label">(enb.plugins.plugin_fpzip.fpzip_codec.Fpzip property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.fse_codec.FSE.label">(enb.plugins.plugin_fse_huffman.fse_codec.FSE property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#enb.plugins.plugin_fse_huffman.huffman_codec.Huffman.label">(enb.plugins.plugin_fse_huffman.huffman_codec.Huffman property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC.label">(enb.plugins.plugin_hevc.hevc_codec.HEVC property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossless.label">(enb.plugins.plugin_hevc.hevc_codec.HEVC_lossless property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy.label">(enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS.label">(enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL.label">(enb.plugins.plugin_jpeg_xl.jpegxl_codec.JPEG_XL property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.label">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT.label">(enb.plugins.plugin_kakadu.kakadu_codec.Kakadu_MCT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.label">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.label">(enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lz4.html#enb.plugins.plugin_lz4.lz4_codec.Lz4.label">(enb.plugins.plugin_lz4.lz4_codec.Lz4 property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_marlin.html#enb.plugins.plugin_marlin.marlin_codec.ImageMarlin.label">(enb.plugins.plugin_marlin.marlin_codec.ImageMarlin property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.label">(enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_spdp.html#enb.plugins.plugin_spdp.spdp_codec.Spdp.label">(enb.plugins.plugin_spdp.spdp_codec.Spdp property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC.label">(enb.plugins.plugin_vvc.vvc_codec.VVC property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossless.label">(enb.plugins.plugin_vvc.vvc_codec.VVC_lossless property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.label">(enb.plugins.plugin_vvc.vvc_codec.VVC_lossy property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zfp.html#enb.plugins.plugin_zfp.zfp_codec.Zfp.label">(enb.plugins.plugin_zfp.zfp_codec.Zfp property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.BZIP2.label">(enb.plugins.plugin_zip.zip_codecs.BZIP2 property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.label">(enb.plugins.plugin_zip.zip_codecs.LZ77Huffman property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZMA.label">(enb.plugins.plugin_zip.zip_codecs.LZMA property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#enb.plugins.plugin_zstandard.zstd_codec.Zstandard.label">(enb.plugins.plugin_zstandard.zstd_codec.Zstandard property)</a>
+</li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.AbstractCodec.label_with_params">label_with_params (enb.icompression.AbstractCodec property)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.legend_column_count">legend_column_count (enb.config.RenderingOptions attribute)</a>
-
-      <ul>
-        <li><a href="api/enb.html#enb.plotdata.PlottableData.legend_column_count">(enb.plotdata.PlottableData attribute)</a>
+      <li><a href="api/enb.html#enb.plotdata.PlottableData.legend_column_count">legend_column_count (enb.plotdata.PlottableData attribute)</a>
 </li>
-      </ul></li>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.legend_column_count">legend_column_count() (enb.config.RenderingOptions method)</a>
+</li>
       <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.line_alpha">line_alpha (enb.aanalysis.OverlappedHistogramAnalyzer attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer.line_width">line_width (enb.aanalysis.OverlappedHistogramAnalyzer attribute)</a>
@@ -895,11 +1655,21 @@
         <li><a href="api/enb.html#enb.plotdata.ErrorLines.line_width">(enb.plotdata.ErrorLines attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP.linear_prediction_oder">linear_prediction_oder (enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.plotdata.LineData">LineData (class in enb.plotdata)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.ListAddOptionsAction">ListAddOptionsAction (class in enb.singleton_cli)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.load_array_bsq">load_array_bsq() (in module enb.isets)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_COL">LOCAL_SUM_NARROW_COL (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_NEI">LOCAL_SUM_NARROW_NEI (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_COL">LOCAL_SUM_WIDE_COL (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_NEI">LOCAL_SUM_WIDE_NEI (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.LosslessCodec">LosslessCodec (class in enb.icompression)</a>
 </li>
@@ -908,6 +1678,12 @@
       <li><a href="api/enb.html#enb.icompression.LossyCodec">LossyCodec (class in enb.icompression)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment">LossyCompressionExperiment (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lz4.html#enb.plugins.plugin_lz4.lz4_codec.Lz4">Lz4 (class in enb.plugins.plugin_lz4.lz4_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman">LZ77Huffman (class in enb.plugins.plugin_zip.zip_codecs)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.LZMA">LZMA (class in enb.plugins.plugin_zip.zip_codecs)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -931,7 +1707,31 @@
         <li><a href="api/enb.html#enb.plotdata.ScatterData.marker_size">(enb.plotdata.ScatterData attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MAX_COMPRESSION_LEVEL">MAX_COMPRESSION_LEVEL (enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_jpeg.html#enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS.max_dimension_size">max_dimension_size (enb.plugins.plugin_jpeg.jpeg_codecs.JPEG_LS attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.max_dimension_size">(enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.max_search_iterations">max_search_iterations (enb.plugins.plugin_kakadu.kakadu_codec.Kakadu attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.max_tested_spatial_size">max_tested_spatial_size (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli">MCALIC_Magli (class in enb.plugins.plugin_mcalic.mcalic_codecs)</a>
+</li>
       <li><a href="api/enb.html#enb.atable.MetaTable">MetaTable (class in enb.atable)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_Abstract">MHDC_Abstract (class in enb.plugins.plugin_ccsds122.ccsds122_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_ID">MHDC_ID (class in enb.plugins.plugin_ccsds122.ccsds122_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_IWT">MHDC_IWT (class in enb.plugins.plugin_ccsds122.ccsds122_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_ccsds122.html#enb.plugins.plugin_ccsds122.ccsds122_codec.MHDC_POT">MHDC_POT (class in enb.plugins.plugin_ccsds122.ccsds122_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_zip.html#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MIN_COMPRESSION_LEVEL">MIN_COMPRESSION_LEVEL (enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.ml.Model">Model (class in enb.ml)</a>
 </li>
@@ -963,11 +1763,101 @@
 </li>
         <li><a href="api/enb.html#module-enb.isets">enb.isets</a>
 </li>
+        <li><a href="api/enb.html#module-enb.misc">enb.misc</a>
+</li>
         <li><a href="api/enb.html#module-enb.ml">enb.ml</a>
 </li>
         <li><a href="api/enb.html#module-enb.pgm">enb.pgm</a>
 </li>
         <li><a href="api/enb.html#module-enb.plotdata">enb.plotdata</a>
+</li>
+        <li><a href="api/enb.plugins.html#module-enb.plugins">enb.plugins</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122">enb.plugins.plugin_ccsds122</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122.ccsds122_codec">enb.plugins.plugin_ccsds122.ccsds122_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#module-enb.plugins.plugin_fapec">enb.plugins.plugin_fapec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#module-enb.plugins.plugin_fapec.fapec_codec">enb.plugins.plugin_fapec.fapec_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fits.html#module-enb.plugins.plugin_fits">enb.plugins.plugin_fits</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fits.html#module-enb.plugins.plugin_fits.fits_to_raw">enb.plugins.plugin_fits.fits_to_raw</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_flif.html#module-enb.plugins.plugin_flif">enb.plugins.plugin_flif</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_flif.html#module-enb.plugins.plugin_flif.flif_codec">enb.plugins.plugin_flif.flif_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack">enb.plugins.plugin_fpack</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack.fpack_codec">enb.plugins.plugin_fpack.fpack_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpc.html#module-enb.plugins.plugin_fpc">enb.plugins.plugin_fpc</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpc.html#module-enb.plugins.plugin_fpc.fpc_codec">enb.plugins.plugin_fpc.fpc_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#module-enb.plugins.plugin_fpzip">enb.plugins.plugin_fpzip</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpzip.html#module-enb.plugins.plugin_fpzip.fpzip_codec">enb.plugins.plugin_fpzip.fpzip_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#module-enb.plugins.plugin_fse_huffman">enb.plugins.plugin_fse_huffman</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#module-enb.plugins.plugin_fse_huffman.fse_codec">enb.plugins.plugin_fse_huffman.fse_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fse_huffman.html#module-enb.plugins.plugin_fse_huffman.huffman_codec">enb.plugins.plugin_fse_huffman.huffman_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#module-enb.plugins.plugin_hevc">enb.plugins.plugin_hevc</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_hevc.html#module-enb.plugins.plugin_hevc.hevc_codec">enb.plugins.plugin_hevc.hevc_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#module-enb.plugins.plugin_jpeg">enb.plugins.plugin_jpeg</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg.html#module-enb.plugins.plugin_jpeg.jpeg_codecs">enb.plugins.plugin_jpeg.jpeg_codecs</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#module-enb.plugins.plugin_jpeg_xl">enb.plugins.plugin_jpeg_xl</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_jpeg_xl.html#module-enb.plugins.plugin_jpeg_xl.jpegxl_codec">enb.plugins.plugin_jpeg_xl.jpegxl_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#module-enb.plugins.plugin_kakadu">enb.plugins.plugin_kakadu</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_kakadu.html#module-enb.plugins.plugin_kakadu.kakadu_codec">enb.plugins.plugin_kakadu.kakadu_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#module-enb.plugins.plugin_lcnl">enb.plugins.plugin_lcnl</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lcnl.html#module-enb.plugins.plugin_lcnl.lcnl_codecs">enb.plugins.plugin_lcnl.lcnl_codecs</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lz4.html#module-enb.plugins.plugin_lz4">enb.plugins.plugin_lz4</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_lz4.html#module-enb.plugins.plugin_lz4.lz4_codec">enb.plugins.plugin_lz4.lz4_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_marlin.html#module-enb.plugins.plugin_marlin">enb.plugins.plugin_marlin</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_marlin.html#module-enb.plugins.plugin_marlin.marlin_codec">enb.plugins.plugin_marlin.marlin_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#module-enb.plugins.plugin_mcalic">enb.plugins.plugin_mcalic</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_mcalic.html#module-enb.plugins.plugin_mcalic.mcalic_codecs">enb.plugins.plugin_mcalic.mcalic_codecs</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_spdp.html#module-enb.plugins.plugin_spdp">enb.plugins.plugin_spdp</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_spdp.html#module-enb.plugins.plugin_spdp.spdp_codec">enb.plugins.plugin_spdp.spdp_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#module-enb.plugins.plugin_vvc">enb.plugins.plugin_vvc</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_vvc.html#module-enb.plugins.plugin_vvc.vvc_codec">enb.plugins.plugin_vvc.vvc_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zfp.html#module-enb.plugins.plugin_zfp">enb.plugins.plugin_zfp</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zfp.html#module-enb.plugins.plugin_zfp.zfp_codec">enb.plugins.plugin_zfp.zfp_codec</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#module-enb.plugins.plugin_zip">enb.plugins.plugin_zip</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zip.html#module-enb.plugins.plugin_zip.zip_codecs">enb.plugins.plugin_zip.zip_codecs</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#module-enb.plugins.plugin_zstandard">enb.plugins.plugin_zstandard</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_zstandard.html#module-enb.plugins.plugin_zstandard.zstd_codec">enb.plugins.plugin_zstandard.zstd_codec</a>
 </li>
         <li><a href="api/enb.html#module-enb.ray_cluster">enb.ray_cluster</a>
 </li>
@@ -978,6 +1868,12 @@
         <li><a href="api/enb.html#module-enb.tarlite">enb.tarlite</a>
 </li>
         <li><a href="api/enb.html#module-enb.tcall">enb.tcall</a>
+</li>
+        <li><a href="api/enb.templates.html#module-enb.templates">enb.templates</a>
+</li>
+        <li><a href="api/enb.templates.html#module-enb.templates.params">enb.templates.params</a>
+</li>
+        <li><a href="api/enb.templates.html#module-enb.templates.templates">enb.templates.templates</a>
 </li>
       </ul></li>
   </ul></td>
@@ -995,14 +1891,30 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.name">(enb.icompression.WrapperCodec property)</a>
 </li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT.name">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_2DDWT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC.name">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_CILLIC property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT.name">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_DWT property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS.name">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_FITS property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA.name">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_HPA property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fapec.html#enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP.name">(enb.plugins.plugin_fapec.fapec_codec.FAPEC_LP property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.Fpack.name">(enb.plugins.plugin_fpack.fpack_codec.Fpack property)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_marlin.html#enb.plugins.plugin_marlin.marlin_codec.ImageMarlin.name">(enb.plugins.plugin_marlin.marlin_codec.ImageMarlin property)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.NearLosslessCodec">NearLosslessCodec (class in enb.icompression)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.no_new_results">no_new_results (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.no_new_results">no_new_results() (enb.config.ExecutionOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.no_render">no_render (enb.config.RenderingOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.no_render">no_render() (enb.config.RenderingOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.normalize_column_properties">normalize_column_properties() (enb.atable.ATable static method)</a>
 </li>
@@ -1014,12 +1926,20 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.icompression.CompressionResults.original_path">original_path (enb.icompression.CompressionResults attribute)</a>
+      <li><a href="api/enb.html#enb.config.Options">Options (class in enb.config)</a>
 </li>
-      <li><a href="api/enb.html#enb.sets.FileVersionTable.original_to_versioned_path">original_to_versioned_path() (enb.sets.FileVersionTable method)</a>
+      <li><a href="api/enb.html#enb.config.OptionsBase">OptionsBase (class in enb.config)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.CompressionResults.original_path">original_path (enb.icompression.CompressionResults attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.original_to_versioned_path">original_to_versioned_path() (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.original_to_versioned_path">(enb.sets.FileVersionTable method)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream">OutputBitStream (class in enb.bitstream)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.OverlappedHistogramAnalyzer">OverlappedHistogramAnalyzer (class in enb.aanalysis)</a>
@@ -1042,25 +1962,31 @@
 </li>
       <li><a href="api/enb.html#enb.atable.MetaTable.pendingdefs_classname_fun_columnproperties_kwargs">pendingdefs_classname_fun_columnproperties_kwargs (enb.atable.MetaTable attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.persistence_dir">persistence_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.persistence_dir">persistence_dir() (enb.config.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.pgm.pgm_to_raw">pgm_to_raw() (in module enb.pgm)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.PGMWrapperCodec">PGMWrapperCodec (class in enb.icompression)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.plot_dir">plot_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.plot_dir">plot_dir() (enb.config.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData">PlottableData (class in enb.plotdata)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData2D">PlottableData2D (class in enb.plotdata)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.PNGWrapperCodec">PNGWrapperCodec (class in enb.icompression)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.pool_scalar_into_analysis_df">pool_scalar_into_analysis_df() (in module enb.aanalysis)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.PositiveFloatAction">PositiveFloatAction (class in enb.singleton_cli)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.singleton_cli.PositiveIntegerAction">PositiveIntegerAction (class in enb.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_FULL">PREDICTION_FULL (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_REDUCED">PREDICTION_REDUCED (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI.print_help">print_help() (enb.singleton_cli.SingletonCLI method)</a>
 </li>
@@ -1078,6 +2004,10 @@
 </li>
       <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI.property">property() (enb.singleton_cli.SingletonCLI class method)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.property_class">property_class() (in module enb.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_kakadu.html#enb.plugins.plugin_kakadu.kakadu_codec.Kakadu.psnr_tolerance">psnr_tolerance (enb.plugins.plugin_kakadu.kakadu_codec.Kakadu attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.put_bit">put_bit() (enb.bitstream.OutputBitStream method)</a>
 </li>
       <li><a href="api/enb.html#enb.bitstream.OutputBitStream.put_bits">put_bits() (enb.bitstream.OutputBitStream method)</a>
@@ -1094,7 +2024,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.quick">quick (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.quick">quick() (enb.config.ExecutionOptions method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1102,13 +2032,15 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_hevc.html#enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy.rate_decimals">rate_decimals (enb.plugins.plugin_hevc.hevc_codec.HEVC_lossy attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy.rate_decimals">(enb.plugins.plugin_vvc.vvc_codec.VVC_lossy attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.isets.raw_path_to_png">raw_path_to_png() (in module enb.isets)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RayOptions.ray_config_file">ray_config_file (enb.config.RayOptions attribute)</a>
-</li>
-      <li><a href="api/enb.html#enb.config.RayOptions.ray_cpu_limit">ray_cpu_limit (enb.config.RayOptions attribute)</a>
-</li>
-      <li><a href="api/enb.html#enb.config.RayOptions">RayOptions (class in enb.config)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.ray_cpu_limit">ray_cpu_limit() (enb.config.ExecutionOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.pgm.read_pgm">read_pgm() (in module enb.pgm)</a>
 </li>
@@ -1116,11 +2048,9 @@
 </li>
       <li><a href="api/enb.html#enb.singleton_cli.ReadableFileAction">ReadableFileAction (class in enb.singleton_cli)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.DirOptions.reconstructed_dir">reconstructed_dir (enb.config.DirOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.DirOptions.reconstructed_dir">reconstructed_dir() (enb.config.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.DecompressionResults.reconstructed_path">reconstructed_path (enb.icompression.DecompressionResults attribute)</a>
-</li>
-      <li><a href="api/enb.html#enb.config.DirOptions.reconstructed_size">reconstructed_size (enb.config.DirOptions attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.redefines_column">redefines_column() (enb.atable.ATable class method)</a>
 
@@ -1128,6 +2058,8 @@
         <li><a href="api/enb.html#enb.atable.redefines_column">(in module enb.atable)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.misc.remove_argparse_action">remove_argparse_action() (in module enb.misc)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.plotdata.BarData.render">render() (enb.plotdata.BarData method)</a>
@@ -1156,7 +2088,7 @@
 </li>
       <li><a href="api/enb.html#enb.config.RenderingOptions">RenderingOptions (class in enb.config)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.repetitions">repetitions (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.repetitions">repetitions() (enb.config.ExecutionOptions method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1164,6 +2096,10 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BIQ">SAMPLE_ORDER_BIQ (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_lcnl.html#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BSQ">SAMPLE_ORDER_BSQ (enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.SampleDistributionTable">SampleDistributionTable (class in enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.scalar_column_to_pds">scalar_column_to_pds() (in module enb.aanalysis)</a>
@@ -1172,7 +2108,11 @@
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer">ScalarDistributionAnalyzer (class in enb.aanalysis)</a>
 </li>
+      <li><a href="api/enb.templates.html#enb.templates.templates.script_generator.scan_for_plugins">scan_for_plugins() (enb.templates.templates.script_generator method)</a>
+</li>
       <li><a href="api/enb.html#enb.plotdata.ScatterData">ScatterData (class in enb.plotdata)</a>
+</li>
+      <li><a href="api/enb.templates.html#enb.templates.templates.script_generator">script_generator (class in enb.templates.templates)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.HistogramDistributionAnalyzer.semilog_hist_min">semilog_hist_min (enb.aanalysis.HistogramDistributionAnalyzer attribute)</a>
 
@@ -1180,7 +2120,7 @@
         <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.semilog_hist_min">(enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/enb.html#enb.config.ExecutionOptions.sequential">sequential (enb.config.ExecutionOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.ExecutionOptions.sequential">sequential() (enb.config.ExecutionOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_big_endian">set_big_endian() (enb.isets.ImageGeometryTable method)</a>
 </li>
@@ -1236,10 +2176,10 @@
 </li>
       <li><a href="api/enb.html#enb.config.set_options">set_options() (in module enb.config)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.sets.FileVersionTable.set_original_file_path">set_original_file_path() (enb.sets.FileVersionTable method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_PAE">set_PAE() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.set_param_dict">set_param_dict() (enb.experiment.Experiment method)</a>
@@ -1266,10 +2206,18 @@
 </li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_type_name">set_type_name() (enb.isets.ImageGeometryTable method)</a>
 </li>
-      <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_repetitions">set_version_repetitions() (enb.sets.FileVersionTable method)</a>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_repetitions">set_version_repetitions() (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_repetitions">(enb.sets.FileVersionTable method)</a>
 </li>
-      <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_time">set_version_time() (enb.sets.FileVersionTable method)</a>
+      </ul></li>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_time">set_version_time() (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_time">(enb.sets.FileVersionTable method)</a>
 </li>
+      </ul></li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData2D.shift_x">shift_x() (enb.plotdata.PlottableData2D method)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.BarData.shift_y">shift_y() (enb.plotdata.BarData method)</a>
@@ -1282,7 +2230,7 @@
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarDistributionAnalyzer.show_count">show_count (enb.aanalysis.ScalarDistributionAnalyzer attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.config.RenderingOptions.show_grid">show_grid (enb.config.RenderingOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.RenderingOptions.show_grid">show_grid() (enb.config.RenderingOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.CompressionResults.side_info_files">side_info_files (enb.icompression.CompressionResults attribute)</a>
 
@@ -1294,9 +2242,17 @@
 </li>
       <li><a href="api/enb.html#enb.singleton_cli.SingletonCLI">SingletonCLI (class in enb.singleton_cli)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_spdp.html#enb.plugins.plugin_spdp.spdp_codec.Spdp">Spdp (class in enb.plugins.plugin_spdp.spdp_codec)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.SpectralAngleTable">SpectralAngleTable (class in enb.icompression)</a>
 </li>
+      <li><a href="api/enb.html#enb.misc.split_camel_case">split_camel_case() (in module enb.misc)</a>
+</li>
       <li><a href="api/enb.html#enb.atable.SummaryTable.split_groups">split_groups() (enb.atable.SummaryTable method)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.split_height_count">split_height_count (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_mcalic.html#enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli.split_width_count">split_width_count (enb.plugins.plugin_mcalic.mcalic_codecs.MCALIC_Magli attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.StepData">StepData (class in enb.plotdata)</a>
 </li>
@@ -1360,25 +2316,39 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.singleton_cli.ValidationAction">ValidationAction (class in enb.singleton_cli)</a>
 </li>
+      <li><a href="api/enb.html#enb.singleton_cli.ValidationTemplateNameAction">ValidationTemplateNameAction (class in enb.singleton_cli)</a>
+</li>
       <li><a href="api/enb.html#enb.context.ValueCounter.value_to_relfreq">value_to_relfreq (enb.context.ValueCounter property)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ValueCounter">ValueCounter (class in enb.context)</a>
 </li>
-      <li><a href="api/enb.html#enb.singleton_cli.GlobalOptions.verbose">verbose (enb.singleton_cli.GlobalOptions attribute)</a>
+      <li><a href="api/enb.html#enb.config.GeneralOptions.verbose">verbose() (enb.config.GeneralOptions method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.isets.QuantizedImageVersion.version">version() (enb.isets.QuantizedImageVersion method)</a>
 
       <ul>
+        <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version">(enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable method)</a>
+</li>
         <li><a href="api/enb.html#enb.sets.FileVersionTable.version">(enb.sets.FileVersionTable method)</a>
 </li>
       </ul></li>
-      <li><a href="api/enb.html#enb.sets.FilePropertiesTable.version_name">version_name (enb.sets.FilePropertiesTable attribute)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_fits.html#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version_name">version_name (enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.sets.FilePropertiesTable.version_name">(enb.sets.FilePropertiesTable attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/enb.html#enb.sets.version_one_path_local">version_one_path_local() (in module enb.sets)</a>
 </li>
       <li><a href="api/enb.html#enb.sets.VersioningFailedException">VersioningFailedException</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC">VVC (class in enb.plugins.plugin_vvc.vvc_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossless">VVC_lossless (class in enb.plugins.plugin_vvc.vvc_codec)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_vvc.html#enb.plugins.plugin_vvc.vvc_codec.VVC_lossy">VVC_lossy (class in enb.plugins.plugin_vvc.vvc_codec)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1401,6 +2371,18 @@
       <li><a href="api/enb.html#enb.atable.ATable.write_persistence">write_persistence() (enb.atable.ATable method)</a>
 </li>
       <li><a href="api/enb.html#enb.pgm.write_pgm">write_pgm() (in module enb.pgm)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_zfp.html#enb.plugins.plugin_zfp.zfp_codec.Zfp">Zfp (class in enb.plugins.plugin_zfp.zfp_codec)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.plugins.plugin_zstandard.html#enb.plugins.plugin_zstandard.zstd_codec.Zstandard">Zstandard (class in enb.plugins.plugin_zstandard.zstd_codec)</a>
 </li>
   </ul></td>
 </tr></table>

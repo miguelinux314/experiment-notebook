@@ -1,6 +1,15 @@
 enb package
 ===========
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   enb.plugins
+   enb.templates
+
 Submodules
 ----------
 
@@ -16,14 +25,6 @@ enb.atable module
 -----------------
 
 .. automodule:: enb.atable
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.atemplate module
---------------------
-
-.. automodule:: enb.atemplate
    :members:
    :undoc-members:
    :show-inheritance:
@@ -76,18 +77,18 @@ enb.isets module
    :undoc-members:
    :show-inheritance:
 
-enb.ml module
--------------
+enb.misc module
+---------------
 
-.. automodule:: enb.ml
+.. automodule:: enb.misc
    :members:
    :undoc-members:
    :show-inheritance:
 
-enb.params module
------------------
+enb.ml module
+-------------
 
-.. automodule:: enb.params
+.. automodule:: enb.ml
    :members:
    :undoc-members:
    :show-inheritance:
