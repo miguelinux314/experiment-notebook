@@ -257,7 +257,7 @@ class MetaTable(type):
             ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
 
         # Column-defining functions are added to a list while the class is being defined.
-        # After that, the subclass' column_to_properties attribute is updated according 
+        # After that, the subclass' column_to_properties attribute is updated according
         # to the column definitions.
         funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
         for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
@@ -479,11 +479,11 @@ class ATable(metaclass=MetaTable):
           in permanent storage. Otherwise, existing values are skipped from the computation.
         :param parallel_row_processing: if True, processing of rows is performed in a parallel,
            possibly distributed fashion. Otherwise, they are processed serially using the invoking thread.
-        :param chunk_size: If None, its value is assigned from options.chunk_size. After this, 
-           if not None, the list of target indices is split in 
+        :param chunk_size: If None, its value is assigned from options.chunk_size. After this,
+           if not None, the list of target indices is split in
            chunks of size at most chunk_size elements. Results are made persistent every time
            one of these chunks is completed. If None, a single chunk is defined with all
-           indices, and results are made persistent only once. 
+           indices, and results are made persistent only once.
 
         :return: a DataFrame instance containing the requested data
         :raises: CorrupedTableError, ColumnFailedError, when an error is encountered

@@ -16,9 +16,7 @@ from enb import isets
 from enb import sets
 from enb import pgm
 from enb import tarlite
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):

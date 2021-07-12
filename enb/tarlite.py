@@ -7,9 +7,7 @@ __date__ = "08/04/2020"
 
 import os
 import collections
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 class TarliteWriter:

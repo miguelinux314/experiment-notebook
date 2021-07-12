@@ -34,9 +34,7 @@ from enb import experiment
 from enb import isets
 from enb import tcall
 from enb.atable import indices_to_internal_loc
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 class CompressionResults(recordclass.RecordClass):
@@ -202,16 +200,21 @@ class NearLosslessCodec(LossyCodec):
 
 class WrapperCodec(AbstractCodec):
     """A codec that uses an external process to compress and decompress.
-
-    :param compressor_path: path to the the executable to be used for compression
-    :param decompressor_path: path to the the executable to be used for decompression
-    :param param_dict: name-value mapping of the parameters to be used for compression
-    :param output_invocation_dir: if not None, invocation strings are stored in this directory
-      with name based on the codec and the image's full path.
     """
 
-    def __init__(self, compressor_path, decompressor_path, param_dict=None, output_invocation_dir=None):
+    def __init__(self, compressor_path, decompressor_path, param_dict=None, output_invocation_dir=None,
+                 signature_in_name=False):
+        """
+        :param compressor_path: path to the the executable to be used for compression
+        :param decompressor_path: path to the the executable to be used for decompression
+        :param param_dict: name-value mapping of the parameters to be used for compression
+        :param output_invocation_dir: if not None, invocation strings are stored in this directory
+          with name based on the codec and the image's full path.
+        :pram signature_in_name: if True, the default codec name includes part of the hexdigest of the
+          compressor and decompressor binaries being used
+        """
         super().__init__(param_dict=param_dict)
+        self.signature_in_name = False
         if os.path.isfile(compressor_path):
             self.compressor_path = compressor_path
         else:
@@ -349,16 +352,17 @@ class WrapperCodec(AbstractCodec):
         and decoder hash summaries (so that changes in the reference binaries
         can be easily detected)
         """
-        compressor_signature = self.get_binary_signature(self.compressor_path)
-        decompressor_signature = self.get_binary_signature(self.decompressor_path)
-        if compressor_signature and decompressor_signature:
-            if compressor_signature == decompressor_signature:
-                signature = f"{compressor_signature}"
-            else:
-                signature = f"{compressor_signature}_{compressor_signature}"
-        else:
-            signature = None
-        name = f"{self.__class__.__name__}_{signature}" if signature else self.__class__.__name__
+        signature = None
+        if self.signature_in_name:
+            compressor_signature = self.get_binary_signature(self.compressor_path)
+            decompressor_signature = self.get_binary_signature(self.decompressor_path)
+            if compressor_signature and decompressor_signature:
+                if compressor_signature == decompressor_signature:
+                    signature = f"{compressor_signature}"
+                else:
+                    signature = f"{compressor_signature}_{compressor_signature}"
+
+        name = f"{self.__class__.__name__}_{signature}" if signature is not None else self.__class__.__name__
         if self.param_dict:
             name += "__" + "_".join(f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
@@ -811,12 +815,6 @@ class CompressionExperiment(experiment.Experiment):
                 full_array = isets.load_array_bsq(
                     file_or_path=row_wrapper.decompression_results.reconstructed_path,
                     image_properties_row=image_info_row).astype(np.int)
-                if options.reconstructed_size is not None:
-                    width, height, _ = full_array.shape
-                    full_array = full_array[
-                                 width // 2 - options.reconstructed_size // 2:width // 2 + options.reconstructed_size // 2,
-                                 height // 2 - options.reconstructed_size // 2:height // 2 + options.reconstructed_size // 2,
-                                 :]
                 for i, rendered_path in enumerate(f"{output_reconstructed_path}_component{i}.png"
                                                   for i in range(image_info_row['component_count'])):
                     if not os.path.exists(rendered_path) or options.force:
@@ -1119,6 +1117,7 @@ class StructuralSimilarity(CompressionExperiment):
         assert len(x) == size
         g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2)))
         return g / g.sum()
+
 
 class SpectralAngleTable(LossyCompressionExperiment):
     """Lossy compression experiment that computes spectral angle "distance"

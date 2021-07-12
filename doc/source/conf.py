@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.abspath('..'), '..')))
 
 project = 'Experiment Notebook'
 copyright = '2020, Miguel Hernández-Cabronero'
-author = 'Miguel Hernández-Cabronero'
+author = 'Miguel Hernández-Cabronero, et al.'
 
 # The full version, including alpha/beta/rc tags
 release = 'MIT License'

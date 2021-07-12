@@ -49,7 +49,7 @@ following example:
 
 
 Further working examples are readily available in the
-`plugin_zip <https://github.com/miguelinux314/experiment-notebook/blob/master/plugins/plugin_zip/zip_codecs.py>`_
+`plugin_zip <https://github.com/miguelinux314/experiment-notebook/blob/master/enb/plugins/plugin_zip/zip_codecs.py>`_
 plugin.
 
 

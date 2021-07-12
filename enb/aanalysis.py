@@ -29,9 +29,7 @@ import enb.atable
 from enb.atable import parse_dict_string
 from enb import plotdata
 from enb import config
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d", "<", ">", "x", "+"]
 color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
