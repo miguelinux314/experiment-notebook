@@ -1,5 +1,6 @@
 .idea/
 
+# Ignore compiled binaries for the plugins
 enb/plugins/plugin_flif/flif
 enb/plugins/plugin_fpack/cfitsio-3.49/
 enb/plugins/plugin_fpack/fpack
@@ -23,10 +24,11 @@ enb/plugins/plugin_vvc/DecoderAppStatic
 enb/plugins/plugin_vvc/EncoderAppStatic
 enb/plugins/plugin_zfp/zfp
 enb/plugins/plugin_zstandard/zstd
+enb/plugins/plugin_ndzip/compress
+
 
 enb/plugins/test_all_codecs/analysis/
 enb/plugins/test_all_codecs/data/
-enb/plugins/test_all_codecs/plots/
 
 doc/build/
 
@@ -43,3 +45,4 @@ enb.egg-info/
 
 /dist/
 /test/persistence_*
+enb/plugins/plugin_*/build_errors.log

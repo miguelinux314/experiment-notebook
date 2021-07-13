@@ -16,6 +16,7 @@ from . import plugin_lcnl
 from . import plugin_lz4
 from . import plugin_marlin
 from . import plugin_mcalic
+from . import plugin_ndzip
 from . import plugin_spdp
 from . import plugin_vvc
 from . import plugin_zip
