@@ -13,8 +13,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,7 +29,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -61,7 +58,7 @@
 
           
             
-            <img src="../_static/img/enb_logo_small.png" class="logo" alt="Logo"/>
+            <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -90,7 +87,7 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -113,7 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#enb-params-module">enb.params module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
@@ -217,51 +214,51 @@
 <p>Read FITS files and convert them to raw files,
 sorting them by type (integer or float) and by bits per pixel.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fits.fits_to_raw.</span></span><span class="sig-name descname"><span class="pre">FitsVersionTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_base_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fits.fits_to_raw.</span></code><code class="sig-name descname"><span class="pre">FitsVersionTable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_base_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>, <a class="reference internal" href="enb.html#enb.sets.FilePropertiesTable" title="enb.sets.FilePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FilePropertiesTable</span></code></a></p>
 <p>Read FITS files and convert them to raw files,
 sorting them by type (integer or float)     and by bits per pixel</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.allowed_extensions">
-<span class="sig-name descname"><span class="pre">allowed_extensions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['fit',</span> <span class="pre">'fits']</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.allowed_extensions" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.allowed_extensions">
+<code class="sig-name descname"><span class="pre">allowed_extensions</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['fit',</span> <span class="pre">'fits']</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.allowed_extensions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.column_to_properties">
-<span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'corpus':</span> <span class="pre">ColumnProperties(name=corpus,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FileVersionTable.set_corpus&gt;,</span> <span class="pre">label=Corpus</span> <span class="pre">name,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'original_file_path':</span> <span class="pre">ColumnProperties(name=original_file_path,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FileVersionTable.set_original_file_path&gt;,</span> <span class="pre">label=original_file_path,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'sha256':</span> <span class="pre">ColumnProperties(name=sha256,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FilePropertiesTable.set_hash_digest&gt;,</span> <span class="pre">label=sha256</span> <span class="pre">hex</span> <span class="pre">digest,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'size_bytes':</span> <span class="pre">ColumnProperties(name=size_bytes,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FilePropertiesTable.set_file_size&gt;,</span> <span class="pre">label=File</span> <span class="pre">size</span> <span class="pre">(bytes),</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'version_name':</span> <span class="pre">ColumnProperties(name=version_name,</span> <span class="pre">fun=&lt;function</span> <span class="pre">get_auto_column_wrapper.&lt;locals&gt;.wrapper&gt;,</span> <span class="pre">label=version_name,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'version_time':</span> <span class="pre">ColumnProperties(name=version_time,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FitsVersionTable.set_version_time&gt;,</span> <span class="pre">label=Versioning</span> <span class="pre">time</span> <span class="pre">(s),</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'version_time_repetitions':</span> <span class="pre">ColumnProperties(name=version_time_repetitions,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FitsVersionTable.set_version_repetitions&gt;,</span> <span class="pre">label=Repetitions</span> <span class="pre">for</span> <span class="pre">obtaining</span> <span class="pre">versioning</span> <span class="pre">time,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False)}</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.column_to_properties">
+<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'corpus':</span> <span class="pre">ColumnProperties(name=corpus,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FileVersionTable.set_corpus&gt;,</span> <span class="pre">label=Corpus</span> <span class="pre">name,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'original_file_path':</span> <span class="pre">ColumnProperties(name=original_file_path,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FileVersionTable.set_original_file_path&gt;,</span> <span class="pre">label=original_file_path,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'sha256':</span> <span class="pre">ColumnProperties(name=sha256,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FilePropertiesTable.set_hash_digest&gt;,</span> <span class="pre">label=sha256</span> <span class="pre">hex</span> <span class="pre">digest,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'size_bytes':</span> <span class="pre">ColumnProperties(name=size_bytes,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FilePropertiesTable.set_file_size&gt;,</span> <span class="pre">label=File</span> <span class="pre">size</span> <span class="pre">(bytes),</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'version_name':</span> <span class="pre">ColumnProperties(name=version_name,</span> <span class="pre">fun=&lt;function</span> <span class="pre">get_auto_column_wrapper.&lt;locals&gt;.wrapper&gt;,</span> <span class="pre">label=version_name,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'version_time':</span> <span class="pre">ColumnProperties(name=version_time,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FitsVersionTable.set_version_time&gt;,</span> <span class="pre">label=Versioning</span> <span class="pre">time</span> <span class="pre">(s),</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False),</span> <span class="pre">'version_time_repetitions':</span> <span class="pre">ColumnProperties(name=version_time_repetitions,</span> <span class="pre">fun=&lt;function</span> <span class="pre">FitsVersionTable.set_version_repetitions&gt;,</span> <span class="pre">label=Repetitions</span> <span class="pre">for</span> <span class="pre">obtaining</span> <span class="pre">versioning</span> <span class="pre">time,</span> <span class="pre">semilog_x=False,</span> <span class="pre">semilog_y=False,</span> <span class="pre">semilog_x_base=10,</span> <span class="pre">semilog_y_base=10,</span> <span class="pre">has_dict_values=False)}</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.fits_extension">
-<span class="sig-name descname"><span class="pre">fits_extension</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'fit'</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.fits_extension" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.fits_extension">
+<code class="sig-name descname"><span class="pre">fits_extension</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'fit'</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.fits_extension" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.get_default_target_indices">
-<span class="sig-name descname"><span class="pre">get_default_target_indices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.get_default_target_indices" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.get_default_target_indices">
+<code class="sig-name descname"><span class="pre">get_default_target_indices</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.get_default_target_indices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.original_to_versioned_path">
-<span class="sig-name descname"><span class="pre">original_to_versioned_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.original_to_versioned_path" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.original_to_versioned_path">
+<code class="sig-name descname"><span class="pre">original_to_versioned_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.original_to_versioned_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the path of the versioned file corresponding to original_path.
 This function will replicate the folder structure within self.original_base_dir.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_repetitions">
-<span class="sig-name descname"><span class="pre">set_version_repetitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_repetitions" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_repetitions">
+<code class="sig-name descname"><span class="pre">set_version_repetitions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_repetitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_time">
-<span class="sig-name descname"><span class="pre">set_version_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_time" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_time">
+<code class="sig-name descname"><span class="pre">set_version_time</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.set_version_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version">
-<span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version">
+<code class="sig-name descname"><span class="pre">version</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a version of input_path and write it into output_path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -279,8 +276,8 @@ for input_path</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version_name">
-<span class="sig-name descname"><span class="pre">version_name</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'FitsToRaw'</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version_name" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version_name">
+<code class="sig-name descname"><span class="pre">version_name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'FitsToRaw'</span></em><a class="headerlink" href="#enb.plugins.plugin_fits.fits_to_raw.FitsVersionTable.version_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

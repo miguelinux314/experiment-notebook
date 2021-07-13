@@ -13,8 +13,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,7 +29,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -61,7 +58,7 @@
 
           
             
-            <img src="../_static/img/enb_logo_small.png" class="logo" alt="Logo"/>
+            <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -90,7 +87,7 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -113,7 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#enb-params-module">enb.params module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
@@ -216,87 +213,87 @@
 <span id="enb-plugins-plugin-lcnl-lcnl-codecs-module"></span><h2>enb.plugins.plugin_lcnl.lcnl_codecs module<a class="headerlink" href="#module-enb.plugins.plugin_lcnl.lcnl_codecs" title="Permalink to this headline">¶</a></h2>
 <p>Wrappers for the CCSDS 123.0-B-2 codecs.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></span><span class="sig-name descname"><span class="pre">CCSDS_LCNL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy_coder_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_encoding_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_sum_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_j</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></code><code class="sig-name descname"><span class="pre">CCSDS_LCNL</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy_coder_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_encoding_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_sum_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_j</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.NearLosslessCodec" title="enb.icompression.NearLosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.WrapperCodec" title="enb.icompression.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code></a></p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE">
-<span class="sig-name descname"><span class="pre">ENTROPY_BLOCK_ADAPTIVE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE">
+<code class="sig-name descname"><span class="pre">ENTROPY_BLOCK_ADAPTIVE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_BLOCK_ADAPTIVE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID">
-<span class="sig-name descname"><span class="pre">ENTROPY_HYBRID</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID">
+<code class="sig-name descname"><span class="pre">ENTROPY_HYBRID</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_HYBRID" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE">
-<span class="sig-name descname"><span class="pre">ENTROPY_SAMPLE_ADAPTIVE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE">
+<code class="sig-name descname"><span class="pre">ENTROPY_SAMPLE_ADAPTIVE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.ENTROPY_SAMPLE_ADAPTIVE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_ABSOLUTE">
-<span class="sig-name descname"><span class="pre">FIDELITY_ABSOLUTE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_ABSOLUTE" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_ABSOLUTE">
+<code class="sig-name descname"><span class="pre">FIDELITY_ABSOLUTE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_ABSOLUTE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_BOTH">
-<span class="sig-name descname"><span class="pre">FIDELITY_BOTH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_BOTH" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_BOTH">
+<code class="sig-name descname"><span class="pre">FIDELITY_BOTH</span></code><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_BOTH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_LOSSLESS">
-<span class="sig-name descname"><span class="pre">FIDELITY_LOSSLESS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_LOSSLESS" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_LOSSLESS">
+<code class="sig-name descname"><span class="pre">FIDELITY_LOSSLESS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_LOSSLESS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_RELATIVE">
-<span class="sig-name descname"><span class="pre">FIDELITY_RELATIVE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_RELATIVE" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_RELATIVE">
+<code class="sig-name descname"><span class="pre">FIDELITY_RELATIVE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.FIDELITY_RELATIVE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_COL">
-<span class="sig-name descname"><span class="pre">LOCAL_SUM_NARROW_COL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_COL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_COL">
+<code class="sig-name descname"><span class="pre">LOCAL_SUM_NARROW_COL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_COL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_NEI">
-<span class="sig-name descname"><span class="pre">LOCAL_SUM_NARROW_NEI</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_NEI" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_NEI">
+<code class="sig-name descname"><span class="pre">LOCAL_SUM_NARROW_NEI</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_NARROW_NEI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_COL">
-<span class="sig-name descname"><span class="pre">LOCAL_SUM_WIDE_COL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_COL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_COL">
+<code class="sig-name descname"><span class="pre">LOCAL_SUM_WIDE_COL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_COL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_NEI">
-<span class="sig-name descname"><span class="pre">LOCAL_SUM_WIDE_NEI</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_NEI" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_NEI">
+<code class="sig-name descname"><span class="pre">LOCAL_SUM_WIDE_NEI</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.LOCAL_SUM_WIDE_NEI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_FULL">
-<span class="sig-name descname"><span class="pre">PREDICTION_FULL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_FULL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_FULL">
+<code class="sig-name descname"><span class="pre">PREDICTION_FULL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_FULL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_REDUCED">
-<span class="sig-name descname"><span class="pre">PREDICTION_REDUCED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_REDUCED" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_REDUCED">
+<code class="sig-name descname"><span class="pre">PREDICTION_REDUCED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.PREDICTION_REDUCED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BIQ">
-<span class="sig-name descname"><span class="pre">SAMPLE_ORDER_BIQ</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BIQ" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BIQ">
+<code class="sig-name descname"><span class="pre">SAMPLE_ORDER_BIQ</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BIQ" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BSQ">
-<span class="sig-name descname"><span class="pre">SAMPLE_ORDER_BSQ</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BSQ" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BSQ">
+<code class="sig-name descname"><span class="pre">SAMPLE_ORDER_BSQ</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.SAMPLE_ORDER_BSQ" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.compress">
-<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.compress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.compress">
+<code class="sig-name descname"><span class="pre">compress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.compress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
@@ -305,48 +302,48 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_entropy_codec_type">
-<span class="sig-name descname"><span class="pre">default_entropy_codec_type</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_entropy_codec_type" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_entropy_codec_type">
+<code class="sig-name descname"><span class="pre">default_entropy_codec_type</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_entropy_codec_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_P">
-<span class="sig-name descname"><span class="pre">default_large_P</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_P" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_P">
+<code class="sig-name descname"><span class="pre">default_large_P</span></code><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_P" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_j">
-<span class="sig-name descname"><span class="pre">default_large_j</span></span><em class="property"> <span class="pre">=</span> <span class="pre">64</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_j" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_j">
+<code class="sig-name descname"><span class="pre">default_large_j</span></code><em class="property"> <span class="pre">=</span> <span class="pre">64</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_j" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_r">
-<span class="sig-name descname"><span class="pre">default_large_r</span></span><em class="property"> <span class="pre">=</span> <span class="pre">64</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_r" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_r">
+<code class="sig-name descname"><span class="pre">default_large_r</span></code><em class="property"> <span class="pre">=</span> <span class="pre">64</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_large_r" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_local_sum_type">
-<span class="sig-name descname"><span class="pre">default_local_sum_type</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_local_sum_type" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_local_sum_type">
+<code class="sig-name descname"><span class="pre">default_local_sum_type</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_local_sum_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_prediction_mode">
-<span class="sig-name descname"><span class="pre">default_prediction_mode</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_prediction_mode" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_prediction_mode">
+<code class="sig-name descname"><span class="pre">default_prediction_mode</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_prediction_mode" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_r">
-<span class="sig-name descname"><span class="pre">default_r</span></span><em class="property"> <span class="pre">=</span> <span class="pre">4096</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_r" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_r">
+<code class="sig-name descname"><span class="pre">default_r</span></code><em class="property"> <span class="pre">=</span> <span class="pre">4096</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_r" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_sample_encoding_order">
-<span class="sig-name descname"><span class="pre">default_sample_encoding_order</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_sample_encoding_order" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_sample_encoding_order">
+<code class="sig-name descname"><span class="pre">default_sample_encoding_order</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.default_sample_encoding_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_compression_params">
-<span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_compression_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_compression_params">
+<code class="sig-name descname"><span class="pre">get_compression_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_compression_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string (shell style) with the parameters
 to be passed to the compressor.</p>
 <p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
@@ -359,8 +356,8 @@ to be passed to the compressor.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_decompression_params">
-<span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_decompression_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_decompression_params">
+<code class="sig-name descname"><span class="pre">get_decompression_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_decompression_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string (shell style) with the parameters
 to be passed to the decompressor.
 Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
@@ -373,14 +370,14 @@ Same parameter semantics as <code class="xref py py-meth docutils literal notran
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_image_params">
-<span class="sig-name descname"><span class="pre">get_image_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_image_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_image_params">
+<code class="sig-name descname"><span class="pre">get_image_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.get_image_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the dictionary of parameters to use in the -x k=v options of lcnl_header_tool.</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.label">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.label" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.label">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">label</span></code><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
 By default, the original name is returned</p>
 </dd></dl>
@@ -388,83 +385,83 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></span><span class="sig-name descname"><span class="pre">CCSDS_LCNL_AdjustedGreenBook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy_coder_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></code><code class="sig-name descname"><span class="pre">CCSDS_LCNL_AdjustedGreenBook</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy_coder_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook" title="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook.get_image_params">
-<span class="sig-name descname"><span class="pre">get_image_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook.get_image_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook.get_image_params">
+<code class="sig-name descname"><span class="pre">get_image_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_AdjustedGreenBook.get_image_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the dictionary of parameters to use in the -x k=v options of lcnl_header_tool.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></span><span class="sig-name descname"><span class="pre">CCSDS_LCNL_GreenBook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy_coder_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></code><code class="sig-name descname"><span class="pre">CCSDS_LCNL_GreenBook</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_error_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy_coder_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL" title="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL</span></code></a></p>
 <p>Wrapper for CCSDS_LCNL that uses the default params specified in
 the Green Book.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_0">
-<span class="sig-name descname"><span class="pre">default_gamma_0</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_0" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_0">
+<code class="sig-name descname"><span class="pre">default_gamma_0</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_star">
-<span class="sig-name descname"><span class="pre">default_gamma_star</span></span><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_star" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_star">
+<code class="sig-name descname"><span class="pre">default_gamma_star</span></code><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_gamma_star" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_omega">
-<span class="sig-name descname"><span class="pre">default_large_omega</span></span><em class="property"> <span class="pre">=</span> <span class="pre">19</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_omega" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_omega">
+<code class="sig-name descname"><span class="pre">default_large_omega</span></code><em class="property"> <span class="pre">=</span> <span class="pre">19</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_omega" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_theta">
-<span class="sig-name descname"><span class="pre">default_large_theta</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_theta" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_theta">
+<code class="sig-name descname"><span class="pre">default_large_theta</span></code><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_theta" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_u_max">
-<span class="sig-name descname"><span class="pre">default_large_u_max</span></span><em class="property"> <span class="pre">=</span> <span class="pre">18</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_u_max" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_u_max">
+<code class="sig-name descname"><span class="pre">default_large_u_max</span></code><em class="property"> <span class="pre">=</span> <span class="pre">18</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_large_u_max" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_log_two_t_inc">
-<span class="sig-name descname"><span class="pre">default_log_two_t_inc</span></span><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_log_two_t_inc" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_log_two_t_inc">
+<code class="sig-name descname"><span class="pre">default_log_two_t_inc</span></code><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_log_two_t_inc" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_phi_vector">
-<span class="sig-name descname"><span class="pre">default_phi_vector</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'7'</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_phi_vector" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_phi_vector">
+<code class="sig-name descname"><span class="pre">default_phi_vector</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'7'</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_phi_vector" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_sample_representative_flag">
-<span class="sig-name descname"><span class="pre">default_sample_representative_flag</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_sample_representative_flag" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_sample_representative_flag">
+<code class="sig-name descname"><span class="pre">default_sample_representative_flag</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_sample_representative_flag" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_v_min">
-<span class="sig-name descname"><span class="pre">default_v_min</span></span><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_v_min" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_v_min">
+<code class="sig-name descname"><span class="pre">default_v_min</span></code><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.default_v_min" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.get_image_params">
-<span class="sig-name descname"><span class="pre">get_image_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.get_image_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.get_image_params">
+<code class="sig-name descname"><span class="pre">get_image_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LCNL_GreenBook.get_image_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the dictionary of parameters to use in the -x k=v options of lcnl_header_tool.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></span><span class="sig-name descname"><span class="pre">CCSDS_LDC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_J</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restricted_code_options_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></code><code class="sig-name descname"><span class="pre">CCSDS_LDC</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_J</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restricted_code_options_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_header_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.WrapperCodec" title="enb.icompression.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.compress">
-<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.compress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.compress">
+<code class="sig-name descname"><span class="pre">compress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.compress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
@@ -473,8 +470,8 @@ the Green Book.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.decompress">
-<span class="sig-name descname"><span class="pre">decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.decompress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.decompress">
+<code class="sig-name descname"><span class="pre">decompress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.decompress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decompress compressed_path into reconstructed_path using param_dict
 as params (if needed).</p>
 <dl class="field-list simple">
@@ -494,13 +491,13 @@ since codecs are expected to store all needed metainformation in the compressed 
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.default_large_J">
-<span class="sig-name descname"><span class="pre">default_large_J</span></span><em class="property"> <span class="pre">=</span> <span class="pre">64</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.default_large_J" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.default_large_J">
+<code class="sig-name descname"><span class="pre">default_large_J</span></code><em class="property"> <span class="pre">=</span> <span class="pre">64</span></em><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.default_large_J" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_compression_params">
-<span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_compression_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_compression_params">
+<code class="sig-name descname"><span class="pre">get_compression_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_compression_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string (shell style) with the parameters
 to be passed to the compressor.</p>
 <p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
@@ -513,8 +510,8 @@ to be passed to the compressor.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_decompression_params">
-<span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_decompression_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_decompression_params">
+<code class="sig-name descname"><span class="pre">get_decompression_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.get_decompression_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string (shell style) with the parameters
 to be passed to the decompressor.
 Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
@@ -526,9 +523,9 @@ Same parameter semantics as <code class="xref py py-meth docutils literal notran
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.label">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.label" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.label">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">label</span></code><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.CCSDS_LDC.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
 By default, the original name is returned</p>
 </dd></dl>
@@ -536,8 +533,8 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="enb.plugins.plugin_lcnl.lcnl_codecs.file_info_to_format_string">
-<span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></span><span class="sig-name descname"><span class="pre">file_info_to_format_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.file_info_to_format_string" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_lcnl.lcnl_codecs.file_info_to_format_string">
+<code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_lcnl.lcnl_codecs.</span></code><code class="sig-name descname"><span class="pre">file_info_to_format_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_lcnl.lcnl_codecs.file_info_to_format_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

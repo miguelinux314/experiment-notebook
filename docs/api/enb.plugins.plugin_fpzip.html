@@ -13,8 +13,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,7 +29,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -61,7 +58,7 @@
 
           
             
-            <img src="../_static/img/enb_logo_small.png" class="logo" alt="Logo"/>
+            <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -90,7 +87,7 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -113,7 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#enb-params-module">enb.params module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
@@ -216,14 +213,14 @@
 <span id="enb-plugins-plugin-fpzip-fpzip-codec-module"></span><h2>enb.plugins.plugin_fpzip.fpzip_codec module<a class="headerlink" href="#module-enb.plugins.plugin_fpzip.fpzip_codec" title="Permalink to this headline">¶</a></h2>
 <p>Codec wrapper for the fpzip lossless image coder</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpzip.fpzip_codec.</span></span><span class="sig-name descname"><span class="pre">Fpzip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fpzip_binary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/data/Dropbox/desarrollo/experiment-notebook.git/enb/plugins/plugin_fpzip/fpzip'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpzip.fpzip_codec.</span></code><code class="sig-name descname"><span class="pre">Fpzip</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fpzip_binary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/data/Dropbox/desarrollo/experiment-notebook.git/enb/plugins/plugin_fpzip/fpzip'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.NearLosslessCodec" title="enb.icompression.NearLosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.WrapperCodec" title="enb.icompression.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code></a></p>
 <p>Wrapper for the fpzip codec
 Allowed data type to be compressed: float 32</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_compression_params">
-<span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_compression_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_compression_params">
+<code class="sig-name descname"><span class="pre">get_compression_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_compression_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string (shell style) with the parameters
 to be passed to the compressor.</p>
 <p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
@@ -236,8 +233,8 @@ to be passed to the compressor.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_decompression_params">
-<span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_decompression_params" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_decompression_params">
+<code class="sig-name descname"><span class="pre">get_decompression_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.get_decompression_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string (shell style) with the parameters
 to be passed to the decompressor.
 Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
@@ -249,9 +246,9 @@ Same parameter semantics as <code class="xref py py-meth docutils literal notran
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.label">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.label" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.label">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">label</span></code><a class="headerlink" href="#enb.plugins.plugin_fpzip.fpzip_codec.Fpzip.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
 By default, the original name is returned</p>
 </dd></dl>
