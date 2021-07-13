@@ -15,6 +15,7 @@ import tempfile
 import filecmp
 import itertools
 import re
+import traceback
 
 import enb
 from enb.config import options
@@ -27,7 +28,8 @@ class AvailabilityExperiment(enb.experiment.Experiment):
     @enb.atable.column_function([
         enb.atable.ColumnProperties("is_working", label="Does the codec work for this input?"),
         enb.atable.ColumnProperties("is_lossless", label="Was compression lossless?"),
-        enb.atable.ColumnProperties("cr_dr", label="Compression ratio respect to the dynamic range.")
+        enb.atable.ColumnProperties("cr_dr", label="Compression ratio respect to the dynamic range."),
+        enb.atable.ColumnProperties("error_str", label="Error string for this execution"),
     ])
     def set_availability_columns(self, index, row):
         file_path, codec = self.index_to_path_task(index)
@@ -41,7 +43,8 @@ class AvailabilityExperiment(enb.experiment.Experiment):
                     compressed_path=tmp_compressed_file.name,
                     original_file_info=self.get_dataset_info_row(file_path))
                 if not os.path.isfile(tmp_compressed_file.name) or not os.path.getsize(tmp_compressed_file.name):
-                    raise enb.icompression.CompressionException(f"[E]rror compressing {index}")
+                    raise enb.icompression.CompressionException(
+                        f"[E]rror compressing {index} -- did not produce a file")
                 codec.decompress(
                     compressed_path=tmp_compressed_file.name,
                     reconstructed_path=tmp_reconstructed_file.name,
@@ -51,10 +54,13 @@ class AvailabilityExperiment(enb.experiment.Experiment):
                 row["cr_dr"] = self.get_dataset_info_row(file_path)["samples"] \
                                * self.get_dataset_info_row(file_path)["dynamic_range_bits"] \
                                / (8 * os.path.getsize(tmp_compressed_file.name))
+                row["error_str"] = ""
         except Exception as ex:
+            row["error_str"] = traceback.format_exc()
             row["is_working"] = False
             row["is_lossless"] = False
             row["cr_dr"] = 0
+
 
 
 class CodecSummaryTable(enb.atable.SummaryTable):
@@ -117,6 +123,7 @@ if __name__ == '__main__':
     from enb.plugins import plugin_zip
     from enb.plugins import plugin_zstandard
 
+
     def log_event(s):
         if options.verbose:
             s = f" {s}..."
@@ -148,7 +155,6 @@ if __name__ == '__main__':
         if not codec_classes:
             log_event("Error: no codec matched the filter. Exiting now.")
             raise ValueError(sys.argv[1:])
-
 
     # Run the experiment
     log_event(f"The following {len(codec_classes)} codecs have been found"

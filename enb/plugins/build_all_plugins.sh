@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Run make under every plugin_* dir found in this folder
+# This is intended as a temporary workaround to a more integrated plugin handling system.
 # Miguel Hernández-Cabronero <miguel.hernandez@uab.cat> - July 2021
 
 find -name 'build_errors.log' -exec rm {} \;

@@ -1,78 +1,88 @@
 # Under development v0.2.8-dev
 
 * New functions:
-  
-  - Added `enb.atable.SummaryTable` as a way to arbitrarily group dataframe rows and compute aggregated columns
-    on them.
-    
-  - Added several new codecs with floating point support. The `test_all_codecs.py` script has been revamped to 
-    more easily describe codec availability of each data format class.
-    
-  - Added `enb.aanalysis.pdf_to_png` to easily convert folders with pdf figures into folders with png figures
-    (source and origin folders may be the same).
-    
-  - Revamped the configuration module with an improved verifier/setter system, keeping a compatible interface.
 
-* Improved general stability to different parts of `aanalysis.py`
+    - Added `enb.atable.SummaryTable` as a way to arbitrarily group dataframe rows and compute aggregated columns on
+      them.
+
+    - Plugins are now automatically included with `enb` distributions. Although integration is not yet complete,
+      the `build_all_plugins.sh` script has been added as a temporary plugin build tool.
+
+    - Added several new codecs with floating point support.
+
+    - Added `enb.aanalysis.pdf_to_png` to easily convert folders with pdf figures into folders with png figures
+      (source and origin folders may be the same).
+
+* General improvements:
+
+    - Improved general stability to different parts of `aanalysis.py`
+
+    - The `test_all_codecs.py` script has been revamped to more easily describe codec availability of each data format
+      class. Now, codecs just need to have been defined (e.g., by an appropriate import). Furthermore, 
+      any error logs is output as a new column to the script's persistence output. 
+
+    - Revamped the configuration module with an improved verifier/setter system. These changes should be totally
+      transparent for enb users, and make life a bit easier for developers.
 
 # 2021/06/30 v0.2.7
 
 * New functions:
-  
-  * Added support to plot columns that contain dictionaries with numeric values (see enb.aanalysis.ScalarDictAnalyzer): 
-    
-    - String keys are supported. In this case, they are assumed to be class names, and are shown by default 
-      as elements across the x_axis.
-      
-    - Number to number mappings are also supported. Typical examples are 
-      histograms, probability mass functions (PMFs/discrete PDFs), and cumulative distribution functions (CDFs). 
-      These can be expressed as a dict-like object mapping x to P(x). 
-      
-    - The `combine_keys` argument can be used to easily plot PMFs/PDFs as histograms, rebin existing histrograms,
-      or regroup class names (e.g., one could have data for `arms`, `head`, `legs`, `feet` 
-      as class names (dictionary key values), and easily combine them into `upper_body` and `lower_body` before
-      analysis.
-      
-    - More generally, any object that supports the comparison interface can be used for the key values, as these
-      are sorted by default.
-      
-  * Added codec support:
-      - enb.isets.FITSWrapper can now be used to easily define codecs that need `.fit`/`.fits` files as an input.
-      - Added FPACK, FPZIP, ZFP, Zstandard codecs for FITS (potentially float) data.
-      - Added standalone Zstandard codec.
-  
-  * enb.iset-based tables can now inherit from enb.isets.SampleDistributionTable to automatically compute dictionaries
-    containing probability mass functions.
-    
-  * Disabled ray's dashboard by default to speed up script startup and termination time.
-    
+
+    * Added support to plot columns that contain dictionaries with numeric values (see
+      enb.aanalysis.ScalarDictAnalyzer):
+
+        - String keys are supported. In this case, they are assumed to be class names, and are shown by default as
+          elements across the x_axis.
+
+        - Number to number mappings are also supported. Typical examples are histograms, probability mass functions (
+          PMFs/discrete PDFs), and cumulative distribution functions (CDFs). These can be expressed as a dict-like
+          object mapping x to P(x).
+
+        - The `combine_keys` argument can be used to easily plot PMFs/PDFs as histograms, rebin existing histrograms, or
+          regroup class names (e.g., one could have data for `arms`, `head`, `legs`, `feet`
+          as class names (dictionary key values), and easily combine them into `upper_body` and `lower_body` before
+          analysis.
+
+        - More generally, any object that supports the comparison interface can be used for the key values, as these are
+          sorted by default.
+
+    * Added codec support:
+        - enb.isets.FITSWrapper can now be used to easily define codecs that need `.fit`/`.fits` files as an input.
+        - Added FPACK, FPZIP, ZFP, Zstandard codecs for FITS (potentially float) data.
+        - Added standalone Zstandard codec.
+
+    * enb.iset-based tables can now inherit from enb.isets.SampleDistributionTable to automatically compute dictionaries
+      containing probability mass functions.
+
+    * Disabled ray's dashboard by default to speed up script startup and termination time.
+
 * Bug fixes:
-      
-  - Fixed potential problems when defining subclasses of enb.sets.FileVersionTable. One should now be able to freely
-    mix and match versioning tables without syntax errors.
-    
-  - Fixed FITS codec endianness
-  
+
+    - Fixed potential problems when defining subclasses of enb.sets.FileVersionTable. One should now be able to freely
+      mix and match versioning tables without syntax errors.
+
+    - Fixed FITS codec endianness
 
 # 2021/05/13 v0.2.6
 
 * New functions:
-  
-  - FileVersionTable subclasses now can choose not to check the expected output files and use all produced
-    files in the versioned dir instead.
-  - Added FITS to raw version table
-  
+
+    - FileVersionTable subclasses now can choose not to check the expected output files and use all produced files in
+      the versioned dir instead.
+    - Added FITS to raw version table
+
 * Function improvements:
-  
-  - Improved HEVC and VVC compilation scripts
-  - Improved support for datasets consisting of symbolic links to a single copy of the dataset
-  - Improved default wrapper codec names when no hexdump signature is desired
-  
+
+    - Improved HEVC and VVC compilation scripts
+    - Improved support for datasets consisting of symbolic links to a single copy of the dataset
+    - Improved default wrapper codec names when no hexdump signature is desired
+
 * Plotting improvements:
-  
-  - Improved the general plot function to increase control over displayed colors.
-  - Added `enb.aanalysis.ScalarToScalarAnalyzer` to plot dictionary cell data. Shadowed bands based on std can now be depicted.
-  - Several minor fix-ups to plot rendering and general stability
+
+    - Improved the general plot function to increase control over displayed colors.
+    - Added `enb.aanalysis.ScalarToScalarAnalyzer` to plot dictionary cell data. Shadowed bands based on std can now be
+      depicted.
+    - Several minor fix-ups to plot rendering and general stability
 
 * Docs are now displayed on the public site automatically point to the dev banch
 
@@ -87,7 +97,7 @@
         - lossless
         - lossy with target rate and target PSNR support
     * Added Makefiles for Windows and MacOS for supporting codecs
-    
+
 - Added support for floating-point images (numpy f16, f32, f64)
 - Added support for FITs images
 
