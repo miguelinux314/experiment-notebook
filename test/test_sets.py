@@ -67,50 +67,46 @@ class TestSets(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp_dir:
             options.persistence_dir = tmp_dir
 
-            try:
-                class TrivialVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
-                    """Trivial FileVersionTable that makes an identical copy of the original
-                    """
-                    version_name = "TrivialCopy"
-                    default_extension = "py"
+            class TrivialVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
+                """Trivial FileVersionTable that makes an identical copy of the original
+                """
+                version_name = "TrivialCopy"
+                default_extension = "py"
 
-                    def __init__(self):
-                        super().__init__(version_name=self.version_name,
-                                         original_base_dir=os.path.dirname(os.path.abspath(__file__)),
-                                         version_base_dir=tmp_dir)
-                        self.default_extension = "py"
+                def __init__(self):
+                    super().__init__(version_name=self.version_name,
+                                     original_base_dir=os.path.dirname(os.path.abspath(__file__)),
+                                     version_base_dir=tmp_dir)
+                    self.default_extension = "py"
 
-                    def version(self, input_path, output_path, row):
-                        shutil.copy(input_path, output_path)
-                        assert os.path.getsize(input_path) == os.path.getsize(output_path)
+                def version(self, input_path, output_path, row):
+                    shutil.copy(input_path, output_path)
+                    assert os.path.getsize(input_path) == os.path.getsize(output_path)
 
-                fpt = sets.FilePropertiesTable()
-                fpt.default_extension = "py"
-                fpt_df = fpt.get_df()
-                fpt_df["original_file_path"] = fpt_df["file_path"]
-                tvt = TrivialVersionTable()
-                tvt.default_extension = "py"
-                tvt_df = tvt.get_df()
+            fpt = sets.FilePropertiesTable()
+            fpt.default_extension = "py"
+            fpt_df = fpt.get_df()
+            fpt_df["original_file_path"] = fpt_df["file_path"]
+            tvt = TrivialVersionTable()
+            tvt.default_extension = "py"
+            tvt_df = tvt.get_df()
 
-                lsuffix = "_original"
-                rsuffix = f"_{tvt.version_name}"
-                joint_df = fpt_df.set_index("original_file_path").join(
-                    tvt_df.set_index("original_file_path"),
-                    lsuffix=lsuffix, rsuffix=rsuffix)
+            lsuffix = "_original"
+            rsuffix = f"_{tvt.version_name}"
+            joint_df = fpt_df.set_index("original_file_path").join(
+                tvt_df.set_index("original_file_path"),
+                lsuffix=lsuffix, rsuffix=rsuffix)
 
-                assert not np.any(joint_df.applymap(lambda x: x is None))
+            assert not np.any(joint_df.applymap(lambda x: x is None))
 
-                for column in [c for c in joint_df.columns.values if lsuffix in c]:
-                    if column.replace(lsuffix, "") in fpt.indices:
-                        continue
-                    version_column = column.replace(lsuffix, rsuffix)
-                    if not column.startswith("corpus"):
-                        assert np.all(joint_df[column] == joint_df[version_column]), \
-                            f"Columns {column} and {version_column} differ: " \
-                            f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
-
-            finally:
-                shutil.rmtree(tmp_dir)
+            for column in [c for c in joint_df.columns.values if lsuffix in c]:
+                if column.replace(lsuffix, "") in fpt.indices:
+                    continue
+                version_column = column.replace(lsuffix, rsuffix)
+                if not column.startswith("corpus"):
+                    assert np.all(joint_df[column] == joint_df[version_column]), \
+                        f"Columns {column} and {version_column} differ: " \
+                        f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
 
 
 if __name__ == '__main__':
