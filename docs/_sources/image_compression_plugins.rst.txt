@@ -60,16 +60,16 @@ For each codec/data type combination, the following aspects are considered:
 
 Availability tables:
 
-- `General availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.pdf>`_
+- `General availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/enb/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.pdf>`_
   (displayed below)
-- `Unsigned integer availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/plots/codec_availability_unsigned_type_to_availability.pdf>`_
+- `Unsigned integer availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/enb/plugins/test_all_codecs/plots/codec_availability_unsigned_type_to_availability.pdf>`_
 
-- `Signed integer availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/plots/codec_availability_signed_type_to_availability.pdf>`_
+- `Signed integer availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/enb/plugins/test_all_codecs/plots/codec_availability_signed_type_to_availability.pdf>`_
 
-- `Floating point data availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/plots/codec_availability_float_type_to_availability.pdf>`_
+- `Floating point data availability <https://github.com/miguelinux314/experiment-notebook/raw/dev/enb/plugins/test_all_codecs/plots/codec_availability_float_type_to_availability.pdf>`_
 
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.png
+.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/enb/plugins/test_all_codecs/plots/codec_availability_general_type_to_availability.png
 
 .. warning:: The following points are important to interpret these results:
 

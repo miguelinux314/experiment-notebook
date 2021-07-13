@@ -13,8 +13,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -31,7 +29,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -61,7 +58,7 @@
 
           
             
-            <img src="../_static/img/enb_logo_small.png" class="logo" alt="Logo"/>
+            <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -90,7 +87,7 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -113,7 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#enb-params-module">enb.params module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
@@ -216,34 +213,34 @@
 <span id="enb-plugins-plugin-zip-zip-codecs-module"></span><h2>enb.plugins.plugin_zip.zip_codecs module<a class="headerlink" href="#module-enb.plugins.plugin_zip.zip_codecs" title="Permalink to this headline">¶</a></h2>
 <p>Wrappers for different types of LZ codecs such as Deflate, LZMA, BZIP2</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></span><span class="sig-name descname"><span class="pre">AbstractZipCodec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></code><code class="sig-name descname"><span class="pre">AbstractZipCodec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a></p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.DEFAULT_COMPRESSION_LEVEL">
-<span class="sig-name descname"><span class="pre">DEFAULT_COMPRESSION_LEVEL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.DEFAULT_COMPRESSION_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.DEFAULT_COMPRESSION_LEVEL">
+<code class="sig-name descname"><span class="pre">DEFAULT_COMPRESSION_LEVEL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.DEFAULT_COMPRESSION_LEVEL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MAX_COMPRESSION_LEVEL">
-<span class="sig-name descname"><span class="pre">MAX_COMPRESSION_LEVEL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">9</span></em><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MAX_COMPRESSION_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MAX_COMPRESSION_LEVEL">
+<code class="sig-name descname"><span class="pre">MAX_COMPRESSION_LEVEL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">9</span></em><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MAX_COMPRESSION_LEVEL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MIN_COMPRESSION_LEVEL">
-<span class="sig-name descname"><span class="pre">MIN_COMPRESSION_LEVEL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MIN_COMPRESSION_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MIN_COMPRESSION_LEVEL">
+<code class="sig-name descname"><span class="pre">MIN_COMPRESSION_LEVEL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec.MIN_COMPRESSION_LEVEL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.BZIP2">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></span><span class="sig-name descname"><span class="pre">BZIP2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.BZIP2">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></code><code class="sig-name descname"><span class="pre">BZIP2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec" title="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec</span></code></a></p>
 <p>Apply the BZIP2 algorithm using zlib.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.BZIP2.compress">
-<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2.compress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.BZIP2.compress">
+<code class="sig-name descname"><span class="pre">compress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2.compress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
@@ -252,8 +249,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.BZIP2.decompress">
-<span class="sig-name descname"><span class="pre">decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2.decompress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.BZIP2.decompress">
+<code class="sig-name descname"><span class="pre">decompress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2.decompress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decompress compressed_path into reconstructed_path using param_dict
 as params (if needed).</p>
 <dl class="field-list simple">
@@ -272,9 +269,9 @@ since codecs are expected to store all needed metainformation in the compressed 
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.BZIP2.label">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2.label" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="enb.plugins.plugin_zip.zip_codecs.BZIP2.label">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">label</span></code><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.BZIP2.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
 By default, the original name is returned</p>
 </dd></dl>
@@ -282,13 +279,13 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></span><span class="sig-name descname"><span class="pre">LZ77Huffman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></code><code class="sig-name descname"><span class="pre">LZ77Huffman</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec" title="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec</span></code></a></p>
 <p>Apply the LZ77 algorithm and Huffman coding to the file using zlib.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.compress">
-<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.compress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.compress">
+<code class="sig-name descname"><span class="pre">compress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.compress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
@@ -297,8 +294,8 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.decompress">
-<span class="sig-name descname"><span class="pre">decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.decompress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.decompress">
+<code class="sig-name descname"><span class="pre">decompress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.decompress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decompress compressed_path into reconstructed_path using param_dict
 as params (if needed).</p>
 <dl class="field-list simple">
@@ -317,9 +314,9 @@ since codecs are expected to store all needed metainformation in the compressed 
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.label">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.label" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.label">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">label</span></code><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZ77Huffman.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
 By default, the original name is returned</p>
 </dd></dl>
@@ -327,13 +324,13 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZMA">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></span><span class="sig-name descname"><span class="pre">LZMA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZMA">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_zip.zip_codecs.</span></code><code class="sig-name descname"><span class="pre">LZMA</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec" title="enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_zip.zip_codecs.AbstractZipCodec</span></code></a></p>
 <p>Apply the LZMA algorithm using the lzma library</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZMA.compress">
-<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA.compress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZMA.compress">
+<code class="sig-name descname"><span class="pre">compress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA.compress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compress original_path into compress_path using param_dict as params.
 :param original_path: path to the original file to be compressed
 :param compressed_path: path to the compressed file to be created
@@ -342,8 +339,8 @@ By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZMA.decompress">
-<span class="sig-name descname"><span class="pre">decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA.decompress" title="Permalink to this definition">¶</a></dt>
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZMA.decompress">
+<code class="sig-name descname"><span class="pre">decompress</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA.decompress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decompress compressed_path into reconstructed_path using param_dict
 as params (if needed).</p>
 <dl class="field-list simple">
@@ -362,9 +359,9 @@ since codecs are expected to store all needed metainformation in the compressed 
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.plugins.plugin_zip.zip_codecs.LZMA.label">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA.label" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="enb.plugins.plugin_zip.zip_codecs.LZMA.label">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">label</span></code><a class="headerlink" href="#enb.plugins.plugin_zip.zip_codecs.LZMA.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
 By default, the original name is returned</p>
 </dd></dl>
