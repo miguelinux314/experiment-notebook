@@ -199,7 +199,7 @@ class FileVersionTable(FilePropertiesTable):
 
         :return: if not None, the time in seconds it took to perform the (forward) versioning.
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_default_target_indices(self):
         return enb.atable.get_all_test_files(
