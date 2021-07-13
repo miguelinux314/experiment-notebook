@@ -75,52 +75,85 @@ class FitsVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
                 continue
             data = hdu.data.transpose()
             header = hdu.header
-
-            if header['NAXIS'] == 2:
-                if header['BITPIX'] < 0:
-                    name_label = f'-f{-header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                    dtype_name = f'float{-header["BITPIX"]}'
-                    enb_type_name = f"f{-header['BITPIX']}"
-                elif header['BITPIX'] > 0:
-                    name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                    dtype_name = f'<u{header["BITPIX"] // 8}'
-                    enb_type_name = f"u{header['BITPIX']}be"
-                else:
-                    raise ValueError(f"Invalid bitpix {header['BITPIX']}")
-
-                # Make 2D data 3D in an efficient way
-                data = np.expand_dims(data, axis=2)
-            elif header['NAXIS'] == 3:
-                if header['BITPIX'] < 0:
-                    name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                    dtype_name = f'float{-header["BITPIX"]}'
-                    enb_type_name = f"f{-header['BITPIX']}"
-                elif header['BITPIX'] > 0:
-                    name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
-                    dtype_name = f'<u{header["BITPIX"] // 8}'
-                    enb_type_name = f"u{header['BITPIX']}be"
-                else:
-                    raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+            
+            if header['BITPIX'] == 8:
+                pass
             else:
-                raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
+            
+                if header['NAXIS'] == 1:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-1x1x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-1x1x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+                    data = np.expand_dims(data, axis=1)
+                    data = np.expand_dims(data, axis=2)
+                
+                elif header['NAXIS'] == 2:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
 
-            output_dir = os.path.join(os.path.dirname(os.path.abspath(output_path)), enb_type_name)
-            effective_output_path = os.path.join(
-                output_dir,
-                f"{os.path.basename(output_path).replace('.raw', '')}_img{saved_images}{name_label}.raw")
-            os.makedirs(os.path.dirname(effective_output_path), exist_ok=True)
-            if options.verbose > 2:
-                print(f"Dumping FITS->raw ({effective_output_path}) from hdu_index={hdu_index}")
-            enb.isets.dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
-            fits_header_path = os.path.join(os.path.dirname(os.path.abspath(effective_output_path)).replace(
-                os.path.abspath(self.version_base_dir),
-                f"{os.path.abspath(self.version_base_dir)}_headers"),
-                os.path.basename(effective_output_path).replace('.raw', '') + "-fits_header.txt")
-            os.makedirs(os.path.dirname(fits_header_path), exist_ok=True)
-            print(f"[watch] fits_header_path={fits_header_path}")
-            if os.path.exists(fits_header_path):
-                os.remove(fits_header_path)
-            header.totextfile(fits_header_path)
+                    data = np.expand_dims(data, axis=2)
+                elif header['NAXIS'] == 3:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+                elif header['NAXIS'] == 4:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+                    data = np.squeeze(data, axis=3)
+                else:
+                    raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
+                
+                output_dir = os.path.join(os.path.dirname(os.path.abspath(output_path)), enb_type_name)
+                effective_output_path = os.path.join(
+                    output_dir,
+                    f"{os.path.basename(output_path).replace('.raw', '')}_img{saved_images}{name_label}.raw")
+                os.makedirs(os.path.dirname(effective_output_path), exist_ok=True)
+                if os.path.isfile(effective_output_path) == True:    
+                    pass
+                else:
+                    if options.verbose > 2:
+                        print(f"Dumping FITS->raw ({effective_output_path}) from hdu_index={hdu_index}")
+                    enb.isets.dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
+                    fits_header_path = os.path.join(os.path.dirname(os.path.abspath(effective_output_path)).replace(
+                        os.path.abspath(self.version_base_dir),
+                        f"{os.path.abspath(self.version_base_dir)}_headers"),
+                        os.path.basename(effective_output_path).replace('.raw', '') + "-fits_header.txt")
+                    os.makedirs(os.path.dirname(fits_header_path), exist_ok=True)
+                    print(f"[watch] fits_header_path={fits_header_path}")
+                    if os.path.exists(fits_header_path):
+                        os.remove(fits_header_path)
+                    header.totextfile(fits_header_path)
+                
             saved_images += 1
 
 
