@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Evaluate the availability of data compressor/decompressor pairs (codecs) defined for enb.
+
+By default, all detected, non-"abstract" codecs are tested.
+If one or more command line arguments are passed, only codec classes matching that name will be tested.
+Empty codec selections are invalid.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "06/07/2021"
 
+import sys
 import os
 import tempfile
 import filecmp
@@ -91,26 +96,26 @@ if __name__ == '__main__':
         print(f"{' [ Codec Availability Test Script ] ':=^100s}")
 
     # Plugin import -- these are needed so that they can be automatically loaded below (ignore IDE non-usage warnings)
-    from enb.plugins import plugin_jpeg, plugin_flif
-    from enb.plugins import plugin_mcalic
     from enb.plugins import plugin_ccsds122
     from enb.plugins import plugin_fapec
+    from enb.plugins import plugin_flif
+    from enb.plugins import plugin_fpack
+    from enb.plugins import plugin_fpc
+    from enb.plugins import plugin_fpzip
     from enb.plugins import plugin_fse_huffman
+    from enb.plugins import plugin_hevc
+    from enb.plugins import plugin_jpeg
+    from enb.plugins import plugin_jpeg_xl
+    from enb.plugins import plugin_kakadu
     from enb.plugins import plugin_lcnl
     from enb.plugins import plugin_marlin
-    from enb.plugins import plugin_zip
-    from enb.plugins import plugin_jpeg_xl
-    from enb.plugins import plugin_hevc
-    from enb.plugins import plugin_kakadu
-    from enb.plugins import plugin_vvc
-    from enb.plugins import plugin_fpack
-    from enb.plugins import plugin_zstandard
-    from enb.plugins import plugin_fpzip
-    from enb.plugins import plugin_zfp
-    from enb.plugins import plugin_fpc
+    from enb.plugins import plugin_mcalic
     from enb.plugins import plugin_spdp
-    from enb.plugins import plugin_lz4
-
+    from enb.plugins import plugin_ndzip
+    from enb.plugins import plugin_vvc
+    from enb.plugins import plugin_zfp
+    from enb.plugins import plugin_zip
+    from enb.plugins import plugin_zstandard
 
     def log_event(s):
         if options.verbose:
@@ -135,8 +140,19 @@ if __name__ == '__main__':
     forbidden_classes = set(base_classes)
     codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
 
+    filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    if filter_args:
+        log_event(f"Filtering for {', '.join(repr(s) for s in filter_args)}")
+        codec_classes = [c for c in codec_classes
+                         if any(s.strip().lower() in c.__name__.strip().lower() for s in filter_args)]
+        if not codec_classes:
+            log_event("Error: no codec matched the filter. Exiting now.")
+            raise ValueError(sys.argv[1:])
+
+
     # Run the experiment
-    log_event(f"The following {len(codec_classes)} codecs have been found")
+    log_event(f"The following {len(codec_classes)} codecs have been found"
+              f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
     for c in codec_classes:
         print(f"\t:: {c.__name__}")
 
@@ -167,7 +183,7 @@ if __name__ == '__main__':
         offset = 0
         last_key = all_keys[0]
         for k in all_keys:
-            if k[:3] != last_key[:3]:
+            if k.strip()[:3] != last_key.strip()[:3]:
                 offset += 1.2
             elif ("be" in last_key and "le" in k) or ("le" in last_key and "be" in k):
                 offset += 0.3

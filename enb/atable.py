@@ -636,7 +636,13 @@ class ATable(metaclass=MetaTable):
         check_unique_indices(table_df)
         for ti in target_indices:
             internal_index = indices_to_internal_loc(ti)
-            assert internal_index in table_df.index, (internal_index, table_df.loc[internal_index])
+            if internal_index not in table_df.index:
+                if options.no_new_results:
+                    raise ValueError(f"[E]rror: options.no_new_results = {options.no_new_results} "
+                                     f"but {internal_index} not found in the table. Please run again "
+                                     f"without --no_new_results nor any of its aliases.")
+                # It should not get to this under regular circumstances...
+                assert internal_index in table_df.index, (internal_index, table_df.loc[internal_index])
         target_internal_indices = [indices_to_internal_loc(ti) for ti in target_indices]
         table_df = table_df.loc[target_internal_indices, self.indices_and_columns]
         assert len(table_df) == len(target_indices), \
