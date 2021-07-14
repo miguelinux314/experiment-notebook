@@ -68,6 +68,6 @@ setup(
     # This part determines the contents of the installed folder in your python's site-packages location.
     # MANIFEST.in is assumed to have been updated, i.e., via git hooks.
     # This allows core plugins and templates to be automatically included.
-    packages=find_packages(),
+    packages=[p for p in find_packages() if p.startswith("enb")],
     include_package_data=True,
 )
