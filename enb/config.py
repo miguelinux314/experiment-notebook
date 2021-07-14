@@ -52,6 +52,7 @@ class OptionsBase(enb.singleton_cli.SingletonCLI):
 class GeneralOptions:
     """Group of uncategorized options.
     """
+
     @OptionsBase.property("v", action="count", default=0)
     def verbose(self, value):
         """Be verbose? Repeat for more.
@@ -67,8 +68,17 @@ class ExecutionOptions:
     @OptionsBase.property("cpu_limit", "cpu_cunt", type=int, default=None)
     def ray_cpu_limit(self, value):
         """Maximum number of virtual CPUs to use in the ray cluster.
+        If set to None or any number n <= 0, then no limits are set in terms of virtual CPU usage.
+
+        IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
+        it afterwards will not change ray cpu limits.
         """
-        return int(value)
+        if value is None:
+            return value
+        value = int(value)
+        if value <= 0:
+            value = None
+        return value
 
     @OptionsBase.property("s", "not_parallel", action="store_true", default=False)
     def sequential(self, value):
