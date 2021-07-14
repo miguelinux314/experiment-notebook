@@ -12,5 +12,17 @@ rm -f MANIFEST.in
 
 # Add everything under enb that has been included in git
 git ls-files | grep "enb/" | awk '{print "include", $1}' | sort >> MANIFEST.in
+
+echo "... found $(wc -l MANIFEST.in) elements before filtering"
+
+# Some elements in git within enb can also be removed from the distribution
+for filter_out in \
+    "test_all_codecs/persistence_test_all_codecs.py" \
+    "test_all_codecs/plots" \
+    "plugin_vvc/test_data"; do
+  grep -v "$filter_out" < MANIFEST.in > MANIFEST.tmp
+  mv MANIFEST.tmp MANIFEST.in
+done
+
 git add MANIFEST.in
 echo "... manifest updated with $(wc -l MANIFEST.in) elements!"
