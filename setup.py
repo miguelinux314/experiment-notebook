@@ -6,28 +6,13 @@
 #
 # Author: Miguel Hernández Cabronero <miguel.hernandez@uab.cat>
 #
-# ---------------------------------------------
-# INSTALLATION (refer to the user manual for additional information)
-#
-# Option 1) from pip
-# 	pip install enb
-#
-# Option 2) install this once
-#  pip install .
-#
-# Option 3) install this and link to track any changes made to the code
-#  pip install -e .
-#
-# Tip: use virtual environments to make sure to have the right package configuration.
-#
 # Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
 #
+# Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
+# how to install this software.
 
-import os
 import io
 from setuptools import setup, find_packages
-
-here = os.path.dirname(os.path.abspath(__file__))
 
 
 def read(*filenames, **kwargs):
@@ -45,7 +30,7 @@ def read(*filenames, **kwargs):
 setup(
     # Metadata about the project
     name='enb',
-    version="dev-0.2.8",
+    version="0.2.8",
     url='https://github.com/miguelinux314/experiment-notebook',
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.8.tar.gz",
     license='MIT',
