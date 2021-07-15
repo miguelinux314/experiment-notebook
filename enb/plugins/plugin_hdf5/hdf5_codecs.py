@@ -3,10 +3,9 @@
 """Codec wrapper for the HDF5 lossless image coder
 """
 
-import enb
-import h5py
 import numpy as np
 import enb
+import h5py  # This is a specific require
 
 
 class AbstractHdf5Codec(enb.icompression.LosslessCodec):
@@ -28,14 +27,16 @@ class GZIP(AbstractHdf5Codec):
     def compress(self, original_path, compressed_path, original_file_info):
         with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
             array = enb.isets.load_array_bsq(
-            file_or_path=original_path, image_properties_row=original_file_info)
-            compressed_file.create_dataset('dataset_1', data=array, compression='gzip', compression_opts=self.param_dict["compression_level"])
-            
+                file_or_path=original_path, image_properties_row=original_file_info)
+            compressed_file.create_dataset('dataset_1', data=array, compression='gzip',
+                                           compression_opts=self.param_dict["compression_level"])
+
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-        with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path, "wb") as reconstructed_file:  
-            compressed_file = compressed_file.get('dataset_1')        
-            compressed_file = np.array(compressed_file)  
-            enb.isets.dump_array_bsq(array=compressed_file, file_or_path=reconstructed_file)     
+        with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path,
+                                                                           "wb") as reconstructed_file:
+            compressed_file = compressed_file.get('dataset_1')
+            compressed_file = np.array(compressed_file)
+            enb.isets.dump_array_bsq(array=compressed_file, file_or_path=reconstructed_file)
 
     @property
     def label(self):
@@ -49,13 +50,14 @@ class LZF(AbstractHdf5Codec):
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
             array = enb.isets.load_array_bsq(
-            file_or_path=original_path, image_properties_row=original_file_info)
+                file_or_path=original_path, image_properties_row=original_file_info)
             compressed_file.create_dataset('dataset_1', data=array, compression='lzf')
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-        with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path, "wb") as reconstructed_file:  
-            compressed_file = compressed_file.get('dataset_1')        
-            compressed_file = np.array(compressed_file)          
+        with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path,
+                                                                           "wb") as reconstructed_file:
+            compressed_file = compressed_file.get('dataset_1')
+            compressed_file = np.array(compressed_file)
             enb.isets.dump_array_bsq(array=compressed_file, file_or_path=reconstructed_file)
 
     @property
@@ -68,18 +70,18 @@ class SZIP(AbstractHdf5Codec):
     """
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-         with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
+        with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
             array = enb.isets.load_array_bsq(
-            file_or_path=original_path, image_properties_row=original_file_info)
+                file_or_path=original_path, image_properties_row=original_file_info)
             compressed_file.create_dataset('dataset_1', data=array, compression='szip')
 
-
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-        with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path, "wb") as reconstructed_file:  
-            compressed_file = compressed_file.get('dataset_1')        
-            compressed_file = np.array(compressed_file)          
+        with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path,
+                                                                           "wb") as reconstructed_file:
+            compressed_file = compressed_file.get('dataset_1')
+            compressed_file = np.array(compressed_file)
             enb.isets.dump_array_bsq(array=compressed_file, file_or_path=reconstructed_file)
-            
+
     @property
     def label(self):
         return f"SZIP"
