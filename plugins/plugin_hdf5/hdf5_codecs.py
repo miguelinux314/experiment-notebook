@@ -80,6 +80,6 @@ class SZIP(AbstractHdf5Codec):
             compressed_file = np.array(compressed_file)          
             enb.isets.dump_array_bsq(array=compressed_file, file_or_path=reconstructed_file)
             
-   @property
+    @property
     def label(self):
         return f"SZIP"
