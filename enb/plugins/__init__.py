@@ -9,6 +9,7 @@ from . import plugin_fpc
 from . import plugin_fpzip
 from . import plugin_fse_huffman
 from . import plugin_hevc
+from . import plugin_hdf5
 from . import plugin_jpeg
 from . import plugin_jpeg_xl
 from . import plugin_kakadu

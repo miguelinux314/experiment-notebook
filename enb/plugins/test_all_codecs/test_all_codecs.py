@@ -62,7 +62,6 @@ class AvailabilityExperiment(enb.experiment.Experiment):
             row["cr_dr"] = 0
 
 
-
 class CodecSummaryTable(enb.atable.SummaryTable):
     # These are the availability levels supported so far
     UNAVAILABLE, NOT_LOSSLESS, LOSSLESS = range(3)
@@ -110,6 +109,7 @@ if __name__ == '__main__':
     from enb.plugins import plugin_fpzip
     from enb.plugins import plugin_fse_huffman
     from enb.plugins import plugin_hevc
+    from enb.plugins import plugin_hdf5
     from enb.plugins import plugin_jpeg
     from enb.plugins import plugin_jpeg_xl
     from enb.plugins import plugin_kakadu
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     # Run the experiment
     log_event(f"The following {len(codec_classes)} codecs have been found"
               f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
-    for c in codec_classes:
+    for c in sorted(codec_classes, key=lambda cls:cls.__name__.lower()):
         print(f"\t:: {c.__name__}")
 
     log_event(f"Running the experiment. This might take some time...")
