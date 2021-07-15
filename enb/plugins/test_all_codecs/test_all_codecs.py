@@ -140,10 +140,17 @@ if __name__ == '__main__':
     # This part searches for all defined codecs so far. Import new codecs to make them appear in the list
     # It also filters away any class with 'abstract' in the name.
     base_classes = {enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec}
-    codec_classes = set(itertools.chain(*([c for c in cls.__subclasses__()
-                                           if "abstract" not in c.__name__.lower()]
-                                          for cls in base_classes)))
+    codec_classes = set(base_classes)
+    previous_length = None
+    while previous_length != len(codec_classes):
+        previous_length = len(codec_classes)
+        new_codec_classes = set(c for cls in codec_classes for c in cls.__subclasses__())
+        codec_classes.update(new_codec_classes)
+
     # Remove any unwanted classes from the analysis
+    codec_classes = set(c for c in codec_classes if "abstract" not in c.__name__.lower())
+    codec_classes = set(c for c in codec_classes if "fapec" not in c.__name__.lower())
+    codec_classes = set(c for c in codec_classes if "lcnl_" not in c.__name__.lower())
     forbidden_classes = set(base_classes)
     codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
 

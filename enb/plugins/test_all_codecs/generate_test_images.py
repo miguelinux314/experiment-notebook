@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Generate the sample vectors for the test.
+"""Generate the sample vectors for the codec availability test.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "24/02/2021"
@@ -8,6 +8,7 @@ __date__ = "24/02/2021"
 import os
 import shutil
 import numpy as np
+from enb.config import options
 
 def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")):
     width = 128
@@ -34,6 +35,10 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
                                 base_dir,
                                 f"{label}_float",
                                 f"{label}_f{effective_bits_per_sample}")
+
+                            if os.path.isdir(output_dir) and not options.force:
+                                continue
+
                             shutil.rmtree(output_dir, ignore_errors=True)
                             os.makedirs(output_dir)
 
@@ -67,6 +72,10 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
                             geometry = f"{component_count}x{height}x{width}"
                             output_dir = os.path.join(
                                 base_dir, f"{label}_{type}")
+
+                            if os.path.isdir(output_dir) and not options.force:
+                                continue
+
                             shutil.rmtree(output_dir, ignore_errors=True)
                             os.makedirs(output_dir)
 

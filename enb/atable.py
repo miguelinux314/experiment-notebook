@@ -505,7 +505,7 @@ class ATable(metaclass=MetaTable):
         assert len(chunk_list) > 0
         for i, chunk in enumerate(chunk_list):
             if options.verbose:
-                print(f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} "
+                print(f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} (chunk_size={chunk_size})"
                       f"@@ {100 * i * chunk_size / len(target_indices):.1f}"
                       f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
                       f"({datetime.datetime.now()})")
