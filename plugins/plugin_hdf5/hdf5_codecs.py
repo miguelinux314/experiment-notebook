@@ -51,7 +51,7 @@ class LZF(AbstractHdf5Codec):
             array = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
             print(original_file_info.samples)
-            compressed_file.create_dataset('dataset_1', data=array, compression='lzm')
+            compressed_file.create_dataset('dataset_1', data=array, compression='lzf')
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         with h5py.File(f'{compressed_path}', 'r') as compressed_file, open(reconstructed_path, "wb") as reconstructed_file:  
