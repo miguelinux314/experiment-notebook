@@ -6,10 +6,10 @@
 import enb
 import h5py
 import numpy as np
-from enb import icompression
+import enb
 
 
-class AbstractHdf5Codec(icompression.LosslessCodec):
+class AbstractHdf5Codec(enb.icompression.LosslessCodec):
     MIN_COMPRESSION_LEVEL = 1
     MAX_COMPRESSION_LEVEL = 9
     DEFAULT_COMPRESSION_LEVEL = 5
