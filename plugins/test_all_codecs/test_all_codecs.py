@@ -45,6 +45,8 @@ from plugins import plugin_fpc
 from plugins import plugin_spdp
 from plugins import plugin_lz4
 from plugins import plugin_ndzip
+from plugins import plugin_hdf5
+
 
 if __name__ == '__main__':
     all_codecs = []
@@ -212,6 +214,14 @@ if __name__ == '__main__':
         all_codecs.append(c)
         ndzip_family.add_task(c.name, f"{c.label}")
     all_families.append(ndzip_family)
+    
+    hdf5_family = enb.aanalysis.TaskFamily(label="*HDF5")
+    for c in (plugin_hdf5.hdf5_codecs.GZIP(),
+              plugin_hdf5.hdf5_codecs.LZF(),
+              plugin_hdf5.hdf5_codecs.SZIP(),):
+        all_codecs.append(c)
+        hdf5_family.add_task(c.name, f"{c.label}")
+    all_families.append(hdf5_family)
 
     label_by_group_name = dict()
     for family in all_families:
