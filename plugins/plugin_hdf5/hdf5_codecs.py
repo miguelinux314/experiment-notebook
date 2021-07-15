@@ -50,7 +50,6 @@ class LZF(AbstractHdf5Codec):
         with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
             array = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
-            print(original_file_info.samples)
             compressed_file.create_dataset('dataset_1', data=array, compression='lzf')
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
@@ -69,6 +68,7 @@ class SZIP(AbstractHdf5Codec):
     """
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+         with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
             array = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
             compressed_file.create_dataset('dataset_1', data=array, compression='szip')
