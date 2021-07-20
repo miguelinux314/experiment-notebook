@@ -160,15 +160,18 @@ if __name__ == '__main__':
         codec_classes = [c for c in codec_classes
                          if any(s.strip().lower() in c.__name__.strip().lower() for s in filter_args)]
         if not codec_classes:
-            log_event("Error: no codec matched the filter. Exiting now.")
-            raise ValueError(sys.argv[1:])
+            log_event("Error: no codec matched the filter strings "
+                      f"({', '.join(repr(v) for v in sys.argv[1:] if not v.startswith('-'))}). "
+                      f"Exiting now.")
+            raise ValueError(sys.argv)
+
+    if options.verbose:
+        log_event(f"The following {len(codec_classes)} codecs have been found"
+                  f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
+        for c in sorted(codec_classes, key=lambda cls:cls.__name__.lower()):
+            print(f"\t:: {c.__name__}")
 
     # Run the experiment
-    log_event(f"The following {len(codec_classes)} codecs have been found"
-              f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
-    for c in sorted(codec_classes, key=lambda cls:cls.__name__.lower()):
-        print(f"\t:: {c.__name__}")
-
     log_event(f"Running the experiment. This might take some time...")
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
