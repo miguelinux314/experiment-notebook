@@ -41,7 +41,7 @@ class ImageMarlin(enb.icompression.LosslessCodec, enb.icompression.NearLosslessC
 
     @property
     def label(self):
-        return "ImageMarlin"
+        return "Marlin V2F"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["bytes_per_sample"] == 1, f"ImageMarlin supports monocomponent 8-bit images only"

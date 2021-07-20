@@ -80,3 +80,19 @@ def split_camel_case(camel_string):
     """Split a camel case string like ThisIsAClass into a string like "This Is A Class".
     """
     return " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', camel_string))
+
+def get_all_subclasses(*base_classes):
+    """Return a set of all subclasses of the classes in base_classes,
+    which have been defined at this point.
+
+    :param base_classes: the list of classes for which subclasses are to be found
+    """
+    base_class_set = set(base_classes)
+    subclasses = set(base_classes)
+    previous_length = None
+    while previous_length != len(subclasses):
+        previous_length = len(subclasses)
+        new_codec_classes = set(c for cls in subclasses for c in cls.__subclasses__())
+        subclasses.update(new_codec_classes)
+
+    return set(cls for cls in subclasses if cls not in base_class_set)

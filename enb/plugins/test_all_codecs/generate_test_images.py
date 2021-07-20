@@ -14,8 +14,11 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
     width = 128
     height = 128
 
-    for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 32)]:
-        for bytes_per_sample in [1, 2, 4, 8]:
+    for bytes_per_sample in [1, 2, 4, 8]:
+        if options.verbose > 1:
+            print(f"\tgenerating vectors with {bytes_per_sample} byte{'s' if bytes_per_sample != 1 else ''} per sample...")
+
+        for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 32)]:
             for signed in [True, False]:
                 for big_endian in [True, False]:
                     for is_float in [True, False]:

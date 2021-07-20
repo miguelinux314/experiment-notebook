@@ -40,7 +40,7 @@ class GZIP(AbstractHdf5Codec):
 
     @property
     def label(self):
-        return f"Gzip {self.param_dict['compression_level']}"
+        return f"GZIP"
 
 
 class LZF(AbstractHdf5Codec):
