@@ -1,5 +1,7 @@
 https://github.com/facebook/zstd
 
+--- what commit are we importing? branch and date 
+
 *** zstd command line interface 64-bits v1.1.3, by Yann Collet ***
 Zstandard allows to compress al data types: float and integer 16, 32 and 64 bpp
 Usage :
