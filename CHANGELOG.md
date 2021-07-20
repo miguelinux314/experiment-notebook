@@ -1,5 +1,11 @@
 # Under development v0.2.9
 
+* New functions
+    
+    - Added several new image compression codec plugins with floating point support, based on the h5py library.
+    - Added recursive subclass search in misc.py
+
+
 # 2021/07/14 v0.2.8
 
 * New functions:

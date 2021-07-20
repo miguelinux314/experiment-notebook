@@ -22,30 +22,26 @@ class VVC(icompression.WrapperCodec):
     def __init__(self, config_path, chroma_format="400", qp=None):
         """
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
-        :param qp: Specifies the base value of the quantization parameter (0-51).
+        :param qp: Specifies the base value of the quantization parameter (0-63, extended from HEVC's 0-51).
         """
         chroma_format = str(chroma_format)
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
         qp = int(qp) if qp is not None else self.default_qp
         assert 0 <= qp <= 63
+        self.config_path = config_path
+        assert os.path.isfile(config_path), f"VVC configuration file path {repr(config_path)} not found."
 
-        param_dict = dict(chroma_format=chroma_format, QP=qp)
+        param_dict = dict(chroma_format=chroma_format, QP=qp, config_path=config_path)
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "EncoderAppStatic"),
             decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "DecoderAppStatic"),
             param_dict=param_dict)
 
-        self.config_path = config_path
-
-        @staticmethod
-        def get_binary_signature(binary_path):
-            return "debug"
-
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info['component_count'] == 1, f"Only 1 frame supported"
         return f"-i {original_path} " \
-               f"-c {self.config_path} " \
+               f"-c {self.param_dict['config_path']} " \
                f"-b {compressed_path} " \
                f"-wdt {original_file_info['width']} " \
                f"-hgt {original_file_info['height']} " \
@@ -90,10 +86,9 @@ class VVC_lossy(VVC, icompression.LossyCodec):
     """
     VVC subclass for lossy compression
     """
-
     rate_decimals = 3
 
-    def __init__(self, config_path=None, chroma_format="400", qp=None, bit_rate=None):
+    def __init__(self, config_path=None, chroma_format="400", qp=25, bit_rate=None):
         """
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
         :param qp: Specifies the base value of the quantization parameter (0-51).

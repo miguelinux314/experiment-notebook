@@ -85,7 +85,7 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
 
     rate_decimals = 3
 
-    def __init__(self, config_path=None, chroma_format="400", qp=None, bit_rate=None):
+    def __init__(self, config_path=None, chroma_format="400", qp=25, bit_rate=None):
         """
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
         :param qp: Specifies the base value of the quantization parameter (0-51).

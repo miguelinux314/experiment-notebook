@@ -17,14 +17,15 @@ from enb import tcall
 options = get_options()
 
 
-class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
+class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
     # When searching for exact PSNR values, this error is tolerated
     psnr_tolerance = 1e-3
     max_search_iterations = 32
 
     def __init__(self, ht=False, spatial_dwt_levels=5,
                  lossless=None, bit_rate=None, quality_factor=None, psnr=None):
-        """
+        """Kakadu wrapper that does not apply decorrelation across bands, even if more than one is present.
+
             :param ht: if True, the high-throughput version of the Kakadu codec is used
             :param spatial_dwt_levels: number of spatial discrete wavelet transform levels.
               Must be between 0 and 33.
@@ -47,6 +48,7 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
         assert spatial_dwt_levels in range(0, 34), \
             f"Invalud number of spatial DWT levels {spatial_dwt_levels}"
 
+        lossless = lossless if lossless is not None else (bit_rate is None and quality_factor is None and psnr is None)
         if lossless:
             assert all(v is None for v in [bit_rate, quality_factor, psnr]), \
                 f"Cannot set bitrate, quality factor or PSNR when lossless is requested."
@@ -174,19 +176,19 @@ class Kakadu(icompression.WrapperCodec, icompression.LosslessCodec, icompression
                f"{'lossless' if self.param_dict['lossless'] else 'lossy'}"
 
 
-class Kakadu_MCT(Kakadu):
+class KakaduMCT(Kakadu2D):
     def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None,
                  bit_rate=None, quality_factor=None, psnr=None):
         """
         :param spectral_dwt_levels: number of spectral discrete wavelet transform levels. Must be between 0 and 32.
         """
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
-        Kakadu.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless,
-                        bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr)
+        Kakadu2D.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless,
+                          bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return Kakadu.get_compression_params(
+        return Kakadu2D.get_compression_params(
             self,
             original_path=original_path,
             compressed_path=compressed_path,
@@ -206,5 +208,4 @@ class Kakadu_MCT(Kakadu):
 
     @property
     def label(self):
-        return f"Kakadu MCT {'HT ' if self.param_dict['ht'] else ''}" \
-               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}"
+        return super().label.replace("Kakadu", "Kakadu MCT")
