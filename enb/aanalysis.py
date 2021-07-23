@@ -227,7 +227,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
 
     for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
-        group_axes.set_ylim(y_min, y_max)
+        if y_min != y_max:
+            group_axes.set_ylim(y_min, y_max)
 
         if semilog_x:
             x_base = column_properties.semilog_x_base if column_properties is not None else 10
@@ -274,9 +275,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     if options.displayed_title is not None:
         plt.suptitle(options.displayed_title)
 
-    xlim[0] = xlim[0] if x_min is None else x_min
-    xlim[1] = xlim[1] if x_max is None else x_max
-    plt.xlim(*xlim)
     if len(sorted_group_names) > 3:
         plt.subplots_adjust(hspace=0.5)
 
@@ -299,6 +297,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             group_axes.minorticks_off()
         if y_tick_label_list is not None:
             assert y_tick_list is not None
+
+    xlim[0] = xlim[0] if x_min is None else x_min
+    xlim[1] = xlim[1] if x_max is None else x_max
+    if xlim[0] != xlim[1]:
+        plt.xlim(*xlim)
 
     show_grid = options.show_grid if show_grid is None else show_grid
 
@@ -1599,7 +1602,7 @@ class ScalarDictAnalyzer(Analyzer):
                 output_plot_path = os.path.join(output_plot_dir, name)
 
             global_x_label = f"{column_to_properties[column].label}"
-            x_min, x_max = column_to_xmin_xmax[column]
+
 
             margin = max(key_to_x_by_column[column].values()) / (10 * len(key_to_x_by_column[column])) \
                 if key_to_x_by_column[column] else 0
