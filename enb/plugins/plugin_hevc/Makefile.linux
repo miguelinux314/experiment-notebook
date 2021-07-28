@@ -46,9 +46,9 @@ zip:
 
 hevc:
 	@cd $(PROGDIR) && \
-	cmake -DCMAKE_BUILD_TYPE=Release -DHIGH_BITDEPTH=ON -GNinja . && \
+	cmake -DCMAKE_BUILD_TYPE=Release -DHIGH_BITDEPTH=ON . && \
 	make -j && \
-	cp -v $(PROGDIR)/bin/TAppEncoderStaticd $(PROGDIR)/../TAppEncoderStatic && \
-	cp -v $(PROGDIR)/bin/TAppDecoderStaticd $(PROGDIR)/../TAppDecoderStatic
+	cp -v $(PROGDIR)/bin/TAppEncoderStatic* $(PROGDIR)/../TAppEncoderStatic && \
+	cp -v $(PROGDIR)/bin/TAppDecoderStatic* $(PROGDIR)/../TAppDecoderStatic
 	rm -rf HM-master
 
