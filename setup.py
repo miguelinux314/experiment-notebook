@@ -61,11 +61,10 @@ setup(
     # Dependencies
     setup_requires=['wheel', 'deprecation'],
     install_requires=[
-        # Core external libraries
-        'numpy', 'pandas', 'matplotlib', 'scipy', 'ray[default]', 'psutil', 'redis', 'imageio', 'numpngw', 'requests',
-        # Utility libraries
-        'deprecation', 'recordclass', 'sortedcontainers', 'wheel', 'pdf2image', 'sphinx_rtd_theme', 'astropy'
-        ],
+        'numpy', 'pandas', 'matplotlib', 'scipy', 'ray[default]', 'psutil', 'redis',
+        'imageio', 'numpngw', 'requests', 'astropy',
+        'deprecation', 'recordclass', 'sortedcontainers', 'wheel', 'pdf2image', 'sphinx_rtd_theme',
+    ],
 
     # This part determines the contents of the installed folder in your python's site-packages location.
     # MANIFEST.in is assumed to have been updated, i.e., via git hooks.

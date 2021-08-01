@@ -57,6 +57,9 @@ class Plugin:
     # Can be empty if needed.
     required_pip_modules = []
 
+    # List of apt-installable modules. If present, the plugin is likely a debian/ubuntu-only plugin.
+    required_apt_modules = []
+
     @classmethod
     def install(cls, installation_dir):
         """Make a copy of this plugin into destination_dir, ready to be imported.
@@ -87,34 +90,44 @@ class Plugin:
         """Perform any additional retrieval, compilation and setup necessary for this plugin
         to be importable and usable.
         By default:
-            1. The existence of installation_dir as a directory is performed.
-            2. Any needed python modules are installed via pip
-            3. The __init__.py file is generated automatically
-            3. Cleanup any generic files that might not be needed at this point
+            - The existence of installation_dir as a directory is performed.
+            - Install any required apt modules
+            - Any needed python modules are installed via pip
+            - Cleanup any generic files that might not be needed at this point
+            - The __init__.py file is generated automatically
         """
-        # 1
+        # Existence assertion
         assert os.path.isdir(installation_dir), \
             f"{cls.__name__}.build(installation_dir={repr(installation_dir)}): installation_dir does not exist"
 
-        # 2
+        # apt module installation - likely to be a debian/ubuntu-only plugin
+        if cls.required_apt_modules:
+            invocation = f"sudo apt install -y {' '.join(cls.required_apt_modules)}"
+            print(f"Installing APT (debian/ubuntu) dependencies of {cls.name} with {repr(invocation)}...")
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+        # pip module installation - note that subprocess is the officially recommended way
         if cls.required_pip_modules:
             invocation = f"{sys.executable} -m pip install {' '.join(cls.required_pip_modules)}"
-            print(f"Installing {cls.name} dependecies with {repr(invocation)}...")
+            print(f"Installing pip dependencies of {cls.name} with {repr(invocation)}...")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise Exception(f"Error installing {cls.name} dependencies ({cls.required_pip_modules}). "
                                 f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
 
-        # 3
+        # cleanup
+        shutil.rmtree(os.path.join(installation_dir, "__pycache__"), ignore_errors=True)
+
+        # add custom __init__
         with open(os.path.join(installation_dir, "__init__.py"), "w") as init_file:
             for py_path in [p for p in glob.glob(os.path.join(installation_dir, "*.py"))
                             if not os.path.basename(p).startswith("__")]:
                 module_name = os.path.basename(py_path)[:-3]
                 init_file.write(f"from . import {module_name}\n")
                 init_file.write(f"from .{module_name} import *\n\n")
-
-        # 4
-        shutil.rmtree(os.path.join(installation_dir, "__pycache__"), ignore_errors=True)
 
     @classmethod
     def repr(cls):
