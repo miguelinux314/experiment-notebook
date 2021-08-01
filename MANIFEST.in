@@ -22,8 +22,6 @@ include enb/plugins/plugin_ccsds122/README.md
 include enb/plugins/plugin_fapec/fapec_codec.py
 include enb/plugins/plugin_fapec/.gitignore
 include enb/plugins/plugin_fapec/README.md
-include enb/plugins/plugin_fits/fits_to_raw.py
-include enb/plugins/plugin_flif/flif_0.3_2017.zip
 include enb/plugins/plugin_flif/flif_codec.py
 include enb/plugins/plugin_flif/.gitignore
 include enb/plugins/plugin_flif/Makefile.darwin
@@ -110,7 +108,6 @@ include enb/plugins/plugin_zstandard/Makefile.darwin
 include enb/plugins/plugin_zstandard/Makefile.linux
 include enb/plugins/plugin_zstandard/README.txt
 include enb/plugins/plugin_zstandard/zstd_codec.py
-include enb/plugins/plugin_zstandard/zstd-dev.zip
 include enb/plugins/test_all_codecs/generate_test_images.py
 include enb/plugins/test_all_codecs/test_all_codecs.py
 include enb/ray_cluster.py
