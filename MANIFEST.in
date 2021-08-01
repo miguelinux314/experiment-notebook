@@ -18,6 +18,7 @@ include enb/plugins/__init__.py
 include enb/plugins/plugin_ccsds122/ccsds122_codec.py
 include enb/plugins/plugin_ccsds122/.gitignore
 include enb/plugins/plugin_ccsds122/__init__.py
+include enb/plugins/plugin_ccsds122/__plugin__.py
 include enb/plugins/plugin_ccsds122/README.md
 include enb/plugins/plugin_fapec/fapec_codec.py
 include enb/plugins/plugin_fapec/.gitignore
@@ -97,7 +98,7 @@ include enb/plugins/plugin_marlin/.gitignore
 include enb/plugins/plugin_marlin/__init__.py
 include enb/plugins/plugin_marlin/Makefile
 include enb/plugins/plugin_marlin/marlin_codec.py
-include enb/plugins/plugin_marlin/marlin_ubuntu20_git.zip
+include enb/plugins/plugin_marlin/__plugin__.py
 include enb/plugins/plugin_mcalic/__init__.py
 include enb/plugins/plugin_mcalic/mcalic_codecs.py
 include enb/plugins/plugin_mcalic/README.txt
