@@ -93,7 +93,7 @@ class PluginList(argparse.Action):
               (f" (filtered with {repr(namespace.filter)}, out of {len(all_plugins)} available)"
                if namespace.filter else "") + ":\n")
         for p in filtered_plugins:
-            print(f"{p.name:>20s} :: {p.label}" +
+            print(f"{p.name:>20s} :: {p.label if p.label else '':50s}" +
                   (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
         print()
 
