@@ -27,9 +27,5 @@ from . import isets
 # TODO: pgm should not be a core module - move somewhere into icompression ?
 from . import pgm
 
+# Plugin support
 from . import plugins
-
-## Templating modules
-# from . import templates
-# from . import atemplate
-# from . import params

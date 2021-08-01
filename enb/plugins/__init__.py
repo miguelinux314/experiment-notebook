@@ -17,7 +17,9 @@ import shutil
 import requests
 import platform
 import subprocess
+import textwrap
 import enb.misc
+
 
 class Plugin:
     """To create new plugins:
@@ -39,7 +41,7 @@ class Plugin:
     # Human-friendly short phrase describing this module.
     label = None
 
-    # Author of the plugin. Subclasses may update this as necessary.
+    # Author of the enb plugin - by default it's us. Subclasses may update this as necessary.
     plugin_author = "The enb team"
 
     # Information about external ("contrib") software used by the plugin
@@ -57,8 +59,18 @@ class Plugin:
     # Can be empty if needed.
     required_pip_modules = []
 
-    # List of apt-installable modules. If present, the plugin is likely a debian/ubuntu-only plugin.
-    required_apt_modules = []
+    # Message shown to users when installing the plugin. It can inform about any additional
+    # external software needed for this plugin to work. Typically, plugins inform about
+    # apt/pacman/... requirements for the plugins to work.
+    # NOTE: the equivalent to build-essential and cmake are expected by most make-based plugins.
+    extra_requirements_message = None
+
+    # Indicates on what platforms this plugin is known to work.
+    # Can contain zero, one, or more among "linux", "darwin", "windows".
+    tested_on = set()
+
+    # List of string to provide soft categorization
+    tags = []
 
     @classmethod
     def install(cls, installation_dir):
@@ -100,15 +112,6 @@ class Plugin:
         assert os.path.isdir(installation_dir), \
             f"{cls.__name__}.build(installation_dir={repr(installation_dir)}): installation_dir does not exist"
 
-        # apt module installation - likely to be a debian/ubuntu-only plugin
-        if cls.required_apt_modules:
-            invocation = f"sudo apt install -y {' '.join(cls.required_apt_modules)}"
-            print(f"Installing APT (debian/ubuntu) dependencies of {cls.name} with {repr(invocation)}...")
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
-
         # pip module installation - note that subprocess is the officially recommended way
         if cls.required_pip_modules:
             invocation = f"{sys.executable} -m pip install {' '.join(cls.required_pip_modules)}"
@@ -129,6 +132,11 @@ class Plugin:
                 init_file.write(f"from . import {module_name}\n")
                 init_file.write(f"from .{module_name} import *\n\n")
 
+        if cls.extra_requirements_message:
+            print("\tNote: The plugin contains the following message regarding additional requirements:\n")
+            print(textwrap.indent(textwrap.dedent(cls.extra_requirements_message).strip(), '\t'))
+            print()
+
     @classmethod
     def repr(cls):
         return f"{cls.__name__}(" + \
@@ -138,10 +146,18 @@ class Plugin:
                          and not inspect.ismethoddescriptor(v)) + \
                ")"
 
+    @classmethod
+    def get_help(cls):
+        """By default, return the docstring of the selected class.
+        """
+        return cls.__doc__
+
+
 class PluginMake(Plugin):
     """Plugin that assumes the existence of a valid Makefile in the installation folder,
     and uses it for building the plugin.
     """
+
     @classmethod
     def build(cls, installation_dir):
         super().build(installation_dir=installation_dir)
@@ -162,37 +178,39 @@ class PluginMake(Plugin):
                              f"in {installation_dir}.")
 
 
-
-
 def import_all_plugins():
-    # All plugins intended to be visible should be defined in modules imported here
+    """Import all public enb plugins.
+
+    Note that this call needs to be deferred in a function so that
+    the plugins themselves can use the classes defined here, e.g., Plugin.
+    """
     from .plugin_ccsds122 import __plugin__
-    from .plugin_marlin import __plugin__
-    # from . import plugin_fapec
-    # from . import plugin_fits
-    # from . import plugin_flif
-    # from . import plugin_fpack
-    # from . import plugin_fpc
-    # from . import plugin_fpzip
-    # from . import plugin_fse_huffman
-    # from . import plugin_hevc
+    from .plugin_fapec import __plugin__
+    from .plugin_fpack import __plugin__
+    from .plugin_flif import __plugin__
+    from .plugin_fpc import __plugin__
+    from .plugin_fpzip import __plugin__
+    from .plugin_fse_huffman import __plugin__
+    from .plugin_hevc import __plugin__
     from .plugin_hdf5 import __plugin__
-    # from . import plugin_jpeg
-    # from . import plugin_jpeg_xl
-    # from . import plugin_kakadu
-    # from . import plugin_lcnl
-    # from . import plugin_lz4
-    # from . import plugin_marlin
-    # from . import plugin_mcalic
-    # from . import plugin_ndzip
-    # from . import plugin_spdp
-    # from . import plugin_vvc
-    # from . import plugin_zip
-    # from . import plugin_zstandard
+    from .plugin_jpeg import __plugin__
+    from .plugin_kakadu import __plugin__
+    from .plugin_lcnl import __plugin__
+    from .plugin_lz4 import __plugin__
+    from .plugin_marlin import __plugin__
+    from .plugin_mcalic import __plugin__
+    from .plugin_ndzip import __plugin__
+    from .plugin_spdp import __plugin__
+    from .plugin_vvc import __plugin__
+    from .plugin_zfp import __plugin__
+    from .plugin_zip import __plugin__
+    from .plugin_zstandard import __plugin__
+    from .test_all_codecs import __plugin__
 
 
 def list_all_plugins():
     """Get a list of all known enb plugins.
     """
     import_all_plugins()
-    return [cls for cls in enb.misc.get_all_subclasses(Plugin) if cls not in [PluginMake]]
+    return sorted([cls for cls in enb.misc.get_all_subclasses(Plugin) if cls not in [PluginMake]],
+                  key=lambda c: c.name.lower())

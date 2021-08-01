@@ -13,9 +13,10 @@ import sys
 import os
 import tempfile
 import filecmp
-import itertools
+import glob
 import re
 import traceback
+import importlib
 
 import enb
 from enb.config import options
@@ -100,29 +101,17 @@ if __name__ == '__main__':
     if options.verbose:
         print(f"{' [ Codec Availability Test Script ] ':=^100s}")
 
-    # Plugin import -- these are needed so that they can be automatically loaded below (ignore IDE non-usage warnings)
-    from enb.plugins import plugin_ccsds122
-    from enb.plugins import plugin_fapec
-    from enb.plugins import plugin_flif
-    from enb.plugins import plugin_fpack
-    from enb.plugins import plugin_fpc
-    from enb.plugins import plugin_fpzip
-    from enb.plugins import plugin_fse_huffman
-    from enb.plugins import plugin_hevc
-    from enb.plugins import plugin_hdf5
-    from enb.plugins import plugin_jpeg
-    from enb.plugins import plugin_jpeg_xl
-    from enb.plugins import plugin_kakadu
-    from enb.plugins import plugin_lcnl
-    from enb.plugins import plugin_marlin
-    from enb.plugins import plugin_mcalic
-    from enb.plugins import plugin_spdp
-    from enb.plugins import plugin_ndzip
-    from enb.plugins import plugin_vvc
-    from enb.plugins import plugin_zfp
-    from enb.plugins import plugin_zip
-    from enb.plugins import plugin_zstandard
+    # Plugin import -- these are needed so that codecs get defined and can
+    # be automatically retrieved below (ignore IDE non-usage warnings).
+    # NOTE: the build script should have created the `plugins` folder with all these codecs
 
+    plugin_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plugins")
+    assert os.path.isdir(plugin_dir), \
+        "The build script should have placed everything under plugins, "
+        "please report this if you feel it is a bug."
+    for d in [p for p in glob.glob(os.path.join(plugin_dir, "*")) if os.path.exists(os.path.join(p, "__init__.py"))]:
+        print(f"Importing {os.path.basename(p)}...")
+        importlib.import_module(f"{os.path.basename(plugin_dir)}.{os.path.basename(d)}")
 
     def log_event(s):
         if options.verbose:

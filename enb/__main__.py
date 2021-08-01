@@ -67,12 +67,12 @@ class PluginInstall(argparse.Action):
         try:
             plugin = [p for p in enb.plugins.list_all_plugins() if p.name == plugin_name][0]
         except IndexError:
-            raise ValueError(f"Invalid plugin name {repr(plugin_name)}. Run `enb plugin list` to see available plugins.")
+            raise ValueError(
+                f"Invalid plugin name {repr(plugin_name)}. Run `enb plugin list` to see available plugins.")
 
         if os.path.exists(destination_dir):
             raise ValueError(f"The destination dir {repr(destination_dir)} already exists. Remove and try again.")
         plugin.install(installation_dir=destination_dir)
-        
 
         # Set status
         setattr(namespace, self.dest, 0)
@@ -86,18 +86,26 @@ class PluginList(argparse.Action):
         else:
             filtered_plugins = []
             for p in all_plugins:
-                if any(f in p.name or f in p.label for f in namespace.filter):
+                if any(f.lower() in p.name.lower() or
+                       (p.label.lower() and f in p.label.lower()) or
+                       any(f.lower() in author.lower() for author in p.contrib_authors)
+                       or any(any(f.lower() in t for t in p.tags) for f in namespace.filter)
+                       for f in namespace.filter):
                     filtered_plugins.append(p)
 
         print(f"Showing {len(filtered_plugins)} {'filtered' if namespace.filter else 'available'} plugins" +
               (f" (filtered with {repr(namespace.filter)}, out of {len(all_plugins)} available)"
                if namespace.filter else "") + ":\n")
         for p in filtered_plugins:
-            print(f"{p.name:>20s} :: {p.label if p.label else '':50s}" +
+            label = p.label if p.label else ''
+            label = f"{label} (privative)" if "privative" in p.tags else label
+            print(f"{p.name:>15s} :: {label:55s}" +
                   (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
         print()
 
 
+def return_banner():
+    return f"{' [ enb - Experiment Notebook ] ': ^80}"
 
 
 def main():
@@ -115,10 +123,5 @@ def main():
         return
 
 
-def return_banner():
-    return f"{' [ enb - Experiment Notebook ] ': ^80}"
-
-
 if __name__ == '__main__':
     main()
-
