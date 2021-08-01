@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Electronic notebook (enb) library
+"""Electronic notebook (enb) library.
 """
 
 # Pre-definition tools
@@ -27,6 +27,9 @@ from . import isets
 # TODO: pgm should not be a core module - move somewhere into icompression ?
 from . import pgm
 
+from . import plugins
+
 ## Templating modules
+# from . import templates
 # from . import atemplate
 # from . import params

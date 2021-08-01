@@ -15,6 +15,7 @@ __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "06/02/2021"
 
 import os
+import sys
 import argparse
 import itertools
 import inspect
@@ -222,8 +223,12 @@ class SingletonCLI(metaclass=Singleton):
         super().__init__()
         # The _parsed_properties is the live dictionary of stored properties
         # Parse CLI options once, the first time the singleton instance is created.
-        for k, v in self._argparser.parse_known_args()[0].__dict__.items():
-            self._name_to_property[self._alias_to_name[k]] = v
+        if os.path.basename(sys.argv[0]) != "__main__.py":
+            for k, v in self._argparser.parse_known_args()[0].__dict__.items():
+                self._name_to_property[self._alias_to_name[k]] = v
+        else:
+            # Main scripts for CLI will define their own syntax
+            pass
         self._custom_attribute_handler_active = True
 
     @classmethod
@@ -241,7 +246,7 @@ class SingletonCLI(metaclass=Singleton):
 
     @classmethod
     def property(cls, *aliases, group_name=None, group_description=None, **kwargs):
-        """Decorator for properties that can be automatically parsed
+        """Decorator for (optional) properties that can be automatically parsed
         using argparse, and also programmatically (the setter is
         created by default when the getter is defined).
 
