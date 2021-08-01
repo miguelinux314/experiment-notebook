@@ -5,7 +5,7 @@ all:
 	make fpack && \
 	make funpack && \
 	cp fpack funpack ../
-	rm -rf cfitstio-3.49
+	rm -rf cfitstio-3.49*
 
 clean:
-	rm -rf cfitsio-3.49 fpack funpack
+	rm -rf cfitsio-3.49* fpack funpack
