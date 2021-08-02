@@ -30,7 +30,7 @@ def read(*filenames, **kwargs):
 setup(
     # Metadata about the project
     name='enb',
-    version="0.2.8",
+    version="dev-0.2.9",
     url='https://github.com/miguelinux314/experiment-notebook',
     download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.8.tar.gz",
     license='MIT',

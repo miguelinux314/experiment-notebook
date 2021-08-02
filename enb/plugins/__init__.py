@@ -1,14 +1,35 @@
 #!/usr/bin/env python3
-"""The core functionality of enb is extended by means of plugins.
-Plugins are self-contained, python modules that may assume enb is installed.
+"""The core functionality of enb is extended by means of plugins and templates. These derive from Installable,
+a class that by default copies the Installable's source contents and runs the subclass' build() method.
+Python libraries available via pip can be defined for Installables, which are attempted to be satisfied before invoking
+the build method.
 
-They can be cloned into your projects via the enb CLI (e.g., with `enb plugin clone <name> <clone_dir>`),
-and then imported like any other module. This performs any needed installation (it may require
-some user interaction, depending on the plugin).
+Plugins are conceived self-contained, python modules that can assume the enb library is installed.
 
-The list of plugins available off-the-box can be obtained using the enb CLI (e.g., with `enb plugin list`).
+- They can be installed into your projects via the enb CLI (e.g., with `enb plugin install <name> <clone_dir>`),
+  and then imported like any other module.
+
+- The list of plugins available off-the-box can be obtained using the enb CLI (e.g., with `enb plugin list`).
+
+- Plugins may declare pip dependencies, which are attempted to be satisfied automatically when the plugins
+  are installed. In addition, plugins may define their `extra_requirements_message` member to be not None,
+  in which case it describes manual intervention required from the user either as a pre-installation
+  or post-installation step. That message is shown when attempting to install the plugin with
+  not-None `extra_requirements_message`.
+
+- The __init__.py file is automatically generated and should not be present in the source plugin folder.
+
+Templates are very similar to plugins, with a few key differences:
+
+- Templates may require so-called fields in order to produce output.
+  Templates without required fields are tagged as "snippet".
+
+- One or more templates can be installed into an existing directory.
+
+- Templates automatically interpret any *.enbt file as a template. The jinja library is used to
+  process them, and the resulting files are renamed removing '.enbt' from their name.
 """
-
+import importlib
 import os
 import sys
 import glob
@@ -21,71 +42,81 @@ import textwrap
 import enb.misc
 
 
-class Plugin:
-    """To create new plugins:
-
-     - Create a folder with one file in it:__plugin__.py
-     - In the __plugin__.py file, import enb and define a subclass of enb.plugin.pluginPlugin.
-       Then overwrite existing class attributes as needed.
-       You cna overwrite the build method if anything besides python packages is required.
-
-    The Plugin class and subclasses are intended to help reuse your code,
-    not to implement their functionality. Meaningful code should be added
-    to regular .py scripts into the plugin folder, and are in no other
-    way restricted insofar as enb is concerned.
-
-    The __init__.py file is automatically generated and should not be present in the source plugin folder.
+class Installable:
+    """Common interface to all Installable types, e.g., Plugins and Templates.
     """
-    # Human friendly, unique name for the plugin
+    # Human friendly, expectedly unique name for the Installable
     name = None
-    # Human-friendly short phrase describing this module.
+    # Human-friendly short phrase describing the Installable.
     label = None
+    # Author of the enb Installable - by default it's us, the enb team.
+    # Subclasses may update this as necessary.
+    author = "The enb team"
+    # List of string to provide soft categorization
+    tags = []
 
-    # Author of the enb plugin - by default it's us. Subclasses may update this as necessary.
-    plugin_author = "The enb team"
+    # List of pip-installable python module names required by this Installable.
+    # Subclasses must overwrite this member as necessary.
+    # Can be empty if needed.
+    required_pip_modules = []
 
-    # Information about external ("contrib") software used by the plugin
+    # Message shown to users when installing the Installable. It can inform about any additional
+    # external software needed for this Installable to work. Typically, Installables inform about
+    # apt/pacman/... requirements for the Installables to work.
+    # NOTE: the equivalent to build-essential and cmake are expected by most make-based Installables.
+    extra_requirements_message = None
+
+    # Information about external ("contrib") software used by the Installable
     # Author(s) of the external software
     contrib_authors = []
-    # Reference URL(s) of the external software
+    # Reference URL(s) of the external software used by the Installable
     contrib_reference_urls = []
     # List of (url, name) tuples with contents needed for retrieving and building the external software.
     # Each url must be a valid downloadable link, and name is the name set to the downloaded file
     # inside the installation dir.
     contrib_download_url_name = []
 
-    # List of pip-installable python module names required by this plugin.
-    # Subclasses must overwrite this member as necessary.
-    # Can be empty if needed.
-    required_pip_modules = []
-
-    # Message shown to users when installing the plugin. It can inform about any additional
-    # external software needed for this plugin to work. Typically, plugins inform about
-    # apt/pacman/... requirements for the plugins to work.
-    # NOTE: the equivalent to build-essential and cmake are expected by most make-based plugins.
-    extra_requirements_message = None
-
-    # Indicates on what platforms this plugin is known to work.
+    # Indicates on what platforms this Installable is known to work.
     # Can contain zero, one, or more among "linux", "darwin", "windows".
     tested_on = set()
 
-    # List of string to provide soft categorization
-    tags = []
-
     @classmethod
-    def install(cls, installation_dir):
-        """Make a copy of this plugin into destination_dir, ready to be imported.
-        By default, a verbatim copy of the source plugin's dir is made.
-        Any previous contents in installation_dir are overwritten.
-        Then any explicit requirements are met (external software may be downloaded
-        and pip packages installed).
-        """
-        print(f"Installing {cls.name} into {installation_dir}...")
-        assert cls is not Plugin, f"{cls} cannot be cloned, only its subclasses."
+    def install(cls, installation_dir, overwrite_destination=False):
+        """Install this Installable into installation_dir.
 
-        # Create output dir and copy plugin contents
-        shutil.rmtree(installation_dir, ignore_errors=True)
-        shutil.copytree(os.path.dirname(inspect.getfile(cls)), installation_dir)
+        :param overwrite_destination: if True, if the destination exists prior to this call,
+          it is removed before installation
+        """
+        installation_dir = os.path.abspath(installation_dir)
+
+        print(f"Installing {cls.name} into {installation_dir}...")
+
+        # Warn about any manual requirements reported by the plugin
+        if cls.extra_requirements_message:
+            print("\tNote: The plugin contains the following message regarding additional requirements:\n")
+            print(textwrap.indent(textwrap.dedent(cls.extra_requirements_message).strip(), '\t'))
+            print()
+
+        # Create output dir if needed and copy Installable contents
+        if overwrite_destination and os.path.exists(installation_dir):
+            try:
+                shutil.rmtree(installation_dir)
+            except NotADirectoryError:
+                os.remove(installation_dir)
+        if not os.path.exists(installation_dir):
+            os.makedirs(os.path.dirname(installation_dir), exist_ok=True)
+
+        shutil.copytree(os.path.dirname(os.path.abspath(inspect.getfile(cls))), installation_dir,
+                        dirs_exist_ok=True)
+
+        # Install any specified pip modules - subprocess is the officially recommended way
+        if cls.required_pip_modules:
+            invocation = f"{sys.executable} -m pip install {' '.join(cls.required_pip_modules)}"
+            print(f"Installing pip dependencies of {cls.name} with {repr(invocation)}...")
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception(f"Error installing {cls.name} dependencies ({cls.required_pip_modules}). "
+                                f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
 
         # Download any needed external packages before the build
         for url, name in cls.contrib_download_url_name:
@@ -94,8 +125,73 @@ class Plugin:
             with open(output_path, "wb") as output_file:
                 output_file.write(requests.get(url, allow_redirects=True).content)
 
-        print(f"Building {cls.name}...")
+        # Custom building of the Installable
+        print(f"Building {cls.name} into {installation_dir}...")
         cls.build(installation_dir=installation_dir)
+
+    @classmethod
+    def build(cls, installation_dir):
+        """Method called after the main installation body, that allows further building customization
+        by Installable subclasses. By default, nothing is done.
+
+        Note that the installation dir is created before calling build.
+        """
+        pass
+
+    @classmethod
+    def repr(cls):
+        """Get a terse representation of this Installable.
+        """
+        return f"{cls.__name__}(" + \
+               ", ".join(f"{k}={v}" for k, v in sorted(cls.__dict__.items())
+                         if not k.startswith("_")
+                         and not callable(v)
+                         and not inspect.ismethoddescriptor(v)) + \
+               ")"
+
+    @classmethod
+    def get_help(cls):
+        """Return help about this Installable.
+        By default, the docstring of the selected class is returned.
+        """
+        return textwrap.dedent(cls.__doc__)
+
+
+class Plugin(Installable):
+    """Plugins are self-contained, python modules that may assume enb is installed.
+
+    - They can be installed into your projects via the enb CLI (e.g., with `enb plugin install <name> <clone_dir>`),
+      and then imported like any other module.
+
+    - The list of plugins available off-the-box can be obtained using the enb CLI (e.g., with `enb plugin list`).
+
+    - Plugins may declare pip dependencies, which are attempted to be satisfied automatically when the plugins
+      are installed. In addition, plugins may define their `extra_requirements_message` member to be not None,
+      in which case it describes manual intervention required from the user either as a pre-installation
+      or post-installation step. That message is shown when attempting to install the plugin with
+      not-None `extra_requirements_message`.
+
+    - The __init__.py file is automatically generated and should not be present in the source plugin folder.
+    """
+
+    @classmethod
+    def install(cls, installation_dir, overwrite_destination=False):
+        """Make a copy of this plugin into installation_dir, ready to be imported.
+        By default, a verbatim copy of the source plugin's dir is made.
+        Any previous contents in installation_dir are overwritten.
+        Then any explicit requirements are met (external software may be downloaded
+        and pip packages installed).
+
+        :param overwrite_destination: if True, the destination path is deleted before
+          installation. If False and installation_dir already exists, an error
+          is raised (plugins are intended to be self-contained, isolated python modules).
+        """
+        if not overwrite_destination and os.path.exists(installation_dir):
+            raise ValueError(f"Plugin {repr(cls)} cannot be installed into existing "
+                             f"path {installation_dir} because "
+                             f"overwrite_destination={overwrite_destination}.")
+        super().install(installation_dir=installation_dir,
+                        overwrite_destination=True)
 
     @classmethod
     def build(cls, installation_dir):
@@ -112,15 +208,6 @@ class Plugin:
         assert os.path.isdir(installation_dir), \
             f"{cls.__name__}.build(installation_dir={repr(installation_dir)}): installation_dir does not exist"
 
-        # pip module installation - note that subprocess is the officially recommended way
-        if cls.required_pip_modules:
-            invocation = f"{sys.executable} -m pip install {' '.join(cls.required_pip_modules)}"
-            print(f"Installing pip dependencies of {cls.name} with {repr(invocation)}...")
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise Exception(f"Error installing {cls.name} dependencies ({cls.required_pip_modules}). "
-                                f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
-
         # cleanup
         shutil.rmtree(os.path.join(installation_dir, "__pycache__"), ignore_errors=True)
 
@@ -131,26 +218,6 @@ class Plugin:
                 module_name = os.path.basename(py_path)[:-3]
                 init_file.write(f"from . import {module_name}\n")
                 init_file.write(f"from .{module_name} import *\n\n")
-
-        if cls.extra_requirements_message:
-            print("\tNote: The plugin contains the following message regarding additional requirements:\n")
-            print(textwrap.indent(textwrap.dedent(cls.extra_requirements_message).strip(), '\t'))
-            print()
-
-    @classmethod
-    def repr(cls):
-        return f"{cls.__name__}(" + \
-               ", ".join(f"{k}={v}" for k, v in sorted(cls.__dict__.items())
-                         if not k.startswith("_")
-                         and not callable(v)
-                         and not inspect.ismethoddescriptor(v)) + \
-               ")"
-
-    @classmethod
-    def get_help(cls):
-        """By default, return the docstring of the selected class.
-        """
-        return cls.__doc__
 
 
 class PluginMake(Plugin):
@@ -178,39 +245,26 @@ class PluginMake(Plugin):
                              f"in {installation_dir}.")
 
 
-def import_all_plugins():
-    """Import all public enb plugins.
+def import_all_installables():
+    """Import all public enb plugins. These are recognized by containing a __plugin__.py file in
+    them and a installable definition.
 
     Note that this call needs to be deferred in a function so that
     the plugins themselves can use the classes defined here, e.g., Plugin.
     """
-    from .plugin_ccsds122 import __plugin__
-    from .plugin_fapec import __plugin__
-    from .plugin_fpack import __plugin__
-    from .plugin_flif import __plugin__
-    from .plugin_fpc import __plugin__
-    from .plugin_fpzip import __plugin__
-    from .plugin_fse_huffman import __plugin__
-    from .plugin_hevc import __plugin__
-    from .plugin_hdf5 import __plugin__
-    from .plugin_jpeg import __plugin__
-    from .plugin_kakadu import __plugin__
-    from .plugin_lcnl import __plugin__
-    from .plugin_lz4 import __plugin__
-    from .plugin_marlin import __plugin__
-    from .plugin_mcalic import __plugin__
-    from .plugin_ndzip import __plugin__
-    from .plugin_spdp import __plugin__
-    from .plugin_vvc import __plugin__
-    from .plugin_zfp import __plugin__
-    from .plugin_zip import __plugin__
-    from .plugin_zstandard import __plugin__
-    from .test_all_codecs import __plugin__
+    for plugin_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**", "__plugin__.py"),
+                                 recursive=True):
+        plugin_path = os.path.abspath(plugin_path)
+        module_name = "enb.plugins"
+        module_name += ".".join(plugin_path.replace(os.path.dirname(os.path.abspath(__file__)), "").split(
+            os.sep)).replace(".__plugin__.py", ".__plugin__")
+        importlib.import_module(module_name)
 
 
-def list_all_plugins():
-    """Get a list of all known enb plugins.
+def list_all_installables(ignored_classes=[Plugin, PluginMake]):
+    """Get a list of all known enb installables, sorted by name.
     """
-    import_all_plugins()
-    return sorted([cls for cls in enb.misc.get_all_subclasses(Plugin) if cls not in [PluginMake]],
+    import_all_installables()
+    return sorted([cls for cls in enb.misc.get_all_subclasses(Installable)
+                   if cls not in ignored_classes],
                   key=lambda c: c.name.lower())

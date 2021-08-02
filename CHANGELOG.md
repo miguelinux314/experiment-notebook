@@ -1,8 +1,11 @@
 # Under development v0.2.9
 
 * New functions
-    
+
+    - Added a functional CLI for installing and searching plugins
+  
     - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
+  
     - Added recursive subclass search in `misc.py`
 
 
