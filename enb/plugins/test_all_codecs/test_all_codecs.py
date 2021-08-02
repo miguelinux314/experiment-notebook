@@ -21,6 +21,10 @@ import importlib
 import enb
 from enb.config import options
 
+def log_event(s):
+    if options.verbose:
+        s = f" {s}..."
+        print(f"\n{s:->100s}\n")
 
 class AvailabilityExperiment(enb.experiment.Experiment):
     def __init__(self, codecs):
@@ -105,19 +109,14 @@ if __name__ == '__main__':
     # be automatically retrieved below (ignore IDE non-usage warnings).
     # NOTE: the build script should have created the `plugins` folder with all these codecs
 
+    log_event("Importing plugin modules")
     plugin_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plugins")
     assert os.path.isdir(plugin_dir), \
-        "The build script should have placed everything under plugins, "
+        "The build script should have placed everything under plugins, " \
         "please report this if you feel it is a bug."
     for d in [p for p in glob.glob(os.path.join(plugin_dir, "*")) if os.path.exists(os.path.join(p, "__init__.py"))]:
-        print(f"Importing {os.path.basename(p)}...")
+        print(f"Importing {os.path.basename(d)}...")
         importlib.import_module(f"{os.path.basename(plugin_dir)}.{os.path.basename(d)}")
-
-    def log_event(s):
-        if options.verbose:
-            s = f" {s}..."
-            print(f"\n{s:->100s}\n")
-
 
     # Make sure data are ready
     log_event("Preparing test dataset")
@@ -135,8 +134,11 @@ if __name__ == '__main__':
     codec_classes = set(c for c in codec_classes if "abstract" not in c.__name__.lower())
     codec_classes = set(c for c in codec_classes if "fapec" not in c.__name__.lower())
     codec_classes = set(c for c in codec_classes if "magli" not in c.__name__.lower())
-    codec_classes = set(c for c in codec_classes if ("mhdc" not in c.__name__.lower() or ("mhdc" in c.__name__.lower()
-                                                                                          and c.__name__ == "MHDC_POT")))
+    # Specialized lcnl configurations
+    codec_classes = set(c for c in codec_classes if "greenbook" not in c.__name__.lower())
+    codec_classes = set(c for c in codec_classes if ("mhdc" not in c.__name__.lower()
+                                                     or ("mhdc" in c.__name__.lower()
+                                                     and c.__name__ == "MHDC_POT")))
 
     filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if filter_args:
@@ -152,7 +154,7 @@ if __name__ == '__main__':
     if options.verbose:
         log_event(f"The following {len(codec_classes)} codecs have been found"
                   f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
-        for c in sorted(codec_classes, key=lambda cls:cls.__name__.lower()):
+        for c in sorted(codec_classes, key=lambda cls: cls.__name__.lower()):
             print(f"\t:: {c.__name__}")
 
     # Run the experiment
