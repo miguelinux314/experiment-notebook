@@ -13,7 +13,6 @@ include enb/misc.py
 include enb/ml.py
 include enb/pgm.py
 include enb/plotdata.py
-include enb/plugins/build_all_plugins.sh
 include enb/plugins/__init__.py
 include enb/plugins/plugin_ccsds122/ccsds122_codec.py
 include enb/plugins/plugin_ccsds122/.gitignore
