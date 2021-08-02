@@ -13,7 +13,7 @@ class TestAllCodecsPlugin(enb.plugins.Plugin):
     @classmethod
     def build(cls, installation_dir):
         super().build(installation_dir=installation_dir)
-        codec_plugins = [cls for cls in enb.plugins.list_all_plugins()
+        codec_plugins = [cls for cls in enb.plugins.list_all_installables()
                          if "codec" in cls.tags]
         print(f"Found {len(codec_plugins)} codecs:")
         print("\n\t- ".join(p.name for p in codec_plugins))

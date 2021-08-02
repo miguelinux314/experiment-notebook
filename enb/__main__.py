@@ -65,7 +65,7 @@ class PluginInstall(argparse.Action):
         destination_dir = namespace.destination_dir
 
         try:
-            plugin = [p for p in enb.plugins.list_all_plugins() if p.name == plugin_name][0]
+            plugin = [p for p in enb.plugins.list_all_installables() if p.name == plugin_name][0]
         except IndexError:
             raise ValueError(
                 f"Invalid plugin name {repr(plugin_name)}. Run `enb plugin list` to see available plugins.")
@@ -80,7 +80,7 @@ class PluginInstall(argparse.Action):
 
 class PluginList(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        all_plugins = enb.plugins.list_all_plugins()
+        all_plugins = enb.plugins.list_all_installables()
         if not namespace.filter:
             filtered_plugins = all_plugins
         else:
@@ -104,6 +104,8 @@ class PluginList(argparse.Action):
                 label = f"{label} (privative)" if "privative" in p.tags else label
                 print(f"{p.name:>15s} :: {label:55s}" +
                       (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
+
+        print()
 
 
 def return_banner():
