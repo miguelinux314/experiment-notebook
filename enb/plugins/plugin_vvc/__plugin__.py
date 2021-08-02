@@ -2,7 +2,7 @@ import enb.plugins
 
 
 class VVCPlugin(enb.plugins.PluginMake):
-    name = "hevc"
+    name = "vvc"
     label = "Wrapper for the VVC / H.266 codec"
     tags = ["data compression", "codec"]
     contrib_authors = ["ISO", "ITU", "IEC"]
