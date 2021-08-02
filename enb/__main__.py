@@ -93,15 +93,17 @@ class PluginList(argparse.Action):
                        for f in namespace.filter):
                     filtered_plugins.append(p)
 
-        print(f"Showing {len(filtered_plugins)} {'filtered' if namespace.filter else 'available'} plugins" +
-              (f" (filtered with {repr(namespace.filter)}, out of {len(all_plugins)} available)"
-               if namespace.filter else "") + ":\n")
-        for p in filtered_plugins:
-            label = p.label if p.label else ''
-            label = f"{label} (privative)" if "privative" in p.tags else label
-            print(f"{p.name:>15s} :: {label:55s}" +
-                  (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
-        print()
+        if namespace.filter and not filtered_plugins:
+            print(f"No plugin matched the filter criteria ({repr(namespace.filter)}).")
+        else:
+            print(f"Showing {len(filtered_plugins)} {'filtered' if namespace.filter else 'available'} plugins" +
+                  (f" (filtered with {repr(namespace.filter)}, out of {len(all_plugins)} available)"
+                   if namespace.filter else "") + ":\n")
+            for p in filtered_plugins:
+                label = p.label if p.label else ''
+                label = f"{label} (privative)" if "privative" in p.tags else label
+                print(f"{p.name:>15s} :: {label:55s}" +
+                      (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
 
 
 def return_banner():
