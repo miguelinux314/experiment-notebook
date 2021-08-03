@@ -4,7 +4,7 @@ import enb.plugins
 class FLIFPlugin(enb.plugins.PluginMake):
     name = "flif"
     label = "Wrapper for the FLIF compressor"
-    tags = ["data compression", "codec"]
+    tags = {"data compression", "codec"}
     contrib_authors = ["The FLIF community"]
     contrib_reference_urls = ["https://flif.info"]
     contrib_download_url_name = [
@@ -23,3 +23,4 @@ class FLIFPlugin(enb.plugins.PluginMake):
     
     Instructions for Windows, MacOS and others can also be found in the README.md file.        
     """
+    tested_on = {"linux"}

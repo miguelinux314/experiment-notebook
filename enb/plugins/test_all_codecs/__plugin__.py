@@ -8,7 +8,8 @@ class TestAllCodecsPlugin(enb.plugins.Plugin):
     label = "Install all codec plugins and test their availability"
     contrib_authors = ["The enb library team"]
     contrib_reference_urls = ["https://github.com/miguelinux314/experiment-notebook"]
-    tags = ["data compression", "test"]
+    tags = {"data compression", "test"}
+    tested_on = {"linux"}
 
     @classmethod
     def build(cls, installation_dir):
@@ -28,5 +29,3 @@ class TestAllCodecsPlugin(enb.plugins.Plugin):
         # Add the __init__.py so that test_all_codecs can import the installed modules
         with open(os.path.join(plugin_dir, "__init__.py"), "w"):
             pass
-
-

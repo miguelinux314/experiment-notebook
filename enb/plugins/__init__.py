@@ -29,10 +29,11 @@ Templates are very similar to plugins, with a few key differences:
 - Templates automatically interpret any *.enbt file as a template. The jinja library is used to
   process them, and the resulting files are renamed removing '.enbt' from their name.
 """
-import importlib
 import os
 import sys
 import glob
+import collections
+import importlib
 import inspect
 import shutil
 import requests
@@ -42,7 +43,41 @@ import textwrap
 import enb.misc
 
 
-class Installable:
+class InstallableMeta(type):
+    """Installable classes are not meant to be instantiated, just to be defined to declare
+    the presence of Installables. This metaclass is used to perform basic checks on the
+    declared Installable subclasses.
+    """
+    valid_tested_on_strings = {"linux", "macos", "windows"}
+
+    # Stores all defined plugins by name
+    name_to_plugin = dict()
+    # Stores all defined plugins by tag
+    tag_to_plugin = collections.defaultdict(list)
+
+    def __init__(cls, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        cls.name = cls.name.lower().strip() if cls.name else None
+        if cls.name is not None:
+            if cls.name in InstallableMeta.name_to_plugin:
+                raise SyntaxError(f"Installable {repr(cls)} contains a non-unique name {repr(cls.name)}.")
+            else:
+                InstallableMeta.name_to_plugin[cls.name] = cls
+        cls.label = cls.label.strip() if cls.label else cls.label
+        cls.label = None if not cls.label else cls.label
+        cls.author = cls.author.strip() if cls.author else cls.author
+        cls.author = None if not cls.author else cls.author
+        cls.tags = {t.lower().strip() for t in cls.tags}
+        for t in cls.tags:
+            InstallableMeta.tag_to_plugin[t].append(cls)
+
+        if not all(s in cls.valid_tested_on_strings for s in cls.tested_on):
+            raise SyntaxError(f"Invalid definition of {cls}: "
+                              f"tested_on={repr(cls.tested_on)} contains invalid elements "
+                              f"not in {repr(cls.valid_tested_on_strings)}.")
+
+
+class Installable(metaclass=InstallableMeta):
     """Common interface to all Installable types, e.g., Plugins and Templates.
     """
     # Human friendly, expectedly unique name for the Installable
@@ -53,7 +88,7 @@ class Installable:
     # Subclasses may update this as necessary.
     author = "The enb team"
     # List of string to provide soft categorization
-    tags = []
+    tags = {}
 
     # List of pip-installable python module names required by this Installable.
     # Subclasses must overwrite this member as necessary.
@@ -63,7 +98,11 @@ class Installable:
     # Message shown to users when installing the Installable. It can inform about any additional
     # external software needed for this Installable to work. Typically, Installables inform about
     # apt/pacman/... requirements for the Installables to work.
-    # NOTE: the equivalent to build-essential and cmake are expected by most make-based Installables.
+    # In general, if extra_requirements_message is not None, the installation process cannot be assumed
+    # to be completed automatically without user intervention.
+    #
+    # NOTE: the equivalent to build-essential and cmake are expected by most make-based Installables,
+    # e.g., PluginMake subclasses.
     extra_requirements_message = None
 
     # Information about external ("contrib") software used by the Installable
