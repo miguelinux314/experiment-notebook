@@ -29,6 +29,7 @@ Templates are very similar to plugins, with a few key differences:
 - Templates automatically interpret any *.enbt file as a template. The jinja library is used to
   process them, and the resulting files are renamed removing '.enbt' from their name.
 """
+import builtins
 import os
 import sys
 import glob
@@ -48,6 +49,7 @@ class InstallableMeta(type):
     the presence of Installables. This metaclass is used to perform basic checks on the
     declared Installable subclasses.
     """
+    installable_file_name = "__plugin__.py"
     valid_tested_on_strings = {"linux", "macos", "windows"}
 
     # Stores all defined Installables by name
@@ -210,7 +212,8 @@ class Plugin(Installable):
       or post-installation step. That message is shown when attempting to install the plugin with
       not-None `extra_requirements_message`.
 
-    - The __init__.py file is automatically generated and should not be present in the source plugin folder.
+    - The __init__.py file is preserved if present. If not present, one is created automatically,
+      which imports all symbols from all .py modules in the plugin.
     """
 
     @classmethod
@@ -241,7 +244,7 @@ class Plugin(Installable):
             - Install any required apt modules
             - Any needed python modules are installed via pip
             - Cleanup any generic files that might not be needed at this point
-            - The __init__.py file is generated automatically
+            - The __init__.py file is preserved or generated automatically
         """
         # Existence assertion
         assert os.path.isdir(installation_dir), \
@@ -250,13 +253,20 @@ class Plugin(Installable):
         # cleanup
         shutil.rmtree(os.path.join(installation_dir, "__pycache__"), ignore_errors=True)
 
-        # add custom __init__
+        # add custom __init__ if needed
+        init_path = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(cls))), "__init__.py")
         with open(os.path.join(installation_dir, "__init__.py"), "w") as init_file:
-            for py_path in [p for p in glob.glob(os.path.join(installation_dir, "*.py"))
-                            if not os.path.basename(p).startswith("__")]:
-                module_name = os.path.basename(py_path)[:-3]
-                init_file.write(f"from . import {module_name}\n")
-                init_file.write(f"from .{module_name} import *\n\n")
+            if os.path.exists(init_path):
+                # An __init__.py file already existed, simply copy it
+                with open(init_path, "r") as source_init:
+                    init_file.write(source_init.read())
+            else:
+                # No __init__.py found. Generating one that publishes all symbols by default
+                for py_path in [p for p in glob.glob(os.path.join(installation_dir, "*.py"))
+                                if not os.path.basename(p).startswith("__")]:
+                    module_name = os.path.basename(py_path)[:-3]
+                    init_file.write(f"from . import {module_name}\n")
+                    init_file.write(f"from .{module_name} import *\n\n")
 
 
 class PluginMake(Plugin):
@@ -291,13 +301,32 @@ def import_all_installables():
     Note that this call needs to be deferred in a function so that
     the plugins themselves can use the classes defined here, e.g., Plugin.
     """
-    for plugin_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**", "__plugin__.py"),
+    for plugin_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**",
+                                              Installable.installable_file_name),
                                  recursive=True):
+        # Compute the module import name
         plugin_path = os.path.abspath(plugin_path)
         module_name = "enb.plugins"
         module_name += ".".join(plugin_path.replace(os.path.dirname(os.path.abspath(__file__)), "").split(
-            os.sep)).replace(".__plugin__.py", ".__plugin__")
-        importlib.import_module(module_name)
+            os.sep)).replace(f".{Installable.installable_file_name}", f".{Installable.installable_file_name[:-3]}")
+
+        # Importing of the __plugin__.py (installable_file_name) module
+        # will fail if there is an __init__.py present which attempts to import
+        # any of the external dependencies. Therefore, a more lenient version of import is used for importing the module
+        original_import = builtins.__import__
+
+        def tolerant_import(*args, **kwargs):
+            try:
+                return original_import(*args, **kwargs)
+            except ImportError:
+                print(f"Ignoring import error in {os.path.basename(os.path.dirname(plugin_path))} "
+                      f"for module {args[0]}. ")
+
+        try:
+            builtins.__import__ = tolerant_import
+            importlib.import_module(module_name)
+        finally:
+            builtins.__import__ = original_import
 
 
 def list_all_installables(base_class=Installable, ignored_classes=[Plugin, PluginMake]):
