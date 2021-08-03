@@ -10,6 +10,10 @@ __date__ = "11/07/2021"
 
 import re
 
+def return_banner():
+    """Returns the enb banner.
+    """
+    return f"\n{' [ enb - Experiment Notebook ] ':.^100}\n"
 
 def get_defining_class_name(f):
     """Return the name of the class of which f is a method, or None if not bound to any class.

@@ -50,26 +50,26 @@ class InstallableMeta(type):
     """
     valid_tested_on_strings = {"linux", "macos", "windows"}
 
-    # Stores all defined plugins by name
-    name_to_plugin = dict()
-    # Stores all defined plugins by tag
-    tag_to_plugin = collections.defaultdict(list)
+    # Stores all defined Installables by name
+    name_to_installable = dict()
+    # Stores all defined Installables by tag
+    tag_to_installable = collections.defaultdict(list)
 
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.name = cls.name.lower().strip() if cls.name else None
         if cls.name is not None:
-            if cls.name in InstallableMeta.name_to_plugin:
+            if cls.name in InstallableMeta.name_to_installable:
                 raise SyntaxError(f"Installable {repr(cls)} contains a non-unique name {repr(cls.name)}.")
             else:
-                InstallableMeta.name_to_plugin[cls.name] = cls
+                InstallableMeta.name_to_installable[cls.name] = cls
         cls.label = cls.label.strip() if cls.label else cls.label
         cls.label = None if not cls.label else cls.label
         cls.author = cls.author.strip() if cls.author else cls.author
         cls.author = None if not cls.author else cls.author
         cls.tags = {t.lower().strip() for t in cls.tags}
         for t in cls.tags:
-            InstallableMeta.tag_to_plugin[t].append(cls)
+            InstallableMeta.tag_to_installable[t].append(cls)
 
         if not all(s in cls.valid_tested_on_strings for s in cls.tested_on):
             raise SyntaxError(f"Invalid definition of {cls}: "
@@ -130,9 +130,9 @@ class Installable(metaclass=InstallableMeta):
 
         print(f"Installing {cls.name} into {installation_dir}...")
 
-        # Warn about any manual requirements reported by the plugin
+        # Warn about any manual requirements reported by the Installable
         if cls.extra_requirements_message:
-            print("\tNote: The plugin contains the following message regarding additional requirements:\n")
+            print("\tNote: This plugin contains the following message regarding additional requirements:\n")
             print(textwrap.indent(textwrap.dedent(cls.extra_requirements_message).strip(), '\t'))
             print()
 

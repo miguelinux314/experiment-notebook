@@ -105,17 +105,22 @@ class PluginList(argparse.Action):
                 label = f"{label} (privative)" if "privative" in p.tags else label
                 print(f"{p.name:>15s} :: {label:55s}" +
                       (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
+        print()
 
+        if not namespace.filter:
+            print("Remember you can filter this list by appending one or more arguments to this command.")
+            print()
+
+        print("The following plugin tags have also been defined (and can be used for filtering):\n\n\t- ",
+              end="")
+        print("\n\t- ".join(sorted((f"{tag}: {len(installable_list)} plugins"
+                                    for tag, installable_list in enb.plugins.InstallableMeta.tag_to_installable.items()),
+                                   key=lambda t: len(t[1]))))
         print()
 
 
-def return_banner():
-    return f"{' [ enb - Experiment Notebook ] ': ^80}"
-
-
 def main():
-    # print(return_banner() + "\n")
-    # print(f"Welcome to enb, your Experiment Notebook framework.\n")
+    print(enb.misc.return_banner())
 
     cli_parser = CLIParser()
     options = cli_parser.parse_args()
