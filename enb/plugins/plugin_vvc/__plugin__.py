@@ -4,7 +4,7 @@ import enb.plugins
 class VVCPlugin(enb.plugins.PluginMake):
     name = "vvc"
     label = "Wrapper for the VVC / H.266 codec"
-    tags = ["data compression", "codec"]
+    tags = {"data compression", "codec"}
     contrib_authors = ["ISO", "ITU", "IEC"]
     contrib_reference_urls = ["https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master"]
     contrib_download_url_name = [
@@ -19,3 +19,4 @@ class VVCPlugin(enb.plugins.PluginMake):
         1. Install homebrew from http://brew.sh
         2. `brew install gcc@9`
     """
+    tested_on = {"linux"}

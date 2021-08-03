@@ -90,6 +90,7 @@ class PluginList(argparse.Action):
                        (p.label.lower() and f in p.label.lower()) or
                        any(f.lower() in author.lower() for author in p.contrib_authors)
                        or any(any(f.lower() in t for t in p.tags) for f in namespace.filter)
+                       or any(any(f.lower() in t for t in p.tested_on) for f in namespace.filter)
                        for f in namespace.filter):
                     filtered_plugins.append(p)
 

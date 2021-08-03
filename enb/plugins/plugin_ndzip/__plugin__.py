@@ -4,7 +4,7 @@ import enb.plugins
 class NDZIPPlugin(enb.plugins.PluginMake):
     name = "ndzip"
     label = "Wrapper for ndzip"
-    tags = ["data compression", "codec"]
+    tags = {"data compression", "codec"}
     contrib_authors = ["Fabian Knorr"]
     contrib_reference_urls = ["https://github.com/fknorr/ndzip"]
     contrib_download_url_name = [
@@ -18,3 +18,4 @@ class NDZIPPlugin(enb.plugins.PluginMake):
         - libboost-thread
         - libboost-program-options
     """
+    tested_on = {"linux"}
