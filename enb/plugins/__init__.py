@@ -300,10 +300,14 @@ def import_all_installables():
         importlib.import_module(module_name)
 
 
-def list_all_installables(ignored_classes=[Plugin, PluginMake]):
+def list_all_installables(base_class=Installable, ignored_classes=[Plugin, PluginMake]):
     """Get a list of all known enb installables, sorted by name.
+
+    :param base_class: base class used for search, e.g. Installable to search for all defined installables.
+    :param ignored_classes: classes to be excluded from the returned list. In addition to these, any
+      installable with name set to None is also excluded
     """
     import_all_installables()
-    return sorted([cls for cls in enb.misc.get_all_subclasses(Installable)
-                   if cls not in ignored_classes],
+    return sorted([cls for cls in enb.misc.get_all_subclasses(base_class)
+                   if cls not in ignored_classes and cls.name is not None],
                   key=lambda c: c.name.lower())
