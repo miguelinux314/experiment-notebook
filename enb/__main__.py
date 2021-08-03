@@ -17,11 +17,13 @@ def CLIParser():
                     "Several subcommands are available; use `enb <subcommand> -h` \n"
                     "to show help about any specific command.",
         formatter_class=argparse.RawTextHelpFormatter)
-    cli_parser.subparsers = cli_parser.add_subparsers(dest="command", description="Available enb CLI commands.")
+    cli_parser.subparsers = cli_parser.add_subparsers(
+        dest="command", required=True, description="Available enb CLI commands.")
 
     # plugin subcommand
     cli_parser.plugin_parser = cli_parser.subparsers.add_parser("plugin", help="Install and manage plugins.")
-    cli_parser.plugin_parser.subparsers = cli_parser.plugin_parser.add_subparsers(dest="subcommand")
+    cli_parser.plugin_parser.subparsers = cli_parser.plugin_parser.add_subparsers(
+        description="Plugin subcommands", dest="subcommand", required=True)
     # # plugin install
     cli_parser.plugin_parser.install_parser = cli_parser.plugin_parser.subparsers.add_parser(
         "install", help="Install an available plugin.")
@@ -39,15 +41,16 @@ def CLIParser():
     cli_parser.plugin_parser.list_parser = cli_parser.plugin_parser.subparsers.add_parser(
         "list", help="List available plugins.")
     cli_parser.plugin_parser.list_parser.add_argument(
-        "filter", nargs="*", help="If provided, only plugins matching the filter string "
-                                  "(e.g., by name or tag) are listed")
+        "filter", nargs="*",
+        help="If provided, only plugins matching the filter string (e.g., by name or tag) are listed")
     cli_parser.plugin_parser.list_parser.add_argument(
         # Used to trigger the desired call and save the return status
         nargs=0, dest="status", action=PluginList)
 
     # Template command
     cli_parser.template_parser = cli_parser.subparsers.add_parser("template", help="Instantiate and manage templates.")
-    cli_parser.template_parser.subparsers = cli_parser.template_parser.add_subparsers(dest="subcommand")
+    cli_parser.template_parser.subparsers = cli_parser.template_parser.add_subparsers(
+        description="Template subcommands", dest="subcommand", required=True)
     # # Template format
     cli_parser.template_parser.format_parser = cli_parser.template_parser.subparsers.add_parser(
         "format", help="Format an input template and save the result.")
@@ -114,7 +117,8 @@ class PluginList(argparse.Action):
         print("The following plugin tags have been defined and can be used for filtering:\n\n\t- ",
               end="")
         print("\n\t- ".join(sorted((f"{tag}: {len(installable_list)} plugins"
-                                    for tag, installable_list in enb.plugins.InstallableMeta.tag_to_installable.items()),
+                                    for tag, installable_list in
+                                    enb.plugins.InstallableMeta.tag_to_installable.items()),
                                    key=lambda t: len(t[1]))))
         print()
 
@@ -124,6 +128,7 @@ def main():
 
     cli_parser = CLIParser()
     options = cli_parser.parse_args()
+
     if options.command is None:
         print("No command provided. Showing help instead.\n")
         print(f"{' [ enb help ] ':-^80s}")

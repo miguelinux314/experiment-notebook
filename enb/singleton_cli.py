@@ -223,13 +223,24 @@ class SingletonCLI(metaclass=Singleton):
         super().__init__()
         # The _parsed_properties is the live dictionary of stored properties
         # Parse CLI options once, the first time the singleton instance is created.
-        if os.path.basename(sys.argv[0]) != "__main__.py":
+        # The -h option is removed if called from the main command line, which
+        # has a different argparsing system and -h should not be "kidnapped" by
+        # config.options.
+        try:
+            original_option_string_actions = self._argparser._option_string_actions
+
+            if os.path.basename(sys.argv[0]) in ["__main__.py", "enb"]:
+                self._argparser._option_string_actions = [a for a in self._argparser._option_string_actions
+                                                          if a not in ["-h", "--help"]]
+                
             for k, v in self._argparser.parse_known_args()[0].__dict__.items():
                 self._name_to_property[self._alias_to_name[k]] = v
-        else:
-            # Main scripts for CLI will define their own syntax
-            pass
-        self._custom_attribute_handler_active = True
+
+            # The setter values are activated only for python-source modifications
+            self._custom_attribute_handler_active = True
+        finally:
+            self._argparser._option_string_actions = original_option_string_actions
+
 
     @classmethod
     def assert_setter_signature(cls, f):
