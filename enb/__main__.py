@@ -97,9 +97,13 @@ class PluginList(argparse.Action):
         if namespace.filter and not filtered_plugins:
             print(f"No plugin matched the filter criteria ({repr(namespace.filter)}).")
         else:
-            print(f"Showing {len(filtered_plugins)} {'filtered' if namespace.filter else 'available'} plugins" +
-                  (f" (filtered with {repr(namespace.filter)}, out of {len(all_plugins)} available)"
-                   if namespace.filter else "") + ":\n")
+            print(f"Showing {len(filtered_plugins)} plugins", end="")
+            if namespace.filter:
+                print(f" (filtered with {repr(namespace.filter)}), out of {len(all_plugins)} available)")
+            else:
+                print(". You can filter this list by adding arguments to this command.")
+            print()
+
             for p in filtered_plugins:
                 label = p.label if p.label else ''
                 label = f"{label} (privative)" if "privative" in p.tags else label
@@ -107,11 +111,7 @@ class PluginList(argparse.Action):
                       (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
         print()
 
-        if not namespace.filter:
-            print("Remember you can filter this list by appending one or more arguments to this command.")
-            print()
-
-        print("The following plugin tags have also been defined (and can be used for filtering):\n\n\t- ",
+        print("The following plugin tags have been defined and can be used for filtering:\n\n\t- ",
               end="")
         print("\n\t- ".join(sorted((f"{tag}: {len(installable_list)} plugins"
                                     for tag, installable_list in enb.plugins.InstallableMeta.tag_to_installable.items()),
