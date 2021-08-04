@@ -492,6 +492,7 @@ class ATable(metaclass=MetaTable):
         overwrite = overwrite if overwrite is not None else options.force
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
             else not options.sequential
+
         target_indices = list(target_indices)
         if not target_indices:
             target_indices = get_all_test_files(ext=self.default_extension)
@@ -1064,8 +1065,8 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
             print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
         return [get_canonical_path(sys.argv[0])]
 
-    assert os.path.isdir(base_dataset_dir), \
-        f"Nonexistent dataset dir {base_dataset_dir}"
+    if not os.path.isdir(base_dataset_dir):
+        raise ValueError(f"base_dataset_dir={repr(base_dataset_dir)} does not exist.")
     sorted_path_list = sorted(
         (get_canonical_path(p) for p in glob.glob(
             os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
@@ -1073,6 +1074,8 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
          if os.path.isfile(p)),
         # key=lambda p: os.path.getsize(p))
         key=lambda p: get_canonical_path(p).lower())
+
+    # If quick is selected, return at most as many paths as the quick parameter count
     return sorted_path_list if not options.quick else sorted_path_list[:options.quick]
 
 

@@ -19,11 +19,18 @@ if not _os.path.isdir(user_config_dir):
 # those in `user_config_dir`.
 calling_script_dir = _os.path.realpath(_os.path.dirname(_os.path.abspath(_sys.argv[0])))
 
+# Data dir
+default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
+# Persistence dir
+default_persistence_dir = _os.path.join(calling_script_dir, f"persistence_{_os.path.basename(_sys.argv[0])}")
+
 # Pre-definition tools
 from . import misc
 
 # Global configuration modules
 from . import singleton_cli
+from . import aini
+from . import aoptions
 from . import config
 
 # Core modules

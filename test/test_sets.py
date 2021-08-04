@@ -64,31 +64,29 @@ class TestSets(unittest.TestCase):
     def test_trivial_version_table(self):
         """Test versioning with a table that simply copies the original file.
         """
+
+        class TrivialVersionTable(sets.FileVersionTable):
+            """Trivial FileVersionTable that makes an identical copy of the original
+            """
+
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.default_extension = "py"
+
+            def version(self, input_path, output_path, row):
+                shutil.copy(input_path, output_path)
+                assert os.path.getsize(input_path) == os.path.getsize(output_path)
+
         with tempfile.TemporaryDirectory() as tmp_dir:
             options.persistence_dir = tmp_dir
 
-            class TrivialVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
-                """Trivial FileVersionTable that makes an identical copy of the original
-                """
-                version_name = "TrivialCopy"
-                default_extension = "py"
-
-                def __init__(self):
-                    super().__init__(version_name=self.version_name,
-                                     original_base_dir=os.path.dirname(os.path.abspath(__file__)),
-                                     version_base_dir=tmp_dir)
-                    self.default_extension = "py"
-
-                def version(self, input_path, output_path, row):
-                    shutil.copy(input_path, output_path)
-                    assert os.path.getsize(input_path) == os.path.getsize(output_path)
-
-            fpt = sets.FilePropertiesTable()
+            fpt = sets.FilePropertiesTable(base_dir=os.path.dirname(os.path.abspath(__file__)))
             fpt.default_extension = "py"
             fpt_df = fpt.get_df()
             fpt_df["original_file_path"] = fpt_df["file_path"]
-            tvt = TrivialVersionTable()
-            tvt.default_extension = "py"
+            tvt = TrivialVersionTable(version_base_dir=tmp_dir,
+                                      version_name="trivial",
+                                      original_base_dir=os.path.dirname(os.path.abspath(__file__)))
             tvt_df = tvt.get_df()
 
             lsuffix = "_original"
