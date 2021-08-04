@@ -232,7 +232,7 @@ class SingletonCLI(metaclass=Singleton):
             if os.path.basename(sys.argv[0]) in ["__main__.py", "enb"]:
                 self._argparser._option_string_actions = [a for a in self._argparser._option_string_actions
                                                           if a not in ["-h", "--help"]]
-                
+
             for k, v in self._argparser.parse_known_args()[0].__dict__.items():
                 self._name_to_property[self._alias_to_name[k]] = v
 
@@ -240,7 +240,6 @@ class SingletonCLI(metaclass=Singleton):
             self._custom_attribute_handler_active = True
         finally:
             self._argparser._option_string_actions = original_option_string_actions
-
 
     @classmethod
     def assert_setter_signature(cls, f):
@@ -302,78 +301,91 @@ class SingletonCLI(metaclass=Singleton):
         """
         # Make sure that the right reference is stored in the closure of property_setter_wrapper
         kwargs = dict(kwargs)
-        closure_group_name = group_name
-        closure_group_description = group_description
-        closure_cls = cls
+        try:
+            default = kwargs["default"]
+        except KeyError:
+            default = None
 
-        def property_setter_wrapper(decorated_method):
+        class PropertySetterWrapper:
             """Wrapper that is executed when defining a new property.
             It performs the argparse and internal updates to actually keep track
             of definitions.
             """
-            cls.assert_setter_signature(decorated_method)
+            closure_group_name = group_name
+            closure_group_description = group_description
+            closure_cls = cls
 
-            # Update argument group name and description
-            defining_class_name = enb.misc.get_defining_class_name(decorated_method)
+            def __call__(self, decorated_method):
+                try:
+                    kwargs["default"] = enb.aini.ini.get_key("enb.config.options", decorated_method.__name__) \
+                        if default is None else default
+                except KeyError as ex:
+                    raise SyntaxError(f"Could not find default value for option {decorated_method.__name__} "
+                                      f"in any of the known .ini files.") from ex
 
-            if closure_group_name is None:
-                if defining_class_name is not None:
-                    # From https://www.geeksforgeeks.org/python-split-camelcase-string-to-individual-strings/
-                    group_name = split_camel_case(defining_class_name)
-                else:
-                    group_name = closure_cls._current_group_name
-            closure_cls._current_group_name = \
-                closure_cls._current_group_name if closure_group_name is None else closure_group_name
-            closure_cls._current_group_description = \
-                closure_cls._current_group_description if closure_group_description is None else closure_group_description
+                cls.assert_setter_signature(decorated_method)
 
-            # Automatically define new groups when needed
-            try:
-                arg_group = closure_cls._name_to_group[closure_cls._current_group_name]
-                if closure_group_description is not None and arg_group.description != closure_group_description:
-                    raise ValueError(f"Cannot change a group's description once it is set. "
-                                     f"Previous value: {arg_group.description}. "
-                                     f"New value: {closure_group_description}.")
-            except KeyError:
-                closure_cls._name_to_group[closure_cls._current_group_name] = \
-                    closure_cls._argparser.add_argument_group(closure_cls._current_group_name,
-                                                              description=closure_cls._current_group_description)
-                arg_group = closure_cls._name_to_group[closure_cls._current_group_name]
+                # Update argument group name and description
+                defining_class_name = enb.misc.get_defining_class_name(decorated_method)
 
-            # Handle alias management
-            if decorated_method.__name__ in closure_cls._alias_to_name \
-                    or any(a in closure_cls._alias_to_name for a in aliases):
-                raise SyntaxError(f"[E]rror: name redefinition for {repr(decorated_method.__name__)} "
-                                  f"with aliases = {repr(aliases)}.")
+                if self.closure_group_name is None:
+                    if defining_class_name is not None:
+                        # From https://www.geeksforgeeks.org/python-split-camelcase-string-to-individual-strings/
+                        closure_group_name = split_camel_case(defining_class_name)
+                    else:
+                        closure_group_name = self.closure_cls._current_group_name
+                self.closure_cls._current_group_name = \
+                    self.closure_cls._current_group_name if closure_group_name is None else closure_group_name
+                self.closure_cls._current_group_description = \
+                    self.closure_cls._current_group_description if self.closure_group_description is None else self.closure_group_description
 
-            argparse_kwargs = dict(help=decorated_method.__doc__)
-            alias_with_dashes = [f"--{decorated_method.__name__}"]
-            for a in aliases:
-                if not a.strip():
-                    raise SyntaxError(f"Cannot define empty aliases: {repr(a)}")
-                if len(a) == 1:
-                    alias_with_dashes.append(f"-{a}")
-                else:
-                    alias_with_dashes.append(f"--{a}")
-            alias_with_dashes = sorted(set(alias_with_dashes), key=len)
+                # Automatically define new groups when needed
+                try:
+                    arg_group = self.closure_cls._name_to_group[self.closure_cls._current_group_name]
+                    if self.closure_group_description is not None and arg_group.description != self.closure_group_description:
+                        raise ValueError(f"Cannot change a group's description once it is set. "
+                                         f"Previous value: {arg_group.description}. "
+                                         f"New value: {self.closure_group_description}.")
+                except KeyError:
+                    self.closure_cls._name_to_group[self.closure_cls._current_group_name] = \
+                        self.closure_cls._argparser.add_argument_group(self.closure_cls._current_group_name,
+                                                                  description=self.closure_cls._current_group_description)
+                    arg_group = self.closure_cls._name_to_group[self.closure_cls._current_group_name]
 
-            argparse_kwargs.update(**kwargs)
-            try:
-                arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
-            except argparse.ArgumentError:
-                pass
+                # Handle alias management
+                if decorated_method.__name__ in self.closure_cls._alias_to_name \
+                        or any(a in self.closure_cls._alias_to_name for a in aliases):
+                    raise SyntaxError(f"[E]rror: name redefinition for {repr(decorated_method.__name__)} "
+                                      f"with aliases = {repr(aliases)}.")
 
-            for alias in itertools.chain((decorated_method.__name__,),
-                                         (a.replace("-", "") for a in alias_with_dashes)):
-                closure_cls._alias_to_name[alias] = decorated_method.__name__
-                closure_cls._name_to_setter[alias] = decorated_method
+                argparse_kwargs = dict(help=decorated_method.__doc__)
+                alias_with_dashes = [f"--{decorated_method.__name__}"]
+                for a in aliases:
+                    if not a.strip():
+                        raise SyntaxError(f"Cannot define empty aliases: {repr(a)}")
+                    if len(a) == 1:
+                        alias_with_dashes.append(f"-{a}")
+                    else:
+                        alias_with_dashes.append(f"--{a}")
+                alias_with_dashes = sorted(set(alias_with_dashes), key=len)
 
-            # # Purposefully returning None so that properties are only accessed through the base class protocol
-            # return None
+                argparse_kwargs.update(**kwargs)
+                try:
+                    arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
+                except argparse.ArgumentError:
+                    pass
 
-            return decorated_method
+                for alias in itertools.chain((decorated_method.__name__,),
+                                             (a.replace("-", "") for a in alias_with_dashes)):
+                    self.closure_cls._alias_to_name[alias] = decorated_method.__name__
+                    self.closure_cls._name_to_setter[alias] = decorated_method
 
-        return property_setter_wrapper
+                # # Purposefully returning None so that properties are only accessed through the base class protocol
+                # return None
+
+                return decorated_method
+
+        return PropertySetterWrapper()
 
     def print_help(self):
         return self._argparser.print_help()

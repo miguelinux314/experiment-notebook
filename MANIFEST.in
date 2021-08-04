@@ -1,4 +1,6 @@
 include enb/aanalysis.py
+include enb/aini.py
+include enb/aoptions.py
 include enb/atable.py
 include enb/atemplate.py
 include enb/bitstream.py
