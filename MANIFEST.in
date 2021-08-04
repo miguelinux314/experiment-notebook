@@ -4,6 +4,7 @@ include enb/atemplate.py
 include enb/bitstream.py
 include enb/config.py
 include enb/context.py
+include enb/enb.ini
 include enb/experiment.py
 include enb/icompression.py
 include enb/__init__.py
