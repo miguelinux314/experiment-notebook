@@ -21,10 +21,12 @@ import importlib
 import enb
 from enb.config import options
 
+
 def log_event(s):
     if options.verbose:
         s = f" {s}..."
         print(f"\n{s:->100s}\n")
+
 
 class AvailabilityExperiment(enb.experiment.Experiment):
     def __init__(self, codecs):
@@ -138,7 +140,7 @@ if __name__ == '__main__':
     codec_classes = set(c for c in codec_classes if "greenbook" not in c.__name__.lower())
     codec_classes = set(c for c in codec_classes if ("mhdc" not in c.__name__.lower()
                                                      or ("mhdc" in c.__name__.lower()
-                                                     and c.__name__ == "MHDC_POT")))
+                                                         and c.__name__ == "MHDC_POT")))
 
     filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if filter_args:
@@ -224,6 +226,6 @@ if __name__ == '__main__':
             reference_df=full_df).get_df()
         save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability_{label}.pdf"))
 
-    if options.verbose:
-        print(f"Saving PNG versions of the PDF files...")
+    log_event(f"Saving PNG versions of the PDF files...")
     enb.aanalysis.pdf_to_png(input_dir=options.plot_dir, output_dir=options.plot_dir)
+    print("Done saving PNGs.")
