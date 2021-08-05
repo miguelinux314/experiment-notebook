@@ -21,7 +21,8 @@ import itertools
 import inspect
 
 import enb.misc
-from enb.misc import split_camel_case
+from enb.misc import split_camel_case, Singleton
+from .aini import ini
 
 
 class ValidationAction(argparse.Action):
@@ -161,23 +162,6 @@ class PositiveIntegerAction(PositiveFloatAction):
         super().assert_valid_value(value)
 
 
-class Singleton(type):
-    """Classes with this metaclass can only be defined once.
-    """
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        """This method replaces the regular initializer of classes with this as their metaclass.
-
-        *args and **kwargs are passed directly to their initializer and do not otherwise affect the Singleton behavior.
-        """
-        try:
-            return cls._instances[cls]
-        except KeyError:
-            cls._instances[cls] = super().__call__(*args, **kwargs)
-            return cls._instances[cls]
-
-
 class SingletonCLI(metaclass=Singleton):
     """Singleton class that holds a set of CLI options.
 
@@ -213,7 +197,8 @@ class SingletonCLI(metaclass=Singleton):
         argument_default=None,
         description="A number of options can be set via the command line interface, then "
                     "accessed via enb.config.options.property_name. All of them are optional, "
-                    "and may be interpreted differently by enb core modules and host code.")
+                    "and may be interpreted differently by enb core modules and host code.",
+        add_help=os.path.basename(sys.argv[0]) not in ["__main__.py", "enb"])
     # Set to True after initialization
     _custom_attribute_handler_active = False
 
@@ -227,11 +212,7 @@ class SingletonCLI(metaclass=Singleton):
         # has a different argparsing system and -h should not be "kidnapped" by
         # config.options.
         try:
-            original_option_string_actions = self._argparser._option_string_actions
-
-            if os.path.basename(sys.argv[0]) in ["__main__.py", "enb"]:
-                self._argparser._option_string_actions = [a for a in self._argparser._option_string_actions
-                                                          if a not in ["-h", "--help"]]
+            original_option_string_actions = list(self._argparser._option_string_actions)
 
             for k, v in self._argparser.parse_known_args()[0].__dict__.items():
                 self._name_to_property[self._alias_to_name[k]] = v
@@ -317,7 +298,7 @@ class SingletonCLI(metaclass=Singleton):
 
             def __call__(self, decorated_method):
                 try:
-                    kwargs["default"] = enb.aini.ini.get_key("enb.config.options", decorated_method.__name__) \
+                    kwargs["default"] = ini.get_key("enb.config.options", decorated_method.__name__) \
                         if default is None else default
                 except KeyError as ex:
                     raise SyntaxError(f"Could not find default value for option {decorated_method.__name__} "

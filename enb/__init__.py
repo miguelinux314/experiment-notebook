@@ -28,9 +28,6 @@ default_persistence_dir = _os.path.join(calling_script_dir, f"persistence_{_os.p
 from . import misc
 
 # Global configuration modules
-from . import singleton_cli
-from . import aini
-from . import aoptions
 from . import config
 
 # Core modules

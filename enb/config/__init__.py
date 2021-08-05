@@ -73,17 +73,16 @@ From there on, many enb functions adhere to the following principle:
 2. If a parameter with default value None is set to None or not specified,
    its value is set based on the properties in `enb.config.options`.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "18/09/2019"
-
-import enb
 
 # enb.config.ini : file-based config management
-from enb.aini import ini
+from .aini import ini
 # enb.config.options : CLI-based config management, defaulting to enb.config.ini
-from enb.aoptions import options, propagates_options, get_options, set_options
+from .aoptions import options, propagates_options, get_options, set_options
 
-for name, section in ini.sections_by_name:
-    print(f"[watch] section={name}")
-    for k, v in section.items():
-        print(f"\t{k}={v}")
+if options.verbose:
+    print("-"*100)
+    print(repr(ini))
+    print()
+    print(repr(options))
+    print("-" * 100)
+    print()
