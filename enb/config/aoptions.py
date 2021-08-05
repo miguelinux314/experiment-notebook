@@ -43,7 +43,6 @@ import enb
 from . import singleton_cli as _singleton_cli
 
 
-
 class OptionsBase(_singleton_cli.SingletonCLI):
     """Global options for all modules, without any positional or required argument.
     """
@@ -58,6 +57,15 @@ class GeneralOptions:
     @OptionsBase.property("v", action="count")
     def verbose(self, value):
         """Be verbose? Repeat for more.
+        """
+        pass
+
+    @OptionsBase.property("ini", nargs="*", type=str, default=[])
+    def extra_ini_paths(self, value):
+        """Additional .ini files to be used to attain file-based configurations,
+        in addition to the default ones (system, user and project).
+        If defined more than once, the last definition sets the list instead of appending
+        to a common list of extra ini paths.
         """
         pass
 
@@ -226,8 +234,6 @@ class RenderingOptions:
 class DirOptions:
     """Options regarding default data directories.
     """
-
-
 
     @OptionsBase.property("d", action=_singleton_cli.ReadableDirAction, default=enb.default_base_dataset_dir)
     def base_dataset_dir(self, value):
