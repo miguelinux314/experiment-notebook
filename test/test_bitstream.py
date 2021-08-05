@@ -10,7 +10,7 @@ import unittest
 import random
 random.seed(0xbadc0f33)
 
-from enb import bitstream
+import bitstream
 
 
 class TestBitstream(unittest.TestCase):

@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Tools to handle binary streams at the bit level
+"""Tools to handle binary streams at the bit level.
+Expect very low speeds - for small tests mostly.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "01/12/2019"
 
-import os
-import collections
 
 class OutputBitStream:
     """Class that allows writing individual bits to a file.
@@ -89,11 +88,14 @@ class OutputBitStream:
         if self.file is not None:
             self.close()
 
+
 class EmptyStreamError(Exception):
     pass
 
+
 class CorruptedStreamError(Exception):
     pass
+
 
 class InputBitStream:
     def __init__(self, path):
@@ -135,6 +137,3 @@ class InputBitStream:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
-
-
-
