@@ -35,21 +35,22 @@ this mitigation.
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "04/08/2019"
 
-import sys
 import os
 import tempfile
 import functools
 import deprecation
 import enb
+from . import singleton_cli as _singleton_cli
 
 
-class OptionsBase(enb.singleton_cli.SingletonCLI):
+
+class OptionsBase(_singleton_cli.SingletonCLI):
     """Global options for all modules, without any positional or required argument.
     """
     pass
 
 
-@enb.singleton_cli.property_class(OptionsBase)
+@_singleton_cli.property_class(OptionsBase)
 class GeneralOptions:
     """Group of uncategorized options.
     """
@@ -61,7 +62,7 @@ class GeneralOptions:
         pass
 
 
-@enb.singleton_cli.property_class(OptionsBase)
+@_singleton_cli.property_class(OptionsBase)
 class ExecutionOptions:
     """General execution options.
     """
@@ -114,14 +115,14 @@ class ExecutionOptions:
         return int(value)
 
     @OptionsBase.property("rep", "repetition_count", "rep_count",
-                          action=enb.singleton_cli.PositiveIntegerAction)
+                          action=_singleton_cli.PositiveIntegerAction)
     def repetitions(self, value):
         """Number of repetitions when calculating execution times.
 
         This value allows computation of more reliable execution times in some experiments, but
         is normally most representative in combination with -s to use a single execution process at a time.
         """
-        enb.singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
     @OptionsBase.property("c", "selected_columns", nargs="+", type=str)
     def columns(self, value):
@@ -166,7 +167,7 @@ class ExecutionOptions:
         pass
 
 
-@enb.singleton_cli.property_class(OptionsBase)
+@_singleton_cli.property_class(OptionsBase)
 class RenderingOptions:
     """Options affecting the rendering of figures.
     """
@@ -177,21 +178,21 @@ class RenderingOptions:
         """
         return bool(value)
 
-    @OptionsBase.property("fw", "width", action=enb.singleton_cli.PositiveFloatAction)
+    @OptionsBase.property("fw", "width", action=_singleton_cli.PositiveFloatAction)
     def fig_width(self, value):
         """Figure width.
 
         Larger values may make text look smaller when the image is scaled to a constant size.
         """
-        enb.singleton_cli.PositiveFloatAction.assert_valid_value(value)
+        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
-    @OptionsBase.property("fh", "height", action=enb.singleton_cli.PositiveFloatAction)
+    @OptionsBase.property("fh", "height", action=_singleton_cli.PositiveFloatAction)
     def fig_height(self, value):
         """Figure height.
 
         Larger values may make text look smaller when the image is scaled to a constant size.
         """
-        enb.singleton_cli.PositiveFloatAction.assert_valid_value(value)
+        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
     @OptionsBase.property("ylpos", type=float)
     def global_y_label_pos(self, value):
@@ -202,11 +203,11 @@ class RenderingOptions:
         """
         return float(value)
 
-    @OptionsBase.property("legend_count", action=enb.singleton_cli.PositiveIntegerAction)
+    @OptionsBase.property("legend_count", action=_singleton_cli.PositiveIntegerAction)
     def legend_column_count(self, value):
         """Number of columns used in plot legends.
         """
-        enb.singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
     @OptionsBase.property(action="store_true")
     def show_grid(self, value):
@@ -221,47 +222,47 @@ class RenderingOptions:
         return str(value)
 
 
-@enb.singleton_cli.property_class(OptionsBase)
+@_singleton_cli.property_class(OptionsBase)
 class DirOptions:
     """Options regarding default data directories.
     """
 
 
 
-    @OptionsBase.property("d", action=enb.singleton_cli.ReadableDirAction, default=enb.default_base_dataset_dir)
+    @OptionsBase.property("d", action=_singleton_cli.ReadableDirAction, default=enb.default_base_dataset_dir)
     def base_dataset_dir(self, value):
         """Directory to be used as source of input files for indices in the get_df method
         of tables and experiments.
 
         It should be an existing, readable directory.
         """
-        enb.singleton_cli.ReadableDirAction.assert_valid_value(value)
+        _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
-    @OptionsBase.property("persistence", action=enb.singleton_cli.WritableOrCreableDirAction,
+    @OptionsBase.property("persistence", action=_singleton_cli.WritableOrCreableDirAction,
                           default=enb.default_persistence_dir)
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
         """
-        enb.singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Reconstructed version dir
-    @OptionsBase.property("reconstructed", action=enb.singleton_cli.WritableOrCreableDirAction)
+    @OptionsBase.property("reconstructed", action=_singleton_cli.WritableOrCreableDirAction)
     def reconstructed_dir(self, value):
         """Base directory where reconstructed versions are to be stored.
         """
-        enb.singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Versioned data dir
-    @OptionsBase.property("vd", "version_target_dir", action=enb.singleton_cli.WritableOrCreableDirAction)
+    @OptionsBase.property("vd", "version_target_dir", action=_singleton_cli.WritableOrCreableDirAction)
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
-        enb.singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Temp dir
     for default_tmp_dir in ["/dev/shm", "/var/run", tempfile.gettempdir()]:
         try:
-            enb.singleton_cli.WritableDirAction.assert_valid_value(default_tmp_dir)
+            _singleton_cli.WritableDirAction.assert_valid_value(default_tmp_dir)
             break
         except AssertionError:
             pass
@@ -269,7 +270,7 @@ class DirOptions:
         default_tmp_dir = os.path.expanduser("~/enb_tmp")
 
     @OptionsBase.property("t", "tmp", "tmp_dir",
-                          action=enb.singleton_cli.WritableOrCreableDirAction,
+                          action=_singleton_cli.WritableOrCreableDirAction,
                           default=default_tmp_dir)
     def base_tmp_dir(self, value):
         """Temporary dir used for intermediate data storage.
@@ -280,46 +281,46 @@ class DirOptions:
         The dir is created when defined if necessary.
         """
         os.makedirs(value, exist_ok=True)
-        enb.singleton_cli.WritableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableDirAction.assert_valid_value(value)
 
     # Base dir for external binaries (e.g., codecs or other tools)
     default_external_binary_dir = os.path.join(enb.calling_script_dir, "bin")
     default_external_binary_dir = default_external_binary_dir \
-        if enb.singleton_cli.ReadableDirAction.check_valid_value(default_external_binary_dir) else None
+        if _singleton_cli.ReadableDirAction.check_valid_value(default_external_binary_dir) else None
 
-    @OptionsBase.property(action=enb.singleton_cli.ReadableDirAction, default=default_external_binary_dir,
+    @OptionsBase.property(action=_singleton_cli.ReadableDirAction, default=default_external_binary_dir,
                           required=False)
     def external_bin_base_dir(self, value):
         """External binary base dir.
 
         In case a centralized repository is defined at the project or system level.
         """
-        enb.singleton_cli.ReadableDirAction.assert_valid_value(value)
+        _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     # Output plots dir
     default_output_plots_dir = os.path.join(enb.calling_script_dir, "plots")
     default_output_plots_dir = default_output_plots_dir \
-        if enb.singleton_cli.WritableOrCreableDirAction.check_valid_value(default_output_plots_dir) else None
+        if _singleton_cli.WritableOrCreableDirAction.check_valid_value(default_output_plots_dir) else None
 
     @OptionsBase.property(
-        action=enb.singleton_cli.WritableOrCreableDirAction,
+        action=_singleton_cli.WritableOrCreableDirAction,
         default=default_output_plots_dir)
     def plot_dir(self, value):
         """Directory to store produced plots.
         """
-        singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Output analysis dir
     default_analysis_dir = os.path.join(enb.calling_script_dir, "analysis")
     default_analysis_dir = default_analysis_dir \
-        if enb.singleton_cli.WritableOrCreableDirAction.check_valid_value(default_analysis_dir) else None
+        if _singleton_cli.WritableOrCreableDirAction.check_valid_value(default_analysis_dir) else None
 
     @OptionsBase.property("analysis",
-                          action=enb.singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
+                          action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
     def analysis_dir(self, value):
         """Directory to store analysis results.
         """
-        singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
 
 class Options(OptionsBase, GeneralOptions, ExecutionOptions, RenderingOptions, DirOptions):

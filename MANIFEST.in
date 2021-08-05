@@ -1,12 +1,13 @@
 include enb/aanalysis.py
-include enb/aini.py
-include enb/aoptions.py
 include enb/atable.py
 include enb/atemplate.py
 include enb/bitstream.py
-include enb/config.py
+include enb/config/aini.py
+include enb/config/aoptions.py
+include enb/config/enb.ini
+include enb/config/__init__.py
+include enb/config/singleton_cli.py
 include enb/context.py
-include enb/enb.ini
 include enb/experiment.py
 include enb/icompression.py
 include enb/__init__.py
@@ -121,7 +122,6 @@ include enb/plugins/test_all_codecs/__plugin__.py
 include enb/plugins/test_all_codecs/test_all_codecs.py
 include enb/ray_cluster.py
 include enb/sets.py
-include enb/singleton_cli.py
 include enb/tarlite.py
 include enb/tcall.py
 include enb/templates/experiment_template.py.enbt

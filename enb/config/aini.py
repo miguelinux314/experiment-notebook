@@ -28,14 +28,16 @@ import os
 import glob
 import ast
 import configparser
+import textwrap
 
 import enb
+from ..misc import Singleton as _Singleton
 
 
-class Ini(metaclass=enb.singleton_cli.Singleton):
+class Ini(metaclass=_Singleton):
     """Class of the enb.config.ini object, that exposes file-defined configurations.
     """
-    global_ini_path = os.path.join(enb.enb_installation_dir, "enb.ini")
+    global_ini_path = os.path.join(enb.enb_installation_dir, "config", "enb.ini")
     user_ini_path = os.path.join(enb.user_config_dir, "enb.ini")
     local_ini_paths = sorted(glob.glob(os.path.join(enb.calling_script_dir, "*.ini")),
                              key=lambda s: os.path.basename(s).lower())
@@ -71,9 +73,19 @@ class Ini(metaclass=enb.singleton_cli.Singleton):
         """
         return list(self.config_parser.items())
 
-    def __getitem__(self, item):
-        return self.config_parser.__getitem__(item)
+    def __repr__(self):
+        s = "File-based configuration for enb, originally read in this order:\n  - "
+        s += "\n  - ".join(self.used_config_paths)
+        s = textwrap.indent(s, "# ")
+        for section_name, section in sorted(ini.sections_by_name):
+            if not section:
+                continue
+            s += "\n\n"
+            s += f"[{section_name}]\n\n"
+            for k, v in sorted(section.items()):
+                s += f"{k} = {v}\n"
+        return s
 
-
+# Export the ini object
 ini = Ini()
 assert ini is Ini(), "Singleton not working for enb.config.ini"

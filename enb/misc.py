@@ -10,10 +10,12 @@ __date__ = "11/07/2021"
 
 import re
 
+
 def return_banner():
     """Returns the enb banner.
     """
     return f"\n{' [ enb - Experiment Notebook ] ':.^100}\n"
+
 
 def get_defining_class_name(f):
     """Return the name of the class of which f is a method, or None if not bound to any class.
@@ -85,6 +87,7 @@ def split_camel_case(camel_string):
     """
     return " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', camel_string))
 
+
 def get_all_subclasses(*base_classes):
     """Return a set of all subclasses of the classes in base_classes,
     which have been defined at this point.
@@ -100,3 +103,19 @@ def get_all_subclasses(*base_classes):
         subclasses.update(new_codec_classes)
 
     return set(cls for cls in subclasses if cls not in base_class_set)
+
+
+class Singleton(type):
+    """Classes using this as will only be instantiated once.
+    """
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        """This method replaces the regular initializer of classes with this as their metaclass.
+        *args and **kwargs are passed directly to their initializer and do not otherwise affect the Singleton behavior.
+        """
+        try:
+            return cls._instances[cls]
+        except KeyError:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+            return cls._instances[cls]
