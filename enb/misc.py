@@ -11,7 +11,7 @@ __date__ = "11/07/2021"
 import re
 
 
-def return_banner():
+def get_banner():
     """Returns the enb banner.
     """
     return f"\n{' [ enb - Experiment Notebook ] ':.^100}\n"

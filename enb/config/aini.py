@@ -24,7 +24,10 @@ Order is important because read properties overwrite any previously set values.
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
 __date__ = "18/09/2019"
 
+import argparse
 import os
+import sys
+import itertools
 import glob
 import ast
 import configparser
@@ -34,6 +37,29 @@ import enb
 from ..misc import Singleton as _Singleton
 
 
+class AdditionalIniParser(argparse.ArgumentParser):
+    def __init__(self):
+        super().__init__(add_help=False)
+        self.add_argument("--extra_ini_paths", "--ini", nargs="+", required=False, default=[])
+
+    def get_extra_ini_paths(self):
+        extra_ini_paths = []
+        parsed_options, remaining_options = self.parse_known_args()
+
+        if enb.is_enb_cli:
+            # The --ini option is not documented in the main enb CLI for simplicity. Remove it once
+            # it has been used to avoid any parsing error
+            sys.argv = sys.argv[0:1] + remaining_options
+
+        for path in parsed_options.extra_ini_paths:
+            if not os.path.exists(path):
+                print(enb.misc.get_banner())
+                print(f"Syntax error: input ini path {path} does not exist. Run with -h for help.")
+                sys.exit(1)
+            extra_ini_paths.append(os.path.abspath(path))
+        return extra_ini_paths
+
+
 class Ini(metaclass=_Singleton):
     """Class of the enb.config.ini object, that exposes file-defined configurations.
     """
@@ -41,6 +67,7 @@ class Ini(metaclass=_Singleton):
     user_ini_path = os.path.join(enb.user_config_dir, "enb.ini")
     local_ini_paths = sorted(glob.glob(os.path.join(enb.calling_script_dir, "*.ini")),
                              key=lambda s: os.path.basename(s).lower())
+    extra_ini_paths = AdditionalIniParser().get_extra_ini_paths()
 
     def __init__(self):
         super().__init__()
@@ -52,7 +79,7 @@ class Ini(metaclass=_Singleton):
         self.update_from_path(self.global_ini_path)
         if os.path.exists(self.user_ini_path):
             self.update_from_path(self.user_ini_path)
-        for ini_path in self.local_ini_paths:
+        for ini_path in itertools.chain(self.local_ini_paths, self.extra_ini_paths):
             self.update_from_path(ini_path)
 
     def update_from_path(self, ini_path):
@@ -85,6 +112,7 @@ class Ini(metaclass=_Singleton):
             for k, v in sorted(section.items()):
                 s += f"{k} = {v}\n"
         return s
+
 
 # Export the ini object
 ini = Ini()

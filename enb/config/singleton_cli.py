@@ -193,6 +193,7 @@ class SingletonCLI(metaclass=Singleton):
     _name_to_group = {}
     # Argument parser built dynamically as properties are defined
     _argparser = argparse.ArgumentParser(
+        # formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         argument_default=None,
         description="A number of options can be set via the command line interface, then "
@@ -205,7 +206,6 @@ class SingletonCLI(metaclass=Singleton):
     def __init__(self):
         """Initializer guaranteed to be called once thanks to the Singleton metaclass.
         """
-        super().__init__()
         # The _parsed_properties is the live dictionary of stored properties
         # Parse CLI options once, the first time the singleton instance is created.
         # The -h option is removed if called from the main command line, which
@@ -274,7 +274,9 @@ class SingletonCLI(metaclass=Singleton):
 
         :param group_name: the description of the group of parameters to be used. If None, the defining classe's
           docstring is used. If unavailable, the last employed group is assumed.
-        :param group_description: description of the current group of parameters.
+
+        :param group_description: description of the current group of parameters. If none, it is taken from
+          the calling class' docstring.
 
         :param kwargs: remaining arguments to be passed when initializing
           :class:`argparse.ArgumentParser` instances. See that class
@@ -312,25 +314,28 @@ class SingletonCLI(metaclass=Singleton):
                 if self.closure_group_name is None:
                     if defining_class_name is not None:
                         # From https://www.geeksforgeeks.org/python-split-camelcase-string-to-individual-strings/
-                        closure_group_name = split_camel_case(defining_class_name)
+                        self.closure_group_name = split_camel_case(defining_class_name)
                     else:
-                        closure_group_name = self.closure_cls._current_group_name
-                self.closure_cls._current_group_name = \
-                    self.closure_cls._current_group_name if closure_group_name is None else closure_group_name
-                self.closure_cls._current_group_description = \
-                    self.closure_cls._current_group_description if self.closure_group_description is None else self.closure_group_description
+                        self.closure_group_name = self.closure_cls._current_group_name
+                self.closure_cls._current_group_name = self.closure_group_name
 
                 # Automatically define new groups when needed
                 try:
+                    # Existing group case
                     arg_group = self.closure_cls._name_to_group[self.closure_cls._current_group_name]
-                    if self.closure_group_description is not None and arg_group.description != self.closure_group_description:
-                        raise ValueError(f"Cannot change a group's description once it is set. "
-                                         f"Previous value: {arg_group.description}. "
-                                         f"New value: {self.closure_group_description}.")
+                    if self.closure_group_description is not None:
+                        if self.closure_cls._current_group_name is None:
+                            self.closure_cls._current_group_name = self.closure_group_description
+                        else:
+                            assert self.closure_cls == self.closure_group_description, \
+                                (self.closure_cls, self.closure_group_description)
+
                 except KeyError:
+                    # New group case, set empty name for now
                     self.closure_cls._name_to_group[self.closure_cls._current_group_name] = \
-                        self.closure_cls._argparser.add_argument_group(self.closure_cls._current_group_name,
-                                                                  description=self.closure_cls._current_group_description)
+                        self.closure_cls._argparser.add_argument_group(
+                            self.closure_cls._current_group_name,
+                            description=self.closure_cls._current_group_description)
                     arg_group = self.closure_cls._name_to_group[self.closure_cls._current_group_name]
 
                 # Handle alias management
@@ -461,15 +466,18 @@ def property_class(base_option_cls: SingletonCLI):
                             description=decorated_cls.__doc__)
                         base_option_cls._name_to_group[split_camel_case(decorated_cls.__name__)] = group
                     group._add_action(action)
+                    group.description = decorated_cls.__doc__
 
                     # Only one matching property should exist
                     break
             else:
                 # The method was not decorated, adding it like this should suffice
                 base_option_cls.property(group_name=split_camel_case(base_option_cls.__name__),
-                                         group_description=base_option_cls.__doc__)(method)
+                                         group_description=decorated_cls.__doc__)(method)
                 # previous_action = None
                 pass
+
+        base_option_cls._current_group_description = decorated_cls.__doc__
 
         return decorated_cls
 

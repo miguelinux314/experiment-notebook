@@ -80,7 +80,7 @@ from .aini import ini
 from .aoptions import options, propagates_options, get_options, set_options
 
 if options.verbose:
-    print("-"*100)
+    print("-" * 100)
     print(repr(ini))
     print()
     print(repr(options))
