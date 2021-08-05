@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Miscelaneous tools for `enb`.
+"""Miscellaneous tools for `enb`.
 
 This module does not and should not import anything from enb, so that other modules
 may use misc tools at definition time.

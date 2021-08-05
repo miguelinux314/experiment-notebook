@@ -118,7 +118,7 @@ class PluginList(argparse.Action):
               end="")
         print("\n\t- ".join(sorted((f"{tag}: {len(installable_list)} plugins"
                                     for tag, installable_list in
-                                    enb.plugins.InstallableMeta.tag_to_installable.items()),
+                                    enb.plugins.installable.InstallableMeta.tag_to_installable.items()),
                                    key=lambda t: len(t[1]))))
         print()
 
