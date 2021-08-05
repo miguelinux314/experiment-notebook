@@ -1,6 +1,5 @@
 include enb/aanalysis.py
 include enb/atable.py
-include enb/atemplate.py
 include enb/config/aini.py
 include enb/config/aoptions.py
 include enb/config/enb.ini
@@ -16,7 +15,9 @@ include enb/misc.py
 include enb/ml.py
 include enb/pgm.py
 include enb/plotdata.py
+include enb/plugins/atemplate.py
 include enb/plugins/__init__.py
+include enb/plugins/installable.py
 include enb/plugins/plugin_ccsds122/ccsds122_codec.py
 include enb/plugins/plugin_ccsds122/.gitignore
 include enb/plugins/plugin_ccsds122/__plugin__.py
@@ -93,6 +94,7 @@ include enb/plugins/plugin_ndzip/Makefile.linux
 include enb/plugins/plugin_ndzip/ndzip_codec.py
 include enb/plugins/plugin_ndzip/__plugin__.py
 include enb/plugins/plugin_ndzip/README.txt
+include enb/plugins/plugin.py
 include enb/plugins/plugin_spdp/Makefile.linux
 include enb/plugins/plugin_spdp/__plugin__.py
 include enb/plugins/plugin_spdp/README.txt
