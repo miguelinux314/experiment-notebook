@@ -3,9 +3,9 @@
 """Wrapper for the JPEG-XL reference implementation
 """
 __author__ = "Ashwin Kumar Gururajan <ashwin.gururajan@uab.cat>"
-__date__ = "15/02/2021"
+__since__ = "15/02/2021"
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "09/02/2021"
+__since__ = "09/02/2021"
 
 
 import os

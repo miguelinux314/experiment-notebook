@@ -11,7 +11,7 @@ The experiment.CompressionExperiment class takes an instance of FilePropertiesTa
 to know what files the experiment should be run on.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "18/09/2019"
+__since__ = "18/09/2019"
 
 import os
 import glob

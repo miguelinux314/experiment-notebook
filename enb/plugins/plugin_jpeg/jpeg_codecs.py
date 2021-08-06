@@ -3,7 +3,7 @@
 """Wrappers for the reference JPEG implementation
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "08/04/2020"
+__since__ = "08/04/2020"
 
 import os
 import tempfile

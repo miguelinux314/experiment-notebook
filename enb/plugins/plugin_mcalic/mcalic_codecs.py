@@ -3,7 +3,7 @@
 """Wrappers for E. Maglis's M-CALIC implementation
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "30/04/2020"
+__since__ = "30/04/2020"
 
 import os
 import sortedcontainers

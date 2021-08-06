@@ -3,7 +3,7 @@
 """Unit tests for the aatable classes
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "07/05/2021"
+__since__ = "07/05/2021"
 
 import os
 import unittest

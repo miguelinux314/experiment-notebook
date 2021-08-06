@@ -3,7 +3,7 @@
 """Tools to connect to ray clusters
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "21/11/2019"
+__since__ = "21/11/2019"
 
 import os
 import ray

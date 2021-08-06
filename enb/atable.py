@@ -42,7 +42,7 @@ import glob
 from builtins import hasattr
 
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "19/09/2019"
+__since__ = "19/09/2019"
 
 import os
 import sys

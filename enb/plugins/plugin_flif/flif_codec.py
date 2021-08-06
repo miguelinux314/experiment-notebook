@@ -3,7 +3,7 @@
 """Codec wrapper for the FLIF lossless image coder (precursor of JPEG-LS)
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "09/02/2021"
+__since__ = "09/02/2021"
 
 import os
 import enb

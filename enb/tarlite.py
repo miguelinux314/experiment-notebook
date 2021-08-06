@@ -3,7 +3,7 @@
 """Lite archiving format to write several files into a single one.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "08/04/2020"
+__since__ = "08/04/2020"
 
 import os
 import collections
