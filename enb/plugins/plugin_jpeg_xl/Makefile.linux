@@ -36,7 +36,7 @@ LFLAGS += $(wildcard ./ext/*.a)
 PROGDIR?= ./jpegxl_git
 
 .PHONY: default
-default: zip dir dependences jpegxl clean
+default: zip dir dependences jpegxl clean-temp
 
 zip:
 	unzip jpegxl_git.zip
@@ -58,5 +58,8 @@ jpegxl:
 	cp ./tools/cjxl ../../ && \
 	cp ./tools/djxl ../../
 
-clean:
+clean: clean-temp
+	rm -rf cjxl djxl
+
+clean-temp:
 	rm -rf jpegxl_git
