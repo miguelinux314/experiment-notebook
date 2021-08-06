@@ -259,7 +259,8 @@ class DirOptions:
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Versioned data dir
-    @OptionsBase.property("vd", "version_target_dir", action=_singleton_cli.WritableOrCreableDirAction)
+    @OptionsBase.property("vd", "version_target_dir", action=_singleton_cli.WritableOrCreableDirAction,
+                          default=enb.default_base_dataset_dir)
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
@@ -304,9 +305,8 @@ class DirOptions:
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     # Output plots dir
-    default_output_plots_dir = os.path.join(enb.calling_script_dir, "plots")
-    default_output_plots_dir = default_output_plots_dir \
-        if _singleton_cli.WritableOrCreableDirAction.check_valid_value(default_output_plots_dir) else None
+    default_output_plots_dir = os.path.join(enb.calling_script_dir, "plots") \
+        if not enb.is_enb_cli else "./plots"
 
     @OptionsBase.property(
         action=_singleton_cli.WritableOrCreableDirAction,
@@ -317,9 +317,8 @@ class DirOptions:
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Output analysis dir
-    default_analysis_dir = os.path.join(enb.calling_script_dir, "analysis")
-    default_analysis_dir = default_analysis_dir \
-        if _singleton_cli.WritableOrCreableDirAction.check_valid_value(default_analysis_dir) else None
+    default_analysis_dir = os.path.join(enb.calling_script_dir, "analysis") \
+        if not enb.is_enb_cli else "./analysis"
 
     @OptionsBase.property("analysis",
                           action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)

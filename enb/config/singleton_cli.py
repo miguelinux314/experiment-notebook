@@ -267,6 +267,8 @@ class SingletonCLI(metaclass=Singleton):
 
         Note that modules and host code may choose to act differently than these options are intended.
 
+        Default values are taken from the file-based configuration proxy in ainit
+
         :param aliases: a list of aliases that can be used for the property in the command line.
 
         :param group_name: the name of the group of parameters to be used. If None, the defining classe's name
@@ -303,8 +305,8 @@ class SingletonCLI(metaclass=Singleton):
                     kwargs["default"] = ini.get_key("enb.config.options", decorated_method.__name__) \
                         if default is None else default
                 except KeyError as ex:
-                    raise SyntaxError(f"Could not find default value for option {decorated_method.__name__} "
-                                      f"in any of the known .ini files.") from ex
+                    raise SyntaxError(f"Could not find default value for option {repr(decorated_method.__name__)} "
+                                      f"in the call nor in any of the known .ini files.") from ex
 
                 cls.assert_setter_signature(decorated_method)
 
