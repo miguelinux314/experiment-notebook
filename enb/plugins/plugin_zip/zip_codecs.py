@@ -3,7 +3,7 @@
 """Wrappers for different types of LZ codecs such as Deflate, LZMA, BZIP2
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "04/01/2021"
+__since__ = "04/01/2021"
 
 import zlib
 import lzma

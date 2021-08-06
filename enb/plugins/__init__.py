@@ -32,3 +32,4 @@ Templates are very similar to plugins, with a few key differences:
 
 from .installable import Installable, import_all_installables, list_all_installables
 from .plugin import Plugin, PluginMake
+

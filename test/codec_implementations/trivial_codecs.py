@@ -3,7 +3,7 @@
 """Trivial codec implementations, mostly for testing purposes.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "31/03/2020"
+__since__ = "31/03/2020"
 
 import shutil
 import numpy as np

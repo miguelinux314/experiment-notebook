@@ -3,7 +3,7 @@
 """Generate the sample vectors for the codec availability test.
 """
 __author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "24/02/2021"
+__since__ = "24/02/2021"
 
 import os
 import shutil
