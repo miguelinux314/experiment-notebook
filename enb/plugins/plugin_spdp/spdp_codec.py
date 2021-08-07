@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Codec wrapper for the SPDP lossless image coder
+"""Codec wrapper for the SPDP codec
 """
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "01/08/2021"
 
 import os
 import enb
-from enb.config import options
 
 
 class Spdp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
@@ -13,8 +13,7 @@ class Spdp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, e
     All data types integer and float 16, 32, 64 can be compressed 
     """
 
-    def __init__(self,spdp_binary=os.path.join(os.path.dirname(__file__), "spdp"), compression_level=9):
-
+    def __init__(self, spdp_binary=os.path.join(os.path.dirname(__file__), "spdp"), compression_level=9):
         super().__init__(compressor_path=spdp_binary,
                          decompressor_path=spdp_binary,
                          param_dict=dict(compression_level=compression_level))
@@ -27,9 +26,7 @@ class Spdp(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, e
         return "SPDP"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f" {self.param_dict['compression_level']} <{original_path}>  {compressed_path}" 
-
+        return f" {self.param_dict['compression_level']} <{original_path}>  {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" < {compressed_path} > {reconstructed_path} "
-

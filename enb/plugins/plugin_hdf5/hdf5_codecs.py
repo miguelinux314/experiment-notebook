@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the HDF5 lossless image coder
 """
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "01/08/2021"
 
 import numpy as np
 import enb
-import h5py  # This is a specific require
+import h5py
 
 
 class AbstractHdf5Codec(enb.icompression.LosslessCodec):
@@ -25,7 +26,7 @@ class GZIP(AbstractHdf5Codec):
     """
 
     def compress(self, original_path, compressed_path, original_file_info):
-        with  open(original_path, "rb") as original_file, h5py.File(compressed_path, "w") as compressed_file:
+        with h5py.File(compressed_path, "w") as compressed_file:
             array = enb.isets.load_array_bsq(
                 file_or_path=original_path, image_properties_row=original_file_info)
             compressed_file.create_dataset('dataset_1', data=array, compression='gzip',

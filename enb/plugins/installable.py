@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Installable interface used for plugins and templates.
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "01/08/2021"
+
 import builtins
 import os
 import sys
@@ -38,8 +41,8 @@ class InstallableMeta(type):
                 InstallableMeta.name_to_installable[cls.name] = cls
         cls.label = cls.label.strip() if cls.label else cls.label
         cls.label = None if not cls.label else cls.label
-        cls.author = cls.author.strip() if cls.author else cls.author
-        cls.author = None if not cls.author else cls.author
+        cls.authors = [a.strip() for a in cls.authors] if cls.authors else cls.authors
+        cls.authors = [] if cls.authors is None else cls.authors
         cls.tags = {t.lower().strip() for t in cls.tags}
         for t in cls.tags:
             InstallableMeta.tag_to_installable[t].append(cls)
@@ -49,6 +52,12 @@ class InstallableMeta(type):
                               f"tested_on={repr(cls.tested_on)} contains invalid elements "
                               f"not in {repr(cls.valid_tested_on_strings)}.")
 
+        if cls.extra_requirements_message is None and "privative" in cls.tags:
+            cls.extra_requirements_message = """
+            Neither source code nor binaries of this plugin can be distributed by enb. 
+            It will be essentially useless unless you can provide the appropriate binaries.
+            """
+
 
 class Installable(metaclass=InstallableMeta):
     """Common interface to all Installable types, e.g., Plugins and Templates.
@@ -57,11 +66,21 @@ class Installable(metaclass=InstallableMeta):
     name = None
     # Human-friendly short phrase describing the Installable.
     label = None
-    # Author of the enb Installable - by default it's us, the enb team.
+    # Authors of the enb Installable - by default it's the main enb maintainer.
     # Subclasses may update this as necessary.
-    author = "The enb team"
+    authors = ["Miguel Hernández-Cabronero"]
     # List of string to provide soft categorization
     tags = {}
+
+    # Information about external ("contrib") software used by the Installable
+    # Author(s) of the external software
+    contrib_authors = []
+    # Reference URL(s) of the external software used by the Installable
+    contrib_reference_urls = []
+    # List of (url, name) tuples with contents needed for retrieving and building the external software.
+    # Each url must be a valid downloadable link, and name is the name set to the downloaded file
+    # inside the installation dir.
+    contrib_download_url_name = []
 
     # List of pip-installable python module names required by this Installable.
     # Subclasses must overwrite this member as necessary.
@@ -77,16 +96,6 @@ class Installable(metaclass=InstallableMeta):
     # NOTE: the equivalent to build-essential and cmake are expected by most make-based Installables,
     # e.g., PluginMake subclasses.
     extra_requirements_message = None
-
-    # Information about external ("contrib") software used by the Installable
-    # Author(s) of the external software
-    contrib_authors = []
-    # Reference URL(s) of the external software used by the Installable
-    contrib_reference_urls = []
-    # List of (url, name) tuples with contents needed for retrieving and building the external software.
-    # Each url must be a valid downloadable link, and name is the name set to the downloaded file
-    # inside the installation dir.
-    contrib_download_url_name = []
 
     # Indicates on what platforms this Installable is known to work.
     # Can contain zero, one, or more among "linux", "darwin", "windows".
@@ -168,6 +177,7 @@ class Installable(metaclass=InstallableMeta):
         """
         return textwrap.dedent(cls.__doc__)
 
+
 def import_all_installables():
     """Import all public enb Installables.
 
@@ -215,3 +225,14 @@ def list_all_installables(base_class=Installable, ignored_classes=[]):
                    if cls not in ignored_classes
                    and cls.name is not None],
                   key=lambda c: c.name.lower())
+
+# Lean description of the intention of each tag
+tag_to_description = {
+    "privative": "Plugins requiring privative (non-free) software, not distributable with enb",
+    "codec": "Data compression/decompression class definition",
+    "data compression": "Data compression tools",
+    "template": "Templates formatteable into the installation dir",
+    "project": "Project templates",
+    "test": "Plugins for testing purposes",
+    "demo": "Exhibit enb's functionality",
+}

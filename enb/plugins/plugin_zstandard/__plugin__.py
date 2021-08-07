@@ -1,6 +1,5 @@
 import enb.plugins
 
-
 class ZstandardPlugin(enb.plugins.PluginMake):
     name = "zstd"
     label = "Zstandard library wrapper"

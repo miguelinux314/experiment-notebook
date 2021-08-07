@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Locate, analyze, expose and catalogue dataset entries.
 
 The FilePropertiesTable class contains the minimal information about the file
@@ -10,11 +9,10 @@ Subclasses of this table can be created adding extra columns.
 The experiment.CompressionExperiment class takes an instance of FilePropertiesTable
 to know what files the experiment should be run on.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "18/09/2019"
 
 import os
-import glob
 import hashlib
 import ray
 import time

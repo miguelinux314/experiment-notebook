@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Codec wrapper for the FLIF lossless image coder (precursor of JPEG-LS
+"""Codec wrapper for the FLIF lossless image coder (precursor of JPEG-LS)
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "09/02/2021"
 
 import os
-import time
-import tempfile
-import subprocess
-import imageio
-import shutil
-import numpy as np
 import enb
 
 
 class ImageMarlin(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.PNGWrapperCodec):
     """Wrapper for the imageMarlin codec
     """
+
     def __init__(self,
                  qstep=1,
                  entfreq=1,

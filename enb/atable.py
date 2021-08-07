@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Automatic tables with implicit column definition.
 
 * Tables are created by specifying the index columns (one or more),
@@ -41,7 +40,7 @@ See ScalarDistributionAnalyzer for automatic reports using ATable
 import glob
 from builtins import hasattr
 
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "19/09/2019"
 
 import os

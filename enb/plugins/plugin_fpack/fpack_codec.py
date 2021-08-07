@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the Fpack lossless and lossy image coder 
 """
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "01/07/2021"
 
 import os
-import time
-import tempfile
-import subprocess
-import imageio
-import shutil
-import numpy as np
 import enb
 
 
 class Fpack(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
-    # TODO: update documentation
-
-    """Wrapper for the imageMarlin codec
+    """Wrapper for the imageMarlin codec.
     """
 
     def __init__(self,

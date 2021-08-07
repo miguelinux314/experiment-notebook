@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the FPC lossless image coder
 """
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "01/08/2021"
 
 import os
 import enb
-from enb.config import options
 
 
 class Fpc(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""Installable interface used for plugins and templates.
+"""Tools define plugin installables.
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "01/08/2021"
+
 import os
 import glob
 import inspect
@@ -47,6 +50,7 @@ class Plugin(Installable):
                              f"overwrite_destination={overwrite_destination}.")
         super().install(installation_dir=installation_dir,
                         overwrite_destination=True)
+        print(f"Plugin {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
 
     @classmethod
     def build(cls, installation_dir):

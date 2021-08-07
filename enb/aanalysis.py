@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Automatic analysis and report of of pandas :class:`pandas.DataFrames`
 (e.g., produced by :class:`enb.experiment.Experiment` instances)
 using pyplot.
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "01/01/2020"
 
 import os
 import itertools
 import math
 import collections
-
-import pdf2image
 import sortedcontainers
 import matplotlib
 import re
@@ -1602,7 +1601,6 @@ class ScalarDictAnalyzer(Analyzer):
                 output_plot_path = os.path.join(output_plot_dir, name)
 
             global_x_label = f"{column_to_properties[column].label}"
-
 
             margin = max(key_to_x_by_column[column].values()) / (10 * len(key_to_x_by_column[column])) \
                 if key_to_x_by_column[column] else 0

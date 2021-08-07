@@ -1,15 +1,13 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-# ================================
-# Experiment Notebook setup script
-# ================================
-#
-# Author: Miguel Hernández Cabronero <miguel.hernandez@uab.cat>
-#
-# Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
-#
-# Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
-# how to install this software.
+#!/usr/bin/env python3
+"""Installation script for the enb library.
+
+Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
+
+Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
+how to install this software.
+"""
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "19/09/2019"
 
 import io
 from setuptools import setup, find_packages

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Automatic file-based configuration login based on the INI format.
 
@@ -21,7 +20,7 @@ Order is important because read properties overwrite any previously set values.
 3. All `*.ini` files defined in the same folder as the called script, in lexicographical,
    case ignorant, order. No recursive folder search is performed.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "18/09/2019"
 
 import argparse
@@ -54,8 +53,7 @@ class AdditionalIniParser(argparse.ArgumentParser):
         for path in parsed_options.extra_ini_paths:
             if not os.path.exists(path):
                 print(enb.misc.get_banner())
-                print(f"Syntax error: input ini path {path} does not exist. Run with -h for help.")
-                sys.exit(1)
+                raise SyntaxError("Input ini path {path} does not exist. Run with -h for help.")
             extra_ini_paths.append(os.path.abspath(path))
         return extra_ini_paths
 
@@ -98,13 +96,13 @@ class Ini(metaclass=_Singleton):
     def sections_by_name(self):
         """Get a list of all configparser.Section instances, including the default section.
         """
-        return list(self.config_parser.items())
+        return dict(self.config_parser.items())
 
     def __repr__(self):
         s = "File-based configuration for enb, originally read in this order:\n  - "
         s += "\n  - ".join(self.used_config_paths)
         s = textwrap.indent(s, "# ")
-        for section_name, section in sorted(ini.sections_by_name):
+        for section_name, section in sorted(ini.sections_by_name.items()):
             if not section:
                 continue
             s += "\n\n"

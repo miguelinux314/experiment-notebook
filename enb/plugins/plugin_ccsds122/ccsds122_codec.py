@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrapper for the CCSDS 122.1 (MHDC) codec
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "29/05/2020"
 
 import os
 import math
 import enb.icompression
-from enb.config import options
 
 
 class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCodec):

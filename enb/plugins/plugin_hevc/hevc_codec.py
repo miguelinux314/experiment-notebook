@@ -1,13 +1,13 @@
-"""
-Wrapper for the HEVC codec, using the reference implementation from
+#!/usr/bin/env python3
+"""Wrapper for the HEVC codec, using the reference implementation from
 
 https://vcgit.hhi.fraunhofer.de/jvet/HM
 """
+__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__since__ = "01/09/2021"
 
 import os
 import math
-import enb
-from enb.config import options
 from enb import icompression
 
 

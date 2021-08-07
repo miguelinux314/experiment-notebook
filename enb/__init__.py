@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-"""Electronic notebook (enb) library.
+"""Electronic Notebook (enb) library.
+
+Please see https://github.com/miguelinux314/experiment-notebook for further information.
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "31/03/2020"
+
 import os as _os
 import sys as _sys
 import appdirs as _appdirs

@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrapper for the POT transform
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "25/05/2020"
 
 import os
 
-from enb.config import get_options
-
-options = get_options(from_main=False)
-
-import enb.icompression
+from enb.config import options
 from . import abstract_mhdc_transform
 
 pot_transform_number = 2
