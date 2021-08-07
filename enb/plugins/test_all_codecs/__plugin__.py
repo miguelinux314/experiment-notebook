@@ -5,8 +5,8 @@ import enb.plugins
 
 class TestAllCodecsPlugin(enb.plugins.Plugin):
     name = "test-codecs"
+    authors = ["Miguel Hernández-Cabronero"]
     label = "Install all codec plugins and test their availability"
-    contrib_authors = ["The enb library team"]
     contrib_reference_urls = ["https://github.com/miguelinux314/experiment-notebook"]
     tags = {"data compression", "test"}
     tested_on = {"linux"}

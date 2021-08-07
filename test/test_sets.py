@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Unit tests for sets.py
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "05/10/2019"
 
 import unittest

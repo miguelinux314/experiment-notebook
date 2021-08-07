@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrappers for the CCSDS 123.0-B-2 codecs.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "01/04/2020"
 
 import os

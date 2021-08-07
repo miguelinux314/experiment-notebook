@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Evaluate the availability of data compressor/decompressor pairs (codecs) defined for enb.
 
 By default, all detected, non-"abstract" codecs are tested.
 If one or more command line arguments are passed, only codec classes matching that name will be tested.
 Empty codec selections are invalid.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "06/07/2021"
 
 import sys

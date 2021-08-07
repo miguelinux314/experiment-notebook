@@ -1,20 +1,18 @@
+#!/usr/bin/env python3
 """
 Wrappers for the Kakadu codec.
 For instructions on downloading and installing visit:
 https://github.com/miguelinux314/experiment-notebook/blob/master/enb/pluginsplugin_kakadu/README.md
 """
+__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__since__ = "01/08/2021"
+
 import math
 import numpy as np
 import os
-import sys
-import subprocess
 import tempfile
 from enb import icompression
-from enb.config import get_options
 from enb import isets
-from enb import tcall
-
-options = get_options()
 
 
 class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
@@ -91,8 +89,8 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
                + (f"Qstep=0.000000001 " if self.param_dict['bit_rate'] is not None else "") \
                + f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
-               f"{'-rate ' + str(self.param_dict['bit_rate'] * original_file_info['component_count']) if self.param_dict['bit_rate'] else ''}" \
-               f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
+                 f"{'-rate ' + str(self.param_dict['bit_rate'] * original_file_info['component_count']) if self.param_dict['bit_rate'] else ''}" \
+                 f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
@@ -140,7 +138,7 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                     # print(f"[watch] self.param_dict['bit_rate'] - actual_bps={self.param_dict['bit_rate'] - actual_bps}")
                     # print()
                 print(f"[watch] psnr_error={psnr_error}")
-                    
+
 
 
 

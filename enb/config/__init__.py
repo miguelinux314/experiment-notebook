@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 # The config module
 
@@ -73,6 +72,8 @@ From there on, many enb functions adhere to the following principle:
 2. If a parameter with default value None is set to None or not specified,
    its value is set based on the properties in `enb.config.options`.
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "1/08/2021"
 
 # enb.config.ini : file-based config management
 from .aini import ini

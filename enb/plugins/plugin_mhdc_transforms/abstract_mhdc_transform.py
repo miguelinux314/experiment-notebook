@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Template class for transformation using mhdctransform
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "25/05/2020"
 
 import os
@@ -43,7 +42,7 @@ class MHDCPropertiesTable(MHDCGeometryTable, enb.isets.ImagePropertiesTable):
 
 class MHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImagePropertiesTable):
     mhdc_transform_path = default_mhdc_binary_path
-    
+
     invocation_output_folder = None
 
     @property

@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""Entropy point for the enb CLI.
+"""Entropy point for the main enb CLI.
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "01/08/2021"
 
 import os
+import sys
 import argparse
+import textwrap
 import enb.plugins
 
 
 def CLIParser():
-    """Return the main argument parser for enb.
+    """Produce and return the main argument parser for enb.
     """
     cli_parser = argparse.ArgumentParser(
         prog="enb",
@@ -35,17 +39,26 @@ def CLIParser():
         help="Path to the directory that will contain the installed plugin.")
     cli_parser.plugin_parser.install_parser.add_argument(
         # Used to trigger the desired call and save the return status
-        nargs=0, dest="status", action=PluginInstall)
+        nargs=0, dest="", action=PluginInstall)
 
     # # plugin list
     cli_parser.plugin_parser.list_parser = cli_parser.plugin_parser.subparsers.add_parser(
         "list", help="List available plugins.")
     cli_parser.plugin_parser.list_parser.add_argument(
+        "-v", action="count", default=0, help="Show additional information about the available plugins.")
+    filtering_group = cli_parser.plugin_parser.list_parser.add_argument_group("Filtering options")
+    filtering_group.add_argument(
+        "--exclude", nargs="*", metavar="exclude_name", default=[], type=str,
+        required=False,
+        help="If provided, plugins matching any of these arguments are not listed. "
+             "It overwrites the filter argument(s).")
+    filtering_group.add_argument(
         "filter", nargs="*",
-        help="If provided, only plugins matching the filter string (e.g., by name or tag) are listed")
+        help="If provided, only plugins matching passed string(s) are listed.")
+
     cli_parser.plugin_parser.list_parser.add_argument(
         # Used to trigger the desired call and save the return status
-        nargs=0, dest="status", action=PluginList)
+        nargs=0, dest="", action=PluginList)
 
     # Template command
     cli_parser.template_parser = cli_parser.subparsers.add_parser("template", help="Instantiate and manage templates.")
@@ -56,12 +69,15 @@ def CLIParser():
         "format", help="Format an input template and save the result.")
 
     # Help command
-    cli_parser.template_parser = cli_parser.subparsers.add_parser("help", help="Show this help and exit.")
+    cli_parser.help_parser = cli_parser.subparsers.add_parser("help", help="Show this help and exit.")
 
     return cli_parser
 
 
 class PluginInstall(argparse.Action):
+    """Action for installing an installable (Plugin, Template, etc).
+    """
+
     def __call__(self, parser, namespace, values, option_string=None):
         plugin_name = namespace.plugin_name.strip()
         assert " " not in plugin_name, f"Plugin names cannot have spaces: {repr(plugin_name)}"
@@ -75,52 +91,127 @@ class PluginInstall(argparse.Action):
 
         if os.path.exists(destination_dir):
             raise ValueError(f"The destination dir {repr(destination_dir)} already exists. Remove and try again.")
-        plugin.install(installation_dir=destination_dir)
+        try:
+            plugin.install(installation_dir=destination_dir)
+        except SyntaxError as ex:
+            print(f"Error installing plugin {repr(plugin_name)}: {ex}")
+            sys.exit(1)
 
         # Set status
         setattr(namespace, self.dest, 0)
 
 
 class PluginList(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        all_plugins = enb.plugins.list_all_installables()
-        if not namespace.filter:
-            filtered_plugins = all_plugins
-        else:
-            filtered_plugins = []
-            for p in all_plugins:
-                if any(f.lower() in p.name.lower() or
-                       (p.label.lower() and f in p.label.lower()) or
-                       any(f.lower() in author.lower() for author in p.contrib_authors)
-                       or any(any(f.lower() in t for t in p.tags) for f in namespace.filter)
-                       or any(any(f.lower() in t for t in p.tested_on) for f in namespace.filter)
-                       for f in namespace.filter):
-                    filtered_plugins.append(p)
+    """Action for listing available plugins.
+    """
 
-        if namespace.filter and not filtered_plugins:
+    def installable_matches_querys(self, installable, query_list):
+        """Return true if and only if the installable matches any of the provided queries.
+        """
+        return any(query.lower() in installable.name.lower() or
+                   (installable.label.lower() and query in installable.label.lower()) or
+                   any(query.lower() in author.lower() for author in installable.contrib_authors)
+                   or any(any(query.lower() in t for t in installable.tags) for f in query_list)
+                   or any(any(query.lower() in t for t in installable.tested_on) for f in query_list)
+                   for query in query_list)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        all_installables = enb.plugins.list_all_installables()
+        filtered_installables = [
+            i for i in all_installables
+            if self.installable_matches_querys(i, namespace.filter if namespace.filter else [])] \
+            if namespace.filter else all_installables
+
+        if namespace.exclude:
+            filtered_installables = [i for i in filtered_installables
+                                     if not self.installable_matches_querys(i, namespace.exclude)]
+
+        if namespace.filter and not filtered_installables:
             print(f"No plugin matched the filter criteria ({repr(namespace.filter)}).")
         else:
-            print(f"Showing {len(filtered_plugins)} plugins", end="")
+            print(f"Showing {len(filtered_installables)} plugins", end="")
             if namespace.filter:
-                print(f" (filtered with {repr(namespace.filter)}), out of {len(all_plugins)} available)")
+                print(f" matching {'any of ' if len(namespace.filter) > 1 else ''}"
+                      f"{', '.join(repr(f) for f in namespace.filter)}, "
+                      f"out of {len(all_installables)} available)", end="")
             else:
-                print(". You can filter this list by adding arguments to this command.")
-            print()
+                print(". You can add arguments to filter this list, and/or use the --exclude argument", end="")
+            print(".\n")
 
-            for p in filtered_plugins:
-                label = p.label if p.label else ''
-                label = f"{label} (privative)" if "privative" in p.tags else label
-                print(f"{p.name:>15s} :: {label:55s}" +
-                      (f" ({', '.join(a for a in p.contrib_authors)})" if p.contrib_authors else ""))
+            for installable in filtered_installables:
+                label = installable.label if installable.label else ''
+                label = f"{label} (privative)" if "privative" in installable.tags else label
+                print(f"{installable.name:>15s} :: ", end="")
+                print("\n".join(textwrap.wrap(label, 100)), end="")
+                print("." if label[0] != "." else "")
+                if enb.config.options.verbose:
+                    indentation_string = " " * (15 + len(" :: "))
+                    if installable.authors:
+                        print(textwrap.indent
+                              (f"* Plugin author{'s' if len(installable.authors) != 1 else ''}:",
+                               indentation_string))
+                        for author in installable.authors:
+                            print(textwrap.indent(f"  - {author}", indentation_string))
+                    if installable.contrib_authors:
+                        print(textwrap.indent(
+                            f"* External software author{'s' if len(installable.contrib_authors) != 1 else ''}:",
+                            indentation_string))
+                        for author in installable.contrib_authors:
+                            print(textwrap.indent(f"  - {author}", indentation_string))
+                    if installable.contrib_reference_urls:
+                        print(textwrap.indent(
+                            f"* Reference URL{'s' if len(installable.contrib_reference_urls) != 1 else ''}:",
+                            indentation_string))
+                        for url in installable.contrib_reference_urls:
+                            print(textwrap.indent(f"  - {url}", indentation_string))
+                    if installable.contrib_download_url_name:
+                        print(textwrap.indent(
+                            f"* External software URL{'s' if len(installable.contrib_download_url_name) != 1 else ''}:",
+                            indentation_string))
+                        for url, name in installable.contrib_download_url_name:
+                            print(textwrap.indent(f"  - {url}", indentation_string))
+                            print(textwrap.indent(f"     -> <installation_dir>/{name}", indentation_string))
+                    if installable.required_pip_modules:
+                        print(textwrap.indent(f"* Automatically installed pip "
+                                              f"{'libraries' if len(installable.required_pip_modules) > 1 else 'library'}:",
+                                              indentation_string))
+                        for name in installable.required_pip_modules:
+                            print(textwrap.indent(f"  - {name}", indentation_string))
+                    if installable.extra_requirements_message:
+                        print(textwrap.indent(f"* WARNING: some requirements might need to be manually satisfied:",
+                                              indentation_string))
+                        print(textwrap.indent(installable.extra_requirements_message.strip(),
+                                              indentation_string + "    "))
+                    if installable.tags:
+                        print(textwrap.indent(f"* Tag{'s' if len(installable.tags) != 1 else ''}: "
+                                              f"{', '.join(repr(t) for t in installable.tags)}",
+                                              indentation_string))
+                    if installable.tested_on:
+                        print(textwrap.indent(f"* Tested on: {', '.join(sorted(installable.tested_on))}",
+                                              indentation_string))
+
+                    print()
         print()
 
-        print("The following plugin tags have been defined and can be used for filtering:\n\n\t- ",
-              end="")
-        print("\n\t- ".join(sorted((f"{tag}: {len(installable_list)} plugins"
-                                    for tag, installable_list in
-                                    enb.plugins.installable.InstallableMeta.tag_to_installable.items()),
-                                   key=lambda t: len(t[1]))))
+        print("The following plugin tags have been defined and can be used for filtering:\n")
+        max_tag_length = max(len(t) for t in enb.plugins.installable.InstallableMeta.tag_to_installable.keys())
+        tag_fmt_str = f"{{tag:{max_tag_length}s}}"
+        for tag, installable_list in sorted(
+                enb.plugins.installable.InstallableMeta.tag_to_installable.items(),
+                key=lambda t: (-len(t[1]), t[0])):
+            print(f"  - {tag_fmt_str.format(tag=tag)} ({len(installable_list):3d} "
+                  f"{'' if len(installable_list) != 1 else ' '}plugin{'s' if len(installable_list) != 1 else ''})",
+                  end="")
+            try:
+                print(f" {enb.plugins.installable.tag_to_description[tag]}", end="")
+                print("" if enb.plugins.installable.tag_to_description[tag].endswith(".") else ".")
+            except KeyError:
+                print()
+
         print()
+        print("Run"
+              f"{' with -v for authorship and additional information,' if not enb.config.options.verbose else ''}"
+              " with -h for full help.")
 
 
 def main():
@@ -136,6 +227,9 @@ def main():
     elif options.command == "help":
         cli_parser.print_help()
         return
+    else:
+        # Successful command run
+        print()
 
 
 if __name__ == '__main__':

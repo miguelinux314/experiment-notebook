@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Module to define global option classes that can be instantiated only once,
 and that can semi-automatically create command-line interfaces based on the
 user's definition of configurable variables.
@@ -11,7 +10,7 @@ Basic usage:
 Properties are added by decorating functions. Multiple inheritance is possible with classes that decorate
 CLI properties, just make sure to subclass from GlobalOptions.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "06/02/2021"
 
 import os

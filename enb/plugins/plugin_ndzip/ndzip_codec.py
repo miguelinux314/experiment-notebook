@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the Ndzip lossless image coder
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "25/05/2020"
 
 import os
 import enb

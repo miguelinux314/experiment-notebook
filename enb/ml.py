@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+"""Automatic analysis and report of of pandas :class:`pandas.DataFrames`
+(e.g., produced by :class:`enb.experiment.Experiment` instances)
+using pyplot.
+"""
+__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__since__ = "01/09/2021"
+
 import inspect
 import os
 import time
@@ -8,7 +16,6 @@ import numpy as np
 import enb
 import enb.atable
 from enb import experiment
-from enb import sets
 from enb.config import get_options
 from enb.atable import indices_to_internal_loc
 

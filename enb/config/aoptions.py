@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Implementation of the classes for the enb.config.options and CLI interface
 
@@ -32,7 +31,7 @@ e.g., with `f.remote(options=ray.put(enb.config.options))` if f is your `@ray.re
 The `@enb.config.propagates_options` decorator provides a slightly cleaner way of automating
 this mitigation.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "04/08/2019"
 
 import os

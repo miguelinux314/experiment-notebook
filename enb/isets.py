@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Image sets information tables
 """
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "01/04/2020"
 
 import os
 import math
 import numpy as np
 import re
-import collections
 import imageio
-
-import enb.sets
-from enb.config import get_options
-
-options = get_options(from_main=False)
-
+import enb
+from enb.config import options
 from enb import atable
 from enb import sets
-
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/04/2020"
 
 
 def entropy(data):

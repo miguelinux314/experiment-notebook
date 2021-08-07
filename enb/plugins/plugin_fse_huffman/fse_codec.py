@@ -1,6 +1,11 @@
+#!/usr/bin/env python3
+"""FSE codec wrapper
+"""
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "01/06/2021"
+
 import os
 from enb import icompression
-from enb.config import options
 
 class FSE(icompression.WrapperCodec, icompression.LosslessCodec):
     def __init__(self):
