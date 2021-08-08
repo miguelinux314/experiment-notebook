@@ -127,7 +127,7 @@ class PluginList(argparse.Action):
                                      if not self.installable_matches_querys(i, namespace.exclude)]
 
         if namespace.filter and not filtered_installables:
-            print(f"No plugin matched the filter criteria ({repr(namespace.filter)}).")
+            print(f"No plugin matched the filter criteria ({', '.join(repr(f) for f in namespace.filter)}).")
         else:
             print(f"Showing {len(filtered_installables)} plugins", end="")
             if namespace.filter:
@@ -218,7 +218,7 @@ def main():
     print(enb.misc.get_banner())
 
     cli_parser = CLIParser()
-    options = cli_parser.parse_args()
+    options, unused_options = cli_parser.parse_known_args()
 
     if options.command is None:
         print("No command provided. Showing help instead.\n")

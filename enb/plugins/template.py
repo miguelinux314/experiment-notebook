@@ -6,6 +6,7 @@ Templates are very similar to plugins, but use jinja to transform `.enbt` templa
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "01/08/2021"
 
+import sys
 import argparse
 import inspect
 import os
@@ -14,12 +15,19 @@ import shutil
 import tempfile
 import jinja2
 
-from .installable import Installable
+from .installable import Installable, InstallableMeta
 import enb.config
 from enb.config import options
 
 
-class Template(Installable):
+class MetaTemplate(InstallableMeta):
+    def __init__(cls, *args, **kwargs):
+        if cls.__name__ != "Template":
+            cls.tags.add("template")
+        super().__init__(*args, **kwargs)
+
+
+class Template(Installable, metaclass=MetaTemplate):
     """
     Base class to define templates. Subclasses must be defined in the __plugin__.py file of the template's
     source dir.
@@ -34,8 +42,8 @@ class Template(Installable):
     - One or more templates can be installed into an existing directory, the __plugin__.py file is not written
       by default to the installation dir.
     """
-    # Set of required field names for this template.
-    required_fields = set()
+    # Map of required field names to their corresponding help
+    required_fields_to_help = dict()
 
     # Files in the template's source dir ending with templatable_extension
     # are subject to jinja templating upon installation.
@@ -60,16 +68,27 @@ class Template(Installable):
         """
         # If there are required fields, satisfy them or fail
         fields = dict(fields) if fields is not None else dict()
-        if cls.required_fields:
-            ini_fields = cls.get_field_parser().parse_known_args()[0]
-            for field_name in cls.required_fields:
+        if cls.required_fields_to_help:
+            ini_cli_fields, unused_options = cls.get_field_parser().parse_known_args()
+            # Syntax is "plugin install <template> <installation>, so
+            # four non-parsed options are expected
+            assert len(unused_options) >= 4, (sys.argv, ini_cli_fields, unused_options)
+            unused_options = unused_options[4:]
+
+            for field_name in cls.required_fields_to_help:
                 if field_name not in fields:
                     try:
-                        fields[field_name] = getattr(ini_fields, field_name)
-                    except KeyError as ex:
+                        fields[field_name] = getattr(ini_cli_fields, field_name)
+                        assert fields[field_name] is not None
+                    except (KeyError, AssertionError) as ex:
                         raise SyntaxError(
                             f"Missing field {repr(field_name)}.\n\n"
-                            f"Invoke again with --{field_name} or with -h for additional help.\n") from ex
+                            f"Invoke again with --{field_name}=your_value or with -h for additional help.\n") from ex
+            if unused_options:
+                print(f"Warning: unused option{'s' if len(unused_options) > 1 else ''}. \n  - ", end="")
+                print('\n  - '.join(repr(o) for o in unused_options))
+                print(f"NOTE: You can use '' or \"\" to define fields with spaces in them.")
+                print()
 
         template_src_dir = os.path.dirname(os.path.abspath(inspect.getfile(cls)))
         for input_path in glob.glob(os.path.join(template_src_dir, "*")):
@@ -114,13 +133,13 @@ class Template(Installable):
     @classmethod
     def get_field_parser(cls):
         description = f"Template {repr(cls.name)} installation help."
-        if cls.required_fields:
+        if cls.required_fields_to_help:
             description += f"\n\nFields are automatically read from the following paths (in this order):\n"
             description += "\n".join(enb.config.ini.used_config_paths)
 
             # defined_description = f"\n\nAlready refined fields:"
             defined_field_lines = []
-            for field_name in cls.required_fields:
+            for field_name in sorted(cls.required_fields_to_help.keys()):
                 try:
                     defined_field_lines.append(f"  {field_name} = {enb.config.ini.get_key('template', field_name)}")
                 except KeyError:
@@ -133,15 +152,19 @@ class Template(Installable):
             prog=f"enb plugin install {cls.name}",
             description=description,
             formatter_class=argparse.RawTextHelpFormatter)
-        required_flags_group = parser.add_argument_group("Required flags")
-        for field_name in cls.required_fields:
+        required_flags_group = parser.add_argument_group(
+            "Required flags (use '' or \"\" quoting for fields with spaces)")
+        for field_name, field_help in cls.required_fields_to_help.items():
             try:
                 default_field_value = enb.config.ini.get_key("template", field_name)
             except KeyError:
                 default_field_value = None
+            if field_help[-1] != ".":
+                field_help += "."
             required_flags_group.add_argument(
                 f"--{field_name}",
                 default=default_field_value,
+                help=field_help,
                 metavar=field_name)
         # This argument is for showing help to the user only, since it will have already been parsed
         # by enb.config.ini by the time this is called.
