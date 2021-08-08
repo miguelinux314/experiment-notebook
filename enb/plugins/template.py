@@ -11,6 +11,9 @@ import inspect
 import os
 import glob
 import shutil
+import tempfile
+import jinja2
+
 from .installable import Installable
 import enb.config
 from enb.config import options
@@ -39,47 +42,71 @@ class Template(Installable):
     templatable_extension = ".enbt"
 
     @classmethod
-    def install(cls, installation_dir, overwrite_destination=False):
+    def install(cls, installation_dir, overwrite_destination=False, fields=None):
+        """Install a template into the given dir. See super().install for more information.
+
+        :param installation_dir: directory where the contents of the template are placed.
+          It will be created if not existing.
+        :param overwrite_destination: if False, a SyntaxError is raised if any of the
+          destination contents existed prior to this call. Note that installation_dir
+          can already exist, it is the files and directories moved into it that can
+          trigger this SyntaxError.
+        :param fields: if not None, it must be a dict-like object containing a field to field value
+          mapping. If None, it is interpreted as an empty dictionary.
+          Required template fields not present in fields will be then read from the CLI
+          arguments. If those are not provided, then the default values read from `*.ini`
+          configuration files. If any required field cannot not satisfied after this,
+          a SyntaxError is raised.
+        """
+        # If there are required fields, satisfy them or fail
+        fields = dict(fields) if fields is not None else dict()
         if cls.required_fields:
-            template_fields = cls.get_field_parser().parse_known_args()[0]
+            ini_fields = cls.get_field_parser().parse_known_args()[0]
             for field_name in cls.required_fields:
-                if getattr(template_fields, field_name) is None:
-                    raise SyntaxError(f"Missing field {repr(field_name)}.\n\n"
-                                      f"Invoke again with --{field_name} or with -h for additional help.\n")
+                if field_name not in fields:
+                    try:
+                        fields[field_name] = getattr(ini_fields, field_name)
+                    except KeyError as ex:
+                        raise SyntaxError(
+                            f"Missing field {repr(field_name)}.\n\n"
+                            f"Invoke again with --{field_name} or with -h for additional help.\n") from ex
 
         template_src_dir = os.path.dirname(os.path.abspath(inspect.getfile(cls)))
         for input_path in glob.glob(os.path.join(template_src_dir, "*")):
-            if os.path.basename(input_path) == "__pycache__":
+            if os.path.basename(input_path) in ["__pycache__", "__plugin__.py"]:
                 continue
 
-            if os.path.basename(input_path) == "__plugin__.py":
-                # Templates don't copy the __plugin__.py
-                continue
+            # By default, the original structure and file names are preserved.
             output_path = os.path.abspath(input_path).replace(
                 os.path.abspath(template_src_dir),
                 os.path.abspath(installation_dir))
 
-            template_src_path = None
-            if output_path.endswith(cls.templatable_extension):
-                template_src_path = output_path
+            is_templatable = os.path.isfile(input_path) \
+                             and os.path.basename(input_path).endswith(cls.templatable_extension)
+            if is_templatable:
+                tmp_input_file = tempfile.NamedTemporaryFile()
+                templated_path = tmp_input_file.name
+
+                with open(templated_path, "w") as templated_file:
+                    jinja_env = jinja2.Environment(
+                        loader=jinja2.FileSystemLoader("/"),
+                        autoescape=jinja2.select_autoescape())
+                    template = jinja_env.get_template(os.path.abspath(input_path))
+                    templated_file.write(template.render(**fields))
+
+                input_path = templated_path
                 output_path = output_path[:-len(cls.templatable_extension)]
 
             if os.path.exists(output_path) and not options.force:
                 raise ValueError(
                     f"Error installing template {cls.name}: output file {repr(output_path)} already exists "
-                    f"and options.force={options.force}.")
+                    f"and options.force={options.force}. Run with -f to overwrite.")
 
-            if template_src_path is None:
-                # Regular file or dir, copy directly
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                if os.path.isdir(input_path):
-                    shutil.copytree(input_path, output_path, dirs_exist_ok=True)
-                else:
-                    shutil.copyfile(input_path, output_path)
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            if os.path.isdir(input_path):
+                shutil.copytree(input_path, output_path, dirs_exist_ok=True)
             else:
-                # Templatable file - fields need to be applied
-                print(f"[watch] cls.required_fields={cls.required_fields}")
-                print("TODO: apply majic!")
+                shutil.copyfile(input_path, output_path)
 
         cls.build(installation_dir=installation_dir)
         print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")

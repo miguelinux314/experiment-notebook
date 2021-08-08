@@ -60,7 +60,7 @@ setup(
     setup_requires=['wheel', 'deprecation'],
     install_requires=[
         'numpy', 'pandas', 'matplotlib', 'scipy', 'ray[default]', 'psutil', 'redis', 'appdirs',
-        'imageio', 'numpngw', 'requests', 'astropy',
+        'imageio', 'numpngw', 'requests', 'astropy', 'jinja2',
         'deprecation', 'recordclass', 'sortedcontainers', 'wheel', 'pdf2image', 'sphinx_rtd_theme',
     ],
 
