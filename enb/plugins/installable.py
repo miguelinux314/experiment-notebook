@@ -103,7 +103,8 @@ class Installable(metaclass=InstallableMeta):
 
     @classmethod
     def install(cls, installation_dir, overwrite_destination=False):
-        """Install this Installable into installation_dir.
+        """Install this Installable into installation_dir. By default, copy all contents
+        of the Installable's source dir and install the declared pip requirements.
 
         :param overwrite_destination: if True, if the destination exists prior to this call,
           it is removed before installation
@@ -225,6 +226,7 @@ def list_all_installables(base_class=Installable, ignored_classes=[]):
                    if cls not in ignored_classes
                    and cls.name is not None],
                   key=lambda c: c.name.lower())
+
 
 # Lean description of the intention of each tag
 tag_to_description = {
