@@ -505,10 +505,11 @@ class ATable(metaclass=MetaTable):
         assert len(chunk_list) > 0
         for i, chunk in enumerate(chunk_list):
             if options.verbose:
-                print(f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} (chunk_size={chunk_size})"
-                      f"@@ {100 * i * chunk_size / len(target_indices):.1f}"
-                      f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
-                      f"({datetime.datetime.now()})")
+                print(
+                    f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} (chunk_size={chunk_size}, "
+                    f"{100 * i * chunk_size / len(target_indices):.1f}"
+                    f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}%) "
+                    f"@ {datetime.datetime.now()}")
             df = self.get_df_one_chunk(
                 target_indices=chunk, target_columns=target_columns, fill=fill,
                 overwrite=overwrite, parallel_row_processing=parallel_row_processing)
@@ -552,7 +553,8 @@ class ATable(metaclass=MetaTable):
                 column_fun_tuples = [t for t in column_fun_tuples if t[0] in target_columns]
                 assert column_fun_tuples, (target_columns, sorted(self.column_to_properties.keys()))
                 if options.verbose:
-                    print(f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
+                    print(
+                        f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
 
             if not parallel_row_processing:
                 # Serial computation, e.g., to favor accurate time measurements
@@ -587,12 +589,16 @@ class ATable(metaclass=MetaTable):
                     if options.verbose:
                         if ids_ready:
                             time_per_id = (time.time() - time_before) / len(ids_ready)
-                            eta = (len(processed_row_ids) - len(ids_ready)) * time_per_id
-                            msg = f"ETA: {eta} s"
+                            eta_seconds = math.ceil((len(processed_row_ids) - len(ids_ready)) * time_per_id)
+                            hours = eta_seconds // (60 * 60)
+                            minutes = (eta_seconds % (60 * 60)) // 60
+                            seconds = (eta_seconds % (60 * 60)) % 60
+                            msg = f" Approximate completion time estimation: {hours}h {minutes}min {seconds}s"
                         else:
-                            msg = "No ETA available"
+                            msg = ""
 
-                        print(f"[I]nfo: {len(ids_ready)} / {len(processed_row_ids)} ready @ {datetime.datetime.now()}. {msg}")
+                        print(f"[I]nfo: {len(ids_ready)} / {len(processed_row_ids)} ready @ "
+                              f"{datetime.datetime.now()}.{msg}")
                 returned_values = ray.get(processed_row_ids)
 
             unpacked_target_indices = list(indices_to_internal_loc(unpack_index_value(target_index))
@@ -808,6 +814,7 @@ class ATable(metaclass=MetaTable):
     def name(self):
         return f"{self.__class__.__name__}"
 
+
 class SummaryTable(ATable):
     """Summary tables allow to define custom group rows of dataframes, e.g., produced by ATable subclasses,
     and to define new columns (measurements) for each of those groups.
@@ -827,6 +834,7 @@ class SummaryTable(ATable):
     SummaryTable can be particularly useful as an intermediate step between a complex table's (or enb.Experiment's)
     get_df and the analyze_df method of analyzers en :mod:`enb.aanalysis`.
     """
+
     def __init__(self, reference_df, reference_column_to_properties=None, copy_df=False,
                  csv_support_path=None):
         """
@@ -857,7 +865,6 @@ class SummaryTable(ATable):
         """
         return [("all", reference_df if reference_df is not None else self.reference_df)]
 
-
     def get_df(self, reference_df=None):
         """
         Get the summary dataframe.
@@ -886,6 +893,7 @@ class SummaryTable(ATable):
 
     def column_group_size(self, index, row):
         return len(self.label_to_df[index])
+
 
 def string_or_float(cell_value):
     """Takes the input value from an ATable cell and returns either
