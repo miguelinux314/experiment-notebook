@@ -228,7 +228,7 @@ def list_all_installables(base_class=Installable, ignored_classes=[]):
                   key=lambda c: c.name.lower())
 
 
-# Lean description of the intention of each tag
+# Lean description of the intention of each tag.
 tag_to_description = {
     "privative": "Plugins requiring privative (non-free) software, not distributable with enb",
     "codec": "Data compression/decompression class definition",
@@ -236,5 +236,5 @@ tag_to_description = {
     "template": "Templates formatteable into the installation dir",
     "project": "Project templates",
     "test": "Plugins for testing purposes",
-    "demo": "Exhibit enb's functionality",
+    "demo": "Examples to exhibit enb's functionality",
 }

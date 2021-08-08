@@ -228,3 +228,6 @@ if __name__ == '__main__':
     log_event(f"Saving PNG versions of the PDF files...")
     enb.aanalysis.pdf_to_png(input_dir=options.plot_dir, output_dir=options.plot_dir)
     print("Done saving PNGs.")
+    
+    log_event("Test all codecs successfully completed")
+    print(f"You can now see the availability plots in .pdf and .png format at {options.plot_dir}")
