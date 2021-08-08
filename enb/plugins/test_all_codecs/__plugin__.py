@@ -1,12 +1,13 @@
 import os
+import sys
 
 import enb.plugins
 
 
-class TestAllCodecsPlugin(enb.plugins.Plugin):
+class TestAllCodecsPlugin(enb.plugins.Template):
     name = "test-codecs"
     authors = ["Miguel Hernández-Cabronero"]
-    label = "Install all codec plugins and test their availability"
+    label = "Install all codec plugins verify their availability"
     contrib_reference_urls = ["https://github.com/miguelinux314/experiment-notebook"]
     tags = {"data compression", "test"}
     tested_on = {"linux"}
@@ -16,16 +17,22 @@ class TestAllCodecsPlugin(enb.plugins.Plugin):
         super().build(installation_dir=installation_dir)
         codec_plugins = [cls for cls in enb.plugins.list_all_installables()
                          if "codec" in cls.tags]
-        print(f"Found {len(codec_plugins)} codecs:")
+        print(f"Found {len(codec_plugins)} codecs:\n\t- ")
         print("\n\t- ".join(p.name for p in codec_plugins))
+        print()
 
-        print(f"Installing codecs...")
+        print(f"Installing {len(codec_plugins)} codecs...")
         plugin_dir = os.path.join(installation_dir, "plugins")
         os.makedirs(plugin_dir)
         for plugin in codec_plugins:
-            print(f"\t... installing {plugin.name}")
+            print(f"\t... installing {plugin.name}...")
             plugin.install(os.path.join(plugin_dir, plugin.name))
+        print("All codecs installed.")
+        print()
 
-        # Add the __init__.py so that test_all_codecs can import the installed modules
-        with open(os.path.join(plugin_dir, "__init__.py"), "w"):
-            pass
+        main_script_name = "test_all_codecs.py"
+        print(f"You can now run the experiment by executing the {main_script_name} script "
+              f"in the installation folder, e.g.,")
+        print()
+        print(f"\t{os.path.basename(sys.executable)} {os.path.join(installation_dir, main_script_name)}")
+        print()
