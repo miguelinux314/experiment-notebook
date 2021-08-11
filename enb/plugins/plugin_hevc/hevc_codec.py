@@ -4,7 +4,7 @@
 https://vcgit.hhi.fraunhofer.de/jvet/HM
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
-__since__ = "01/09/2021"
+__since__ = "2021/09/01"
 
 import os
 import math

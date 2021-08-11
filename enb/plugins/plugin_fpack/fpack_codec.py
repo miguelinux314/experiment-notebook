@@ -2,7 +2,7 @@
 """Codec wrapper for the Fpack lossless and lossy image coder 
 """
 __author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
-__since__ = "01/07/2021"
+__since__ = "2021/07/01"
 
 import os
 import enb

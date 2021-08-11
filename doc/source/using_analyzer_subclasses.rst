@@ -1,4 +1,4 @@
-.. Using enb.aanalysis.Analyzer subclases
+.. Using enb.aanalysis.Analyzer subclasses
 
 Using Analyzer subclasses
 -------------------------

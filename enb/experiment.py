@@ -2,7 +2,7 @@
 """Tools to run compression experiments
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "19/09/2019"
+__since__ = "2019/09/19"
 
 import os
 import collections
@@ -128,7 +128,7 @@ class Experiment(atable.ATable):
         self.tasks = list(tasks)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else enb.atable.get_all_test_files()
+            else enb.atable.get_all_input_files()
 
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,

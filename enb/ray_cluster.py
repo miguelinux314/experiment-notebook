@@ -2,7 +2,7 @@
 """Tools to connect to ray clusters
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "21/11/2019"
+__since__ = "2019/11/21"
 
 import ray
 from enb.config import options

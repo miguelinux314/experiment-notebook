@@ -10,7 +10,7 @@ The experiment.CompressionExperiment class takes an instance of FilePropertiesTa
 to know what files the experiment should be run on.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "18/09/2019"
+__since__ = "2019/09/18"
 
 import os
 import hashlib
@@ -62,8 +62,8 @@ class FilePropertiesTable(atable.ATable):
                chunk_size=None):
 
         target_indices = target_indices if target_indices is not None \
-            else enb.atable.get_all_test_files(ext=self.default_extension,
-                                               base_dataset_dir=self.base_dir)
+            else enb.atable.get_all_input_files(ext=self.default_extension,
+                                                base_dataset_dir=self.base_dir)
 
         return super().get_df(target_indices=target_indices,
                               target_columns=target_columns,
@@ -176,7 +176,7 @@ class FileVersionTable(FilePropertiesTable):
         raise NotImplementedError
 
     def get_default_target_indices(self):
-        return enb.atable.get_all_test_files(
+        return enb.atable.get_all_input_files(
             base_dataset_dir=self.original_base_dir, ext=self.default_extension)
 
     def original_to_versioned_path(self, original_path):
@@ -401,12 +401,13 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
 
 
 @deprecation.deprecated(deprecated_in="v0.2.7",
-                        removed_in="v0.3.0",
+                        removed_in="v1.1.0",
+                        current_version=enb.config.ini.get_key("enb", "version"),
                         details="Please use atable.get_all_test_files() instead.")
 def get_all_test_files(*args, **kwargs):
     """Deprecated - for backwards compatibility only.
     """
-    return atable.get_all_test_files(*args, **kwargs)
+    return atable.get_all_input_files(*args, **kwargs)
 
 
 @deprecation.deprecated(deprecated_in="v0.2.7",

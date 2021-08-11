@@ -11,7 +11,7 @@ Properties are added by decorating functions. Multiple inheritance is possible w
 CLI properties, just make sure to subclass from GlobalOptions.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "06/02/2021"
+__since__ = "2021/02/06"
 
 import os
 import sys

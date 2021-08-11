@@ -7,7 +7,7 @@ Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) f
 how to install this software.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "19/09/2019"
+__since__ = "2019/09/19"
 
 import os
 import io
@@ -16,14 +16,18 @@ import configparser
 import subprocess
 import sys
 
-# Needed tools to automatically populate the setup
-invocation = f"{sys.executable} -m pip install bs4 markdown"
-status, output = subprocess.getstatusoutput(invocation)
-if status != 0:
-    raise RuntimeError("Error installing needed build libraries. "
-                       f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
-from bs4 import BeautifulSoup
-from markdown import markdown
+# Tools needed to automatically populate the setup using file-based configurations
+try:
+    from bs4 import BeautifulSoup
+    from markdown import markdown
+except ImportError:
+    invocation = f"{sys.executable} -m pip install bs4 markdown"
+    status, output = subprocess.getstatusoutput(invocation)
+    if status != 0:
+        raise RuntimeError("Error installing needed build libraries. "
+                           f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
+    from bs4 import BeautifulSoup
+    from markdown import markdown
 
 # Read the configuration from ./enb/config/enb.ini, section "enb"
 enb_options = configparser.ConfigParser()
@@ -82,9 +86,8 @@ setup(
     # Dependencies
     setup_requires=['wheel', 'deprecation', 'bs4', 'markdown'],
     install_requires=[
-        'numpy', 'pandas', 'matplotlib', 'scipy', 'ray[default]', 'psutil', 'redis', 'appdirs',
-        'imageio', 'numpngw', 'requests', 'astropy', 'jinja2',
-        'deprecation', 'recordclass', 'sortedcontainers', 'wheel', 'pdf2image',
+        'appdirs', 'astropy', 'astropy', 'deprecation', 'imageio', 'jinja2', 'matplotlib', 'numpngw', 'numpy', 'pandas',
+        'pdf2image', 'psutil', 'ray[default]', 'recordclass', 'redis', 'requests', 'scipy', 'sortedcontainers', 'wheel',
     ],
 
     # This part determines the contents of the installed folder in your python's site-packages location.

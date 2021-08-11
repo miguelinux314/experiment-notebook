@@ -2,7 +2,7 @@
 """Wrapper for the JPEG-XL reference implementation
 """
 __author__ = "Ashwin Kumar Gururajan <ashwin.gururajan@uab.cat>"
-__since__ = "15/02/2021"
+__since__ = "2021/02/15"
 
 import os
 from enb import icompression

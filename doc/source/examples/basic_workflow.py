@@ -2,7 +2,7 @@
 """Example showing the basic workflow of the ``enb`` library.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "13/09/2020"
+__since__ = "2020/09/13"
 
 import os
 import glob

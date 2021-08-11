@@ -4,7 +4,7 @@
 using pyplot.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/01/2020"
+__since__ = "2020/01/01"
 
 import os
 import itertools
@@ -25,7 +25,7 @@ import pandas as pd
 import ray
 
 import enb.atable
-from enb.atable import parse_dict_string
+from enb.atable import get_nonscalar_value
 from enb import plotdata
 from enb import config
 from enb.config import options
@@ -1795,7 +1795,8 @@ def get_histogram_dicts(df, column):
     """Get a list of dicts, each one representing one histogram stored at row, column
     for al rows in df in the order given by the index.
     """
-    parsed_dicts = [parse_dict_string(column_value) for column_value in df[column]]
+    #
+    parsed_dicts = [get_nonscalar_value(column_value) for column_value in df[column]]
     assert len(parsed_dicts) == len(df)
     return parsed_dicts
 

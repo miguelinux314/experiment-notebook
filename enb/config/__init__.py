@@ -73,7 +73,7 @@ From there on, many enb functions adhere to the following principle:
    its value is set based on the properties in `enb.config.options`.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "1/08/2021"
+__since__ = "2021/08/1"
 
 # enb.config.ini : file-based config management
 from .aini import ini

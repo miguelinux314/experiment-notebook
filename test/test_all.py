@@ -2,7 +2,7 @@
 """Rull all test modules in the current working dir
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "19/09/2019"
+__since__ = "2019/09/19"
 
 import os
 import glob

@@ -2,7 +2,7 @@
 """Image compression experiment module
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/04/2020"
+__since__ = "2020/04/01"
 
 import filecmp
 import hashlib

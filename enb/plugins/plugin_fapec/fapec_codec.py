@@ -2,7 +2,7 @@
 """Wrappers for the FAPEC codec.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "25/05/2020"
+__since__ = "2020/05/25"
 
 import os
 

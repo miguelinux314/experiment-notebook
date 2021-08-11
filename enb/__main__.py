@@ -2,7 +2,7 @@
 """Entropy point for the main enb CLI.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import os
 import sys

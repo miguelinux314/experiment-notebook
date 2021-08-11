@@ -2,7 +2,7 @@
 """Unit tests for the icompression module
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "6/4/2020"
+__since__ = "2020/4/6"
 
 import unittest
 import tempfile

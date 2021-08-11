@@ -3,7 +3,7 @@
 Expect very low speeds - for small tests mostly.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/12/2019"
+__since__ = "2019/12/01"
 
 
 class OutputBitStream:

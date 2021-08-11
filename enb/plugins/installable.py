@@ -2,7 +2,7 @@
 """Installable interface used for plugins and templates.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import builtins
 import os

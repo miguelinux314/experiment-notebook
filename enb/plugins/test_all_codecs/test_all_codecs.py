@@ -6,7 +6,7 @@ If one or more command line arguments are passed, only codec classes matching th
 Empty codec selections are invalid.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "06/07/2021"
+__since__ = "2021/07/06"
 
 import sys
 import os

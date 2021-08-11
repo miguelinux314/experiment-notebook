@@ -4,7 +4,7 @@
 Templates are very similar to plugins, but use jinja to transform `.enbt` template files upon installation.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import sys
 import argparse
