@@ -2,7 +2,7 @@
 """Codec wrapper for the SPDP codec
 """
 __author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import os
 import enb

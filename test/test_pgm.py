@@ -2,7 +2,7 @@
 """Unit tests for isets.py
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "07/04/2020"
+__since__ = "2020/04/07"
 
 import unittest
 import tempfile

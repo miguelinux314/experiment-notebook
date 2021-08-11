@@ -4,7 +4,7 @@
 Please see https://github.com/miguelinux314/experiment-notebook for further information.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "31/03/2020"
+__since__ = "2020/03/31"
 
 import os as _os
 import sys as _sys
@@ -34,7 +34,6 @@ is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
 # Pre-definition tools
 from . import misc
-
 # Global configuration modules
 from . import config
 

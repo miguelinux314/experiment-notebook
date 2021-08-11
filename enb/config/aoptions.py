@@ -32,7 +32,7 @@ The `@enb.config.propagates_options` decorator provides a slightly cleaner way o
 this mitigation.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "04/08/2019"
+__since__ = "2019/08/04"
 
 import os
 import tempfile

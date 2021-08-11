@@ -5,7 +5,7 @@ For instructions on downloading and installing visit:
 https://github.com/miguelinux314/experiment-notebook/blob/master/enb/pluginsplugin_kakadu/README.md
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import math
 import numpy as np

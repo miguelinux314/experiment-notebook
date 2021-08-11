@@ -2,7 +2,7 @@
 """Tools define plugin installables.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import os
 import glob
@@ -55,13 +55,13 @@ class Plugin(Installable):
     @classmethod
     def build(cls, installation_dir):
         """Perform any additional retrieval, compilation and setup necessary for this plugin
-        to be importable and usable.
-        By default:
-            - The existence of installation_dir as a directory is performed.
-            - Install any required apt modules
-            - Any needed python modules are installed via pip
-            - Cleanup any generic files that might not be needed at this point
-            - The __init__.py file is preserved or generated automatically
+        to be importable and usable. By default:
+
+        - The existence of installation_dir as a directory is performed.
+        - Install any required apt modules
+        - Any needed python modules are installed via pip
+        - Cleanup any generic files that might not be needed at this point
+        - The __init__.py file is preserved or generated automatically
         """
         # Existence assertion
         assert os.path.isdir(installation_dir), \

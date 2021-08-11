@@ -1,63 +1,196 @@
 #!/usr/bin/env python3
-"""Automatic tables with implicit column definition.
+"""
+.. include:: ../tag_definition.rst
 
-* Tables are created by specifying the index columns (one or more),
-  and optionally a path to a file where precomputed values are stored.
+:mod:`enb.atable`: Automatic tables with implicit column definition
+-------------------------------------------------------------------
 
-* Table columns are defined via the @YourATableSubclass.column_function
-  decorator. Decorated functions implicitly define the table, since they
-  are called to fill the corresponding cells for each index.
+|ATable| produces |DataFrame| instances
+=======================================
 
-* The ATable.get_df method can be invoked to obtain the df for any given set of indices
+This module defines the |ATable| class,
+which is the base for all automatic tables in |enb|.
 
+All |ATable| subclasses generate a |DataFrame| instance
+when their `get_df` method is successfully called. These are powerful dynamic tables
+that can be used directly, and/or passed to some of the tools in the |aanalysis| module
+to easily produce figures and tables.
 
-For example::
+|ATable| provides automatic persistence
+=======================================
+
+The produced tables are automatically stored into persistent disk storage in CSV format.
+This offers several key advantages:
+
+- It avoids recalculating already known values. This speeds up subsequent
+  calls to `get_df` for the same inputs.
+
+- It allows sharing your raw results in a convenient way.
+
+Using existing |ATable| columns
+===============================
+
+|enb| implements several |ATable| subclasses that can be directly used in your code.
+All |ATable| subclasses work as follows:
+
+1. They accept an iterable (e.g., a list) of *indices* as an input. An *index* is often a string, e.g.,
+   a path to an element of your test dataset. Note that |enb| is capable of creating that list
+   of indices if you point it to your dataset folder.
+
+2. For each row, the set of defined data *columns* (e.g., the dependent/independent variables of an experiment)
+   is computed and stored to disk along with the row's index.
+   You can reuse existing ATable subclasses directly and/or create new subclasses.
+
+Consider the following toy example::
 
         import enb
 
-        class Subclass(enb.atable.ATable):
+        class TableA(enb.atable.ATable):
             def column_index_length(self, index, row):
                 return len(index)
 
-        sc = Subclass(index="index")
-        df = sc.get_df(target_indices=["a"*i for i in range(10)])
+Our `TableA` class accepts list-like values (e.g., strings) as indices,
+and defines the `index_length` column as the number of elements (e.g., characters) in the index.
+
+One can then use the `get_df` method to obtain a |DataFrame| instance as follows::
+
+        table_a = TableA(index="my_index_name")
+        example_indices = ["ab c" * i for i in range(10)]  # It could be any list of iterables
+        df = table_a.get_df(target_indices=example_indices)
         print(df.head())
 
+The previous code should produce the following output::
 
-Should return::
-
-                           index index_length
+                                  my_index_name index_length
         __atable_index
-        ('',)                           0
-        ('a',)             a            1
-        ('aa',)           aa            2
-        ('aaa',)         aaa            3
-        ('aaaa',)       aaaa            4
+        ('',)                                              0
+        ('ab c',)                          ab c            4
+        ('ab cab c',)                  ab cab c            8
+        ('ab cab cab c',)          ab cab cab c           12
+        ('ab cab cab cab c',)  ab cab cab cab c           16
 
 
-See ScalarDistributionAnalyzer for automatic reports using ATable
+Note that the `__atable_index` is the dataframe's index, which is set and
+used by ATable subclasses internally. This index is not
+included in the persistence data (i.e., it is not part of the CSV tables output to disk).
+
+New columns: defining and composing |ATable| subclasses
+=======================================================
+
+|enb| defines many columns in their core and plugin classes.
+If you need more, you can easily create new |ATable| subclasses with custom columns,
+as explained next.
+
+You can use string, number and boolean types for scalar columns,
+and dict-like and list-like (mappings and iterables) for non-scalar columns.
+
+Basic column definition
++++++++++++++++++++++++
+
+The fastest way of defining a column is to subclass |ATable| and to
+create methods with names that start with `column_`.
+The value returned by these methods is automatically stored
+in the appropriate cell of the dataframe.
+
+An example of this approach is copied from `TableA` above::
+
+        import enb
+
+        class TableA(enb.atable.ATable):
+            def column_index_length(self, index, row):
+                return len(index)
+
+which defines the `index_length` column in that table.
+
+Advanced column definition
+++++++++++++++++++++++++++
+
+To further customize your new columns, you can use the |column_function| decorator.
+
+1. You can add column metainformation on how |aanalysis| plots the data by default,
+   e.g., labels, ranges, logarithmic axes, etc. An example column with descriptive
+   label can be defined as follows::
+
+        @enb.atable.column_function("uppercase", label="Uppercase version of the index")
+        def set_character_sum(self, index, row):
+            row["uppercase"] = index.upper()
+
+   See the |ColumnProperties| class for all available plotting cues.
+
+
+2. You can set two or more columns with a single function.
+   To do so, you can pass a list of |ColumnProperties| instances to the |column_function| decorator.
+   Each instance describes one column, which can be independently customized.
+
+3. You can define columns to contain non-scalar data. The following default types are supported:
+   tuples, lists, dicts.
+
+4. You can mix strings and |ColumnProperties| instances in the |column_function| decorator.
+
+
+The following snippet illustrates points 2 onwards::
+
+        class TableB(TableA):
+            @enb.atable.column_function("uppercase", label="Uppercase version of the index")
+            def set_character_sum(self, index, row):
+                row["uppercase"] = index.upper()
+
+            @enb.atable.column_function(
+                enb.atable.ColumnProperties(
+                    "first_and_last",
+                    label="First and last characters of the index",
+                    has_dict_values=True),
+
+                "constant_zero",
+
+                enb.atable.ColumnProperties(
+                    "space_count",
+                    label="Number of spaces in the string",
+                    plot_min=0),
+
+            )
+            def function_for_two_columns(self, index, row):
+                row["first_and_last"] = {"first": index[0] if index else "",
+                                         "last": index[-1] if index else ""}
+                row["constant_zero"] = 0
+                row["space_count"] = sum(1 for c in index if c == " ")
+
+After the definition, the table's dataframe can be obtained with
+`print(TableB().get_df(target_indices=example_indices).head())` to obtain simething similar to::
+
+                                      file_path index_length         uppercase               first_and_last space_count constant_zero
+    __atable_index
+    ('',)                                              0                      {'first': '', 'last': ''}           0             0
+    ('ab c',)                          ab c            4              AB C  {'first': 'a', 'last': 'c'}           1             0
+    ('ab cab c',)                  ab cab c            8          AB CAB C  {'first': 'a', 'last': 'c'}           2             0
+    ('ab cab cab c',)          ab cab cab c           12      AB CAB CAB C  {'first': 'a', 'last': 'c'}           3             0
+    ('ab cab cab cab c',)  ab cab cab cab c           16  AB CAB CAB CAB C  {'first': 'a', 'last': 'c'}           4             0
+
 """
-import glob
-from builtins import hasattr
-
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "19/09/2019"
+__since__ = "2019/09/19"
 
+import ast
+from builtins import hasattr
+import collections
+import collections.abc
+import copy
+import datetime
+import functools
+import glob
+import inspect
+import itertools
+import math
 import os
 import sys
-import itertools
-import collections
-import pandas as pd
-import math
-import copy
-import functools
 import time
-import datetime
-import inspect
 import traceback
-import ray
-import ast
 
+import deprecation
+import ray
+import pandas as pd
+
+import enb.config
 from enb import config
 from enb import ray_cluster
 from enb.config import options
@@ -66,7 +199,7 @@ from enb.misc import get_defining_class_name
 
 class CorruptedTableError(Exception):
     """Raised when a table is Corrupted, e.g., when loading a
-    CSV with missing indices
+    CSV with missing indices.
     """
 
     def __init__(self, atable, ex=None, msg=None):
@@ -88,7 +221,7 @@ class CorruptedTableError(Exception):
 
 
 class ColumnFailedError(CorruptedTableError):
-    """Raised when a function failed to fill a column
+    """Raised when a function failed to fill a column.
     """
 
     def __init__(self, atable=None, index=None, column=None, msg=None, ex=None):
@@ -104,8 +237,21 @@ class ColumnFailedError(CorruptedTableError):
 
 
 class ColumnProperties:
-    """Static properties of a table's column. Use this class to provide metainformation
-    about rendering options.
+    """
+    All columns defined in an |ATable| subclass have a corresponding |ColumnProperties| instance,
+    which provides metainformation about it. Its main uses are providing plotting
+    cues and to allow non-scalar data (tuples, lists and dicts).
+
+    Once an |ATable| subclass c is defined, `c.column_to_properties` contains a mapping from
+    a column's name to its ColumnProperties instance.
+
+    It is possible to change attributes of column properties instances, and to replace
+    the ColumnProperties instances in `column_to_properties`.
+
+    For instance, one may want to
+    plot a column with its original cues first, and then create a second version with semi-logarithmic
+    axes. Then it would suffice to use |aanalysis| tools with the |ATable| subclass default `column_to_properties`
+    first, then modify one or more ColumnProperties instances, and finally apply the same tools again.
     """
 
     def __init__(self, name, fun=None, label=None,
@@ -113,20 +259,28 @@ class ColumnProperties:
                  semilog_x=False, semilog_y=False,
                  semilog_x_base=10, semilog_y_base=10,
                  hist_label=None, hist_min=None, hist_max=None,
-                 hist_bin_width=None, has_dict_values=False, hist_label_dict=None,
+                 hist_bin_width=None,
+                 has_dict_values=False,
+                 has_iterable_values=False,
+                 hist_label_dict=None,
                  **extra_attributes):
         """
-        Main parameters:
-        :param name: unique name that identifies a column. Column names can be overwritten
-          in subclasses with the @ATable.column_function decorator.
-        :param fun: function to be invoked to fill a column value. It should be none when
-          passed to the @ATable.column_function decorator.
-        :param label: main version of the column's name, to be displayed in labels.
-        :param has_dict_values: True only if the column cells contain value mappings (i.e., dicts),
-          as opposed to scalar values.
+        Column-function linking:
+        :param name: unique name that identifies a column.
+        :param fun: function to be invoked to fill a column value. If None, |enb| will set this for you
+          when you define columns with `column_` or |column_function|.
 
+        Type specification:
+        :param has_dict_values: set to True if and only if the column cells contain value mappings (i.e., dicts),
+          as opposed to scalar values. Both keys and values should be valid scalar values (numeric, string or boolean).
+          It cannot be True if `has_iterable_values` is True.
+        :param has_iterable_values: set to True if and only if the column cells should contain iterables,
+          i.e., tuples or lists. It cannot be True if `has_dict_values` is True.
+        The has_ast_values property of the ColumnProperties instance will return true if and only if
+        either of these arguments is True.
 
         Plot rendering hints:
+        :param label: descriptive label of the column, intended to be displayed in plot (e.g., axes) labels
         :param plot_min: minimum value to be plotted for the column. For histograms,
           this refers to the range of key (X-axis) values.
         :param plot_max: minimum value to be plotted for the column. For histograms,
@@ -147,7 +301,10 @@ class ColumnProperties:
           If None, the AAnalyzer instance decides the range (typically (0,1)).
         :param hist_label: if not None, the label to be shown globally in the Y axis.
 
-        :param **extra_extra_attributes: any parameters passed are set as attributes
+        User-defined attributes:
+        :param **extra_extra_attributes: any parameters passed are set as attributes of the created
+          instance (with __setattr__). These attributes are not directly used by |enb|'s core,
+          but can be safely used by host code.
         """
         self.name = name
         self.fun = fun
@@ -160,6 +317,10 @@ class ColumnProperties:
         self.semilog_y_base = semilog_y_base
         self.hist_bin_width = hist_bin_width
         self.has_dict_values = has_dict_values or self.hist_bin_width is not None
+        self.has_iterable_values = has_iterable_values
+        if self.has_dict_values and self.has_iterable_values:
+            raise ValueError(
+                "has_dict_values and has_iterable_values cannot be both set to True at once")
         self.hist_label_dict = hist_label_dict
         self.hist_label = hist_label
         self.hist_min = hist_min
@@ -167,31 +328,41 @@ class ColumnProperties:
         for k, v in extra_attributes.items():
             self.__setattr__(k, v)
 
+    @property
+    def has_ast_values(self):
+        """Determine whether this column requires ast for literal parsing,
+        e.g., for supported non-scalar data: dicts and iterables.
+        """
+        return self.has_dict_values or self.has_iterable_values
+
     def __repr__(self):
-        args = ", ".join(f"{k}={v}" for k, v in self.__dict__.items() if v is not None)
+        args = ", ".join(f"{repr(k)}={repr(v)}" for k, v in self.__dict__.items() if v is not None)
         return f"{self.__class__.__name__}({args})"
 
 
 class MetaTable(type):
-    """Metaclass for ATable and all subclasses, which
-    guarantees that the column_to_properties is a static OrderedDict,
+    """Metaclass for |ATable| and all subclasses, which
+    guarantees that the column_to_properties is a static OrderedDict instance
     different from other classes' column_to_properties. This way,
-    @column_function and all subclasses can access and update
-    the dict separately for each class (as logically intended).
+    |ATable| and all subclasses can access and update
+    their dicts separately for each class, effectively allowing to split
+    the definition of columns across multiple |ATable| instances.
 
-    Note: Table clases should inherit from ATable, not MetaTable
+    Note: Table classes should inherit from |ATable|, not |MetaTable|.
+    You probably don't ever need to use this class directly.
     """
-    pendingdefs_classname_fun_columnproperties_kwargs = []
+    pendingdefs_classname_fun_columnpropertylist_kwargs = []
 
     def __new__(cls, name, bases, dct):
         if MetaTable in bases:
-            raise SyntaxError(f"Use ATable, not MetaTable, for subclassing.")
+            raise SyntaxError(f"Please use ATable, not MetaTable, for subclassing.")
+
+        # Explore parent classes and search for all column_to_properties definitions,
+        # so that they are inherited into the subclass cls.
         unique_bases = []
         for base in bases:
             if base in unique_bases:
                 continue
-            # if any(issubclass(base, seen) for seen in unique_bases):
-            #     continue
             try:
                 _ = base.column_to_properties
             except AttributeError:
@@ -199,13 +370,14 @@ class MetaTable(type):
             unique_bases.append(base)
         bases = tuple(unique_bases)
 
+        # The |ATable| subclass is initialized and its column_to_properties
+        # is filled by default with the parent classes' definitions.
         dct.setdefault("column_to_properties", collections.OrderedDict())
         subclass = super().__new__(cls, name, bases, dct)
-
         for base in bases:
             try:
                 # It is ok to update keys later decorated in the
-                # subclasses. That happens after metracreation,
+                # subclasses. That happens after meta-creation,
                 # therefore overwrites the following updates
                 subclass.column_to_properties.update(base.column_to_properties)
             except AttributeError:
@@ -213,7 +385,68 @@ class MetaTable(type):
 
         # Make sure that subclasses do not re-use a base class column
         # function name without it being decorated as column function
-        # (unexpected behavior)
+        # (unexpected behavior).
+        MetaTable.assert_unreported_overwrite(subclass)
+
+        # Add pending decorated and column_* methods (declared as columns before subclass existed),
+        # in the order they were declared (needed when there are data dependencies between columns).
+        inherited_classname_fun_columnproperties_kwargs = [
+            t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
+            if t[0] != subclass.__name__]
+        decorated_classname_fun_columnproperties_kwargs = [
+            t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
+            if t[0] == subclass.__name__]
+        for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
+            ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
+
+        # Column functions are added to a list while the class is being defined.
+        # After that, the subclass' column_to_properties attribute is updated according
+        # to the column definitions.
+        funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
+
+        for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
+            try:
+                # Decorated function: the column properties are already present
+                classname, fun, cp_list, kwargs = funname_to_pending_entry[fun.__name__]
+                for cp in cp_list:
+                    ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
+                del funname_to_pending_entry[fun.__name__]
+            except KeyError:
+                # Non decorated function: decorate automatically if it starts with 'column_*'
+                assert all(cp.fun is not fun for cp in subclass.column_to_properties.values())
+                if not fun.__name__.startswith("column_"):
+                    continue
+                column_name = fun.__name__[len("column_"):]
+                if not column_name:
+                    raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
+                wrapper = MetaTable.get_auto_column_wrapper(fun=fun)
+                cp = ColumnProperties(name=column_name, fun=wrapper)
+                ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp)
+
+        assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
+        cls.pendingdefs_classname_fun_columnpropertylist_kwargs.clear()
+
+        return subclass
+
+    @staticmethod
+    def assert_unreported_overwrite(subclass):
+        """
+        Raise a SyntaxError if any of the methods defined in subclass overwrites
+        (i.e., defines a method with the same name as)
+        a parent's class method and two conditions are met:
+
+        - subclass' parent(s) defined the method as a column function
+        - subclass does not use the @|redefines_column| decorator
+
+        If the subclass does use @|redefines_column|, then no error is raised and
+        subclass is updated to reflect this change.
+
+        Note that this syntax restriction is imposed to maintain OOP intuitions true about
+        column functions, or raise the appropriate SyntaxError.
+        Otherwise, the parent's method would be invoked to fill in the |DataFrame|,
+        even though subclass has a method with the same name. This is opposed
+        to basic OOP principles, and thus is not allowed.
+        """
         for column, properties in subclass.column_to_properties.items():
             try:
                 defining_class_name = get_class_that_defined_method(properties.fun).__name__
@@ -231,78 +464,46 @@ class MetaTable(type):
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
                         if hasattr(sc_fun, "_redefines_column"):
                             properties = copy.copy(properties)
-                            properties.fun = ATable.build_column_name_wrapper(fun=sc_fun, column_properties=properties)
+                            properties.fun = ATable.build_column_function_wrapper(fun=sc_fun,
+                                                                                  column_properties=properties)
                             subclass.column_to_properties[column] = properties
                         else:
-                            print(f"[W]arning: {defining_class_name}'s subclass {subclass.__name__} "
-                                  f"overwrites method {properties.fun.__name__}, "
-                                  f"but it does not decorate it with @atable.column_function "
-                                  f"for column {column}. "
-                                  f"The method from class {defining_class_name} will be used to fill "
-                                  f"the table's column {column}. Consider decorating the function "
-                                  f"with the same @atable.column_function as the base class, "
-                                  f"or simply with @atable.redefines_column to maintain the same "
-                                  f"difinition")
+                            # NOTE: it is technically possible to change
+                            raise SyntaxError(f"{defining_class_name}'s subclass {subclass.__name__} "
+                                              f"overwrites method {properties.fun.__name__}, "
+                                              f"but it does not decorate it with @enb.atable.column_function "
+                                              f"for column {column} - please add the decorator manually.")
 
-        # Add pending decorated and column_* methods (declared as columns before subclass existed)
-        inherited_classname_fun_columnproperties_kwargs = [t for t in
-                                                           cls.pendingdefs_classname_fun_columnproperties_kwargs
-                                                           if t[0] != subclass.__name__]
-        decorated_classname_fun_columnproperties_kwargs = [t for t in
-                                                           cls.pendingdefs_classname_fun_columnproperties_kwargs
-                                                           if t[0] == subclass.__name__]
+    @staticmethod
+    def get_auto_column_wrapper(fun):
+        """Create a wrapper for a function with a signature compatible with column-setting functions,
+        so that its returned value is assigned to the row's column.
+        """
 
-        for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
-            ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
+        def wrapper(self, index, row):
+            f"""Column wrapper for {fun.__name__}"""
+            row[_column_name] = fun(self, index, row)
 
-        # Column-defining functions are added to a list while the class is being defined.
-        # After that, the subclass' column_to_properties attribute is updated according
-        # to the column definitions.
-        funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
-        for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
-            try:
-                # Add decorated function
-                classname, fun, cp, kwargs = funname_to_pending_entry[fun.__name__]
-                ATable.add_column_function(cls=subclass, column_properties=cp, fun=fun, **kwargs)
-                del funname_to_pending_entry[fun.__name__]
-            except KeyError:
-                assert all(cp.fun is not fun for cp in subclass.column_to_properties.values())
-                if not fun.__name__.startswith("column_"):
-                    continue
-                column_name = fun.__name__[len("column_"):]
-                if not column_name:
-                    raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
-
-                wrapper = get_auto_column_wrapper(fun=fun)
-                cp = ColumnProperties(name=column_name, fun=wrapper)
-                ATable.add_column_function(cls=subclass, column_properties=cp, fun=wrapper)
-
-        assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
-
-        cls.pendingdefs_classname_fun_columnproperties_kwargs.clear()
-
-        return subclass
-
-
-def get_auto_column_wrapper(fun):
-    """Method internal to this module that allows automatic recognition of column_* function
-    in ATable subclasses.
-    """
-
-    # Function is not decorated: add wrapper if starts with column_*
-    def wrapper(self, index, row):
-        f"""Column wrapper for {fun.__name__}"""
-        row[_column_name] = fun(self, index, row)
-
-    return wrapper
+        return wrapper
 
 
 class ATable(metaclass=MetaTable):
-    """Automatic table, that allows decorating functions to fill dependent variable
-    columns
+    """Automatic table with implicit column definition.
+
+    ATable subclasses' have the `get_df` method, which returns a |DataFrame| instance with
+    the requested data. You can use (multiple) inheritance using one or more ATable subclasses
+    to combine the columns of those subclasses into the newly defined one. You can then define
+    methods with names that begin with `column_`, or using the
+    `@enb.atable.column_function` decorator on them.
+
+    See |atable| for more detailed help and examples.
     """
-    # Default input sample extension. Make sure to update in subclasses as needed
-    default_extension = "raw"
+    # Default input sample extension. If affects the result of enb.atable.get_all_test_files,
+    # filtering out any file that does not end with the given string. Leave empty not to filter out
+    # any file found in the data dir.
+    #
+    # Update in subclasses as needed
+    default_extension = ""
 
     # Name of the index used internally
     private_index_column = "__atable_index"
@@ -314,7 +515,7 @@ class ATable(metaclass=MetaTable):
         :param index: column name or list of column names that will be
           used for indexing. Indices provided to self.get_df must be
           either one instance (when a single column name is given)
-          or a list of as many instances as elemnts are contained in self.index.
+          or a list of as many instances as elements are contained in self.index.
           See self.indices
         :param csv_support_path: path to a file where this ATable contents
           are to be stored and retrieved. If None, persistence is disabled.
@@ -326,8 +527,10 @@ class ATable(metaclass=MetaTable):
         if column_to_properties is not None:
             self.column_to_properties = collections.OrderedDict(column_to_properties)
 
+    # Methods related to defining columns and retrieving them afterwards
+
     @classmethod
-    def column_function(cls, column_properties, **kwargs):
+    def column_function(cls, *column_properties, **kwargs):
         """Decorator for functions that produce values for column_name when
         given the current index and current column values.
 
@@ -343,101 +546,150 @@ class ATable(metaclass=MetaTable):
         A variable _column is added to the decorated function's scope, e.g.,
         to assign values to the intended column of the row object.
 
-        :param column_properties: one of the following options:
+        :param column_properties: a list of one or more of the following types of elements:
 
-          * a string with the column's name to be used in the table
-          * a list of strings of length at least one, defining len(column_properties) columns
-          * a ColumnProperties instance, or a list thereof, defining 1 and len(column_properties) column, respectively
+          * a string with the column's name to be used in the table. A new |ColumnProperties| instance
+            is then created, passing `**kwargs` to the initializer.
 
-          All columns defined this way must be set in the row instance received by the decorated function
+          * a ColumnProperties instance. In this case `**kwargs` is ignored.
         """
 
         def decorator_wrapper(fun):
-            return ATable.add_column_function(cls=cls, column_properties=column_properties,
-                                              fun=fun, **kwargs)
+            return ATable.add_column_function(
+                *column_properties, cls=cls, fun=fun, **kwargs)
 
         return decorator_wrapper
 
     @classmethod
     def redefines_column(cls, fun):
         """Decorator to be applied on overwriting methods that are meant to fill
-        the same columns as the base class' homonymous method.
+        the same columns as the base class' homonym method.
         """
         fun._redefines_column = True
         return fun
 
     @staticmethod
-    def normalize_column_properties(column_properties, fun):
-        """Helper method to transform the arguments of add_column_function into
-        a nonempty list of valid ColumnProperties instances.
+    def add_column_function(cls, fun, column_properties, **kwargs):
+        """Main entry point for column definition in |ATable| subclasses.
 
-        :param column_properties: the column_properties parameter to add_column_function()
-        :param fun: the function being decorated
+        Methods decorated with |column_function|, or with a name beginning with `column_`
+        are automatically "registered" using this function. It can be invoked
+        directly to add columns manually, although it is not recommended in most scenarios.
+
+        :param cls: the |ATable| subclass to which a new column is to be added.
+        :param column_properties: a |ColumnProperties| instance describing the
+          column to be created. This list may also contain strings, which are interpreted
+          as column names, creating the corresponding columns.
+        :param fun: column-setting function. It must have a signature compatible with a call
+          `(self, index, row)`, where `index` is the row's index and `row` is a dict-like
+          object where the new column is to be stored. Previously set columns can also be
+          read from `row`. When a column-setting method is decorated,
+          fun is automatically set so that the decorated method is called, but it is not guaranteed
+          that fun is the decorated method.
         """
+        if not issubclass(cls, ATable):
+            raise SyntaxError("Column definition is only supported for classes that inherit from ATable, "
+                              f"but {cls} was found.")
+        if not isinstance(column_properties, ColumnProperties):
+            raise SyntaxError("Only subclasses of ColumnProperties are allowed for the column_properties argument "
+                              f"(found type {type(column_properties)} -- {column_properties})")
 
-        def normalize_one_element(element):
-            """:return: a ColumnProperties instance
-            """
-            if isinstance(element, str):
-                cp = ColumnProperties(name=element, fun=fun)
-            elif isinstance(element, ColumnProperties):
-                cp = copy.copy(element)
-                cp.fun = fun if cp.fun is None else cp.fun
-                if not hasattr(fun, "_redefines_column"):
-                    assert cp.fun is None or cp.fun is fun, f"{cp.fun}, {fun}"
-            else:
-                raise TypeError(type(element))
-            return cp
-
-        try:
-            if isinstance(column_properties, str):
-                raise TypeError
-            column_properties = list(column_properties)
-        except TypeError:
-            column_properties = [column_properties]
-        for i in range(len(column_properties)):
-            column_properties[i] = normalize_one_element(column_properties[i])
-        return column_properties
-
-    @staticmethod
-    def add_column_function(cls, column_properties, fun, **kwargs):
-        """Static implementation of @column_function. Subclasses may call
-        this method directly when overwriting @column_function.
-        """
-        column_properties = cls.normalize_column_properties(
-            column_properties=column_properties, fun=fun)
-        for cp in column_properties:
-            for k, v in kwargs.items():
-                cp.__setattr__(k, v)
-
-        assert all(cp.fun is None or cp.fun is fun
-                   for cp in column_properties), (id(fun), [id(cp.fun) for cp in column_properties])
-
-        fun_wrapper = cls.build_column_name_wrapper(fun=fun, column_properties=column_properties)
-
-        column_to_properties_dict = cls.column_to_properties
-        for cp in column_properties:
-            cp.fun = fun_wrapper
-            column_to_properties_dict[cp.name] = cp
+        # Effectively register the column function into the class
+        fun_wrapper = cls.build_column_function_wrapper(fun=fun, column_properties=column_properties)
+        column_properties.fun = fun_wrapper
+        cls.column_to_properties[column_properties.name] = column_properties
 
         return fun_wrapper
 
-    @classmethod
-    def build_column_name_wrapper(cls, fun, column_properties):
-        column_properties = cls.normalize_column_properties(column_properties=column_properties, fun=fun)
+    @staticmethod
+    def normalize_column_function_arguments(column_property_list, fun, **kwargs):
+        """Helper method to verify and normalize the `column_property_list` varargs passed to add_column_function.
+        Each element of that list is passed as the `column_properties` argument to this function.
 
+        - If the element is a string, it is interpreted as a column name, and a new ColumnProperties
+          object is is created with that name and the `fun` argument to this function. The kwargs argument
+          is passed to that initializer.
+
+        - If the element is a |ColumnProperties| instance, it is returned without modification.
+          The kwargs argument is ignored in this case.
+
+        - Otherwise, a SyntaxError is raised.
+
+        :param column_property_list: one of the elements of the `*column_property_list` parameter to add_column_function.
+        :param fun: the function being decorated.
+
+        :return: a nonempty list of valid ColumnProperties instances
+        """
+        normalized_cp_list = []
+        for cp in column_property_list:
+            if isinstance(cp, str):
+                normalized_cp_list.append(ColumnProperties(name=cp, fun=fun, **kwargs))
+            elif isinstance(cp, ColumnProperties):
+                normalized_cp_list.append(cp)
+            elif isinstance(cp, collections.abc.Iterable):
+                # Deprecated
+                ATable._normalize_list_of_column_properties()
+                normalized_cp_list.extend(ATable.normalize_column_function_arguments(
+                    column_property_list=cp, fun=fun))
+            else:
+                raise SyntaxError("Invalid arguments passed to add_column_function: "
+                                  f"{cp} (type {type(cp)}), {fun}, {kwargs} ")
+        return normalized_cp_list
+
+    @staticmethod
+    @deprecation.deprecated(
+        deprecated_in="1.0.0",
+        removed_in="1.1.0",
+        current_version=enb.config.ini.get_key("enb", "version"),
+        details="Passing a list of column properties such as "
+                "@enb.atable.column_function([cp1,cp2]) instead "
+                "of passing them as positional arguments,"
+                "@enb.atable.column_function(cp1,cp2) is deprecated")
+    def _normalize_list_of_column_properties():
+        """It does nothing. Method defined just to provide deprecation information when
+        the old interface is used.
+        """
+        pass
+
+    @classmethod
+    def build_column_function_wrapper(cls, fun, column_properties):
+        """Build the wrapper function applied to all column-setting functions given
+        a column properties instance.
+
+        |ATable|'s implementation of `build_column_function_wrapper` adds two variables
+        to the column-setting function's scope: `_column_name` and `_column_properties`,
+        in addition to verifying the column-setting function's signature.
+
+        Notwithstanding, this behavior can be altered in |ATable| subclasses, affecting only
+        the wrappers for that class' column-setting functions.
+
+        :param fun: function to be called by the wrapper.
+        :param column_properties: |ColumnProperties| instance with properties associated to the column.
+        :return: a function that wraps fun adding `_column_name` and `_column_properties` to its scope.
+        """
+        # Math fun's signature with the expected one (self, index, row). Variable names are not checked.
+        fun_spec = inspect.getfullargspec(fun)
+        if len(fun_spec.args) != 3 or any(v is not None for v in (fun_spec.varargs, fun_spec.varkw)):
+            raise SyntaxError(f"Trying to add a column-setting method {repr(fun.__name__)} to {cls.__name__}, "
+                              f"but an invalid signature was found. "
+                              f"Column-setting methods should have a (self, index, row) signature. "
+                              f"Instead, the following signature was provided: {fun_spec}.")
+
+        # Create a wrapper that adds some temporary globals
         @functools.wraps(fun)
-        def fun_wrapper(*args, **kwargs):
+        def fun_wrapper(self, index, row):
             if isinstance(fun, functools.partial):
                 globals = fun.func.__globals__
             else:
                 globals = fun.__globals__
 
             old_globals = dict(globals)
-            globals.update(_column_name=column_properties[0].name if len(column_properties) == 1 else None,
+            globals.update(_column_name=column_properties.name,
                            _column_properties=column_properties)
             try:
-                return fun(*args, **kwargs)
+                returned_value = fun(self, index, row)
+                if returned_value is not None:
+                    row[column_properties.name] = returned_value
             finally:
                 globals.clear()
                 globals.update(old_globals)
@@ -446,30 +698,28 @@ class ATable(metaclass=MetaTable):
 
     @property
     def indices(self):
-        """If self.index is a string, it returns a list with that column name.
-        If self.index is a list, it returns self.index.
+        """If `self.index` is a string, it returns a list with that column name.
+        If self.index is a list, it returns `self.index`.
         Useful to iterate homogeneously regardless of whether single or multiple indices are used.
         """
         return unpack_index_value(self.index)
 
     @property
     def indices_and_columns(self):
-        """
-        :return: a list of all defined columns, i.e., those for which
-          a function has been defined
+        """:return: a list of all defined columns, i.e., those for which a function has been defined.
         """
         return self.indices + list(k for k in self.column_to_properties.keys()
                                    if k not in itertools.chain(self.indices, self.ignored_columns))
 
-    def get_df(self, target_indices, target_columns=None,
+    # Methods to generate a DataFrame instance with the requested data
+
+    def get_df(self, target_indices=None, target_columns=None,
                fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
-        """Return a pandas DataFrame containing all given indices and defined columns.
-        If fill is True, missing values will be computed.
-        If fill and overwrite are True, all values will be computed, regardless of
-        whether they are previously present in the table.
+        """Return a |DataFrame| containing all given indices and defined columns.
 
-        :param target_indices: list of indices that are to be contained in the table
+        :param target_indices: list of indices that are to be contained in the table, or None to infer
+          from the dataset.
         :param target_columns: if not None, it must be a list of column names that
           are to be obtained for the specified indices. If not None, only those
           columns are computed.
@@ -485,16 +735,18 @@ class ATable(metaclass=MetaTable):
            indices, and results are made persistent only once.
 
         :return: a DataFrame instance containing the requested data
-        :raises: CorrupedTableError, ColumnFailedError, when an error is encountered
+        :raises: CorruptedTableError, ColumnFailedError, when an error is encountered
           processing the data.
         """
+        target_indices = target_indices if target_indices is not None \
+            else get_all_input_files(self.default_extension)
         overwrite = overwrite if overwrite is not None else options.force
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
             else not options.sequential
 
         target_indices = list(target_indices)
         if not target_indices:
-            target_indices = get_all_test_files(ext=self.default_extension)
+            target_indices = get_all_input_files(ext=self.default_extension)
         assert len(target_indices) > 0, "At least one index must be provided"
 
         chunk_size = chunk_size if chunk_size is not None else options.chunk_size
@@ -522,13 +774,15 @@ class ATable(metaclass=MetaTable):
 
     def get_df_one_chunk(self, target_indices, target_columns=None,
                          fill=True, overwrite=False, parallel_row_processing=True):
-        """Implementation the :meth:`get_df` for one chunk of indices
+        """Internal implementation of the :meth:`get_df` functionality,
+         to be applied to a single chunk of indices.
         """
+        # It is a no-op if ray is already initialzied
         ray_cluster.init_ray()
 
         if options.verbose > 2:
             print("[I]nfo: Loading data and/or defaults...")
-        table_df = self._load_saved_df()
+        table_df = self.load_saved_df()
         if options.verbose > 2:
             print("[I]nfo: ... loaded data and/or defaults!")
 
@@ -709,7 +963,10 @@ class ATable(metaclass=MetaTable):
         for column, fun in column_fun_tuples:
             if fun in called_functions:
                 if row[column] is None:
-                    raise ValueError(f"[F]unction {fun} failed to fill column {column}")
+                    raise ValueError(
+                        f"[F]unction {fun} failed to fill column {column} with a not-None value. " +
+                        ("Note that functions starting with column_ should either return a value or raise an exception"
+                         if fun.__name__.startwith("column_") else ""))
                 if options.verbose > 2:
                     print(f"[A]lready called function {fun.__name__} <{self.__class__.__name__}>")
                 continue
@@ -745,17 +1002,17 @@ class ATable(metaclass=MetaTable):
                     print(f"[E]rror while obtaining {column} with {fun}: {repr(ex)}")
                 ex = ColumnFailedError(atable=self, index=index, column=column, ex=ex)
                 if options.exit_on_error:
-                    print(f"{self} ------------------------------------------------- [START]")
+                    print(f"{self} ------------------------------------------------- [START error stack trace]")
                     traceback.print_exc()
+                    print(f"{self} ------------------------------------------------- [END error stack trace]")
                     print(f"[E]rror: Exiting because options.exit_on_error = {options.exit_on_error}")
-                    print(f"{self} ------------------------------------------------- [END]")
                     sys.exit(-1)
                 else:
                     return ex
 
         return row
 
-    def _load_saved_df(self):
+    def load_saved_df(self):
         """Load the df stored in permanent support (if any), otherwise an empty dataset,
         verifying that no duplicated indices exist based on atable.indices_to_internal_loc.
 
@@ -782,7 +1039,7 @@ class ATable(metaclass=MetaTable):
                                                   f"values for index {index_name} (at least)")
             loaded_df = loaded_df[self.indices_and_columns]
             for column, properties in self.column_to_properties.items():
-                if properties.has_dict_values:
+                if properties.has_ast_values:
                     loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
                     assert (loaded_df[column].apply(lambda v: isinstance(v, dict))).all(), \
                         f"Not all entries are dicts for {column}"
@@ -896,9 +1153,10 @@ class SummaryTable(ATable):
 
 
 def string_or_float(cell_value):
-    """Takes the input value from an ATable cell and returns either
+    """Takes the input value from an |ATable| cell and returns either
     its float value or its string value. In the latter case, one level of surrounding
     ' or " is removed from the value before returning.
+    :return: the string or float value given by cell_value
     """
     try:
         v = float(cell_value)
@@ -911,57 +1169,49 @@ def string_or_float(cell_value):
     return v
 
 
-def parse_dict_string(cell_value, key_type=string_or_float, value_type=float):
-    """Parse a cell value for a string describing a dictionary.
-    Some checks are performed based on ATable cell contents, i.e.,
+def get_nonscalar_value(cell_value):
+    """Parse a |DataFrame|'s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
+    Return an instance of one of those types.
 
-      * if a dict is found it is returned directly
-      * a Nan (empty cell) is also returned directly
-      * otherwise a string starting by '{' and ending by '}' with 'key:value' pairs
-        separated by ',' (and possibly spaces) is returned
+    If cell_value is a string, ast is employed to parse it.
+    If cell_Value is a dict, list or tuple, it is returned without modification.
+    Otherwise, an error is raised.
 
-    :param key_type: if not None, the key is substituted by a instantiation
-      of that type with the key as argument
-    :param value_type: if not None, the value is substituted by a instantiation
-      of that type with the value as argument
+    Note that |ATable| subclasses produce dataframes with the intended data types also for non-scalar types.
+    This method is provided as a convenience tool for the case when raw CSV files produced by |enb| are
+    read directly, and not through |ATable|'s persistence system.
     """
-    if isinstance(cell_value, dict):
+    if isinstance(cell_value, dict) or isinstance(cell_value, list) or isinstance(cell_value, tuple):
         return cell_value
-    try:
-        assert cell_value[0] == "{", (cell_value[0], f">>{cell_value}<<")
-        assert cell_value[-1] == "}", (cell_value[-1], f">>{cell_value}<<")
-    except TypeError as ex:
-        if cell_value is None or math.isnan(cell_value):
-            return cell_value
-        raise TypeError(f"Trying to parse a dict string '{cell_value}', "
-                        f"wrong type {type(cell_value)} found instead. "
-                        f"Double check the has_dict_values column property.") from ex
-    return ast.literal_eval(cell_value)
+    elif isinstance(cell_value, str):
+        return ast.literal_eval(cell_value)
+    else:
+        raise ValueError(f"Cannot identify non-scalar value {repr(cell_value)}")
 
 
-def check_unique_indices(df: pd.DataFrame):
-    """Verify that df has no duplicated indices
+def check_unique_indices(df):
+    """Verify that df has no duplicated indices, or raise a CorruptedTableError.
     """
     # Verify consistency
     duplicated_indices = df.index.duplicated()
     if duplicated_indices.any():
-        s = f"Loaded table with the following duplicated indices:\n\t: "
-        duplicated_df = df[duplicated_indices]
-        for i in range(len(duplicated_df)):
-            print("[watch] duplicated_df.iloc[i] = {}".format(duplicated_df.iloc[i]))
-
+        s = f"Loaded table with the following DUPLICATED indices:\n\t: "
         if options.verbose:
-            print("[watch] df[duplicated_indices] = {}".format(df[duplicated_indices]))
             s += "\n\t:: ".join(str(' , '.join(values))
-                                for values in df[duplicated_indices][df.indices].values)
+                                for values in df[duplicated_indices][df.example_indices].values)
             print(s)
         raise CorruptedTableError(atable=None)
 
 
 def indices_to_internal_loc(values):
     """Given an index string or list of strings, return a single index string
-    that uniquely identifies those strings and can be used as an internal index
+    that uniquely identifies those strings and can be used as an internal index.
 
+    This is used internally to set the actual |DataFrame|'s index value to a unique
+    value that represents the row's index. Note that |DataFrame|'s subindexing is
+    intentionally not used to maintain a simple, flat structure of tables without nesting.
+
+    :return: a unique string for indexing given the input values
     """
     if isinstance(values, str):
         values = [values]
@@ -970,9 +1220,11 @@ def indices_to_internal_loc(values):
 
 
 def unpack_index_value(input):
-    """If input is a string, it returns a list with that column name.
-    If input is a list, it returns self.index.
-    Useful to iterate homogeneously regardless of whether single or multiple indices are used.
+    """Unpack an enb-created |DataFrame| index and return its elements.
+    This can be useful to iterate homogeneously regardless of whether single or multiple indices are used.
+
+    :return: If input is a string, it returns a list with that column name.
+      If input is a list, it returns self.index.
     """
     if isinstance(input, str):
         return [input]
@@ -1011,31 +1263,80 @@ def ray_process_row(atable, index, column_fun_tuples, row, overwrite, fill, opti
                               row=row, overwrite=overwrite, fill=fill)
 
 
-def column_function(column_properties, **kwargs):
-    """Decorator to allow definition of table columns for
-    still undefined classes.
+def column_function(*column_property_list, **kwargs):
+    """New columns can be added to |ATable| subclasses by decorating them with @enb.atable.column_function,
+    e.g., with code similar to the following::
 
-    Arguments follow the semantics defined in :meth:`ATable.column_function`.
+        class TableA(enb.atable.ATable):
+        @enb.atable.column_function("uppercase", label="Uppercase version of the index")
+        def set_character_sum(self, index, row):
+            row["uppercase"] = index.upper()
+
+    The `column_property_list` argument can be one of the following options:
+
+    - one or more strings, which are interpreted as the new column(s)' name(s). For example::
+
+        class TableC(enb.atable.ATable):
+        @enb.atable.column_function("uppercase", "lowercase")
+        def set_character_sum(self, index, row):
+            row["uppercase"] = index.upper()
+            row["lowercase"] = index.lower()
+
+
+    - one or more |ColumnProperties| instances, one for each defined column.
+    - a list of |ColumnProperties| instances, e.g., by invoking `@column_function([cp1,cp2])`
+          where `cp1` and `cp2` are |ColumnProperties| instances.
+          This option is deprecated and provided for backwards compatibility only.
+          If `properties=[cp1,cp2]`, then `@column_function(l)` (deprecated) and `@column_function(*l)`
+          should result in identical column definitions.
+
+
+    Decorator to allow definition of table columns for
+    still undefined classes. To do so, MetaTable keeps track of |column_function|-decorated methods
+    while the class is being defined.
+    Then, when the class is created, MetaTable adds the columns defined by the decorated functions.
+
+    :param column_property_list: list of column property definitions, as described above.
+    :return: the wrapper that actually decorates the function using the column_property_list and kwargs parameters.
     """
+    kwargs = dict(kwargs)
 
-    def inner_wrapper(f):
+    column_property_list = list(column_property_list)
+
+    def inner_wrapper(decorated_method):
         try:
-            cls_name = get_defining_class_name(f)
+            cls_name = get_defining_class_name(decorated_method)
         except IndexError:
-            raise Exception(f"Are you decorating a non-method function {f.__name__}? Not allowed")
+            raise SyntaxError(f"Detected a non-class method decorated with @enb.atable.column_function, "
+                              f"which is not supported.")
 
-        MetaTable.pendingdefs_classname_fun_columnproperties_kwargs.append(
-            (cls_name, f, column_properties, dict(kwargs))
-        )
+        # Normalize arguments and add to the list of functions pending to be registered.
+        normalized_list = ATable.normalize_column_function_arguments(
+            column_property_list=column_property_list, fun=decorated_method, **kwargs)
 
-        return f
+        MetaTable.pendingdefs_classname_fun_columnpropertylist_kwargs.append(
+            (cls_name, decorated_method, normalized_list, kwargs))
+
+        return decorated_method
 
     return inner_wrapper
 
 
 def redefines_column(f):
-    """Decorator to mark a function as a column_function for all
-    columns associated with functions with the same name as f.
+    """When an |ATable| subclass defines a method with the same name as any of the
+    parent classes, and when that method defines a column, it must be decorated with this.
+
+    Otherwise, a SyntaxError is raised. This is to prevent hard-to-find bugs where a parent
+    class' definition of the method is used when filling a row's column, but calling that method
+    on the child's instance runs the child's code.
+
+    Functions decorated with this method acquire a _redefines_column attribute, that is then identified by
+    :meth:`enb.atable.ATable.add_column_function`, i.e., the method responsible for creating columns.
+
+    Note that _redefines_column attributes for non-column and non-overwritting methods are not employed
+    by |enb| thereafter.
+
+    :param f: rewriting function being decorated
     """
     f._redefines_column = True
     return f
@@ -1058,28 +1359,25 @@ def get_class_that_defined_method(meth):
     return getattr(meth, '__objclass__', None)
 
 
-def get_all_test_files(ext="raw", base_dataset_dir=None):
-    """Get a list of all set files contained in the data dir.
+def get_all_input_files(ext=None, base_dataset_dir=None):
+    """Get a list of all input files (recursively) contained in base_dataset_dir.
 
-    :param ext: if not None, only files with that extension (without dot)
-      are returned by this method.
+    :param ext: if not None, only files with names ending with ext will be
     :param base_dataset_dir: if not None, the dir where test files are searched
       for recursively. If None, options.base_dataset_dir is used instead.
+    :return: the sorted list of canonical paths to the found input files.
     """
+    # Set the input dataset dir
     base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
-    if base_dataset_dir is None:
-        if options.verbose > 1:
-            print(f"[W]arning: base_dataset_dir is none, returning [sys.argv[0]] as the only test file.")
-        return [get_canonical_path(sys.argv[0])]
+    if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
+        raise ValueError(f"Cannot get input samples from {base_dataset_dir} (path not found or not a dir).")
 
-    if not os.path.isdir(base_dataset_dir):
-        raise ValueError(f"base_dataset_dir={repr(base_dataset_dir)} does not exist.")
+    # Recursively get all files, filtering only those that match the extension, if provided.
     sorted_path_list = sorted(
         (get_canonical_path(p) for p in glob.glob(
-            os.path.join(base_dataset_dir, "**", f"*.{ext}" if ext else "*"),
+            os.path.join(base_dataset_dir, "**", f"*{ext}" if ext else "*"),
             recursive=True)
          if os.path.isfile(p)),
-        # key=lambda p: os.path.getsize(p))
         key=lambda p: get_canonical_path(p).lower())
 
     # If quick is selected, return at most as many paths as the quick parameter count
@@ -1087,7 +1385,8 @@ def get_all_test_files(ext="raw", base_dataset_dir=None):
 
 
 def get_canonical_path(file_path):
-    """:return: the canonical path to be stored in the database.
     """
-    file_path = os.path.abspath(os.path.realpath(file_path))
-    return file_path
+    :return: the canonical version of a path to be stored in the database, to make sure
+      indexing is consistent across code using |ATable| and its subclasses.
+    """
+    return os.path.abspath(os.path.realpath(file_path))

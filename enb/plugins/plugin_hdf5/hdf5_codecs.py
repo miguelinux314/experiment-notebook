@@ -2,7 +2,7 @@
 """Codec wrapper for the HDF5 lossless image coder
 """
 __author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
-__since__ = "01/08/2021"
+__since__ = "2021/08/01"
 
 import numpy as np
 import enb

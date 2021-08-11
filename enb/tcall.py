@@ -2,7 +2,7 @@
 """Timed calls to subprocess, so that real execution times can be obtained.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "23/05/2020"
+__since__ = "2020/05/23"
 
 import os
 import subprocess

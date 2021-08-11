@@ -5,7 +5,7 @@ Wrapper for the VVC codec, using the reference implementation from
 https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
-__since__ = "01/06/2021"
+__since__ = "2021/06/01"
 
 import os
 import math

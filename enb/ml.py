@@ -4,7 +4,7 @@
 using pyplot.
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
-__since__ = "01/09/2021"
+__since__ = "2021/09/01"
 
 import inspect
 import os
@@ -151,7 +151,7 @@ class MachineLearningExperiment(experiment.Experiment):
         self.tasks = list(models)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else enb.atable.get_all_test_files()
+            else enb.atable.get_all_input_files()
 
         self.dataset_paths = dataset_paths  # TODO: remove this
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Template example of a lossy image compression experiment.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "02/02/2021"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "2021/02/02"
 
 import os
 import glob

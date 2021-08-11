@@ -21,7 +21,7 @@ Order is important because read properties overwrite any previously set values.
    case ignorant, order. No recursive folder search is performed.
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "18/09/2019"
+__since__ = "2019/09/18"
 
 import argparse
 import os

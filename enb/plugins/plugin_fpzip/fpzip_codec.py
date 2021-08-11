@@ -2,7 +2,7 @@
 """Codec wrapper for the fpzip lossless image coder
 """
 __author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
-__since__ = "01/06/2021"
+__since__ = "2021/06/01"
 
 import os
 import enb

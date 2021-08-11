@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Lossless compression experiment example (uses JPEG-LS)
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "25/11/2020"
+__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__since__ = "2020/11/25"
 
 import os
 

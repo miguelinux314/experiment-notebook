@@ -2,7 +2,7 @@
 """Utils to plot data (thinking about pyplot)
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "10/09/2019"
+__since__ = "2019/09/10"
 
 import numpy as np
 import collections

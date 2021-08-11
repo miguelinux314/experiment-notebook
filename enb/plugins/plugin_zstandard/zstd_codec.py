@@ -2,7 +2,7 @@
 """Codec wrapper for the Zstandard lossless image coder
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "12/07/2021"
+__since__ = "2021/07/12"
 
 import os
 import enb

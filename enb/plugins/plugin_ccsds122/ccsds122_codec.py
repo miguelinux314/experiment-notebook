@@ -2,7 +2,7 @@
 """Wrapper for the CCSDS 122.1 (MHDC) codec
 """
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
-__since__ = "29/05/2020"
+__since__ = "2020/05/29"
 
 import os
 import math
