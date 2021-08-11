@@ -13,44 +13,11 @@ import os
 import io
 from setuptools import setup, find_packages
 import configparser
-import subprocess
-import sys
-
-# Tools needed to automatically populate the setup using file-based configurations
-try:
-    from bs4 import BeautifulSoup
-    from markdown import markdown
-except ImportError:
-    invocation = f"{sys.executable} -m pip install bs4 markdown"
-    status, output = subprocess.getstatusoutput(invocation)
-    if status != 0:
-        raise RuntimeError("Error installing needed build libraries. "
-                           f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
-    from bs4 import BeautifulSoup
-    from markdown import markdown
 
 # Read the configuration from ./enb/config/enb.ini, section "enb"
 enb_options = configparser.ConfigParser()
 enb_options.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "enb", "config", "enb.ini"))
 enb_options = enb_options["enb"]
-
-
-def strip_markdown_files(*filenames, **kwargs):
-    """Return the contents of one or more files.
-    """
-    # Concatenate the contents of the input files
-    encoding = kwargs.get('encoding', 'utf-8')
-    sep = kwargs.get('sep', '\n')
-    buf = []
-    for filename in filenames:
-        with io.open(filename, encoding=encoding) as f:
-            buf.append(f.read())
-    content_concatenation = sep.join(buf).strip()
-
-    # Apply markdown to html and html to text
-    html = markdown(content_concatenation)
-    return ''.join(BeautifulSoup(html, features="html.parser").findAll(text=True))
-
 
 setup(
     # Metadata about the project
@@ -62,7 +29,7 @@ setup(
     author=enb_options["author"],
     author_email=enb_options["author_email"],
     description=enb_options["description"],
-    long_description=strip_markdown_files('README.md'),
+    long_description=enb_options["long_description"],
     platforms=enb_options["platforms"],
     python_requires=enb_options["python_requires"],
     classifiers=[
@@ -84,7 +51,8 @@ setup(
     },
 
     # Dependencies
-    setup_requires=['wheel', 'deprecation', 'bs4', 'markdown'],
+    setup_requires=['wheel', 'deprecation'],
+
     install_requires=[
         'appdirs', 'astropy', 'astropy', 'deprecation', 'imageio', 'jinja2', 'matplotlib', 'numpngw', 'numpy', 'pandas',
         'pdf2image', 'psutil', 'ray[default]', 'recordclass', 'redis', 'requests', 'scipy', 'sortedcontainers', 'wheel',

@@ -88,9 +88,16 @@ class Ini(metaclass=_Singleton):
 
     def get_key(self, section, name):
         """Return a read key value in the given section (if existing),
-        after applying ast.literal_eval on the value.
+        after applying ast.literal_eval on the value to recognize any
+        valid python literals (essentially numbers, lists, dicts, tuples, booleans and None).
         """
-        return ast.literal_eval(self.config_parser[section][name])
+        try:
+            # Attempt to interpret the string as a literal
+            return ast.literal_eval(self.config_parser[section][name])
+        except SyntaxError:
+            # The key could not be parsed as a literal, it is returned as a string
+            # (this is configparser's default)
+            return self.config_parser[section][name]
 
     @property
     def sections_by_name(self):
