@@ -15,9 +15,11 @@ if __name__ == '__main__':
         def column_index_length(self, index, row):
             return len(index)
 
-
     table_a = TableA(index="my_index_name")
     df = table_a.get_df(target_indices=example_indices)
+    for i, (index, row) in enumerate(df.iterrows()):
+        assert row["index_length"] == len(row["my_index_name"]), (row["index_length"] , len(row["my_index_name"]))
+
     print(df.head())
 
     print("\n\nB")
@@ -60,3 +62,27 @@ if __name__ == '__main__':
     print(f"[watch] TableC.column_to_properties={TableC.column_to_properties}")
     
     print(TableC().get_df(target_indices=example_indices))
+
+
+    class TypesTable(enb.atable.ATable):
+        @enb.atable.column_function(
+            "uppercase",
+            "lowercase",
+            enb.atable.ColumnProperties(
+                "first_last_iterable",
+                label="First and last characters of the index",
+                has_iterable_values=True),
+            enb.atable.ColumnProperties(
+                "first_last_dict",
+                label="First and last characters of the index",
+                has_dict_values=True),
+        )
+        def set_columns(self, index, row):
+            row["uppercase"] = index.upper()
+            row["lowercase"] = index.lower()
+            row["first_last_iterable"] = (index[0], index[-1]) if index else []
+            row["first_last_dict"] = dict(first=index[0], last=index[-1]) if index else {}
+
+    print("TypesTable")
+    df1 = TypesTable().get_df(target_indices=example_indices)
+    df2 = TypesTable().get_df(target_indices=example_indices)

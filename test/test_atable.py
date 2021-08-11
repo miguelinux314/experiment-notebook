@@ -3,6 +3,7 @@
 import os
 import glob
 import unittest
+import string
 import test_all
 
 import enb.atable
@@ -72,6 +73,18 @@ class DefinitionModesTable(atable.ATable):
         row["e"] = row["d"] + 1
         row["f"] = row["e"] + 1
 
+    @atable.column_function(
+        atable.ColumnProperties("constant_one", plot_min=1, plot_max=1),
+        "constant_zero",
+        atable.ColumnProperties("first_ten_numbers", has_iterable_values=True),
+        atable.ColumnProperties("ascii_table", has_dict_values=True),
+    )
+    def set_mixed_type_columns(self, index, row):
+        row["constant_one"] = 1
+        row["constant_zero"] = 0
+        row["first_ten_numbers"] = list(range(10))
+        row["ascii_table"] = {l: ord(l) for l in string.ascii_letters}
+
 
 class TestATable(unittest.TestCase):
     def test_subclassing(self):
@@ -97,8 +110,15 @@ class TestATable(unittest.TestCase):
         table = DefinitionModesTable()
         df = table.get_df(target_indices=["val0"])
         assert len(df) == 1, len(df)
+        row = df.iloc[0]
         for i, c in enumerate((chr(o) for o in range(ord("a"), ord("f") + 1)), start=1):
-            assert df.iloc[0][c] == i
+            assert row[c] == i
+
+        assert row["constant_zero"] == 0, row["constant_zero"]
+        assert row["constant_one"] == 1, row["constant_one"]
+        assert row["first_ten_numbers"] == list(range(10)), row["first_ten_numbers"]
+        assert len(row["ascii_table"]) == len(string.ascii_letters), len(row["ascii_table"])
+        assert all(v == ord(k) for k, v in row["ascii_table"].items()), row["ascii_table"]
 
 
 class TestSummaryTable(unittest.TestCase):
