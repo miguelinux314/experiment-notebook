@@ -211,7 +211,7 @@ class MDHCLosslessCompressionExperiment(enb.icompression.LosslessCompressionExpe
             output_path=row[enb.sets.FilePropertiesTable.index_name],
             transform_number=self.transform_number)
         assert os.path.exists(si_path), f"Side information {si_path} not found. Is it really a RWA-transformed set?"
-        row[_column_name] = os.path.getsize(row.compression_results.compressed_path) \
+        row[_column_name] = os.path.getsize(self.codec_results.compression_results.compressed_path) \
                             + os.path.getsize(si_path)
 
 

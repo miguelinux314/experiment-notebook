@@ -254,7 +254,8 @@ class SingletonCLI(metaclass=Singleton):
         - The decorated functions' docstrings are used as help for those arguments.
 
         - If a None value is returned, the property is updated (e.g., defining a function
-          with a single `pass` line).
+          with a single `pass` line) with the original value without any transformation.
+          No need to update the enb.config.options instance directly.
 
         - If a non-None value is returned, that value is used instead.
           To set a property value to `None`, `self._parsed_properties` dict must be updated manually by

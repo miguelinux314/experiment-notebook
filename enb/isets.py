@@ -57,7 +57,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
-    default_extension = "raw"
+    dataset_files_extension = "raw"
 
     # Data type columns
 
@@ -315,7 +315,7 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
     allowed_extensions = ["fit", "fits"]
     version_name = "FitsToRaw"
 
-    # No need to set  default_extension here, because get_default_target_indices is overwriten.
+    # No need to set  dataset_files_extension here, because get_default_target_indices is overwriten.
     def __init__(self, original_base_dir, version_base_dir):
         super().__init__(
             original_base_dir=original_base_dir,
