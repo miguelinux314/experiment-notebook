@@ -57,7 +57,7 @@ class GeneralOptions:
     def verbose(self, value):
         """Be verbose? Repeat for more.
         """
-        pass
+        return value
 
     @OptionsBase.property("ini", nargs="*", type=str, default=[])
     def extra_ini_paths(self, value):
@@ -171,7 +171,14 @@ class ExecutionOptions:
         Each processed chunk is made persistent before processing the next one.
         This parameter can be used to control the trade-off between error tolerance and overall speed.
         """
-        pass
+        return int(value)
+
+    @OptionsBase.property("fsn", type=bool)
+    def force_sanity_checks(self, value):
+        """If this flag is used, extra sanity checks are performed by enb during the execution of this script.
+        The trade-off for rare error condition detection is a slower execution time.
+        """
+        return bool(value)
 
 
 @_singleton_cli.property_class(OptionsBase)

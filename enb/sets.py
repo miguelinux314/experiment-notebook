@@ -49,6 +49,7 @@ class FilePropertiesTable(atable.ATable):
     hash_field_name = f"{hash_algorithm}"
     index_name = "file_path"
     base_dir = None
+    default_extension = ""
 
     def __init__(self, csv_support_path=None, base_dir=None):
         if csv_support_path is None and options.persistence_dir is not None:
@@ -60,16 +61,15 @@ class FilePropertiesTable(atable.ATable):
     def get_df(self, target_indices=None, target_columns=None,
                fill=True, overwrite=None, parallel_row_processing=None,
                chunk_size=None):
-
         target_indices = target_indices if target_indices is not None \
-            else enb.atable.get_all_input_files(ext=self.default_extension,
+            else enb.atable.get_all_input_files(ext=self.dataset_files_extension,
                                                 base_dataset_dir=self.base_dir)
 
         return super().get_df(target_indices=target_indices,
-                              target_columns=target_columns,
-                              fill=fill, overwrite=overwrite,
-                              parallel_row_processing=parallel_row_processing,
-                              chunk_size=chunk_size)
+                            target_columns=target_columns,
+                            fill=fill, overwrite=overwrite,
+                            parallel_row_processing=parallel_row_processing,
+                            chunk_size=chunk_size)
 
     def get_relative_path(self, file_path):
         """Get the relative path. Overwritten to handle the versioned path.
@@ -177,7 +177,7 @@ class FileVersionTable(FilePropertiesTable):
 
     def get_default_target_indices(self):
         return enb.atable.get_all_input_files(
-            base_dataset_dir=self.original_base_dir, ext=self.default_extension)
+            base_dataset_dir=self.original_base_dir, ext=self.dataset_files_extension)
 
     def original_to_versioned_path(self, original_path):
         """Get the path of the versioned file corresponding to original_path.
