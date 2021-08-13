@@ -59,7 +59,7 @@ One can then use the `get_df` method to obtain a |DataFrame| instance as follows
         df = table_a.get_df(target_indices=example_indices)
         print(df.head())
 
-The previous code should produce the following output::
+The previous code should produce the following output (automatic timestamping columns now shown)::
 
                                   my_index_name index_length
         __atable_index
@@ -185,8 +185,6 @@ import inspect
 import itertools
 import math
 import os
-import sys
-import time
 import traceback
 
 import deprecation
@@ -535,7 +533,7 @@ class ATable(metaclass=MetaTable):
 
     # Name of the index used internally
     private_index_column = "__atable_index"
-    # Column names in this list are not retrieved nor saved to file
+    # Column names in this list are not retrieved nor saved to persistence, even if they are defined.
     ignored_columns = []
 
     def __init__(self, index="index", csv_support_path=None, column_to_properties=None):
@@ -555,9 +553,14 @@ class ATable(metaclass=MetaTable):
         if column_to_properties is not None:
             self.column_to_properties = collections.OrderedDict(column_to_properties)
 
+        # Add the row_created and row_updated columns. The latter is updated by enb
+        # everytime a row is modified.
         self.add_column_function(self.__class__,
                                  fun=lambda self, index, row: datetime.datetime.now(),
                                  column_properties=ColumnProperties("row_created"))
+        self.add_column_function(self.__class__,
+                                 fun=lambda self, index, row: datetime.datetime.now(),
+                                 column_properties=ColumnProperties("row_updated"))
 
     # Methods related to defining columns and retrieving them afterwards
 
@@ -937,6 +940,82 @@ class ATable(metaclass=MetaTable):
 
         return filtered_df
 
+    def load_saved_df(self, csv_support_path=None, run_sanity_checks=True):
+        """Load the df stored in permanent support (if any) and return it.
+        If not present, an empty dataset is returned instead.
+
+        :param run_sanity_checks: if True, data are verified to detect corruption.
+          This may increase computation time, but provides an extra layer
+          of data reliability.
+
+        :return: the loaded table_df, which may be empty
+        :raise CorruptedTableError: if run_run_sanity_checks is True and
+          a problem is detected.
+        """
+        csv_support_path = csv_support_path if csv_support_path is not None else self.csv_support_path
+
+        try:
+            if not csv_support_path:
+                raise FileNotFoundError(
+                    f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
+
+            # Read CSV from disk
+            loaded_df = pd.read_csv(csv_support_path)
+            if options.verbose > 2:
+                print(f"[I]nfo: loaded dataframe from persistence with {len(loaded_df)} elements.")
+
+            # Columns defined since the last invocation are initially set to None for all previously
+            # existing data.
+            for column in self.indices_and_columns:
+                if column not in loaded_df.columns:
+                    loaded_df[column] = None
+
+            if run_sanity_checks:
+                for index_name in self.indices:
+                    if loaded_df[index_name].isnull().any():
+                        raise CorruptedTableError(atable=self,
+                                                  msg=f"Loaded table from {csv_support_path} with empty "
+                                                      f"values for index {index_name} (at least)")
+
+            # Some columns may have been deleted since the first rows
+            # were added to persistence. Only defined columns are selected here,
+            # so that (a) no bogus data is passed to the user (b) the columns
+            # whose definition is removed can be removed from persistence
+            # when the df is dumped into persistence.
+            loaded_df = loaded_df[self.indices_and_columns + [self.private_index_column]]
+            for column, properties in self.column_to_properties.items():
+                if column in loaded_df.columns:
+                    # Column existed - parse literals if needed
+                    if properties.has_ast_values:
+                        loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
+                else:
+                    # Column did not exist: create with None values
+                    loaded_df[column] = None
+
+        except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
+            # Persistence not found
+            if csv_support_path is None:
+                if options.verbose > 2:
+                    print(f"[I]nfo: no csv persistence support.")
+            elif options.verbose:
+                print(f"[W]arning: ATable supporting file {csv_support_path} could not be loaded " +
+                      (f"({ex.__class__.__name__}) " if options.verbose > 1 else '') +
+                      f"- creating an empty one")
+            loaded_df = pd.DataFrame(columns=self.indices_and_columns + [self.private_index_column])
+            for c in self.indices_and_columns:
+                loaded_df[c] = None
+
+        loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
+
+        if run_sanity_checks:
+            try:
+                check_unique_indices(loaded_df)
+            except CorruptedTableError as ex:
+                print(f"[E]rror loading table from {csv_support_path}")
+                raise ex
+
+        return loaded_df
+
     def fill_all_rows(self,
                       loaded_df,
                       filtered_df,
@@ -1029,34 +1108,6 @@ class ATable(metaclass=MetaTable):
         # The result is the concatenation of all loaded series
         return pd.concat(computed_series)
 
-    def write_persistence(self, df, output_csv=None):
-        """Dump a dataframe produced by this table into persistent storage.
-
-        :param output_csv: if None, self.csv_support_path is used as the output path.
-        """
-        output_csv = output_csv if output_csv is not None else self.csv_support_path
-        if options.verbose > 1:
-            print(f"[D]umping CSV with {len(df)} entries into {output_csv}")
-        df.to_csv(output_csv, index=True)
-
-    def get_matlab_struct_str(self, target_indices):
-        """Return a string containing MATLAB code that defines a list of structs
-        (one per target index), with the fields being the columns defined
-        for this table.
-        """
-        result_df = self.get_df(target_indices=target_indices)
-        struct_str_lines = []
-        struct_str_lines.append("image_list = [")
-        for i in range(len(result_df)):
-            row = result_df.iloc[i]
-            row_str = "struct(" \
-                      + f"'{self.index}',{repr(row[self.index])}, " \
-                      + ", ".join(f"'{c}',{repr(row[c])}" for c in self.column_to_properties.keys()) \
-                      + ");"
-            struct_str_lines.append("".join(row_str.replace("True", "true").replace("False", "false")))
-        struct_str_lines.append("]';")
-        return "\n".join(struct_str_lines)
-
     def fill_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
         """Process a single row of an ATable instance, returning a Series object corresponding to that row in
         case of success.
@@ -1136,83 +1187,37 @@ class ATable(metaclass=MetaTable):
         for index_name, index_value in zip(self.indices, unpack_index_value(index)):
             row[index_name] = index_value
 
+        row["row_updated"] = datetime.datetime.now()
+
         return row
 
-    def load_saved_df(self, csv_support_path=None, run_sanity_checks=True):
-        """Load the df stored in permanent support (if any) and return it.
-        If not present, an empty dataset is returned instead.
+    def write_persistence(self, df, output_csv=None):
+        """Dump a dataframe produced by this table into persistent storage.
 
-        :param run_sanity_checks: if True, data are verified to detect corruption.
-          This may increase computation time, but provides an extra layer
-          of data reliability.
-
-        :return: the loaded table_df, which may be empty
-        :raise CorruptedTableError: if run_run_sanity_checks is True and
-          a problem is detected.
+        :param output_csv: if None, self.csv_support_path is used as the output path.
         """
-        csv_support_path = csv_support_path if csv_support_path is not None else self.csv_support_path
+        output_csv = output_csv if output_csv is not None else self.csv_support_path
+        if options.verbose > 1:
+            print(f"[D]umping CSV with {len(df)} entries into {output_csv}")
+        df.to_csv(output_csv, index=True)
 
-        try:
-            if not csv_support_path:
-                raise FileNotFoundError(
-                    f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
-
-            # Read CSV from disk
-            loaded_df = pd.read_csv(csv_support_path)
-            if options.verbose > 2:
-                print(f"[I]nfo: loaded dataframe from persistence with {len(loaded_df)} elements.")
-
-            # Columns defined since the last invocation are initially set to None for all previously
-            # existing data.
-            for column in self.indices_and_columns:
-                if column not in loaded_df.columns:
-                    loaded_df[column] = None
-
-            if run_sanity_checks:
-                for index_name in self.indices:
-                    if loaded_df[index_name].isnull().any():
-                        raise CorruptedTableError(atable=self,
-                                                  msg=f"Loaded table from {csv_support_path} with empty "
-                                                      f"values for index {index_name} (at least)")
-
-            # Some columns may have been deleted since the first rows
-            # were added to persistence. Only defined columns are selected here,
-            # so that (a) no bogus data is passed to the user (b) the columns
-            # whose definition is removed can be removed from persistence
-            # when the df is dumped into persistence.
-            loaded_df = loaded_df[self.indices_and_columns + [self.private_index_column]]
-            for column, properties in self.column_to_properties.items():
-                if column in loaded_df.columns:
-                    # Column existed - parse literals if needed
-                    if properties.has_ast_values:
-                        loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
-                else:
-                    # Column did not exist: create with None values
-                    loaded_df[column] = None
-
-        except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
-            # Persistence not found
-            if csv_support_path is None:
-                if options.verbose > 2:
-                    print(f"[I]nfo: no csv persistence support.")
-            elif options.verbose:
-                print(f"[W]arning: ATable supporting file {csv_support_path} could not be loaded " +
-                      (f"({ex.__class__.__name__}) " if options.verbose > 1 else '') +
-                      f"- creating an empty one")
-            loaded_df = pd.DataFrame(columns=self.indices_and_columns + [self.private_index_column])
-            for c in self.indices_and_columns:
-                loaded_df[c] = None
-
-        loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
-
-        if run_sanity_checks:
-            try:
-                check_unique_indices(loaded_df)
-            except CorruptedTableError as ex:
-                print(f"[E]rror loading table from {csv_support_path}")
-                raise ex
-
-        return loaded_df
+    def get_matlab_struct_str(self, target_indices):
+        """Return a string containing MATLAB code that defines a list of structs
+        (one per target index), with the fields being the columns defined
+        for this table.
+        """
+        result_df = self.get_df(target_indices=target_indices)
+        struct_str_lines = []
+        struct_str_lines.append("image_list = [")
+        for i in range(len(result_df)):
+            row = result_df.iloc[i]
+            row_str = "struct(" \
+                      + f"'{self.index}',{repr(row[self.index])}, " \
+                      + ", ".join(f"'{c}',{repr(row[c])}" for c in self.column_to_properties.keys()) \
+                      + ");"
+            struct_str_lines.append("".join(row_str.replace("True", "true").replace("False", "false")))
+        struct_str_lines.append("]';")
+        return "\n".join(struct_str_lines)
 
     @property
     def name(self):

@@ -12,7 +12,6 @@ import numpy as np
 import shutil
 
 import enb.atable
-import test_all
 import enb.sets as sets
 from enb.config import options
 
@@ -99,7 +98,9 @@ class TestSets(unittest.TestCase):
                     continue
                 version_column = column.replace(lsuffix, rsuffix)
                 if not column.startswith("corpus"):
-                    assert np.all(joint_df[column] == joint_df[version_column]) or column.startswith("row_created"), \
+                    assert np.all(joint_df[column] == joint_df[version_column]) \
+                           or column.startswith("row_created") \
+                           or column.startswith("row_update"), \
                         f"Columns {column} and {version_column} differ: " \
                         f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
 

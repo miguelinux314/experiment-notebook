@@ -4,7 +4,7 @@ import os
 import glob
 import unittest
 import string
-import test_all
+
 
 import enb.atable
 import enb.atable as atable
