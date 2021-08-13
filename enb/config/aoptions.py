@@ -143,12 +143,6 @@ class ExecutionOptions:
         assert value, f"At least one column must be defined"
 
     @OptionsBase.property(action="store_true")
-    def exit_on_error(self, value):
-        """If True, any exception when processing rows aborts the program.
-        """
-        return bool(value)
-
-    @OptionsBase.property(action="store_true")
     def discard_partial_results(self, value):
         """Discard partial results when an error is found running the experiment?
 

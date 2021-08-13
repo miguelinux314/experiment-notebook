@@ -1110,12 +1110,13 @@ class ATable(metaclass=MetaTable):
         # Get the list of pandas Series instances (table rows) corresponding to target_indices.
         target_locs = target_locs if target_locs is None else [indices_to_internal_loc(v) for v in target_indices]
         if not parallel_row_processing:
-            computed_series = [self.process_row(filtered_df=filtered_df,
-                                                index=index, loc=loc,
-                                                column_fun_tuples=column_fun_tuples,
-                                                overwrite=overwrite,
-                                                options=enb.config.options)
-                               for index, loc in zip(target_indices, target_locs)]
+            computed_series = []
+            for index, loc in zip(target_indices, target_locs):
+                computed_series.append(self.process_row(filtered_df=filtered_df,
+                                                        index=index, loc=loc,
+                                                        column_fun_tuples=column_fun_tuples,
+                                                        overwrite=overwrite,
+                                                        options=enb.config.options))
         else:
             filtered_df_id = ray.put(filtered_df)
             column_fun_tuples_id = ray.put(column_fun_tuples)
@@ -1132,6 +1133,10 @@ class ATable(metaclass=MetaTable):
                 options=options_id)
                 for index, loc in zip(target_indices, target_locs)]
             computed_series = ray.get(pending_ids)
+
+        found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
+        if found_exceptions:
+            raise ColumnFailedError(f"Error setting (at least) one cell with {self}: {repr(found_exceptions)}")
 
         # Update new rows
         for loc, series in ((loc, series) for loc, series in zip(target_locs, computed_series)):
@@ -1169,7 +1174,11 @@ class ATable(metaclass=MetaTable):
         return "\n".join(struct_str_lines)
 
     def process_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
-        """Process a single row of an ATable instance, returning a Series object corresponding to that row.
+        """Process a single row of an ATable instance, returning a Series object corresponding to that row in
+        case of success.
+
+        If an error is detected, an exception is returned instead of a Series. Note that the exception
+        is not raised here, but intended to be detected by the dispatcher.
 
         :param filtered_df: |DataFrame| retrieved from persistent storage, with index compatible with loc.
           The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
@@ -1231,18 +1240,15 @@ class ATable(metaclass=MetaTable):
                     raise ValueError(f"Function {fun} failed to fill "
                                      f"the associated '{column}' column ({column}:{row[column]})")
             except Exception as ex:
-                ex = ColumnFailedError(atable=self, index=index, column=column, ex=ex)
+                msg = f"[E]rror computing a cell: {repr(ex)}\n" \
+                      f"{self} ------------------------------------------------- [START error stack trace]\n" \
+                      f"{traceback.format_exc()}\n" \
+                      f"{self} ------------------------------------------------- [END error stack trace]\n" \
+                      f"[E]rror: Exiting because options.exit_on_error = {options.exit_on_error}"
+                cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
                 if options.verbose:
-                    print(f"[E]rror while obtaining {column} with {fun}: {repr(ex)}")
-                if options.exit_on_error:
-                    if options.verbose:
-                        print(f"{self} ------------------------------------------------- [START error stack trace]")
-                        traceback.print_exc()
-                        print(f"{self} ------------------------------------------------- [END error stack trace]")
-                        print(f"[E]rror: Exiting because options.exit_on_error = {options.exit_on_error}")
-                    sys.exit(-1)
-                else:
-                    return ex
+                    print(msg)
+                return cfe
 
         for index_name, index_value in zip(self.indices, unpack_index_value(index)):
             row[index_name] = index_value
