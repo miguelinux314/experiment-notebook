@@ -20,7 +20,7 @@ Order is important because read properties overwrite any previously set values.
 3. All `*.ini` files defined in the same folder as the called script, in lexicographical,
    case ignorant, order. No recursive folder search is performed.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/18"
 
 import argparse
@@ -94,7 +94,7 @@ class Ini(metaclass=_Singleton):
         try:
             # Attempt to interpret the string as a literal
             return ast.literal_eval(self.config_parser[section][name])
-        except SyntaxError:
+        except (SyntaxError, ValueError):
             # The key could not be parsed as a literal, it is returned as a string
             # (this is configparser's default)
             return self.config_parser[section][name]

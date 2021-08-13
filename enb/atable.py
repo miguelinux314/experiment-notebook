@@ -184,7 +184,7 @@ After the definition, the table's dataframe can be obtained with
     ('ab cab cab cab c',)  ab cab cab cab c           16  AB CAB CAB CAB C  {'first': 'a', 'last': 'c'}           4             0
 
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
 from builtins import hasattr

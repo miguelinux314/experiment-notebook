@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Template example of a lossy image compression experiment.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/02/02"
 
 import os

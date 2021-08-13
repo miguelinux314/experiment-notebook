@@ -3,7 +3,7 @@
 
 Please see https://github.com/miguelinux314/experiment-notebook for further information.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
 
 import os as _os
@@ -32,10 +32,15 @@ default_persistence_dir = _os.path.join(calling_script_dir, f"persistence_{_os.p
 # Are we currently running the main enb CLI or the CLI for a host script? True means main enb CLI.
 is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
+# Logging tools
+from . import log
 # Pre-definition tools
 from . import misc
 # Global configuration modules
 from . import config
+
+# Set the logging options from this point onwards.
+log.logger.max_log_level = log.get_level(config.options.max_log_level)
 
 # Core modules
 ## Basic ATable features
@@ -52,7 +57,7 @@ from . import aanalysis
 ## Image compression modules
 from . import icompression
 from . import isets
-# TODO: pgm should not be a core module - move somewhere into icompression ?
+# TODO: pgm should not be a core module - move somewhere into icompression
 from . import pgm
 
 # Plugin support

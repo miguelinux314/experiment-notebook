@@ -94,3 +94,5 @@ if __name__ == '__main__':
     print(types_df.head())
     print(types_df.iloc[0])
     print([type(v) for v in types_df.iloc[0]])
+
+

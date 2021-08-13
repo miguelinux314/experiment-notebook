@@ -10,7 +10,7 @@ Basic usage:
 Properties are added by decorating functions. Multiple inheritance is possible with classes that decorate
 CLI properties, just make sure to subclass from GlobalOptions.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/02/06"
 
 import os
@@ -305,8 +305,11 @@ class SingletonCLI(metaclass=Singleton):
                     kwargs["default"] = ini.get_key("enb.config.options", decorated_method.__name__) \
                         if default is None else default
                 except KeyError as ex:
-                    raise SyntaxError(f"Could not find default value for option {repr(decorated_method.__name__)} "
-                                      f"in the call nor in any of the known .ini files.") from ex
+                    if default is not None:
+                        kwargs["default"] = default
+                    else:
+                        raise SyntaxError(f"Could not find default value for option {repr(decorated_method.__name__)} "
+                                          f"in the call nor in any of the known .ini files.") from ex
 
                 cls.assert_setter_signature(decorated_method)
 
@@ -358,6 +361,7 @@ class SingletonCLI(metaclass=Singleton):
                 alias_with_dashes = sorted(set(alias_with_dashes), key=len)
 
                 argparse_kwargs.update(**kwargs)
+
                 try:
                     arg_group.add_argument(*alias_with_dashes, **argparse_kwargs)
                 except argparse.ArgumentError:

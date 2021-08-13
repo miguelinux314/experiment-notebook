@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Wrappers for different types of LZ codecs such as Deflate, LZMA, BZIP2
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/01/04"
 
 import zlib

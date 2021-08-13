@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Utils to plot data (thinking about pyplot)
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/10"
 
 import numpy as np

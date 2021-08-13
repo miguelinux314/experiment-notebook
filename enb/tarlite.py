@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lite archiving format to write several files into a single one.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/04/08"
 
 import os

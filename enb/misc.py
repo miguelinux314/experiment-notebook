@@ -4,7 +4,7 @@
 This module does not and should not import anything from enb, so that other modules
 may use misc tools at definition time.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/11"
 
 import re

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Trivial codec implementations, mostly for testing purposes.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
 
 import shutil

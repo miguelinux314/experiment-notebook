@@ -9,7 +9,7 @@ Subclasses of this table can be created adding extra columns.
 The experiment.CompressionExperiment class takes an instance of FilePropertiesTable
 to know what files the experiment should be run on.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/18"
 
 import os

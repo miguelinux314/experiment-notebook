@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Codec wrapper for the Zstandard lossless image coder
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/12"
 
 import os

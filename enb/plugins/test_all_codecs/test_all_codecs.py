@@ -5,7 +5,7 @@ By default, all detected, non-"abstract" codecs are tested.
 If one or more command line arguments are passed, only codec classes matching that name will be tested.
 Empty codec selections are invalid.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/06"
 
 import sys

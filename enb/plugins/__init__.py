@@ -10,7 +10,7 @@ Templates are very similar to plugins, but use jinja to transform `.enbt` templa
 
 Please refer to each submodule for further information.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
 
 from .installable import Installable, import_all_installables, list_all_installables
