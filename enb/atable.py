@@ -915,7 +915,7 @@ class ATable(metaclass=MetaTable):
         if fill:
             # This method may raise ColumnFailedError if a column function crashes
             # or fails to fill their associated column(s).
-            self.process_all_rows(
+            self.fill_all_rows(
                 # By passing target_df instead of loaded_table, there is less memory (and possibly network traffic)
                 # footprint.
                 loaded_df=loaded_table,
@@ -1084,14 +1084,14 @@ class ATable(metaclass=MetaTable):
     #
     #     return table_df
 
-    def process_all_rows(self,
-                         loaded_df,
-                         filtered_df,
-                         target_indices,
-                         target_columns,
-                         overwrite,
-                         parallel_row_processing,
-                         target_locs=None):
+    def fill_all_rows(self,
+                      loaded_df,
+                      filtered_df,
+                      target_indices,
+                      target_columns,
+                      overwrite,
+                      parallel_row_processing,
+                      target_locs=None):
         """This method is run when the table is known to have some missing values.
         These can be:
 
@@ -1138,11 +1138,11 @@ class ATable(metaclass=MetaTable):
         if not parallel_row_processing:
             computed_series = []
             for index, loc in zip(target_indices, target_locs):
-                computed_series.append(self.process_row(filtered_df=filtered_df,
-                                                        index=index, loc=loc,
-                                                        column_fun_tuples=column_fun_tuples,
-                                                        overwrite=overwrite,
-                                                        options=enb.config.options))
+                computed_series.append(self.fill_one_row(filtered_df=filtered_df,
+                                                         index=index, loc=loc,
+                                                         column_fun_tuples=column_fun_tuples,
+                                                         overwrite=overwrite,
+                                                         options=enb.config.options))
         else:
             filtered_df_id = ray.put(filtered_df)
             column_fun_tuples_id = ray.put(column_fun_tuples)
@@ -1203,7 +1203,7 @@ class ATable(metaclass=MetaTable):
         struct_str_lines.append("]';")
         return "\n".join(struct_str_lines)
 
-    def process_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
+    def fill_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
         """Process a single row of an ATable instance, returning a Series object corresponding to that row in
         case of success.
 
@@ -1570,7 +1570,7 @@ def ray_get_row_or_default(df, index, index_columns, all_columns):
 def ray_process_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite, options):
     """Ray wrapper for :meth:`ATable.process_row`
     """
-    return atable_instance.process_row(
+    return atable_instance.fill_one_row(
         filtered_df=filtered_df,
         index=index,
         loc=loc,

@@ -752,7 +752,7 @@ class CompressionExperiment(experiment.Experiment):
         """
         return self.tasks_by_name
 
-    def process_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
+    def fill_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
 
         # Prepare a new column with a self.CodecRowWrapper instance that allows
         # automatic, lazy computation of compression and decompression results.
@@ -770,7 +770,7 @@ class CompressionExperiment(experiment.Experiment):
                 image_info_row=image_info_row)
             assert self.codec_results is not None
 
-            processed_row = super().process_row(
+            processed_row = super().fill_one_row(
                 filtered_df=filtered_df, index=index, loc=loc, column_fun_tuples=column_fun_tuples,
                 overwrite=overwrite, options=options)
 
