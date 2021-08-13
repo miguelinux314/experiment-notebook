@@ -62,7 +62,7 @@ class AvailabilityExperiment(enb.experiment.Experiment):
                                / (8 * os.path.getsize(tmp_compressed_file.name))
                 row["error_str"] = ""
         except Exception as ex:
-            row["error_str"] = traceback.format_exc()
+            row["error_str"] = repr(traceback.format_exc())
             row["is_working"] = False
             row["is_lossless"] = False
             row["cr_dr"] = 0
