@@ -555,6 +555,10 @@ class ATable(metaclass=MetaTable):
         if column_to_properties is not None:
             self.column_to_properties = collections.OrderedDict(column_to_properties)
 
+        self.add_column_function(self.__class__,
+                                 fun=lambda self, index, row: datetime.datetime.now(),
+                                 column_properties=ColumnProperties("row_created"))
+
     # Methods related to defining columns and retrieving them afterwards
 
     @classmethod
@@ -1158,11 +1162,8 @@ class ATable(metaclass=MetaTable):
             if options.verbose > 2:
                 print(f"[I]nfo: loaded dataframe from persistence with {len(loaded_df)} elements.")
 
-            # Columns defined since the last invocation are initially set to None.
-            # Furthermore, the row_complete column is set to False for all elements initially.
-            # This value is only reverted to True for a row after get_df is called with
-            # its index in the `target_indices` parameter.
-            # This avoids cell-by-cell checking and is intended to speedup overall execution.
+            # Columns defined since the last invocation are initially set to None for all previously
+            # existing data.
             for column in self.indices_and_columns:
                 if column not in loaded_df.columns:
                     loaded_df[column] = None

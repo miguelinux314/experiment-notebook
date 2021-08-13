@@ -99,7 +99,7 @@ class TestSets(unittest.TestCase):
                     continue
                 version_column = column.replace(lsuffix, rsuffix)
                 if not column.startswith("corpus"):
-                    assert np.all(joint_df[column] == joint_df[version_column]), \
+                    assert np.all(joint_df[column] == joint_df[version_column]) or column.startswith("row_created"), \
                         f"Columns {column} and {version_column} differ: " \
                         f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
 
