@@ -261,7 +261,6 @@ class ColumnFailedError(CorruptedTableError):
         if failing_columns:
             parts.append(f"failing columns: {', '.join(repr(c) for c in failing_columns)}")
 
-
         return f"{self.__class__.__name__}({', '.join(parts)}){': ' + repr(self.ex) if self.ex else ''}"
 
 
@@ -888,17 +887,8 @@ class ATable(metaclass=MetaTable):
         # This inner join efficiently queries the loaded table for existing target indices.
         # Its length may be smaller than the requested index length, meaning
         # that some rows are still to be computed.
-
-        # filtered_df = pd.DataFrame(index=target_locs).merge(
-        #     right=loaded_table,
-        #     how="inner",
-        #     left_index=True,
-        #     right_index=True,
-        #     copy=False)
-
         filtered_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
         filtered_df.set_index(self.private_index_column, drop=True, inplace=True)
-
         filtered_df = filtered_df.merge(
             right=loaded_table,
             how="inner",
@@ -942,147 +932,6 @@ class ATable(metaclass=MetaTable):
                 self.write_persistence(df=filtered_df, output_csv=self.csv_support_path)
 
         return filtered_df
-
-    # def get_df_one_chunk(self, target_indices, target_columns=None,
-    #                      fill=True, overwrite=False, parallel_row_processing=True):
-    #     """Internal implementation of the :meth:`get_df` functionality,
-    #     to be applied to a single chunk of indices. It is essentially a self-contained
-    #     call to meth:`enb.atable.ATable.get_df` as described in its documentation, where
-    #     data are stored in memory
-    #     """
-    #     # It is a no-op if ray is already initialzied
-    #     ray_cluster.init_ray()
-    #
-    #     if options.verbose > 2:
-    #         print("[I]nfo: Loading data and/or defaults...")
-    #     table_df = self.load_saved_df()
-    #     if options.verbose > 2:
-    #         print("[I]nfo: ... loaded data and/or defaults!")
-    #
-    #     if not options.no_new_results:
-    #         # Parallel read of current and/or default (with fields set to None) rows
-    #         loaded_df_id = ray.put(table_df)
-    #         index_ids = [ray.put(index) for index in target_indices]
-    #         index_columns_id = ray.put(tuple(self.indices))
-    #         all_columns_id = ray.put(self.indices_and_columns)
-    #         loaded_rows_ids = [ray_get_row_or_default.remote(
-    #             loaded_df_id, index_id, index_columns_id, all_columns_id)
-    #             for index_id in index_ids]
-    #         assert len(index_ids) == len(target_indices)
-    #         assert len(loaded_rows_ids) == len(target_indices)
-    #
-    #         column_fun_tuples = [(column, properties.fun)
-    #                              for column, properties in self.column_to_properties.items()
-    #                              if column not in self.ignored_columns]
-    #
-    #         if target_columns is not None:
-    #             len_before = len(column_fun_tuples)
-    #             column_fun_tuples = [t for t in column_fun_tuples if t[0] in target_columns]
-    #             assert column_fun_tuples, (target_columns, sorted(self.column_to_properties.keys()))
-    #             if options.verbose:
-    #                 print(
-    #                     f"[O]nly for columns {', '.join(target_columns)} ({len_before}->{len(column_fun_tuples)} cols)")
-    #
-    #         if not parallel_row_processing:
-    #             # Serial computation, e.g., to favor accurate time measurements
-    #             returned_values = []
-    #             for index, row in zip(target_indices, ray.get(loaded_rows_ids)):
-    #                 try:
-    #                     returned_values.append(self.process_row(
-    #                         index=index, column_fun_tuples=column_fun_tuples,
-    #                         row=row, overwrite=overwrite, fill=fill))
-    #                 except ColumnFailedError as ex:
-    #                     returned_values.append(ex)
-    #         else:
-    #             self_id = ray.put(self)
-    #             options_id = ray.put(options)
-    #             overwrite_id = ray.put(overwrite)
-    #             fill_id = ray.put(fill)
-    #             column_fun_tuples_id = ray.put(column_fun_tuples)
-    #             processed_row_ids = [ray_process_row.remote(
-    #                 atable=self_id, index=index_id, row=row_id,
-    #                 column_fun_tuples=column_fun_tuples_id,
-    #                 overwrite=overwrite_id, fill=fill_id,
-    #                 options=options_id)
-    #                 for index_id, row_id in zip(index_ids, loaded_rows_ids)]
-    #             time_before = time.time()
-    #             while True:
-    #                 ids_ready, _ = ray.wait(processed_row_ids, num_returns=len(processed_row_ids), timeout=60.0)
-    #                 if len(ids_ready) == len(processed_row_ids):
-    #                     break
-    #                 if any(isinstance(id_ready, Exception) for id_ready in ids_ready):
-    #                     break
-    #
-    #                 if options.verbose:
-    #                     if ids_ready:
-    #                         time_per_id = (time.time() - time_before) / len(ids_ready)
-    #                         eta_seconds = math.ceil((len(processed_row_ids) - len(ids_ready)) * time_per_id)
-    #                         hours = eta_seconds // (60 * 60)
-    #                         minutes = (eta_seconds % (60 * 60)) // 60
-    #                         seconds = (eta_seconds % (60 * 60)) % 60
-    #                         msg = f" Approximate completion time estimation: {hours}h {minutes}min {seconds}s"
-    #                     else:
-    #                         msg = ""
-    #
-    #                     print(f"[I]nfo: {len(ids_ready)} / {len(processed_row_ids)} ready @ "
-    #                           f"{datetime.datetime.now()}.{msg}")
-    #             returned_values = ray.get(processed_row_ids)
-    #
-    #         unpacked_target_indices = list(indices_to_internal_loc(unpack_index_value(target_index))
-    #                                        for target_index in target_indices)
-    #         index_exception_list = []
-    #         for index, row in zip(unpacked_target_indices, returned_values):
-    #             if isinstance(row, Exception):
-    #                 if options.verbose:
-    #                     print(f"[E]rror processing index {index}: {row}")
-    #                 index_exception_list.append((index, row))
-    #                 try:
-    #                     table_df = table_df.drop(index)
-    #                 except KeyError as ex:
-    #                     pass
-    #             else:
-    #                 table_df.loc[index] = row
-    #     else:
-    #         index_exception_list = []
-    #
-    #     table_df = table_df[[c for c in table_df.columns if c not in self.ignored_columns]]
-    #
-    #     # All data (new or previously loaded) is saved to persistent storage
-    #     # if (a) all data were successfully obtained or
-    #     #    (b) the save_partial_results options is enabled
-    #     if not options.no_new_results and self.csv_support_path and \
-    #             (not index_exception_list or not options.discard_partial_results):
-    #         os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
-    #         self.write_persistence(table_df)
-    #
-    #     # A DataFrame is NOT returned if any error is produced
-    #     if index_exception_list:
-    #         raise CorruptedTableError(
-    #             atable=self, ex=index_exception_list[0][1],
-    #             msg=f"{len(index_exception_list)} out of"
-    #                 f" {len(target_indices)} errors happened. "
-    #                 f"Run with --exit_on_error to obtain a full "
-    #                 f"stack trace of the first error.")
-    #
-    #     # Sanity checks before returning the DataFrame with only the requested indices
-    #     # Verify loaded indices are ok (sanity check)
-    #     check_unique_indices(table_df)
-    #     for ti in target_indices:
-    #         internal_index = indices_to_internal_loc(ti)
-    #         if internal_index not in table_df.index:
-    #             if options.no_new_results:
-    #                 raise ValueError(f"[E]rror: options.no_new_results = {options.no_new_results} "
-    #                                  f"but {internal_index} not found in the table. Please run again "
-    #                                  f"without --no_new_results nor any of its aliases.")
-    #             # It should not get to this under regular circumstances...
-    #             assert internal_index in table_df.index, (internal_index, table_df.loc[internal_index])
-    #     target_internal_indices = [indices_to_internal_loc(ti) for ti in target_indices]
-    #     table_df = table_df.loc[target_internal_indices, self.indices_and_columns]
-    #     assert len(table_df) == len(target_indices), \
-    #         "Unexpected table length / requested indices " \
-    #         f"{(len(table_df), len(target_indices))}"
-    #
-    #     return table_df
 
     def fill_all_rows(self,
                       loaded_df,
@@ -1163,8 +1012,9 @@ class ATable(metaclass=MetaTable):
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
             if options.verbose:
-                print(f"[E]rror running {self.__class__.__name__}.get_df(): {len(found_exceptions)}/{len(target_indices)} indices failed. "
-                      f"Using the first one as the main cause.")
+                print(
+                    f"[E]rror running {self.__class__.__name__}.get_df(): {len(found_exceptions)}/{len(target_indices)} indices failed. "
+                    f"Using the first one as the main cause.")
             raise ColumnFailedError(f"Error setting (at least) one cell with {self.__class__.__name__}",
                                     exception_list=found_exceptions) from found_exceptions[0]
 
