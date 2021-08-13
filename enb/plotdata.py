@@ -289,7 +289,8 @@ class HorizontalBand(PlottableData2D):
                 new_y_values = []
                 new_pos_heights = []
                 new_neg_heights = []
-                for x, y, pos_height, neg_height in zip(band_x_values, band_y_values, pos_height_values, neg_height_values):
+                for x, y, pos_height, neg_height in zip(band_x_values, band_y_values, pos_height_values,
+                                                        neg_height_values):
                     new_x_values.extend([x - 0.5, x + 0.5])
                     new_y_values.extend([y, y])
                     new_pos_heights.extend([pos_height, pos_height])

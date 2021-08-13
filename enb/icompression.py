@@ -17,13 +17,9 @@ import math
 import numpy as np
 import imageio
 import subprocess
+
 import numpngw
 from astropy.io import fits
-from astropy.io.fits import Header
-
-from scipy import signal
-from scipy.ndimage.filters import convolve
-
 from scipy import signal
 from scipy.ndimage.filters import convolve
 
