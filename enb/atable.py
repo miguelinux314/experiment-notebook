@@ -32,8 +32,12 @@ This offers several key advantages:
 This is best supported for numeric, string, and boolean types, which are assumed by default.
 You can also use non-scalar types, e.g., list, tuple and dict types, by setting the `has_iterable_values`
 and `has_dict_values` for |ColumnProperties|'s constructor (more on that later).
+
 Finally, you can use any python object that can be pickled and unpickled. For this to work for a given
 column, the `has_object_values` needs to be set to True it the aforementioned constructor.
+
+The only restriction is not to use None nor any other value detected as null by pandas, because these
+are used to efficiently signal the absence of data.
 
 
 Using existing |ATable| columns
@@ -1013,7 +1017,7 @@ class ATable(metaclass=MetaTable):
                     if properties.has_ast_values:
                         loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
                     elif properties.has_object_values:
-                        loaded_df[column] = loaded_df[column].apply(lambda v : pickle.loads(ast.literal_eval(v)))
+                        loaded_df[column] = loaded_df[column].apply(lambda v: pickle.loads(ast.literal_eval(v)))
                 else:
                     # Column did not exist: create with None values
                     loaded_df[column] = None
