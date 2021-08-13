@@ -227,16 +227,42 @@ class ColumnFailedError(CorruptedTableError):
     """Raised when a function failed to fill a column.
     """
 
-    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None):
+    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None, exception_list=[]):
         """
         :param atable: atable instance that originated the problem
         :param column: column where the problem happened
-        :param ex: exception that lead to the problem, or None
+        :param ex: main exception that lead to the problem, or None
+        :param exception_list: a list of exceptions related to this one, e.g., all failing columns
         :param msg: message describing the problem, or None
         """
         super().__init__(atable=atable, msg=msg, ex=ex)
         self.index = index
         self.column = column
+        self.exception_list = list(exception_list)
+
+    def __str__(self):
+        parts = []
+        if self.exception_list:
+            parts.append(f"{len(self.exception_list)} related exceptions")
+        if self.index:
+            parts.append(f"index={self.index}")
+        if self.column:
+            parts.append(f"column={self.column}")
+        if self.msg:
+            parts.append(f"msg='{repr(self.msg[:25])[1:-1]}{'...' if len(self.msg) > 25 else ''}'")
+
+        failing_columns = set()
+        for ex in itertools.chain((self.ex,), self.exception_list):
+            try:
+                if ex.column:
+                    failing_columns.add(ex.column)
+            except AttributeError:
+                pass
+        if failing_columns:
+            parts.append(f"failing columns: {', '.join(repr(c) for c in failing_columns)}")
+
+
+        return f"{self.__class__.__name__}({', '.join(parts)}){': ' + repr(self.ex) if self.ex else ''}"
 
 
 class ColumnProperties:
@@ -1136,7 +1162,10 @@ class ATable(metaclass=MetaTable):
 
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
-            raise ColumnFailedError(f"Error setting (at least) one cell with {self}: {repr(found_exceptions)}")
+            print(f"[E]rror running {self.__class__.__name__}.get_df(): {len(found_exceptions)}/{len(target_indices)} indices failed. "
+                  f"Using the first one as the main cause.")
+            raise ColumnFailedError(f"Error setting (at least) one cell with {self.__class__.__name__}",
+                                    exception_list=found_exceptions) from found_exceptions[0]
 
         # Update new rows
         for loc, series in ((loc, series) for loc, series in zip(target_locs, computed_series)):
@@ -1243,8 +1272,7 @@ class ATable(metaclass=MetaTable):
                 msg = f"[E]rror computing a cell: {repr(ex)}\n" \
                       f"{self} ------------------------------------------------- [START error stack trace]\n" \
                       f"{traceback.format_exc()}\n" \
-                      f"{self} ------------------------------------------------- [END error stack trace]\n" \
-                      f"[E]rror: Exiting because options.exit_on_error = {options.exit_on_error}"
+                      f"{self} ------------------------------------------------- [END error stack trace]\n"
                 cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
                 if options.verbose:
                     print(msg)

@@ -86,3 +86,14 @@ if __name__ == '__main__':
     print("TypesTable")
     df1 = TypesTable().get_df(target_indices=example_indices)
     df2 = TypesTable().get_df(target_indices=example_indices)
+    
+    
+    
+    class FailingTable(enb.atable.ATable):
+        def column_failing(self, index, row):
+            raise NotImplementedError("I always crash")
+    
+    ft = FailingTable()
+    ft.get_df(target_indices=example_indices)
+    print(f"[watch] ft={ft}")
+    
