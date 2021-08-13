@@ -31,7 +31,7 @@ e.g., with `f.remote(options=ray.put(enb.config.options))` if f is your `@ray.re
 The `@enb.config.propagates_options` decorator provides a slightly cleaner way of automating
 this mitigation.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/08/04"
 
 import os
@@ -168,61 +168,6 @@ class ExecutionOptions:
 
 
 @_singleton_cli.property_class(OptionsBase)
-class RenderingOptions:
-    """Options affecting the rendering of figures.
-    """
-
-    @OptionsBase.property("nr", "norender", action="store_true")
-    def no_render(self, value):
-        """If set, some rendering options will be skipped.
-        """
-        return bool(value)
-
-    @OptionsBase.property("fw", "width", action=_singleton_cli.PositiveFloatAction)
-    def fig_width(self, value):
-        """Figure width.
-
-        Larger values may make text look smaller when the image is scaled to a constant size.
-        """
-        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
-
-    @OptionsBase.property("fh", "height", action=_singleton_cli.PositiveFloatAction)
-    def fig_height(self, value):
-        """Figure height.
-
-        Larger values may make text look smaller when the image is scaled to a constant size.
-        """
-        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
-
-    @OptionsBase.property("ylpos", type=float)
-    def global_y_label_pos(self, value):
-        """Relative position of the global Y label.
-
-        Can be negative or positive. Intended as a quick hack when left y-axis ticks are longer or shorter
-        than the default assumptions.
-        """
-        return float(value)
-
-    @OptionsBase.property("legend_count", action=_singleton_cli.PositiveIntegerAction)
-    def legend_column_count(self, value):
-        """Number of columns used in plot legends.
-        """
-        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
-
-    @OptionsBase.property(action="store_true")
-    def show_grid(self, value):
-        """Show axis grid lines?
-        """
-        return bool(value)
-
-    @OptionsBase.property("title", "global_title", type=str)
-    def displayed_title(self, value):
-        """When this property is not None, displayed plots will typically include its value as the main title.
-        """
-        return str(value)
-
-
-@_singleton_cli.property_class(OptionsBase)
 class DirOptions:
     """Options regarding default data directories.
     """
@@ -320,7 +265,74 @@ class DirOptions:
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
 
-class Options(OptionsBase, GeneralOptions, ExecutionOptions, RenderingOptions, DirOptions):
+@_singleton_cli.property_class(OptionsBase)
+class RenderingOptions:
+    """Options affecting the rendering of figures.
+    """
+
+    @OptionsBase.property("nr", "norender", action="store_true")
+    def no_render(self, value):
+        """If set, some rendering options will be skipped.
+        """
+        return bool(value)
+
+    @OptionsBase.property("fw", "width", action=_singleton_cli.PositiveFloatAction)
+    def fig_width(self, value):
+        """Figure width.
+
+        Larger values may make text look smaller when the image is scaled to a constant size.
+        """
+        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
+
+    @OptionsBase.property("fh", "height", action=_singleton_cli.PositiveFloatAction)
+    def fig_height(self, value):
+        """Figure height.
+
+        Larger values may make text look smaller when the image is scaled to a constant size.
+        """
+        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
+
+    @OptionsBase.property("ylpos", type=float)
+    def global_y_label_pos(self, value):
+        """Relative position of the global Y label.
+
+        Can be negative or positive. Intended as a quick hack when left y-axis ticks are longer or shorter
+        than the default assumptions.
+        """
+        return float(value)
+
+    @OptionsBase.property("legend_count", action=_singleton_cli.PositiveIntegerAction)
+    def legend_column_count(self, value):
+        """Number of columns used in plot legends.
+        """
+        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+
+    @OptionsBase.property(action="store_true")
+    def show_grid(self, value):
+        """Show axis grid lines?
+        """
+        return bool(value)
+
+    @OptionsBase.property("title", "global_title", type=str)
+    def displayed_title(self, value):
+        """When this property is not None, displayed plots will typically include its value as the main title.
+        """
+        return str(value)
+
+
+@_singleton_cli.property_class(OptionsBase)
+class LoggingOptions(OptionsBase):
+    """Options controlling what and how is printed and/or logged to files.
+    """
+
+    @OptionsBase.property(type=str, choices=["core", "error", "warning", "message", "verbose", "informative", "debug"])
+    def max_log_level(self, value):
+        """Maximum log level / minimum priority required when printing messages.
+        """
+        return str(value)
+
+
+class Options(OptionsBase, GeneralOptions, ExecutionOptions, DirOptions, RenderingOptions):
     """Class of the `enb.config.options` object, which exposes
     options for all modules, allowing CLI-based parameter setting.
 

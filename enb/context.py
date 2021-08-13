@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Module to keep track of contexts
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/13"
 
 import math

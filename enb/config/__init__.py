@@ -72,18 +72,28 @@ From there on, many enb functions adhere to the following principle:
 2. If a parameter with default value None is set to None or not specified,
    its value is set based on the properties in `enb.config.options`.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/1"
 
 # enb.config.ini : file-based config management
+import ast
+
 from .aini import ini
 # enb.config.options : CLI-based config management, defaulting to enb.config.ini
 from .aoptions import options, propagates_options, get_options, set_options
 
-if options.verbose:
-    print("-" * 100)
-    print(repr(ini))
-    print()
-    print(repr(options))
-    print("-" * 100)
-    print()
+
+def report_configuration():
+    """Return a string describing the current configuration status.
+    """
+    import enb.log
+    return "\n".join((
+        "Combined ini file configurations:",
+        repr(ini),
+        "",
+        "Parameters of enb.config.options(after CLI parsing and potential manual changes):",
+        "\n".join((f"{k} = {v}" for k, v in options.items())),
+        "",
+        "Logging status:",
+        enb.log.report_level_status()
+    ))

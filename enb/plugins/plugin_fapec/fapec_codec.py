@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Wrappers for the FAPEC codec.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/05/25"
 
 import os

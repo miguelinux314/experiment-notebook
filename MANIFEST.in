@@ -10,6 +10,7 @@ include enb/experiment.py
 include enb/icompression.py
 include enb/__init__.py
 include enb/isets.py
+include enb/log.py
 include enb/__main__.py
 include enb/misc.py
 include enb/ml.py

@@ -6,7 +6,7 @@ Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-pr
 Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
 how to install this software.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
 import os

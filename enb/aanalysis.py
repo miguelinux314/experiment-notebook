@@ -3,7 +3,7 @@
 (e.g., produced by :class:`enb.experiment.Experiment` instances)
 using pyplot.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/01/01"
 
 import os

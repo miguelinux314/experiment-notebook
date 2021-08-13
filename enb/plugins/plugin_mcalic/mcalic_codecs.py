@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Wrappers for E. Maglis's M-CALIC implementation
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/04/30"
 
 import os

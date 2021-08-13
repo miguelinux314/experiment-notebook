@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Wrapper for the CCSDS 122.1 (MHDC) codec
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/05/29"
 
 import os

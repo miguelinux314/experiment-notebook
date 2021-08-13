@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Unit tests for isets.py
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/04/07"
 
 import unittest

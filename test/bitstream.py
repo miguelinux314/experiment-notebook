@@ -2,7 +2,7 @@
 """Tools to handle binary streams at the bit level.
 Expect very low speeds - for small tests mostly.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/12/01"
 
 

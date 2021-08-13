@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Image sets information tables
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/04/01"
 
 import os

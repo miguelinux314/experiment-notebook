@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Timed calls to subprocess, so that real execution times can be obtained.
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/05/23"
 
 import os

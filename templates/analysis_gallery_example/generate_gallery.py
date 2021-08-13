@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate the gallery of analyzers
 """
-__author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/02/01"
 
 import os
