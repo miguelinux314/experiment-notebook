@@ -4,7 +4,7 @@ import os
 import glob
 import unittest
 import string
-
+import numpy as np
 
 import enb.atable
 import enb.atable as atable
@@ -120,6 +120,7 @@ class TestATable(unittest.TestCase):
         assert len(row["ascii_table"]) == len(string.ascii_letters), len(row["ascii_table"])
         assert all(v == ord(k) for k, v in row["ascii_table"].items()), row["ascii_table"]
 
+
 class TestFailingTable(unittest.TestCase):
     def test_always_failing_column(self):
         class FailingTable(enb.atable.ATable):
@@ -135,6 +136,7 @@ class TestFailingTable(unittest.TestCase):
             assert len(ex.exception_list) == len(target_indices)
             pass
 
+
 class TestSummaryTable(unittest.TestCase):
     def test_summary_table(self):
         base_table = enb.sets.FilePropertiesTable()
@@ -147,9 +149,44 @@ class TestSummaryTable(unittest.TestCase):
 
         summary_table = enb.atable.SummaryTable(reference_df=base_df)
         summary_df = summary_table.get_df()
-        
+
         assert summary_df.iloc[0]["group_label"] == "all", summary_df.iloc[0]["group_label"]
         assert summary_df.iloc[0]["group_size"] == len(target_paths)
+
+
+class TestObjectColumns(unittest.TestCase):
+    def test_object_values(self):
+        class CustomType:
+            def __init__(self, custom_prop):
+                self.custom_prop = custom_prop
+                self.other_prop = 2 * custom_prop
+
+        class TypesTable(enb.atable.ATable):
+            @enb.atable.column_function(
+                "uppercase",
+                "lowercase",
+                enb.atable.ColumnProperties(
+                    "first_last_iterable",
+                    label="First and last characters of the index",
+                    has_iterable_values=True),
+                enb.atable.ColumnProperties(
+                    "first_last_dict",
+                    label="First and last characters of the index",
+                    has_dict_values=True),
+                enb.atable.ColumnProperties(
+                    "custom_type_column", has_object_values=True)
+            )
+            def set_columns(self, index, row):
+                row["uppercase"] = index.upper()
+                row["lowercase"] = index.lower()
+                row["first_last_iterable"] = (index[0], index[-1]) if index else []
+                row["first_last_dict"] = dict(first=index[0], last=index[-1]) if index else {}
+                row["custom_type_column"] = CustomType(custom_prop=len(index))
+
+        df = TypesTable().get_df(target_indices=string.ascii_letters)
+        assert np.all(df["custom_type_column"].apply(type) == CustomType)
+        assert np.all(df["custom_type_column"].apply(lambda ct: ct.custom_prop) == 1)
+        assert np.all(df["custom_type_column"].apply(lambda ct: ct.other_prop) == 2)
 
 
 if __name__ == '__main__':

@@ -27,6 +27,15 @@ This offers several key advantages:
 
 - It allows sharing your raw results in a convenient way.
 
+- It can help you reuse results from different projects.
+
+This is best supported for numeric, string, and boolean types, which are assumed by default.
+You can also use non-scalar types, e.g., list, tuple and dict types, by setting the `has_iterable_values`
+and `has_dict_values` for |ColumnProperties|'s constructor (more on that later).
+Finally, you can use any python object that can be pickled and unpickled. For this to work for a given
+column, the `has_object_values` needs to be set to True it the aforementioned constructor.
+
+
 Using existing |ATable| columns
 ===============================
 
@@ -126,7 +135,8 @@ To further customize your new columns, you can use the |column_function| decorat
    Each instance describes one column, which can be independently customized.
 
 3. You can define columns to contain non-scalar data. The following default types are supported:
-   tuples, lists, dicts.
+   tuples, lists, dicts. Note that using non-scalar data is generally slower than using scalar types,
+   but allows easy aggregation and combination of variables.
 
 4. You can mix strings and |ColumnProperties| instances in the |column_function| decorator.
 
@@ -173,23 +183,23 @@ After the definition, the table's dataframe can be obtained with
 __author__ = "Miguel Hernández-Cabronero <miguel.hernandez@uab.cat>"
 __since__ = "2019/09/19"
 
-import ast
 from builtins import hasattr
+import ast
 import collections
 import collections.abc
 import copy
 import datetime
+import deprecation
 import functools
 import glob
 import inspect
 import itertools
 import math
 import os
-import traceback
-
-import deprecation
-import ray
 import pandas as pd
+import pickle
+import ray
+import traceback
 
 import enb.config
 from enb import config
@@ -288,6 +298,7 @@ class ColumnProperties:
                  hist_bin_width=None,
                  has_dict_values=False,
                  has_iterable_values=False,
+                 has_object_values=False,
                  hist_label_dict=None,
                  **extra_attributes):
         """
@@ -296,14 +307,17 @@ class ColumnProperties:
         :param fun: function to be invoked to fill a column value. If None, |enb| will set this for you
           when you define columns with `column_` or |column_function|.
 
-        Type specification:
+        Type specification (mutually exclusive)
         :param has_dict_values: set to True if and only if the column cells contain value mappings (i.e., dicts),
           as opposed to scalar values. Both keys and values should be valid scalar values (numeric, string or boolean).
-          It cannot be True if `has_iterable_values` is True.
-        :param has_iterable_values: set to True if and only if the column cells should contain iterables,
-          i.e., tuples or lists. It cannot be True if `has_dict_values` is True.
-        The has_ast_values property of the ColumnProperties instance will return true if and only if
-        either of these arguments is True.
+          It cannot be True if any other type is specified.
+        :param has_iterable_values: set to True if and only if the column cells contain iterables,
+          i.e., tuples or lists. It cannot be True if any other type is specified.
+        :param has_object_values: set to True if and only if the column cells contain general python objects
+          that can be pickled an unpickled.
+
+        The `has_ast_values` property of the ColumnProperties instance will return true if and only if
+        iterable or dict values are used.
 
         Plot rendering hints:
         :param label: descriptive label of the column, intended to be displayed in plot (e.g., axes) labels
@@ -344,9 +358,10 @@ class ColumnProperties:
         self.hist_bin_width = hist_bin_width
         self.has_dict_values = has_dict_values or self.hist_bin_width is not None
         self.has_iterable_values = has_iterable_values
-        if self.has_dict_values and self.has_iterable_values:
-            raise ValueError(
-                "has_dict_values and has_iterable_values cannot be both set to True at once")
+        self.has_object_values = has_object_values
+        if sum(1 for flag in (self.has_iterable_values, self.has_dict_values, self.has_object_values)
+               if flag is True) > 1:
+            raise ValueError(f"At most one of iterable, dict or object types can be specified.")
         self.hist_label_dict = hist_label_dict
         self.hist_label = hist_label
         self.hist_min = hist_min
@@ -423,7 +438,14 @@ class MetaTable(type):
             t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
             if t[0] == subclass.__name__]
         for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
-            ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
+            if isinstance(cp, collections.abc.Iterable):
+                # Passed a list of instances: make sure they are all ColumnProperties
+                for p in cp:
+                    if not isinstance(p, ColumnProperties):
+                        raise SyntaxError(f"Found {repr(p)} not a ColumnProperties instance.")
+                    ATable.add_column_function(cls=subclass, fun=fun, column_properties=p, **kwargs)
+            else:
+                ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
 
         # Column functions are added to a list while the class is being defined.
         # After that, the subclass' column_to_properties attribute is updated according
@@ -557,10 +579,12 @@ class ATable(metaclass=MetaTable):
         # everytime a row is modified.
         self.add_column_function(self.__class__,
                                  fun=lambda self, index, row: datetime.datetime.now(),
-                                 column_properties=ColumnProperties("row_created"))
+                                 column_properties=ColumnProperties(
+                                     "row_created", has_object_values=True))
         self.add_column_function(self.__class__,
                                  fun=lambda self, index, row: datetime.datetime.now(),
-                                 column_properties=ColumnProperties("row_updated"))
+                                 column_properties=ColumnProperties(
+                                     "row_updated", has_object_values=True))
 
     # Methods related to defining columns and retrieving them afterwards
 
@@ -988,6 +1012,8 @@ class ATable(metaclass=MetaTable):
                     # Column existed - parse literals if needed
                     if properties.has_ast_values:
                         loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
+                    elif properties.has_object_values:
+                        loaded_df[column] = loaded_df[column].apply(lambda v : pickle.loads(ast.literal_eval(v)))
                 else:
                     # Column did not exist: create with None values
                     loaded_df[column] = None
@@ -1196,6 +1222,13 @@ class ATable(metaclass=MetaTable):
 
         :param output_csv: if None, self.csv_support_path is used as the output path.
         """
+        if any(p.has_object_values for p in self.column_to_properties.values()):
+            # If pickling is needed, a copy of the df is made so as not to modify the original.
+            df = df.copy()
+            for column, properties in self.column_to_properties.items():
+                if properties.has_object_values:
+                    df[column] = df[column].apply(pickle.dumps)
+
         output_csv = output_csv if output_csv is not None else self.csv_support_path
         if options.verbose > 1:
             print(f"[D]umping CSV with {len(df)} entries into {output_csv}")
