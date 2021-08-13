@@ -60,7 +60,7 @@ class AvailabilityExperiment(enb.experiment.Experiment):
                 row["cr_dr"] = self.get_dataset_info_row(file_path)["samples"] \
                                * self.get_dataset_info_row(file_path)["dynamic_range_bits"] \
                                / (8 * os.path.getsize(tmp_compressed_file.name))
-                row["error_str"] = ""
+                row["error_str"] = "No error"
         except Exception as ex:
             row["error_str"] = repr(traceback.format_exc())
             row["is_working"] = False
