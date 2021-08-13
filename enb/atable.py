@@ -1162,8 +1162,9 @@ class ATable(metaclass=MetaTable):
 
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
-            print(f"[E]rror running {self.__class__.__name__}.get_df(): {len(found_exceptions)}/{len(target_indices)} indices failed. "
-                  f"Using the first one as the main cause.")
+            if options.verbose:
+                print(f"[E]rror running {self.__class__.__name__}.get_df(): {len(found_exceptions)}/{len(target_indices)} indices failed. "
+                      f"Using the first one as the main cause.")
             raise ColumnFailedError(f"Error setting (at least) one cell with {self.__class__.__name__}",
                                     exception_list=found_exceptions) from found_exceptions[0]
 

@@ -120,6 +120,20 @@ class TestATable(unittest.TestCase):
         assert len(row["ascii_table"]) == len(string.ascii_letters), len(row["ascii_table"])
         assert all(v == ord(k) for k, v in row["ascii_table"].items()), row["ascii_table"]
 
+class TestFailingTable(unittest.TestCase):
+    def test_always_failing_column(self):
+        class FailingTable(enb.atable.ATable):
+            def column_failing(self, index, row):
+                raise NotImplementedError("I always crash")
+
+        ft = FailingTable()
+        target_indices = string.ascii_letters
+        try:
+            ft.get_df(target_indices=target_indices)
+            raise RuntimeError("The previous call should have failed")
+        except enb.atable.ColumnFailedError as ex:
+            assert len(ex.exception_list) == len(target_indices)
+            pass
 
 class TestSummaryTable(unittest.TestCase):
     def test_summary_table(self):
