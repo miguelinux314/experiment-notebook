@@ -142,14 +142,6 @@ class ExecutionOptions:
         """
         assert value, f"At least one column must be defined"
 
-    @OptionsBase.property(action="store_true")
-    def discard_partial_results(self, value):
-        """Discard partial results when an error is found running the experiment?
-
-        Otherwise, they are output to persistent storage.
-        """
-        return bool(value)
-
     @OptionsBase.property("no_new_data", "render_only", action="store_true")
     def no_new_results(self, value):
         """If True, ATable's get_df method relies entirely on the loaded persistence data, no new rows are computed.
