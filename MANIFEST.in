@@ -121,6 +121,7 @@ include enb/plugins/template.py
 include enb/plugins/template_wellcome/__plugin__.py
 include enb/plugins/template_wellcome/test.txt.enbt
 include enb/plugins/template_wellcome/witness_dir/b.txt
+include enb/plugins/template_wellcome/witness_dir/c.txt.enbt
 include enb/plugins/template_wellcome/witness.txt
 include enb/plugins/test_all_codecs/generate_test_images.py
 include enb/plugins/test_all_codecs/__plugin__.py

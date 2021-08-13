@@ -91,7 +91,7 @@ class Template(Installable, metaclass=MetaTemplate):
                 print()
 
         template_src_dir = os.path.dirname(os.path.abspath(inspect.getfile(cls)))
-        for input_path in glob.glob(os.path.join(template_src_dir, "*")):
+        for input_path in glob.glob(os.path.join(template_src_dir, "**", "*"), recursive=True):
             if os.path.basename(input_path) in ["__pycache__", "__plugin__.py"]:
                 continue
 
@@ -100,8 +100,15 @@ class Template(Installable, metaclass=MetaTemplate):
                 os.path.abspath(template_src_dir),
                 os.path.abspath(installation_dir))
 
+            # Directories are created when found
+            if os.path.isdir(input_path):
+                os.makedirs(output_path, exist_ok=True)
+                continue
+
+            # Files ending in '.enbt' will be identified as templates, processed and stripped of their extension.
             is_templatable = os.path.isfile(input_path) \
                              and os.path.basename(input_path).endswith(cls.templatable_extension)
+
             if is_templatable:
                 tmp_input_file = tempfile.NamedTemporaryFile()
                 templated_path = tmp_input_file.name
@@ -122,10 +129,7 @@ class Template(Installable, metaclass=MetaTemplate):
                     f"and options.force={options.force}. Run with -f to overwrite.")
 
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
-            if os.path.isdir(input_path):
-                shutil.copytree(input_path, output_path, dirs_exist_ok=True)
-            else:
-                shutil.copyfile(input_path, output_path)
+            shutil.copyfile(input_path, output_path)
 
         cls.build(installation_dir=installation_dir)
         print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
