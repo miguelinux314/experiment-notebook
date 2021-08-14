@@ -4,6 +4,8 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
 
+import sys
+import os
 import ray
 from enb.config import options
 
@@ -23,3 +25,8 @@ def init_ray(force=False):
             print(f"[I]nfo: making new cluster [CPUlimit={options.ray_cpu_limit}]")
         ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
                  local_mode=options.sequential)
+
+def on_remote_process():
+    """Return True if and only if the call is made from a remote ray process.
+    """
+    return os.path.basename(sys.argv[0]) == "default_worker.py"
