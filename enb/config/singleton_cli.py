@@ -19,8 +19,7 @@ import argparse
 import itertools
 import inspect
 
-import enb.misc
-from enb.misc import split_camel_case, Singleton
+from ..misc import split_camel_case, Singleton, get_defining_class_name, remove_argparse_action
 from .aini import ini
 
 
@@ -314,7 +313,7 @@ class SingletonCLI(metaclass=Singleton):
                 cls.assert_setter_signature(decorated_method)
 
                 # Update argument group name and description
-                defining_class_name = enb.misc.get_defining_class_name(decorated_method)
+                defining_class_name = get_defining_class_name(decorated_method)
 
                 if self.closure_group_name is None:
                     if defining_class_name is not None:
@@ -461,7 +460,7 @@ def property_class(base_option_cls: SingletonCLI):
             for action in base_option_cls._argparser._actions:
                 if method_name in [s.replace("-", "") for s in action.option_strings]:
                     # Remove the option from the parser entirely
-                    enb.misc.remove_argparse_action(base_option_cls._argparser, action)
+                    remove_argparse_action(base_option_cls._argparser, action)
 
                     # Add to an existing or new group
                     try:

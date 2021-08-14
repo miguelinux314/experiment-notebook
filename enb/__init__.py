@@ -32,10 +32,10 @@ default_persistence_dir = _os.path.join(calling_script_dir, f"persistence_{_os.p
 # Are we currently running the main enb CLI or the CLI for a host script? True means main enb CLI.
 is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
-# Logging tools
-from . import log
 # Pre-definition tools
 from . import misc
+# Logging tools
+from . import log
 # Global configuration modules
 from . import config
 

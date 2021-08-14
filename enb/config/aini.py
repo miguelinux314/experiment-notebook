@@ -32,7 +32,7 @@ import ast
 import configparser
 import textwrap
 
-import enb
+from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
 from ..misc import Singleton as _Singleton
 
 
@@ -45,14 +45,13 @@ class AdditionalIniParser(argparse.ArgumentParser):
         extra_ini_paths = []
         parsed_options, remaining_options = self.parse_known_args()
 
-        if enb.is_enb_cli:
+        if is_enb_cli:
             # The --ini option is not documented in the main enb CLI for simplicity. Remove it once
             # it has been used to avoid any parsing error
             sys.argv = sys.argv[0:1] + remaining_options
 
         for path in parsed_options.extra_ini_paths:
             if not os.path.exists(path):
-                print(enb.config.get_banner())
                 raise SyntaxError("Input ini path {path} does not exist. Run with -h for help.")
             extra_ini_paths.append(os.path.abspath(path))
         return extra_ini_paths
@@ -61,9 +60,9 @@ class AdditionalIniParser(argparse.ArgumentParser):
 class Ini(metaclass=_Singleton):
     """Class of the enb.config.ini object, that exposes file-defined configurations.
     """
-    global_ini_path = os.path.join(enb.enb_installation_dir, "config", "enb.ini")
-    user_ini_path = os.path.join(enb.user_config_dir, "enb.ini")
-    local_ini_paths = sorted(glob.glob(os.path.join(enb.calling_script_dir, "*.ini")),
+    global_ini_path = os.path.join(enb_installation_dir, "config", "enb.ini")
+    user_ini_path = os.path.join(user_config_dir, "enb.ini")
+    local_ini_paths = sorted(glob.glob(os.path.join(calling_script_dir, "*.ini")),
                              key=lambda s: os.path.basename(s).lower())
     extra_ini_paths = AdditionalIniParser().get_extra_ini_paths()
 

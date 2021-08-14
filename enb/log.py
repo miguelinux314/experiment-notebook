@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Logging utilities for `enb`
+"""Logging utilities for `enb`.
+
+It uses only symbols from .misc, but no other module in enb.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __date__ = "2021/08/13"
 
 import sys
 from .misc import ExposedProperty
-from .config.singleton_cli import Singleton
+from .misc import Singleton
 
 
 class LogLevel:
