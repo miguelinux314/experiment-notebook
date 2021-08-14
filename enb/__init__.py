@@ -40,7 +40,8 @@ from . import misc
 from . import config
 
 # Set the logging options from this point onwards.
-log.logger.max_log_level = log.get_level(config.options.max_log_level)
+log.logger.selected_log_level = log.get_level(config.options.selected_log_level,
+                                              lower_priority=config.options.verbose)
 
 # Core modules
 ## Basic ATable features
@@ -49,16 +50,19 @@ from . import atable
 ## Basic Experiment features
 from . import sets
 from . import experiment
-
 ## Data analysis (e.g., plotting) modules
 from . import plotdata
 from . import aanalysis
 
-## Image compression modules
+# TODO: move image compression moduels into an optional plugin
+# Image compression modules
 from . import icompression
 from . import isets
-# TODO: pgm should not be a core module - move somewhere into icompression
 from . import pgm
 
 # Plugin support
 from . import plugins
+
+if not ray_cluster.on_remote_process():
+    # Don't show the banner in each child instance
+    log.core(config.get_banner())

@@ -10,12 +10,6 @@ __since__ = "2021/07/11"
 import re
 
 
-def get_banner():
-    """Returns the enb banner.
-    """
-    return f"\n{' [ enb - Experiment Notebook ] ':.^100}\n"
-
-
 def get_defining_class_name(f):
     """Return the name of the class of which f is a method, or None if not bound to any class.
     """
@@ -118,3 +112,16 @@ class Singleton(type):
         except KeyError:
             cls._instances[cls] = super().__call__(*args, **kwargs)
             return cls._instances[cls]
+
+
+class ExposedProperty:
+    """This method can be used to expose object properties as public callables
+    that return what requesting that property would.
+    """
+
+    def __init__(self, instance, property_name):
+        self.property_name = property_name
+        self.instance = instance
+
+    def __call__(self, *args, **kwargs):
+        return getattr(self.instance, self.property_name)

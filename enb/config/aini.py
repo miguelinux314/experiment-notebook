@@ -52,7 +52,7 @@ class AdditionalIniParser(argparse.ArgumentParser):
 
         for path in parsed_options.extra_ini_paths:
             if not os.path.exists(path):
-                print(enb.misc.get_banner())
+                print(enb.config.get_banner())
                 raise SyntaxError("Input ini path {path} does not exist. Run with -h for help.")
             extra_ini_paths.append(os.path.abspath(path))
         return extra_ini_paths

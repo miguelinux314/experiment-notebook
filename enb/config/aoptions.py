@@ -55,8 +55,11 @@ class GeneralOptions:
 
     @OptionsBase.property("v", action="count")
     def verbose(self, value):
-        """Be verbose? Repeat for more.
+        """Be verbose? Repeat for more. Change at any time to increase the logger's verbosity.
         """
+        enb.log.logger.selected_log_level = enb.log.get_level(
+            enb.log.logger.selected_log_level.name,
+            float(value))
         return value
 
     @OptionsBase.property("ini", nargs="*", type=str, default=[])
@@ -326,7 +329,7 @@ class LoggingOptions(OptionsBase):
     """
 
     @OptionsBase.property(type=str, choices=["core", "error", "warning", "message", "verbose", "informative", "debug"])
-    def max_log_level(self, value):
+    def selected_log_level(self, value):
         """Maximum log level / minimum priority required when printing messages.
         """
         return str(value)

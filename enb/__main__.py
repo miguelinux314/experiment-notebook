@@ -215,8 +215,6 @@ class PluginList(argparse.Action):
 
 
 def main():
-    print(enb.misc.get_banner())
-
     cli_parser = CLIParser()
     options, unused_options = cli_parser.parse_known_args()
 

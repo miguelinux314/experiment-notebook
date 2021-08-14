@@ -76,12 +76,18 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/1"
 
 # enb.config.ini : file-based config management
-import ast
-
 from .aini import ini
 # enb.config.options : CLI-based config management, defaulting to enb.config.ini
 from .aoptions import options, propagates_options, get_options, set_options
 
+import shutil as _shutil
+
+
+def get_banner():
+    """Returns the enb banner showing the current version.
+    """
+    contents = f" [ Powered by enb (Experiment NoteBook) v{ini.get_key('enb', 'version')} ] "
+    return f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
 
 def report_configuration():
     """Return a string describing the current configuration status.
