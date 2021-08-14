@@ -38,7 +38,9 @@ import os
 import tempfile
 import functools
 import deprecation
-import enb
+
+from .. import default_base_dataset_dir, default_persistence_dir, calling_script_dir, is_enb_cli
+from .. import log
 from . import singleton_cli as _singleton_cli
 
 
@@ -57,8 +59,8 @@ class GeneralOptions:
     def verbose(self, value):
         """Be verbose? Repeat for more. Change at any time to increase the logger's verbosity.
         """
-        enb.log.logger.selected_log_level = enb.log.get_level(
-            enb.log.logger.selected_log_level.name,
+        log.logger.selected_log_level = log.get_level(
+            log.logger.selected_log_level.name,
             float(value))
         return value
 
@@ -162,7 +164,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @OptionsBase.property("fsn", type=bool)
+    @OptionsBase.property("fsn", action="store_true")
     def force_sanity_checks(self, value):
         """If this flag is used, extra sanity checks are performed by enb during the execution of this script.
         The trade-off for rare error condition detection is a slower execution time.
@@ -175,7 +177,7 @@ class DirOptions:
     """Options regarding default data directories.
     """
 
-    @OptionsBase.property("d", action=_singleton_cli.ReadableDirAction, default=enb.default_base_dataset_dir)
+    @OptionsBase.property("d", action=_singleton_cli.ReadableDirAction, default=default_base_dataset_dir)
     def base_dataset_dir(self, value):
         """Directory to be used as source of input files for indices in the get_df method
         of tables and experiments.
@@ -185,7 +187,7 @@ class DirOptions:
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     @OptionsBase.property("persistence", action=_singleton_cli.WritableOrCreableDirAction,
-                          default=enb.default_persistence_dir)
+                          default=default_persistence_dir)
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
         """
@@ -200,7 +202,7 @@ class DirOptions:
 
     # Versioned data dir
     @OptionsBase.property("vd", "version_target_dir", action=_singleton_cli.WritableOrCreableDirAction,
-                          default=enb.default_base_dataset_dir)
+                          default=default_base_dataset_dir)
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
@@ -231,7 +233,7 @@ class DirOptions:
         _singleton_cli.WritableDirAction.assert_valid_value(value)
 
     # Base dir for external binaries (e.g., codecs or other tools)
-    default_external_binary_dir = os.path.join(enb.calling_script_dir, "bin")
+    default_external_binary_dir = os.path.join(calling_script_dir, "bin")
     default_external_binary_dir = default_external_binary_dir \
         if _singleton_cli.ReadableDirAction.check_valid_value(default_external_binary_dir) else None
 
@@ -245,8 +247,8 @@ class DirOptions:
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     # Output plots dir
-    default_output_plots_dir = os.path.join(enb.calling_script_dir, "plots") \
-        if not enb.is_enb_cli else "./plots"
+    default_output_plots_dir = os.path.join(calling_script_dir, "plots") \
+        if not is_enb_cli else "./plots"
 
     @OptionsBase.property(
         action=_singleton_cli.WritableOrCreableDirAction,
@@ -257,8 +259,8 @@ class DirOptions:
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Output analysis dir
-    default_analysis_dir = os.path.join(enb.calling_script_dir, "analysis") \
-        if not enb.is_enb_cli else "./analysis"
+    default_analysis_dir = os.path.join(calling_script_dir, "analysis") \
+        if not is_enb_cli else "./analysis"
 
     @OptionsBase.property("analysis",
                           action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
@@ -334,8 +336,14 @@ class LoggingOptions(OptionsBase):
         """
         return str(value)
 
+    @OptionsBase.property(type=bool, choices=[True, False])
+    def replace_print(self, value):
+        """If True, the print command is replaced by a wrapper that logs with "message" priority.
+        """
+        return bool(value)
 
-class Options(OptionsBase, GeneralOptions, ExecutionOptions, DirOptions, RenderingOptions):
+
+class Options(GeneralOptions, ExecutionOptions, DirOptions, RenderingOptions, LoggingOptions):
     """Class of the `enb.config.options` object, which exposes
     options for all modules, allowing CLI-based parameter setting.
 
@@ -356,17 +364,15 @@ class Options(OptionsBase, GeneralOptions, ExecutionOptions, DirOptions, Renderi
 def get_options(from_main=False):
     """Deprecated - use `from enb.config import options`.
     """
-    global options
-    return options
+    return Options()
 
 
 def set_options(new_option_dict):
     """Update global options with a dictionary of values
     """
-    global options
-    if options is not new_option_dict:
+    if Options() is not new_option_dict:
         for k, v in new_option_dict.__dict__.items():
-            options.__setattr__(k, v)
+            Options().__setattr__(k, v)
 
 
 def propagates_options(f):
@@ -381,7 +387,3 @@ def propagates_options(f):
         return f(*args, **kwargs)
 
     return wrapper
-
-
-options = Options()
-assert options is Options(), "Singleton not working"

@@ -75,13 +75,17 @@ From there on, many enb functions adhere to the following principle:
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/1"
 
+# Logging tools
+from .. import log
 # enb.config.ini : file-based config management
 from .aini import ini
 # enb.config.options : CLI-based config management, defaulting to enb.config.ini
-from .aoptions import options, propagates_options, get_options, set_options
+from .aoptions import propagates_options, get_options, set_options
 
 import shutil as _shutil
 
+options = aoptions.Options()
+assert options is aoptions.Options(), "Singleton not working"
 
 def get_banner():
     """Returns the enb banner showing the current version.
@@ -89,10 +93,10 @@ def get_banner():
     contents = f" [ Powered by enb (Experiment NoteBook) v{ini.get_key('enb', 'version')} ] "
     return f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
 
+
 def report_configuration():
     """Return a string describing the current configuration status.
     """
-    import enb.log
     return "\n".join((
         "Combined ini file configurations:",
         repr(ini),
@@ -101,5 +105,5 @@ def report_configuration():
         "\n".join((f"{k} = {v}" for k, v in options.items())),
         "",
         "Logging status:",
-        enb.log.report_level_status()
+        log.report_level_status()
     ))
