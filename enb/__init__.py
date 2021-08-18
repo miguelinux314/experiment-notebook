@@ -40,11 +40,13 @@ from . import log
 from . import config
 
 # Set the logging options from this point onwards.
-log.logger.selected_log_level = log.get_level(config.options.selected_log_level,
-                                              lower_priority=config.options.verbose)
-log.logger.show_prefixes = config.options.log_level_prefix
+from .log import logger
+
+logger.selected_log_level = log.get_level(config.options.selected_log_level,
+                                          lower_priority=config.options.verbose)
+logger.show_prefixes = config.options.log_level_prefix
 if config.options.log_print:
-    log.logger.replace_print()
+    logger.replace_print()
 
 # Core modules
 ## Basic ATable features

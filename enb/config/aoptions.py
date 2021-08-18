@@ -352,6 +352,13 @@ class LoggingOptions(OptionsBase):
         """
         return str(value)
 
+    @OptionsBase.property(type=str, choices=["core", "error", "warning", "message", "verbose", "informative", "debug"])
+    def default_print_level(self, value):
+        """Selects the default log level equivalent to a regular print-like message. It is most effective
+        when combined with log_print set to True.
+        """
+        return str(value)
+
     @OptionsBase.property(type=bool, choices=[True, False])
     def log_print(self, value):
         """If True, the default print command is substituted by enb's logging system when enb is imported.
