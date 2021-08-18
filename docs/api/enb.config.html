@@ -92,7 +92,6 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression</a></li>
@@ -109,6 +108,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.experiment">enb.experiment module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
@@ -172,8 +172,6 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../contents.html">Contents</a> &raquo;</li>
         
           <li><a href="../api.html">API</a> &raquo;</li>
         
@@ -247,7 +245,8 @@ case ignorant, order. No recursive folder search is performed.</p></li>
 <dt class="sig sig-object py" id="enb.config.aini.Ini.get_key">
 <span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.get_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a read key value in the given section (if existing),
-after applying ast.literal_eval on the value.</p>
+after applying ast.literal_eval on the value to recognize any
+valid python literals (essentially numbers, lists, dicts, tuples, booleans and None).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -414,24 +413,18 @@ Don’t use this argument unless you know what you are doing, or expect potentia
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.discard_partial_results">
-<span class="sig-name descname"><span class="pre">discard_partial_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.discard_partial_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Discard partial results when an error is found running the experiment?</p>
-<p>Otherwise, they are output to persistent storage.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.exit_on_error">
-<span class="sig-name descname"><span class="pre">exit_on_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.exit_on_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>If True, any exception when processing rows aborts the program.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.force">
 <span class="sig-name descname"><span class="pre">force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.force" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force calculation of pre-existing results, if available?</p>
 <p>Note that should an error occur while re-computing a given index,
 that index is dropped from the persistent support.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.force_sanity_checks">
+<span class="sig-name descname"><span class="pre">force_sanity_checks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.force_sanity_checks" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this flag is used, extra sanity checks are performed by enb during the execution of this script.
+The trade-off for rare error condition detection is a slower execution time.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -451,31 +444,11 @@ in most get_df methods from ATable instances</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.ray_cpu_limit">
-<span class="sig-name descname"><span class="pre">ray_cpu_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.ray_cpu_limit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum number of virtual CPUs to use in the ray cluster.
-If set to None or any number n &lt;= 0, then no limits are set in terms of virtual CPU usage.</p>
-<p>IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
-it afterwards will not change ray cpu limits.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.repetitions">
 <span class="sig-name descname"><span class="pre">repetitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.repetitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of repetitions when calculating execution times.</p>
 <p>This value allows computation of more reliable execution times in some experiments, but
 is normally most representative in combination with -s to use a single execution process at a time.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.sequential">
-<span class="sig-name descname"><span class="pre">sequential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.sequential" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make computations sequentially instead of distributed?</p>
-<p>When -s is set, local mode is use when initializing ray.</p>
-<p>This can be VERY useful to detect what parts of your code may be causing
-an exception while running a get_df() method.</p>
-<p>Furthermore, it can also help to limit the memory consumption of an experiment,
-which is also useful in case exceptions are due to lack of RAM.</p>
 </dd></dl>
 
 </dd></dl>
@@ -497,7 +470,38 @@ to a common list of extra ini paths.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.GeneralOptions.verbose">
 <span class="sig-name descname"><span class="pre">verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.GeneralOptions.verbose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Be verbose? Repeat for more.</p>
+<dd><p>Be verbose? Repeat for more. Change at any time to increase the logger’s verbosity.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">LoggingOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.OptionsBase" title="enb.config.aoptions.OptionsBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.OptionsBase</span></code></a></p>
+<p>Options controlling what and how is printed and/or logged to files.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.default_print_level">
+<span class="sig-name descname"><span class="pre">default_print_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.default_print_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the default log level equivalent to a regular print-like message. It is most effective
+when combined with log_print set to True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.log_level_prefix">
+<span class="sig-name descname"><span class="pre">log_level_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_level_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.log_print">
+<span class="sig-name descname"><span class="pre">log_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>If True, the default print command is substituted by enb’s logging system when enb is imported.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.selected_log_level">
+<span class="sig-name descname"><span class="pre">selected_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.selected_log_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum log level / minimum priority required when printing messages.</p>
 </dd></dl>
 
 </dd></dl>
@@ -505,7 +509,7 @@ to a common list of extra ini paths.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.config.aoptions.Options">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">Options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.Options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.OptionsBase" title="enb.config.aoptions.OptionsBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.OptionsBase</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RenderingOptions" title="enb.config.aoptions.RenderingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RenderingOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RayOptions" title="enb.config.aoptions.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RenderingOptions" title="enb.config.aoptions.RenderingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RenderingOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.LoggingOptions" title="enb.config.aoptions.LoggingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.LoggingOptions</span></code></a></p>
 <p>Class of the <cite>enb.config.options</cite> object, which exposes
 options for all modules, allowing CLI-based parameter setting.</p>
 <p>Classes wishing to expand the set of global options can be defined above,
@@ -523,6 +527,40 @@ results in <cite>sys.argv</cite> differing in the orchestrating and host process
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">OptionsBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.OptionsBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.SingletonCLI" title="enb.config.singleton_cli.SingletonCLI"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.SingletonCLI</span></code></a></p>
 <p>Global options for all modules, without any positional or required argument.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RayOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RayOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Options related to the ray library, used for parallel/distributed computing.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.ray_cpu_limit">
+<span class="sig-name descname"><span class="pre">ray_cpu_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_cpu_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of virtual CPUs to use in the ray cluster.
+If set to None or any number n &lt;= 0, then no limits are set in terms of virtual CPU usage.</p>
+<p>IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
+it afterwards will not change ray cpu limits.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.sequential">
+<span class="sig-name descname"><span class="pre">sequential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.sequential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make computations sequentially instead of distributed?</p>
+<p>When -s is set, local mode is use when initializing ray.</p>
+<p>This can be VERY useful to detect what parts of your code may be causing
+an exception while running a get_df() method.</p>
+<p>Furthermore, it can also help to limit the memory consumption of an experiment,
+which is also useful in case exceptions are due to lack of RAM.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.worker_script_name">
+<span class="sig-name descname"><span class="pre">worker_script_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.worker_script_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base name of ray’s worker scripts, invoked to run tasks in parallel processes.
+You don’t need to change this unless you want to use custom ray workers.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -749,7 +787,8 @@ observations:</p>
 of its defined properties.</p></li>
 <li><p>The decorated functions’ docstrings are used as help for those arguments.</p></li>
 <li><p>If a None value is returned, the property is updated (e.g., defining a function
-with a single <cite>pass</cite> line).</p></li>
+with a single <cite>pass</cite> line) with the original value without any transformation.
+No need to update the enb.config.options instance directly.</p></li>
 <li><p>If a non-None value is returned, that value is used instead.
 To set a property value to <cite>None</cite>, <cite>self._parsed_properties</cite> dict must be updated manually by
 the decorated function.</p></li>
@@ -922,6 +961,18 @@ The last set value is used.</p></li>
 <li><p>If a parameter with default value None is set to None or not specified,
 its value is set based on the properties in <cite>enb.config.options</cite>.</p></li>
 </ol>
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.config.get_banner">
+<span class="sig-prename descclassname"><span class="pre">enb.config.</span></span><span class="sig-name descname"><span class="pre">get_banner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.get_banner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the enb banner showing the current version.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.config.report_configuration">
+<span class="sig-prename descclassname"><span class="pre">enb.config.</span></span><span class="sig-name descname"><span class="pre">report_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.report_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string describing the current configuration status.</p>
+</dd></dl>
+
 </div>
 </div>
 
