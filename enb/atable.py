@@ -562,7 +562,8 @@ class ATable(metaclass=MetaTable):
     # Column names in this list are not retrieved nor saved to persistence, even if they are defined.
     ignored_columns = []
 
-    def __init__(self, index="index", csv_support_path=None, column_to_properties=None):
+    def __init__(self, index="index", csv_support_path=None, column_to_properties=None,
+                 progress_report_period=None):
         """
         :param index: string with column name or list of column names that will be
           used for indexing. Indices provided to self.get_df must be
@@ -573,7 +574,14 @@ class ATable(metaclass=MetaTable):
           are to be stored and retrieved. If None, persistence is disabled.
         :param column_to_properties: if not None, it is a mapping from strings to callables
           that defines the columns of the table and how to obtain the cell values
+        :param progress_report_period: if not None, it must be a positive number of seconds
+          that are waited between progress report messages (if applicable).
         """
+        progress_report_period = progress_report_period if progress_report_period is not None \
+            else enb.config.options.progress_report_period
+        if progress_report_period < 0:
+            raise ValueError(f"Invalid progress_report_period {progress_report_period}")
+        self.progress_report_period = progress_report_period
         self.index = index
         self.csv_support_path = csv_support_path
         if column_to_properties is not None:
@@ -1120,6 +1128,12 @@ class ATable(metaclass=MetaTable):
                 overwrite=overwrite_id,
                 options=options_id)
                 for index, loc in zip(target_indices, target_locs)]
+
+            pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids, iteration_period=self.progress_report_period)
+            for _ in pg:
+                enb.logger.verbose(pg.report())
+            enb.logger.verbose(pg.report())
+
             computed_series = ray.get(pending_ids)
 
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]

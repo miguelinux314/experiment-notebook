@@ -36,7 +36,7 @@ def on_remote_process():
     return os.path.basename(sys.argv[0]) == options.worker_script_name
 
 
-class ProgressiveGet:
+class ProgressiveGetter:
     """When an instance is created, the computation of the requested list of ray ids is started
     in parallel the background (unless they are already running).
 
@@ -67,19 +67,54 @@ class ProgressiveGet:
         iteration_period = float(iteration_period)
         if iteration_period < 0:
             raise ValueError(f"Invalid iteration period {iteration_period}: it cannot be negative (but it can be zero)")
-        self.id_list = list(ray_id_list)
-        self.weight_list = weight_list if weight_list is not None else [1] * len(self.id_list)
+        self.full_id_list = list(ray_id_list)
+        self.weight_list = weight_list if weight_list is not None else [1] * len(self.full_id_list)
+        self.id_to_weight = {i:w for i, w in zip(self.full_id_list, self.weight_list)}
         self.iteration_period = iteration_period
-        self.pending_ids = list(self.id_list)
+        self.pending_ids = list(self.full_id_list)
         self.completed_ids = []
         self.update_finished_tasks(timeout=0)
-        self.start_time = datetime.datetime.now()
+        self.start_time = time.time_ns()
+        self.end_time = None
 
     def update_finished_tasks(self, timeout=None):
+        """Wait for up to timeout seconds or until ray completes computation
+        of all pending tasks. Update the list of completed and pending tasks.
+        """
         timeout = timeout if timeout is not None else self.iteration_period
         self.completed_ids, self.pending_ids = ray.wait(
-            self.id_list, num_returns=len(self.id_list), timeout=timeout)
-        assert len(self.completed_ids) + len(self.pending_ids) == len(self.id_list)
+            self.full_id_list, num_returns=len(self.full_id_list), timeout=timeout)
+
+        if not self.pending_ids and self.end_time is None:
+            self.end_time = time.time_ns()
+
+        assert len(self.completed_ids) + len(self.pending_ids) == len(self.full_id_list)
+
+    def report(self):
+        """Return a string that represents the current state of this progressive run.
+        """
+        if self.pending_ids:
+            running_nanos = (time.time_ns() - self.start_time + 0.5) // 2
+        else:
+            running_nanos = (self.end_time - self.start_time + 0.5) // 2
+        seconds = max(0, running_nanos / 1e9)
+        seconds, minutes = seconds - 60 * (seconds // 60), seconds // 60
+        minutes, hours = int(minutes % 60), int(minutes // 60)
+
+        total_weight = sum(self.id_to_weight.values())
+        completed_weight = sum(self.id_to_weight[i] for i in self.completed_ids)
+
+        time_str = f"Time elapsed {hours:02d}h {minutes:02d}min {seconds:02.3f}s ({running_nanos:e}ns)."
+        percentage_str = f"{100*(completed_weight/total_weight):0.1f}%"
+
+        if self.pending_ids:
+            return f"Progress report ({percentage_str}): " \
+                   f"{len(self.completed_ids)} / {len(self.full_id_list)} completed tasks. " \
+                   f"{time_str}."
+
+        else:
+            return f"Progress report: completed all {len(self.full_id_list)} tasks in " \
+                   f"{hours:02d}h : {minutes:02d} min : {seconds:02.03f} s."
 
     def __iter__(self):
         """This instance is itself iterable.
