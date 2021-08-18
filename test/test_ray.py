@@ -18,7 +18,7 @@ class TestRay(unittest.TestCase):
     def test_progress_run(self):
         self.test_ray_is_automatically_started()
 
-        sleep_time = 0.3
+        sleep_time = 0.5
 
         @ray.remote
         def wait_a(_):
@@ -39,7 +39,7 @@ class TestRay(unittest.TestCase):
             assert i < 10, pg
         time_after = time.time()
 
-        assert time_after - time_before > sleep_time
+        assert sleep_time < time_after - time_before < 2 * sleep_time
 
         # All ids should be immediately ready after iterating the ProgressiveGet instance
         ray.get(target_ids, timeout=0)
