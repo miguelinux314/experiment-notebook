@@ -35,8 +35,6 @@ class LogLevel:
             self.prefix = prefix
         else:
             self.prefix = f"[{name[0].upper()}] "
-            # if name == "message":
-            #     self.prefix = " "*len(self.prefix)
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}:{self.priority})"
