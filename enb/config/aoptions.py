@@ -79,35 +79,6 @@ class ExecutionOptions:
     """General execution options.
     """
 
-    @OptionsBase.property("cpu_limit", "cpu_cunt", type=int)
-    def ray_cpu_limit(self, value):
-        """Maximum number of virtual CPUs to use in the ray cluster.
-        If set to None or any number n <= 0, then no limits are set in terms of virtual CPU usage.
-
-        IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
-        it afterwards will not change ray cpu limits.
-        """
-        if value is None:
-            return value
-        value = int(value)
-        if value <= 0:
-            value = None
-        return value
-
-    @OptionsBase.property("s", "not_parallel", action="store_true")
-    def sequential(self, value):
-        """Make computations sequentially instead of distributed?
-
-        When -s is set, local mode is use when initializing ray.
-
-        This can be VERY useful to detect what parts of your code may be causing
-        an exception while running a get_df() method.
-
-        Furthermore, it can also help to limit the memory consumption of an experiment,
-        which is also useful in case exceptions are due to lack of RAM.
-        """
-        return bool(value)
-
     @OptionsBase.property("f", "overwrite", action="count")
     def force(self, value):
         """Force calculation of pre-existing results, if available?
@@ -126,27 +97,6 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @OptionsBase.property("rep", "repetition_count", "rep_count",
-                          action=_singleton_cli.PositiveIntegerAction)
-    def repetitions(self, value):
-        """Number of repetitions when calculating execution times.
-
-        This value allows computation of more reliable execution times in some experiments, but
-        is normally most representative in combination with -s to use a single execution process at a time.
-        """
-        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
-
-    @OptionsBase.property("c", "selected_columns", nargs="+", type=str)
-    def columns(self, value):
-        """List of selected column names for computation.
-
-        If one or more column names are provided,
-        all others are ignored. Multiple columns can be expressed,
-        separated by spaces.
-        Don't use this argument unless you know what you are doing, or expect potential exceptions.
-        """
-        assert value, f"At least one column must be defined"
-
     @OptionsBase.property("no_new_data", "render_only", action="store_true")
     def no_new_results(self, value):
         """If True, ATable's get_df method relies entirely on the loaded persistence data, no new rows are computed.
@@ -164,12 +114,33 @@ class ExecutionOptions:
         """
         return int(value)
 
+    @OptionsBase.property("rep", "repetition_count", "rep_count",
+                          action=_singleton_cli.PositiveIntegerAction)
+    def repetitions(self, value):
+        """Number of repetitions when calculating execution times.
+
+        This value allows computation of more reliable execution times in some experiments, but
+        is normally most representative in combination with -s to use a single execution process at a time.
+        """
+        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+
     @OptionsBase.property("fsn", action="store_true")
     def force_sanity_checks(self, value):
         """If this flag is used, extra sanity checks are performed by enb during the execution of this script.
         The trade-off for rare error condition detection is a slower execution time.
         """
         return bool(value)
+
+    @OptionsBase.property("c", "selected_columns", nargs="+", type=str)
+    def columns(self, value):
+        """List of selected column names for computation.
+
+        If one or more column names are provided,
+        all others are ignored. Multiple columns can be expressed,
+        separated by spaces.
+        Don't use this argument unless you know what you are doing, or expect potential exceptions.
+        """
+        assert value, f"At least one column must be defined"
 
 
 @_singleton_cli.property_class(OptionsBase)
@@ -271,6 +242,51 @@ class DirOptions:
 
 
 @_singleton_cli.property_class(OptionsBase)
+class RayOptions:
+    """Options related to the ray library, used for parallel/distributed computing.
+    """
+
+    @OptionsBase.property("cpu_limit", "cpu_cunt", type=int)
+    def ray_cpu_limit(self, value):
+        """Maximum number of virtual CPUs to use in the ray cluster.
+        If set to None or any number n <= 0, then no limits are set in terms of virtual CPU usage.
+
+        IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
+        it afterwards will not change ray cpu limits.
+        """
+        if value is None:
+            return value
+        value = int(value)
+        if value <= 0:
+            value = None
+        return value
+
+    @OptionsBase.property("s", "not_parallel", action="store_true")
+    def sequential(self, value):
+        """Make computations sequentially instead of distributed?
+
+        When -s is set, local mode is use when initializing ray.
+
+        This can be VERY useful to detect what parts of your code may be causing
+        an exception while running a get_df() method.
+
+        Furthermore, it can also help to limit the memory consumption of an experiment,
+        which is also useful in case exceptions are due to lack of RAM.
+        """
+        return bool(value)
+
+    @OptionsBase.property("wsn", type=str)
+    def worker_script_name(self, value):
+        """Base name of ray's worker scripts, invoked to run tasks in parallel processes.
+        You don't need to change this unless you want to use custom ray workers.
+        """
+        if value != os.path.basename(value):
+            raise SyntaxError("The worker_script_name parameter must be a base name, i.e., a file name "
+                              f"including any extension, and without any path indication. Found {value} instead")
+        return str(value)
+
+
+@_singleton_cli.property_class(OptionsBase)
 class RenderingOptions:
     """Options affecting the rendering of figures.
     """
@@ -349,7 +365,7 @@ class LoggingOptions(OptionsBase):
         return log.logger.show_prefixes
 
 
-class Options(GeneralOptions, ExecutionOptions, DirOptions, RenderingOptions, LoggingOptions):
+class Options(GeneralOptions, ExecutionOptions, DirOptions, RayOptions, RenderingOptions, LoggingOptions):
     """Class of the `enb.config.options` object, which exposes
     options for all modules, allowing CLI-based parameter setting.
 
