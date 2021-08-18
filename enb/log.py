@@ -8,6 +8,7 @@ __author__ = "Miguel Hernández-Cabronero"
 __date__ = "2021/08/13"
 
 import sys
+import builtins
 from .misc import ExposedProperty
 from .misc import Singleton
 
@@ -30,6 +31,12 @@ class LogLevel:
         self.priority = priority
         self.label = prefix
         self.help = help
+        if prefix is not None:
+            self.prefix = prefix
+        else:
+            self.prefix = f"[{name[0].upper()}] "
+            # if name == "message":
+            #     self.prefix = " "*len(self.prefix)
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}:{self.priority})"
@@ -79,54 +86,83 @@ class Logger(metaclass=Singleton):
         self.level_verbose = self.get_level("verbose")
         self.level_info = self.get_level("info")
         self.level_debug = self.get_level("debug")
+        self.show_prefixes = False  # Set to the configure value by enb's __init__.py
 
     def levels_by_priority(self):
         """Return a list of the available levels, sorted from higher to lower priority.
         """
         return sorted(self.name_to_level.values(), key=lambda level: level.priority)
 
-    def log(self, msg, level):
-        """Conditionally log a message given its level.
+    def log(self, msg, level, end="\n", file=sys.stdout, flush=False):
+        """Conditionally log a message given its level. It only shares "end" with builtins.print as keyword argument.
         """
         if level.priority <= self.selected_log_level.priority:
-            sys.stdout.write(f"{msg}\n")
+            try:
+                last_end = self._last_end
+                last_level = self._last_level
+            except AttributeError:
+                last_end = "\n"
+                last_level = self.selected_log_level
 
-    def core(self, msg):
-        """A message of "core" level
+            forfeit_prefix = last_level is level and not last_end.endswith("\n")
+
+            file.write(f"{level.prefix if self.show_prefixes and not forfeit_prefix else ''}{msg}{end}")
+            if flush:
+                file.flush()
+
+            self._last_end = end
+            self._last_level = level
+
+    def core(self, msg, **kwargs):
+        """A message of "core" level.
+
+        :param kwargs: optional arguments passed to self.log (must be compatible)
         """
-        self.log(msg=msg, level=self.level_core)
+        self.log(msg=msg, level=self.level_core, **kwargs)
 
-    def error(self, msg):
+    def error(self, msg, **kwargs):
         """Log an error message.
-        """
-        self.log(msg=msg, level=self.level_error)
 
-    def warn(self, msg):
+        :param kwargs: optional arguments passed to self.log (must be compatible)
+        """
+        self.log(msg=msg, level=self.level_error, **kwargs)
+
+    def warn(self, msg, **kwargs):
         """Log a warning message.
-        """
-        self.log(msg=msg, level=self.level_warn)
 
-    def message(self, msg):
+        :param kwargs: optional arguments passed to self.log (must be compatible)
+        """
+        self.log(msg=msg, level=self.level_warn, **kwargs)
+
+    def message(self, msg, **kwargs):
         """Log a regular console message.
-        """
-        self.log(msg=msg, level=self.level_console)
 
-    def verbose(self, msg):
+        :param kwargs: optional arguments passed to self.log (must be compatible)
+        """
+        self.log(msg=msg, level=self.level_message, **kwargs)
+
+    def verbose(self, msg, **kwargs):
         """Log a verbose console message.
-        """
-        self.log(msg=msg, level=self.level_verbose)
 
-    def info(self, msg):
+        :param kwargs: optional arguments passed to self.log (must be compatible)
+        """
+        self.log(msg=msg, level=self.level_verbose, **kwargs)
+
+    def info(self, msg, **kwargs):
         """Log an extra-informative console message.
-        """
-        self.log(msg=msg, level=self.level_info)
 
-    def debug(self, msg):
+        :param kwargs: optional arguments passed to self.log (must be compatible)
+        """
+        self.log(msg=msg, level=self.level_info, **kwargs)
+
+    def debug(self, msg, **kwargs):
         """Log a debug trace.
-        """
-        self.log(msg=msg, level=self.level_debug)
 
-    def level_active(self, name):
+        :param kwargs: optional arguments passed to self.log (must be compatible)
+        """
+        self.log(msg=msg, level=self.level_debug, **kwargs)
+
+    def level_active(self, name, **kwargs):
         """Return True if and only if the given name corresponds to a level with
         priority sufficient given self.min_priority_level.
         """
@@ -210,6 +246,39 @@ class Logger(metaclass=Singleton):
                     break
 
         return base_level
+
+    def replace_print(self, replace=True):
+        """When invoked with replace set to True,
+        it substitutes the builtin print for a wrapper function that logs the contents
+        with "message" priority. If invoked more than once in a row with replace set to True, the second
+        and following calls just return the original print function.
+
+        When invoked with replace set to False, the original print function is restored if it is not currently
+        substituted with enb's logging method. The original print function is also returned in this case.
+
+        Note that the wrapper function does not admit the file or flush parameters.
+
+        :return: the original builtin's print.
+        """
+        try:
+            _ = self._original_print
+            if replace:
+                builtins.print = self._original_print
+        except AttributeError:
+            if not replace:
+                # No substitution has been made, builtins contains the original function
+                return builtins.print
+            else:
+                # _original_print is only set to the original print function
+                self._original_print = builtins.print
+                builtins.print = self.print_to_log
+
+        return self._original_print
+
+    def print_to_log(self, *args, sep=" ", end="\n", file=sys.stdout, flush=False):
+        """Method used to substitute print if configured to do so.
+        """
+        self.message(f"{sep.join(args)}", end=end, file=file, flush=flush)
 
 
 # Singleton instance of the logger, shared across modules even if reinstantiated.

@@ -337,10 +337,16 @@ class LoggingOptions(OptionsBase):
         return str(value)
 
     @OptionsBase.property(type=bool, choices=[True, False])
-    def replace_print(self, value):
-        """If True, the print command is replaced by a wrapper that logs with "message" priority.
+    def log_print(self, value):
+        """If True, the default print command is substituted by enb's logging system when enb is imported.
         """
+        log.logger.replace_print(bool(value))
         return bool(value)
+
+    @OptionsBase.property(type=bool, choices=[True, False])
+    def log_level_prefix(self, value):
+        log.logger.show_prefixes = bool(value)
+        return log.logger.show_prefixes
 
 
 class Options(GeneralOptions, ExecutionOptions, DirOptions, RenderingOptions, LoggingOptions):
