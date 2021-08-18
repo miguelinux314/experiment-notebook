@@ -42,6 +42,9 @@ from . import config
 # Set the logging options from this point onwards.
 log.logger.selected_log_level = log.get_level(config.options.selected_log_level,
                                               lower_priority=config.options.verbose)
+log.logger.show_prefixes = config.options.log_level_prefix
+if config.options.log_print:
+    log.logger.replace_print()
 
 # Core modules
 ## Basic ATable features
@@ -54,7 +57,7 @@ from . import experiment
 from . import plotdata
 from . import aanalysis
 
-# TODO: move image compression moduels into an optional plugin
+# TODO: move image compression modules into an optional plugin
 # Image compression modules
 from . import icompression
 from . import isets
@@ -63,6 +66,7 @@ from . import pgm
 # Plugin support
 from . import plugins
 
+# Set up ray and other remaining logging aspects
 if not ray_cluster.on_remote_process():
     # Don't show the banner in each child instance
     log.core(config.get_banner())
