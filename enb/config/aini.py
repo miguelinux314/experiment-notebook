@@ -70,6 +70,7 @@ class Ini(metaclass=_Singleton):
         super().__init__()
         # Keep track of what config files have been used to get the final result
         self.used_config_paths = []
+        self.extra_ini_paths = self.extra_ini_paths if self.extra_ini_paths is not None else []
 
         # Parse configuration files with the specified prioritization
         self.config_parser = configparser.ConfigParser()

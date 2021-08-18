@@ -278,7 +278,7 @@ class Logger(metaclass=Singleton):
     def print_to_log(self, *args, sep=" ", end="\n", file=sys.stdout, flush=False):
         """Method used to substitute print if configured to do so.
         """
-        self.message(f"{sep.join(args)}", end=end, file=file, flush=flush)
+        self.message(f"{sep.join((str(a) for a in args))}", end=end, file=file, flush=flush)
 
 
 # Singleton instance of the logger, shared across modules even if reinstantiated.

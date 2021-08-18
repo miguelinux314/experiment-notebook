@@ -29,4 +29,4 @@ def init_ray(force=False):
 def on_remote_process():
     """Return True if and only if the call is made from a remote ray process.
     """
-    return os.path.basename(sys.argv[0]) == "default_worker.py"
+    return os.path.basename(sys.argv[0]) == options.worker_script_name
