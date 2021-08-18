@@ -142,6 +142,13 @@ class ExecutionOptions:
         """
         assert value, f"At least one column must be defined"
 
+    @OptionsBase.property("prp", type=float)
+    def progress_report_period(self, value):
+        """Default minimum time in seconds between progress report updates,
+         when get_df() is invoked and computation is being processed in parallel.
+         """
+        return float(value)
+
 
 @_singleton_cli.property_class(OptionsBase)
 class DirOptions:
