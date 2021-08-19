@@ -25,9 +25,9 @@ def init_ray(force=False):
       (generally problematic, specially if jobs are running)
     """
     if not ray.is_initialized() or force:
-        enb.logger.info(f"[I]nfo: making new cluster [CPUlimit={options.ray_cpu_limit}]")
-        ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
-                 local_mode=options.sequential)
+        with enb.logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
+            ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
+                     local_mode=options.sequential)
 
 
 def on_remote_process():

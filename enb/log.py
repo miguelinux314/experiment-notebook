@@ -106,8 +106,10 @@ class Logger(metaclass=Singleton):
                 last_level = self.selected_log_level
 
             forfeit_prefix = last_level is level and not last_end.endswith("\n")
-
-            file.write(f"{level.prefix if self.show_prefixes and not forfeit_prefix else ''}{msg}{end}")
+            split_message_str = "" if last_level is level or last_end.endswith("\n") else "\n"
+            file.write(f"{split_message_str}"
+                       f"{level.prefix if self.show_prefixes and not forfeit_prefix else ''}"
+                       f"{msg}{end}")
             if flush:
                 file.flush()
 
@@ -164,17 +166,18 @@ class Logger(metaclass=Singleton):
         self.log(msg=msg, level=self.level_debug, **kwargs)
 
     @contextlib.contextmanager
-    def log_context(self, msg, level, sep="...", msg_after=" done", show_duration=True):
+    def log_context(self, msg, level, sep="...", msg_after=None, show_duration=True):
         """Log a message before executing the `with` block code,
         run the block, and log another message when the block is completed.
         The message given the selected priority level, and is only displayed based on `self.selected_log_level`.
         The block of code is executed regardless of the logging options.
 
-        :param msg: Message to show before starting the code block.
+        :param msg: Message typically describing the
         :param level: Priority level for the shown messages.
         :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
           single-line reporting.
-        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param msg_after: message shown after `msg` and `sep` upon completion. If none, one is automatically selected
+          based on msg.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
         self.log(msg=msg, end=sep, level=level)
@@ -182,9 +185,10 @@ class Logger(metaclass=Singleton):
         yield None
         run_time = time.time() - time_before
 
+        msg_after = f" done" if self._last_level is level and self._last_end == sep else f"done ({msg})"
         msg = f"{msg_after}"
         if show_duration:
-            msg += f" (took {run_time:.2f}s, it's {datetime.datetime.now()})"
+            msg += f" (took {run_time:.2f}s)"
         msg += "." if msg_after[-1] != "." else ""
 
         self.log(msg=msg, level=level)

@@ -477,8 +477,8 @@ class MetaTable(type):
                 ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp)
 
         assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
-        cls.pendingdefs_classname_fun_columnpropertylist_kwargs.clear()
 
+        cls.pendingdefs_classname_fun_columnpropertylist_kwargs.clear()
         return subclass
 
     @staticmethod
@@ -704,6 +704,7 @@ class ATable(metaclass=MetaTable):
             else:
                 raise SyntaxError("Invalid arguments passed to add_column_function: "
                                   f"{cp} (type {type(cp)}), {fun}, {kwargs} ")
+
         return normalized_cp_list
 
     @staticmethod
@@ -897,7 +898,7 @@ class ATable(metaclass=MetaTable):
                 overwrite=False,
                 parallel_row_processing=parallel_row_processing,
                 run_sanity_checks=enb.config.options.force_sanity_checks)
-            
+
         if fill or overwrite:
             assert len(df) == len(target_indices), (len(df), len(target_indices), target_indices, df)
             enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved filled dataframe with {len(df)} rows.")
@@ -1038,17 +1039,11 @@ class ATable(metaclass=MetaTable):
                     loaded_df[column] = None
 
         except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
-            # Persistence not found
-            if csv_support_path is None:
-                if options.verbose > 2:
-                    print(f"[I]nfo: no csv persistence support.")
-            elif options.verbose:
-                print(f"[W]arning: ATable supporting file {csv_support_path} could not be loaded " +
-                      (f"({ex.__class__.__name__}) " if options.verbose > 1 else '') +
-                      f"- creating an empty one")
-            loaded_df = pd.DataFrame(columns=self.indices_and_columns + [self.private_index_column])
-            for c in self.indices_and_columns:
-                loaded_df[c] = None
+            with enb.logger.verbose_context(f"No CSV persistence found for {self.__class__.__name__} "
+                                            f"at {csv_support_path}. Creating an empty one"):
+                loaded_df = pd.DataFrame(columns=self.indices_and_columns + [self.private_index_column])
+                for c in self.indices_and_columns:
+                    loaded_df[c] = None
 
         loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
 
