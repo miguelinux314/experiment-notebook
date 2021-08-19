@@ -148,16 +148,18 @@ class Experiment(atable.ATable):
         assert len(self.dataset_info_table.indices) == 1, \
             f"dataset_info_table is expected to have a single index"
 
-        if options.verbose > 1:
-            print(f"Obtaining properties of {len(dataset_paths)} files... "
-                  f"[dataset info: {type(self.dataset_info_table).__name__}]")
-        self.dataset_table_df = self.dataset_info_table.get_df(target_indices=dataset_paths,
-                                                               overwrite=overwrite_file_properties,
-                                                               fill=True,
-                                                               parallel_row_processing=(
-                                                                   parallel_dataset_property_processing
-                                                                   if parallel_dataset_property_processing is not None
-                                                                   else not options.sequential))
+        with enb.logger.verbose_context(
+                f"[{self.__class__.__name__}:__init__()] "
+                f"Obtaining dataset properties with {self.dataset_info_table.__class__.__name__} "
+                f"({len(dataset_paths)} files)"):
+            self.dataset_table_df = self.dataset_info_table.get_df(
+                target_indices=dataset_paths,
+                overwrite=overwrite_file_properties,
+                fill=True,
+                parallel_row_processing=(
+                    parallel_dataset_property_processing
+                    if parallel_dataset_property_processing is not None
+                    else not options.sequential))
 
         self.target_file_paths = dataset_paths
 
@@ -166,6 +168,7 @@ class Experiment(atable.ATable):
                                                f"{self.__class__.__name__}_persistence.csv")
 
         os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
+
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
