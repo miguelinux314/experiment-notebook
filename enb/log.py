@@ -180,18 +180,24 @@ class Logger(metaclass=Singleton):
           based on msg.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
+        # Show entry message
         self.log(msg=msg, end=sep, level=level)
         time_before = time.time()
+
+        # Run block
         yield None
         run_time = time.time() - time_before
 
-        msg_after = f" done" if self._last_level is level and self._last_end == sep else f"done ({msg})"
-        msg = f"{msg_after}"
+        # Show exit message
+        if msg_after is None:
+            try:
+                msg_after = f" done" if self._last_level is level and self._last_end == sep else f"done ({msg})"
+            except AttributeError:
+                msg_after = f" done"
         if show_duration:
-            msg += f" (took {run_time:.2f}s)"
-        msg += "." if msg_after[-1] != "." else ""
-
-        self.log(msg=msg, level=level)
+            msg_after += f" (took {run_time:.2f}s)"
+        msg_after += "." if msg_after[-1] != "." else ""
+        self.log(msg=msg_after, level=level)
 
     def core_context(self, msg, sep="...", msg_after=" done", show_duration=True):
         """Logging context of core priority.
@@ -204,7 +210,7 @@ class Logger(metaclass=Singleton):
         """
         return self.log_context(msg=msg, level=self.level_core,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
-    
+
     def info_context(self, msg, sep="...", msg_after=" done", show_duration=True):
         """Logging context of info priority.
 
@@ -216,7 +222,7 @@ class Logger(metaclass=Singleton):
         """
         return self.log_context(msg=msg, level=self.level_info,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
-    
+
     def message_context(self, msg, sep="...", msg_after=" done", show_duration=True):
         """Logging context of message priority.
 
@@ -228,7 +234,7 @@ class Logger(metaclass=Singleton):
         """
         return self.log_context(msg=msg, level=self.level_message,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
-    
+
     def verbose_context(self, msg, sep="...", msg_after=" done", show_duration=True):
         """Logging context of verbose priority.
 
@@ -240,7 +246,7 @@ class Logger(metaclass=Singleton):
         """
         return self.log_context(msg=msg, level=self.level_verbose,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
-    
+
     def info_context(self, msg, sep="...", msg_after=" done", show_duration=True):
         """Logging context of info priority.
 
@@ -252,7 +258,7 @@ class Logger(metaclass=Singleton):
         """
         return self.log_context(msg=msg, level=self.level_info,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
-    
+
     def debug_context(self, msg, sep="...", msg_after=" done", show_duration=True):
         """Logging context of debug priority.
 

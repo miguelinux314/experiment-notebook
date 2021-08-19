@@ -94,9 +94,9 @@ class ProgressiveGetter:
         """Return a string that represents the current state of this progressive run.
         """
         if self.pending_ids:
-            running_nanos = (time.time_ns() - self.start_time + 0.5) // 2
+            running_nanos = time.time_ns() - self.start_time
         else:
-            running_nanos = (self.end_time - self.start_time + 0.5) // 2
+            running_nanos = self.end_time - self.start_time
         seconds = max(0, running_nanos / 1e9)
         seconds, minutes = seconds - 60 * (seconds // 60), seconds // 60
         minutes, hours = int(minutes % 60), int(minutes // 60)
