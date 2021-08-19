@@ -591,13 +591,11 @@ class ATable(metaclass=MetaTable):
         # Add the row_created and row_updated columns. The latter is updated by enb
         # everytime a row is modified.
         self.add_column_function(self.__class__,
-                                 fun=lambda self, index, row: datetime.datetime.now(),
-                                 column_properties=ColumnProperties(
-                                     "row_created", has_object_values=True))
+                                 fun=lambda self, index, row: datetime.datetime.now().isoformat(),
+                                 column_properties=ColumnProperties("row_created"))
         self.add_column_function(self.__class__,
-                                 fun=lambda self, index, row: datetime.datetime.now(),
-                                 column_properties=ColumnProperties(
-                                     "row_updated", has_object_values=True))
+                                 fun=lambda self, index, row: datetime.datetime.now().isoformat(),
+                                 column_properties=ColumnProperties("row_updated"))
 
     # Methods related to defining columns and retrieving them afterwards
 
@@ -850,7 +848,8 @@ class ATable(metaclass=MetaTable):
         target_columns = target_columns if target_columns is not None else list(self.column_to_properties.keys())
 
         overwrite = overwrite if overwrite is not None else options.force
-        fill = fill if fill is not None else options.no_new_results is False
+        fill = fill if fill is not None else not options.no_new_results
+
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
             else not options.sequential
 
@@ -898,9 +897,12 @@ class ATable(metaclass=MetaTable):
                 overwrite=False,
                 parallel_row_processing=parallel_row_processing,
                 run_sanity_checks=enb.config.options.force_sanity_checks)
-
-        assert len(df) == len(target_indices)
-        enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved dataframe with {len(df)} rows.")
+            
+        if fill or overwrite:
+            assert len(df) == len(target_indices), (len(df), len(target_indices), target_indices, df)
+            enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved filled dataframe with {len(df)} rows.")
+        else:
+            enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved unfilled dataframe with {len(df)} rows.")
 
         return df
 
@@ -1241,7 +1243,7 @@ class ATable(metaclass=MetaTable):
         for index_name, index_value in zip(self.indices, unpack_index_value(index)):
             row[index_name] = index_value
 
-        row["row_updated"] = datetime.datetime.now()
+        row["row_updated"] = datetime.datetime.now().isoformat()
         row[self.private_index_column] = loc
 
         return row
