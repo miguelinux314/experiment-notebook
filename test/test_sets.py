@@ -48,14 +48,17 @@ class TestSets(unittest.TestCase):
                 assert (dataset_properties_df.columns == new_df.columns).all()
 
                 for c in dataset_properties_df.columns:
-                    if not (dataset_properties_df[c] == new_df[c]).all():
-                        # Floating point values might be unstable
-                        try:
-                            assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12
-                        except TypeError:
-                            # Stability within dictionaries is not verified,
-                            # but only dictionaries can raise this error
-                            assert (dataset_properties_df[c].apply(lambda c: isinstance(c, dict))).all()
+                    try:
+                        if not (dataset_properties_df[c] == new_df[c]).all():
+                            # Floating point values might be unstable
+                            try:
+                                assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12
+                            except TypeError:
+                                # Stability within dictionaries is not verified,
+                                # but only dictionaries can raise this error
+                                assert (dataset_properties_df[c].apply(lambda c: isinstance(c, dict))).all()
+                    except ValueError as ex:
+                        raise RuntimeError("The original and loaded datasets differ") from ex
 
     def test_trivial_version_table(self):
         """Test versioning with a table that simply copies the original file.

@@ -187,6 +187,7 @@ After the definition, the table's dataframe can be obtained with
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
+import tempfile
 from builtins import hasattr
 import ast
 import collections
@@ -532,8 +533,8 @@ class MetaTable(type):
         so that its returned value is assigned to the row's column.
         """
 
+        @functools.wraps(fun)
         def wrapper(self, index, row):
-            f"""Column wrapper for {fun.__name__}"""
             row[_column_name] = fun(self, index, row)
 
         return wrapper
@@ -871,32 +872,39 @@ class ATable(metaclass=MetaTable):
                       for i in range(0, len(target_indices), chunk_size)]
         assert len(chunk_list) > 0
 
-        if fill:
+        # Split in chunks and add/update the persistent storage
+        df = None
+        if fill or overwrite:
             for i, chunk in enumerate(chunk_list):
-                if options.verbose:
-                    print(
-                        f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} (chunk_size={chunk_size}, "
-                        f"{100 * i * chunk_size / len(target_indices):.1f}"
-                        f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}%) "
-                        f"@ {datetime.datetime.now()}")
+                enb.logger.verbose(
+                    f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} "
+                    f"(chunk_size={chunk_size}, "
+                    f"{100 * i * chunk_size / len(target_indices):.1f}"
+                    f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}%) "
+                    f"@ {datetime.datetime.now()}")
                 df = self.get_df_one_chunk(
                     target_indices=chunk, target_columns=target_columns,
-                    fill=True,
+                    fill_needed=True,
                     overwrite=overwrite, parallel_row_processing=parallel_row_processing,
                     run_sanity_checks=False)
 
-        if len(chunk_list) > 1 or not fill:
-            # Get the full df if needed
+        # Get the target df again without filling
+        # - If more than one chunk was used, df contains the last chunk ony
+        # - If fill was False and df was not set
+        if len(chunk_list) > 1 or df is None:
             df = self.get_df_one_chunk(
                 target_indices=target_indices, target_columns=target_columns,
-                fill=False,
+                fill_needed=False,
                 overwrite=False,
                 parallel_row_processing=parallel_row_processing,
                 run_sanity_checks=enb.config.options.force_sanity_checks)
 
+        assert len(df) == len(target_indices)
+        enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved dataframe with {len(df)} rows.")
+
         return df
 
-    def get_df_one_chunk(self, target_indices, target_columns, fill,
+    def get_df_one_chunk(self, target_indices, target_columns, fill_needed,
                          overwrite, parallel_row_processing, run_sanity_checks):
         """Internal implementation of the :meth:`get_df` functionality,
         to be applied to a single chunk of indices. It is essentially a self-contained
@@ -906,7 +914,7 @@ class ATable(metaclass=MetaTable):
 
         :param target_columns: list of indices for this chunk
         :param target_columns: list of column names to be filled in this call
-        :param fill: if False, results are not computed (they default to None). Instead,
+        :param fill_needed: if False, results are not computed (they default to None). Instead,
           only data in persistent storage is used.
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
@@ -930,51 +938,49 @@ class ATable(metaclass=MetaTable):
         # This inner join efficiently queries the loaded table for existing target indices.
         # Its length may be smaller than the requested index length, meaning
         # that some rows are still to be computed.
-        filtered_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
-        filtered_df.set_index(self.private_index_column, drop=True, inplace=True)
-        filtered_df = filtered_df.merge(
+        target_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
+        target_df.set_index(self.private_index_column, drop=True, inplace=True)
+        target_df = target_df.merge(
             right=loaded_table,
             how="inner",
             left_index=True,
             right_index=True,
             copy=False)
 
-        assert len(filtered_df) <= len(target_locs)
+        assert len(target_df) <= len(target_locs)
 
         # This is the case where input samples were previously processed,
         # but new columns were defined/requested.
-        fill = fill and (len(filtered_df) < len(target_indices) or filtered_df[target_columns].isnull().any().any())
+        fill_needed = fill_needed and (
+                len(target_df) < len(target_indices) or target_df[target_columns].isnull().any().any())
 
-        if fill:
+        if fill_needed or overwrite:
             # This method may raise ColumnFailedError if a column function crashes
             # or fails to fill their associated column(s).
-            self.fill_all_rows(
+            target_df = self.compute_target_rows(
                 # By passing target_df instead of loaded_table, there is less memory (and possibly network traffic)
                 # footprint.
                 loaded_df=loaded_table,
-                filtered_df=filtered_df,
+                target_df=target_df,
                 target_indices=target_indices,
                 target_locs=target_locs,
                 target_columns=target_columns,
                 overwrite=overwrite,
                 parallel_row_processing=parallel_row_processing)
+            assert len(target_df) == len(target_indices)
 
             if self.ignored_columns:
-                loaded_table = loaded_table[[c for c in loaded_table.columns
-                                             if c not in self.ignored_columns]]
+                target_df = target_df[[c for c in loaded_table.columns
+                                       if c not in self.ignored_columns]]
 
-            # Retrieve the requested data and verify consistency if requested
-            filtered_df = loaded_table.loc[target_locs]
-            if run_sanity_checks:
-                self.assert_df_sanity(df=filtered_df)
-
-            # Write to persistence if configured to do so - needed only if fill was True
+            # The new df is available. Now store data into persistence if one is configured
             if self.csv_support_path:
-                os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)),
-                            exist_ok=True)
-                self.write_persistence(df=filtered_df, output_csv=self.csv_support_path)
+                loaded_table = loaded_table.append(target_df)
+                loaded_table = loaded_table[~loaded_table.index.duplicated(keep="last")]
+                os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
+                self.write_persistence(df=loaded_table, output_csv=self.csv_support_path)
 
-        return filtered_df
+        return target_df
 
     def load_saved_df(self, csv_support_path=None, run_sanity_checks=True):
         """Load the df stored in permanent support (if any) and return it.
@@ -996,9 +1002,8 @@ class ATable(metaclass=MetaTable):
                     f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
 
             # Read CSV from disk
-            loaded_df = pd.read_csv(csv_support_path)
-            if options.verbose > 2:
-                print(f"[I]nfo: loaded dataframe from persistence with {len(loaded_df)} elements.")
+            with enb.logger.info_context("Loading dataframe from persistence"):
+                loaded_df = pd.read_csv(csv_support_path)
 
             # Columns defined since the last invocation are initially set to None for all previously
             # existing data.
@@ -1054,24 +1059,27 @@ class ATable(metaclass=MetaTable):
 
         return loaded_df
 
-    def fill_all_rows(self,
-                      loaded_df,
-                      filtered_df,
-                      target_indices,
-                      target_columns,
-                      overwrite,
-                      parallel_row_processing,
-                      target_locs=None):
-        """This method is run when the table is known to have some missing values.
-        These can be:
+    def compute_target_rows(self,
+                            loaded_df,
+                            target_df,
+                            target_indices,
+                            target_columns,
+                            overwrite,
+                            parallel_row_processing,
+                            target_locs=None):
+        """Generate and return a |DataFrame| with as many rows as given by `target_indices`, with the columns
+        given in `target_columns`, using this table's column-setting functions.
 
-        - missing columns of existing rows, or
-        - new rows to be added (i.e., target_locs contains at least one index not
-          in loaded_table).
+        This method is run when there are known missing values in the requested df, e.g., there are:
+        - missing columns of existing rows, and/or
+        - new rows to be added (i.e., `target_locs` contains at least one index not
+          in `loaded_df`).
 
-        :param loaded_df: the full loaded dataframe read from persistence (or created anew). This reference
-          is the one where values are ultimately stored.
-        :param filtered_df: a dataframe with identical column structure as loaded_table,
+        Note that this method does not modify `loaded_df`.
+
+        :param loaded_df: the full loaded dataframe read from persistence (or created anew). It is used to avoid
+          recomputation of existing columns, but it is not modified by this method.
+        :param target_df: a dataframe with identical column structure as loaded_table,
           with the subset of loaded_table's rows that match the target indices (i.e., inner join)
         :param target_indices: list of indices to be filled
         :param target_locs: if not None, it must be the resulting list
@@ -1080,8 +1088,8 @@ class ATable(metaclass=MetaTable):
           elements must be compatible with `loaded_table.loc`
           and be present in the same order as their corresponding
           target_indices.
-        :param target_columns: list of columns that are to be computed. |enb| defaults
-          to all columns in the table.
+        :param target_columns: list of columns that are to be computed. |enb| defaults to calling
+          this function with all columns in the table.
         :param overwrite: if True, cell values are computed even when storage
           data was present. In that case, the newly computed results replace the old ones.
         :param parallel_row_processing: if True, computation is run in parallel
@@ -1103,18 +1111,23 @@ class ATable(metaclass=MetaTable):
                              f"target_columns={repr(target_columns)}, "
                              f"column_to_properties.keys()={repr(list(self.column_to_properties.keys()))}") from ex
 
+        enb.logger.info(f"Filling {len(target_indices)} rows, {len(target_columns)} columns...")
+
         # Get the list of pandas Series instances (table rows) corresponding to target_indices.
         target_locs = target_locs if target_locs is None else [indices_to_internal_loc(v) for v in target_indices]
         if not parallel_row_processing:
-            computed_series = []
-            for index, loc in zip(target_indices, target_locs):
-                computed_series.append(self.fill_one_row(filtered_df=filtered_df,
-                                                         index=index, loc=loc,
-                                                         column_fun_tuples=column_fun_tuples,
-                                                         overwrite=overwrite,
-                                                         options=enb.config.options))
+            with enb.logger.info_context("Sequentially computing rows"):
+                computed_series = []
+                for i, (index, loc) in enumerate(zip(target_indices, target_locs)):
+                    computed_series.append(self.compute_one_row(filtered_df=target_df,
+                                                                index=index, loc=loc,
+                                                                column_fun_tuples=column_fun_tuples,
+                                                                overwrite=overwrite,
+                                                                options=enb.config.options))
+                enb.logger.log(msg=".", level=enb.logger.level_info, end="")
+
         else:
-            filtered_df_id = ray.put(filtered_df)
+            filtered_df_id = ray.put(target_df)
             column_fun_tuples_id = ray.put(column_fun_tuples)
             overwrite_id = ray.put(overwrite)
             options_id = ray.put(enb.config.options)
@@ -1129,35 +1142,32 @@ class ATable(metaclass=MetaTable):
                 options=options_id)
                 for index, loc in zip(target_indices, target_locs)]
 
-            pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids, iteration_period=self.progress_report_period)
+            # Iterating a progressive getter continues until all tasks are complete.
+            pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
+                                                   iteration_period=self.progress_report_period)
             for _ in pg:
                 enb.logger.verbose(pg.report())
             enb.logger.verbose(pg.report())
-
             computed_series = ray.get(pending_ids)
 
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
-            if options.verbose:
-                print(
-                    f"[E]rror running {self.__class__.__name__}.get_df(): {len(found_exceptions)}/{len(target_indices)} indices failed. "
-                    f"Using the first one as the main cause.")
-            raise ColumnFailedError(f"Error setting (at least) one cell with {self.__class__.__name__}",
+            raise ColumnFailedError(f"Error setting {len(found_exceptions)}/{len(target_indices)} indices"
+                                    f" with {self.__class__.__name__}",
                                     exception_list=found_exceptions) from found_exceptions[0]
 
-        # Update new rows
-        for loc, series in ((loc, series) for loc, series in zip(target_locs, computed_series)):
-            loaded_df.loc[loc] = series
+        with enb.logger.info_context(msg="Merging requested rows"):
+            target_df = pd.DataFrame(
+                computed_series,
+                columns=[self.private_index_column] + list(loaded_df.columns))
+            target_df.set_index(self.private_index_column, inplace=True)
 
-        # The result is the concatenation of all loaded series
-        return pd.concat(computed_series)
+        return target_df
 
-    def fill_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
-        """Process a single row of an ATable instance, returning a Series object corresponding to that row in
-        case of success.
-
+    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
+        """Process a single row of an ATable instance, returning a Series object corresponding to that row.
         If an error is detected, an exception is returned instead of a Series. Note that the exception
-        is not raised here, but intended to be detected by the dispatcher.
+        is not raised here, but intended to be detected by the compute_target_rows(), i.e., the dispatcher function.
 
         :param filtered_df: |DataFrame| retrieved from persistent storage, with index compatible with loc.
           The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
@@ -1232,6 +1242,7 @@ class ATable(metaclass=MetaTable):
             row[index_name] = index_value
 
         row["row_updated"] = datetime.datetime.now()
+        row[self.private_index_column] = loc
 
         return row
 
@@ -1240,17 +1251,16 @@ class ATable(metaclass=MetaTable):
 
         :param output_csv: if None, self.csv_support_path is used as the output path.
         """
-        if any(p.has_object_values for p in self.column_to_properties.values()):
-            # If pickling is needed, a copy of the df is made so as not to modify the original.
-            df = df.copy()
-            for column, properties in self.column_to_properties.items():
-                if properties.has_object_values:
-                    df[column] = df[column].apply(pickle.dumps)
-
-        output_csv = output_csv if output_csv is not None else self.csv_support_path
-        if options.verbose > 1:
-            print(f"[D]umping CSV with {len(df)} entries into {output_csv}")
-        df.to_csv(output_csv, index=True)
+        with enb.logger.info_context(
+                msg=f"Dumping CSV with {len(df)} entries into {output_csv}", msg_after=" dumped"):
+            if any(p.has_object_values for p in self.column_to_properties.values()):
+                # If pickling is needed, a copy of the df is made so as not to modify the original.
+                df = df.copy()
+                for column, properties in self.column_to_properties.items():
+                    if properties.has_object_values:
+                        df[column] = df[column].apply(pickle.dumps)
+            output_csv = output_csv if output_csv is not None else self.csv_support_path
+            df.to_csv(output_csv, index=True)
 
     def get_matlab_struct_str(self, target_indices):
         """Return a string containing MATLAB code that defines a list of structs
@@ -1477,7 +1487,7 @@ def ray_get_row_or_default(df, index, index_columns, all_columns):
 def ray_process_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite, options):
     """Ray wrapper for :meth:`ATable.process_row`
     """
-    return atable_instance.fill_one_row(
+    return atable_instance.compute_one_row(
         filtered_df=filtered_df,
         index=index,
         loc=loc,

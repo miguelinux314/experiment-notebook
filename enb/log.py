@@ -7,8 +7,11 @@ It uses only symbols from .misc, but no other module in enb.
 __author__ = "Miguel Hernández-Cabronero"
 __date__ = "2021/08/13"
 
+import contextlib
 import sys
 import builtins
+import datetime
+import time
 from .misc import ExposedProperty
 from .misc import Singleton
 
@@ -84,14 +87,14 @@ class Logger(metaclass=Singleton):
         self.level_verbose = self.get_level("verbose")
         self.level_info = self.get_level("info")
         self.level_debug = self.get_level("debug")
-        self.show_prefixes = False  # Set to the configure value by enb's __init__.py
+        self.show_prefixes = False  # This value is changed based on the file and CLI configuration by enb/__init__.py
 
     def levels_by_priority(self):
         """Return a list of the available levels, sorted from higher to lower priority.
         """
         return sorted(self.name_to_level.values(), key=lambda level: level.priority)
 
-    def log(self, msg, level, end="\n", file=sys.stdout, flush=False):
+    def log(self, msg, level, end="\n", file=sys.stdout, flush=True):
         """Conditionally log a message given its level. It only shares "end" with builtins.print as keyword argument.
         """
         if level.priority <= self.selected_log_level.priority:
@@ -159,6 +162,104 @@ class Logger(metaclass=Singleton):
         :param kwargs: optional arguments passed to self.log (must be compatible)
         """
         self.log(msg=msg, level=self.level_debug, **kwargs)
+
+    @contextlib.contextmanager
+    def log_context(self, msg, level, sep="...", msg_after=" done", show_duration=True):
+        """Log a message before executing the `with` block code,
+        run the block, and log another message when the block is completed.
+        The message given the selected priority level, and is only displayed based on `self.selected_log_level`.
+        The block of code is executed regardless of the logging options.
+
+        :param msg: Message to show before starting the code block.
+        :param level: Priority level for the shown messages.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        self.log(msg=msg, end=sep, level=level)
+        time_before = time.time()
+        yield None
+        run_time = time.time() - time_before
+
+        msg = f"{msg_after}"
+        if show_duration:
+            msg += f" (took {run_time:.2f}s, it's {datetime.datetime.now()})"
+        msg += "." if msg_after[-1] != "." else ""
+
+        self.log(msg=msg, level=level)
+
+    def core_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+        """Logging context of core priority.
+
+        :param msg: Message to show before starting the code block.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        return self.log_context(msg=msg, level=self.level_core,
+                                sep=sep, msg_after=msg_after, show_duration=show_duration)
+    
+    def info_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+        """Logging context of info priority.
+
+        :param msg: Message to show before starting the code block.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        return self.log_context(msg=msg, level=self.level_info,
+                                sep=sep, msg_after=msg_after, show_duration=show_duration)
+    
+    def message_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+        """Logging context of message priority.
+
+        :param msg: Message to show before starting the code block.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        return self.log_context(msg=msg, level=self.level_message,
+                                sep=sep, msg_after=msg_after, show_duration=show_duration)
+    
+    def verbose_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+        """Logging context of verbose priority.
+
+        :param msg: Message to show before starting the code block.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        return self.log_context(msg=msg, level=self.level_verbose,
+                                sep=sep, msg_after=msg_after, show_duration=show_duration)
+    
+    def info_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+        """Logging context of info priority.
+
+        :param msg: Message to show before starting the code block.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        return self.log_context(msg=msg, level=self.level_info,
+                                sep=sep, msg_after=msg_after, show_duration=show_duration)
+    
+    def debug_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+        """Logging context of debug priority.
+
+        :param msg: Message to show before starting the code block.
+        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
+          single-line reporting.
+        :param msg_after: message shown after `msg` and `sep` upon completion.
+        :param show_duration: if True, a message displaying the run time is logged upon completion.
+        """
+        return self.log_context(msg=msg, level=self.level_debug,
+                                sep=sep, msg_after=msg_after, show_duration=show_duration)
 
     def level_active(self, name, **kwargs):
         """Return True if and only if the given name corresponds to a level with

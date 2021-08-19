@@ -211,14 +211,14 @@ class MachineLearningExperiment(experiment.Experiment):
     #     """
     #     return self.tasks_by_name
 
-    def fill_one_row(self, index, column_fun_tuples, row, overwrite, fill):
+    def compute_one_row(self, index, column_fun_tuples, row, overwrite, fill):
         # Right now we are using file_path as testing_dataset_path maybe we will need to also add training_dataset_path
         file_path, model_name = index
         model = self.models_by_name[model_name]
         image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         row_wrapper = self.RowWrapper(file_path, model, row)
-        result = super().fill_one_row(index=index, column_fun_tuples=column_fun_tuples,
-                                      row=row_wrapper, overwrite=overwrite, fill=fill)
+        result = super().compute_one_row(index=index, column_fun_tuples=column_fun_tuples,
+                                         row=row_wrapper, overwrite=overwrite, fill=fill)
 
         if isinstance(result, Exception):
             return result
