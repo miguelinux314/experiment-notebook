@@ -1,12 +1,21 @@
-# Under development v0.2.9
+# Under development v0.3.0
 
-* New functions
+Version 0.3.0 is packed with new features and general performance improvements. 
+At the same time, full backwards compatibility is almost entirely preserved with the 0.2 version family.
 
-    - Added a functional CLI for installing and searching plugins
-  
-    - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
-  
-    - Added recursive subclass search in `misc.py`
+* New major functions
+  - Created a CLI with 
+  - Added a plugin installation subsystem.  
+  - New logging subsystem, which allows for a more flexible message output selection with more elegant code
+
+* Improvements
+  - Improved ATable population and storage routines to make better use of pandas' efficiency.
+  - Improved ATable loading  
+
+
+* 
+  - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
+  - Added recursive subclass search in `misc.py`
 
 
 # 2021/07/14 v0.2.8
