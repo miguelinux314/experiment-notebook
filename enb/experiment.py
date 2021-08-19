@@ -205,7 +205,10 @@ class Experiment(atable.ATable):
                      on=self.dataset_info_table.index, rsuffix=rsuffix)
         if options.verbose:
             redundant_columns = [c.replace(rsuffix, "")
-                                 for c in df.columns if c.endswith(rsuffix)]
+                                 for c in df.columns
+                                 if c.endswith(rsuffix)
+                                 and not c.startswith("row_created")
+                                 and not c.startswith("row_updated")]
             if redundant_columns:
                 print("[W]arning: redundant dataset/experiment column(s): " +
                       ', '.join(redundant_columns) + ".")

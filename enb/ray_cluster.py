@@ -10,6 +10,7 @@ import os
 import datetime
 import ray
 
+import enb
 from enb.config import options
 
 
@@ -24,8 +25,7 @@ def init_ray(force=False):
       (generally problematic, specially if jobs are running)
     """
     if not ray.is_initialized() or force:
-        if options.verbose:
-            print(f"[I]nfo: making new cluster [CPUlimit={options.ray_cpu_limit}]")
+        enb.logger.info(f"[I]nfo: making new cluster [CPUlimit={options.ray_cpu_limit}]")
         ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
                  local_mode=options.sequential)
 
@@ -69,7 +69,7 @@ class ProgressiveGetter:
             raise ValueError(f"Invalid iteration period {iteration_period}: it cannot be negative (but it can be zero)")
         self.full_id_list = list(ray_id_list)
         self.weight_list = weight_list if weight_list is not None else [1] * len(self.full_id_list)
-        self.id_to_weight = {i:w for i, w in zip(self.full_id_list, self.weight_list)}
+        self.id_to_weight = {i: w for i, w in zip(self.full_id_list, self.weight_list)}
         self.iteration_period = iteration_period
         self.pending_ids = list(self.full_id_list)
         self.completed_ids = []
@@ -104,17 +104,18 @@ class ProgressiveGetter:
         total_weight = sum(self.id_to_weight.values())
         completed_weight = sum(self.id_to_weight[i] for i in self.completed_ids)
 
-        time_str = f"Time elapsed {hours:02d}h {minutes:02d}min {seconds:02.3f}s ({running_nanos:e}ns)."
-        percentage_str = f"{100*(completed_weight/total_weight):0.1f}%"
+        time_str = f"{hours:02d}h {minutes:02d}min {seconds:02.3f}s"
+        percentage_str = f"{100 * (completed_weight / total_weight):0.1f}%"
+        now_str = f"(current time: {datetime.datetime.now()})"
 
         if self.pending_ids:
             return f"Progress report ({percentage_str}): " \
                    f"{len(self.completed_ids)} / {len(self.full_id_list)} completed tasks. " \
-                   f"{time_str}."
+                   f"Elapsed time: {time_str} {now_str}."
 
         else:
             return f"Progress report: completed all {len(self.full_id_list)} tasks in " \
-                   f"{hours:02d}h : {minutes:02d} min : {seconds:02.03f} s."
+                   f"{time_str} {now_str}."
 
     def __iter__(self):
         """This instance is itself iterable.
