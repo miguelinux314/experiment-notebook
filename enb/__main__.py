@@ -60,14 +60,6 @@ def CLIParser():
         # Used to trigger the desired call and save the return status
         nargs=0, dest="", action=PluginList)
 
-    # Template command
-    cli_parser.template_parser = cli_parser.subparsers.add_parser("template", help="Instantiate and manage templates.")
-    cli_parser.template_parser.subparsers = cli_parser.template_parser.add_subparsers(
-        description="Template subcommands", dest="subcommand", required=True)
-    # # Template format
-    cli_parser.template_parser.format_parser = cli_parser.template_parser.subparsers.add_parser(
-        "format", help="Format an input template and save the result.")
-
     # Help command
     cli_parser.help_parser = cli_parser.subparsers.add_parser("help", help="Show this help and exit.")
 
