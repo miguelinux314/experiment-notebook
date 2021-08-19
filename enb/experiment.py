@@ -192,43 +192,34 @@ class Experiment(atable.ATable):
         parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
             else not options.sequential
 
+        enb.logger.verbose(f"Starting {self.__class__.__name__} with "
+                           f"{len(target_tasks)} tasks, "
+                           f"{len(target_indices)} indices, and "
+                           f"{len(self.column_to_properties)} columns.")
+
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
-        df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
-                            parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
+
+        with enb.logger.verbose_context("Computing experiment results",
+                                        sep="...\n",
+                                        msg_after="successfully computed experiment results."):
+            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
+                                parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
 
         # Add dataset columns
-        rsuffix = "__redundant__index"
-        df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
-                     on=self.dataset_info_table.index, rsuffix=rsuffix)
-        if options.verbose:
+        with enb.logger.verbose_context("Merging dataset and experiment results"):
+            rsuffix = "__redundant__index"
+            df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
+                         on=self.dataset_info_table.index, rsuffix=rsuffix)
             redundant_columns = [c.replace(rsuffix, "")
                                  for c in df.columns
                                  if c.endswith(rsuffix)
                                  and not c.startswith("row_created")
                                  and not c.startswith("row_updated")]
             if redundant_columns:
-                print("[W]arning: redundant dataset/experiment column(s): " +
-                      ', '.join(redundant_columns) + ".")
-
-        # Add columns based on task parameters
-        if len(df) > 0:
-            task_param_names = set()
-            for task in self.tasks_by_name.values():
-                for k in task.param_dict.keys():
-                    task_param_names.add(k)
-            for param_name in task_param_names:
-                def get_param_row(row):
-                    file_path, task_name = row[self.index]
-                    task = self.tasks_by_name[task_name]
-                    try:
-                        return task.param_dict[param_name]
-                    except KeyError as ex:
-                        return None
-
-                df[param_name] = df.apply(get_param_row, axis=1)
+                enb.logger.warn(f"Found redundant dataset/experiment column(s): {', '.join(redundant_columns)}.")
 
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 

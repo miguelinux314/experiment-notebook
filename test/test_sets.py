@@ -41,10 +41,11 @@ class TestSets(unittest.TestCase):
                 # Run the actual loading sequence
                 dataset_properties_df = dataset_properties_table.get_df(
                     target_indices=target_indices, parallel_row_processing=parallel)
+                assert len(dataset_properties_df) == len(target_indices)
 
-                # Obtain again, forcing load from the temporary file
-                new_df = dataset_properties_table.get_df(target_indices=target_indices, fill=False, overwrite=False,
-                                                         parallel_row_processing=parallel)
+                # Obtain again, forcing load from the temporary file without any additional computations
+                new_df = dataset_properties_table.get_df(
+                    target_indices=target_indices, fill=False, overwrite=False, parallel_row_processing=parallel)
                 assert (dataset_properties_df.columns == new_df.columns).all()
 
                 for c in dataset_properties_df.columns:
