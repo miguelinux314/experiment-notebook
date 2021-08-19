@@ -34,9 +34,10 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
     if matches:
         match = matches[-1]
-        if len(matches) > 1 and options.verbose:
-            print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
-                  f"Only the last one is considered.")
+        if len(matches) > 1:
+            enb.logger.warn(f"File path {file_path} contains more than one image geometry tag "
+                            f"(matches: {', '.join(repr(m.group(0)) for m in matches)}. "
+                            f"Only the last one is considered")
         component_count, height, width = (int(match[i]) for i in range(3))
         if any(dim < 1 for dim in (width, height, component_count)):
             raise ValueError(f"Invalid dimension tag in {file_path}")
@@ -297,12 +298,8 @@ class QuantizedImageVersion(ImageVersionTable):
     def version(self, input_path, output_path, row):
         img = load_array_bsq(file_or_path=input_path, image_properties_row=row)
         if math.log2(self.qstep) == int(math.log2(self.qstep)):
-            if options.verbose > 3:
-                print("[V]ersioning with shift")
             img >>= int(math.log2(self.qstep))
         else:
-            if options.verbose > 3:
-                print("[V]ersioning with division")
             img //= self.qstep
         dump_array_bsq(array=img, file_or_path=output_path)
 

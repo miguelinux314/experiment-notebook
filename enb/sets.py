@@ -66,10 +66,10 @@ class FilePropertiesTable(atable.ATable):
                                                 base_dataset_dir=self.base_dir)
 
         return super().get_df(target_indices=target_indices,
-                            target_columns=target_columns,
-                            fill=fill, overwrite=overwrite,
-                            parallel_row_processing=parallel_row_processing,
-                            chunk_size=chunk_size)
+                              target_columns=target_columns,
+                              fill=fill, overwrite=overwrite,
+                              parallel_row_processing=parallel_row_processing,
+                              chunk_size=chunk_size)
 
     def get_relative_path(self, file_path):
         """Get the relative path. Overwritten to handle the versioned path.
@@ -198,8 +198,7 @@ class FileVersionTable(FilePropertiesTable):
             else:
                 raise Exception(f"Original path {original_path} not found in {self.original_base_dir}")
 
-        if options.verbose > 2:
-            print(f"[W]ill version {original_path} -> {versioned_path}")
+        enb.logger.info(f"Transformed original path {original_path} into versioned path {versioned_path}")
 
         return versioned_path
 
@@ -277,12 +276,11 @@ class FileVersionTable(FilePropertiesTable):
         try:
             version_time_list = self.current_run_version_times[file_path]
         except KeyError:
-            if options.verbose > 1:
-                print(f"[W]arning: no valid version time was found for {repr(file_path)}. "
-                      f"This is probably due to the versioning table changing the name of the"
-                      f"output files. If the actual versioning time is needed, "
-                      f"you can ovewrite set_version_time in {self.__class__} "
-                      f"looking at the appropriate values in self.current_run_version_times.")
+            enb.logger.verbose(f"[W]arning: no valid version time was found for {repr(file_path)}. "
+                               f"This is probably due to the versioning table changing the name of the"
+                               f"output files. If the actual versioning time is needed, "
+                               f"you can ovewrite set_version_time in {self.__class__} "
+                               f"looking at the appropriate values in self.current_run_version_times.")
             version_time_list = [0]
 
         if any(t < 0 for t in version_time_list):

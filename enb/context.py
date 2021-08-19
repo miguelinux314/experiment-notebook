@@ -33,10 +33,7 @@ class ValueCounter:
         """Tally one more of the given value, which should be in the
         list of allowed values
         """
-        try:
-            self.value_to_count[value] += 1
-        except KeyError:
-            print(f"Value {value} not in {self.value_to_count.keys()}")
+        self.value_to_count[value] += 1
 
     @property
     def allowed_values(self):

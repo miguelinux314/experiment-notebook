@@ -396,7 +396,7 @@ class Options(GeneralOptions, ExecutionOptions, DirOptions, RayOptions, Renderin
     pass
 
 
-@deprecation.deprecated(deprecated_in="0.2.7", removed_in="0.3.0")
+@deprecation.deprecated(deprecated_in="0.2.7", removed_in="0.3.1")
 def get_options(from_main=False):
     """Deprecated - use `from enb.config import options`.
     """
