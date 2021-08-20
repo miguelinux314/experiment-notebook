@@ -23,13 +23,23 @@ class TestLog(unittest.TestCase):
                 for j in range(i + 1, len(levels_by_priority)):
                     enb.config.options.verbose = 0
                     enb.log.logger.selected_log_level = levels_by_priority[i]
-                    enb.config.options.verbose += levels_by_priority[j].priority - levels_by_priority[i].priority
-                    assert enb.log.logger.selected_log_level is levels_by_priority[j]
+                    enb.config.options.verbose = \
+                        levels_by_priority[j].priority \
+                        - enb.log.logger.level_message.priority
+                    assert enb.log.logger.selected_log_level is levels_by_priority[j], \
+                        dict(i=i, j=j, verbose=enb.config.options.verbose,
+                             selected_level=enb.log.logger.selected_log_level,
+                             target_level_j=levels_by_priority[j])
 
                     enb.config.options.verbose = 0
                     enb.log.logger.selected_log_level = levels_by_priority[j]
-                    enb.config.options.verbose += levels_by_priority[i].priority - levels_by_priority[j].priority
-                    assert enb.log.logger.selected_log_level is levels_by_priority[i]
+                    enb.config.options.verbose += \
+                        levels_by_priority[i].priority \
+                        - enb.log.logger.level_message.priority
+                    assert enb.log.logger.selected_log_level is levels_by_priority[i], \
+                        dict(i=i, j=j, verbose=enb.config.options.verbose,
+                             selected_level=enb.log.logger.selected_log_level,
+                             target_level_i=levels_by_priority[i])
         finally:
             enb.config.options.verbose = original_verbosity_level
             enb.log.logger.selected_log_level = enb.log.get_level(original_log_level_name)

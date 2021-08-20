@@ -207,7 +207,6 @@ import ray
 import traceback
 
 import enb.config
-from enb import config
 from enb import ray_cluster
 from enb.config import options
 from enb.misc import get_defining_class_name
@@ -1051,8 +1050,7 @@ class ATable(metaclass=MetaTable):
             try:
                 check_unique_indices(loaded_df)
             except CorruptedTableError as ex:
-                print(f"[E]rror loading table from {csv_support_path}")
-                raise ex
+                raise CorruptedTableError(f"Error loading table from {csv_support_path}") from ex
 
         return loaded_df
 
@@ -1119,33 +1117,33 @@ class ATable(metaclass=MetaTable):
                     computed_series.append(self.compute_one_row(filtered_df=target_df,
                                                                 index=index, loc=loc,
                                                                 column_fun_tuples=column_fun_tuples,
-                                                                overwrite=overwrite,
-                                                                options=enb.config.options))
+                                                                overwrite=overwrite))
                 enb.logger.log(msg=".", level=enb.logger.level_info, end="")
 
         else:
             filtered_df_id = ray.put(target_df)
             column_fun_tuples_id = ray.put(column_fun_tuples)
             overwrite_id = ray.put(overwrite)
-            options_id = ray.put(enb.config.options)
             self_id = ray.put(self)
 
-            pending_ids = [ray_process_row.remote(
+            pending_ids = [parallel_compute_one_row.remote(
                 atable_instance=self_id,
                 filtered_df=filtered_df_id,
                 index=ray.put(index), loc=ray.put(loc),
                 column_fun_tuples=column_fun_tuples_id,
-                overwrite=overwrite_id,
-                options=options_id)
+                overwrite=overwrite_id)
                 for index, loc in zip(target_indices, target_locs)]
 
             # Iterating a progressive getter continues until all tasks are complete.
-            pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
-                                                   iteration_period=self.progress_report_period)
-            for _ in pg:
+            with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
+                                            f"rows [CPU limit: {enb.config.options.ray_cpu_limit}]",
+                                            sep="...\n"):
+                pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
+                                                       iteration_period=self.progress_report_period)
+                for _ in pg:
+                    enb.logger.verbose(pg.report())
                 enb.logger.verbose(pg.report())
-            enb.logger.verbose(pg.report())
-            computed_series = ray.get(pending_ids)
+                computed_series = ray.get(pending_ids)
 
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
@@ -1161,7 +1159,7 @@ class ATable(metaclass=MetaTable):
 
         return target_df
 
-    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
+    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite):
         """Process a single row of an ATable instance, returning a Series object corresponding to that row.
         If an error is detected, an exception is returned instead of a Series. Note that the exception
         is not raised here, but intended to be detected by the compute_target_rows(), i.e., the dispatcher function.
@@ -1177,7 +1175,6 @@ class ATable(metaclass=MetaTable):
            where fun is to be invoked to fill column
         :param overwrite: if True, existing values are overwriten with
           newly computed data
-        :param options: a copy of the enb.config.options of the orchestrating process.
 
         :return: a `pandas.Series` instance corresponding to this row, with a column named
           as given by self.private_index_column set to the `loc` argument passed to this function.
@@ -1187,59 +1184,62 @@ class ATable(metaclass=MetaTable):
         except KeyError:
             row = pd.Series({k: None for k in self.column_to_properties.keys()})
 
-        called_functions = set()
-        for column, fun in column_fun_tuples:
-            if fun in called_functions:
-                if row[column] is None:
-                    raise ValueError(
-                        f"[F]unction {fun} failed to fill column {column} with a not-None value. " +
-                        ("Note that functions starting with column_ should either return a value or raise an exception"
-                         if fun.__name__.startwith("column_") else ""))
-                if options.verbose > 2:
-                    print(f"[A]lready called function {fun.__name__} <{self.__class__.__name__}>")
-                continue
-            if options.columns and column not in options.columns:
-                if options.verbose > 2:
-                    print(f"[S]kipping non-selected column {column}")
-                continue
+        with enb.logger.info_context(f"Computing {self.__class__.__name__}'s row for index {index}"):
+            called_functions = set()
+            for column, fun in column_fun_tuples:
+                if fun in called_functions:
+                    if row[column] is None:
+                        raise ValueError(
+                            f"[F]unction {fun} failed to fill column {column} with a not-None value. " + (
+                                "Note that functions starting with column_ should either "
+                                "return a value or raise an exception"
+                                if fun.__name__.startwith("column_") else ""))
+                    enb.logger.info(f"Already called function {fun.__name__} <{self.__class__.__name__}>")
+                    continue
+                if options.columns and column not in options.columns:
+                    enb.logger.info(f"Skipping non-selected column {column}")
+                    continue
 
-            if overwrite or column not in row or row[column] is None:
-                skip = False
-            else:
+                if overwrite or column not in row or row[column] is None:
+                    skip = False
+                else:
+                    try:
+                        skip = not math.isnan(float(row[column]))
+                    except (ValueError, TypeError):
+                        skip = len(str(row[column])) > 0
+                if skip:
+                    enb.logger.info(f"Skipping existing '{column}' for index={index} <{self.__class__.__name__}>")
+                    continue
+
+                enb.logger.info(f"[C]alculating {column} for {index} with <{self.__class__.__name__}>{{ {fun} }}")
                 try:
-                    skip = not math.isnan(float(row[column]))
-                except (ValueError, TypeError):
-                    skip = len(str(row[column])) > 0
-            if skip:
-                if options.verbose > 2:
-                    print(f"[S]kipping existing '{column}' for index={index} <{self.__class__.__name__}>")
-                continue
+                    result = fun(self, index, row)
+                    called_functions.add(fun)
 
-            if options.verbose > 1:
-                print(f"[C]alculating {column} for {index} with <{self.__class__.__name__}>{{ {fun} }}")
-            try:
-                result = fun(self, index, row)
-                called_functions.add(fun)
-                if result is not None and options.verbose > 1:
-                    print(f"[W]arning: result of {fun.__name__} ignored")
-                if row[column] is None:
-                    raise ValueError(f"Function {fun} failed to fill "
-                                     f"the associated '{column}' column ({column}:{row[column]})")
-            except Exception as ex:
-                msg = f"[E]rror computing a cell: {repr(ex)}\n" \
-                      f"{self} ------------------------------------------------- [START error stack trace]\n" \
-                      f"{traceback.format_exc()}\n" \
-                      f"{self} ------------------------------------------------- [END error stack trace]\n"
-                cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
-                if options.verbose:
-                    print(msg)
-                return cfe
+                    if row[column] is None:
+                        raise ValueError(f"Function {fun} failed to fill "
+                                         f"the associated '{column}' column ({column}:{row[column]})")
 
-        for index_name, index_value in zip(self.indices, unpack_index_value(index)):
-            row[index_name] = index_value
+                    if result is not None and options.verbose > 1 and not fun.__name__.startswith("column_"):
+                        enb.logger.warn(f"Function {fun.__name__} returned a non-None value ({repr(result)} "
+                                        f"when setting column {repr(column)}. "
+                                        f"This value is ignored, and row['{column}'] is used instead.")
 
-        row["row_updated"] = datetime.datetime.now().isoformat()
-        row[self.private_index_column] = loc
+                except Exception as ex:
+                    msg = f"[E]rror computing a cell: {repr(ex)}\n" \
+                          f"{self} ------------------------------------------------- [START error stack trace]\n" \
+                          f"{traceback.format_exc()}\n" \
+                          f"{self} ------------------------------------------------- [END error stack trace]\n"
+                    cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
+                    if options.verbose:
+                        print(msg)
+                    return cfe
+
+            for index_name, index_value in zip(self.indices, unpack_index_value(index)):
+                row[index_name] = index_value
+
+            row["row_updated"] = datetime.datetime.now().isoformat()
+            row[self.private_index_column] = loc
 
         return row
 
@@ -1420,12 +1420,10 @@ def check_unique_indices(df):
     # Verify consistency
     duplicated_indices = df.index.duplicated()
     if duplicated_indices.any():
-        s = f"Loaded table with the following DUPLICATED indices:\n\t: "
-        if options.verbose:
-            s += "\n\t:: ".join(str(' , '.join(values))
-                                for values in df[duplicated_indices][df.example_indices].values)
-            print(s)
-        raise CorruptedTableError(atable=None)
+        msg = f"Loaded table with the following DUPLICATED indices:\n\t: "
+        msg += "\n\t:: ".join(str(' , '.join(values))
+                              for values in df[duplicated_indices][df.example_indices].values)
+        raise CorruptedTableError(atable=None, msg=msg)
 
 
 def indices_to_internal_loc(values):
@@ -1457,31 +1455,10 @@ def unpack_index_value(input):
         return list(input)
 
 
-@ray.remote
-def ray_get_row_or_default(df, index, index_columns, all_columns):
-    """Get an existing row of df, or a newly created row (not added to df)
-    containing keys in index_columns set to the values given by index
-    (which must match in number of items based on unpack_index_value()
-    and all other defined columns set to None
-    """
-    if isinstance(index, str):
-        index = [index]
-    assert len(index) == len(index_columns), (index, index_columns)
-    try:
-        internal_index = str(tuple(index))
-        row = df.loc[internal_index]
-    except KeyError:
-        initial_dict = {column: None for column in all_columns}
-        initial_dict.update({index_name: index_value
-                             for index_name, index_value
-                             in zip(index_columns, index)})
-        row = pd.Series(initial_dict)
-    return row
-
-
-@ray.remote
-@config.propagates_options
-def ray_process_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite, options):
+# @ray.remote
+# @config.propagates_options
+@enb.ray_cluster.remote()
+def parallel_compute_one_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite):
     """Ray wrapper for :meth:`ATable.process_row`
     """
     return atable_instance.compute_one_row(
@@ -1489,8 +1466,7 @@ def ray_process_row(atable_instance, filtered_df, index, loc, column_fun_tuples,
         index=index,
         loc=loc,
         column_fun_tuples=column_fun_tuples,
-        overwrite=overwrite,
-        options=options)
+        overwrite=overwrite)
 
 
 def column_function(*column_property_list, **kwargs):

@@ -10,8 +10,8 @@ __date__ = "2021/08/13"
 import contextlib
 import sys
 import builtins
-import datetime
 import time
+
 from .misc import ExposedProperty
 from .misc import Singleton
 
@@ -94,9 +94,17 @@ class Logger(metaclass=Singleton):
         """
         return sorted(self.name_to_level.values(), key=lambda level: level.priority)
 
-    def log(self, msg, level, end="\n", file=sys.stdout, flush=True):
+    def log(self, msg, level, end="\n", file=None, flush=True):
         """Conditionally log a message given its level. It only shares "end" with builtins.print as keyword argument.
+
+        :param msg: message to be logged
+        :param level: priority level for the message
+        :param end: string appended after the message, if it is shown.
+        :param file: file where to log the message, or None to automatically select sys.stdout
+        :param flush: if True, the output file is flushed after writing.
         """
+        file = sys.stdout if file is None else file
+
         if level.priority <= self.selected_log_level.priority:
             try:
                 last_end = self._last_end
@@ -105,16 +113,25 @@ class Logger(metaclass=Singleton):
                 last_end = "\n"
                 last_level = self.selected_log_level
 
-            forfeit_prefix = last_level is level and not last_end.endswith("\n")
+            forfeit_prefix = (last_level is level and not last_end.endswith("\n")) \
+                             or (self.selected_log_level.priority <= self.level_message.priority)
             split_message_str = "" if last_level is level or last_end.endswith("\n") else "\n"
-            file.write(f"{split_message_str}"
-                       f"{level.prefix if self.show_prefixes and not forfeit_prefix else ''}"
-                       f"{msg}{end}")
+
+            output_msg = f"{split_message_str}" \
+                         f"{level.prefix if self.show_prefixes and not forfeit_prefix else ''}" \
+                         f"{msg}{end}"
+
+            file.write(output_msg)
             if flush:
                 file.flush()
 
             self._last_end = end
             self._last_level = level
+        # else:
+        #     sys.stdout.write(f"\n\nIgnoring msg {msg} due to priority\n")
+        #     sys.stdout.write(f"[watch] level={level}\n")
+        #     sys.stdout.write(report_level_status() + "\n")
+        #     sys.stdout.write(f"[watch] self.selected_log_level={self.selected_log_level}\n\n")
 
     def core(self, msg, **kwargs):
         """A message of "core" level.
@@ -190,10 +207,12 @@ class Logger(metaclass=Singleton):
 
         # Show exit message
         if msg_after is None:
+            space = " "
             try:
-                msg_after = f" done" if self._last_level is level and self._last_end == sep else f"done ({msg})"
+                space = space if not self._last_end.endswith("\n") else ""
+                msg_after = f"{space}done" if self._last_level is level and self._last_end == sep else f"done ({msg})"
             except AttributeError:
-                msg_after = f" done"
+                msg_after = f"{space}done"
         if show_duration:
             msg_after += f" (took {run_time:.2f}s)"
         msg_after += "." if msg_after[-1] != "." else ""
@@ -333,6 +352,15 @@ class Logger(metaclass=Singleton):
         """
         return self.level_active("debug")
 
+    def report_level_status(self):
+        """:return: a string reporting the present logging levels and whether or not they are active.
+        """
+        lines = [f"{'level':8s}  {'priority':8s}  {'active':6s}"]
+        lines.append("-" * len(lines[0]))
+        lines.extend(f"{name:8s}  {str(level.priority):8s}  {self.level_active(name)}"
+                     for name, level in self.name_to_level.items())
+        return "\n".join(lines)
+
     def get_level(self, name, lower_priority=0):
         """If lower_priority is 0, return the logging level associated with the name passed as argument.
         Otherwise, the aforementioned level's priority is lowered by that numeric amount (positive values means
@@ -384,10 +412,14 @@ class Logger(metaclass=Singleton):
 
         return self._original_print
 
-    def print_to_log(self, *args, sep=" ", end="\n", file=sys.stdout, flush=False):
+    def print_to_log(self, *args, sep=" ", end="\n", file=None, flush=False):
         """Method used to substitute print if configured to do so.
+        If file is None, then sys.stdout is used by default.
         """
         self.message(f"{sep.join((str(a) for a in args))}", end=end, file=file, flush=flush)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(selected={self.selected_log_level})"
 
 
 # Singleton instance of the logger, shared across modules even if reinstantiated.
@@ -414,12 +446,6 @@ verbose_active = ExposedProperty(instance=logger, property_name="verbose_active"
 info_active = ExposedProperty(instance=logger, property_name="info_active")
 debug_active = ExposedProperty(instance=logger, property_name="debug_active")
 
+# Expose report functions
 
-def report_level_status():
-    """:return: a string reporting the present logging levels and whether or not they are active.
-    """
-    lines = [f"{'level':8s}  {'priority':8s}  {'active':6s}"]
-    lines.append("-" * len(lines[0]))
-    lines.extend(f"{name:8s}  {str(level.priority):8s}  {logger.level_active(name)}"
-                 for name, level in logger.name_to_level.items())
-    return "\n".join(lines)
+report_level_status = logger.report_level_status

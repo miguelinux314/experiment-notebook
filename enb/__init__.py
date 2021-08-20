@@ -9,6 +9,7 @@ __since__ = "2020/03/31"
 import os as _os
 import sys as _sys
 import appdirs as _appdirs
+from builtins import print as _original_print
 
 # Current installation dir of enb
 enb_installation_dir = _os.path.dirname(_os.path.abspath(__file__))
@@ -38,19 +39,20 @@ from . import misc
 from . import log
 # Global configuration modules
 from . import config
-
-# Set the logging options from this point onwards.
+# Logging tools
 from .log import logger
+# ray for parallelization
+from . import ray_cluster
 
+# Setup logging so that it is used from here on
 logger.selected_log_level = log.get_level(config.options.selected_log_level,
                                           lower_priority=config.options.verbose)
 logger.show_prefixes = config.options.log_level_prefix
-if config.options.log_print:
+if config.options.log_print and not ray_cluster.on_remote_process():
     logger.replace_print()
 
-# Core modules
-## Basic ATable features
-from . import ray_cluster
+# Remaining core modules
+## Keystone ATable features
 from . import atable
 ## Basic Experiment features
 from . import sets
@@ -72,3 +74,7 @@ from . import plugins
 if not ray_cluster.on_remote_process():
     # Don't show the banner in each child instance
     log.core(config.get_banner())
+
+    # Show a bye message when exiting from the header process
+    import atexit as _atexit
+    _atexit.register(lambda: logger.verbose("Shutting down enb..."))

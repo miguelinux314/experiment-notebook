@@ -9,9 +9,12 @@ import sys
 import os
 import datetime
 import ray
+import builtins
 
-import enb
-from enb.config import options
+from . import config
+from .config import options
+from . import log
+from .log import logger
 
 
 def init_ray(force=False):
@@ -25,9 +28,15 @@ def init_ray(force=False):
       (generally problematic, specially if jobs are running)
     """
     if not ray.is_initialized() or force:
-        with enb.logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
+        with logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
             ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
                      local_mode=options.sequential)
+
+
+def stop_ray():
+    if ray.is_initialized:
+        with logger.info_context("Shutting down ray cluster"):
+            ray.shutdown()
 
 
 def on_remote_process():
@@ -131,3 +140,46 @@ class ProgressiveGetter:
         if not self.pending_ids:
             raise StopIteration
         return self
+
+
+def remote(*args, **kwargs):
+    """Decorator of the @`ray.remote` decorator that automatically updates enb.config.options
+    for remote processes, so that they always access the intended configuration.
+    """
+    kwargs["num_cpus"] = kwargs["num_cpus"] if "num_cpus" in kwargs else 1
+    kwargs["num_gpus"] = kwargs["num_gpus"] if "num_gpus" in kwargs else 0
+
+    def enb_remote_wrapper(f):
+        def remote_method_wrapper(_opts, *a, **k):
+            """Wrapper for the decorated function f, that updates enb.config.options before f is called.
+            """
+            config.options.update(_opts, trigger_events=False)
+            new_level = logger.get_level(logger.level_message.name, config.options.verbose)
+            log.logger.selected_log_level = new_level
+            log.logger.replace_print()
+            with log.logger.info_context("Calling remote method..."):
+                return f(*a, **k)
+
+        method_proxy = ray.remote(*args, **kwargs)(remote_method_wrapper)
+        method_proxy.ray_remote = method_proxy.remote
+
+        def local_side_remote(*a, **k):
+            """Wrapper for ray's `.remote()` method invoked in the local side.
+            It makes sure that `remote_side_wrapper` receives the options argument.
+            """
+            try:
+                try:
+                    current_print = builtins.print
+                    builtins.print = logger._original_print
+                except AttributeError:
+                    pass
+
+                return method_proxy.ray_remote(_opts=ray.put(dict(config.options.items())), *a, **k)
+            finally:
+                builtins.print = current_print
+
+        method_proxy.remote = local_side_remote
+
+        return method_proxy
+
+    return enb_remote_wrapper
