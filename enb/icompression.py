@@ -740,7 +740,7 @@ class CompressionExperiment(experiment.Experiment):
         """
         return self.tasks_by_name
 
-    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite, options):
+    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite):
 
         # Prepare a new column with a self.CodecRowWrapper instance that allows
         # automatic, lazy computation of compression and decompression results.
@@ -760,7 +760,7 @@ class CompressionExperiment(experiment.Experiment):
 
             processed_row = super().compute_one_row(
                 filtered_df=filtered_df, index=index, loc=loc, column_fun_tuples=column_fun_tuples,
-                overwrite=overwrite, options=options)
+                overwrite=overwrite)
 
             if isinstance(processed_row, Exception):
                 # Should not do anything beyond here if errors occurred

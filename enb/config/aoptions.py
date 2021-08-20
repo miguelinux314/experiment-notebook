@@ -60,8 +60,8 @@ class GeneralOptions:
         """Be verbose? Repeat for more. Change at any time to increase the logger's verbosity.
         """
         log.logger.selected_log_level = log.get_level(
-            log.logger.selected_log_level.name,
-            float(value))
+            name=log.logger.level_message.name, lower_priority=float(value))
+
         return value
 
     @OptionsBase.property("ini", nargs="*", type=str, default=[])

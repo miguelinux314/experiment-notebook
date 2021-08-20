@@ -378,6 +378,23 @@ class SingletonCLI(metaclass=Singleton):
 
         return PropertySetterWrapper()
 
+    def update(self, other, trigger_events=False):
+        """Update self with other, using None value items from other's `items()` method.
+
+        :param other: dict-like object with key-value pairs to be used to update self.
+        :param trigger_events: if True, the setter functions are used to assign any items found.
+          If alse, self's attributes are updated directly without using those methods.
+        """
+
+        if trigger_events:
+            for k, v in other.items():
+                if v is not None:
+                    self.__setattr__(k, v)
+        else:
+            for k, v in other.items():
+                if v is not None:
+                    self._name_to_property[k] = v
+
     def print_help(self):
         return self._argparser.print_help()
 
@@ -418,6 +435,9 @@ class SingletonCLI(metaclass=Singleton):
                 alias_to_name[key] = key
                 name_to_property[key] = value
                 name_to_setter[key] = lambda a, b: b
+
+    def __iter__(self):
+        return self._name_to_property.__iter__()
 
     def __str__(self):
         return f"Options({str(self._name_to_property)})"
