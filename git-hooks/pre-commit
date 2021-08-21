@@ -1,5 +1,5 @@
 #!/bin/sh
-# Pre-commit git hook.
+# pre-commit git hook.
 # Generates a MANIFEST.in based on everything under enb/ included in the repository.
 
 # Go to the project's root
@@ -26,3 +26,4 @@ done
 
 git add MANIFEST.in
 echo "... manifest updated with $(wc -l MANIFEST.in) elements!"
+
