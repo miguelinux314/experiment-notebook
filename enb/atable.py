@@ -1313,13 +1313,13 @@ class SummaryTable(ATable):
         super().__init__(csv_support_path=csv_support_path, index="group_label")
         self.reference_df = reference_df if copy_df is not True else pd.DataFrame.copy(reference_df)
         self.reference_column_to_properties = reference_column_to_properties
-        self.copied_df = copy_df
 
     def split_groups(self, reference_df=None):
         """Split the reference dataframe into an iterable of (label, dataframe) tuples. By default, no splitting is
         performed and a single group with label "all" and the full df is returned.
 
-        Subclasses can easily overwrite this behavior.
+        Subclasses can easily overwrite this behavior, as long as they return the items compatible
+        with the :meth:`pandas.DataFrame.groupby` method.
         Labels are arbitrary, but must be unique. Dataframes are also arbitrary, but it is
         recommended that at least all columns of the reference dataframe are maintained.
 
@@ -1330,12 +1330,13 @@ class SummaryTable(ATable):
 
     def get_df(self, reference_df=None):
         """
-        Get the summary dataframe.
+        Get the summary dataframe. This class only defines the 'group_size' column for the output dataframe.
+        Subclasses may add as many columns to the summary as desired.
 
         :param reference_df: if not None, the dataframe to be used as reference for the summary. If None,
           the one provided at initialization is used.
 
-        :return: the summary dataframe
+        :return: the summary dataframe with all columns defined for self's class.
         """
         if hasattr(self, "label_to_df"):
             raise RuntimeError("self.label_to_df should not be defined externally")
@@ -1355,6 +1356,8 @@ class SummaryTable(ATable):
                 pass
 
     def column_group_size(self, index, row):
+        """Number of elements (rows from full_df) in the group.
+        """
         return len(self.label_to_df[index])
 
 
@@ -1436,8 +1439,6 @@ def unpack_index_value(input):
         return list(input)
 
 
-# @ray.remote
-# @config.propagates_options
 @enb.ray_cluster.remote()
 def parallel_compute_one_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite):
     """Ray wrapper for :meth:`ATable.process_row`
