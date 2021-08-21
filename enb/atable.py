@@ -396,6 +396,7 @@ class MetaTable(type):
     Note: Table classes should inherit from |ATable|, not |MetaTable|.
     You probably don't ever need to use this class directly.
     """
+    automatic_column_function_prefix = "column_"
     pendingdefs_classname_fun_columnpropertylist_kwargs = []
 
     def __new__(cls, name, bases, dct):
@@ -466,9 +467,9 @@ class MetaTable(type):
             except KeyError:
                 # Non decorated function: decorate automatically if it starts with 'column_*'
                 assert all(cp.fun is not fun for cp in subclass.column_to_properties.values())
-                if not fun.__name__.startswith("column_"):
+                if not fun.__name__.startswith(MetaTable.automatic_column_function_prefix):
                     continue
-                column_name = fun.__name__[len("column_"):]
+                column_name = fun.__name__[len(MetaTable.automatic_column_function_prefix):]
                 if not column_name:
                     raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
                 wrapper = MetaTable.get_auto_column_wrapper(fun=fun)
@@ -1193,7 +1194,7 @@ class ATable(metaclass=MetaTable):
                             f"[F]unction {fun} failed to fill column {column} with a not-None value. " + (
                                 "Note that functions starting with column_ should either "
                                 "return a value or raise an exception"
-                                if fun.__name__.startwith("column_") else ""))
+                                if fun.__name__.startwith(MetaTable.automatic_column_function_prefix) else ""))
                     enb.logger.info(f"Already called function {fun.__name__} <{self.__class__.__name__}>")
                     continue
                 if options.columns and column not in options.columns:
@@ -1220,7 +1221,8 @@ class ATable(metaclass=MetaTable):
                         raise ValueError(f"Function {fun} failed to fill "
                                          f"the associated '{column}' column ({column}:{row[column]})")
 
-                    if result is not None and options.verbose > 1 and not fun.__name__.startswith("column_"):
+                    if result is not None and options.verbose > 1 \
+                            and not fun.__name__.startswith(MetaTable.automatic_column_function_prefix):
                         enb.logger.warn(f"Function {fun.__name__} returned a non-None value ({repr(result)} "
                                         f"when setting column {repr(column)}. "
                                         f"This value is ignored, and row['{column}'] is used instead.")
