@@ -44,10 +44,11 @@ from .log import logger
 # ray for parallelization
 from . import ray_cluster
 
-# Setup logging so that it is used from here on
-logger.selected_log_level = log.get_level(config.options.selected_log_level,
+# Setup logging so that it is used from here on. Done here to avoid circular dependencies.
+logger.selected_log_level = log.get_level(name=config.options.selected_log_level,
                                           lower_priority=config.options.verbose)
 logger.show_prefixes = config.options.log_level_prefix
+logger.show_prefix_level = logger.get_level(name=config.options.show_prefix_level)
 if config.options.log_print and not ray_cluster.on_remote_process():
     logger.replace_print()
 
@@ -77,4 +78,5 @@ if not ray_cluster.on_remote_process():
 
     # Show a bye message when exiting from the header process
     import atexit as _atexit
+
     _atexit.register(lambda: logger.verbose("Shutting down enb..."))
