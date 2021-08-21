@@ -11,15 +11,10 @@ import itertools
 import math
 import collections
 import sortedcontainers
-import matplotlib
 import re
 import glob
 
 import pdf2image
-from matplotlib.ticker import (AutoMinorLocator, MaxNLocator, LogLocator)
-
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import ray
@@ -27,293 +22,12 @@ import ray
 import enb.atable
 from enb.atable import get_nonscalar_value
 from enb import plotdata
-from enb import config
 from enb.config import options
+from enb.plotdata import parallel_render_plds_by_group
+from enb.plotdata import render_plds_by_group
+from enb.plotdata import color_cycle
+from enb.plotdata import marker_cycle
 
-marker_cycle = ["o", "s", "p", "P", "*", "2", "H", "X", "1", "d", "<", ">", "x", "+"]
-color_cycle = [f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))]
-fill_style_cycle = ["full"] * len(marker_cycle) + ["none"] * len(marker_cycle)
-
-
-@ray.remote
-@config.propagates_options
-def ray_render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, horizontal_margin, global_x_label,
-                             y_min=None, y_max=None, y_labels_by_group_name=None, color_by_group_name=None,
-                             overwrite_colors=True,
-                             x_min=None, x_max=None,
-                             global_y_label="Relative frequency", combine_groups=False, semilog_hist_min=1e-10,
-                             options=None,  # Used by @config.propagates_options
-                             group_name_order=None, fig_width=None, fig_height=None,
-                             global_y_label_pos=None, legend_column_count=None,
-                             show_grid=None,
-                             x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
-                             y_tick_list=None, y_tick_label_list=None,
-                             semilog_y=None, semilog_y_base=10):
-    """Ray wrapper for render_plds_by_group"""
-    # (options automatically propagated)
-    return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
-                                column_properties=column_properties, global_x_label=global_x_label,
-                                horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
-                                overwrite_colors=overwrite_colors,
-                                x_min=x_min, x_max=x_max,
-                                y_labels_by_group_name=y_labels_by_group_name,
-                                color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                combine_groups=combine_groups, semilog_hist_min=semilog_hist_min,
-                                group_name_order=group_name_order,
-                                fig_width=fig_width, fig_height=fig_height,
-                                global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
-                                show_grid=show_grid,
-                                x_tick_list=x_tick_list,
-                                x_tick_label_list=x_tick_label_list,
-                                x_tick_label_angle=x_tick_label_angle,
-                                y_tick_list=y_tick_list,
-                                y_tick_label_list=y_tick_label_list,
-                                semilog_y=semilog_y, semilog_y_base=semilog_y_base)
-
-
-def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties, global_x_label,
-                         horizontal_margin=0, x_min=None, x_max=None,
-                         overwrite_colors=True,
-                         y_min=None, y_max=None, y_labels_by_group_name=None,
-                         color_by_group_name=None, global_y_label="Relative frequency",
-                         combine_groups=False, semilog_hist_min=1e-10,
-                         group_name_order=None,
-                         fig_width=None, fig_height=None, global_y_label_pos=None, legend_column_count=None,
-                         show_grid=None,
-                         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
-                         y_tick_list=None, y_tick_label_list=None,
-                         semilog_y=None, semilog_y_base=10):
-    """Render lists of plotdata.PlottableData instances indexed by group name,
-    each group in a row, with a shared X axis, which is set automatically in common
-    for all groups for easier comparison.
-
-    :param pds_by_group_name: dictionary of lists of PlottableData instances
-    :param output_plot_path: path to the file to be created with the plot
-    :param column_properties: ColumnProperties instance for the column being plotted
-    :param overwrite_colors: if True, all plottable data in each group is set to the same color,
-      defined by color_cycle.
-    :param x_min, x_max: range of values to be plotted in the X axis. If any is None,
-      the plot automatically adjusts to column_properties, or the data if limits
-      are not specified there either.
-    :param y_min, y_max: range of values to be plotted in the Y axis. If any is None,
-      the plot automatically adjusts to column_properties, or the data if limits
-      are not specified there either.
-    :param global_x_label, param global_y_label: common X and Y labels
-    :param horizontal_margin: Total horizontal margin (in plot units) to be left horizontally
-    :param y_labels_by_group_name: if not None, a dictionary of labels for the groups,
-      indexed with the same keys as pds_by_group_name
-    :param color_by_group_name: if not None, a dictionary of pyplot colors for the groups,
-      indexed with the same keys as pds_by_group_name
-    :param combine_groups: if False, each group is plotted in a different row. If True,
-      all groups share the same subplot (and no group name is displayed).
-    :param group_name_order: if not None, it contains the order in which groups are
-      displayed. If None, alphabetical, case-insensitive order is applied.
-    :param fig_width, fig_height: Figure size. The larger the figure size,
-      the smaller the text will look.
-    :param show_grid: if True, or if None and options.show_grid, grid is displayed
-      aligned with the major axis
-    :param x_tick_list: if not None, these ticks will be displayed
-    :param x_tick_label_list: if not None, these labels will be displayed. Only used when x_tick_list is not None.
-    :param x_tick_label_angle: when label ticks are specified, they will be rotated to this angle
-    """
-    with enb.logger.verbose_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}"):
-
-        if len(pds_by_group_name) < 1:
-            if options.verbose > 1:
-                print("[W]arning: trying to render an empty pds_by_group_name dict. "
-                      f"output_plot_path={output_plot_path}, column_properties={column_properties}. "
-                      f"No analysis is performed.")
-            return
-
-        legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
-        if legend_column_count:
-            for name, pds in pds_by_group_name.items():
-                for pld in pds:
-                    pld.legend_column_count = legend_column_count
-
-        y_min = column_properties.hist_min if y_min is None else y_min
-        y_min = max(semilog_hist_min, y_min if y_min is not None else 0) \
-            if ((column_properties is not None and column_properties.semilog_y) or semilog_y) else y_min
-        y_max = column_properties.hist_max if y_max is None else y_max
-
-        if group_name_order is None:
-            sorted_group_names = sorted(pds_by_group_name.keys(),
-                                        key=lambda s: "" if s == "all" else str(s).strip().lower())
-        else:
-            sorted_group_names = []
-            for group_name in group_name_order:
-                if group_name not in pds_by_group_name:
-                    if options.verbose > 2:
-                        print(f"[W]arning: {group_name} was provided in group_name_order but is not one of the "
-                              f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Ignoring.")
-                else:
-                    sorted_group_names.append(group_name)
-            for g in pds_by_group_name.keys():
-                if g not in sorted_group_names:
-                    if options.verbose > 2:
-                        print(f"[W]arning: {g} was not provided in group_name_order but is one of the "
-                              f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
-                    sorted_group_names.append(g)
-
-        y_labels_by_group_name = {g: g for g in sorted_group_names} \
-            if y_labels_by_group_name is None else y_labels_by_group_name
-        if color_by_group_name is None:
-            color_by_group_name = {}
-            for i, group_name in enumerate(sorted_group_names):
-                color_by_group_name[group_name] = color_cycle[i % len(color_cycle)]
-        if os.path.dirname(output_plot_path):
-            os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
-
-        fig_width = options.fig_width if fig_width is None else fig_width
-        fig_height = options.fig_height if fig_height is None else fig_height
-        global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
-
-        fig, group_axis_list = plt.subplots(
-            nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
-            ncols=1, sharex=True, sharey=combine_groups,
-            figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
-
-        if combine_groups:
-            group_axis_list = [group_axis_list]
-        elif len(sorted_group_names) == 1:
-            group_axis_list = [group_axis_list]
-
-        semilog_x, semilog_y = False, semilog_y if semilog_y is not None else semilog_y
-
-        if combine_groups:
-            assert len(group_axis_list) == 1
-            # group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
-            group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
-        else:
-            group_name_axes = zip(sorted_group_names, group_axis_list)
-
-        global_x_min = float("inf")
-        global_x_max = float("-inf")
-        for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
-            global_x_min = min(global_x_min,
-                               min(x if not math.isinf(x) else 0 for x in
-                                   pld.x_values) if pld.x_values else global_x_min)
-            global_x_max = max(global_x_max,
-                               max(x if not math.isinf(x) else 1 for x in
-                                   pld.x_values) if pld.x_values else global_x_max)
-        if global_x_max - global_x_min > 1:
-            global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
-            global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
-        if column_properties:
-            global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
-            global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
-        if global_x_max is None:
-            global_x_min = 1
-
-        for i, (group_name, group_axes) in enumerate(group_name_axes):
-            group_color = color_by_group_name[group_name]
-            for pld in pds_by_group_name[group_name]:
-                pld.x_label = None
-                pld.y_label = None
-                d = dict()
-                if overwrite_colors:
-                    pld.color = group_color
-                d.update(color=pld.color)
-                try:
-                    pld.extra_kwargs.update(d)
-                except AttributeError:
-                    pld.extra_kwargs = d
-
-                try:
-                    pld.render(axes=group_axes)
-                except Exception as ex:
-                    raise Exception(f"Error rendering {pld} -- {group_name} -- {output_plot_path}") from ex
-                semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
-                semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
-
-        for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
-            if y_min != y_max:
-                group_axes.set_ylim(y_min, y_max)
-
-            if semilog_x:
-                x_base = column_properties.semilog_x_base if column_properties is not None else 10
-                group_axes.semilogx(base=x_base)
-                group_axes.get_xaxis().set_major_locator(LogLocator(base=x_base))
-            else:
-                group_axes.get_xaxis().set_major_locator(MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
-                group_axes.get_xaxis().set_minor_locator(AutoMinorLocator())
-
-            if semilog_y:
-                base_y = column_properties.semilog_y_base if column_properties is not None else semilog_y_base
-                group_axes.semilogy(base=base_y)
-                if combine_groups or len(sorted_group_names) <= 2:
-                    numticks = 11
-                elif len(sorted_group_names) <= 5 and not column_properties.semilog_y:
-                    numticks = 6
-                elif len(sorted_group_names) <= 10:
-                    numticks = 4
-                else:
-                    numticks = 3
-                group_axes.get_yaxis().set_major_locator(LogLocator(base=base_y, numticks=numticks))
-                group_axes.grid(True, "major", axis="y", alpha=0.2)
-            else:
-                group_axes.get_yaxis().set_major_locator(MaxNLocator(nbins="auto", integer=False))
-                group_axes.get_yaxis().set_minor_locator(AutoMinorLocator())
-            if not combine_groups:
-                group_axes.get_yaxis().set_label_position("right")
-                group_axes.set_ylabel(y_labels_by_group_name[group_name]
-                                      if group_name in y_labels_by_group_name
-                                      else clean_column_name(group_name),
-                                      rotation=0, ha="left", va="center")
-
-        plt.xlabel(global_x_label)
-        if column_properties and column_properties.hist_label_dict is not None:
-            x_tick_values = sorted(column_properties.hist_label_dict.keys())
-            x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
-            plt.xticks(x_tick_values, x_tick_labels)
-
-        xlim = [global_x_min - horizontal_margin, global_x_max + horizontal_margin]
-
-        if global_y_label:
-            fig.text(global_y_label_pos, 0.5, global_y_label, va='center', rotation='vertical')
-
-        if options.displayed_title is not None:
-            plt.suptitle(options.displayed_title)
-
-        if len(sorted_group_names) > 3:
-            plt.subplots_adjust(hspace=0.5)
-
-        if x_tick_list is not None:
-            if not x_tick_label_list:
-                plt.xticks(x_tick_list)
-            else:
-                plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
-            plt.minorticks_off()
-        if x_tick_label_list is not None:
-            assert x_tick_list is not None
-
-        for group_axes in group_axis_list:
-            plt.sca(group_axes)
-            if y_tick_list is not None:
-                if not y_tick_label_list:
-                    plt.yticks(y_tick_list)
-                else:
-                    plt.yticks(y_tick_list, y_tick_label_list)
-                group_axes.minorticks_off()
-            if y_tick_label_list is not None:
-                assert y_tick_list is not None
-
-        xlim[0] = xlim[0] if x_min is None else x_min
-        xlim[1] = xlim[1] if x_max is None else x_max
-        if xlim[0] != xlim[1]:
-            plt.xlim(*xlim)
-
-        show_grid = options.show_grid if show_grid is None else show_grid
-
-        if show_grid:
-            if combine_groups:
-                plt.grid("major", alpha=0.5)
-            else:
-                for axes in group_axis_list:
-                    axes.grid("major", alpha=0.5)
-
-        plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
-        plt.close()
 
 
 class Analyzer:
@@ -338,8 +52,11 @@ class Analyzer:
         :param group_name_order: if not None, and if group_by is not None,
           it must be the list of group names (values of the group_by) in the order that they are to be displayed.
           If None, group names are sorted alphabetically (case insensitive).
+        :param show_global: this flags controls whether results for the full_df (without grouping) are
+          to be included in the results. If no grouping is selected, this options is ignored.
         :param show_count: determines whether the number of element per group should be shown in the group label
-        :param version_name: if not None, a string identifying the file version that produced full_df.
+        :param version_name: if not None, a string identifying the file version that produced full_df is displayed
+          where relevant.
         """
         raise NotImplementedError(self)
 
@@ -491,8 +208,7 @@ class ScalarDistributionAnalyzer(Analyzer):
             group_str = f"_groupby-{group_by}" if group_by is not None else ""
 
             expected_return_ids.append(
-                ray_render_plds_by_group.remote(
-                    options=ray.put(options),
+                parallel_render_plds_by_group.remote(
                     pds_by_group_name=ray.put(pds_by_group_name),
                     output_plot_path=ray.put(os.path.join(output_plot_dir,
                                                           f"distribution{group_str}_{column_name}.pdf")),
@@ -748,8 +464,7 @@ class HistogramDistributionAnalyzer(Analyzer):
             except KeyError:
                 x_min, x_max = None, None
 
-            return_ids.append(ray_render_plds_by_group.remote(
-                options=ray.put(options),
+            return_ids.append(parallel_render_plds_by_group.remote(
                 pds_by_group_name=ray.put(pds_by_group_name),
                 output_plot_path=ray.put(output_plot_path),
                 horizontal_margin=ray.put(histogram_bin_width),
@@ -913,8 +628,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
             except KeyError:
                 x_min, x_max = None, None
 
-            result_ids.append(ray_render_plds_by_group.remote(
-                options=ray.put(options),
+            result_ids.append(parallel_render_plds_by_group.remote(
                 pds_by_group_name=ray.put(pds_by_group),
                 output_plot_path=ray.put(output_plot_path),
                 column_properties=ray.put(properties), horizontal_margin=ray.put(0),
@@ -1054,7 +768,7 @@ class TwoColumnScatterAnalyzer(Analyzer):
             else:
                 horizontal_margin = 0.05 * (global_x_max - global_x_min)
 
-            expected_returns.append(ray_render_plds_by_group.remote(
+            expected_returns.append(parallel_render_plds_by_group.remote(
                 pds_by_group_name=pds_by_group_id,
                 output_plot_path=ray.put(output_plot_path),
                 column_properties=ray.put(
@@ -1064,7 +778,6 @@ class TwoColumnScatterAnalyzer(Analyzer):
                 y_min=ray.put(global_y_min),
                 y_max=ray.put(global_y_max),
                 global_x_label=ray.put(x_label), global_y_label=ray.put(y_label),
-                options=ray.put(options), group_name_order=ray.put(group_name_order),
                 combine_groups=ray.put(True),
                 legend_column_count=ray.put(legend_column_count)))
 
@@ -1634,7 +1347,7 @@ class ScalarDictAnalyzer(Analyzer):
                 original_fig_width = options.fig_width
                 options.fig_width = max(options.fig_width, len(keys_by_column[column]) / 5)
 
-                render_ids.append(ray_render_plds_by_group.remote(
+                render_ids.append(parallel_render_plds_by_group.remote(
                     pds_by_group_name=ray.put(pds_by_group),
                     output_plot_path=ray.put(output_plot_path),
                     column_properties=ray.put(column_to_properties[column]),
@@ -1650,8 +1363,7 @@ class ScalarDictAnalyzer(Analyzer):
                     y_min=ray.put(y_min), y_max=ray.put(y_max),
                     show_grid=ray.put(show_grid),
                     combine_groups=ray.put(combine_groups),
-                    overwrite_colors=ray.put(False),
-                    options=ray.put(options),
+                    force_monochrome_group=ray.put(False),
                     fig_height=ray.put(fig_height),
                     fig_width=ray.put(fig_width),
                     semilog_y=ray.put(semilog_y),

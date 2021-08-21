@@ -125,3 +125,13 @@ class ExposedProperty:
 
     def __call__(self, *args, **kwargs):
         return getattr(self.instance, self.property_name)
+
+
+class CircularList(list):
+    """A tuned list that automatically applies modulo len(self) to the given index,
+    allowing for circular, index-based access to the data (whereas itertools.cycle does
+    not allow accessing elements by index).
+    """
+
+    def __getitem__(self, item):
+        return super().__getitem__(item % len(self))
