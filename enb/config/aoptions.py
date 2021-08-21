@@ -26,10 +26,9 @@ An important note should be made about the interaction between enb.config.option
 When ray spawns new (local or remote) processes to serve as workers, the Options singleton
 is initialized for each of those process, with the catch that ray does **not** pass the user's CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
-To mitigate this problem, an `options` parameter is defined and passed to many these functions,
-e.g., with `f.remote(options=ray.put(enb.config.options))` if f is your `@ray.remote`-decorated function.
-The `@enb.config.propagates_options` decorator provides a slightly cleaner way of automating
-this mitigation.
+To mitigate this problem, the @`enb.ray_cluster.remote` decorator is provided in substitution of :meth:`ray.remote`
+so that options at the time of calling the remote method are available to that method at
+its regular location (enb.config.options).
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/08/04"
@@ -38,7 +37,6 @@ import os
 import tempfile
 import functools
 import deprecation
-from mpl_toolkits.axes_grid1.axes_size import _Base
 
 from .. import default_base_dataset_dir, default_persistence_dir, calling_script_dir, is_enb_cli
 from .. import log
