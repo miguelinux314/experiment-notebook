@@ -671,7 +671,6 @@ class CompressionExperiment(experiment.Experiment):
                  csv_dataset_path=None,
                  dataset_info_table=None,
                  overwrite_file_properties=False,
-                 parallel_dataset_property_processing=None,
                  reconstructed_dir_path=None,
                  compressed_copy_dir_path=None):
         """
@@ -694,8 +693,6 @@ class CompressionExperiment(experiment.Experiment):
           the experiment. Useful for temporary and/or random datasets. Note that overwrite
           control for the experiment results themselves is controlled in the call
           to get_df
-        :param parallel_dataset_property_processing: if not None, it determines whether file properties
-          are to be obtained in parallel. If None, it is given by not options.sequential.
         :param reconstructed_dir_path: if not None, a directory where reconstructed images are
           to be stored.
         :param compressed_copy_dir_path: if not None, it gives the directory where a copy of the compressed images.
@@ -715,8 +712,7 @@ class CompressionExperiment(experiment.Experiment):
                          csv_experiment_path=csv_experiment_path,
                          csv_dataset_path=csv_dataset_path,
                          dataset_info_table=imageinfo_table,
-                         overwrite_file_properties=overwrite_file_properties,
-                         parallel_dataset_property_processing=parallel_dataset_property_processing)
+                         overwrite_file_properties=overwrite_file_properties)
         self.reconstructed_dir_path = reconstructed_dir_path
         self.compressed_copy_dir_path = compressed_copy_dir_path
         # This attribute is automatically set before running the defined column-setting functions,

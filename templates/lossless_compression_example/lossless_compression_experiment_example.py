@@ -26,9 +26,7 @@ if __name__ == '__main__':
     exp = icompression.LosslessCompressionExperiment(codecs=codecs)
 
     # Generate pandas dataframe with results
-    df = exp.get_df(
-        parallel_row_processing=not options.sequential,
-        overwrite=options.force > 0)
+    df = exp.get_df(overwrite=options.force > 0)
 
     # Plot some results
     analyzer = aanalysis.ScalarDistributionAnalyzer()

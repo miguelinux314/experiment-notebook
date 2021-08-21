@@ -189,15 +189,13 @@ class InverseMHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImageGeomet
 
 class MDHCLosslessCompressionExperiment(enb.icompression.LosslessCompressionExperiment):
     def __init__(self, codecs, dataset_paths=None, csv_experiment_path=None, csv_dataset_path=None,
-                 overwrite_file_properties=False, parallel_dataset_property_processing=None,
-                 reconstructed_dir_path=None, *args, **kwargs):
+                 overwrite_file_properties=False, reconstructed_dir_path=None, *args, **kwargs):
         dataset_info_table = MHDCPropertiesTable(
             csv_support_path=csv_dataset_path)
 
         super().__init__(codecs=codecs, dataset_paths=dataset_paths, csv_experiment_path=csv_experiment_path,
                          csv_dataset_path=csv_dataset_path, dataset_info_table=dataset_info_table,
                          overwrite_file_properties=overwrite_file_properties,
-                         parallel_dataset_property_processing=parallel_dataset_property_processing,
                          reconstructed_dir_path=reconstructed_dir_path,
                          *args, **kwargs)
 
@@ -218,7 +216,7 @@ class MDHCLosslessCompressionExperiment(enb.icompression.LosslessCompressionExpe
 def apply_transform(
         input_dir, output_dir, forward_class, inverse_class,
         forward_properties_csv=None, inverse_properties_csv=None,
-        repetitions=10, run_sequential=True):
+        repetitions=10):
     """Apply an MHDC transform to input_dir and save the results to output_dir.
 
     :param input_dir: input directory to be transformed (recursively)
@@ -229,8 +227,6 @@ def apply_transform(
       are stored here (including inverse transform time)
     :param repetitions: number of repetitions used to calculate execution time
       (for both forward and inverse transform)
-    :param run_sequential: if True, transformations are run in sequential mode
-      (as opposed to parallel) so that time measurements can be taken
 
     :raises AssertionError: if transformation/reconstruction is not lossless
 
@@ -247,7 +243,6 @@ def apply_transform(
         options.base_dataset_dir = input_dir
         options.base_version_dataset_dir = output_dir
         options.repetitions = repetitions
-        options.sequential = 1 if run_sequential else 0
         reconstructed_dir_path = os.path.join(tmp_dir, "reconstructed_dir")
         os.makedirs(reconstructed_dir_path, exist_ok=True)
 
@@ -263,8 +258,7 @@ def apply_transform(
             original_base_dir=options.base_dataset_dir, version_base_dir=options.base_version_dataset_dir,
             original_properties_table=original_geometry_table, version_name=forward_class.__name__,
             csv_support_path=os.path.join(options.persistence_dir, "versioned_properties.csv"))
-        forward_df = forward_table.get_df(target_indices=original_target_files, overwrite=options.force,
-                                          parallel_row_processing=True)
+        forward_df = forward_table.get_df(target_indices=original_target_files, overwrite=options.force)
 
         if options.verbose:
             print(f"[I]nverse MHDC<{inverse_class.__name__}> to {len(original_target_files)} images")
@@ -279,7 +273,7 @@ def apply_transform(
                 version_name=inverse_class.__name__,
                 csv_support_path=os.path.join(
                     options.persistence_dir, "inverse_versioned_properties.csv"))
-            inverse_df = inverse_table.get_df(target_indices=transformed_target_files, parallel_row_processing=True)
+            inverse_df = inverse_table.get_df(target_indices=transformed_target_files)
 
         if options.verbose:
             print(f"[C]hecking lossless to {len(original_target_files)}  images")

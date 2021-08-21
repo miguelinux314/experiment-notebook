@@ -1634,47 +1634,28 @@ class ScalarDictAnalyzer(Analyzer):
                 original_fig_width = options.fig_width
                 options.fig_width = max(options.fig_width, len(keys_by_column[column]) / 5)
 
-                if not options.sequential:
-                    render_ids.append(ray_render_plds_by_group.remote(
-                        pds_by_group_name=ray.put(pds_by_group),
-                        output_plot_path=ray.put(output_plot_path),
-                        column_properties=ray.put(column_to_properties[column]),
-                        global_x_label=ray.put(global_x_label),
-                        global_y_label=ray.put(global_y_label),
-                        x_tick_list=ray.put(x_tick_list),
-                        x_tick_label_list=ray.put(keys_by_column[column]),
-                        x_tick_label_angle=ray.put(x_tick_label_angle),
-                        y_tick_list=ray.put(y_tick_list),
-                        y_tick_label_list=ray.put(y_tick_label_list),
-                        horizontal_margin=ray.put(0.1),
-                        x_min=ray.put(x_min), x_max=ray.put(x_max),
-                        y_min=ray.put(y_min), y_max=ray.put(y_max),
-                        show_grid=ray.put(show_grid),
-                        combine_groups=ray.put(combine_groups),
-                        overwrite_colors=ray.put(False),
-                        options=ray.put(options),
-                        fig_height=ray.put(fig_height),
-                        fig_width=ray.put(fig_width),
-                        semilog_y=ray.put(semilog_y),
-                        group_name_order=ray.put(group_name_order)))
-                else:
-                    render_plds_by_group(pds_by_group_name=pds_by_group,
-                                         output_plot_path=output_plot_path,
-                                         column_properties=column_to_properties[column],
-                                         global_x_label=global_x_label,
-                                         global_y_label=global_y_label,
-                                         x_tick_list=x_tick_list,
-                                         x_tick_label_list=keys_by_column[column],
-                                         x_tick_label_angle=x_tick_label_angle,
-                                         x_min=x_min, x_max=x_max,
-                                         y_min=y_min, y_max=y_max,
-                                         combine_groups=combine_groups,
-                                         overwrite_colors=False,
-                                         show_grid=show_grid,
-                                         fig_height=fig_height,
-                                         fig_width=fig_width,
-                                         semilog_y=semilog_y,
-                                         group_name_order=group_name_order)
+                render_ids.append(ray_render_plds_by_group.remote(
+                    pds_by_group_name=ray.put(pds_by_group),
+                    output_plot_path=ray.put(output_plot_path),
+                    column_properties=ray.put(column_to_properties[column]),
+                    global_x_label=ray.put(global_x_label),
+                    global_y_label=ray.put(global_y_label),
+                    x_tick_list=ray.put(x_tick_list),
+                    x_tick_label_list=ray.put(keys_by_column[column]),
+                    x_tick_label_angle=ray.put(x_tick_label_angle),
+                    y_tick_list=ray.put(y_tick_list),
+                    y_tick_label_list=ray.put(y_tick_label_list),
+                    horizontal_margin=ray.put(0.1),
+                    x_min=ray.put(x_min), x_max=ray.put(x_max),
+                    y_min=ray.put(y_min), y_max=ray.put(y_max),
+                    show_grid=ray.put(show_grid),
+                    combine_groups=ray.put(combine_groups),
+                    overwrite_colors=ray.put(False),
+                    options=ray.put(options),
+                    fig_height=ray.put(fig_height),
+                    fig_width=ray.put(fig_width),
+                    semilog_y=ray.put(semilog_y),
+                    group_name_order=ray.put(group_name_order)))
 
                 _ = [ray.get(id) for id in render_ids]
 

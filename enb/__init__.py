@@ -12,6 +12,8 @@ import appdirs as _appdirs
 from builtins import print as _original_print
 
 # Current installation dir of enb
+import ray
+
 enb_installation_dir = _os.path.dirname(_os.path.abspath(__file__))
 
 # User configuration dir (e.g., ~/.config/enb in many linux distributions)
@@ -79,4 +81,5 @@ if not ray_cluster.on_remote_process():
     # Show a bye message when exiting from the header process
     import atexit as _atexit
 
-    _atexit.register(lambda: logger.verbose("Shutting down enb..."))
+    if not ray_cluster.on_remote_process():
+        _atexit.register(lambda: ray_cluster.stop_ray() if ray.is_initialized() else None)

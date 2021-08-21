@@ -30,7 +30,7 @@ def init_ray(force=False):
     if not ray.is_initialized() or force:
         with logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
             ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
-                     local_mode=options.sequential)
+                     local_mode=options.ray_cpu_limit == 1)
 
 
 def stop_ray():
@@ -157,8 +157,7 @@ def remote(*args, **kwargs):
             new_level = logger.get_level(logger.level_message.name, config.options.verbose)
             log.logger.selected_log_level = new_level
             log.logger.replace_print()
-            with log.logger.info_context("Calling remote method..."):
-                return f(*a, **k)
+            return f(*a, **k)
 
         method_proxy = ray.remote(*args, **kwargs)(remote_method_wrapper)
         method_proxy.ray_remote = method_proxy.remote

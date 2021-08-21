@@ -117,8 +117,6 @@ class TestSpectralAngle(unittest.TestCase):
         return angles
 
     def test_spectral_angle(self):
-        options.sequential = True
-
         for constant_offset in [1, 5, 10]:
             width, height, component_count = 2, 3, 4
             bytes_per_sample, signed, big_endian = 2, True, True

@@ -25,41 +25,39 @@ class TestSets(unittest.TestCase):
     def test_file_properties(self):
         """Test that file properties are correctly obtained and retrieved.
         """
-        for parallel in [True, False]:
-            # dataset_df = get_result_df()
-            with tempfile.NamedTemporaryFile(suffix=".csv") as tmp_file:
-                dataset_properties_table = sets.FilePropertiesTable(
-                    csv_support_path=tmp_file.name)
+        # dataset_df = get_result_df()
+        with tempfile.NamedTemporaryFile(suffix=".csv") as tmp_file:
+            dataset_properties_table = sets.FilePropertiesTable(
+                csv_support_path=tmp_file.name)
 
-                # Attempt loading from an empty file, verify it is empty because fill=False
-                empty_property_table = dataset_properties_table.get_df(
-                    fill=False, target_indices=target_indices, parallel_row_processing=parallel)
+            # Attempt loading from an empty file, verify it is empty because fill=False
+            empty_property_table = dataset_properties_table.get_df(
+                fill=False, target_indices=target_indices)
 
-                assert len(empty_property_table) == 0, empty_property_table
-                assert empty_property_table.isnull().all().all()
+            assert len(empty_property_table) == 0, empty_property_table
+            assert empty_property_table.isnull().all().all()
 
-                # Run the actual loading sequence
-                dataset_properties_df = dataset_properties_table.get_df(
-                    target_indices=target_indices, parallel_row_processing=parallel)
-                assert len(dataset_properties_df) == len(target_indices)
+            # Run the actual loading sequence
+            dataset_properties_df = dataset_properties_table.get_df(target_indices=target_indices)
+            assert len(dataset_properties_df) == len(target_indices)
 
-                # Obtain again, forcing load from the temporary file without any additional computations
-                new_df = dataset_properties_table.get_df(
-                    target_indices=target_indices, fill=False, overwrite=False, parallel_row_processing=parallel)
-                assert (dataset_properties_df.columns == new_df.columns).all()
+            # Obtain again, forcing load from the temporary file without any additional computations
+            new_df = dataset_properties_table.get_df(
+                target_indices=target_indices, fill=False, overwrite=False)
+            assert (dataset_properties_df.columns == new_df.columns).all()
 
-                for c in dataset_properties_df.columns:
-                    try:
-                        if not (dataset_properties_df[c] == new_df[c]).all():
-                            # Floating point values might be unstable
-                            try:
-                                assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12
-                            except TypeError:
-                                # Stability within dictionaries is not verified,
-                                # but only dictionaries can raise this error
-                                assert (dataset_properties_df[c].apply(lambda c: isinstance(c, dict))).all()
-                    except ValueError as ex:
-                        raise RuntimeError("The original and loaded datasets differ") from ex
+            for c in dataset_properties_df.columns:
+                try:
+                    if not (dataset_properties_df[c] == new_df[c]).all():
+                        # Floating point values might be unstable
+                        try:
+                            assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12
+                        except TypeError:
+                            # Stability within dictionaries is not verified,
+                            # but only dictionaries can raise this error
+                            assert (dataset_properties_df[c].apply(lambda c: isinstance(c, dict))).all()
+                except ValueError as ex:
+                    raise RuntimeError("The original and loaded datasets differ") from ex
 
     def test_trivial_version_table(self):
         """Test versioning with a table that simply copies the original file.
