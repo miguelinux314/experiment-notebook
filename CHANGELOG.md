@@ -1,16 +1,27 @@
 # Under development v0.3.0
 
-Version 0.3.0 is packed with new features and general performance improvements. At the same time, full backwards
-compatibility is almost entirely preserved with the 0.2 version family.
+Version 0.3.0 is packed with new features and general performance improvements. At the same time, 
+some backwards compatibility is preserved with the 0.2 version family:
 
-* New major functions
-    - Created the first functional CLI. Can be run with `enb` or `python -m enb`.
-    - Added a plugin installation subsystem; try `enb plugin -h` for more information.
-    - New logging subsystem, which allows for a more flexible message output selection with more elegant code
+- Host code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name
+  and semantics. Several methods and classes have been renamed and refactored, but these are not likely
+  referenced in host code. In summary, your host code should be compatible with 0.3.0 if it was with 0.2.8.
 
-* Improvements
-    - Improved performance of the ATable population, storage and loading routines.
-    - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
+- Data format: the __atable_index column is now included in the CSV persistence. This trades off some extra
+  disk space for faster loading times and a little extra traceability. As a result, CSV persistence files 
+  produced with 0.2.8 or earlier cannot be loaded with 0.3.0 and later.
+
+- Features: all previous features have been retained, and new ones have been added.
+
+New major functions
+- Created the first functional CLI. Can be run with `enb` or `python -m enb`.
+- Added a plugin installation subsystem; try `enb plugin -h` for more information.
+- New logging subsystem, which allows for a more flexible message output selection with more elegant code
+
+Improvements
+
+- Improved performance of the ATable population, storage and loading routines.
+- Added several new image compression codec plugins with floating point support, based on the `h5py` library.
 
 # 2021/07/14 v0.2.8
 
