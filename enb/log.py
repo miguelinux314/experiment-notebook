@@ -114,7 +114,7 @@ class Logger(metaclass=Singleton):
                 last_level = self.selected_log_level
 
             forfeit_prefix = (last_level is level and not last_end.endswith("\n")) \
-                             or (self.selected_log_level.priority <= self.level_message.priority)
+                             or (self.selected_log_level.priority <= self.level_verbose.priority)
             split_message_str = "" if last_level is level or last_end.endswith("\n") else "\n"
 
             output_msg = f"{split_message_str}" \
