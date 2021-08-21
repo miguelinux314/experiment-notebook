@@ -38,10 +38,14 @@ import os
 import tempfile
 import functools
 import deprecation
+from mpl_toolkits.axes_grid1.axes_size import _Base
 
 from .. import default_base_dataset_dir, default_persistence_dir, calling_script_dir, is_enb_cli
 from .. import log
 from . import singleton_cli as _singleton_cli
+
+# Allowed message types
+_logging_level_names = ["core", "error", "warning", "message", "verbose", "informative", "debug"]
 
 
 class OptionsBase(_singleton_cli.SingletonCLI):
@@ -353,13 +357,13 @@ class LoggingOptions(OptionsBase):
     """Options controlling what and how is printed and/or logged to files.
     """
 
-    @OptionsBase.property(type=str, choices=["core", "error", "warning", "message", "verbose", "informative", "debug"])
+    @OptionsBase.property(type=str, choices=_logging_level_names)
     def selected_log_level(self, value):
         """Maximum log level / minimum priority required when printing messages.
         """
         return str(value)
 
-    @OptionsBase.property(type=str, choices=["core", "error", "warning", "message", "verbose", "informative", "debug"])
+    @OptionsBase.property(type=str, choices=_logging_level_names)
     def default_print_level(self, value):
         """Selects the default log level equivalent to a regular print-like message. It is most effective
         when combined with log_print set to True.
@@ -375,8 +379,14 @@ class LoggingOptions(OptionsBase):
 
     @OptionsBase.property(type=bool, choices=[True, False])
     def log_level_prefix(self, value):
+        """If True, logged messages include a prefix, e.g., based on their priority.
+        """
         log.logger.show_prefixes = bool(value)
         return log.logger.show_prefixes
+
+    @OptionsBase.property(type=str, choices=_logging_level_names)
+    def show_prefix_level(self, value):
+        log.logger.show_prefix_level = log.logger.get_level(value)
 
 
 class Options(GeneralOptions, ExecutionOptions, DirOptions, RayOptions, RenderingOptions, LoggingOptions):

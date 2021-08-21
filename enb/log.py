@@ -88,6 +88,8 @@ class Logger(metaclass=Singleton):
         self.level_info = self.get_level("info")
         self.level_debug = self.get_level("debug")
         self.show_prefixes = False  # This value is changed based on the file and CLI configuration by enb/__init__.py
+        # show_prefix_level determines the level required to include prefixes in any shown messages.
+        self.show_prefix_level = self.level_info
 
     def levels_by_priority(self):
         """Return a list of the available levels, sorted from higher to lower priority.
@@ -114,7 +116,7 @@ class Logger(metaclass=Singleton):
                 last_level = self.selected_log_level
 
             forfeit_prefix = (last_level is level and not last_end.endswith("\n")) \
-                             or (self.selected_log_level.priority <= self.level_verbose.priority)
+                             or (self.selected_log_level.priority <= self.show_prefix_level.priority)
             split_message_str = "" if last_level is level or last_end.endswith("\n") else "\n"
 
             output_msg = f"{split_message_str}" \
@@ -127,11 +129,6 @@ class Logger(metaclass=Singleton):
 
             self._last_end = end
             self._last_level = level
-        # else:
-        #     sys.stdout.write(f"\n\nIgnoring msg {msg} due to priority\n")
-        #     sys.stdout.write(f"[watch] level={level}\n")
-        #     sys.stdout.write(report_level_status() + "\n")
-        #     sys.stdout.write(f"[watch] self.selected_log_level={self.selected_log_level}\n\n")
 
     def core(self, msg, **kwargs):
         """A message of "core" level.
@@ -218,7 +215,7 @@ class Logger(metaclass=Singleton):
         msg_after += "." if msg_after[-1] != "." else ""
         self.log(msg=msg_after, level=level)
 
-    def core_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+    def core_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of core priority.
 
         :param msg: Message to show before starting the code block.
@@ -230,7 +227,7 @@ class Logger(metaclass=Singleton):
         return self.log_context(msg=msg, level=self.level_core,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
 
-    def info_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+    def info_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of info priority.
 
         :param msg: Message to show before starting the code block.
@@ -242,7 +239,7 @@ class Logger(metaclass=Singleton):
         return self.log_context(msg=msg, level=self.level_info,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
 
-    def message_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+    def message_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of message priority.
 
         :param msg: Message to show before starting the code block.
@@ -254,7 +251,7 @@ class Logger(metaclass=Singleton):
         return self.log_context(msg=msg, level=self.level_message,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
 
-    def verbose_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+    def verbose_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of verbose priority.
 
         :param msg: Message to show before starting the code block.
@@ -266,7 +263,7 @@ class Logger(metaclass=Singleton):
         return self.log_context(msg=msg, level=self.level_verbose,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
 
-    def info_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+    def info_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of info priority.
 
         :param msg: Message to show before starting the code block.
@@ -278,7 +275,7 @@ class Logger(metaclass=Singleton):
         return self.log_context(msg=msg, level=self.level_info,
                                 sep=sep, msg_after=msg_after, show_duration=show_duration)
 
-    def debug_context(self, msg, sep="...", msg_after=" done", show_duration=True):
+    def debug_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of debug priority.
 
         :param msg: Message to show before starting the code block.
