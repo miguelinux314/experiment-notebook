@@ -272,20 +272,6 @@ class RayOptions:
             value = None
         return value
 
-    @OptionsBase.property("s", "not_parallel", action="store_true")
-    def sequential(self, value):
-        """Make computations sequentially instead of distributed?
-
-        When -s is set, local mode is use when initializing ray.
-
-        This can be VERY useful to detect what parts of your code may be causing
-        an exception while running a get_df() method.
-
-        Furthermore, it can also help to limit the memory consumption of an experiment,
-        which is also useful in case exceptions are due to lack of RAM.
-        """
-        return bool(value)
-
     @OptionsBase.property("wsn", type=str)
     def worker_script_name(self, value):
         """Base name of ray's worker scripts, invoked to run tasks in parallel processes.

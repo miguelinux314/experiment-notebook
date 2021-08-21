@@ -21,5 +21,4 @@ if __name__ == '__main__':
 
     exp = ml.MachineLearningExperiment(models=models, dataset_paths=dataset_path, test_set=test_set)
 
-    df = exp.get_df(parallel_row_processing=not options.sequential,
-                    overwrite=options.force > 0)
+    df = exp.get_df(overwrite=options.force > 0)

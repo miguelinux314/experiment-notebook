@@ -785,8 +785,7 @@ class ATable(metaclass=MetaTable):
     # Methods to generate a DataFrame instance with the requested data
 
     def get_df(self, target_indices=None, target_columns=None,
-               fill=None, overwrite=None, parallel_row_processing=None,
-               chunk_size=None):
+               fill=None, overwrite=None, chunk_size=None):
         """Core method for all |ATable| subclasses to obtain the table's content.
         The following principles guide the way `get_df` works:
 
@@ -829,8 +828,6 @@ class ATable(metaclass=MetaTable):
           If None, values are only computed if enb.config.options.no_new_results is False.
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
-        :param parallel_row_processing: if True, processing of rows is performed in a parallel,
-           possibly distributed fashion. Otherwise, they are processed serially using the invoking thread.
         :param chunk_size: If None, its value is assigned from options.chunk_size. After this,
            if not None, the list of target indices is split in
            chunks of size at most chunk_size elements (each one corresponding to one row in the table).
@@ -850,9 +847,6 @@ class ATable(metaclass=MetaTable):
 
         overwrite = overwrite if overwrite is not None else options.force
         fill = fill if fill is not None else not options.no_new_results
-
-        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
-            else not options.sequential
 
         # Use the provided target indices or discover automatically from the dataset folder
         target_indices = list(target_indices) if target_indices is not None \
@@ -885,7 +879,7 @@ class ATable(metaclass=MetaTable):
                 df = self.get_df_one_chunk(
                     target_indices=chunk, target_columns=target_columns,
                     fill_needed=True,
-                    overwrite=overwrite, parallel_row_processing=parallel_row_processing,
+                    overwrite=overwrite,
                     run_sanity_checks=False)
 
         # Get the target df again without filling
@@ -896,7 +890,6 @@ class ATable(metaclass=MetaTable):
                 target_indices=target_indices, target_columns=target_columns,
                 fill_needed=False,
                 overwrite=False,
-                parallel_row_processing=parallel_row_processing,
                 run_sanity_checks=enb.config.options.force_sanity_checks)
 
         if fill or overwrite:
@@ -908,7 +901,7 @@ class ATable(metaclass=MetaTable):
         return df
 
     def get_df_one_chunk(self, target_indices, target_columns, fill_needed,
-                         overwrite, parallel_row_processing, run_sanity_checks):
+                         overwrite, run_sanity_checks):
         """Internal implementation of the :meth:`get_df` functionality,
         to be applied to a single chunk of indices. It is essentially a self-contained
         call to meth:`enb.atable.ATable.get_df` as described in its documentation, where
@@ -921,8 +914,6 @@ class ATable(metaclass=MetaTable):
           only data in persistent storage is used.
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
-        :param parallel_row_processing: if True, processing of rows is performed in a parallel,
-           possibly distributed fashion. Otherwise, they are processed serially using the invoking thread.
         :param run_sanity_checks: if True, sanity checks are performed on the data
 
         :return: a DataFrame instance containing the requested data
@@ -968,8 +959,7 @@ class ATable(metaclass=MetaTable):
                 target_indices=target_indices,
                 target_locs=target_locs,
                 target_columns=target_columns,
-                overwrite=overwrite,
-                parallel_row_processing=parallel_row_processing)
+                overwrite=overwrite)
             assert len(target_df) == len(target_indices)
 
             if self.ignored_columns:
@@ -1061,7 +1051,6 @@ class ATable(metaclass=MetaTable):
                             target_indices,
                             target_columns,
                             overwrite,
-                            parallel_row_processing,
                             target_locs=None):
         """Generate and return a |DataFrame| with as many rows as given by `target_indices`, with the columns
         given in `target_columns`, using this table's column-setting functions.
@@ -1088,9 +1077,6 @@ class ATable(metaclass=MetaTable):
           this function with all columns in the table.
         :param overwrite: if True, cell values are computed even when storage
           data was present. In that case, the newly computed results replace the old ones.
-        :param parallel_row_processing: if True, computation is run in parallel
-          as much as possible. Setting it to False is needed if you want execution
-          in a single or if you are debugging and prefer less complex stack traces.
 
         :return: a |DataFrame| instance with the same column structure as loaded_df
           (i.e., following this class' column defintion). Each row corresponds to
@@ -1111,47 +1097,40 @@ class ATable(metaclass=MetaTable):
 
         # Get the list of pandas Series instances (table rows) corresponding to target_indices.
         target_locs = target_locs if target_locs is None else [indices_to_internal_loc(v) for v in target_indices]
-        if not parallel_row_processing:
-            with enb.logger.info_context("Sequentially computing rows"):
-                computed_series = []
-                for i, (index, loc) in enumerate(zip(target_indices, target_locs)):
-                    computed_series.append(self.compute_one_row(filtered_df=target_df,
-                                                                index=index, loc=loc,
-                                                                column_fun_tuples=column_fun_tuples,
-                                                                overwrite=overwrite))
-                enb.logger.log(msg=".", level=enb.logger.level_info, end="")
 
-        else:
-            filtered_df_id = ray.put(target_df)
-            column_fun_tuples_id = ray.put(column_fun_tuples)
-            overwrite_id = ray.put(overwrite)
-            self_id = ray.put(self)
+        # Start computation of new and updated rows in parallel
+        filtered_df_id = ray.put(target_df)
+        column_fun_tuples_id = ray.put(column_fun_tuples)
+        overwrite_id = ray.put(overwrite)
+        self_id = ray.put(self)
+        pending_ids = [parallel_compute_one_row.remote(
+            atable_instance=self_id,
+            filtered_df=filtered_df_id,
+            index=ray.put(index), loc=ray.put(loc),
+            column_fun_tuples=column_fun_tuples_id,
+            overwrite=overwrite_id)
+            for index, loc in zip(target_indices, target_locs)]
 
-            pending_ids = [parallel_compute_one_row.remote(
-                atable_instance=self_id,
-                filtered_df=filtered_df_id,
-                index=ray.put(index), loc=ray.put(loc),
-                column_fun_tuples=column_fun_tuples_id,
-                overwrite=overwrite_id)
-                for index, loc in zip(target_indices, target_locs)]
-
-            # Iterating a progressive getter continues until all tasks are complete.
-            with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
-                                            f"rows [CPU limit: {enb.config.options.ray_cpu_limit}]",
-                                            sep="...\n"):
-                pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
-                                                       iteration_period=self.progress_report_period)
-                for _ in pg:
-                    enb.logger.verbose(pg.report())
+        # Iterating a progressive getter continues until all rows are obtained
+        with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
+                                        f"rows [CPU limit: {enb.config.options.ray_cpu_limit}]",
+                                        sep="...\n"):
+            pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
+                                                   iteration_period=self.progress_report_period)
+            for _ in pg:
                 enb.logger.verbose(pg.report())
-                computed_series = ray.get(pending_ids)
+            enb.logger.verbose(pg.report())
+            computed_series = ray.get(pending_ids)
 
+        # Verify that everything went well
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
             raise ColumnFailedError(f"Error setting {len(found_exceptions)}/{len(target_indices)} indices"
                                     f" with {self.__class__.__name__}",
                                     exception_list=found_exceptions) from found_exceptions[0]
 
+        # Return the dataframe with the requested rows and columns, without attempting to updated
+        # the loaded dataframe (that is done by methods calling this one)
         with enb.logger.info_context(msg="Merging requested rows"):
             target_df = pd.DataFrame(
                 computed_series,
@@ -1212,7 +1191,7 @@ class ATable(metaclass=MetaTable):
                     enb.logger.info(f"Skipping existing '{column}' for index={index} <{self.__class__.__name__}>")
                     continue
 
-                enb.logger.info(f"[C]alculating {column} for {index} with <{self.__class__.__name__}>{{ {fun} }}")
+                enb.logger.info(f"Calculating {column} for {index} with <{self.__class__.__name__}>{{ {fun} }}")
                 try:
                     result = fun(self, index, row)
                     called_functions.add(fun)

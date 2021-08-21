@@ -5,7 +5,8 @@ some backwards compatibility is preserved with the 0.2 version family:
 
 - Host code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name
   and semantics. Several methods and classes have been renamed and refactored, but these are not likely
-  referenced in host code. In summary, your host code should be compatible with 0.3.0 if it was with 0.2.8.
+  referenced in host code. In summary, your host code should be compatible with 0.3.0 if it was with 0.2.8 
+  as long as it did not rely on the library internals.
 
 - Data format: the __atable_index column is now included in the CSV persistence. This trades off some extra
   disk space for faster loading times and a little extra traceability. As a result, CSV persistence files 
@@ -18,10 +19,11 @@ New major functions
 - Added a plugin installation subsystem; try `enb plugin -h` for more information.
 - New logging subsystem, which allows for a more flexible message output selection with more elegant code
 
-Improvements
+Improvements and other changes
 
 - Improved performance of the ATable population, storage and loading routines.
 - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
+- The sequential option is removed, in favor of setting the maximum number of cpus to 1.
 
 # 2021/07/14 v0.2.8
 

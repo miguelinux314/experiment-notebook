@@ -58,9 +58,7 @@ class FilePropertiesTable(atable.ATable):
                          csv_support_path=csv_support_path)
         self.base_dir = base_dir if base_dir is not None else options.base_dataset_dir
 
-    def get_df(self, target_indices=None, target_columns=None,
-               fill=True, overwrite=None, parallel_row_processing=None,
-               chunk_size=None):
+    def get_df(self, target_indices=None, target_columns=None, fill=True, overwrite=None, chunk_size=None):
         target_indices = target_indices if target_indices is not None \
             else enb.atable.get_all_input_files(ext=self.dataset_files_extension,
                                                 base_dataset_dir=self.base_dir)
@@ -68,7 +66,6 @@ class FilePropertiesTable(atable.ATable):
         return super().get_df(target_indices=target_indices,
                               target_columns=target_columns,
                               fill=fill, overwrite=overwrite,
-                              parallel_row_processing=parallel_row_processing,
                               chunk_size=chunk_size)
 
     def get_relative_path(self, file_path):
@@ -203,7 +200,6 @@ class FileVersionTable(FilePropertiesTable):
         return versioned_path
 
     def get_df(self, target_indices=None, fill=True, overwrite=None,
-               parallel_versioning=None, parallel_row_processing=None,
                target_columns=None):
         """Create a version of target_indices (which must all be contained
         in self.original_base_dir) into self.version_base_dir.
@@ -215,13 +211,9 @@ class FileVersionTable(FilePropertiesTable):
         :param overwrite: if True, version files are written even if they exist
         :param target_indices: list of indices that are to be contained in the table,
             or None to use the list of files returned by enb.atable.get_all_test_files()
-        :param parallel_versioning: if True, files are versioned in parallel if needed
-        :param parallel_row_processing: if True, file properties are gathered in parallel
         :param target_columns: if not None, the list of columns that are considered for computation
         """
         target_indices = target_indices if target_indices is not None else self.get_default_target_indices()
-        parallel_versioning = parallel_versioning if parallel_versioning is not None else not options.sequential
-        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None else not options.sequential
         overwrite = overwrite if overwrite is not None else options.force
 
         assert all(index == enb.atable.get_canonical_path(index) for index in target_indices)
@@ -233,38 +225,26 @@ class FileVersionTable(FilePropertiesTable):
         version_indices = [self.original_to_versioned_path(index)
                            for index in target_indices]
 
-        if parallel_versioning:
-            version_fun_id = ray.put(self.version)
-            overwrite_id = ray.put(overwrite)
-            original_df_id = ray.put(original_df)
-            options_id = ray.put(options)
-            versioning_result_ids = []
-            for original_path, version_path in zip(target_indices, version_indices):
-                input_path_id = ray.put(original_path)
-                output_path_id = ray.put(version_path)
-                versioning_result_ids.append(ray_version_one_path.remote(
-                    version_fun=version_fun_id, input_path=input_path_id,
-                    output_path=output_path_id, overwrite=overwrite_id,
-                    original_info_df=original_df_id,
-                    check_generated_files=ray.put(self.check_generated_files),
-                    options=options_id))
-            for output_file_path, time_list in ray.get(versioning_result_ids):
-                self.current_run_version_times[output_file_path] = time_list
-        else:
-            for original_path, version_path in zip(target_indices, version_indices):
-                reported_index, self.current_run_version_times[version_path] = \
-                    version_one_path_local(
-                        version_fun=self.version, input_path=original_path,
-                        output_path=version_path, overwrite=overwrite,
-                        original_info_df=original_df,
-                        check_generated_files=self.check_generated_files,
-                        options=options)
-                assert reported_index == version_path, (reported_index, version_path)
+        version_fun_id = ray.put(self.version)
+        overwrite_id = ray.put(overwrite)
+        original_df_id = ray.put(original_df)
+        options_id = ray.put(options)
+        versioning_result_ids = []
+        for original_path, version_path in zip(target_indices, version_indices):
+            input_path_id = ray.put(original_path)
+            output_path_id = ray.put(version_path)
+            versioning_result_ids.append(ray_version_one_path.remote(
+                version_fun=version_fun_id, input_path=input_path_id,
+                output_path=output_path_id, overwrite=overwrite_id,
+                original_info_df=original_df_id,
+                check_generated_files=ray.put(self.check_generated_files),
+                options=options_id))
+        for output_file_path, time_list in ray.get(versioning_result_ids):
+            self.current_run_version_times[output_file_path] = time_list
 
         return FilePropertiesTable.get_df(
             self,
             target_indices=version_indices,
-            parallel_row_processing=parallel_row_processing,
             target_columns=target_columns, overwrite=overwrite)
 
     @atable.column_function("original_file_path")
@@ -365,8 +345,7 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
             print(f"[S]kipping versioning of {input_path}->{output_path}")
         return output_path, [-1]
 
-    if options.verbose > 1:
-        print(f"[V]ersioning {input_path} -> {output_path} (overwrite={overwrite}) <{version_fun}>")
+    enb.logger.verbose(f"Versioning {input_path} -> {output_path} (overwrite={overwrite}) <{version_fun}>")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     row = original_info_df.loc[atable.indices_to_internal_loc(input_path)]
     for repetition_index in range(options.repetitions):

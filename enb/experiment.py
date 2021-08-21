@@ -90,8 +90,7 @@ class Experiment(atable.ATable):
                  csv_experiment_path=None,
                  csv_dataset_path=None,
                  dataset_info_table=None,
-                 overwrite_file_properties=False,
-                 parallel_dataset_property_processing=None):
+                 overwrite_file_properties=False):
         """
         :param tasks: an iterable of :py:class:`ExperimentTask` instances. Each test file
           is processed by all defined tasks. For each (file, task) combination,
@@ -117,14 +116,10 @@ class Experiment(atable.ATable):
           persistent storage when available. Note that this parameter does not
           affect whether experiment results are retrieved from persistent storage if available.
           This is controlled via the parameters passed to get_df()
-        :param parallel_row_processing: if not None, it determines whether file properties
-          are to be obtained in parallel. If None, it is given by not options.sequential.
         """
         overwrite_file_properties = overwrite_file_properties \
             if overwrite_file_properties is not None else options.force
 
-        parallel_dataset_property_processing = parallel_dataset_property_processing \
-            if parallel_dataset_property_processing is not None else not options.sequential
         self.tasks = list(tasks)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
@@ -155,11 +150,7 @@ class Experiment(atable.ATable):
             self.dataset_table_df = self.dataset_info_table.get_df(
                 target_indices=dataset_paths,
                 overwrite=overwrite_file_properties,
-                fill=True,
-                parallel_row_processing=(
-                    parallel_dataset_property_processing
-                    if parallel_dataset_property_processing is not None
-                    else not options.sequential))
+                fill=True)
 
         self.target_file_paths = dataset_paths
 
@@ -173,15 +164,11 @@ class Experiment(atable.ATable):
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
     def get_df(self, target_indices=None, target_columns=None,
-               fill=True, overwrite=None, parallel_row_processing=None,
-               chunk_size=None):
+               fill=True, overwrite=None, chunk_size=None):
         """Get a DataFrame with the results of the experiment. The produced DataFrame
         contains the columns from the dataset info table (but they are not stored
         in the experiment's persistence file).
 
-        :param parallel_row_processing: if True, parallel computation is used to fill the df,
-          including compression. If False, sequential execution is applied. If None,
-          not options.sequential is used.
         :param target_indices: list of file paths to be processed. If None, self.target_file_paths
           is used instead.
         :param chunk_size: if not None, a positive integer that determines the number of table
@@ -192,8 +179,6 @@ class Experiment(atable.ATable):
         target_indices = self.target_file_paths if target_indices is None else target_indices
         overwrite = overwrite if overwrite is not None else options.force
         target_tasks = list(self.tasks)
-        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
-            else not options.sequential
 
         enb.logger.verbose(f"Starting {self.__class__.__name__} with "
                            f"{len(target_tasks)} tasks, "
@@ -208,8 +193,7 @@ class Experiment(atable.ATable):
         with enb.logger.verbose_context("Computing experiment results",
                                         sep="...\n",
                                         msg_after="successfully computed experiment results."):
-            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
-                                parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
+            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite, chunk_size=chunk_size)
 
         # Add dataset columns
         with enb.logger.verbose_context("Merging dataset and experiment results"):
