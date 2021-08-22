@@ -122,3 +122,34 @@ class Ini(metaclass=_Singleton):
 # Export the ini object
 ini = Ini()
 assert ini is Ini(), "Singleton not working for enb.config.ini"
+
+
+def managed_attributes(cls):
+    """Decorator for classes so that their (class) attributes are set
+    based on the `.ini` files found. Attributes starting with `_` are not considered.
+
+    Values are read from the section titled as the classes fully qualified name
+    (e.g., using the `[enb.aanalysis.ScalarValueAnalyzer]` header in one of the .ini files).
+
+    Note that adding keys to that section corresponding to attributes not present
+    in the definition of cls are ignored, i.e., new attributes are not added to cls.
+    """
+    from enb import logger
+
+    cls_fqn = f"{str(cls.__module__) + '.' if cls.__module__ is not None else ''}" \
+              f"{cls.__name__}"
+
+    for attribute in (k for k, v in cls.__dict__.items()
+                      if not k.startswith("_") and not k == "column_to_properties" and not callable(v)):
+        try:
+            old_value = getattr(cls, attribute)
+            setattr(cls, attribute, ini.get_key(cls_fqn, attribute))
+            if getattr(cls, attribute) != old_value:
+                logger.info(f"Updating {cls_fqn}.{attribute} = {getattr(cls, attribute)} based on .ini files.")
+        except KeyError as ex:
+            logger.warn(f"The {cls_fqn} class is decorated with "
+                        f"enb.ini.managed.attributes, but contains an attribute "
+                        f"{repr(attribute)} which is not present in the configuration. "
+                        f"The class' default value ({cls.__dict__[attribute]}) is used instead.")
+
+    return cls
