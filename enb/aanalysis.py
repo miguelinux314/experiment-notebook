@@ -6,6 +6,7 @@ using pyplot.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/01/01"
 
+import functools
 import os
 import itertools
 import math
@@ -13,6 +14,7 @@ import collections
 import sortedcontainers
 import re
 import glob
+import numbers
 
 import pdf2image
 import numpy as np
@@ -29,36 +31,166 @@ from enb.plotdata import color_cycle
 from enb.plotdata import marker_cycle
 
 
+class Analyzer(enb.atable.ATable):
+    def __init__(self, csv_support_path=None, column_to_properties=None, progress_report_period=None):
+        super().__init__(csv_support_path=csv_support_path,
+                         column_to_properties=column_to_properties,
+                         progress_report_period=progress_report_period)
 
-class Analyzer:
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False):
+    def get_df(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
+               group_by=None, column_to_properties=None,
+               show_global=True, show_count=True,
+               plot_title=None, **kwargs):
         """
-        Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
+        Analyze a :class:`pandas.DataFrame` instance, optionally producing plots, and returning the computed
+        dataframe with the analysis results.
 
-        :param adjust_height:
-        :param full_df: full DataFrame instance with data to be plotted and/or analyzed
-        :param target_columns: list of columns to be analyzed. Typically a list of column names, although
-          each subclass may redefine the accepted format (e.g., pairs of column names)
+        You can use the @enb.aanalysis.Analyzer.normalize_parameters decorator when overwriting this method,
+        to automatically transform None values into their defaults.
+
+        :param full_df: full DataFrame instance with data to be plotted and/or analyzed.
+        :param render_plots: if True or False, it selects whether plots are generated. If None,
+          the decision is made based on `enb.config.options`.
+        :param target_columns: columns to be analyzed. Typically a list of column names, although
+          each subclass may redefine the accepted format (e.g., pairs of column names). If None,
+          all scalar, non string columns are used.
         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
-        :param output_csv_file: If not None, path of the csv file where basic analysis results are stored.
-          The contents of the file are subclass-defined.
+          If None, the default output plots path given by `enb.config.options` is used.
+        :param group_by: if not None, the name of the column to be used for grouping.
         :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
           in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
           columns.
-        :param group_by: if not None, the name of the column to be used for grouping.
-        :param group_name_order: if not None, and if group_by is not None,
-          it must be the list of group names (values of the group_by) in the order that they are to be displayed.
-          If None, group names are sorted alphabetically (case insensitive).
         :param show_global: this flags controls whether results for the full_df (without grouping) are
           to be included in the results. If no grouping is selected, this options is ignored.
         :param show_count: determines whether the number of element per group should be shown in the group label
-        :param version_name: if not None, a string identifying the file version that produced full_df is displayed
-          where relevant.
+        :param plot_title: if not None, the title to use in the plot.
+        :param kwargs: keyword arguments passed directly to :meth:`enb.plotdata.render_plds_by_group`. See that
+          method for more information on admitted arguments.
+
+        :return: a |DataFrame| instance with analysis results
         """
-        raise NotImplementedError(self)
+        raise SyntaxError(
+            f"Subclasses must implement this method. {self.__class__} did not. See enb.aanalysis.Analyzer.")
+
+    @classmethod
+    def normalize_parameters(cls, f):
+        """Optional decorator for Analyzer.get_df implementations, so that None values are automatically
+        transformed into their defaults.
+        """
+
+        @functools.wraps(f)
+        def wrapper(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
+                    group_by=None, column_to_properties=None,
+                    show_global=True, show_count=True,
+                    plot_title=None, **kwargs):
+            render_plots = render_plots if render_plots is not None else not enb.config.options.no_render
+            target_columns = target_columns if target_columns is not None else \
+                [c for c in full_df.columns if isinstance(full_df.iloc[0][c], numbers.Number)]
+            column_to_properties = column_to_properties if column_to_properties is not None else \
+                {c: enb.atable.ColumnProperties(c) for c in target_columns}
+            output_plot_dir = output_plot_dir if output_plot_dir is not None else enb.config.options.plot_dir
+            return f(self=self, full_df=full_df, render_plots=render_plots,
+                     target_columns=target_columns, output_plot_dir=output_plot_dir,
+                     group_by=group_by, column_to_properties=column_to_properties,
+                     show_global=show_global, show_count=show_count,
+                     plot_title=plot_title, **kwargs)
+
+        return wrapper
+
+    def build_summary_atable(self, full_df, target_columns, group_by, column_to_properties, show_global):
+        """
+        Build a :class:`enb.atable.SummaryTable` instance with the appropriate columns to perform the intended analysis.
+
+        :param target_columns: as passed to `enb.aanalysis.Analyzer.analyze_df`
+        :param group_by: as passed to `enb.aanalysis.Analyzer.analyze_df`
+        :param column_to_properties: as passed to `enb.aanalysis.Analyzer.analyze_df`
+        :param show_global: as passed to `enb.aanalysis.Analyzer.analyze_df`
+        :return: the built summary table, without having called its get_df method.
+        """
+        raise SyntaxError(
+            f"Subclasses must implement this method. {self.__class__} did not. See enb.aanalysis.Analyzer.")
+
+
+class ScalarValueAnalyzer(Analyzer):
+    @Analyzer.normalize_parameters
+    def get_df(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
+               group_by=None, column_to_properties=None,
+               show_global=True, show_count=True,
+               plot_title=None, **kwargs):
+        summary_table = self.build_summary_atable(
+            full_df=full_df, target_columns=target_columns, group_by=group_by,
+            column_to_properties=column_to_properties,
+            show_global=show_global)
+        return summary_table.get_df(reference_df=full_df)
+
+    def build_summary_atable(self, full_df, target_columns, group_by, column_to_properties, show_global):
+        class ScalarValueSummary(enb.atable.SummaryTable):
+            """Summary table used in ScalarValueAnalyzer.
+            """
+
+            def __init__(self, reference_df, c_t_p, csv_support_path, group_by=None):
+                super().__init__(reference_df=reference_df, column_to_properties=c_t_p,
+                                 copy_df=False, csv_support_path=csv_support_path)
+                self.group_by = group_by
+                for c, cp in c_t_p.items():
+                    for descriptor in ["min", "max", "avg", "median"]:
+                        self.add_column_function(
+                            self,
+                            fun=functools.partial(self.set_scalar_description, column_name=c),
+                            column_properties=enb.atable.ColumnProperties(f"{c}_{descriptor}"))
+
+            def split_groups(self, reference_df=None):
+                self.reference_df = reference_df if reference_df is not None else self.reference_df
+                return self.reference_df.groupby(self.group_by) \
+                    if self.group_by is not None else [("all", self.reference_df)]
+
+            def set_scalar_description(self, *args, **kwargs):
+                _, group_label, row = args
+                column_name = kwargs["column_name"]
+                description_df = self.label_to_df[group_label][column_name].describe()
+                row[f"{column_name}_min"] = description_df["min"]
+                row[f"{column_name}_max"] = description_df["max"]
+                row[f"{column_name}_avg"] = description_df["mean"]
+                row[f"{column_name}_median"] = description_df["50%"]
+
+        return ScalarValueSummary(
+            reference_df=full_df,
+            c_t_p=column_to_properties,
+            csv_support_path=self.csv_support_path,
+            group_by=group_by)
+
+
+# class Analyzer:
+#     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None,
+#                    group_by=None, column_to_properties=None,
+#                     group_name_order=None, show_global=True, show_count=True, version_name=None,
+#                    adjust_height=False):
+#         """
+#         Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
+#
+#         :param adjust_height:
+#         :param full_df: full DataFrame instance with data to be plotted and/or analyzed
+#         :param target_columns: list of columns to be analyzed. Typically a list of column names, although
+#           each subclass may redefine the accepted format (e.g., pairs of column names)
+#         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
+#         :param output_csv_file: If not None, path of the csv file where basic analysis results are stored.
+#           The contents of the file are subclass-defined.
+#         :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
+#           in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
+#           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
+#           columns.
+#         :param group_by: if not None, the name of the column to be used for grouping.
+#         :param group_name_order: if not None, and if group_by is not None,
+#           it must be the list of group names (values of the group_by) in the order that they are to be displayed.
+#           If None, group names are sorted alphabetically (case insensitive).
+#         :param show_global: this flags controls whether results for the full_df (without grouping) are
+#           to be included in the results. If no grouping is selected, this options is ignored.
+#         :param show_count: determines whether the number of element per group should be shown in the group label
+#         :param version_name: if not None, a string identifying the file version that produced full_df is displayed
+#           where relevant.
+#         """
+#         raise NotImplementedError(self)
 
 
 class ScalarDistributionAnalyzer(Analyzer):
@@ -79,12 +211,12 @@ class ScalarDistributionAnalyzer(Analyzer):
 
     semilog_hist_min = 1e-5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, global_y_label=None,
+                   output_plot_dir=None, output_csv_file=None, column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
-                   adjust_height=False, y_labels_by_group_name=None):
+                   y_max=None, y_labels_by_group_name=None, **kwargs):
         """Perform an analysis of target_columns, grouping as specified.
 
-        :param adjust_height: adjust height to the maximum height contained in the y_values
         :param output_csv_file: path where the CSV report is stored
         :param output_plot_dir: path where the distribution plots are stored. Defaults to options.plotdir
         :param target_columns: list of column names for which an analysis is to be performed.
@@ -95,6 +227,7 @@ class ScalarDistributionAnalyzer(Analyzer):
         :param group_by: if not None, analysis is performed after grouping by that column name
         :param show_global: if True, distribution for all entries (without grouping) is also shown
         :param version_name: if not None, the version name is prepended to the x axis' label
+        :param global_y_label: shared y-axis label
         """
         output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         target_columns = [target_columns] if isinstance(target_columns, str) else target_columns
@@ -172,19 +305,23 @@ class ScalarDistributionAnalyzer(Analyzer):
             y_min = 0 if not column_name in column_to_properties \
                          or not column_to_properties[column_name].semilog_y else self.semilog_hist_min
 
-            if adjust_height:
-                y_max = 0
+            # Compute the maximum height of any plottable element
+            if y_max is None:
+                y_max = float("-inf")
                 for pds in pds_by_group_name.values():
                     for pld in pds:
                         if not isinstance(pld, plotdata.BarData):
                             continue
                         y_max = max(y_max, max(pld.y_values))
+                y_max = y_max if y_max != float("-inf") else None
+
+            # If that height is not 1 (e.g., it is not a relative frequency),
+            # some elements may need adjustment
+            if y_max != 1:
                 for pds in pds_by_group_name.values():
                     for pld in pds:
                         if isinstance(pld, plotdata.ErrorLines):
                             pld.y_values = [0.5 * (y_max - y_min)]
-            else:
-                y_max = 1
 
             try:
                 column_properties = column_to_properties[column_name]
@@ -216,6 +353,8 @@ class ScalarDistributionAnalyzer(Analyzer):
                                               if column_name in column_to_properties else None),
                     horizontal_margin=ray.put(histogram_bin_width),
                     global_x_label=ray.put(x_label),
+                    global_y_label=ray.put(r"Distribution, average and $\pm 1\sigma$"
+                                           if global_y_label is None else global_y_label),
                     y_labels_by_group_name=ray.put(y_labels_by_group_name),
                     x_min=ray.put(x_min), x_max=ray.put(x_max),
                     y_min=ray.put(y_min), y_max=ray.put(y_max),

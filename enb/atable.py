@@ -657,7 +657,7 @@ class ATable(metaclass=MetaTable):
           fun is automatically set so that the decorated method is called, but it is not guaranteed
           that fun is the decorated method.
         """
-        if not issubclass(cls, ATable):
+        if (type(cls) is type and not issubclass(cls, ATable)) and not isinstance(cls, ATable):
             raise SyntaxError("Column definition is only supported for classes that inherit from ATable, "
                               f"but {cls} was found.")
         if not isinstance(column_properties, ColumnProperties):
@@ -738,9 +738,9 @@ class ATable(metaclass=MetaTable):
         :param column_properties: |ColumnProperties| instance with properties associated to the column.
         :return: a function that wraps fun adding `_column_name` and `_column_properties` to its scope.
         """
-        # Math fun's signature with the expected one (self, index, row). Variable names are not checked.
+        # Match fun's signature with the expected one (self, index, row). Variable names are not checked.
         fun_spec = inspect.getfullargspec(fun)
-        if len(fun_spec.args) != 3 or any(v is not None for v in (fun_spec.varargs, fun_spec.varkw)):
+        if len(fun_spec.args) != 3 and fun_spec.varargs is None and fun_spec.varkw is None:
             raise SyntaxError(f"Trying to add a column-setting method {fun} to {cls.__name__}, "
                               f"but an invalid signature was found. "
                               f"Column-setting methods should have a (self, index, row) signature. "
@@ -1298,13 +1298,16 @@ class SummaryTable(ATable):
     get_df and the analyze_df method of analyzers en :mod:`enb.aanalysis`.
     """
 
-    def __init__(self, reference_df, reference_column_to_properties=None, copy_df=False,
+    def __init__(self, reference_df, column_to_properties=None, copy_df=False,
                  csv_support_path=None):
         """
         Initialize a summary table. Group splitting is not invoked until needed by calling self.get_df().
 
+        Column-setting columns are given the group label and the row to be completed. They can access
+        self.label_to_df to get the dataframe corresponding to the row's group.
+
         :param reference_df: reference pandas dataframe to be summarized
-        :param reference_column_to_properties: if not None, it should be the column_to_properties attribute
+        :param column_to_properties: if not None, it should be the column_to_properties attribute
           of the table that produced reference_df.
         :param copy_df: if not True, a pointer to the original reference_df is used. Otherwise, a copy is made.
           Note that reference_df is typically evaluated each time split_groups() is called.
@@ -1312,7 +1315,7 @@ class SummaryTable(ATable):
         """
         super().__init__(csv_support_path=csv_support_path, index="group_label")
         self.reference_df = reference_df if copy_df is not True else pd.DataFrame.copy(reference_df)
-        self.reference_column_to_properties = reference_column_to_properties
+        self.reference_column_to_properties = column_to_properties
 
     def split_groups(self, reference_df=None):
         """Split the reference dataframe into an iterable of (label, dataframe) tuples. By default, no splitting is
