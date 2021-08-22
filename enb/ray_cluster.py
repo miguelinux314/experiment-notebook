@@ -94,7 +94,10 @@ class ProgressiveGetter:
         self.completed_ids, self.pending_ids = ray.wait(
             self.full_id_list, num_returns=len(self.full_id_list), timeout=timeout)
 
-        if not self.pending_ids and self.end_time is None:
+        try:
+            if not self.pending_ids and self.end_time is None:
+                self.end_time = time.time_ns()
+        except AttributeError:
             self.end_time = time.time_ns()
 
         assert len(self.completed_ids) + len(self.pending_ids) == len(self.full_id_list)

@@ -39,5 +39,6 @@ if __name__ == '__main__':
         output_csv_file=os.path.join(         # save some statistics 
             options.analysis_dir, "lossless_compression_analysis.csv"),
         column_to_properties=exp.joined_column_to_properties, # contains plotting hints
-        group_by="task_label",                # one can group by any column name                    
+        group_by="task_label",                # one can group by any column name
+        y_max=1,
     )
