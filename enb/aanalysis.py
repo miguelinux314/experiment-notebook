@@ -18,6 +18,7 @@ import numbers
 
 import pdf2image
 import numpy as np
+import scipy.stats
 import pandas as pd
 import ray
 
@@ -100,13 +101,15 @@ class Analyzer(enb.atable.ATable):
 
         return wrapper
 
-    def build_summary_atable(self, full_df, target_columns, group_by, column_to_properties, show_global, render_plots):
+    def build_summary_atable(self, full_df, target_columns, group_by, original_column_to_properties,
+                             show_global, render_plots):
         """
         Build a :class:`enb.atable.SummaryTable` instance with the appropriate columns to perform the intended analysis.
-
+        :param full_df: df being analyzed
         :param target_columns: as passed to `enb.aanalysis.Analyzer.analyze_df`
         :param group_by: as passed to `enb.aanalysis.Analyzer.analyze_df`
-        :param column_to_properties: as passed to `enb.aanalysis.Analyzer.analyze_df`
+        :param original_column_to_properties: column_to_properties passed to `enb.aanalysis.Analyzer.analyze_df`, i.e.,
+           the properties defined for the table that produced full_df, if any. It can be None.
         :param show_global: as passed to `enb.aanalysis.Analyzer.analyze_df`
         :param render_plots: if True, plotting elements for each group are computed, adding the appropriate
           `*_plds` columns.
@@ -125,22 +128,28 @@ class ScalarValueAnalyzer(Analyzer):
     # see the documentation of the enb.config.aini.managed_attributes decorator for more information.
 
     # Number of vertical bars in the displayed histograms.
-    hist_bin_count = 50
+    histogram_bin_count = 50
     # Fraction between 0 and 1 of the bar width for histogram.
     # Adjust for thinner or thicker vertical bars.
     bar_width_fraction = 1
     # When more than one row is displayed (e.g., when combine_groups is False)
     # The following vertical margin is applied between group rows.
     group_row_margin = 0.2
+    # Display the same scale for the y axis?
+    common_y_axis = True
     # If True, the number of items in each group
     # is displayed next to their names
     show_count = True
-    # Default element opacity
+    # Histogram bar opacity
     bar_alpha = 0.5
+    # Mean and std bar opacity
     errorbar_alpha = 0.6
-    # minimum y_min when using a semilogarithmic scale
+    # Minimum y_min when using a semilog-y scale
     semilog_hist_min = 1e-5
-
+    # Size of the marker that indicates the average. Set to zero to disable.
+    group_avg_marker_size = 5
+    # Width of the line that depicts +/- 1 standard deviation. Set to zero to disable.
+    std_line_width = 2
 
     @Analyzer.normalize_parameters
     def get_df(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
@@ -157,17 +166,89 @@ class ScalarValueAnalyzer(Analyzer):
         """
         summary_table = self.build_summary_atable(
             full_df=full_df, target_columns=target_columns, group_by=group_by,
-            column_to_properties=column_to_properties,
+            original_column_to_properties=column_to_properties,
             show_global=show_global, render_plots=render_plots)
-        return summary_table.get_df(reference_df=full_df)
+        summary_df = summary_table.get_df(reference_df=full_df)
 
-    def build_summary_atable(self, full_df, target_columns, group_by, column_to_properties,
+        if render_plots:
+            render_ids = []
+            for column_name in target_columns:
+                column_kwargs = dict(render_kwargs) if render_kwargs is not None else dict()
+
+                # Get the output path. Plots are overwriten by default
+                column_kwargs["output_plot_path"] = os.path.join(
+                    output_plot_dir,
+                    f"{self.__class__.__name__}_"
+                    f"{column_name}{'_groupby-' + group_by if group_by else ''}.pdf")
+                column_kwargs["pds_by_group_name"] = {
+                    group_label: group_plds for group_label, group_plds
+                    in summary_df[["group_label",
+                                   f"{column_name}{self.plottable_data_column_suffix}"]].values}
+
+                # General column properties
+                if "column_properties" not in column_kwargs:
+                    try:
+                        column_kwargs["column_properties"] = column_to_properties[column_name]
+                    except KeyError:
+                        column_kwargs["column_properties"] = enb.atable.ColumnProperties(name=column_name)
+
+                # Calculate the axis limits
+                if "x_min" not in column_kwargs:
+                    column_kwargs["x_min"] = float(summary_df[f"{column_name}_min"].min())
+                if "x_max" not in column_kwargs:
+                    column_kwargs["x_max"] = float(summary_df[f"{column_name}_max"].max())
+
+                # Generate labels
+                if "global_x_label" not in column_kwargs:
+                    if column_name in column_to_properties and column_to_properties[column_name].label:
+                        column_kwargs["global_x_label"] = column_to_properties[column_name].label
+                    else:
+                        column_kwargs["global_x_label"] = clean_column_name(column_name)
+                if "global_y_label" not in column_kwargs:
+                    if self.bar_alpha != 0:
+                        column_kwargs["global_y_label"] = f"Sample distribution"
+                        if self.errorbar_alpha != 0:
+                            column_kwargs["global_y_label"] += ", average and $\pm 1\sigma$"
+                    elif self.errorbar_alpha != 0:
+                        column_kwargs["global_y_label"] = f"Average and $\pm 1 \sigma$"
+                    else:
+                        enb.logger.warn(f"Plotting with {self.__class__.__name__} "
+                                        "and both bar_alpha and errorbar_alpha "
+                                        "set to zero. Expect an empty-looking plot.")
+                if "y_labels_by_group_name" not in column_kwargs:
+                    column_kwargs["y_labels_by_group_name"] = {
+                        group: f"{group} ({count})" if show_count else f"{group}"
+                        for group, count in summary_df[["group_label", "group_size"]].values}
+
+                if self.common_y_axis:
+                    global_y_min = float("inf")
+                    global_y_max = float("-inf")
+                    for pld_list in summary_df[f"{column_name}{self.plottable_data_column_suffix}"]:
+                        for bar_data in (pld for pld in pld_list if isinstance(pld, plotdata.BarData)):
+                            global_y_min = min(global_y_min, min(bar_data.y_values))
+                            global_y_max = max(global_y_max, max(bar_data.y_values))
+
+                    if "y_min" not in column_kwargs:
+                        column_kwargs["y_min"] = global_y_min
+                    if "y_max" not in column_kwargs:
+                        column_kwargs["y_max"] = global_y_max
+
+                render_ids.append(enb.plotdata.parallel_render_plds_by_group.remote(
+                    **{k: ray.put(v) for k, v in column_kwargs.items()}))
+
+        with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots..."):
+            for progress_report in enb.ray_cluster.ProgressiveGetter(ray_id_list=render_ids, iteration_period=5):
+                enb.logger.verbose(progress_report)
+
+        return summary_df
+
+    def build_summary_atable(self, full_df, target_columns, group_by, original_column_to_properties,
                              show_global, render_plots):
         """Dynamically build a SummaryTable instance for scalar value analysis.
         """
 
         class ScalarValueSummary(enb.atable.SummaryTable):
-            """Summary table used in ScalarValueAnalyzer.
+            """Summary table used in ScalarValueAnalyzer. Nested to highlight its dynamic nature.
             """
 
             # Underscores are used to avoid name shadowing
@@ -179,25 +260,27 @@ class ScalarValueAnalyzer(Analyzer):
                 _self.histogram_bin_count = _histogram_bin_count if _histogram_bin_count is not None \
                     else self.histogram_bin_count
                 _self.group_by = _group_by
-                for c, cp in _column_to_properties.items():
+                _self.column_to_xmin_xmax = {}
+                for c_name, c_properties in _column_to_properties.items():
                     # Add columns that compute the summary information
-                    for descriptor in ["min", "max", "avg", "median"]:
+                    for descriptor in ["min", "max", "avg", "std", "median"]:
                         _self.add_column_function(
                             _self,
-                            fun=functools.partial(_self.set_scalar_description, column_name=c),
+                            fun=functools.partial(_self.set_scalar_description, column_name=c_name),
                             column_properties=enb.atable.ColumnProperties(
-                                name=f"{c}_{descriptor}", label=f"{c}: {descriptor}"))
-                    # Add columns that compute the plotting elements of each group, if needed
+                                name=f"{c_name}_{descriptor}", label=f"{c_name}: {descriptor}"))
+                    _self.column_to_xmin_xmax[c_name] = scipy.stats.describe(_reference_df[c_name].values).minmax
+                    # Add columns that compute the list of plotting elements of each group, if needed
                     if render_plots:
-                        _self.add_column(
+                        _self.add_column_function(
                             _self,
-                            fun=functools.partial(_self.render_target, column_name=c),
+                            fun=functools.partial(_self.render_target, column_name=c_name),
                             column_properties=enb.atable.ColumnProperties(
-                                name=f"{c}{_self.plottable_data_column_suffix}")
-                        )
+                                name=f"{c_name}{self.plottable_data_column_suffix}",
+                                has_object_values=True))
 
-            def split_groups(_self, _reference_df=None):
-                _self.reference_df = _reference_df if _reference_df is not None else _self.reference_df
+            def split_groups(_self, reference_df=None):
+                _self.reference_df = reference_df if reference_df is not None else _self.reference_df
                 return _self.reference_df.groupby(_self.group_by) \
                     if _self.group_by is not None else [("all", _self.reference_df)]
 
@@ -210,142 +293,125 @@ class ScalarValueAnalyzer(Analyzer):
                 row[f"{column_name}_min"] = description_df["min"]
                 row[f"{column_name}_max"] = description_df["max"]
                 row[f"{column_name}_avg"] = description_df["mean"]
+                row[f"{column_name}_std"] = description_df["std"]
                 row[f"{column_name}_median"] = description_df["50%"]
 
             def render_target(_self, *_args, **_kwargs):
-                """Compute the list of plotdata.PlottableData instances that represent this group in a plot.
+                """Compute the list of plotdata.PlottableData instances that represent
+                this group in a plot.
                 """
                 _, group_label, row = _args
                 group_df = _self.label_to_df[group_label]
                 column_name = _kwargs["column_name"]
+                column_series = group_df[column_name]
 
                 # Set the analysis range based on column properties if provided, or the data's dynamic range.
                 try:
-                    analysis_range = _self.column_to_properties[column_name].plot_min, _self.column_to_properties[
-                        column_name].plot_max
+                    analysis_range = [original_column_to_properties[column_name].plot_min,
+                                      original_column_to_properties[column_name].plot_max]
                 except KeyError:
-                    analysis_range = None, None
-                analysis_range[0] = analysis_range[0] if analysis_range[0] is not None else row[f"{column_name}_min"]
-                analysis_range[1] = analysis_range[1] if analysis_range[1] is not None else row[f"{column_name}_max"]
+                    analysis_range = [None, None]
+                analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
+                    else _self.column_to_xmin_xmax[column_name][0]
+                analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
+                    else _self.column_to_xmin_xmax[column_name][1]
                 if analysis_range[0] == analysis_range[1]:
                     # Avoid unnecessary warnings from matplotlib
                     analysis_range = [analysis_range[0], analysis_range[0] + 1]
 
                 # Use numpy to obtain the absolute mass distribution of the data.
+                # density=False is used so that we can detect the case where
+                # some data is not used.
                 hist_y_values, bin_edges = np.histogram(
-                    group_df[column_name], bins=self.histogram_bin_count,
+                    column_series.dropna(), bins=self.histogram_bin_count,
                     range=analysis_range, density=False)
-                hist_y_values = hist_y_values / len(self.reference_df) if len(self.reference_df) else hist_y_values
 
                 # Verify that the histogram uses all data
-                if sum(hist_y_values) != 1:
+                if sum(hist_y_values) != len(column_series):
                     justified_difference = False
-                    error_msg = f"Not all samples are included in the scalar value histogram for {column_name}. " \
-                                f"Used samples represent {100*sum(hist_y_values)}% of the values."
+                    error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
+                                f"({sum(hist_y_values)} used out of {len(column_series)})."
                     if math.isinf(row[f"{column_name}_min"]) or math.isinf(row[f"{column_name}_max"]):
-                        error_msg += f" Note that infinite values have been found in the column, which are not accounted for."
+                        error_msg += f" Note that infinite values have been found in the column, " \
+                                     f"which are not included in the analysis."
                         justified_difference = True
-
-                    if analysis_range[0] > row[f"{column_name}_min"] or analysis_range[1] < row[f"{column_name}_max"]:
+                    if analysis_range[0] > row[f"{column_name}_min"] or analysis_range[1] < row[
+                        f"{column_name}_max"]:
                         error_msg += f" This is likely explained by the plot_min/plot_max or y_min/y_max " \
                                      f"values set for this analysis."
                         justified_difference = True
                     if justified_difference:
-                        enb.log.warn(error_msg)
+                        enb.log.info(error_msg)
                     else:
                         raise ValueError(error_msg)
 
                 # The relative distribution is computed based
                 # on the selected analysis range only, which
                 # may differ from the full column dynamic range
-                # (hence the warning above)
+                # (hence the warning(s) above)
                 histogram_sum = hist_y_values.sum()
-                hist_y_values = hist_y_values / histogram_sum \
-                    if histogram_sum != 0 else hist_y_values
+                hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+                hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
 
                 # Create the plotdata.PlottableData instances for this group
+                group_plds = []
+                group_plds.append(plotdata.BarData(
+                    x_values=hist_x_values,
+                    y_values=hist_y_values,
+                    x_label=original_column_to_properties[column_name].label,
+                    alpha=self.bar_alpha,
+                    extra_kwargs=dict(
+                        width=self.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
 
+                if self.group_avg_marker_size > 0:
+                    group_plds.append(plotdata.ErrorLines(
+                        x_values=[row[f"{column_name}_avg"]],
+                        y_values=[0.5 * (hist_y_values.min() + hist_y_values.max())],
+                        marker_size=self.group_avg_marker_size,
+                        alpha=self.errorbar_alpha,
+                        err_neg_values=[row[f"{column_name}_std"]],
+                        err_pos_values=[row[f"{column_name}_std"]],
+                        line_width=self.std_line_width,
+                        vertical=False))
 
-
-                #         if options.verbose:
-                #             print(f"[W]arning: not all samples included in the scalar distribution for {column} "
-                #                   f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
-                #                   f"Note that infinite values are not accounted for, and the plot_min "
-                #                   f"and plot_max column properties affect this range.")
-                #     else:
-                #         if options.verbose:
-                #             print(f"[W]arning: not all samples included in the scalar distribution for {column} "
-                #                   f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
-                #                   f"Note that plot_min and plot_max column properties might be affecting this range.")
-                #
-                # hist_y_values = hist_y_values / hist_y_values.sum() \
-                #     if hist_y_values.sum() > 0 and len(hist_y_values) > 0 and np.isfinite(
-                #     hist_y_values / hist_y_values.sum()).all() \
-                #     else hist_y_values
-                #
-                # x_label = column if (properties is None or not properties.label) else properties.label
-                #
-                # hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-                # plot_data = plotdata.BarData(x_values=hist_x_values,
-                #                              y_values=hist_y_values,
-                #                              x_label=x_label,
-                #                              y_label="",
-                #                              alpha=bar_alpha,
-                #                              extra_kwargs=dict(
-                #                                  width=bar_width_fraction
-                #                                        * (bin_edges[1] - bin_edges[0])))
-                #
-                # average_point_position = 0.5
-                # if properties is not None and properties.semilog_y:
-                #     average_point_position = 10 ** (0.5 * (math.log10(semilogy_min_y) + math.log10(1)))
-                # error_lines = plotdata.ErrorLines(
-                #     x_values=[column_df.mean()],
-                #     y_values=[average_point_position],
-                #     marker_size=5,
-                #     alpha=errorbar_alpha,
-                #     err_neg_values=[column_df.std()], err_pos_values=[column_df.std()],
-                #     line_width=2,
-                #     vertical=False)
-                #
-                # return [plot_data, error_lines]
+                row[_column_name] = group_plds
 
         return ScalarValueSummary(
             _reference_df=full_df,
-            _column_to_properties=column_to_properties,
+            _column_to_properties=original_column_to_properties,
             _csv_support_path=self.csv_support_path,
-            _group_by=group_by)
+            _group_by=group_by, _histogram_bin_count=self.histogram_bin_count)
 
-
-# class Analyzer:
-#     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None,
-#                    group_by=None, column_to_properties=None,
-#                     group_name_order=None, show_global=True, show_count=True, version_name=None,
-#                    adjust_height=False):
-#         """
-#         Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
-#
-#         :param adjust_height:
-#         :param full_df: full DataFrame instance with data to be plotted and/or analyzed
-#         :param target_columns: list of columns to be analyzed. Typically a list of column names, although
-#           each subclass may redefine the accepted format (e.g., pairs of column names)
-#         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
-#         :param output_csv_file: If not None, path of the csv file where basic analysis results are stored.
-#           The contents of the file are subclass-defined.
-#         :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
-#           in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
-#           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
-#           columns.
-#         :param group_by: if not None, the name of the column to be used for grouping.
-#         :param group_name_order: if not None, and if group_by is not None,
-#           it must be the list of group names (values of the group_by) in the order that they are to be displayed.
-#           If None, group names are sorted alphabetically (case insensitive).
-#         :param show_global: this flags controls whether results for the full_df (without grouping) are
-#           to be included in the results. If no grouping is selected, this options is ignored.
-#         :param show_count: determines whether the number of element per group should be shown in the group label
-#         :param version_name: if not None, a string identifying the file version that produced full_df is displayed
-#           where relevant.
-#         """
-#         raise NotImplementedError(self)
+    # class Analyzer:
+    #     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None,
+    #                    group_by=None, column_to_properties=None,
+    #                     group_name_order=None, show_global=True, show_count=True, version_name=None,
+    #                    adjust_height=False):
+    #         """
+    #         Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
+    #
+    #         :param adjust_height:
+    #         :param full_df: full DataFrame instance with data to be plotted and/or analyzed
+    #         :param target_columns: list of columns to be analyzed. Typically a list of column names, although
+    #           each subclass may redefine the accepted format (e.g., pairs of column names)
+    #         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
+    #         :param output_csv_file: If not None, path of the csv file where basic analysis results are stored.
+    #           The contents of the file are subclass-defined.
+    #         :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
+    #           in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
+    #           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
+    #           columns.
+    #         :param group_by: if not None, the name of the column to be used for grouping.
+    #         :param group_name_order: if not None, and if group_by is not None,
+    #           it must be the list of group names (values of the group_by) in the order that they are to be displayed.
+    #           If None, group names are sorted alphabetically (case insensitive).
+    #         :param show_global: this flags controls whether results for the full_df (without grouping) are
+    #           to be included in the results. If no grouping is selected, this options is ignored.
+    #         :param show_count: determines whether the number of element per group should be shown in the group label
+    #         :param version_name: if not None, a string identifying the file version that produced full_df is displayed
+    #           where relevant.
+    #         """
+    #         raise NotImplementedError(self)
 
 
 class ScalarDistributionAnalyzer(Analyzer):
@@ -448,15 +514,15 @@ class ScalarDistributionAnalyzer(Analyzer):
             if version_name and version_name.strip():
                 x_label = f"{version_name.strip()} {x_label}"
 
-            histogram_bin_width = None
+            hist_bin_width = None
             if column_name in column_to_properties and column_to_properties[column_name].hist_bin_width is not None:
-                histogram_bin_width = column_to_properties[column_name].hist_bin_width
-            if histogram_bin_width is None:
+                hist_bin_width = column_to_properties[column_name].hist_bin_width
+            if hist_bin_width is None:
                 try:
-                    histogram_bin_width = ((min_max_by_column[column_name][1] - min_max_by_column[column_name][0])
-                                           / self.hist_bin_count)
+                    hist_bin_width = ((min_max_by_column[column_name][1] - min_max_by_column[column_name][0])
+                                      / self.hist_bin_count)
                 except TypeError:
-                    histogram_bin_width = 1 / self.hist_bin_count
+                    hist_bin_width = 1 / self.hist_bin_count
             y_min = 0 if not column_name in column_to_properties \
                          or not column_to_properties[column_name].semilog_y else self.semilog_hist_min
 
@@ -506,7 +572,7 @@ class ScalarDistributionAnalyzer(Analyzer):
                                                           f"distribution{group_str}_{column_name}.pdf")),
                     column_properties=ray.put(column_to_properties[column_name]
                                               if column_name in column_to_properties else None),
-                    horizontal_margin=ray.put(histogram_bin_width),
+                    horizontal_margin=ray.put(hist_bin_width),
                     global_x_label=ray.put(x_label),
                     global_y_label=ray.put(r"Distribution, average and $\pm 1\sigma$"
                                            if global_y_label is None else global_y_label),
@@ -552,7 +618,8 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
                       f"Note that plot_min and plot_max column properties might be affecting this range.")
 
     hist_y_values = hist_y_values / hist_y_values.sum() \
-        if hist_y_values.sum() > 0 and len(hist_y_values) > 0 and np.isfinite(hist_y_values / hist_y_values.sum()).all() \
+        if hist_y_values.sum() > 0 and len(hist_y_values) > 0 and np.isfinite(
+        hist_y_values / hist_y_values.sum()).all() \
         else hist_y_values
 
     x_label = column if (properties is None or not properties.label) else properties.label
@@ -670,7 +737,8 @@ class HistogramDistributionAnalyzer(Analyzer):
 
     color_sequence = ["blue", "orange", "r", "g", "magenta", "yellow"]
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None,
+                   column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
         """Analyze a column, where each cell contains a real to real mapping.
@@ -868,7 +936,8 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
     line_alpha = 0.3
     line_width = 0.5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None,
+                   column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
         output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
@@ -941,7 +1010,8 @@ class TwoColumnScatterAnalyzer(Analyzer):
     marker_size = 5
     alpha = 0.5
 
-    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None,
+                   column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    adjust_height=False, show_individual=True, legend_column_count=None):
         """
@@ -1350,7 +1420,8 @@ class ScalarDictAnalyzer(Analyzer):
 
     def analyze_df(self, full_df, target_columns, output_plot_path=None, combine_keys=None,
                    x_min=None, x_max=None, mass_fraction=None, epsilon=0.0001, width_fraction=1,
-                   key_to_x=None, key_list=None, output_plot_dir=None, output_csv_file=None, column_to_properties=None,
+                   key_to_x=None, key_list=None, output_plot_dir=None, output_csv_file=None,
+                   column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
                    show_std_bar=True, show_std_band=False, show_individual_results=False,
                    y_tick_list=None, y_tick_label_list=None, y_tick_label_angle=0,
@@ -1787,7 +1858,7 @@ def get_histogram_dicts(df, column):
     return parsed_dicts
 
 
-def column_name_to_labels(column_name):
+def columnname_to_labels(column_name):
     """Guess x_label and y_label from a name column.
     If _to_ is found once in the string, x_label will be obtained from the text to the left,
     and y_label from the text to the right.

@@ -152,4 +152,10 @@ def managed_attributes(cls):
                         f"{repr(attribute)} which is not present in the configuration. "
                         f"The class' default value ({cls.__dict__[attribute]}) is used instead.")
 
+    for k, v in ini.sections_by_name[cls_fqn].items():
+        if not hasattr(cls, k):
+            logger.warn(f"In the .ini configuration files, managed attribute {repr(k)} is defined for {cls_fqn}, "
+                        f"but {cls.__name__} itself does not define that class attribute. The attribute is NOT added "
+                        f"to {cls.__name__}.")
+
     return cls

@@ -14,9 +14,3 @@ if __name__ == "__main__":
     analyzer = enb.aanalysis.ScalarValueAnalyzer()
 
     analysis_df = analyzer.get_df(full_df=full_df, group_by="class")
-    
-    print(f"[watch] analysis_df=\n{analysis_df}")
-    print(f"[watch] analysis_df.iloc[0]=\n{analysis_df.iloc[0]}")
-
-    
-

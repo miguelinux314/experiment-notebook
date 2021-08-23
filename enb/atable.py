@@ -205,6 +205,7 @@ import pandas as pd
 import pickle
 import ray
 import traceback
+import shutil
 
 import enb.config
 from enb import ray_cluster
@@ -1170,7 +1171,7 @@ class ATable(metaclass=MetaTable):
                 if fun in called_functions:
                     if row[column] is None:
                         raise ValueError(
-                            f"[F]unction {fun} failed to fill column {column} with a not-None value. " + (
+                            f"{self.__class__.__name__} failed to fill column {column} with a not-None value. " + (
                                 "Note that functions starting with column_ should either "
                                 "return a value or raise an exception"
                                 if fun.__name__.startwith(MetaTable.automatic_column_function_prefix) else ""))
@@ -1188,17 +1189,19 @@ class ATable(metaclass=MetaTable):
                     except (ValueError, TypeError):
                         skip = len(str(row[column])) > 0
                 if skip:
-                    enb.logger.info(f"Skipping existing '{column}' for index={index} <{self.__class__.__name__}>")
+                    enb.logger.info(f"Skipping existing value for column {repr(column)},  "
+                                    f"index={repr(index)} <{self.__class__.__name__}>")
                     continue
 
-                enb.logger.info(f"Calculating {column} for {index} with <{self.__class__.__name__}>{{ {fun} }}")
+                enb.logger.info(f"Calculating {repr(column)} for "
+                                f"index={repr(index)} <{self.__class__.__name__}>")
                 try:
                     result = fun(self, index, row)
                     called_functions.add(fun)
 
                     if row[column] is None:
-                        raise ValueError(f"Function {fun} failed to fill "
-                                         f"the associated '{column}' column ({column}:{row[column]})")
+                        raise ValueError(f"{self.__class__.__name__} failed to fill "
+                                         f"column {repr(column)}, index {repr(index)}")
 
                     if result is not None and options.verbose > 1 \
                             and not fun.__name__.startswith(MetaTable.automatic_column_function_prefix):
@@ -1207,13 +1210,18 @@ class ATable(metaclass=MetaTable):
                                         f"This value is ignored, and row['{column}'] is used instead.")
 
                 except Exception as ex:
-                    msg = f"[E]rror computing a cell: {repr(ex)}\n" \
-                          f"{self} ------------------------------------------------- [START error stack trace]\n" \
-                          f"{traceback.format_exc()}\n" \
-                          f"{self} ------------------------------------------------- [END error stack trace]\n"
+                    stack_start_message = "-" * (shutil.get_terminal_size()[0] // 5) + \
+                                          f" [START stack trace ({ex.__class__.__name__}) <{self.__class__.__name__}>]"
+                    stack_end_message = "-" * (shutil.get_terminal_size()[0] // 5) + \
+                                        f" [END stack trace ({ex.__class__.__name__}) <{self.__class__.__name__}>]"
+                    stack_format = f"{{msg:->{shutil.get_terminal_size()[0]}s}}"
+                    msg = f"Error computing column {repr(column)} of {self.__class__.__name__}, index {repr(index)}. " \
+                          f"Found exception: {repr(ex)}\n" \
+                          + stack_format.format(msg=stack_start_message) + "\n" + \
+                          f"{traceback.format_exc().strip()}\n" \
+                          + stack_format.format(msg=stack_end_message)
                     cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
-                    if options.verbose:
-                        print(msg)
+                    enb.logger.error(msg)
                     return cfe
 
             for index_name, index_value in zip(self.indices, unpack_index_value(index)):
