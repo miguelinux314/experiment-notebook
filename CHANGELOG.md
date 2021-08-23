@@ -1,7 +1,7 @@
 # Under development v0.3.0
 
 Version 0.3.0 is packed with new features and general performance improvements. At the same time, 
-some backwards compatibility is preserved with the 0.2 version family:
+significant backwards compatibility is preserved with the 0.2 version family:
 
 - Host code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name
   and semantics. Several methods and classes have been renamed and refactored, but these are not likely
@@ -14,7 +14,8 @@ some backwards compatibility is preserved with the 0.2 version family:
 
 - Features: all previous features have been retained, and new ones have been added.
 
-New major functions
+New major functions:
+
 - Created the first functional CLI. Can be run with `enb` or `python -m enb`.
 - Added a plugin installation subsystem; try `enb plugin -h` for more information.
 - New logging subsystem, which allows for a more flexible message output selection with more elegant code
@@ -22,6 +23,7 @@ New major functions
 Improvements and other changes
 
 - Improved performance of the ATable population, storage and loading routines.
+- Plotting in aanalysis makes more efficient use of parallelization. 
 - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
 - The sequential option is removed, in favor of setting the maximum number of cpus to 1.
 

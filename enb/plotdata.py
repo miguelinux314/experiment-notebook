@@ -451,7 +451,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       Only used when y_tick_list is not None.
     """
     with enb.logger.verbose_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}"):
-
         if len(pds_by_group_name) < 1:
             if options.verbose > 1:
                 print("[W]arning: trying to render an empty pds_by_group_name dict. "

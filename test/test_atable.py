@@ -122,18 +122,26 @@ class TestATable(unittest.TestCase):
 
 class TestFailingTable(unittest.TestCase):
     def test_always_failing_column(self):
-        class FailingTable(enb.atable.ATable):
-            def column_failing(self, index, row):
-                raise NotImplementedError("I always crash")
-
-        ft = FailingTable()
-        target_indices = string.ascii_letters
         try:
-            ft.get_df(target_indices=target_indices)
-            raise RuntimeError("The previous call should have failed")
-        except enb.atable.ColumnFailedError as ex:
-            assert len(ex.exception_list) == len(target_indices)
-            pass
+            # Disable logging of expected errors
+            old_verbose = enb.config.options.verbose
+            enb.config.options.verbose -= len(enb.logger.name_to_level)
+
+            class FailingTable(enb.atable.ATable):
+                def column_failing(self, index, row):
+                    raise NotImplementedError("I am expected to crash - no worries!")
+
+            ft = FailingTable()
+            target_indices = string.ascii_letters
+            try:
+                ft.get_df(target_indices=target_indices)
+                enb.config.options.verbose = old_verbose
+                raise RuntimeError("The previous call should have failed")
+            except enb.atable.ColumnFailedError as ex:
+                assert len(ex.exception_list) == len(target_indices)
+                pass
+        finally:
+            enb.config.options.verbose = old_verbose
 
 
 class TestSummaryTable(unittest.TestCase):
