@@ -254,7 +254,7 @@ class ScalarNumericAnalyzer(Analyzer):
                         column_kwargs["global_x_label"] = clean_column_name(column_name)
                 if "global_y_label" not in column_kwargs:
                     if self.main_alpha != 0:
-                        column_kwargs["global_y_label"] = f"Sample distribution"
+                        column_kwargs["global_y_label"] = f"Sample histogram"
                         if self.secondary_alpha != 0:
                             column_kwargs["global_y_label"] += ", average and $\pm 1\sigma$"
                     elif self.secondary_alpha != 0:
@@ -418,7 +418,7 @@ class ScalarNumericAnalyzer(Analyzer):
                         alpha=self.secondary_alpha,
                         err_neg_values=[row[f"{column_name}_std"]],
                         err_pos_values=[row[f"{column_name}_std"]],
-                        line_width=self.main_line_width,
+                        line_width=self.secondary_line_width,
                         vertical=False))
 
                 row[_column_name] = group_plds
