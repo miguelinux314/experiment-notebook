@@ -348,7 +348,7 @@ def parallel_render_plds_by_group(
         force_monochrome_group=True,
         # Axis configuration
         show_grid=None,
-        semilog_y=None, semilog_y_base=10, semilog_hist_min=1e-10,
+        semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
         # Axis limits
         x_min=None, x_max=None, horizontal_margin=0,
         y_min=None, y_max=None,
@@ -365,7 +365,7 @@ def parallel_render_plds_by_group(
                                 x_min=x_min, x_max=x_max,
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                combine_groups=combine_groups, semilog_hist_min=semilog_hist_min,
+                                combine_groups=combine_groups, semilog_y_min_bound=semilog_y_min_bound,
                                 group_name_order=group_name_order,
                                 fig_width=fig_width, fig_height=fig_height,
                                 global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
@@ -387,7 +387,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          force_monochrome_group=True,
                          # Axis configuration
                          show_grid=None,
-                         semilog_y=None, semilog_y_base=10, semilog_hist_min=1e-10,
+                         semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
                          # Axis limits
                          x_min=None, x_max=None, horizontal_margin=0,
                          y_min=None, y_max=None,
@@ -430,7 +430,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       aligned with the major axis
     :param semilog_y: if True, a logarithmic scale is used in the Y axis.
     :param semilog_y_base: if semilog_y is True, the logarithm base employed
-    :param semilog_hist_min: if semilog_y is True, make y_min the maximum of y_min and this value
+    :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum of y_min and this value
 
     Axis limits:
     :param x_min: if not None, force plots to have this value as left end
@@ -465,7 +465,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     pld.legend_column_count = legend_column_count
 
         y_min = column_properties.hist_min if y_min is None else y_min
-        y_min = max(semilog_hist_min, y_min if y_min is not None else 0) \
+        y_min = max(semilog_y_min_bound, y_min if y_min is not None else 0) \
             if ((column_properties is not None and column_properties.semilog_y) or semilog_y) else y_min
         y_max = column_properties.hist_max if y_max is None else y_max
 

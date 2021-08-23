@@ -30,6 +30,7 @@ import itertools
 import glob
 import ast
 import configparser
+import inspect
 import textwrap
 
 from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
@@ -140,7 +141,10 @@ def managed_attributes(cls):
               f"{cls.__name__}"
 
     for attribute in (k for k, v in cls.__dict__.items()
-                      if not k.startswith("_") and not k == "column_to_properties" and not callable(v)):
+                      if not k.startswith("_")
+                         and not k == "column_to_properties"
+                         and not callable(v)
+                         and not isinstance(v, classmethod)):
         try:
             old_value = getattr(cls, attribute)
             setattr(cls, attribute, ini.get_key(cls_fqn, attribute))

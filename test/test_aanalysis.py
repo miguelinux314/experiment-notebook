@@ -35,5 +35,6 @@ class TestScalarToScalar(unittest.TestCase):
                 output_csv_file=os.path.join(tmp_dir, "ignore.csv"),
                 output_plot_dir=tmp_dir)
 
+
 if __name__ == "__main__":
     unittest.main()

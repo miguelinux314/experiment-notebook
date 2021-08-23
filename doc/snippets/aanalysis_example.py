@@ -11,6 +11,6 @@ import enb
 if __name__ == "__main__":
     full_df = pd.read_csv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "iris_dataset.csv"))
 
-    analyzer = enb.aanalysis.ScalarValueAnalyzer()
+    analyzer = enb.aanalysis.ScalarNumericAnalyzer()
 
     analysis_df = analyzer.get_df(full_df=full_df, group_by="class")
