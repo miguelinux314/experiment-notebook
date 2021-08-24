@@ -15,7 +15,6 @@ import sortedcontainers
 import re
 import glob
 import numbers
-import deprecation
 
 import pdf2image
 import numpy as np
@@ -34,8 +33,9 @@ from enb.plotdata import marker_cycle
 
 
 class OldAnalyzer:
-    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None, column_to_properties=None,
-                   group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
+    def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None,
+                   column_to_properties=None, group_by=None, group_name_order=None,
+                   show_global=True, show_count=True, version_name=None,
                    adjust_height=False):
         """
         Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
@@ -62,11 +62,29 @@ class OldAnalyzer:
 
 @enb.config.aini.managed_attributes
 class Analyzer(enb.atable.ATable):
-    """Base class for all analyzers.
+    """Base class for all enb analyzers.
 
-    Note that the `@enb.config.aini.managed_attributes` decorator overwrites the class ("static") properties
-    upon definition, with values taken from file-based configuration.
+    A |DataFrame| instance with analysis results can be obtained by calling get_df.
+    In addition, if render_plots is used in that function, one or more figures will be
+    produced. What plots are generated (if any) is based on the values of
+    the self.selected_render_modes list, which must contain only elements in self.valid_render_modes.
+
+    Data analysis is done through a surrogate :class:`enb.aanalysis.AnalyzerSummary` subclass,
+    which is used to obtain the returned analysis results. Subclasses of :class:`enb.aanalysis.Analyzer`
+    then perform any requested plotting.
+
+    Rendering is performed for all modes contained self.selected_render_modes, which
+    must be in self.valid_render_modes.
+
+    The `@enb.config.aini.managed_attributes` decorator overwrites the class ("static") properties
+    upon definition, with values taken from .ini configuration files. The decorator can be added
+    to any Analyzer subclass, and parameters can be managed within the full-qualified name of the class,
+    e.g., using a "[enb.aanalysis.Analyzer]" section header in any of the .ini files detected by enb.
     """
+    # List of allowed rendering modes for the analyzer
+    valid_render_modes = {"histogram"}
+    # Selected render modes (by default, all of them)
+    selected_render_modes = set(valid_render_modes)
     # Main title to be displayed
     plot_title = None
     # Show the number of elements in each group?
@@ -90,26 +108,40 @@ class Analyzer(enb.atable.ATable):
     # If more than group is displayed, when applicable, adjust plots to use the same scale in every subplot?
     common_group_scale = True
 
-    # Underscored attributes are not maanged
-    _plottable_data_column_suffix = "_plds"
+    # (Underscored attributes are not managed)
 
     def __init__(self, csv_support_path=None, column_to_properties=None, progress_report_period=None):
         super().__init__(csv_support_path=csv_support_path,
                          column_to_properties=column_to_properties,
                          progress_report_period=progress_report_period)
+        self.valid_render_modes = set(self.valid_render_modes)
+        self.selected_render_modes = set(self.selected_render_modes)
+        for mode in self.selected_render_modes:
+            if mode not in self.valid_render_modes:
+                raise SyntaxError(f"Selected mode {repr(mode)} not in the "
+                                  f"list of available modes ({repr(self.valid_render_modes)}")
 
-    def get_df(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
-               group_by=None, column_to_properties=None, **render_kwargs):
+    def get_df(self, full_df, target_columns,
+               # Dynamic arguments with every call
+               output_plot_dir=None,
+               group_by=None, column_to_properties=None,
+               # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
+               # in turn manageable through .ini configuration files via the
+               # @enb.config.aini.managed_attributes decorator.
+               selected_render_modes=None, show_global=None, show_count=True, plot_title=None,
+               # Rendering options, directly passed to plotdata.render_plds_by_group
+               **render_kwargs):
         """
         Analyze a :class:`pandas.DataFrame` instance, optionally producing plots, and returning the computed
         dataframe with the analysis results.
+
+        Rendering is performed for all modes contained self.selected_render_modes, which
+        must be in self.valid_render_modes.
 
         You can use the @enb.aanalysis.Analyzer.normalize_parameters decorator when overwriting this method,
         to automatically transform None values into their defaults.
 
         :param full_df: full DataFrame instance with data to be plotted and/or analyzed.
-        :param render_plots: if True or False, it selects whether plots are generated. If None,
-          the decision is made based on `enb.config.options`.
         :param target_columns: columns to be analyzed. Typically a list of column names, although
           each subclass may redefine the accepted format (e.g., pairs of column names). If None,
           all scalar, non string columns are used.
@@ -121,56 +153,269 @@ class Analyzer(enb.atable.ATable):
           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
           columns.
 
+        :param selected_render_modes: a potentially empty list of mode names, all of which
+          must be in self.valid_render_modes
+        :param show_global: if True, a group containing all elements is also included in the analysis
+
         :return: a |DataFrame| instance with analysis results
         """
-        raise SyntaxError(
-            f"Subclasses must implement this method. {self.__class__} did not. See enb.aanalysis.Analyzer.")
+
+        def normalized_wrapper(self, full_df, target_columns,
+                               output_plot_dir, group_by, column_to_properties,
+                               **render_kwargs):
+            # Get the summary table with the requested data analysis
+            summary_table = self.build_summary_atable(
+                full_df=full_df, target_columns=target_columns, group_by=group_by)
+            summary_df = summary_table.get_df(reference_df=full_df)
+
+            # Render all applicable modes
+            self.render_all_modes(
+                summary_df=summary_df,
+                target_columns=target_columns,
+                output_plot_dir=output_plot_dir,
+                group_by=group_by,
+                column_to_properties=column_to_properties,
+                **render_kwargs)
+
+            # Return the summary result dataframe
+            return summary_df
+
+        normalized_wrapper = self.normalize_parameters(
+            f=normalized_wrapper,
+            group_by=group_by,
+            column_to_properties=column_to_properties)
+
+        return normalized_wrapper(self=self, full_df=full_df)
+
+    def render_all_modes(self,
+                         # Dynamic arguments with every call
+                         summary_df, target_columns, output_plot_dir,
+                         group_by, column_to_properties,
+                         # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
+                         # in turn manageable through .ini configuration files via the
+                         # @enb.config.aini.managed_attributes decorator.
+                         selected_render_modes, show_global, show_count,
+                         # Rendering options, directly passed to plotdata.render_plds_by_group
+                         **render_kwargs):
+        """Render all target modes and columns into output_plot_dir, with file names based
+        on self's class name, the target column and the target render mode.
+
+        Subclasses may overwrite their update_render_kwargs_one_case method to customize the rendering
+        parameters that are passed to the parallel rendering function from enb.plotdata.
+        These overwriting methods are encouraged to call enb.aanalysis.Analyzer.update_render_kwargs_one_case
+        (directly or indirectly) so make sure all necessary parameters reach the rendering function.
+        """
+        # If plot rendering is requested, do so for all selected modes, in parallel
+        render_ids = []
+        for render_mode in selected_render_modes:
+            for column_name in target_columns:
+                # The update_render_kwargs_one_case call should set all rendering kwargs of interest.
+                # A call to Analyzer's/super()'s update_render_kwargs_one_case is recommended
+                # to guarantee consistency and minimize code duplicity.
+                column_kwargs = self.update_render_kwargs_one_case(
+                    column_name=column_name, render_mode=render_mode, summary_df=summary_df,
+                    output_plot_dir=output_plot_dir, group_by=group_by, column_to_properties=column_to_properties,
+                    show_global=show_global, show_count=show_count,
+                    **(dict(render_kwargs) if render_kwargs is not None else dict()))
+
+                # All arguments to the parallel rendering function are ready; their associated tasks as created
+                render_ids.append(enb.plotdata.parallel_render_plds_by_group.remote(
+                    **{k: ray.put(v) for k, v in column_kwargs.items()}))
+
+        # Wait until all rendering tasks are done while updating about progress
+        with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}..."):
+            for progress_report in enb.ray_cluster.ProgressiveGetter(
+                    ray_id_list=render_ids,
+                    iteration_period=self.progress_report_period):
+                enb.logger.verbose(progress_report)
+
+    def update_render_kwargs_one_case(
+            self, column_name, render_mode,
+            # Dynamic arguments with every call
+            summary_df, output_plot_dir,
+            group_by, column_to_properties,
+            # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
+            # in turn manageable through .ini configuration files via the
+            # @enb.config.aini.managed_attributes decorator.
+            show_global, show_count,
+            # Rendering options, directly passed to plotdata.render_plds_by_group
+            **column_kwargs):
+        """Update column_kwargs with the desired rendering arguments for this column
+        and render mode. Return the updated dict.
+        """
+        # Get the output path. Plots are overwriten by default
+        column_kwargs["output_plot_path"] = os.path.join(
+            output_plot_dir,
+            f"{self.__class__.__name__}_"
+            f"{column_name}{'_groupby-' + group_by if group_by else ''}.pdf")
+        column_kwargs["pds_by_group_name"] = {
+            group_label: group_plds for group_label, group_plds
+            in summary_df[["group_label", f"{column_name}_render-{render_mode}"]].values}
+
+        # General column properties
+        if "column_properties" not in column_kwargs:
+            try:
+                column_kwargs["column_properties"] = column_to_properties[column_name]
+            except (KeyError, TypeError):
+                column_kwargs["column_properties"] = enb.atable.ColumnProperties(name=column_name)
+
+        # Generate labels
+        if "global_x_label" not in column_kwargs:
+            if column_to_properties is not None \
+                    and column_name in column_to_properties \
+                    and column_to_properties[column_name].label:
+                column_kwargs["global_x_label"] = column_to_properties[column_name].label
+            else:
+                column_kwargs["global_x_label"] = clean_column_name(column_name)
+        if "y_labels_by_group_name" not in column_kwargs:
+            column_kwargs["y_labels_by_group_name"] = {
+                group: f"{group} ({count})" if show_count else f"{group}"
+                for group, count in summary_df[["group_label", "group_size"]].values}
+
+        return column_kwargs
 
     @classmethod
-    def normalize_parameters(cls, f):
-        """Optional decorator for Analyzer.get_df implementations, so that None values are automatically
-        transformed into their defaults.
+    def normalize_parameters(cls, f, group_by, column_to_properties):
+        """Optional decorator methods compatible with the Analyzer.get_df signature, so that managed
+        attributes are used when
+
+        This way, users may overwrite most adjustable arguments programmatically,
+        or via .ini configuration files.
         """
 
         @functools.wraps(f)
-        def wrapper(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
-                    group_by=None, column_to_properties=None,
-                    show_global=None, show_count=None,
-                    plot_title=None, **render_kwargs):
-            render_plots = render_plots if render_plots is not None else not enb.config.options.no_render
-            target_columns = target_columns if target_columns is not None else \
-                [c for c in full_df.columns if isinstance(full_df.iloc[0][c], numbers.Number)]
-            column_to_properties = column_to_properties if column_to_properties is not None else \
-                {c: enb.atable.ColumnProperties(c) for c in target_columns}
-            output_plot_dir = output_plot_dir if output_plot_dir is not None else enb.config.options.plot_dir
+        def wrapper(self,
+                    # Dynamic arguments with every call (full_df and group_by are not normalized)
+                    full_df, target_columns=None, output_plot_dir=None,
+                    # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
+                    # in turn manageable through .ini configuration files via the
+                    # @enb.config.aini.managed_attributes decorator.
+                    selected_render_modes=None, show_global=None, show_count=True, plot_title=None,
+                    # Rendering options, directly passed to plotdata.render_plds_by_group
+                    **render_kwargs):
+            selected_render_modes = selected_render_modes if selected_render_modes is not None \
+                else cls.selected_render_modes
+            if target_columns is None:
+                target_columns = [c for c in full_df.columns if isinstance(full_df.iloc[0][c], numbers.Number)]
+                if not target_columns:
+                    raise ValueError(f"Cannot find any numeric columns in {repr(full_df.columns)} "
+                                     "and no specific column was chosen")
+            elif isinstance(target_columns, str):
+                target_columns = [target_columns]
+
+            output_plot_dir = output_plot_dir if output_plot_dir is not None \
+                else enb.config.options.plot_dir
             show_global = show_global if show_global is not None else cls.show_global
             show_count = show_count if show_count is not None else cls.show_count
             plot_title = plot_title if plot_title is not None else cls.plot_title
-            return f(self=self, full_df=full_df, render_plots=render_plots,
+
+            return f(self=self, full_df=full_df, selected_render_modes=selected_render_modes,
                      target_columns=target_columns, output_plot_dir=output_plot_dir,
-                     group_by=group_by, column_to_properties=column_to_properties,
                      show_global=show_global, show_count=show_count,
+                     group_by=group_by, column_to_properties=column_to_properties,
                      plot_title=plot_title, **render_kwargs)
 
         return wrapper
 
-    def build_summary_atable(self, full_df, target_columns, group_by, original_column_to_properties, render_plots):
+    def build_summary_atable(self, full_df, target_columns, group_by):
         """
-        Build a :class:`enb.atable.SummaryTable` instance with the appropriate columns to perform the intended analysis.
-        Use this class' properties, e.g., managed via .ini configuration files.
+        Build a :class:`enb.aanalysis.AnalyzerSummary` instance with the appropriate
+        columns to perform the intended analysis. See :class:`enb.aanalysis.AnalyzerSummary`
+        for documentation on the meaning of each argument.
 
-        :param full_df: df being analyzed
-        :param target_columns: as passed to `enb.aanalysis.Analyzer.analyze_df`
-        :param group_by: as passed to `enb.aanalysis.Analyzer.analyze_df`
-        :param original_column_to_properties: column_to_properties passed to `enb.aanalysis.Analyzer.analyze_df`, i.e.,
-           the properties defined for the table that produced full_df, if any. It can be None.
-        :param show_global: as passed to `enb.aanalysis.Analyzer.analyze_df`
-        :param render_plots: if True, plotting elements for each group are computed, adding the appropriate
-          `*_plds` columns.
+        :param full_df: dataframe instance being analyzed
+        :param target_columns: list of columns specified for analysis
+
         :return: the built summary table, without having called its get_df method.
         """
         raise SyntaxError(
-            f"Subclasses must implement this method. {self.__class__} did not. See enb.aanalysis.Analyzer.")
+            f"Subclasses must implement this method. {self.__class__} did not. "
+            f"Typically, the associated AnalyzerSummary needs to be instantiated and returned. "
+            f"See enb.aanalysis.Analyzer's documentation.")
+
+
+class AnalyzerSummary(enb.atable.SummaryTable):
+    """Base class for the surrogate, dynamic summary tables employed by :class:`enb.aanalysis.Analyzer`
+    subclasses to gather analysis results and plottable data (when configured to do so).
+    """
+
+    def __init__(self, analyzer, full_df, target_columns, group_by):
+        """Dynamically generate the needed analysis columns and any other needed attributes
+        for the analysis.
+
+        Columns that generate plottable data are automatically defined defined using self.render_target,
+        based on the analyzer's selected render modes.
+
+        Plot rendering columns are added automatically via this call, with
+        associated function self.render_target with partialed parameters
+        column_name and render_mode.
+
+        Subclasses are encouraged to call `self.move_render_columns_back()` to make sure rendering columns
+        are processed after any other intermediate column defined by the subclass.
+
+        :param analyzer: :class:`enb.aanalysis.Analyzer` subclass instance corresponding to this summary table
+        :param full_df: full dataframe specified for analysis
+        :param target_columns: columns for which an analysis is being requested
+        :param group_by: grouping configuration for this summary. See the specific subclass help for more inforamtion.
+        """
+        # Note that csv_support_path is set to None to force computation of the analysis
+        # every call, instead of relying on persistence (it would make no sense to load
+        # the summary for a different input dataset).
+        super().__init__(full_df=full_df, column_to_properties=analyzer.column_to_properties,
+                         copy_df=False, csv_support_path=None)
+        self.analyzer = analyzer
+        self.full_df = full_df
+        self.group_by = group_by
+
+        # Add columns that compute the list of plotting elements of each group, if needed
+        for selected_render_mode in self.analyzer.selected_render_modes:
+            for column_name in target_columns:
+                self.add_column_function(
+                    self,
+                    fun=functools.partial(
+                        self.compute_plottable_data_one_case, column_name=column_name,
+                        render_mode=selected_render_mode),
+                    column_properties=enb.atable.ColumnProperties(
+                        name=f"{column_name}_render-{selected_render_mode}",
+                        has_object_values=True))
+
+    def compute_plottable_data_one_case(self, *args, **kwargs):
+        """Column-setting function (after "partialing"-out "column_name" and "render_mode"),
+        that computes the list of enb.plotdata.PlottableData instances that represent
+        one group, one target column and one render mode.
+
+        Subclasses must implement this method.
+
+        :param args: render configuration arguments is expected to contain values for the signature
+          (self, group_label, row)
+        :param kwargs: dict with at least the "column_name" and "render_mode" parameters.
+        """
+        # The following snippet can be used in overwriting implementations of render_target.
+        _self, group_label, row = args
+        # group_df = self.label_to_df[group_label]
+        column_name = kwargs["column_name"]
+        render_mode = kwargs["render_mode"]
+        # column_series = group_df[column_name]
+        if render_mode not in self.analyzer.valid_render_modes:
+            raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
+
+        raise SyntaxError(f"Subclasses must implement this method, which should set row[_column_name] "
+                          f"to a list of enb.plotdata.PlottableData instances. "
+                          f"{self.__class__.__name__} did not "
+                          f"(group_label={group_label}, "
+                          f"column_name={repr(column_name)}, "
+                          f"render_mode={repr(render_mode)}).")
+
+    def move_render_columns_back(self):
+        """Reorder the column definitions so that rendering columns are attempted after
+        any column the subclass may have defined.
+        """
+        column_to_properties = collections.OrderedDict()
+        for k, v in ((k, v) for k, v in self.column_to_properties.items() if f"_render-" not in k):
+            column_to_properties[k] = v
+        for k, v in ((k, v) for k, v in self.column_to_properties.items() if f"_render-" in k):
+            column_to_properties[k] = v
+        self.column_to_properties = column_to_properties
 
 
 @enb.config.aini.managed_attributes
@@ -181,6 +426,8 @@ class ScalarNumericAnalyzer(Analyzer):
     # and can be modified before any call to get_df. These values may be updated based on .ini files,
     # see the documentation of the enb.config.aini.managed_attributes decorator for more information.
     # Common analyzer attributes:
+    valid_render_modes = {"histogram"}
+    selected_render_modes = set(valid_render_modes)
     plot_title = None
     show_count = True
     show_global = True
@@ -199,402 +446,409 @@ class ScalarNumericAnalyzer(Analyzer):
     # Adjust for thinner or thicker vertical bars.
     bar_width_fraction = 1
 
-    @Analyzer.normalize_parameters
-    def get_df(self, full_df, render_plots=None, target_columns=None, output_plot_dir=None,
-               group_by=None, column_to_properties=None,
-               show_global=True, show_count=True, plot_title=None,
-               **render_kwargs):
+    def update_render_kwargs_one_case(
+            self, column_name, render_mode,
+            # Dynamic arguments with every call
+            summary_df, output_plot_dir,
+            group_by, column_to_properties,
+            # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
+            # in turn manageable through .ini configuration files via the
+            # @enb.config.aini.managed_attributes decorator.
+            show_global, show_count,
+            # Rendering options, directly passed to plotdata.render_plds_by_group
+            **column_kwargs):
+        """Update column_kwargs with the desired rendering arguments for this column
+        and render mode. Return the updated dict.
         """
-        Analyze and plot full_df, as described in :meth:`enb.aanalysis.Analyzer.get_df`.
+        # Update common rendering kwargs
+        column_kwargs = super().update_render_kwargs_one_case(
+            column_name=column_name, render_mode=render_mode,
+            summary_df=summary_df, output_plot_dir=output_plot_dir,
+            group_by=group_by, column_to_properties=column_to_properties,
+            show_global=show_global, show_count=show_count,
+            **column_kwargs)
 
-        If histogram_bin_count is None, self.histogram_bin_count is used instead
+        # Update specific rendering kwargs for this analyzer:
+        if "global_y_label" not in column_kwargs:
+            if self.main_alpha != 0:
+                column_kwargs["global_y_label"] = f"Sample histogram"
+                if self.secondary_alpha != 0:
+                    column_kwargs["global_y_label"] += ", average and $\pm 1\sigma$"
+            elif self.secondary_alpha != 0:
+                column_kwargs["global_y_label"] = f"Average and $\pm 1 \sigma$"
+            else:
+                enb.logger.warn(f"Plotting with {self.__class__.__name__} "
+                                "and both bar_alpha and secondary_alpha "
+                                "set to zero. Expect an empty-looking plot.")
 
-        The target_columns parameter must be either a string or a list of strings, with the
-        names of the columns to be analyzed.
-        """
-        summary_table = self.build_summary_atable(
-            full_df=full_df, target_columns=target_columns, group_by=group_by,
-            original_column_to_properties=column_to_properties,
-            render_plots=render_plots)
-        summary_df = summary_table.get_df(reference_df=full_df)
+        # Calculate axis limits
+        if "x_min" not in column_kwargs:
+            column_kwargs["x_min"] = float(summary_df[f"{column_name}_min"].min())
+        if "x_max" not in column_kwargs:
+            column_kwargs["x_max"] = float(summary_df[f"{column_name}_max"].max())
 
-        if render_plots:
-            render_ids = []
-            for column_name in target_columns:
-                column_kwargs = dict(render_kwargs) if render_kwargs is not None else dict()
+        # Adjust a common scale for all subplots
+        if self.common_group_scale and ("y_min" not in column_kwargs or "y_max" not in column_kwargs):
+            global_y_min = float("inf")
+            global_y_max = float("-inf")
+            for pld_list in summary_df[f"{column_name}_render-{render_mode}"]:
+                for bar_data in (pld for pld in pld_list if isinstance(pld, plotdata.BarData)):
+                    global_y_min = min(global_y_min, min(bar_data.y_values))
+                    global_y_max = max(global_y_max, max(bar_data.y_values))
+            if "y_min" not in column_kwargs:
+                column_kwargs["y_min"] = global_y_min
+            if "y_max" not in column_kwargs:
+                column_kwargs["y_max"] = global_y_max
 
-                # Get the output path. Plots are overwriten by default
-                column_kwargs["output_plot_path"] = os.path.join(
-                    output_plot_dir,
-                    f"{self.__class__.__name__}_"
-                    f"{column_name}{'_groupby-' + group_by if group_by else ''}.pdf")
-                column_kwargs["pds_by_group_name"] = {
-                    group_label: group_plds for group_label, group_plds
-                    in summary_df[["group_label",
-                                   f"{column_name}{self._plottable_data_column_suffix}"]].values}
+        return column_kwargs
 
-                # General column properties
-                if "column_properties" not in column_kwargs:
-                    try:
-                        column_kwargs["column_properties"] = column_to_properties[column_name]
-                    except KeyError:
-                        column_kwargs["column_properties"] = enb.atable.ColumnProperties(name=column_name)
-
-                # Calculate the axis limits
-                if "x_min" not in column_kwargs:
-                    column_kwargs["x_min"] = float(summary_df[f"{column_name}_min"].min())
-                if "x_max" not in column_kwargs:
-                    column_kwargs["x_max"] = float(summary_df[f"{column_name}_max"].max())
-
-                # Generate labels
-                if "global_x_label" not in column_kwargs:
-                    if column_name in column_to_properties and column_to_properties[column_name].label:
-                        column_kwargs["global_x_label"] = column_to_properties[column_name].label
-                    else:
-                        column_kwargs["global_x_label"] = clean_column_name(column_name)
-                if "global_y_label" not in column_kwargs:
-                    if self.main_alpha != 0:
-                        column_kwargs["global_y_label"] = f"Sample histogram"
-                        if self.secondary_alpha != 0:
-                            column_kwargs["global_y_label"] += ", average and $\pm 1\sigma$"
-                    elif self.secondary_alpha != 0:
-                        column_kwargs["global_y_label"] = f"Average and $\pm 1 \sigma$"
-                    else:
-                        enb.logger.warn(f"Plotting with {self.__class__.__name__} "
-                                        "and both bar_alpha and secondary_alpha "
-                                        "set to zero. Expect an empty-looking plot.")
-                if "y_labels_by_group_name" not in column_kwargs:
-                    column_kwargs["y_labels_by_group_name"] = {
-                        group: f"{group} ({count})" if show_count else f"{group}"
-                        for group, count in summary_df[["group_label", "group_size"]].values}
-
-                if self.common_group_scale:
-                    global_y_min = float("inf")
-                    global_y_max = float("-inf")
-                    for pld_list in summary_df[f"{column_name}{self._plottable_data_column_suffix}"]:
-                        for bar_data in (pld for pld in pld_list if isinstance(pld, plotdata.BarData)):
-                            global_y_min = min(global_y_min, min(bar_data.y_values))
-                            global_y_max = max(global_y_max, max(bar_data.y_values))
-
-                    if "y_min" not in column_kwargs:
-                        column_kwargs["y_min"] = global_y_min
-                    if "y_max" not in column_kwargs:
-                        column_kwargs["y_max"] = global_y_max
-
-                render_ids.append(enb.plotdata.parallel_render_plds_by_group.remote(
-                    **{k: ray.put(v) for k, v in column_kwargs.items()}))
-
-        with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots..."):
-            for progress_report in enb.ray_cluster.ProgressiveGetter(ray_id_list=render_ids, iteration_period=5):
-                enb.logger.verbose(progress_report)
-
-        return summary_df
-
-    def build_summary_atable(self, full_df, target_columns, group_by, original_column_to_properties, render_plots):
+    def build_summary_atable(self, full_df, target_columns, group_by):
         """Dynamically build a SummaryTable instance for scalar value analysis.
         """
-
-        class ScalarNumericSummary(enb.atable.SummaryTable):
-            """Summary table used in ScalarValueAnalyzer. Nested to highlight its dynamic nature.
-            """
-
-            # Underscores are used to avoid name shadowing
-
-            def __init__(_self, _reference_df, _column_to_properties, _csv_support_path, _histogram_bin_count,
-                         _group_by=None):
-                super().__init__(reference_df=_reference_df, column_to_properties=_column_to_properties,
-                                 copy_df=False, csv_support_path=_csv_support_path)
-                _self.histogram_bin_count = _histogram_bin_count if _histogram_bin_count is not None \
-                    else self.histogram_bin_count
-                _self.group_by = _group_by
-                _self.column_to_xmin_xmax = {}
-                for c_name, c_properties in _column_to_properties.items():
-                    # Add columns that compute the summary information
-                    for descriptor in ["min", "max", "avg", "std", "median"]:
-                        _self.add_column_function(
-                            _self,
-                            fun=functools.partial(_self.set_scalar_description, column_name=c_name),
-                            column_properties=enb.atable.ColumnProperties(
-                                name=f"{c_name}_{descriptor}", label=f"{c_name}: {descriptor}"))
-                    _self.column_to_xmin_xmax[c_name] = scipy.stats.describe(_reference_df[c_name].values).minmax
-                    # Add columns that compute the list of plotting elements of each group, if needed
-                    if render_plots:
-                        _self.add_column_function(
-                            _self,
-                            fun=functools.partial(_self.render_target, column_name=c_name),
-                            column_properties=enb.atable.ColumnProperties(
-                                name=f"{c_name}{self._plottable_data_column_suffix}",
-                                has_object_values=True))
-
-            def split_groups(_self, reference_df=None):
-                _self.reference_df = reference_df if reference_df is not None else _self.reference_df
-                return _self.reference_df.groupby(_self.group_by) \
-                    if _self.group_by is not None else [("all", _self.reference_df)]
-
-            def set_scalar_description(_self, *_args, **_kwargs):
-                """Set basic descriptive statistics for the target column
-                """
-                _, group_label, row = _args
-                column_name = _kwargs["column_name"]
-                description_df = _self.label_to_df[group_label][column_name].describe()
-                row[f"{column_name}_min"] = description_df["min"]
-                row[f"{column_name}_max"] = description_df["max"]
-                row[f"{column_name}_avg"] = description_df["mean"]
-                row[f"{column_name}_std"] = description_df["std"]
-                row[f"{column_name}_median"] = description_df["50%"]
-
-            def render_target(_self, *_args, **_kwargs):
-                """Compute the list of plotdata.PlottableData instances that represent
-                this group in a plot. It is only invoked if render_plots is True.
-                """
-                _, group_label, row = _args
-                group_df = _self.label_to_df[group_label]
-                column_name = _kwargs["column_name"]
-                column_series = group_df[column_name]
-
-                # Set the analysis range based on column properties if provided, or the data's dynamic range.
-                try:
-                    analysis_range = [original_column_to_properties[column_name].plot_min,
-                                      original_column_to_properties[column_name].plot_max]
-                except KeyError:
-                    analysis_range = [None, None]
-                analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
-                    else _self.column_to_xmin_xmax[column_name][0]
-                analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
-                    else _self.column_to_xmin_xmax[column_name][1]
-                if analysis_range[0] == analysis_range[1]:
-                    # Avoid unnecessary warnings from matplotlib
-                    analysis_range = [analysis_range[0], analysis_range[0] + 1]
-
-                # Use numpy to obtain the absolute mass distribution of the data.
-                # density=False is used so that we can detect the case where
-                # some data is not used.
-                hist_y_values, bin_edges = np.histogram(
-                    column_series.dropna(), bins=self.histogram_bin_count,
-                    range=analysis_range, density=False)
-
-                # Verify that the histogram uses all data
-                if sum(hist_y_values) != len(column_series):
-                    justified_difference = False
-                    error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
-                                f"({sum(hist_y_values)} used out of {len(column_series)})."
-                    if math.isinf(row[f"{column_name}_min"]) or math.isinf(row[f"{column_name}_max"]):
-                        error_msg += f" Note that infinite values have been found in the column, " \
-                                     f"which are not included in the analysis."
-                        justified_difference = True
-                    if analysis_range[0] > row[f"{column_name}_min"] or analysis_range[1] < row[
-                        f"{column_name}_max"]:
-                        error_msg += f" This is likely explained by the plot_min/plot_max or y_min/y_max " \
-                                     f"values set for this analysis."
-                        justified_difference = True
-                    if justified_difference:
-                        enb.log.info(error_msg)
-                    else:
-                        raise ValueError(error_msg)
-
-                # The relative distribution is computed based
-                # on the selected analysis range only, which
-                # may differ from the full column dynamic range
-                # (hence the warning(s) above)
-                histogram_sum = hist_y_values.sum()
-                hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-                hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
-
-                # Create the plotdata.PlottableData instances for this group
-                group_plds = []
-                group_plds.append(plotdata.BarData(
-                    x_values=hist_x_values,
-                    y_values=hist_y_values,
-                    x_label=original_column_to_properties[column_name].label,
-                    alpha=self.main_alpha,
-                    extra_kwargs=dict(
-                        width=self.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
-
-                if self.main_marker_size > 0:
-                    group_plds.append(plotdata.ErrorLines(
-                        x_values=[row[f"{column_name}_avg"]],
-                        y_values=[0.5 * (hist_y_values.min() + hist_y_values.max())],
-                        marker_size=self.main_marker_size,
-                        alpha=self.secondary_alpha,
-                        err_neg_values=[row[f"{column_name}_std"]],
-                        err_pos_values=[row[f"{column_name}_std"]],
-                        line_width=self.secondary_line_width,
-                        vertical=False))
-
-                row[_column_name] = group_plds
-
-        return ScalarNumericSummary(
-            _reference_df=full_df,
-            _column_to_properties=original_column_to_properties,
-            _csv_support_path=self.csv_support_path,
-            _group_by=group_by, _histogram_bin_count=self.histogram_bin_count)
+        return ScalarNumericSummary(analyzer=self, full_df=full_df, target_columns=target_columns,
+                                    group_by=group_by)
 
 
-@enb.config.aini.managed_attributes
-class DictNumericAnalyzer(Analyzer):
-    """Analyzer for columns with associated ColumnProperties having has_dict=True.
-    Dictionaries are expected to have numeric entries.
+class ScalarNumericSummary(AnalyzerSummary):
+    """Summary table used in ScalarValueAnalyzer, defined dynamically with each call to maintain
+    independent column definitions.
+
+    Note that dynamically in this context implies that modifying the returned instance's class columns does
+    not affect the definition of other instances of this class.
+
+    Note that in most cases, the columns returned by default
+    should suffice.
     """
-    # The following attributes are directly used for analysis/plotting,
-    # and can be modified before any call to get_df. These values may be updated based on .ini files,
-    # see the documentation of the enb.config.aini.managed_attributes decorator for more information.
-    # Common analyzer attributes:
-    plot_title = None
-    show_count = True
-    show_global = True
-    main_marker_size = 5
-    main_alpha = 0.5
-    secondary_alpha = 0.5
-    semilog_y_min_bound = 1e-5
-    main_line_width = 2
-    secondary_line_width = 2
-    group_row_margin = 0.2
-    common_group_scale = True
-    # Specific analyzer attributes:
-    # Number of bins (histogram columns) when "histogram" is used as the combination
-    # method.
-    default_bin_count = 16
-    # Angle used for the y axis tick labels
-    y_tick_label_angle = 90
 
-    def build_summary_atable(self, full_df, target_columns, group_by, original_column_to_properties, render_plots):
-        """Dynamically build a SummaryTable instance for scalar value analysis.
+    # Underscores are used to avoid name shadowing
+
+    def __init__(self, analyzer, full_df, target_columns, group_by):
+        # Plot rendering columns are added automatically via this call, with
+        # associated function self.render_target with partialed parameters
+        # column_name and render_mode.
+        super().__init__(analyzer=analyzer, full_df=full_df, target_columns=target_columns,
+                         group_by=group_by)
+
+        self.column_to_xmin_xmax = {}
+        for c_name in target_columns:
+            # Add columns that compute the summary information
+            for descriptor in ["min", "max", "avg", "std", "median"]:
+                self.add_column_function(
+                    self,
+                    fun=functools.partial(self.set_scalar_description, column_name=c_name),
+                    column_properties=enb.atable.ColumnProperties(
+                        name=f"{c_name}_{descriptor}", label=f"{c_name}: {descriptor}"))
+
+            # Compute the global dynamic range of all input samples (before grouping)
+            self.column_to_xmin_xmax[c_name] = scipy.stats.describe(full_df[c_name].values).minmax
+
+        self.move_render_columns_back()
+
+    def set_scalar_description(self, *args, **kwargs):
+        """Set basic descriptive statistics for the target column
         """
+        _, group_label, row = args
+        column_name = kwargs["column_name"]
+        description_df = self.label_to_df[group_label][column_name].describe()
+        row[f"{column_name}_min"] = description_df["min"]
+        row[f"{column_name}_max"] = description_df["max"]
+        row[f"{column_name}_avg"] = description_df["mean"]
+        row[f"{column_name}_std"] = description_df["std"]
+        row[f"{column_name}_median"] = description_df["50%"]
 
-        class DictNumericSummary(enb.atable.SummaryTable):
-            """Summary table used in DictNumericAnalyzer. Nested to highlight its dynamic nature.
-            """
+    def compute_plottable_data_one_case(self, *args, **kwargs):
+        """Column-setting function that computes
+        a list of `enb.plotdata.PlottableData elements` for this case (group, column, render_mode).
 
-            # Underscores are used to avoid name shadowing
+        See `enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case`
+        for additional information.
+        """
+        _self, group_label, row = args
+        group_df = self.label_to_df[group_label]
+        column_name = kwargs["column_name"]
+        render_mode = kwargs["render_mode"]
+        column_series = group_df[column_name]
+        if render_mode not in self.analyzer.valid_render_modes:
+            raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
 
-            def __init__(_self, _reference_df, _column_to_properties, _csv_support_path,
-                         _group_by=None):
-                super().__init__(reference_df=_reference_df, column_to_properties=_column_to_properties,
-                                 copy_df=False, csv_support_path=_csv_support_path)
-                _self.histogram_bin_count = _histogram_bin_count if _histogram_bin_count is not None \
-                    else self.histogram_bin_count
-                _self.group_by = _group_by
-                _self.column_to_xmin_xmax = {}
-                for c_name, c_properties in _column_to_properties.items():
-                    # Add columns that compute the summary information
-                    for descriptor in ["min", "max", "avg", "std", "median"]:
-                        _self.add_column_function(
-                            _self,
-                            fun=functools.partial(_self.set_scalar_description, column_name=c_name),
-                            column_properties=enb.atable.ColumnProperties(
-                                name=f"{c_name}_{descriptor}", label=f"{c_name}: {descriptor}"))
-                    _self.column_to_xmin_xmax[c_name] = scipy.stats.describe(_reference_df[c_name].values).minmax
-                    # Add columns that compute the list of plotting elements of each group, if needed
-                    if render_plots:
-                        _self.add_column_function(
-                            _self,
-                            fun=functools.partial(_self.render_target, column_name=c_name),
-                            column_properties=enb.atable.ColumnProperties(
-                                name=f"{c_name}{self._plottable_data_column_suffix}",
-                                has_object_values=True))
+        # Only histogram mode is supported in this version of enb
+        assert render_mode == "histogram"
 
-            def split_groups(_self, reference_df=None):
-                _self.reference_df = reference_df if reference_df is not None else _self.reference_df
-                return _self.reference_df.groupby(_self.group_by) \
-                    if _self.group_by is not None else [("all", _self.reference_df)]
+        # Set the analysis range based on column properties if provided, or the data's dynamic range.
+        try:
+            analysis_range = [self.analyzer.column_to_properties[column_name].plot_min,
+                              self.analyzer.column_to_properties[column_name].plot_max]
+        except KeyError:
+            analysis_range = [None, None]
+        analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
+            else self.column_to_xmin_xmax[column_name][0]
+        analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
+            else self.column_to_xmin_xmax[column_name][1]
+        if analysis_range[0] == analysis_range[1]:
+            # Avoid unnecessary warnings from matplotlib
+            analysis_range = [analysis_range[0], analysis_range[0] + 1]
 
-            def set_scalar_description(_self, *_args, **_kwargs):
-                """Set basic descriptive statistics for the target column
-                """
-                _, group_label, row = _args
-                column_name = _kwargs["column_name"]
-                description_df = _self.label_to_df[group_label][column_name].describe()
-                row[f"{column_name}_min"] = description_df["min"]
-                row[f"{column_name}_max"] = description_df["max"]
-                row[f"{column_name}_avg"] = description_df["mean"]
-                row[f"{column_name}_std"] = description_df["std"]
-                row[f"{column_name}_median"] = description_df["50%"]
+        # Use numpy to obtain the absolute mass distribution of the data.
+        # density=False is used so that we can detect the case where
+        # some data is not used.
+        hist_y_values, bin_edges = np.histogram(
+            column_series.dropna(), bins=self.analyzer.histogram_bin_count,
+            range=analysis_range, density=False)
 
-            def render_target(_self, *_args, **_kwargs):
-                """Compute the list of plotdata.PlottableData instances that represent
-                this group in a plot.
-                """
-                _, group_label, row = _args
-                group_df = _self.label_to_df[group_label]
-                column_name = _kwargs["column_name"]
-                column_series = group_df[column_name]
+        # Verify that the histogram uses all data
+        if sum(hist_y_values) != len(column_series):
+            justified_difference = False
+            error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
+                        f"({sum(hist_y_values)} used out of {len(column_series)})."
+            if math.isinf(row[f"{column_name}_min"]) or math.isinf(row[f"{column_name}_max"]):
+                error_msg += f" Note that infinite values have been found in the column, " \
+                             f"which are not included in the analysis."
+                justified_difference = True
+            if analysis_range[0] > row[f"{column_name}_min"] or analysis_range[1] < row[
+                f"{column_name}_max"]:
+                error_msg += f" This is likely explained by the plot_min/plot_max or y_min/y_max " \
+                             f"values set for this analysis."
+                justified_difference = True
+            if justified_difference:
+                enb.log.info(error_msg)
+            else:
+                raise ValueError(error_msg)
 
-                # Set the analysis range based on column properties if provided, or the data's dynamic range.
-                try:
-                    analysis_range = [original_column_to_properties[column_name].plot_min,
-                                      original_column_to_properties[column_name].plot_max]
-                except KeyError:
-                    analysis_range = [None, None]
-                analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
-                    else _self.column_to_xmin_xmax[column_name][0]
-                analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
-                    else _self.column_to_xmin_xmax[column_name][1]
-                if analysis_range[0] == analysis_range[1]:
-                    # Avoid unnecessary warnings from matplotlib
-                    analysis_range = [analysis_range[0], analysis_range[0] + 1]
+        # The relative distribution is computed based
+        # on the selected analysis range only, which
+        # may differ from the full column dynamic range
+        # (hence the warning(s) above)
+        histogram_sum = hist_y_values.sum()
+        hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+        hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
 
-                # Use numpy to obtain the absolute mass distribution of the data.
-                # density=False is used so that we can detect the case where
-                # some data is not used.
-                hist_y_values, bin_edges = np.histogram(
-                    column_series.dropna(), bins=self.histogram_bin_count,
-                    range=analysis_range, density=False)
+        # Create the plotdata.PlottableData instances for this group
+        row[_column_name] = []
+        row[_column_name].append(plotdata.BarData(
+            x_values=hist_x_values,
+            y_values=hist_y_values,
+            x_label=self.analyzer.column_to_properties[column_name].label \
+                if column_name in self.analyzer.column_to_properties else clean_column_name(column_name),
+            alpha=self.analyzer.main_alpha,
+            extra_kwargs=dict(
+                width=self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
 
-                # Verify that the histogram uses all data
-                if sum(hist_y_values) != len(column_series):
-                    justified_difference = False
-                    error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
-                                f"({sum(hist_y_values)} used out of {len(column_series)})."
-                    if math.isinf(row[f"{column_name}_min"]) or math.isinf(row[f"{column_name}_max"]):
-                        error_msg += f" Note that infinite values have been found in the column, " \
-                                     f"which are not included in the analysis."
-                        justified_difference = True
-                    if analysis_range[0] > row[f"{column_name}_min"] or analysis_range[1] < row[
-                        f"{column_name}_max"]:
-                        error_msg += f" This is likely explained by the plot_min/plot_max or y_min/y_max " \
-                                     f"values set for this analysis."
-                        justified_difference = True
-                    if justified_difference:
-                        enb.log.info(error_msg)
-                    else:
-                        raise ValueError(error_msg)
+        if self.analyzer.main_marker_size > 0:
+            row[_column_name].append(plotdata.ErrorLines(
+                x_values=[row[f"{column_name}_avg"]],
+                y_values=[0.5 * (hist_y_values.min() + hist_y_values.max())],
+                marker_size=self.analyzer.main_marker_size,
+                alpha=self.analyzer.secondary_alpha,
+                err_neg_values=[row[f"{column_name}_std"]],
+                err_pos_values=[row[f"{column_name}_std"]],
+                line_width=self.analyzer.secondary_line_width,
+                vertical=False))
 
-                # The relative distribution is computed based
-                # on the selected analysis range only, which
-                # may differ from the full column dynamic range
-                # (hence the warning(s) above)
-                histogram_sum = hist_y_values.sum()
-                hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-                hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
 
-                # Create the plotdata.PlottableData instances for this group
-                group_plds = []
-                group_plds.append(plotdata.BarData(
-                    x_values=hist_x_values,
-                    y_values=hist_y_values,
-                    x_label=original_column_to_properties[column_name].label,
-                    alpha=self.bar_alpha,
-                    extra_kwargs=dict(
-                        width=self.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
+# @enb.config.aini.managed_attributes
+# class TwoNumericAnalyzer(Analyzer):
+#     """Analyze pairs of columns, compute basic statistics and
+#     produce a scatter plot based on the obtained data.
+#
+#     As opposed to ScalarNumericAnalyzer, target_columns should be
+#     an iterable of tuples with 2 column names (other elements are ignored).
+#     When applicable, the first column in each tuple is considered
+#     the x column, and the second the y column.
+#     """
+#     # The following attributes are directly used for analysis/plotting,
+#     # and can be modified before any call to get_df. These values may be updated based on .ini files,
+#     # see the documentation of the enb.config.aini.managed_attributes decorator for more information.
+#     # Common analyzer attributes:
+#     valid_render_modes = {"scatter", "line"}
+#     selected_render_modes = set(valid_render_modes)
+#     plot_title = None
+#     show_count = True
+#     show_global = True
+#     main_marker_size = 5
+#     main_alpha = 0.5
+#     secondary_alpha = 0.5
+#     semilog_y_min_bound = 1e-5
+#     main_line_width = 2
+#     secondary_line_width = 2
+#     group_row_margin = 0.2
+#     common_group_scale = True
+#
+#     # Specific analyzer attributes:
+#     def build_summary_atable(self, full_df):
+#         return TwoNumericSummary(analyzer=self, full_df=full_df)
+#
+#
+# class TwoNumericSummary(AnalyzerSummary):
+#     """Summary table used in TwoNumericAnalyzer.
+#     """
+#     pass
 
-                if self.main_marker_size > 0:
-                    group_plds.append(plotdata.ErrorLines(
-                        x_values=[row[f"{column_name}_avg"]],
-                        y_values=[0.5 * (hist_y_values.min() + hist_y_values.max())],
-                        marker_size=self.main_marker_size,
-                        alpha=self.secondary_alpha,
-                        err_neg_values=[row[f"{column_name}_std"]],
-                        err_pos_values=[row[f"{column_name}_std"]],
-                        line_width=self.main_line_width,
-                        vertical=False))
 
-                row[_column_name] = group_plds
-
-        return DictNumericSummary(
-            _reference_df=full_df,
-            _column_to_properties=original_column_to_properties,
-            _csv_support_path=self.csv_support_path,
-            _group_by=group_by, _histogram_bin_count=self.histogram_bin_count)
+# @enb.config.aini.managed_attributes
+# class DictNumericAnalyzer(Analyzer):
+#     """Analyzer for columns with associated ColumnProperties having has_dict=True.
+#     Dictionaries are expected to have numeric entries.
+#     """
+#     # The following attributes are directly used for analysis/plotting,
+#     # and can be modified before any call to get_df. These values may be updated based on .ini files,
+#     # see the documentation of the enb.config.aini.managed_attributes decorator for more information.
+#     # Common analyzer attributes:
+#     plot_title = None
+#     show_count = True
+#     show_global = True
+#     main_marker_size = 5
+#     main_alpha = 0.5
+#     secondary_alpha = 0.5
+#     semilog_y_min_bound = 1e-5
+#     main_line_width = 2
+#     secondary_line_width = 2
+#     group_row_margin = 0.2
+#     common_group_scale = True
+#     # Specific analyzer attributes:
+#     # Number of bins (histogram columns) when "histogram" is used as the combination
+#     # method.
+#     default_bin_count = 16
+#     # Angle used for the y axis tick labels
+#     y_tick_label_angle = 90
+#
+#     def build_summary_atable(self, full_df):
+#         """Dynamically build a SummaryTable instance for scalar value analysis.
+#         """
+#
+#         class DictNumericSummary(enb.atable.SummaryTable):
+#             """Summary table used in DictNumericAnalyzer. Nested to highlight its dynamic nature.
+#             """
+#
+#             # Underscores are used to avoid name shadowing
+#
+#             def __init__(self, reference_df, column_to_properties, csv_support_path,
+#                          _group_by=None):
+#                 super().__init__(reference_df=reference_df, column_to_properties=column_to_properties,
+#                                  copy_df=False, csv_support_path=csv_support_path)
+#                 self.histogram_bin_count = self.analyzer.histogram_bin_count \
+#                     if self.analyzer.histogram_bin_count is not None else self.histogram_bin_count
+#                 self.group_by = _group_by
+#                 self.column_to_xmin_xmax = {}
+#                 for c_name, c_properties in column_to_properties.items():
+#                     # Add columns that compute the summary information
+#                     for descriptor in ["min", "max", "avg", "std", "median"]:
+#                         self.add_column_function(
+#                             self,
+#                             fun=functools.partial(self.set_scalar_description, column_name=c_name),
+#                             column_properties=enb.atable.ColumnProperties(
+#                                 name=f"{c_name}_{descriptor}", label=f"{c_name}: {descriptor}"))
+#                     self.column_to_xmin_xmax[c_name] = scipy.stats.describe(reference_df[c_name].values).minmax
+#                     # Add columns that compute the list of plotting elements of each group, if needed
+#                     if render_plots:
+#                         self.add_column_function(
+#                             self,
+#                             fun=functools.partial(self.render_target, column_name=c_name),
+#                             column_properties=enb.atable.ColumnProperties(
+#                                 name=f"{c_name}{self._plottable_data_column_suffix}",
+#                                 has_object_values=True))
+#
+#             def split_groups(self, reference_df=None):
+#                 self.reference_df = reference_df if reference_df is not None else self.reference_df
+#                 return self.reference_df.groupby(self.group_by) \
+#                     if self.group_by is not None else [("all", self.reference_df)]
+#
+#             def set_scalar_description(self, *args, **kwargs):
+#                 """Set basic descriptive statistics for the target column
+#                 """
+#                 _, group_label, row = args
+#                 column_name = kwargs["column_name"]
+#                 description_df = self.label_to_df[group_label][column_name].describe()
+#                 row[f"{column_name}_min"] = description_df["min"]
+#                 row[f"{column_name}_max"] = description_df["max"]
+#                 row[f"{column_name}_avg"] = description_df["mean"]
+#                 row[f"{column_name}_std"] = description_df["std"]
+#                 row[f"{column_name}_median"] = description_df["50%"]
+#
+#             def render_target(self, *args, **kwargs):
+#                 """Compute the list of plotdata.PlottableData instances that represent
+#                 this group in a plot.
+#                 """
+#                 _, group_label, row = args
+#                 group_df = self.label_to_df[group_label]
+#                 column_name = kwargs["column_name"]
+#                 column_series = group_df[column_name]
+#
+#                 # Set the analysis range based on column properties if provided, or the data's dynamic range.
+#                 try:
+#                     analysis_range = [original_column_to_properties[column_name].plot_min,
+#                                       original_column_to_properties[column_name].plot_max]
+#                 except KeyError:
+#                     analysis_range = [None, None]
+#                 analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
+#                     else self.column_to_xmin_xmax[column_name][0]
+#                 analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
+#                     else self.column_to_xmin_xmax[column_name][1]
+#                 if analysis_range[0] == analysis_range[1]:
+#                     # Avoid unnecessary warnings from matplotlib
+#                     analysis_range = [analysis_range[0], analysis_range[0] + 1]
+#
+#                 # Use numpy to obtain the absolute mass distribution of the data.
+#                 # density=False is used so that we can detect the case where
+#                 # some data is not used.
+#                 hist_y_values, bin_edges = np.histogram(
+#                     column_series.dropna(), bins=self.histogram_bin_count,
+#                     range=analysis_range, density=False)
+#
+#                 # Verify that the histogram uses all data
+#                 if sum(hist_y_values) != len(column_series):
+#                     justified_difference = False
+#                     error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
+#                                 f"({sum(hist_y_values)} used out of {len(column_series)})."
+#                     if math.isinf(row[f"{column_name}_min"]) or math.isinf(row[f"{column_name}_max"]):
+#                         error_msg += f" Note that infinite values have been found in the column, " \
+#                                      f"which are not included in the analysis."
+#                         justified_difference = True
+#                     if analysis_range[0] > row[f"{column_name}_min"] or analysis_range[1] < row[
+#                         f"{column_name}_max"]:
+#                         error_msg += f" This is likely explained by the plot_min/plot_max or y_min/y_max " \
+#                                      f"values set for this analysis."
+#                         justified_difference = True
+#                     if justified_difference:
+#                         enb.log.info(error_msg)
+#                     else:
+#                         raise ValueError(error_msg)
+#
+#                 # The relative distribution is computed based
+#                 # on the selected analysis range only, which
+#                 # may differ from the full column dynamic range
+#                 # (hence the warning(s) above)
+#                 histogram_sum = hist_y_values.sum()
+#                 hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+#                 hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
+#
+#                 # Create the plotdata.PlottableData instances for this group
+#                 group_plds = []
+#                 group_plds.append(plotdata.BarData(
+#                     x_values=hist_x_values,
+#                     y_values=hist_y_values,
+#                     x_label=original_column_to_properties[column_name].label,
+#                     alpha=self.bar_alpha,
+#                     extra_kwargs=dict(
+#                         width=self.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
+#
+#                 if self.main_marker_size > 0:
+#                     group_plds.append(plotdata.ErrorLines(
+#                         x_values=[row[f"{column_name}_avg"]],
+#                         y_values=[0.5 * (hist_y_values.min() + hist_y_values.max())],
+#                         marker_size=self.main_marker_size,
+#                         alpha=self.secondary_alpha,
+#                         err_neg_values=[row[f"{column_name}_std"]],
+#                         err_pos_values=[row[f"{column_name}_std"]],
+#                         line_width=self.main_line_width,
+#                         vertical=False))
+#
+#                 row[_column_name] = group_plds
+#
+#         return DictNumericSummary(
+#             reference_df=full_df,
+#             column_to_properties=original_column_to_properties,
+#             csv_support_path=self.csv_support_path,
+#             _group_by=group_by, _histogram_bin_count=self.histogram_bin_count)
 
 
 class ScalarDistributionAnalyzer(OldAnalyzer):
@@ -938,7 +1192,7 @@ class HistogramDistributionAnalyzer(OldAnalyzer):
         """
         if options.verbose:
             print(f"[D]eprecated class {self.__class__.__name__}. "
-                  f"Please use {DictNumericAnalyzer.__class__.__name__} instead.")
+                  f"Please use {ScalarDictAnalyzer.__class__.__name__} instead.")
 
         output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         full_df = pd.DataFrame(full_df)

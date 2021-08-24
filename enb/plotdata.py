@@ -7,6 +7,9 @@ __since__ = "2019/09/10"
 import os
 import math
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.ticker
 import numpy as np
 import collections
@@ -355,7 +358,8 @@ def parallel_render_plds_by_group(
         # Optional axis labeling
         y_labels_by_group_name=None,
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
-        y_tick_list=None, y_tick_label_list=None):
+        y_tick_list=None, y_tick_label_list=None,
+        plot_title=None):
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
     """
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
@@ -375,7 +379,8 @@ def parallel_render_plds_by_group(
                                 x_tick_label_angle=x_tick_label_angle,
                                 y_tick_list=y_tick_list,
                                 y_tick_label_list=y_tick_label_list,
-                                semilog_y=semilog_y, semilog_y_base=semilog_y_base)
+                                semilog_y=semilog_y, semilog_y_base=semilog_y_base,
+                                plot_title=plot_title)
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
@@ -394,7 +399,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          # Optional axis labeling
                          y_labels_by_group_name=None,
                          x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
-                         y_tick_list=None, y_tick_label_list=None):
+                         y_tick_list=None, y_tick_label_list=None,
+                         plot_title=None):
     """Render lists of plotdata.PlottableData instances indexed by group name.
     Each group is rendered in a row (subplot), with a shared X axis.
     Groups can also be combined into a single row (subplot), i.e., rending all plottable data into that single subplot.
@@ -449,8 +455,12 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param y_tick_list: if not None, these ticks will be displayed in the y axis.
     :param y_tick_label_list: if not None, these labels will be displayed in the y axis.
       Only used when y_tick_list is not None.
+
+    Global title:
+    :param plot_title: title to be displayed
     """
-    with enb.logger.verbose_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}"):
+    with enb.logger.verbose_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
+                                    sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
         if len(pds_by_group_name) < 1:
             if options.verbose > 1:
                 print("[W]arning: trying to render an empty pds_by_group_name dict. "

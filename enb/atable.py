@@ -1306,15 +1306,15 @@ class SummaryTable(ATable):
     get_df and the analyze_df method of analyzers en :mod:`enb.aanalysis`.
     """
 
-    def __init__(self, reference_df, column_to_properties=None, copy_df=False,
-                 csv_support_path=None):
+    def __init__(self, full_df, column_to_properties=None, copy_df=False,
+                 csv_support_path=None, group_by=None):
         """
         Initialize a summary table. Group splitting is not invoked until needed by calling self.get_df().
 
         Column-setting columns are given the group label and the row to be completed. They can access
         self.label_to_df to get the dataframe corresponding to the row's group.
 
-        :param reference_df: reference pandas dataframe to be summarized
+        :param full_df: reference pandas dataframe to be summarized
         :param column_to_properties: if not None, it should be the column_to_properties attribute
           of the table that produced reference_df.
         :param copy_df: if not True, a pointer to the original reference_df is used. Otherwise, a copy is made.
@@ -1322,22 +1322,46 @@ class SummaryTable(ATable):
         :param csv_support_path: if not None, a CSV file is used at that for persistence
         """
         super().__init__(csv_support_path=csv_support_path, index="group_label")
-        self.reference_df = reference_df if copy_df is not True else pd.DataFrame.copy(reference_df)
+        self.reference_df = full_df if copy_df is not True else pd.DataFrame.copy(full_df)
         self.reference_column_to_properties = column_to_properties
+        self.group_by = group_by
 
     def split_groups(self, reference_df=None):
-        """Split the reference dataframe into an iterable of (label, dataframe) tuples. By default, no splitting is
-        performed and a single group with label "all" and the full df is returned.
+        """Split the reference_df |DataFrame| into an iterable of (label, dataframe) tuples.
+        This splitting is performed based on the value of self.group_by:
 
-        Subclasses can easily overwrite this behavior, as long as they return the items compatible
-        with the :meth:`pandas.DataFrame.groupby` method.
-        Labels are arbitrary, but must be unique. Dataframes are also arbitrary, but it is
-        recommended that at least all columns of the reference dataframe are maintained.
+        - If it is None, a single group labelled "all" is created, associated to reference_df.
+        - If it is not None:
+            - It can be a |DataFrame| column index, e.g., a column name or a list of column names.
+              In this case, the result pandas' groupby is returned.
+            - It can be a callable with a single argument reference_df.
+              In this case, the result of calling that method with reference_df as argument
+              is returned by the call to split_groups().
 
-        :param reference_df: if not None, a reference dataframe to split. If None, self.reference_df is employed.
+
+        Subclasses can easily implement grouping custom grouping methods, which must adhere
+        to the following constraints:
+        - It must return an iterable of group_label, group_df tuples.
+        - Unique group_label values must be returned.
+
+        Also note that:
+        - It is NOT needed that the union of all group_df tuples yield reference_df.
+        - It is NOT needed that the intersection of the any two group_df elements is empty.
+        - The group_df dataframes normally contain all columns in reference_df, but
+          it is NOT mandatory to maintain this behavior.
+
+        :param reference_df: if not None, a reference dataframe to split.
+          If None, self.reference_df is employed instead.
         :return: an iterable of (label, dataframe) tuples.
         """
-        return [("all", reference_df if reference_df is not None else self.reference_df)]
+        reference_df = reference_df if reference_df is not None else self.reference_df
+        if self.group_by is None:
+            return [("all", reference_df)]
+        else:
+            try:
+                return self.group_by(reference_df)
+            except TypeError:
+                return reference_df.groupby(self.group_by)
 
     def get_df(self, reference_df=None):
         """

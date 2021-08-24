@@ -36,7 +36,12 @@ def init_ray(force=False):
 def stop_ray():
     if ray.is_initialized:
         with logger.info_context("Shutting down ray cluster"):
+            # This tiny delay allows error messages from child processes to reach the
+            # orchestrating process for logging.
+            # It might need to be tuned for distributed computation across networks.
+            time.sleep(0.1)
             ray.shutdown()
+
 
 
 def on_remote_process():

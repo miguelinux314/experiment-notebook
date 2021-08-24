@@ -13,4 +13,6 @@ if __name__ == "__main__":
 
     analyzer = enb.aanalysis.ScalarNumericAnalyzer()
 
-    analysis_df = analyzer.get_df(full_df=full_df, group_by="class")
+    analysis_df = analyzer.get_df(full_df=full_df, group_by="class",
+                                  target_columns=[c for c in full_df.columns
+                                                  if any(s in c for s in ("width", "height"))])
