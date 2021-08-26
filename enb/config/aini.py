@@ -30,11 +30,10 @@ import itertools
 import glob
 import ast
 import configparser
-import inspect
 import textwrap
 
 from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
-from ..misc import Singleton as _Singleton
+from ..misc import Singleton as _Singleton, class_to_fqn
 
 
 class AdditionalIniParser(argparse.ArgumentParser):
@@ -137,24 +136,29 @@ def managed_attributes(cls):
     """
     from enb import logger
 
-    cls_fqn = f"{str(cls.__module__) + '.' if cls.__module__ is not None else ''}" \
-              f"{cls.__name__}"
+    cls_fqn = class_to_fqn(cls)
 
     for attribute in (k for k, v in cls.__dict__.items()
                       if not k.startswith("_")
                          and not k == "column_to_properties"
                          and not callable(v)
                          and not isinstance(v, classmethod)):
+        old_value = getattr(cls, attribute)
         try:
-            old_value = getattr(cls, attribute)
             setattr(cls, attribute, ini.get_key(cls_fqn, attribute))
-            if getattr(cls, attribute) != old_value:
-                logger.info(f"Updating {cls_fqn}.{attribute} = {getattr(cls, attribute)} based on .ini files.")
-        except KeyError as ex:
-            logger.warn(f"The {cls_fqn} class is decorated with "
-                        f"enb.ini.managed.attributes, but contains an attribute "
-                        f"{repr(attribute)} which is not present in the configuration. "
-                        f"The class' default value ({cls.__dict__[attribute]}) is used instead.")
+            if getattr(cls, attribute) != old_value \
+                    and str(getattr(cls, attribute)) != str(old_value):
+                logger.debug(f"Updating {cls_fqn}.{attribute} = {getattr(cls, attribute)} based on .ini files "
+                             f"(it was {old_value})")
+        except KeyError:
+            found_in_bases = _add_base_attributes_recursively(attribute, cls)
+            if not found_in_bases:
+                logger.warn(f"The {cls_fqn} class is decorated with "
+                            f"enb.ini.managed.attributes, but contains an attribute "
+                            f"{repr(attribute)} which is not present in its configuration nor in any of"
+                            f"its base classes. "
+                            f"The class' default value in the python code definition of ({cls.__dict__[attribute]}) "
+                            f"is used instead.")
 
     for k, v in ini.sections_by_name[cls_fqn].items():
         if not hasattr(cls, k):
@@ -163,3 +167,30 @@ def managed_attributes(cls):
                         f"to {cls.__name__}.")
 
     return cls
+
+
+def _add_base_attributes_recursively(attribute, base_cls, current_cls=None):
+    """Given a class base_cls, attempt to get the value of attribute defined for any of its base classes,
+    recursively.
+
+    :param attribute: name of the attribute to be queried and potentially set.
+    :param base_cls: class whose attribute is being managed.
+    :param current_cls: used for recursion, it must be None when invoked outside this method.
+    """
+    if current_cls is None:
+        current_cls = base_cls
+
+    found_in_bases = False
+
+    for base in current_cls.__bases__:
+        try:
+            setattr(base_cls, attribute, ini.get_key(class_to_fqn(base), attribute))
+            found_in_bases = True
+            break
+        except KeyError:
+            for bases_base in base.__bases__:
+                if _add_base_attributes_recursively(attribute=attribute, base_cls=base_cls, current_cls=bases_base):
+                    found_in_bases = True
+                    break
+
+    return found_in_bases
