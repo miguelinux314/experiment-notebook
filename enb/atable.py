@@ -187,7 +187,6 @@ After the definition, the table's dataframe can be obtained with
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
-import tempfile
 from builtins import hasattr
 import ast
 import collections
@@ -240,7 +239,7 @@ class ColumnFailedError(CorruptedTableError):
     """Raised when a function failed to fill a column.
     """
 
-    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None, exception_list=[]):
+    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None, exception_list=None):
         """
         :param atable: atable instance that originated the problem
         :param column: column where the problem happened
@@ -248,6 +247,7 @@ class ColumnFailedError(CorruptedTableError):
         :param exception_list: a list of exceptions related to this one, e.g., all failing columns
         :param msg: message describing the problem, or None
         """
+        exception_list = exception_list if exception_list is not None else []
         super().__init__(atable=atable, msg=msg, ex=ex)
         self.index = index
         self.column = column
@@ -1194,7 +1194,7 @@ class ATable(metaclass=MetaTable):
                     continue
 
                 enb.logger.info(f"Calculating {repr(column)} for "
-                                f"index={repr(index)} <{self.__class__.__name__}>")
+                                f"index={repr(index)}, fun={fun.__name__}, <{self.__class__.__name__}>")
                 try:
                     result = fun(self, index, row)
                     called_functions.add(fun)
@@ -1307,26 +1307,28 @@ class SummaryTable(ATable):
     """
 
     def __init__(self, full_df, column_to_properties=None, copy_df=False,
-                 csv_support_path=None, group_by=None):
+                 csv_support_path=None, group_by=None, include_all_group=False):
         """
         Initialize a summary table. Group splitting is not invoked until needed by calling self.get_df().
 
         Column-setting columns are given the group label and the row to be completed. They can access
         self.label_to_df to get the dataframe corresponding to the row's group.
 
-        :param full_df: reference pandas dataframe to be summarized
+        :param full_df: reference pandas dataframe to be summarized.
         :param column_to_properties: if not None, it should be the column_to_properties attribute
           of the table that produced reference_df.
         :param copy_df: if not True, a pointer to the original reference_df is used. Otherwise, a copy is made.
           Note that reference_df is typically evaluated each time split_groups() is called.
-        :param csv_support_path: if not None, a CSV file is used at that for persistence
+        :param csv_support_path: if not None, a CSV file is used at that for persistence.
+        :param include_all_group: if True, a group "All" with all samples is included in the summary.
         """
         super().__init__(csv_support_path=csv_support_path, index="group_label")
         self.reference_df = full_df if copy_df is not True else pd.DataFrame.copy(full_df)
         self.reference_column_to_properties = column_to_properties
         self.group_by = group_by
+        self.include_all_group = include_all_group
 
-    def split_groups(self, reference_df=None):
+    def split_groups(self, reference_df=None, include_all_group=None):
         """Split the reference_df |DataFrame| into an iterable of (label, dataframe) tuples.
         This splitting is performed based on the value of self.group_by:
 
@@ -1352,18 +1354,26 @@ class SummaryTable(ATable):
 
         :param reference_df: if not None, a reference dataframe to split.
           If None, self.reference_df is employed instead.
+        :param include_all_group: if True, an "All" group is added, containing all input samples,
+          regardless of the groups produced based on groupby. If None, self's class is queried
+          for that attribute.
         :return: an iterable of (label, dataframe) tuples.
         """
         reference_df = reference_df if reference_df is not None else self.reference_df
+        all_group_iterable = [("All", reference_df)]
+        include_all_group = include_all_group if include_all_group is not None else self.include_all_group
+
         if self.group_by is None:
-            return [("all", reference_df)]
+            return all_group_iterable
         else:
             try:
-                return self.group_by(reference_df)
+                return itertools.chain(self.group_by(reference_df),
+                                       all_group_iterable if include_all_group else [])
             except TypeError:
-                return reference_df.groupby(self.group_by)
+                return itertools.chain(reference_df.groupby(self.group_by),
+                                       all_group_iterable if include_all_group else [])
 
-    def get_df(self, reference_df=None):
+    def get_df(self, reference_df=None, include_all_group=None):
         """
         Get the summary dataframe. This class only defines the 'group_size' column for the output dataframe.
         Subclasses may add as many columns to the summary as desired.
@@ -1377,7 +1387,7 @@ class SummaryTable(ATable):
             raise RuntimeError("self.label_to_df should not be defined externally")
         self.label_to_df = collections.OrderedDict()
         try:
-            for label, df in self.split_groups(reference_df=reference_df):
+            for label, df in self.split_groups(reference_df=reference_df, include_all_group=include_all_group):
                 if label in self.label_to_df:
                     raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
                                      f"Group labels must be unique.")

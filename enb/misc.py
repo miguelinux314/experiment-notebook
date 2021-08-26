@@ -135,3 +135,9 @@ class CircularList(list):
 
     def __getitem__(self, item):
         return super().__getitem__(item % len(self))
+
+
+def class_to_fqn(cls):
+    cls_fqn = f"{str(cls.__module__) + '.' if cls.__module__ is not None else ''}" \
+              f"{cls.__name__}"
+    return cls_fqn

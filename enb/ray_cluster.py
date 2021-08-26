@@ -39,7 +39,7 @@ def stop_ray():
             # This tiny delay allows error messages from child processes to reach the
             # orchestrating process for logging.
             # It might need to be tuned for distributed computation across networks.
-            time.sleep(0.1)
+            time.sleep(0.5)
             ray.shutdown()
 
 
@@ -104,6 +104,9 @@ class ProgressiveGetter:
                 self.end_time = time.time_ns()
         except AttributeError:
             self.end_time = time.time_ns()
+
+        # On success, this should return immediately. On failure, it forces errors to be displayed.
+        ray.get(self.full_id_list)
 
         assert len(self.completed_ids) + len(self.pending_ids) == len(self.full_id_list)
 
