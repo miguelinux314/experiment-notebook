@@ -12,6 +12,8 @@ import itertools
 import math
 import collections
 import collections.abc
+
+import deprecation
 import sortedcontainers
 import re
 import glob
@@ -1326,16 +1328,14 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
 
     if abs(sum(hist_y_values) - 1) > 1e-10:
         if math.isinf(df[column].max()) or math.isinf(df[column].min()):
-            if options.verbose:
-                print(f"[W]arning: not all samples included in the scalar distribution for {column} "
-                      f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
-                      f"Note that infinite values are not accounted for, and the plot_min "
-                      f"and plot_max column properties affect this range.")
+            enb.log.warn(f"Not all samples included in the scalar distribution for {column} "
+                         f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
+                         f"Note that infinite values are not accounted for, and the plot_min "
+                         f"and plot_max column properties affect this range.")
         else:
-            if options.verbose:
-                print(f"[W]arning: not all samples included in the scalar distribution for {column} "
-                      f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
-                      f"Note that plot_min and plot_max column properties might be affecting this range.")
+            enb.log.warn(f"Not all samples included in the scalar distribution for {column} "
+                         f"(used {100 * (sum(hist_y_values)):.1f}% of the samples)."
+                         f"Note that plot_min and plot_max column properties might be affecting this range.")
 
     hist_y_values = hist_y_values / hist_y_values.sum() \
         if hist_y_values.sum() > 0 and len(hist_y_values) > 0 and np.isfinite(
@@ -1454,6 +1454,7 @@ class HistogramDistributionAnalyzer(OldAnalyzer):
 
     color_sequence = ["blue", "orange", "r", "g", "magenta", "yellow"]
 
+    @deprecation.deprecated(deprecated_in="0.3.0", removed_in="0.3.1")
     def analyze_df(self, full_df, target_columns, output_plot_dir=None, output_csv_file=None,
                    column_to_properties=None,
                    group_by=None, group_name_order=None, show_global=True, show_count=True, version_name=None,
@@ -1473,10 +1474,6 @@ class HistogramDistributionAnalyzer(OldAnalyzer):
         :param show_count: determines whether the number of element per group should be shown in the group label
         :param version_name: if not None, a string identifying the file version that produced full_df.
         """
-        if options.verbose:
-            print(f"[D]eprecated class {self.__class__.__name__}. "
-                  f"Please use {ScalarDictAnalyzer.__class__.__name__} instead.")
-
         output_plot_dir = options.plot_dir if output_plot_dir is None else output_plot_dir
         full_df = pd.DataFrame(full_df)
         column_to_properties = collections.defaultdict(
@@ -1554,9 +1551,6 @@ class HistogramDistributionAnalyzer(OldAnalyzer):
                 y_min=ray.put(y_min), y_max=ray.put(y_max),
                 y_labels_by_group_name=ray.put(labels_by_group),
                 group_name_order=ray.put(group_name_order)))
-
-        if options.verbose > 1:
-            print(f"TODO: Save results in CSV at output_csv_file?")
 
         return ray.get(return_ids)
 
@@ -2115,9 +2109,9 @@ class HistogramKeyBinner:
             total_sum += v
 
         if ignored_sum > 0 and options.verbose > 2:
-            print(f"[W]arning: {self.__class__.__name__} ignorning {100 * ignored_sum / total_sum:.6f}% "
-                  f"of the values, which lie outside {self.min_value, self.max_value}. This is OK if "
-                  f"you specified x_min or x_max when using ScalarDictAnalyzer.get_df()")
+            enb.log.warn(f"{self.__class__.__name__} is ignorning {100 * ignored_sum / total_sum:.6f}% "
+                         f"of the values, which lie outside {self.min_value, self.max_value}. "
+                         f"This is likely OK if you specified x_min or x_max manually.")
 
         output_dict = collections.OrderedDict()
         for i, k in enumerate(self.binned_keys):
