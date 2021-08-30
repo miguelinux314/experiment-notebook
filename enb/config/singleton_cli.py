@@ -150,6 +150,15 @@ class PositiveFloatAction(ValidationAction):
         assert value > 0
 
 
+class NonnegativeFloatAction(ValidationAction):
+    """Check that a numerical value is greater or equal than zero.
+    """
+
+    @classmethod
+    def assert_valid_value(cls, value):
+        assert value >= 0
+
+
 class PositiveIntegerAction(PositiveFloatAction):
     """Check that value is an integer and greater than zero.
     """

@@ -315,6 +315,20 @@ class RenderingOptions:
         """
         _singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
+    @OptionsBase.property(action=_singleton_cli.NonnegativeFloatAction)
+    def horizontal_margin(self, value):
+        """Horizontal margin, which effectively expands the (x_min, x_max) limits
+        by this amount on each direction.
+        """
+        _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
+
+    @OptionsBase.property(action=_singleton_cli.NonnegativeFloatAction)
+    def vertical_margin(self, value):
+        """Vertical margin, which effectively expands the (y_min, y_max) limits
+        by this amount on each direction.
+        """
+        _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
+
     @OptionsBase.property("ylpos", type=float)
     def global_y_label_pos(self, value):
         """Relative position of the global Y label.

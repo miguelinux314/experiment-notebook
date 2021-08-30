@@ -348,8 +348,8 @@ def parallel_render_plds_by_group(
         show_grid=None,
         semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
         # Axis limits
-        x_min=None, x_max=None, horizontal_margin=0,
-        y_min=None, y_max=None,
+        x_min=None, x_max=None, y_min=None, y_max=None,
+        horizontal_margin=None, vertical_margin=None,
         # Optional axis labeling
         y_labels_by_group_name=None,
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
@@ -359,7 +359,8 @@ def parallel_render_plds_by_group(
     """
     return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
                                 column_properties=column_properties, global_x_label=global_x_label,
-                                horizontal_margin=horizontal_margin, y_min=y_min, y_max=y_max,
+                                horizontal_margin=horizontal_margin, vertical_margin=vertical_margin,
+                                y_min=y_min, y_max=y_max,
                                 force_monochrome_group=force_monochrome_group,
                                 x_min=x_min, x_max=x_max,
                                 y_labels_by_group_name=y_labels_by_group_name,
@@ -390,7 +391,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          show_grid=None,
                          semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
                          # Axis limits
-                         x_min=None, x_max=None, horizontal_margin=0,
+                         x_min=None, x_max=None,
+                         horizontal_margin=None, vertical_margin=None,
                          y_min=None, y_max=None,
                          # Optional axis labeling
                          y_labels_by_group_name=None,
@@ -438,7 +440,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     Axis limits:
     :param x_min: if not None, force plots to have this value as left end
     :param x_max: if not None, force plots to have this value as right end
-    :param horizontal_margin: Total horizontal margin (in plot units) to be left horizontally
+    :param horizontal_margin: Horizontal margin to be added to the figures,
+      expressed as a fraction of the horizontal dynamic range.
+    :param vertical_margin: Vertical margin to be added to the figures,
+      expressed as a fraction of the horizontal dynamic range.
     :param y_min: if not None, force plots to have this value as bottom end
     :param y_max: if not None, force plots to have this value as top end
 
@@ -543,20 +548,27 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         global_x_min = float("inf")
         global_x_max = float("-inf")
+        global_y_min = float("inf")
+        global_y_max = float("-inf")
         for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
             x_values = np.array(pld.x_values, copy=False)
             x_values = x_values[np.isnan(x_values)]
             global_x_min = min(global_x_min, x_values.min() if len(x_values) > 0 else global_x_min)
             global_x_max = max(global_x_min, x_values.max() if len(x_values) > 0 else global_x_min)
+            y_values = np.array(pld.y_values, copy=False)
+            y_values = y_values[np.isnan(y_values)]
+            global_y_min = min(global_y_min, y_values.min() if len(y_values) > 0 else global_y_min)
+            global_y_max = max(global_y_min, y_values.max() if len(y_values) > 0 else global_y_min)
 
         if global_x_max - global_x_min > 1:
             global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
             global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
+        if global_y_max - global_y_min > 1:
+            global_y_min = math.floor(global_y_min) if not math.isinf(global_y_min) else global_y_min
+            global_y_max = math.ceil(global_y_max) if not math.isinf(global_y_max) else global_y_max
         if column_properties:
             global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
             global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
-        if global_x_max is None:
-            global_x_min = 1
 
         for i, (group_name, group_axes) in enumerate(group_name_axes):
             group_color = color_by_group_name[group_name]
@@ -621,8 +633,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
             plt.xticks(x_tick_values, x_tick_labels)
 
-        xlim = [global_x_min - horizontal_margin, global_x_max + horizontal_margin]
-
         if global_y_label:
             fig.text(global_y_label_pos, 0.5, global_y_label, va='center', rotation='vertical')
 
@@ -652,10 +662,25 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             if y_tick_label_list is not None:
                 assert y_tick_list is not None
 
+        # Set the axis limits
+        xlim = [global_x_min, global_x_max]
+        ylim = [global_y_min, global_y_max]
         xlim[0] = xlim[0] if x_min is None else x_min
         xlim[1] = xlim[1] if x_max is None else x_max
+        ylim[0] = ylim[0] if y_min is None else y_min
+        ylim[1] = ylim[1] if y_max is None else y_max
+        # Translate relative margin to absolute margin
+        horizontal_margin = horizontal_margin if horizontal_margin is not None else options.horizontal_margin
+        vertical_margin = vertical_margin if vertical_margin is not None else options.vertical_margin
+        h_margin = horizontal_margin * (xlim[1] - xlim[0])
+        v_margin = vertical_margin * (ylim[1] - ylim[0])
+        xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
+        ylim = [ylim[0] - v_margin, ylim[1] + v_margin]
+        # Apply changes to the figure
         if xlim[0] != xlim[1]:
             plt.xlim(*xlim)
+        if ylim[0] != ylim[1]:
+            plt.ylim(*ylim)
 
         show_grid = options.show_grid if show_grid is None else show_grid
 
