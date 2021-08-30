@@ -3,9 +3,9 @@
 Version 0.3.0 is packed with new features and general performance improvements. At the same time, 
 significant backwards compatibility is preserved with the 0.2 version family:
 
-- Host code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name
+- Client code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name
   and semantics. Several methods and classes have been renamed and refactored, but these are not likely
-  referenced in host code. In summary, your host code should be compatible with 0.3.0 if it was with 0.2.8 
+  referenced in client code. In summary, your client code should be compatible with 0.3.0 if it was with 0.2.8 
   as long as it did not rely on the library internals.
 
 - Data format: the __atable_index column is now included in the CSV persistence. This trades off some extra
@@ -65,7 +65,7 @@ Improvements and other changes
         - Improved value verifier/setter system. In addition to CLI-parsing, it allows finer-grain input value
           validation and shaping.
 
-        - All changes should be totally transparent for enb host code. Recall that `from enb.config import options`
+        - All changes should be totally transparent for enb client code. Recall that `from enb.config import options`
           is the preferred way of acquiring the global options instance, then both `x = options.property`
           and `options.property = x` are supported as before
           (except for any additional value checks that may now be performed).

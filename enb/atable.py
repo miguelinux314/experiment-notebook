@@ -349,7 +349,7 @@ class ColumnProperties:
         User-defined attributes:
         :param **extra_extra_attributes: any parameters passed are set as attributes of the created
           instance (with __setattr__). These attributes are not directly used by |enb|'s core,
-          but can be safely used by host code.
+          but can be safely used by client code.
         """
         self.name = name
         self.fun = fun

@@ -20,9 +20,8 @@ import enb
 from enb.config import options
 from enb.misc import CircularList
 
-marker_cycle = CircularList(["o", "x", "s", "*", "p", "P", "2", "H", "X", "1", "d", "<", ">", "+"])
-color_cycle = CircularList([f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(4, 6))])
-fill_style_cycle = CircularList(["full"] * len(marker_cycle) + ["none"] * len(marker_cycle))
+marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "2", "H", "X", "1", "d", "<", ">", "+"])
+color_cycle = CircularList([f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(5, 6))])
 
 
 class PlottableData:
@@ -505,8 +504,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
                         pds_by_group_name[g][0].label = g
                 for pld in pds_by_group_name[g]:
-                    if pld.marker is not None:
-                        pld.marker = marker_cycle[i]
+                    pld.marker = marker_cycle[i]
 
         y_labels_by_group_name = {g: g for g in sorted_group_names} \
             if y_labels_by_group_name is None else y_labels_by_group_name

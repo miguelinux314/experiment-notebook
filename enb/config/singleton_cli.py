@@ -196,7 +196,7 @@ class SingletonCLI(metaclass=Singleton):
         argument_default=None,
         description="A number of options can be set via the command line interface, then "
                     "accessed via enb.config.options.property_name. All of them are optional, "
-                    "and may be interpreted differently by enb core modules and host code.",
+                    "and may be interpreted differently by enb core modules and client code.",
         add_help=os.path.basename(sys.argv[0]) not in ["__main__.py", "enb"])
     # Set to True after initialization
     _custom_attribute_handler_active = False
@@ -264,7 +264,7 @@ class SingletonCLI(metaclass=Singleton):
 
         - CLI validation capabilities are provided by the argparse.Action subclasses defined above.
 
-        Note that modules and host code may choose to act differently than these options are intended.
+        Note that modules and client code may choose to act differently than these options are intended.
 
         Default values are taken from the file-based configuration proxy in ainit
 

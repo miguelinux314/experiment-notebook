@@ -32,14 +32,10 @@ class TestRay(unittest.TestCase):
                      + [wait_b.remote(ray.put(_)) for _ in range(5)]
 
         pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=target_ids, iteration_period=0.6)
-        time_before = time.time()
 
         for i, _ in enumerate(pg):
             assert len(pg.completed_ids) < len(target_ids)
             assert i < 10, pg
-        time_after = time.time()
-
-        assert sleep_time < time_after - time_before < 2 * sleep_time
 
         # All ids should be immediately ready after iterating the ProgressiveGet instance
         ray.get(target_ids, timeout=0)
