@@ -864,7 +864,40 @@ class TwoNumericSummary(ScalarNumericSummary):
                 # Compute the global dynamic range of all input samples (before grouping)
                 self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
 
+            self.add_twoscalar_description_columns(column_names=x_y_names)
+
         self.move_render_columns_back()
+
+    def add_twoscalar_description_columns(self, column_names):
+        """Add columns that compute several statistics considering two columns jointly, e.g., their correlation.
+        """
+        for descriptor in ["pearson_correlation", "pearson_correlation_pvalue",
+                           "spearman_correlation", "spearman_correlation_pvalue",
+                           "linear_lse_slope", "linear_lse_intercept"]:
+            cp = enb.atable.ColumnProperties(
+                name=f"{column_names[0]}_{column_names[1]}_{descriptor}",
+                label=f"{descriptor[:1].upper() + descriptor[1:]} "
+                      f"for {column_names[0]}, {column_names[1]}".replace("_", " "))
+            self.add_column_function(
+                self,
+                fun=functools.partial(self.set_twoscalar_description, column_selection=column_names),
+                column_properties=cp)
+
+    def set_twoscalar_description(self, *args, **kwargs):
+        """Set basic descriptive statistics for the target column
+        """
+        _, group_label, row = args
+        x_column_name, y_column_name = kwargs["column_selection"]
+        row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
+        row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
+            scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+        row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
+        row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
+            scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+
+        lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
+        row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
+        row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function that computes
