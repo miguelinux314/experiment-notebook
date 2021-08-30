@@ -14,7 +14,6 @@ if __name__ == "__main__":
     combine_groups = True
 
     for group_by in [None, "class"]:
-
         # Test the scalar numeric analyzer
         analyzer = enb.aanalysis.ScalarNumericAnalyzer()
         analyzer.combine_groups = combine_groups
