@@ -280,6 +280,13 @@ class RayOptions:
                               f"including any extension, and without any path indication. Found {value} instead")
         return str(value)
 
+    @OptionsBase.property("pws", type=str)
+    def preshutdown_wait_seconds(self, value):
+        """A wait period can be held before shutting down ray. This allows displaying messages produced by
+        child processes (e.g., stack traces) in case of abrupt termination of enb client code.
+        """
+        return float(value) if float(value) <= 0 else 0
+
 
 @_singleton_cli.property_class(OptionsBase)
 class RenderingOptions:

@@ -32,14 +32,13 @@ def init_ray(force=False):
             ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
                      local_mode=options.ray_cpu_limit == 1)
 
-
 def stop_ray():
     if ray.is_initialized:
         with logger.info_context("Shutting down ray cluster"):
             # This tiny delay allows error messages from child processes to reach the
             # orchestrating process for logging.
             # It might need to be tuned for distributed computation across networks.
-            time.sleep(0.5)
+            time.sleep(options.preshutdown_wait_seconds)
             ray.shutdown()
 
 
