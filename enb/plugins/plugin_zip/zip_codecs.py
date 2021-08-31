@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrappers for different types of LZ codecs such as Deflate, LZMA, BZIP2
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "04/01/2021"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/01/04"
 
 import zlib
 import lzma
@@ -38,7 +37,7 @@ class LZ77Huffman(AbstractZipCodec):
 
     @property
     def label(self):
-        return f"LZ77Huff {self.param_dict['compression_level']}"
+        return f"LZ77Huff"
 
 
 class LZMA(AbstractZipCodec):
@@ -55,7 +54,7 @@ class LZMA(AbstractZipCodec):
 
     @property
     def label(self):
-        return f"LZMA {self.param_dict['compression_level']}"
+        return f"LZMA"
 
 
 class BZIP2(AbstractZipCodec):

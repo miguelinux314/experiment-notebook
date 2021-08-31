@@ -7,8 +7,8 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   enb.config
    enb.plugins
-   enb.templates
 
 Submodules
 ----------
@@ -25,30 +25,6 @@ enb.atable module
 -----------------
 
 .. automodule:: enb.atable
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.atemplate module
---------------------
-
-.. automodule:: enb.atemplate
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.bitstream module
---------------------
-
-.. automodule:: enb.bitstream
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.config module
------------------
-
-.. automodule:: enb.config
    :members:
    :undoc-members:
    :show-inheritance:
@@ -85,6 +61,14 @@ enb.isets module
    :undoc-members:
    :show-inheritance:
 
+enb.log module
+--------------
+
+.. automodule:: enb.log
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.misc module
 ---------------
 
@@ -97,14 +81,6 @@ enb.ml module
 -------------
 
 .. automodule:: enb.ml
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.params module
------------------
-
-.. automodule:: enb.params
    :members:
    :undoc-members:
    :show-inheritance:
@@ -137,14 +113,6 @@ enb.sets module
 ---------------
 
 .. automodule:: enb.sets
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.singleton\_cli module
--------------------------
-
-.. automodule:: enb.singleton_cli
    :members:
    :undoc-members:
    :show-inheritance:

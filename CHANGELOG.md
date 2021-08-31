@@ -1,3 +1,32 @@
+# 2021/08/31 v0.3.0
+
+Version 0.3.0 is packed with new features and general performance improvements. At the same time, significant backwards
+compatibility is preserved with the 0.2 version family:
+
+- Client code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name and
+  semantics. Several methods and classes have been renamed and refactored, but these are not likely referenced in client
+  code. In summary, your client code should be compatible with 0.3.0 if it was with 0.2.8 as long as it did not rely on
+  the library internals.
+
+- Data format: the __atable_index column is now included in the CSV persistence. This trades off some extra disk space
+  for faster loading times and a little extra traceability. As a result, CSV persistence files produced with 0.2.8 or
+  earlier cannot be loaded with 0.3.0 and later.
+
+- Features: all previous features have been retained, and new ones have been added.
+
+New major functions:
+
+- Created the first functional CLI. Can be run with `enb` or `python -m enb`.
+- Added a plugin installation subsystem; try `enb plugin -h` for more information.
+- New logging subsystem, which allows for a more flexible message output selection with more elegant code
+
+Improvements and other changes
+
+- Improved performance of the ATable population, storage and loading routines.
+- Plotting in aanalysis makes more efficient use of parallelization.
+- Added several new image compression codec plugins with floating point support, based on the `h5py` library.
+- The sequential option is removed, in favor of setting the maximum number of cpus to 1.
+
 # 2021/07/14 v0.2.8
 
 * New functions:
@@ -36,11 +65,11 @@
         - Improved value verifier/setter system. In addition to CLI-parsing, it allows finer-grain input value
           validation and shaping.
 
-        - All changes should be totally transparent for enb host code. Recall that `from enb.config import options`
+        - All changes should be totally transparent for enb client code. Recall that `from enb.config import options`
           is the preferred way of acquiring the global options instance, then both `x = options.property`
           and `options.property = x` are supported as before
           (except for any additional value checks that may now be performed).
-          
+
 # 2021/06/30 v0.2.7
 
 * New functions:
@@ -64,7 +93,7 @@
           sorted by default.
 
     * Added codec support:
-      
+
         - enb.isets.FITSWrapper can now be used to easily define codecs that need `.fit`/`.fits` files as an input.
         - Added FPACK, FPZIP, ZFP, Zstandard codecs for FITS (potentially float) data.
         - Added standalone Zstandard codec.

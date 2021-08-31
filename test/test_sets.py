@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Unit tests for sets.py
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "05/10/2019"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2019/10/05"
 
 import unittest
 import tempfile
@@ -13,7 +12,6 @@ import numpy as np
 import shutil
 
 import enb.atable
-import test_all
 import enb.sets as sets
 from enb.config import options
 
@@ -27,68 +25,66 @@ class TestSets(unittest.TestCase):
     def test_file_properties(self):
         """Test that file properties are correctly obtained and retrieved.
         """
-        for parallel in [True, False]:
-            # dataset_df = get_result_df()
-            with tempfile.NamedTemporaryFile(suffix=".csv") as tmp_fid:
-                tmp_path = tmp_fid.name
-            dataset_properties_table = sets.FilePropertiesTable(csv_support_path=tmp_path)
+        # dataset_df = get_result_df()
+        with tempfile.NamedTemporaryFile(suffix=".csv") as tmp_file:
+            dataset_properties_table = sets.FilePropertiesTable(
+                csv_support_path=tmp_file.name)
 
-            # Attempt loading from an empty file, verify it is empty
-            empty_property_table = dataset_properties_table.get_df(target_indices=target_indices, fill=False,
-                                                                   parallel_row_processing=parallel)
-            assert len(empty_property_table) == len(target_indices)
+            # Attempt loading from an empty file, verify it is empty because fill=False
+            empty_property_table = dataset_properties_table.get_df(
+                fill=False, target_indices=target_indices)
 
-            assert np.all(empty_property_table[[
-                c for c in empty_property_table.columns
-                if c not in dataset_properties_table.indices]].applymap(lambda x: x is None)), \
-                empty_property_table
+            assert len(empty_property_table) == 0, empty_property_table
+            assert empty_property_table.isnull().all().all()
 
             # Run the actual loading sequence
-            dataset_properties_df = dataset_properties_table.get_df(target_indices=target_indices,
-                                                                    parallel_row_processing=parallel)
+            dataset_properties_df = dataset_properties_table.get_df(target_indices=target_indices)
+            assert len(dataset_properties_df) == len(target_indices)
 
-            # Obtain again, forcing load from the temporary file
-            new_df = dataset_properties_table.get_df(target_indices=target_indices, fill=False, overwrite=False,
-                                                     parallel_row_processing=parallel)
+            # Obtain again, forcing load from the temporary file without any additional computations
+            new_df = dataset_properties_table.get_df(
+                target_indices=target_indices, fill=False, overwrite=False)
             assert (dataset_properties_df.columns == new_df.columns).all()
+
             for c in dataset_properties_df.columns:
-                if not (dataset_properties_df[c] == new_df[c]).all():
-                    # Floating point values might be unstable
-                    try:
-                        assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12
-                    except TypeError:
-                        # Stability within dictionaries is not verified,
-                        # but only dictionaries can raise this error
-                        assert (dataset_properties_df[c].apply(lambda c: isinstance(c, dict))).all()
+                try:
+                    if not (dataset_properties_df[c] == new_df[c]).all():
+                        # Floating point values might be unstable
+                        try:
+                            assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12
+                        except TypeError:
+                            # Stability within dictionaries is not verified,
+                            # but only dictionaries can raise this error
+                            assert (dataset_properties_df[c].apply(lambda c: isinstance(c, dict))).all()
+                except ValueError as ex:
+                    raise RuntimeError("The original and loaded datasets differ") from ex
 
     def test_trivial_version_table(self):
         """Test versioning with a table that simply copies the original file.
         """
+
+        class TrivialVersionTable(sets.FileVersionTable):
+            """Trivial FileVersionTable that makes an identical copy of the original
+            """
+
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.dataset_files_extension = "py"
+
+            def version(self, input_path, output_path, row):
+                shutil.copy(input_path, output_path)
+                assert os.path.getsize(input_path) == os.path.getsize(output_path)
+
         with tempfile.TemporaryDirectory() as tmp_dir:
             options.persistence_dir = tmp_dir
 
-            class TrivialVersionTable(sets.FileVersionTable, sets.FilePropertiesTable):
-                """Trivial FileVersionTable that makes an identical copy of the original
-                """
-                version_name = "TrivialCopy"
-                default_extension = "py"
-
-                def __init__(self):
-                    super().__init__(version_name=self.version_name,
-                                     original_base_dir=os.path.dirname(os.path.abspath(__file__)),
-                                     version_base_dir=tmp_dir)
-                    self.default_extension = "py"
-
-                def version(self, input_path, output_path, row):
-                    shutil.copy(input_path, output_path)
-                    assert os.path.getsize(input_path) == os.path.getsize(output_path)
-
-            fpt = sets.FilePropertiesTable()
-            fpt.default_extension = "py"
+            fpt = sets.FilePropertiesTable(base_dir=os.path.dirname(os.path.abspath(__file__)))
+            fpt.dataset_files_extension = "py"
             fpt_df = fpt.get_df()
             fpt_df["original_file_path"] = fpt_df["file_path"]
-            tvt = TrivialVersionTable()
-            tvt.default_extension = "py"
+            tvt = TrivialVersionTable(version_base_dir=tmp_dir,
+                                      version_name="trivial",
+                                      original_base_dir=os.path.dirname(os.path.abspath(__file__)))
             tvt_df = tvt.get_df()
 
             lsuffix = "_original"
@@ -104,7 +100,9 @@ class TestSets(unittest.TestCase):
                     continue
                 version_column = column.replace(lsuffix, rsuffix)
                 if not column.startswith("corpus"):
-                    assert np.all(joint_df[column] == joint_df[version_column]), \
+                    assert np.all(joint_df[column] == joint_df[version_column]) \
+                           or column.startswith("row_created") \
+                           or column.startswith("row_update"), \
                         f"Columns {column} and {version_column} differ: " \
                         f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
 

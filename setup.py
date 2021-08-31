@@ -1,55 +1,47 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-# ================================
-# Experiment Notebook setup script
-# ================================
-#
-# Author: Miguel Hernández Cabronero <miguel.hernandez@uab.cat>
-#
-# Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
-#
-# Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
-# how to install this software.
+#!/usr/bin/env python3
+"""Installation script for the enb library.
 
+Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
+
+Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
+how to install this software.
+"""
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2019/09/19"
+
+import os
 import io
 from setuptools import setup, find_packages
+import configparser
 
-
-def read(*filenames, **kwargs):
-    """Return the contents of one or more files.
-    """
-    encoding = kwargs.get('encoding', 'utf-8')
-    sep = kwargs.get('sep', '\n')
-    buf = []
-    for filename in filenames:
-        with io.open(filename, encoding=encoding) as f:
-            buf.append(f.read())
-    return sep.join(buf)
-
+# Read the configuration from ./enb/config/enb.ini, section "enb"
+enb_options = configparser.ConfigParser()
+enb_options.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "enb", "config", "enb.ini"))
+enb_options = enb_options["enb"]
 
 setup(
     # Metadata about the project
-    name='enb',
-    version="0.2.8",
-    url='https://github.com/miguelinux314/experiment-notebook',
-    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.8.tar.gz",
-    license='MIT',
-    author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona), et al.',
-    author_email='miguel.hernandez@uab.cat',
-    description='Automated experiment definition, execution and analysis based on a declarative paradigm.',
-    long_description=read('README.md'),
-    platforms='any',
-    python_requires=">=3.6",
+    name=enb_options["name"],
+    version=enb_options["version"],
+    url=enb_options["url"],
+    download_url=enb_options["download_url"],
+    license=enb_options["license"],
+    author=enb_options["author"],
+    author_email=enb_options["author_email"],
+    description=enb_options["description"],
+    long_description=enb_options["long_description"],
+    platforms=enb_options["platforms"],
+    python_requires=enb_options["python_requires"],
     classifiers=[
-        'Programming Language :: Python',
-        'Development Status :: 4 - Beta',
-        'Natural Language :: English',
-        'Environment :: Console',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Topic :: Scientific/Engineering',
+        "Programming Language :: Python",
+        f"Development Status :: {enb_options['development_status']}",
+        "Natural Language :: English",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        f"License :: OSI Approved :: {enb_options['license']}",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Topic :: Scientific/Engineering",
     ],
 
     # UI
@@ -60,10 +52,11 @@ setup(
 
     # Dependencies
     setup_requires=['wheel', 'deprecation'],
+
     install_requires=[
-        'wheel', 'deprecation', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
-        'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation', 'pdf2image'],
+        'appdirs', 'astropy', 'astropy', 'deprecation', 'imageio', 'jinja2', 'matplotlib', 'numpngw', 'numpy', 'pandas',
+        'pdf2image', 'psutil', 'ray[default]', 'recordclass', 'redis', 'requests', 'scipy', 'sortedcontainers', 'wheel',
+    ],
 
     # This part determines the contents of the installed folder in your python's site-packages location.
     # MANIFEST.in is assumed to have been updated, i.e., via git hooks.

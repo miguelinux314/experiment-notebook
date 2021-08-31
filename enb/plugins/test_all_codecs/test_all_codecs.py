@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Evaluate the availability of data compressor/decompressor pairs (codecs) defined for enb.
 
 By default, all detected, non-"abstract" codecs are tested.
 If one or more command line arguments are passed, only codec classes matching that name will be tested.
 Empty codec selections are invalid.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "06/07/2021"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/07/06"
 
 import sys
 import os
 import tempfile
 import filecmp
-import itertools
+import glob
 import re
 import traceback
+import importlib
 
 import enb
 from enb.config import options
+
+
+def log_event(s):
+    if options.verbose:
+        s = f" {s}..."
+        print(f"\n{s:->100s}\n")
 
 
 class AvailabilityExperiment(enb.experiment.Experiment):
@@ -54,13 +60,12 @@ class AvailabilityExperiment(enb.experiment.Experiment):
                 row["cr_dr"] = self.get_dataset_info_row(file_path)["samples"] \
                                * self.get_dataset_info_row(file_path)["dynamic_range_bits"] \
                                / (8 * os.path.getsize(tmp_compressed_file.name))
-                row["error_str"] = ""
+                row["error_str"] = "No error"
         except Exception as ex:
-            row["error_str"] = traceback.format_exc()
+            row["error_str"] = repr(traceback.format_exc())
             row["is_working"] = False
             row["is_lossless"] = False
             row["cr_dr"] = 0
-
 
 
 class CodecSummaryTable(enb.atable.SummaryTable):
@@ -101,34 +106,18 @@ if __name__ == '__main__':
     if options.verbose:
         print(f"{' [ Codec Availability Test Script ] ':=^100s}")
 
-    # Plugin import -- these are needed so that they can be automatically loaded below (ignore IDE non-usage warnings)
-    from enb.plugins import plugin_ccsds122
-    from enb.plugins import plugin_fapec
-    from enb.plugins import plugin_flif
-    from enb.plugins import plugin_fpack
-    from enb.plugins import plugin_fpc
-    from enb.plugins import plugin_fpzip
-    from enb.plugins import plugin_fse_huffman
-    from enb.plugins import plugin_hevc
-    from enb.plugins import plugin_jpeg
-    from enb.plugins import plugin_jpeg_xl
-    from enb.plugins import plugin_kakadu
-    from enb.plugins import plugin_lcnl
-    from enb.plugins import plugin_marlin
-    from enb.plugins import plugin_mcalic
-    from enb.plugins import plugin_spdp
-    from enb.plugins import plugin_ndzip
-    from enb.plugins import plugin_vvc
-    from enb.plugins import plugin_zfp
-    from enb.plugins import plugin_zip
-    from enb.plugins import plugin_zstandard
+    # Plugin import -- these are needed so that codecs get defined and can
+    # be automatically retrieved below (ignore IDE non-usage warnings).
+    # NOTE: the build script should have created the `plugins` folder with all these codecs
 
-
-    def log_event(s):
-        if options.verbose:
-            s = f" {s}..."
-            print(f"\n{s:->100s}\n")
-
+    log_event("Importing plugin modules")
+    plugin_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plugins")
+    assert os.path.isdir(plugin_dir), \
+        "The build script should have placed everything under plugins, " \
+        "please report this if you feel it is a bug."
+    for d in [p for p in glob.glob(os.path.join(plugin_dir, "*")) if os.path.exists(os.path.join(p, "__init__.py"))]:
+        print(f"Importing {os.path.basename(d)}...")
+        importlib.import_module(f"{os.path.basename(plugin_dir)}.{os.path.basename(d)}")
 
     # Make sure data are ready
     log_event("Preparing test dataset")
@@ -139,13 +128,18 @@ if __name__ == '__main__':
 
     # This part searches for all defined codecs so far. Import new codecs to make them appear in the list
     # It also filters away any class with 'abstract' in the name.
-    base_classes = {enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec}
-    codec_classes = set(itertools.chain(*([c for c in cls.__subclasses__()
-                                           if "abstract" not in c.__name__.lower()]
-                                          for cls in base_classes)))
+    codec_classes = enb.misc.get_all_subclasses(
+        enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec)
+
     # Remove any unwanted classes from the analysis
-    forbidden_classes = set(base_classes)
-    codec_classes = set(cls for cls in codec_classes if cls not in base_classes)
+    codec_classes = set(c for c in codec_classes if "abstract" not in c.__name__.lower())
+    codec_classes = set(c for c in codec_classes if "fapec" not in c.__name__.lower())
+    codec_classes = set(c for c in codec_classes if "magli" not in c.__name__.lower())
+    # Specialized lcnl configurations
+    codec_classes = set(c for c in codec_classes if "greenbook" not in c.__name__.lower())
+    codec_classes = set(c for c in codec_classes if ("mhdc" not in c.__name__.lower()
+                                                     or ("mhdc" in c.__name__.lower()
+                                                         and c.__name__ == "MHDC_POT")))
 
     filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if filter_args:
@@ -153,15 +147,18 @@ if __name__ == '__main__':
         codec_classes = [c for c in codec_classes
                          if any(s.strip().lower() in c.__name__.strip().lower() for s in filter_args)]
         if not codec_classes:
-            log_event("Error: no codec matched the filter. Exiting now.")
-            raise ValueError(sys.argv[1:])
+            log_event("Error: no codec matched the filter strings "
+                      f"({', '.join(repr(v) for v in sys.argv[1:] if not v.startswith('-'))}). "
+                      f"Exiting now.")
+            raise ValueError(sys.argv)
+
+    if options.verbose:
+        log_event(f"The following {len(codec_classes)} codecs have been found"
+                  f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
+        for c in sorted(codec_classes, key=lambda cls: cls.__name__.lower()):
+            print(f"\t:: {c.__name__}")
 
     # Run the experiment
-    log_event(f"The following {len(codec_classes)} codecs have been found"
-              f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
-    for c in codec_classes:
-        print(f"\t:: {c.__name__}")
-
     log_event(f"Running the experiment. This might take some time...")
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
@@ -228,6 +225,9 @@ if __name__ == '__main__':
             reference_df=full_df).get_df()
         save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability_{label}.pdf"))
 
-    if options.verbose:
-        print(f"Saving PNG versions of the PDF files...")
+    log_event(f"Saving PNG versions of the PDF files...")
     enb.aanalysis.pdf_to_png(input_dir=options.plot_dir, output_dir=options.plot_dir)
+    print("Done saving PNGs.")
+    
+    log_event("Test all codecs successfully completed")
+    print(f"You can now see the availability plots in .pdf and .png format at {options.plot_dir}")

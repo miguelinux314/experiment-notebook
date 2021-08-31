@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import os
 import glob
 import unittest
-import test_all
+import string
+import numpy as np
 
 import enb.atable
 import enb.atable as atable
@@ -73,21 +73,32 @@ class DefinitionModesTable(atable.ATable):
         row["e"] = row["d"] + 1
         row["f"] = row["e"] + 1
 
+    @atable.column_function(
+        atable.ColumnProperties("constant_one", plot_min=1, plot_max=1),
+        "constant_zero",
+        atable.ColumnProperties("first_ten_numbers", has_iterable_values=True),
+        atable.ColumnProperties("ascii_table", has_dict_values=True),
+    )
+    def set_mixed_type_columns(self, index, row):
+        row["constant_one"] = 1
+        row["constant_zero"] = 0
+        row["first_ten_numbers"] = list(range(10))
+        row["ascii_table"] = {l: ord(l) for l in string.ascii_letters}
+
 
 class TestATable(unittest.TestCase):
     def test_subclassing(self):
         """Verify that ATable can be subclassed with well defined behavior
         """
-        for parallel in [True, False]:
-            df_length = 5
-            sc = Subclass(index="index")
-            assert sc.column_to_properties["index_length"].fun.__qualname__ == Subclass.set_index_length.__qualname__, \
-                (sc.column_to_properties["index_length"].fun, Subclass.set_index_length,
-                 Subclass.set_index_length.__qualname__)
-            df = sc.get_df(target_indices=["a" * i for i in range(df_length)], parallel_row_processing=parallel)
-            assert len(df) == df_length
-            assert (df["index_length"].values == range(df_length)).all(), \
-                (df["index_length"].values)
+        df_length = 5
+        sc = Subclass(index="index")
+        assert sc.column_to_properties["index_length"].fun.__qualname__ == Subclass.set_index_length.__qualname__, \
+            (sc.column_to_properties["index_length"].fun, Subclass.set_index_length,
+             Subclass.set_index_length.__qualname__)
+        df = sc.get_df(target_indices=["a" * i for i in range(df_length)])
+        assert len(df) == df_length
+        assert (df["index_length"].values == range(df_length)).all(), \
+            (df["index_length"].values)
 
     def test_column_definition_modes(self):
         """Test the different methods of adding columns to a table and verify that they work properly.
@@ -98,8 +109,39 @@ class TestATable(unittest.TestCase):
         table = DefinitionModesTable()
         df = table.get_df(target_indices=["val0"])
         assert len(df) == 1, len(df)
+        row = df.iloc[0]
         for i, c in enumerate((chr(o) for o in range(ord("a"), ord("f") + 1)), start=1):
-            assert df.iloc[0][c] == i
+            assert row[c] == i
+
+        assert row["constant_zero"] == 0, row["constant_zero"]
+        assert row["constant_one"] == 1, row["constant_one"]
+        assert row["first_ten_numbers"] == list(range(10)), row["first_ten_numbers"]
+        assert len(row["ascii_table"]) == len(string.ascii_letters), len(row["ascii_table"])
+        assert all(v == ord(k) for k, v in row["ascii_table"].items()), row["ascii_table"]
+
+
+class TestFailingTable(unittest.TestCase):
+    def test_always_failing_column(self):
+        try:
+            # Disable logging of expected errors
+            old_verbose = enb.config.options.verbose
+            enb.config.options.verbose -= len(enb.logger.name_to_level)
+
+            class FailingTable(enb.atable.ATable):
+                def column_failing(self, index, row):
+                    raise NotImplementedError("I am expected to crash - no worries!")
+
+            ft = FailingTable()
+            target_indices = string.ascii_letters
+            try:
+                ft.get_df(target_indices=target_indices)
+                enb.config.options.verbose = old_verbose
+                raise RuntimeError("The previous call should have failed")
+            except enb.atable.ColumnFailedError as ex:
+                assert len(ex.exception_list) == len(target_indices)
+                pass
+        finally:
+            enb.config.options.verbose = old_verbose
 
 
 class TestSummaryTable(unittest.TestCase):
@@ -112,10 +154,46 @@ class TestSummaryTable(unittest.TestCase):
 
         base_df = base_table.get_df(target_indices=target_paths)
 
-        summary_table = enb.atable.SummaryTable(reference_df=base_df)
+        summary_table = enb.atable.SummaryTable(full_df=base_df)
         summary_df = summary_table.get_df()
-        assert summary_df.iloc[0]["group_label"] == "all"
+
+        assert summary_df.iloc[0]["group_label"].lower() == "all", summary_df.iloc[0]["group_label"]
         assert summary_df.iloc[0]["group_size"] == len(target_paths)
+
+
+class TestObjectColumns(unittest.TestCase):
+    def test_object_values(self):
+        class CustomType:
+            def __init__(self, custom_prop):
+                self.custom_prop = custom_prop
+                self.other_prop = 2 * custom_prop
+
+        class TypesTable(enb.atable.ATable):
+            @enb.atable.column_function(
+                "uppercase",
+                "lowercase",
+                enb.atable.ColumnProperties(
+                    "first_last_iterable",
+                    label="First and last characters of the index",
+                    has_iterable_values=True),
+                enb.atable.ColumnProperties(
+                    "first_last_dict",
+                    label="First and last characters of the index",
+                    has_dict_values=True),
+                enb.atable.ColumnProperties(
+                    "custom_type_column", has_object_values=True)
+            )
+            def set_columns(self, index, row):
+                row["uppercase"] = index.upper()
+                row["lowercase"] = index.lower()
+                row["first_last_iterable"] = (index[0], index[-1]) if index else []
+                row["first_last_dict"] = dict(first=index[0], last=index[-1]) if index else {}
+                row["custom_type_column"] = CustomType(custom_prop=len(index))
+
+        df = TypesTable().get_df(target_indices=string.ascii_letters)
+        assert np.all(df["custom_type_column"].apply(type) == CustomType)
+        assert np.all(df["custom_type_column"].apply(lambda ct: ct.custom_prop) == 1)
+        assert np.all(df["custom_type_column"].apply(lambda ct: ct.other_prop) == 2)
 
 
 if __name__ == '__main__':

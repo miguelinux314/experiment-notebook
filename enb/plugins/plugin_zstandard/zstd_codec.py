@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the Zstandard lossless image coder
 """
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/07/12"
 
 import os
 import enb
-from enb.config import options
 
 
 class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
@@ -20,8 +20,6 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
         super().__init__(compressor_path=zstd_binary,
                          decompressor_path=zstd_binary,
                          param_dict=dict(compression_level=compression_level))
-
-    
 
     @property
     def label(self):

@@ -1,13 +1,13 @@
-"""
-Wrapper for the HEVC codec, using the reference implementation from
+#!/usr/bin/env python3
+"""Wrapper for the HEVC codec, using the reference implementation from
 
 https://vcgit.hhi.fraunhofer.de/jvet/HM
 """
+__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__since__ = "2021/09/01"
 
 import os
 import math
-import enb
-from enb.config import options
 from enb import icompression
 
 
@@ -85,7 +85,7 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
 
     rate_decimals = 3
 
-    def __init__(self, config_path=None, chroma_format="400", qp=None, bit_rate=None):
+    def __init__(self, config_path=None, chroma_format="400", qp=25, bit_rate=None):
         """
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
         :param qp: Specifies the base value of the quantization parameter (0-51).

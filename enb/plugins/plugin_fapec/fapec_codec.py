@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrappers for the FAPEC codec.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "25/05/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/05/25"
 
 import os
 
 import enb
 from enb import icompression
-from enb.config import options
 
 
 class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompression.WrapperCodec):

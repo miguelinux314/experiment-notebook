@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Tools to run compression experiments
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "19/09/2019"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2019/09/19"
 
 import os
 import collections
@@ -91,8 +90,7 @@ class Experiment(atable.ATable):
                  csv_experiment_path=None,
                  csv_dataset_path=None,
                  dataset_info_table=None,
-                 overwrite_file_properties=False,
-                 parallel_dataset_property_processing=None):
+                 overwrite_file_properties=False):
         """
         :param tasks: an iterable of :py:class:`ExperimentTask` instances. Each test file
           is processed by all defined tasks. For each (file, task) combination,
@@ -118,18 +116,14 @@ class Experiment(atable.ATable):
           persistent storage when available. Note that this parameter does not
           affect whether experiment results are retrieved from persistent storage if available.
           This is controlled via the parameters passed to get_df()
-        :param parallel_row_processing: if not None, it determines whether file properties
-          are to be obtained in parallel. If None, it is given by not options.sequential.
         """
         overwrite_file_properties = overwrite_file_properties \
             if overwrite_file_properties is not None else options.force
 
-        parallel_dataset_property_processing = parallel_dataset_property_processing \
-            if parallel_dataset_property_processing is not None else not options.sequential
         self.tasks = list(tasks)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else enb.atable.get_all_test_files()
+            else enb.atable.get_all_input_files()
 
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,
@@ -149,16 +143,14 @@ class Experiment(atable.ATable):
         assert len(self.dataset_info_table.indices) == 1, \
             f"dataset_info_table is expected to have a single index"
 
-        if options.verbose > 1:
-            print(f"Obtaining properties of {len(dataset_paths)} files... "
-                  f"[dataset info: {type(self.dataset_info_table).__name__}]")
-        self.dataset_table_df = self.dataset_info_table.get_df(target_indices=dataset_paths,
-                                                               overwrite=overwrite_file_properties,
-                                                               fill=True,
-                                                               parallel_row_processing=(
-                                                                   parallel_dataset_property_processing
-                                                                   if parallel_dataset_property_processing is not None
-                                                                   else not options.sequential))
+        with enb.logger.verbose_context(
+                f"[{self.__class__.__name__}:__init__()] "
+                f"Obtaining dataset properties with {self.dataset_info_table.__class__.__name__} "
+                f"({len(dataset_paths)} files)"):
+            self.dataset_table_df = self.dataset_info_table.get_df(
+                target_indices=dataset_paths,
+                overwrite=overwrite_file_properties,
+                fill=True)
 
         self.target_file_paths = dataset_paths
 
@@ -167,19 +159,16 @@ class Experiment(atable.ATable):
                                                f"{self.__class__.__name__}_persistence.csv")
 
         os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
+
         super().__init__(csv_support_path=csv_experiment_path,
                          index=self.dataset_info_table.indices + [self.task_name_column])
 
     def get_df(self, target_indices=None, target_columns=None,
-               fill=True, overwrite=None, parallel_row_processing=None,
-               chunk_size=None):
+               fill=True, overwrite=None, chunk_size=None):
         """Get a DataFrame with the results of the experiment. The produced DataFrame
         contains the columns from the dataset info table (but they are not stored
         in the experiment's persistence file).
 
-        :param parallel_row_processing: if True, parallel computation is used to fill the df,
-          including compression. If False, sequential execution is applied. If None,
-          not options.sequential is used.
         :param target_indices: list of file paths to be processed. If None, self.target_file_paths
           is used instead.
         :param chunk_size: if not None, a positive integer that determines the number of table
@@ -190,43 +179,34 @@ class Experiment(atable.ATable):
         target_indices = self.target_file_paths if target_indices is None else target_indices
         overwrite = overwrite if overwrite is not None else options.force
         target_tasks = list(self.tasks)
-        parallel_row_processing = parallel_row_processing if parallel_row_processing is not None \
-            else not options.sequential
+
+        enb.logger.verbose(f"Starting {self.__class__.__name__} with "
+                           f"{len(target_tasks)} tasks, "
+                           f"{len(target_indices)} indices, and "
+                           f"{len(self.column_to_properties)} columns.")
 
         self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
         target_task_names = [t.name for t in target_tasks]
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
-        df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
-                            parallel_row_processing=parallel_row_processing, chunk_size=chunk_size)
+
+        with enb.logger.verbose_context("Computing experiment results",
+                                        sep="...\n",
+                                        msg_after="successfully computed experiment results."):
+            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite, chunk_size=chunk_size)
 
         # Add dataset columns
-        rsuffix = "__redundant__index"
-        df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
-                     on=self.dataset_info_table.index, rsuffix=rsuffix)
-        if options.verbose:
+        with enb.logger.verbose_context("Merging dataset and experiment results"):
+            rsuffix = "__redundant__index"
+            df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
+                         on=self.dataset_info_table.index, rsuffix=rsuffix)
             redundant_columns = [c.replace(rsuffix, "")
-                                 for c in df.columns if c.endswith(rsuffix)]
+                                 for c in df.columns
+                                 if c.endswith(rsuffix)
+                                 and not c.startswith("row_created")
+                                 and not c.startswith("row_updated")]
             if redundant_columns:
-                print("[W]arning: redundant dataset/experiment column(s): " +
-                      ', '.join(redundant_columns) + ".")
-
-        # Add columns based on task parameters
-        if len(df) > 0:
-            task_param_names = set()
-            for task in self.tasks_by_name.values():
-                for k in task.param_dict.keys():
-                    task_param_names.add(k)
-            for param_name in task_param_names:
-                def get_param_row(row):
-                    file_path, task_name = row[self.index]
-                    task = self.tasks_by_name[task_name]
-                    try:
-                        return task.param_dict[param_name]
-                    except KeyError as ex:
-                        return None
-
-                df[param_name] = df.apply(get_param_row, axis=1)
+                enb.logger.warn(f"Found redundant dataset/experiment column(s): {', '.join(redundant_columns)}.")
 
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 

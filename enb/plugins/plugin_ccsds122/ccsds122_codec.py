@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Wrapper for the CCSDS 122 (MHDC) codec
+"""Wrapper for the CCSDS 122.1 (MHDC) codec
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "29/05/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/05/29"
 
 import os
 import math
 import enb.icompression
-from enb.config import options
 
 
 class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCodec):
@@ -67,7 +65,7 @@ class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCode
 class MHDC_ID(MHDC_Abstract):
     @property
     def label(self):
-        return f"CCSDS-122"
+        return f"CCSDS 122.1"
 
     def get_transform_params(self, original_file_info):
         return f"-t id"
@@ -84,7 +82,7 @@ class MHDC_POT(MHDC_Abstract):
 
     @property
     def label(self):
-        return f"CCSDS-122-POT"
+        return f"CCSDS 122.1 POT"
 
     def get_transform_params(self, original_file_info):
         return f"-t pot -F {self.param_dict['F']} -O {self.param_dict['Omega']}"
@@ -101,7 +99,7 @@ class MHDC_IWT(MHDC_Abstract):
 
     @property
     def label(self):
-        return f"CCSDS-122-IWT"
+        return f"CCSDS 122.1 IWT"
 
     def get_transform_params(self, original_file_info):
         return f"-t iwt"

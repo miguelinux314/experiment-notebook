@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrappers for the reference JPEG implementation
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "08/04/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/04/08"
 
 import os
 import sortedcontainers

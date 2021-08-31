@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrapper for the IWT transform
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "25/05/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/05/25"
 
 import os
 
