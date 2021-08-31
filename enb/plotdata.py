@@ -485,8 +485,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if group_name_order is None:
             sorted_group_names = sorted(pds_by_group_name.keys(),
                                         key=lambda s: "" if s == "all" else str(s).strip().lower())
-            if sorted_group_names[0].lower() == "all":
-                sorted_group_names = sorted_group_names[1:] + sorted_group_names[:1]
+            if str(sorted_group_names[0]).lower() == "all":
+                sorted_group_names = sorted_group_names[1:] + [str(n) for n in sorted_group_names[:1]]
         else:
             sorted_group_names = []
             for group_name in group_name_order:

@@ -187,6 +187,7 @@ After the definition, the table's dataframe can be obtained with
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
+import numbers
 from builtins import hasattr
 import ast
 import collections
@@ -1465,9 +1466,11 @@ def indices_to_internal_loc(values):
 
     :return: a unique string for indexing given the input values
     """
-    if isinstance(values, str):
+    if isinstance(values, str) or isinstance(values, numbers.Number):
         values = [values]
-    values = [os.path.abspath(v) if os.path.exists(v) else v for v in values]
+
+    values = [os.path.abspath(v) if isinstance(v, str) and os.path.exists(v) else v for v in values]
+
     return str(tuple(values))
 
 
@@ -1478,7 +1481,7 @@ def unpack_index_value(input):
     :return: If input is a string, it returns a list with that column name.
       If input is a list, it returns self.index.
     """
-    if isinstance(input, str):
+    if isinstance(input, str) or isinstance(input, numbers.Number):
         return [input]
     else:
         return list(input)
