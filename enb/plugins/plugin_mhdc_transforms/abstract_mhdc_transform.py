@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Template class for transformation using mhdctransform
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "25/05/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/05/25"
 
 import os
 import tempfile
@@ -43,7 +42,7 @@ class MHDCPropertiesTable(MHDCGeometryTable, enb.isets.ImagePropertiesTable):
 
 class MHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImagePropertiesTable):
     mhdc_transform_path = default_mhdc_binary_path
-    
+
     invocation_output_folder = None
 
     @property
@@ -190,15 +189,13 @@ class InverseMHDCTransformTable(enb.sets.FileVersionTable, enb.isets.ImageGeomet
 
 class MDHCLosslessCompressionExperiment(enb.icompression.LosslessCompressionExperiment):
     def __init__(self, codecs, dataset_paths=None, csv_experiment_path=None, csv_dataset_path=None,
-                 overwrite_file_properties=False, parallel_dataset_property_processing=None,
-                 reconstructed_dir_path=None, *args, **kwargs):
+                 overwrite_file_properties=False, reconstructed_dir_path=None, *args, **kwargs):
         dataset_info_table = MHDCPropertiesTable(
             csv_support_path=csv_dataset_path)
 
         super().__init__(codecs=codecs, dataset_paths=dataset_paths, csv_experiment_path=csv_experiment_path,
                          csv_dataset_path=csv_dataset_path, dataset_info_table=dataset_info_table,
                          overwrite_file_properties=overwrite_file_properties,
-                         parallel_dataset_property_processing=parallel_dataset_property_processing,
                          reconstructed_dir_path=reconstructed_dir_path,
                          *args, **kwargs)
 
@@ -212,14 +209,14 @@ class MDHCLosslessCompressionExperiment(enb.icompression.LosslessCompressionExpe
             output_path=row[enb.sets.FilePropertiesTable.index_name],
             transform_number=self.transform_number)
         assert os.path.exists(si_path), f"Side information {si_path} not found. Is it really a RWA-transformed set?"
-        row[_column_name] = os.path.getsize(row.compression_results.compressed_path) \
+        row[_column_name] = os.path.getsize(self.codec_results.compression_results.compressed_path) \
                             + os.path.getsize(si_path)
 
 
 def apply_transform(
         input_dir, output_dir, forward_class, inverse_class,
         forward_properties_csv=None, inverse_properties_csv=None,
-        repetitions=10, run_sequential=True):
+        repetitions=10):
     """Apply an MHDC transform to input_dir and save the results to output_dir.
 
     :param input_dir: input directory to be transformed (recursively)
@@ -230,8 +227,6 @@ def apply_transform(
       are stored here (including inverse transform time)
     :param repetitions: number of repetitions used to calculate execution time
       (for both forward and inverse transform)
-    :param run_sequential: if True, transformations are run in sequential mode
-      (as opposed to parallel) so that time measurements can be taken
 
     :raises AssertionError: if transformation/reconstruction is not lossless
 
@@ -248,13 +243,12 @@ def apply_transform(
         options.base_dataset_dir = input_dir
         options.base_version_dataset_dir = output_dir
         options.repetitions = repetitions
-        options.sequential = 1 if run_sequential else 0
         reconstructed_dir_path = os.path.join(tmp_dir, "reconstructed_dir")
         os.makedirs(reconstructed_dir_path, exist_ok=True)
 
         enb.ray_cluster.init_ray()
 
-        original_target_files = enb.atable.get_all_test_files()
+        original_target_files = enb.atable.get_all_input_files()
 
         if options.verbose:
             print(f"[F]orward MHDC<{forward_class.__name__}> to {len(original_target_files)} images")
@@ -264,12 +258,11 @@ def apply_transform(
             original_base_dir=options.base_dataset_dir, version_base_dir=options.base_version_dataset_dir,
             original_properties_table=original_geometry_table, version_name=forward_class.__name__,
             csv_support_path=os.path.join(options.persistence_dir, "versioned_properties.csv"))
-        forward_df = forward_table.get_df(target_indices=original_target_files, overwrite=options.force,
-                                          parallel_row_processing=True)
+        forward_df = forward_table.get_df(target_indices=original_target_files, overwrite=options.force)
 
         if options.verbose:
             print(f"[I]nverse MHDC<{inverse_class.__name__}> to {len(original_target_files)} images")
-        transformed_target_files = enb.atable.get_all_test_files(base_dataset_dir=options.base_version_dataset_dir)
+        transformed_target_files = enb.atable.get_all_input_files(base_dataset_dir=options.base_version_dataset_dir)
         with tempfile.NamedTemporaryFile(dir=tmp_dir) as tmp_csv_support:
             shutil.copy(forward_table.csv_support_path, tmp_csv_support.name)
             fwd_ig_table = enb.isets.ImageGeometryTable(csv_support_path=tmp_csv_support.name)
@@ -280,7 +273,7 @@ def apply_transform(
                 version_name=inverse_class.__name__,
                 csv_support_path=os.path.join(
                     options.persistence_dir, "inverse_versioned_properties.csv"))
-            inverse_df = inverse_table.get_df(target_indices=transformed_target_files, parallel_row_processing=True)
+            inverse_df = inverse_table.get_df(target_indices=transformed_target_files)
 
         if options.verbose:
             print(f"[C]hecking lossless to {len(original_target_files)}  images")

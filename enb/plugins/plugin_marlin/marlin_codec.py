@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Codec wrapper for the FLIF lossless image coder (precursor of JPEG-LS
+"""Codec wrapper for the FLIF lossless image coder (precursor of JPEG-LS)
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "09/02/2021"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/02/09"
 
 import os
-import time
-import tempfile
-import subprocess
-import imageio
-import shutil
-import numpy as np
 import enb
 
 
 class ImageMarlin(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.PNGWrapperCodec):
     """Wrapper for the imageMarlin codec
     """
+
     def __init__(self,
                  qstep=1,
                  entfreq=1,
@@ -41,7 +35,7 @@ class ImageMarlin(enb.icompression.LosslessCodec, enb.icompression.NearLosslessC
 
     @property
     def label(self):
-        return "ImageMarlin"
+        return "Marlin V2F"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["bytes_per_sample"] == 1, f"ImageMarlin supports monocomponent 8-bit images only"

@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+"""Automatic analysis and report of of pandas :class:`pandas.DataFrames`
+(e.g., produced by :class:`enb.experiment.Experiment` instances)
+using pyplot.
+"""
+__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__since__ = "2021/09/01"
+
 import inspect
 import os
 import time
@@ -8,7 +16,6 @@ import numpy as np
 import enb
 import enb.atable
 from enb import experiment
-from enb import sets
 from enb.config import get_options
 from enb.atable import indices_to_internal_loc
 
@@ -92,8 +99,7 @@ class MachineLearningExperiment(experiment.Experiment):
                  csv_experiment_path=None,
                  csv_dataset_path=None,
                  dataset_info_table=None,
-                 overwrite_file_properties=False,
-                 parallel_dataset_property_processing=None):
+                 overwrite_file_properties=False):
         """
         :param codecs: list of :py:class:`AbstractCodec` instances. Note that
           codecs are compatible with the interface of :py:class:`ExperimentTask`.
@@ -114,8 +120,6 @@ class MachineLearningExperiment(experiment.Experiment):
           the experiment. Useful for temporary and/or random datasets. Note that overwrite
           control for the experiment results themselves is controlled in the call
           to get_df
-        :param parallel_dataset_property_processing: if not None, it determines whether file properties
-          are to be obtained in parallel. If None, it is given by not options.sequential.
         """
         self.test_set = test_set
         # TODO: if no dataset object use default dataset class using the provided path
@@ -133,18 +137,15 @@ class MachineLearningExperiment(experiment.Experiment):
         #                  csv_experiment_path=csv_experiment_path,
         #                  csv_dataset_path=csv_dataset_path,
         #                  dataset_info_table=imageinfo_table,
-        #                  overwrite_file_properties=overwrite_file_properties,
-        #                  parallel_dataset_property_processing=parallel_dataset_property_processing)
+        #                  overwrite_file_properties=overwrite_file_properties)
 
-        verwrite_file_properties = overwrite_file_properties \
+        overwrite_file_properties = overwrite_file_properties \
             if overwrite_file_properties is not None else options.force
 
-        parallel_dataset_property_processing = parallel_dataset_property_processing \
-            if parallel_dataset_property_processing is not None else not options.sequential
         self.tasks = list(models)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else enb.atable.get_all_test_files()
+            else enb.atable.get_all_input_files()
 
         self.dataset_paths = dataset_paths  # TODO: remove this
 
@@ -170,11 +171,7 @@ class MachineLearningExperiment(experiment.Experiment):
         #     print(f"Obtaining properties of {len(dataset_paths)} files... "
         #           f"[dataset info: {type(self.dataset_info_table).__name__}]")
         # self.dataset_table_df = self.dataset_info_table.get_df(target_indices=dataset_paths,
-        #                                                        overwrite=overwrite_file_properties,
-        #                                                        parallel_row_processing=(
-        #                                                            parallel_dataset_property_processing
-        #                                                            if parallel_dataset_property_processing is not None
-        #                                                            else not options.sequential))
+        #                                                        overwrite=overwrite_file_properties)
 
         self.target_file_paths = dataset_paths
 
@@ -187,8 +184,7 @@ class MachineLearningExperiment(experiment.Experiment):
         #                  index=self.dataset_info_table.indices + [self.task_name_column])
 
     def get_df(self, target_indices=None, target_columns=None,
-               fill=True, overwrite=None, parallel_row_processing=None,
-               chunk_size=None):
+               fill=True, overwrite=None, chunk_size=None):
         print("Testing...")
 
         test_loader = torch.utils.data.DataLoader(self.test_set, batch_size=512, shuffle=False, num_workers=2)
@@ -204,14 +200,14 @@ class MachineLearningExperiment(experiment.Experiment):
     #     """
     #     return self.tasks_by_name
 
-    def process_row(self, index, column_fun_tuples, row, overwrite, fill):
+    def compute_one_row(self, index, column_fun_tuples, row, overwrite, fill):
         # Right now we are using file_path as testing_dataset_path maybe we will need to also add training_dataset_path
         file_path, model_name = index
         model = self.models_by_name[model_name]
         image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         row_wrapper = self.RowWrapper(file_path, model, row)
-        result = super().process_row(index=index, column_fun_tuples=column_fun_tuples,
-                                     row=row_wrapper, overwrite=overwrite, fill=fill)
+        result = super().compute_one_row(index=index, column_fun_tuples=column_fun_tuples,
+                                         row=row_wrapper, overwrite=overwrite, fill=fill)
 
         if isinstance(result, Exception):
             return result

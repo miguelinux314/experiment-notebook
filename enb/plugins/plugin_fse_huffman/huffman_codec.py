@@ -1,6 +1,11 @@
+#!/usr/bin/env python3
+"""Huffman codec wrapper
+"""
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "2021/06/01"
+
 import os
 from enb import icompression
-from enb.config import options
 
 
 class Huffman(icompression.WrapperCodec, icompression.LosslessCodec):

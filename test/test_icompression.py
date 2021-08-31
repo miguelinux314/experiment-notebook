@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Unit tests for the icompression module
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "6/4/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/4/6"
 
 import unittest
 import tempfile
@@ -118,9 +117,6 @@ class TestSpectralAngle(unittest.TestCase):
         return angles
 
     def test_spectral_angle(self):
-        options.exit_on_error = True
-        options.sequential = True
-
         for constant_offset in [1, 5, 10]:
             width, height, component_count = 2, 3, 4
             bytes_per_sample, signed, big_endian = 2, True, True

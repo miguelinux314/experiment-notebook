@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Generate the sample vectors for the test.
+"""Generate the sample vectors for the codec availability test.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "24/02/2021"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/02/24"
 
 import os
 import shutil
 import numpy as np
+from enb.config import options
 
 def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")):
     width = 128
     height = 128
 
-    for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 32)]:
-        for bytes_per_sample in [1, 2, 4, 8]:
+    for bytes_per_sample in [1, 2, 4, 8]:
+        if options.verbose > 1:
+            print(f"\tgenerating vectors with {bytes_per_sample} byte{'s' if bytes_per_sample != 1 else ''} per sample...")
+
+        for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 32)]:
             for signed in [True, False]:
                 for big_endian in [True, False]:
                     for is_float in [True, False]:
@@ -34,6 +37,10 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
                                 base_dir,
                                 f"{label}_float",
                                 f"{label}_f{effective_bits_per_sample}")
+
+                            if os.path.isdir(output_dir) and not options.force:
+                                continue
+
                             shutil.rmtree(output_dir, ignore_errors=True)
                             os.makedirs(output_dir)
 
@@ -67,6 +74,10 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
                             geometry = f"{component_count}x{height}x{width}"
                             output_dir = os.path.join(
                                 base_dir, f"{label}_{type}")
+
+                            if os.path.isdir(output_dir) and not options.force:
+                                continue
+
                             shutil.rmtree(output_dir, ignore_errors=True)
                             os.makedirs(output_dir)
 

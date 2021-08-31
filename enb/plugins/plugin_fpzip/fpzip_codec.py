@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the fpzip lossless image coder
 """
+__author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
+__since__ = "2021/06/01"
 
 import os
 import enb
-from enb.config import options
 
 
 class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
@@ -18,14 +18,13 @@ class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
                          decompressor_path=fpzip_binary,
                          param_dict=dict())
 
-
-
     @property
     def label(self):
         return "FPZIP"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        assert original_file_info["bytes_per_sample"] == 4 and original_file_info["float"] == True,'data type must be float 32'
+        assert original_file_info["bytes_per_sample"] == 4 and original_file_info[
+            "float"] == True, 'data type must be float 32'
         dimensions = 1
 
         return f"-i {os.path.abspath(original_path)} " \
@@ -36,4 +35,3 @@ class Fpzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
         dimensions = 1
 
         return f"-d -i {compressed_path} -o {reconstructed_path} -{dimensions} {original_file_info.samples} "
-

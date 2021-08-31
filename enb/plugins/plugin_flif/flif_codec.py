@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the FLIF lossless image coder (precursor of JPEG-LS)
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "09/02/2021"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/02/09"
 
 import os
 import enb

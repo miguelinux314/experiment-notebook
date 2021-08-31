@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Unit tests for the aatable classes
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "07/05/2021"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2021/05/07"
 
 import os
 import unittest
@@ -35,6 +34,7 @@ class TestScalarToScalar(unittest.TestCase):
                     "dicts", has_dict_values=True)},
                 output_csv_file=os.path.join(tmp_dir, "ignore.csv"),
                 output_plot_dir=tmp_dir)
+
 
 if __name__ == "__main__":
     unittest.main()

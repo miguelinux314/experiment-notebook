@@ -1,41 +1,40 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Example showing the basic workflow of the ``enb`` library.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "13/09/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/09/13"
 
-import os
 import glob
 import enb.atable
 import enb.aanalysis
 
 
 class WikiAnalysis(enb.atable.ATable):
-    @enb.atable.column_function("line_count")
-    def set_line_count(self, file_path, row):
+    # Methods that start with column_ are automatically recognized as such.
+    # They just need to return the intended value.
+    def column_line_count(self, file_path, row):
         with open(file_path, "r") as input_file:
-            row["line_count"] = sum(1 for line in input_file)
+            return sum(1 for line in input_file)
 
-    @enb.atable.column_function(enb.atable.ColumnProperties(
-        name="word_count", label="Word count", plot_min=0))
-    def set_line_count(self, file_path, row):
+    # More information about a column can be provided
+    # Several column names and/or enb.atable.ColumnProperties instances
+    # can also be passed as *args to the decorator to define multiple columns
+    @enb.atable.column_function(
+        enb.atable.ColumnProperties(name="word_count", label="Word count", plot_min=0),
+        "status")
+    def set_word_count(self, file_path, row):
         with open(file_path, "r") as input_file:
-            row[_column_name] = len(input_file.read().split())
-
-    @enb.atable.column_function(enb.atable.ColumnProperties("status"))
-    def set_dead_person(self, file_path, row):
-        with open(file_path, "r") as input_file:
-            row[_column_name] = "dead" if "death_place" in input_file.read() else "alive"
+            row["word_count"] = len(input_file.read().split())
+            row["status"] = "dead" if "death_place" in input_file.read() else "alive"
 
 
 def main():
-
     # Step 1: get a list of all data samples
     sample_paths = glob.glob("./data/wiki/*.txt")
 
     # Step 2: run experiment to gather data
     table = WikiAnalysis(csv_support_path="persistence_basic_workflow.csv")
+
     result_df = table.get_df(target_indices=sample_paths)
 
     # Step 3: plot results

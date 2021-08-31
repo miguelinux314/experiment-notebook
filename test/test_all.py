@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Rull all test modules in the current working dir
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "19/09/2019"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2019/09/19"
 
 import os
 import glob
@@ -37,4 +36,4 @@ if __name__ == '__main__':
         print(f"{'':-^30s}")
         print()
 
-    unittest.TextTestRunner(verbosity=3).run(suite)
+    unittest.TextTestRunner(verbosity=3, failfast=True).run(suite)

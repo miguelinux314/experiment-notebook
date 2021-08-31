@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrappers for the CCSDS 123.0-B-2 codecs.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "01/04/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/04/01"
 
 import os
 import subprocess
@@ -290,11 +289,11 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
         except KeyError:
             entropy_coder_type = self.default_entropy_codec_type
         if entropy_coder_type == self.ENTROPY_SAMPLE_ADAPTIVE:
-            s = "CCSDS 123 Sample Adaptative"
+            s = "CCSDS 123.0-B-2 Sample Adaptative"
         elif entropy_coder_type == self.ENTROPY_BLOCK_ADAPTIVE:
-            s = "CCSDS 123 Block Adaptative"
+            s = "CCSDS 123.0-B-2 Block Adaptative"
         elif entropy_coder_type == self.ENTROPY_HYBRID:
-            s = "CCSDS 123 Hybrid"
+            s = "CCSDS 123.0-B-2 Hybrid"
         else:
             raise ValueError(f"Unexpected entropy coding type {entropy_coder_type}")
 
