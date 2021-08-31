@@ -1190,10 +1190,11 @@ class OldAnalyzer:
                    adjust_height=False):
         """
         Analyze a :class:`pandas.DataFrame` instance, producing plots and/or analysis files.
+        
         :param adjust_height:
         :param full_df: full DataFrame instance with data to be plotted and/or analyzed
-        :param target_columns: list of columns to be analyzed. Typically a list of column names, although
-          each subclass may redefine the accepted format (e.g., pairs of column names)
+        :param target_columns: list of columns to be analyzed. Typically a list of column names, although each subclass may 
+         redefine the accepted format (e.g., pairs of column names)
         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
         :param output_csv_file: If not None, path of the csv file where basic analysis results are stored.
           The contents of the file are subclass-defined.

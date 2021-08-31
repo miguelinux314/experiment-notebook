@@ -1058,10 +1058,11 @@ class ATable(metaclass=MetaTable):
         given in `target_columns`, using this table's column-setting functions.
 
         This method is run when there are known missing values in the requested df, e.g., there are:
+        
         - missing columns of existing rows, and/or
         - new rows to be added (i.e., `target_locs` contains at least one index not
           in `loaded_df`).
-
+        
         Note that this method does not modify `loaded_df`.
 
         :param loaded_df: the full loaded dataframe read from persistence (or created anew). It is used to avoid
@@ -1332,7 +1333,7 @@ class SummaryTable(ATable):
     def split_groups(self, reference_df=None, include_all_group=None):
         """Split the reference_df |DataFrame| into an iterable of (label, dataframe) tuples.
         This splitting is performed based on the value of self.group_by:
-
+        
         - If it is None, a single group labelled "all" is created, associated to reference_df.
         - If it is not None:
             - It can be a |DataFrame| column index, e.g., a column name or a list of column names.
@@ -1340,19 +1341,21 @@ class SummaryTable(ATable):
             - It can be a callable with a single argument reference_df.
               In this case, the result of calling that method with reference_df as argument
               is returned by the call to split_groups().
-
-
+              
+        
         Subclasses can easily implement grouping custom grouping methods, which must adhere
         to the following constraints:
         - It must return an iterable of group_label, group_df tuples.
         - Unique group_label values must be returned.
-
+        
         Also note that:
+        
         - It is NOT needed that the union of all group_df tuples yield reference_df.
         - It is NOT needed that the intersection of the any two group_df elements is empty.
         - The group_df dataframes normally contain all columns in reference_df, but
           it is NOT mandatory to maintain this behavior.
-
+        
+        
         :param reference_df: if not None, a reference dataframe to split.
           If None, self.reference_df is employed instead.
         :param include_all_group: if True, an "All" group is added, containing all input samples,

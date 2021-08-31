@@ -403,53 +403,58 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     """Render lists of plotdata.PlottableData instances indexed by group name.
     Each group is rendered in a row (subplot), with a shared X axis.
     Groups can also be combined into a single row (subplot), i.e., rending all plottable data into that single subplot.
-
+    
     When applicable, None values are substituted by
     default values given enb.config.options (guaranteed to be updated thanks to the
     @enb.ray_cluster.remote decorator) and the current context.
-
+    
     Mandatory parameters:
+    
     :param pds_by_group_name: dictionary of lists of PlottableData instances
     :param output_plot_path: path to the file to be created with the plot
     :param column_properties: ColumnProperties instance for the column being plotted
     :param global_x_label: x-axis label shared by all subplots (there can be just one subplot)
     :param global_y_label: y-axis label shared by all subplots (there can be just one subplot)
-
+    
     General figure configuration:
+    
     :param combine_groups: if False, each group is plotted in a different row. If True,
-      all groups share the same subplot (and no group name is displayed).
+        all groups share the same subplot (and no group name is displayed).
     :param color_by_group_name: if not None, a dictionary of pyplot colors for the groups,
-      indexed with the same keys as pds_by_group_name
+        indexed with the same keys as `pds_by_group_name`.
     :param group_name_order: if not None, it contains the order in which groups are
-      displayed. If None, alphabetical, case-insensitive order is applied.
+        displayed. If None, alphabetical, case-insensitive order is applied.
     :param fig_width: figure width. The larger the figure size, the smaller the text will look.
     :param fig_height: figure height. The larger the figure size, the smaller the text will look.
-    :param global_y_label_pos: position of the global y label -- needed if the y axis has ticks with
-      long labels.
+    :param global_y_label_pos: position of the global y label. Needed if the y axis has ticks with
+        long labels.
     :param legend_column_count: when the legend is shown, use this many columns.
     :param force_monochrome_group: if True, all plottable data in each group is set to the same color,
-      defined by color_cycle.
-
+        defined by color_cycle.
+    
     Axis configuration:
+    
     :param show_grid: if True, or if None and options.show_grid, grid is displayed
-      aligned with the major axis
+         aligned with the major axis.
     :param semilog_y: if True, a logarithmic scale is used in the Y axis.
-    :param semilog_y_base: if semilog_y is True, the logarithm base employed
-    :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum of y_min and this value
-
+    :param semilog_y_base: if semilog_y is True, the logarithm base employed.
+    :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum of y_min and this value.
+    
     Axis limits:
-    :param x_min: if not None, force plots to have this value as left end
-    :param x_max: if not None, force plots to have this value as right end
+    
+    :param x_min: if not None, force plots to have this value as left end.
+    :param x_max: if not None, force plots to have this value as right end.
     :param horizontal_margin: Horizontal margin to be added to the figures,
       expressed as a fraction of the horizontal dynamic range.
     :param vertical_margin: Vertical margin to be added to the figures,
       expressed as a fraction of the horizontal dynamic range.
-    :param y_min: if not None, force plots to have this value as bottom end
-    :param y_max: if not None, force plots to have this value as top end
-
+    :param y_min: if not None, force plots to have this value as bottom end.
+    :param y_max: if not None, force plots to have this value as top end.
+    
     Optional axis labeling:
+    
     :param y_labels_by_group_name: if not None, a dictionary of labels for the groups,
-      indexed with the same keys as pds_by_group_name
+      indexed with the same keys as pds_by_group_name.
     :param x_tick_list: if not None, these ticks will be displayed in the x axis.
     :param x_tick_label_list: if not None, these labels will be displayed in the x axis.
       Only used when x_tick_list is not None.
@@ -457,10 +462,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param y_tick_list: if not None, these ticks will be displayed in the y axis.
     :param y_tick_label_list: if not None, these labels will be displayed in the y axis.
       Only used when y_tick_list is not None.
-
+    
     Global title:
-    :param plot_title: title to be displayed
-    :param show_legend: if True, legends are added to the plot
+    
+    :param plot_title: title to be displayed.
+    :param show_legend: if True, legends are added to the plot.
     """
     with enb.logger.verbose_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
                                     sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):

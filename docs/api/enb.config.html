@@ -278,6 +278,17 @@ valid python literals (essentially numbers, lists, dicts, tuples, booleans and N
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.config.aini.managed_attributes">
+<span class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></span><span class="sig-name descname"><span class="pre">managed_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.managed_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for classes so that their (class) attributes are set
+based on the <cite>.ini</cite> files found. Attributes starting with <cite>_</cite> are not considered.</p>
+<p>Values are read from the section titled as the classes fully qualified name
+(e.g., using the <cite>[enb.aanalysis.ScalarValueAnalyzer]</cite> header in one of the .ini files).</p>
+<p>Note that adding keys to that section corresponding to attributes not present
+in the definition of cls are ignored, i.e., new attributes are not added to cls.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-enb.config.aoptions">
 <span id="enb-config-aoptions-module"></span><h2>enb.config.aoptions module<a class="headerlink" href="#module-enb.config.aoptions" title="Permalink to this headline">¶</a></h2>
@@ -304,10 +315,9 @@ their default values.</p></li>
 When ray spawns new (local or remote) processes to serve as workers, the Options singleton
 is initialized for each of those process, with the catch that ray does <strong>not</strong> pass the user’s CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
-To mitigate this problem, an <cite>options</cite> parameter is defined and passed to many these functions,
-e.g., with <cite>f.remote(options=ray.put(enb.config.options))</cite> if f is your <cite>&#64;ray.remote</cite>-decorated function.
-The <cite>&#64;enb.config.propagates_options</cite> decorator provides a slightly cleaner way of automating
-this mitigation.</p>
+To mitigate this problem, the &#64;`enb.ray_cluster.remote` decorator is provided in substitution of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.remote()</span></code>
+so that options at the time of calling the remote method are available to that method at
+its regular location (enb.config.options).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.config.aoptions.DirOptions">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">DirOptions</span></span><a class="headerlink" href="#enb.config.aoptions.DirOptions" title="Permalink to this definition">¶</a></dt>
@@ -436,6 +446,13 @@ aesthetic plotting options.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.progress_report_period">
+<span class="sig-name descname"><span class="pre">progress_report_period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.progress_report_period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default minimum time in seconds between progress report updates,
+when get_df() is invoked and computation is being processed in parallel.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.quick">
 <span class="sig-name descname"><span class="pre">quick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.quick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a quick test with a subset of the input samples?</p>
@@ -490,7 +507,8 @@ when combined with log_print set to True.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.log_level_prefix">
 <span class="sig-name descname"><span class="pre">log_level_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_level_prefix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>If True, logged messages include a prefix, e.g., based on their priority.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.log_print">
@@ -503,6 +521,11 @@ when combined with log_print set to True.</p>
 <span class="sig-name descname"><span class="pre">selected_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.selected_log_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum log level / minimum priority required when printing messages.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.show_prefix_level">
+<span class="sig-name descname"><span class="pre">show_prefix_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.show_prefix_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -535,23 +558,19 @@ results in <cite>sys.argv</cite> differing in the orchestrating and host process
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Options related to the ray library, used for parallel/distributed computing.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.preshutdown_wait_seconds">
+<span class="sig-name descname"><span class="pre">preshutdown_wait_seconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.preshutdown_wait_seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wait period can be held before shutting down ray. This allows displaying messages produced by
+child processes (e.g., stack traces) in case of abrupt termination of enb client code.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.ray_cpu_limit">
 <span class="sig-name descname"><span class="pre">ray_cpu_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_cpu_limit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum number of virtual CPUs to use in the ray cluster.
 If set to None or any number n &lt;= 0, then no limits are set in terms of virtual CPU usage.</p>
 <p>IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
 it afterwards will not change ray cpu limits.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.sequential">
-<span class="sig-name descname"><span class="pre">sequential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.sequential" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make computations sequentially instead of distributed?</p>
-<p>When -s is set, local mode is use when initializing ray.</p>
-<p>This can be VERY useful to detect what parts of your code may be causing
-an exception while running a get_df() method.</p>
-<p>Furthermore, it can also help to limit the memory consumption of an experiment,
-which is also useful in case exceptions are due to lack of RAM.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -597,6 +616,13 @@ than the default assumptions.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.horizontal_margin">
+<span class="sig-name descname"><span class="pre">horizontal_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.horizontal_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal margin, which effectively expands the (x_min, x_max) limits
+by this amount on each direction.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.legend_column_count">
 <span class="sig-name descname"><span class="pre">legend_column_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.legend_column_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of columns used in plot legends.</p>
@@ -614,6 +640,13 @@ than the default assumptions.</p>
 <dd><p>Show axis grid lines?</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.vertical_margin">
+<span class="sig-name descname"><span class="pre">vertical_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.vertical_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertical margin, which effectively expands the (y_min, y_max) limits
+by this amount on each direction.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -621,7 +654,7 @@ than the default assumptions.</p>
 <span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_main</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.get_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated - use <cite>from enb.config import options</cite>.</p>
 <div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.2.7: </span>This will be removed in 0.3.0.</p>
+<p><span class="versionmodified deprecated">Deprecated since version 0.2.7: </span>This will be removed in 0.3.1.</p>
 </div>
 </dd></dl>
 
@@ -671,6 +704,18 @@ CLI properties, just make sure to subclass from GlobalOptions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.singleton_cli.ListAddOptionsAction.assert_valid_value">
 <em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ListAddOptionsAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.NonnegativeFloatAction">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">NonnegativeFloatAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.NonnegativeFloatAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ValidationAction" title="enb.config.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ValidationAction</span></code></a></p>
+<p>Check that a numerical value is greater or equal than zero.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.NonnegativeFloatAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.NonnegativeFloatAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -795,7 +840,7 @@ the decorated function.</p></li>
 <li><p>Subclasses may choose to raise an exception if a read-only property is trying to be set.</p></li>
 <li><p>CLI validation capabilities are provided by the argparse.Action subclasses defined above.</p></li>
 </ul>
-<p>Note that modules and host code may choose to act differently than these options are intended.</p>
+<p>Note that modules and client code may choose to act differently than these options are intended.</p>
 <p>Default values are taken from the file-based configuration proxy in ainit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -810,6 +855,21 @@ the calling class’ docstring.</p></li>
 <li><p><strong>kwargs</strong> – remaining arguments to be passed when initializing
 <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code> instances. See that class
 for detailed help on available parameters and usage.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update self with other, using None value items from other’s <cite>items()</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> – dict-like object with key-value pairs to be used to update self.</p></li>
+<li><p><strong>trigger_events</strong> – if True, the setter functions are used to assign any items found.
+If alse, self’s attributes are updated directly without using those methods.</p></li>
 </ul>
 </dd>
 </dl>
