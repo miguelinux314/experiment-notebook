@@ -185,11 +185,11 @@ class Logger(metaclass=Singleton):
         run the block, and log another message when the block is completed.
         The message given the selected priority level, and is only displayed based on `self.selected_log_level`.
         The block of code is executed regardless of the logging options.
-
+        
         :param msg: Message typically describing the
         :param level: Priority level for the shown messages.
-        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
-          single-line reporting.
+        :param sep: separator printed between msg_before and msg_after (newline is not required in it to allow
+          single-line reporting)
         :param msg_after: message shown after `msg` and `sep` upon completion. If none, one is automatically selected
           based on msg.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
@@ -217,10 +217,9 @@ class Logger(metaclass=Singleton):
 
     def core_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of core priority.
-
+        
         :param msg: Message to show before starting the code block.
-        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
-          single-line reporting.
+        :param sep: separator printed between msg_before and msg_after (newline is not required in it to allow single-line reporting).
         :param msg_after: message shown after `msg` and `sep` upon completion.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
@@ -229,7 +228,7 @@ class Logger(metaclass=Singleton):
 
     def info_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of info priority.
-
+        
         :param msg: Message to show before starting the code block.
         :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
           single-line reporting.
@@ -241,10 +240,10 @@ class Logger(metaclass=Singleton):
 
     def message_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of message priority.
-
+        
         :param msg: Message to show before starting the code block.
-        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
-          single-line reporting.
+        :param sep: separator printed between msg_before and msg_after (newline is not required in it to allow
+          single-line reporting)
         :param msg_after: message shown after `msg` and `sep` upon completion.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
@@ -253,10 +252,10 @@ class Logger(metaclass=Singleton):
 
     def verbose_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of verbose priority.
-
+        
         :param msg: Message to show before starting the code block.
-        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
-          single-line reporting.
+        :param sep: separator printed between msg_before and msg_after (newline is not required in it to allow
+          single-line reporting)
         :param msg_after: message shown after `msg` and `sep` upon completion.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
@@ -265,10 +264,10 @@ class Logger(metaclass=Singleton):
 
     def info_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of info priority.
-
+        
         :param msg: Message to show before starting the code block.
-        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
-          single-line reporting.
+        :param sep: separator printed between msg_before and msg_after (newline is not required in it to allow
+          single-line reporting)
         :param msg_after: message shown after `msg` and `sep` upon completion.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
@@ -277,10 +276,10 @@ class Logger(metaclass=Singleton):
 
     def debug_context(self, msg, sep="...", msg_after=None, show_duration=True):
         """Logging context of debug priority.
-
+        
         :param msg: Message to show before starting the code block.
-        :param sep: separator printed between msg_before and msg_after (\n is not required in it to allow
-          single-line reporting.
+        :param sep: separator printed between msg_before and msg_after (newline is not required in it to allow
+          single-line reporting)
         :param msg_after: message shown after `msg` and `sep` upon completion.
         :param show_duration: if True, a message displaying the run time is logged upon completion.
         """
