@@ -155,7 +155,7 @@ def managed_attributes(cls):
             if not found_in_bases:
                 logger.warn(f"The {cls_fqn} class is decorated with "
                             f"enb.ini.managed.attributes, but contains an attribute "
-                            f"{repr(attribute)} which is not present in its configuration nor in any of"
+                            f"{repr(attribute)} which is not present in its configuration nor in any of "
                             f"its base classes. "
                             f"The class' default value in the python code definition of ({cls.__dict__[attribute]}) "
                             f"is used instead.")
@@ -182,15 +182,15 @@ def _add_base_attributes_recursively(attribute, base_cls, current_cls=None):
 
     found_in_bases = False
 
-    for base in current_cls.__bases__:
-        try:
-            setattr(base_cls, attribute, ini.get_key(class_to_fqn(base), attribute))
-            found_in_bases = True
-            break
-        except KeyError:
-            for bases_base in base.__bases__:
-                if _add_base_attributes_recursively(attribute=attribute, base_cls=base_cls, current_cls=bases_base):
-                    found_in_bases = True
-                    break
+    try:
+        setattr(base_cls, attribute, ini.get_key(section=class_to_fqn(current_cls), name=attribute))
+        found_in_bases = True
+    except KeyError:
+        for base in current_cls.__bases__:
+            if base is None:
+                continue
+            if _add_base_attributes_recursively(attribute=attribute, base_cls=base_cls, current_cls=base):
+                found_in_bases = True
+                break
 
     return found_in_bases

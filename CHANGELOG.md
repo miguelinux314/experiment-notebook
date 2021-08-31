@@ -1,16 +1,16 @@
-# Under development v0.3.0
+# 2021/08/31 v0.3.0
 
-Version 0.3.0 is packed with new features and general performance improvements. At the same time, 
-significant backwards compatibility is preserved with the 0.2 version family:
+Version 0.3.0 is packed with new features and general performance improvements. At the same time, significant backwards
+compatibility is preserved with the 0.2 version family:
 
-- Client code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name
-  and semantics. Several methods and classes have been renamed and refactored, but these are not likely
-  referenced in client code. In summary, your client code should be compatible with 0.3.0 if it was with 0.2.8 
-  as long as it did not rely on the library internals.
+- Client code: major class names and their methods (e.g., ATable, Experiment, get_df, etc.) retain their name and
+  semantics. Several methods and classes have been renamed and refactored, but these are not likely referenced in client
+  code. In summary, your client code should be compatible with 0.3.0 if it was with 0.2.8 as long as it did not rely on
+  the library internals.
 
-- Data format: the __atable_index column is now included in the CSV persistence. This trades off some extra
-  disk space for faster loading times and a little extra traceability. As a result, CSV persistence files 
-  produced with 0.2.8 or earlier cannot be loaded with 0.3.0 and later.
+- Data format: the __atable_index column is now included in the CSV persistence. This trades off some extra disk space
+  for faster loading times and a little extra traceability. As a result, CSV persistence files produced with 0.2.8 or
+  earlier cannot be loaded with 0.3.0 and later.
 
 - Features: all previous features have been retained, and new ones have been added.
 
@@ -23,7 +23,7 @@ New major functions:
 Improvements and other changes
 
 - Improved performance of the ATable population, storage and loading routines.
-- Plotting in aanalysis makes more efficient use of parallelization. 
+- Plotting in aanalysis makes more efficient use of parallelization.
 - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
 - The sequential option is removed, in favor of setting the maximum number of cpus to 1.
 
