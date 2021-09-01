@@ -226,8 +226,8 @@ class ErrorLines(PlottableData2D):
         """
         super().__init__(x_values=x_values, y_values=y_values, remove_duplicates=False,
                          alpha=alpha, marker_size=marker_size, **kwargs)
-        self.err_neg = err_neg_values
-        self.err_pos = err_pos_values
+        self.err_neg = [v if not np.isnan(v) else 0 for v in err_neg_values]
+        self.err_pos = [v if not np.isnan(v) else 0 for v in err_pos_values]
         self.cap_size = cap_size if cap_size is not None else self.cap_size
         self.line_width = line_width if line_width is not None else self.line_width
         self.vertical = vertical
@@ -243,20 +243,27 @@ class ErrorLines(PlottableData2D):
             np.array(self.err_neg).reshape(1, len(self.err_neg)),
             np.array(self.err_pos).reshape(1, len(self.err_pos))),
             axis=0)
+        # When std is computed for constant data, nan is returned. Replace those with 0 to avoid warnings.
         err_argument = err_argument[:, :len(self.x_values)]
 
-        if self.vertical:
-            axes.errorbar(self.x_values, self.y_values, yerr=err_argument,
-                          fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width,
-                          ms=self.marker_size,
-                          alpha=self.alpha,
-                          **self.extra_kwargs)
-        else:
-            axes.errorbar(self.x_values, self.y_values, xerr=err_argument,
-                          fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width,
-                          ms=self.marker_size,
-                          alpha=self.alpha,
-                          **self.extra_kwargs)
+        try:
+            if self.vertical:
+                axes.errorbar(self.x_values, self.y_values, yerr=err_argument,
+                              fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width,
+                              ms=self.marker_size,
+                              alpha=self.alpha,
+                              **self.extra_kwargs)
+            else:
+                axes.errorbar(self.x_values, self.y_values, xerr=err_argument,
+                              fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width,
+                              ms=self.marker_size,
+                              alpha=self.alpha,
+                              **self.extra_kwargs)
+        except UserWarning as ex:
+            raise ValueError(f"Error rendering {self}. x_values={repr(self.x_values)}, "
+                             f"y_values={repr(self.y_values)}, self.extra_kwargs={self.extra_kwargs} "
+                             f"self.err_neg={self.err_neg}, "
+                             f"self.err_pos={self.err_pos},") from ex
 
         assert len(self.x_values) == len(self.y_values)
 
@@ -347,6 +354,7 @@ def parallel_render_plds_by_group(
         # Axis configuration
         show_grid=None,
         semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
+        group_row_margin=None,
         # Axis limits
         x_min=None, x_max=None, y_min=None, y_max=None,
         horizontal_margin=None, vertical_margin=None,
@@ -366,6 +374,7 @@ def parallel_render_plds_by_group(
                                 y_labels_by_group_name=y_labels_by_group_name,
                                 color_by_group_name=color_by_group_name, global_y_label=global_y_label,
                                 combine_groups=combine_groups, semilog_y_min_bound=semilog_y_min_bound,
+                                group_row_margin=group_row_margin,
                                 group_name_order=group_name_order,
                                 fig_width=fig_width, fig_height=fig_height,
                                 global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
@@ -390,6 +399,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          # Axis configuration
                          show_grid=None,
                          semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
+                         group_row_margin=None,
                          # Axis limits
                          x_min=None, x_max=None,
                          horizontal_margin=None, vertical_margin=None,
@@ -439,6 +449,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param semilog_y: if True, a logarithmic scale is used in the Y axis.
     :param semilog_y_base: if semilog_y is True, the logarithm base employed.
     :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum of y_min and this value.
+    :param group_row_margin: if provided, this margin is applied between rows of groups
     
     Axis limits:
     
@@ -558,11 +569,14 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         global_y_max = float("-inf")
         for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
             x_values = np.array(pld.x_values, copy=False)
-            x_values = x_values[np.isnan(x_values)]
+            if len(x_values) > 0:
+                x_values = x_values[~np.isnan(x_values)]
             global_x_min = min(global_x_min, x_values.min() if len(x_values) > 0 else global_x_min)
             global_x_max = max(global_x_min, x_values.max() if len(x_values) > 0 else global_x_min)
             y_values = np.array(pld.y_values, copy=False)
-            y_values = y_values[np.isnan(y_values)]
+            if len(y_values) > 0:
+                y_values = y_values[~np.isnan(y_values)]
+
             global_y_min = min(global_y_min, y_values.min() if len(y_values) > 0 else global_y_min)
             global_y_max = max(global_y_min, y_values.max() if len(y_values) > 0 else global_y_min)
 
@@ -645,8 +659,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if options.displayed_title is not None:
             plt.suptitle(options.displayed_title)
 
-        if len(sorted_group_names) > 3:
-            plt.subplots_adjust(hspace=0.5)
+        group_row_margin = group_row_margin if group_row_margin is not None else float(enb.config.options.group_row_margin)
+        group_row_margin += (len(pds_by_group_name) - 6) / 24
+        plt.subplots_adjust(hspace=group_row_margin)
 
         if x_tick_list is not None:
             if not x_tick_label_list:
@@ -656,6 +671,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             plt.minorticks_off()
         if x_tick_label_list is not None:
             assert x_tick_list is not None
+        if x_tick_list is None and x_tick_label_angle is not None:
+            plt.xticks(rotation=x_tick_label_angle)
 
         for group_axes in group_axis_list:
             plt.sca(group_axes)
@@ -667,6 +684,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 group_axes.minorticks_off()
             if y_tick_label_list is not None:
                 assert y_tick_list is not None
+            plt.yticks()
 
         # Set the axis limits
         xlim = [global_x_min, global_x_max]
