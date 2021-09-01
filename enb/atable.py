@@ -855,8 +855,8 @@ class ATable(metaclass=MetaTable):
             else get_all_input_files(ext=self.dataset_files_extension)
         if not target_indices:
             raise ValueError("No target indices could be found. "
-                             "Double check that the base_dataset_dir is correctly "
-                             "set and that you are passing the right value to the "
+                             f"Please double check that the base_dataset_dir={repr(options.base_dataset_dir)} "
+                             f"is correctly set and that you are passing the right value to the "
                              "`target_indices` argument of get_df().")
 
         # Split the work into one or more chunks, which are completed before moving on to the next one.
@@ -1163,7 +1163,7 @@ class ATable(metaclass=MetaTable):
           as given by self.private_index_column set to the `loc` argument passed to this function.
         """
         try:
-            row = filtered_df.loc[loc]
+            row = filtered_df.loc[loc].copy()
         except KeyError:
             row = pd.Series({k: None for k in self.column_to_properties.keys()})
 
@@ -1374,8 +1374,9 @@ class SummaryTable(ATable):
                 return itertools.chain(self.group_by(reference_df),
                                        all_group_iterable if include_all_group else [])
             except TypeError:
-                return itertools.chain(reference_df.groupby(self.group_by),
-                                       all_group_iterable if include_all_group else [])
+                groups = list(itertools.chain(reference_df.groupby(self.group_by),
+                                              all_group_iterable if include_all_group else []))
+                return groups
 
     def get_df(self, reference_df=None, include_all_group=None):
         """
@@ -1392,6 +1393,7 @@ class SummaryTable(ATable):
         self.label_to_df = collections.OrderedDict()
         try:
             for label, df in self.split_groups(reference_df=reference_df, include_all_group=include_all_group):
+                label = str(label)  # Needed to ensure labels are properly diplayed
                 if label in self.label_to_df:
                     raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
                                      f"Group labels must be unique.")

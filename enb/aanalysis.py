@@ -169,7 +169,9 @@ class Analyzer(enb.atable.ATable):
             f=normalized_wrapper,
             group_by=group_by,
             column_to_properties=column_to_properties,
-            target_columns=target_columns)
+            target_columns=target_columns,
+            output_plot_dir=output_plot_dir,
+            selected_render_modes=selected_render_modes)
 
         return normalized_wrapper(self=self, full_df=full_df, **render_kwargs)
 
@@ -191,8 +193,6 @@ class Analyzer(enb.atable.ATable):
         These overwriting methods are encouraged to call enb.aanalysis.Analyzer.update_render_kwargs_one_case
         (directly or indirectly) so make sure all necessary parameters reach the rendering function.
         """
-        print(f"[watch]Analyzer:: render_kwargs={render_kwargs}")
-
         # If plot rendering is requested, do so for all selected modes, in parallel
         render_ids = []
         for render_mode in selected_render_modes:
@@ -280,13 +280,26 @@ class Analyzer(enb.atable.ATable):
         return column_kwargs
 
     def get_output_pdf_path(self, column_selection, group_by, output_plot_dir, render_mode):
+        if group_by:
+            if isinstance(group_by, str):
+                group_by_str = group_by
+            elif isinstance(group_by, collections.abc.Iterable):
+                group_by_str = ",".join(group_by)
+            else:
+                group_by_str = str(group_by)
+        else:
+            group_by_str = ""
+        group_by_str = group_by_str if not group_by_str else f"_groupby-{group_by_str}"
+
+
         return os.path.join(
             output_plot_dir,
             f"{self.__class__.__name__}_"
-            f"{column_selection}{'_groupby-' + group_by if group_by else ''}_{render_mode}.pdf")
+            f"{column_selection}{group_by_str}_{render_mode}.pdf")
 
     @classmethod
-    def normalize_parameters(cls, f, group_by, column_to_properties, target_columns):
+    def normalize_parameters(cls, f, group_by, column_to_properties, target_columns,
+                             output_plot_dir, selected_render_modes):
         """Optional decorator methods compatible with the Analyzer.get_df signature, so that managed
         attributes are used when
 
@@ -299,7 +312,7 @@ class Analyzer(enb.atable.ATable):
         @functools.wraps(f)
         def wrapper(self,
                     # Dynamic arguments with every call (full_df and group_by are not normalized)
-                    full_df, target_columns=target_columns, output_plot_dir=None,
+                    full_df, target_columns=target_columns, output_plot_dir=output_plot_dir,
                     # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
                     # in turn manageable through .ini configuration files via the
                     # @enb.config.aini.managed_attributes decorator.
@@ -349,10 +362,10 @@ class Analyzer(enb.atable.ATable):
             #                   any(isinstance(pld, cls) for cls in (enb.plotdata.LineData))
             # candidate_plds = (pld for pld in pld_list if isinstance(pld, plotdata.LineData))
             for pld in pld_list:
-                global_x_min = min(global_x_min, min(pld.x_values))
-                global_x_max = max(global_x_max, max(pld.x_values))
-                global_y_min = min(global_y_min, min(pld.y_values))
-                global_y_max = max(global_y_max, max(pld.y_values))
+                global_x_min = min(global_x_min, min(pld.x_values) if len(pld.x_values) > 0 else global_x_min)
+                global_x_max = max(global_x_max, max(pld.x_values) if len(pld.x_values) > 0 else global_x_max)
+                global_y_min = min(global_y_min, min(pld.y_values) if len(pld.y_values) > 0 else global_y_min)
+                global_y_max = max(global_y_max, max(pld.y_values) if len(pld.y_values) > 0 else global_y_max)
         if "y_min" not in column_kwargs:
             column_kwargs["y_min"] = global_y_min
         if "y_max" not in column_kwargs:
@@ -589,7 +602,16 @@ class ScalarNumericSummary(AnalyzerSummary):
             self.add_scalar_description_columns(column_name=column_name)
 
             # Compute the global dynamic range of all input samples (before grouping)
-            self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
+            finite_series = full_df[column_name].replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
+            if len(finite_series) > 1:
+                try:
+                    self.column_to_xmin_xmax[column_name] = scipy.stats.describe(finite_series.values).minmax
+                except FloatingPointError as ex:
+                    raise FloatingPointError(f"[watch] finite_series.values={finite_series.values}") from ex
+            elif len(finite_series) == 1:
+                self.column_to_xmin_xmax[column_name] = [finite_series.values[0], finite_series.values[0]]
+            else:
+                self.column_to_xmin_xmax[column_name] = [None, None]
 
         self.move_render_columns_back()
 
@@ -609,7 +631,22 @@ class ScalarNumericSummary(AnalyzerSummary):
         """
         _, group_label, row = args
         column_name = kwargs["column_selection"]
-        description_df = self.label_to_df[group_label][column_name].describe()
+
+        full_series = self.label_to_df[group_label][column_name]
+        finite_series = full_series.replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
+
+        if len(full_series) != len(finite_series):
+            if len(finite_series) > 0:
+                enb.logger.warn(f"{self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
+                                f"column {repr(column_name)} "
+                                f"is ignoring infinite values ({100 * (1 - len(finite_series) / len(full_series)):.2f}%"
+                                f" of the total).")
+            else:
+                enb.logger.warn(f"{self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
+                                f"column {repr(column_name)} "
+                                f"found only infinite values. Several statistics will be nan for this case.")
+
+        description_df = finite_series.describe()
         row[f"{column_name}_min"] = description_df["min"]
         row[f"{column_name}_max"] = description_df["max"]
         row[f"{column_name}_avg"] = description_df["mean"]
@@ -648,15 +685,28 @@ class ScalarNumericSummary(AnalyzerSummary):
             # Avoid unnecessary warnings from matplotlib
             analysis_range = [analysis_range[0], analysis_range[0] + 1]
 
+        finite_only_series = column_series.replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
+        if len(finite_only_series) == 0:
+            enb.logger.warn(f"{self.__class__.__name__}: No finite data found for column {repr(column_name)}. "
+                            f"No plottable data is produced for this case.")
+            row[_column_name] = []
+            return
+
+        if math.isinf(analysis_range[0]):
+            analysis_range[0] = finite_only_series.min()
+        if math.isinf(analysis_range[1]):
+            analysis_range[1] = finite_only_series.max()
+
         # Use numpy to obtain the absolute mass distribution of the data.
         # density=False is used so that we can detect the case where
         # some data is not used.
         hist_y_values, bin_edges = np.histogram(
-            column_series.dropna(), bins=self.analyzer.histogram_bin_count,
+            finite_only_series,
+            bins=self.analyzer.histogram_bin_count,
             range=analysis_range, density=False)
 
         # Verify that the histogram uses all data
-        if sum(hist_y_values) != len(column_series):
+        if sum(hist_y_values) != len(finite_only_series):
             justified_difference = False
             error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
                         f"({sum(hist_y_values)} used out of {len(column_series)})."
@@ -814,6 +864,9 @@ class TwoNumericAnalyzer(Analyzer):
                 column_kwargs["y_min"] = global_y_min
             if "y_max" not in column_kwargs:
                 column_kwargs["y_max"] = global_y_max
+
+        if len(summary_df) >= 5 and "group_row_margin" not in column_kwargs:
+            column_kwargs["group_row_margin"] = 0.2 * len(summary_df)
 
         return column_kwargs
 
@@ -1181,7 +1234,8 @@ class DictNumericSummary(AnalyzerSummary):
 
 
 class OldAnalyzer:
-    @deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0", current_version=enb.config.ini.get_key("enb", "version"),
+    @deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0",
+                            current_version=enb.config.ini.get_key("enb", "version"),
                             details="A new set of analyzer classes has been defined. "
                                     "See enb.aanalysis.Analyzer for further information.")
     def analyze_df(self, full_df, target_columns, output_plot_dir, output_csv_file=None,
@@ -1390,9 +1444,10 @@ class ScalarDistributionAnalyzer(OldAnalyzer):
         return analysis_df
 
 
-@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0", current_version=enb.config.ini.get_key("enb", "version"),
-                            details="A new set of analyzer classes has been defined. "
-                                    "See enb.aanalysis.Analyzer for further information.")
+@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0",
+                        current_version=enb.config.ini.get_key("enb", "version"),
+                        details="A new set of analyzer classes has been defined. "
+                                "See enb.aanalysis.Analyzer for further information.")
 def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_count, bar_width_fraction,
                          semilogy_min_y, bar_alpha=0.5, secondary_alpha=0.75, ):
     """Add the pooled values and get a list of PlottableData instances with the
@@ -1453,9 +1508,10 @@ def scalar_column_to_pds(column, properties, df, min_max_by_column, hist_bin_cou
     return [plot_data, error_lines]
 
 
-@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0", current_version=enb.config.ini.get_key("enb", "version"),
-                            details="A new set of analyzer classes has been defined. "
-                                    "See enb.aanalysis.Analyzer for further information.")
+@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0",
+                        current_version=enb.config.ini.get_key("enb", "version"),
+                        details="A new set of analyzer classes has been defined. "
+                                "See enb.aanalysis.Analyzer for further information.")
 def pool_scalar_into_analysis_df(analysis_df, analysis_label, data_df, pooler_suffix_tuples, columns):
     """Pull columns into analysis using the poolers in pooler_suffix_tuples, with the specified
     suffixes.
@@ -1466,9 +1522,11 @@ def pool_scalar_into_analysis_df(analysis_df, analysis_label, data_df, pooler_su
         for pool_fun, suffix in pooler_suffix_tuples:
             analysis_df.at[analysis_label, f"{column}_{suffix}"] = pool_fun(data_df[column])
 
-@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0", current_version=enb.config.ini.get_key("enb", "version"),
-                            details="A new set of analyzer classes has been defined. "
-                                    "See enb.aanalysis.Analyzer for further information.")
+
+@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0",
+                        current_version=enb.config.ini.get_key("enb", "version"),
+                        details="A new set of analyzer classes has been defined. "
+                                "See enb.aanalysis.Analyzer for further information.")
 def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
     """Get a dictionary indexed by column name with minimum and maximum values.
     (useful e.g., for normalized processing of subgroups).
@@ -1508,9 +1566,11 @@ def get_scalar_min_max_by_column(df, target_columns, column_to_properties):
 
     return min_max_by_column
 
-@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0", current_version=enb.config.ini.get_key("enb", "version"),
-                            details="A new set of analyzer classes has been defined. "
-                                    "See enb.aanalysis.Analyzer for further information.")
+
+@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0",
+                        current_version=enb.config.ini.get_key("enb", "version"),
+                        details="A new set of analyzer classes has been defined. "
+                                "See enb.aanalysis.Analyzer for further information.")
 def histogram_overlap_column_to_pds(df, column, column_properties=None, line_alpha=0.2, line_width=0.5):
     pld_list = []
     for d in df[column]:
@@ -1649,9 +1709,10 @@ class HistogramDistributionAnalyzer(OldAnalyzer):
         return ray.get(return_ids)
 
 
-@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0", current_version=enb.config.ini.get_key("enb", "version"),
-                            details="A new set of analyzer classes has been defined. "
-                                    "See enb.aanalysis.Analyzer for further information.")
+@deprecation.deprecated(deprecated_in="0.3.0", removed_in="1.0.0",
+                        current_version=enb.config.ini.get_key("enb", "version"),
+                        details="A new set of analyzer classes has been defined. "
+                                "See enb.aanalysis.Analyzer for further information.")
 def histogram_dist_column_to_pds(df, column, global_xmin_xmax,
                                  bar_width_fraction,
                                  column_properties=None, plot_individual=False,

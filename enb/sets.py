@@ -17,6 +17,7 @@ import hashlib
 import ray
 import time
 import deprecation
+import glob
 
 import enb
 from enb import atable
@@ -244,7 +245,8 @@ class FileVersionTable(FilePropertiesTable):
 
         return FilePropertiesTable.get_df(
             self,
-            target_indices=version_indices,
+            target_indices=[p for p in glob.glob(os.path.join(self.version_base_dir, "**", "*"), recursive=True)
+                            if os.path.isfile(p)],
             target_columns=target_columns, overwrite=overwrite)
 
     @atable.column_function("original_file_path")

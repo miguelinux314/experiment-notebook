@@ -255,7 +255,7 @@ class RayOptions:
     """Options related to the ray library, used for parallel/distributed computing.
     """
 
-    @OptionsBase.property("cpu_limit", "cpu_cunt", type=int)
+    @OptionsBase.property("cpu", type=int)
     def ray_cpu_limit(self, value):
         """Maximum number of virtual CPUs to use in the ray cluster.
         If set to None or any number n <= 0, then no limits are set in terms of virtual CPU usage.
@@ -355,6 +355,11 @@ class RenderingOptions:
         """When this property is not None, displayed plots will typically include its value as the main title.
         """
         return str(value)
+
+    @OptionsBase.property("grm", action=_singleton_cli.NonnegativeFloatAction)
+    def group_row_margin(self, value):
+        _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
+        return float(value)
 
 
 @_singleton_cli.property_class(OptionsBase)

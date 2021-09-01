@@ -9,7 +9,12 @@ __since__ = "2020/03/31"
 import os as _os
 import sys as _sys
 import appdirs as _appdirs
-from builtins import print as _original_print
+
+# Make all warnings errors
+import numpy as _np
+_np.seterr(all="raise")
+import warnings as _warnings
+_warnings.simplefilter('error', UserWarning)
 
 # Current installation dir of enb
 import ray
