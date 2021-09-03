@@ -500,8 +500,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         y_max = column_properties.hist_max if y_max is None else y_max
 
         if group_name_order is None:
-            sorted_group_names = sorted(pds_by_group_name.keys(),
-                                        key=lambda s: "" if s == "all" else str(s).strip().lower())
+            def normalize_group_label(group_name):
+                if isinstance(group_name, str):
+                    return group_name.strip().lower()
+                else:
+                    return group_name
+
+            sorted_group_names = sorted(pds_by_group_name.keys(), key=normalize_group_label)
             if str(sorted_group_names[0]).lower() == "all":
                 sorted_group_names = sorted_group_names[1:] + [str(n) for n in sorted_group_names[:1]]
         else:
@@ -659,7 +664,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if options.displayed_title is not None:
             plt.suptitle(options.displayed_title)
 
-        group_row_margin = group_row_margin if group_row_margin is not None else float(enb.config.options.group_row_margin)
+        group_row_margin = group_row_margin if group_row_margin is not None else float(
+            enb.config.options.group_row_margin)
         group_row_margin += (len(pds_by_group_name) - 6) / 24
         plt.subplots_adjust(hspace=group_row_margin)
 

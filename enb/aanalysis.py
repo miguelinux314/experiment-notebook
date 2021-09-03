@@ -151,7 +151,12 @@ class Analyzer(enb.atable.ATable):
             summary_table = self.build_summary_atable(
                 full_df=full_df, target_columns=target_columns, group_by=group_by,
                 include_all_group=show_global)
-            summary_df = summary_table.get_df(reference_df=full_df)
+            old_nnr = options.no_new_results
+            try:
+                options.no_new_results = False
+                summary_df = summary_table.get_df(reference_df=full_df)
+            finally:
+                options.no_new_results = old_nnr
 
             # Render all applicable modes
             self.render_all_modes(
@@ -218,7 +223,7 @@ class Analyzer(enb.atable.ATable):
             for progress_report in enb.ray_cluster.ProgressiveGetter(
                     ray_id_list=render_ids,
                     iteration_period=self.progress_report_period):
-                enb.logger.verbose(progress_report)
+                enb.logger.verbose(progress_report.report())
 
     def update_render_kwargs_one_case(
             self, column_selection, render_mode,
@@ -254,7 +259,8 @@ class Analyzer(enb.atable.ATable):
             column_selection, group_by, output_plot_dir, render_mode)
         column_kwargs["pds_by_group_name"] = {
             group_label: group_plds for group_label, group_plds
-            in summary_df[["group_label", f"{column_selection}_render-{render_mode}"]].values}
+            in sorted(summary_df[["group_label", f"{column_selection}_render-{render_mode}"]].values,
+                      key=lambda t: t[0])}
 
         # General column properties
         if "column_properties" not in column_kwargs:
@@ -285,12 +291,11 @@ class Analyzer(enb.atable.ATable):
                 group_by_str = group_by
             elif isinstance(group_by, collections.abc.Iterable):
                 group_by_str = ",".join(group_by)
-            else:
-                group_by_str = str(group_by)
+            # else:
+            #     group_by_str = str(group_by)
         else:
             group_by_str = ""
         group_by_str = group_by_str if not group_by_str else f"_groupby-{group_by_str}"
-
 
         return os.path.join(
             output_plot_dir,
@@ -537,7 +542,7 @@ class ScalarNumericAnalyzer(Analyzer):
 
         if "global_y_label" not in column_kwargs:
             if self.main_alpha != 0:
-                column_kwargs["global_y_label"] = f"Sample histogram"
+                column_kwargs["global_y_label"] = f"Histogram"
                 if self.secondary_alpha != 0:
                     column_kwargs["global_y_label"] += ", average" if self.show_x_std else " and average"
             elif self.secondary_alpha != 0:
@@ -551,9 +556,13 @@ class ScalarNumericAnalyzer(Analyzer):
 
         # Calculate axis limits
         if "x_min" not in column_kwargs:
-            column_kwargs["x_min"] = float(summary_df[f"{column_selection}_min"].min())
+            column_kwargs["x_min"] = float(summary_df[f"{column_selection}_min"].min()) \
+                if column_to_properties[column_selection].plot_min is None else \
+                column_to_properties[column_selection].plot_min
         if "x_max" not in column_kwargs:
-            column_kwargs["x_max"] = float(summary_df[f"{column_selection}_max"].max())
+            column_kwargs["x_max"] = float(summary_df[f"{column_selection}_max"].max()) \
+                if column_to_properties[column_selection].plot_max is None else \
+                column_to_properties[column_selection].plot_max
 
         # Adjust a common scale for all subplots
         if self.common_group_scale and ("y_min" not in column_kwargs or "y_max" not in column_kwargs):
@@ -836,13 +845,21 @@ class TwoNumericAnalyzer(Analyzer):
 
         # Calculate axis limits
         if "x_min" not in column_kwargs:
-            column_kwargs["x_min"] = float(summary_df[f"{x_column_name}_min"].min())
+            column_kwargs["x_min"] = float(summary_df[f"{x_column_name}_min"].min()) \
+                if column_to_properties[x_column_name].plot_min is None \
+                else column_to_properties[x_column_name].plot_min
         if "x_max" not in column_kwargs:
-            column_kwargs["x_max"] = float(summary_df[f"{x_column_name}_max"].max())
+            column_kwargs["x_max"] = float(summary_df[f"{x_column_name}_max"].max()) \
+                if column_to_properties[x_column_name].plot_max is None \
+                else column_to_properties[x_column_name].plot_max
         if "y_min" not in column_kwargs:
-            column_kwargs["y_min"] = float(summary_df[f"{y_column_name}_min"].min())
+            column_kwargs["y_min"] = float(summary_df[f"{y_column_name}_min"].min()) \
+                if column_to_properties[y_column_name].plot_min is None \
+                else column_to_properties[y_column_name].plot_min
         if "y_max" not in column_kwargs:
-            column_kwargs["y_max"] = float(summary_df[f"{y_column_name}_max"].max())
+            column_kwargs["y_max"] = float(summary_df[f"{y_column_name}_max"].max()) \
+                if column_to_properties[y_column_name].plot_max is None \
+                else column_to_properties[y_column_name].plot_max
 
         # Adjust a common scale for all subplots
         if self.common_group_scale and ("y_min" not in column_kwargs or "y_max" not in column_kwargs):
