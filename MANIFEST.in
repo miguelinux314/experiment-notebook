@@ -119,11 +119,11 @@ include enb/plugins/plugin_zstandard/__plugin__.py
 include enb/plugins/plugin_zstandard/README.txt
 include enb/plugins/plugin_zstandard/zstd_codec.py
 include enb/plugins/template.py
-include enb/plugins/template_wellcome/__plugin__.py
-include enb/plugins/template_wellcome/test.txt.enbt
-include enb/plugins/template_wellcome/witness_dir/b.txt
-include enb/plugins/template_wellcome/witness_dir/c.txt.enbt
-include enb/plugins/template_wellcome/witness.txt
+include enb/plugins/template_welcome/__plugin__.py
+include enb/plugins/template_welcome/test.txt.enbt
+include enb/plugins/template_welcome/witness_dir/b.txt
+include enb/plugins/template_welcome/witness_dir/c.txt.enbt
+include enb/plugins/template_welcome/witness.txt
 include enb/plugins/test_all_codecs/generate_test_images.py
 include enb/plugins/test_all_codecs/__plugin__.py
 include enb/plugins/test_all_codecs/test_all_codecs.py
