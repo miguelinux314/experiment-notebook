@@ -1,3 +1,7 @@
+# Under development v0.3.1
+
+- Improved overall stability and aesthetic control over plotting with enb.aanalysis 
+
 # 2021/08/31 v0.3.0
 
 Version 0.3.0 is packed with new features and general performance improvements. At the same time, significant backwards
