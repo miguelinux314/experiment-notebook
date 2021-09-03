@@ -1196,7 +1196,7 @@ class ATable(metaclass=MetaTable):
                     continue
 
                 enb.logger.info(f"Calculating {repr(column)} for "
-                                f"index={repr(index)}, fun={fun.__name__}, <{self.__class__.__name__}>")
+                                f"index={repr(index)}, fun={fun}, <{self.__class__.__name__}>")
                 try:
                     result = fun(self, index, row)
                     called_functions.add(fun)
@@ -1371,10 +1371,10 @@ class SummaryTable(ATable):
             return all_group_iterable
         else:
             try:
-                return itertools.chain(self.group_by(reference_df),
+                return itertools.chain(sorted(self.group_by(reference_df)),
                                        all_group_iterable if include_all_group else [])
             except TypeError:
-                groups = list(itertools.chain(reference_df.groupby(self.group_by),
+                groups = list(itertools.chain(sorted(reference_df.groupby(self.group_by)),
                                               all_group_iterable if include_all_group else []))
                 return groups
 
@@ -1393,7 +1393,7 @@ class SummaryTable(ATable):
         self.label_to_df = collections.OrderedDict()
         try:
             for label, df in self.split_groups(reference_df=reference_df, include_all_group=include_all_group):
-                label = str(label)  # Needed to ensure labels are properly diplayed
+                label = str(label) # Needed to force labels being displayable strings
                 if label in self.label_to_df:
                     raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
                                      f"Group labels must be unique.")
