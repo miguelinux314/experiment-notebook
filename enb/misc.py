@@ -7,6 +7,8 @@ may use misc tools at definition time.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/11"
 
+import csv
+import textwrap
 import re
 
 
@@ -141,3 +143,33 @@ def class_to_fqn(cls):
     cls_fqn = f"{str(cls.__module__) + '.' if cls.__module__ is not None else ''}" \
               f"{cls.__name__}"
     return cls_fqn
+
+
+def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True, use_booktabks=True):
+    """Read a CSV table from a file and output it as a latex table to another file.
+    The first row is assumed to be the header.
+
+    :param input_csv_path: path to a file containing CSV data.
+    :param output_tex_file: path where the tex contents are to be stored, ready to be `\input` in latex.
+    :param contains_header: if True, the first line is assumed to be a header containing column names.
+    :param use_booktabs: if True, a booktabs-based decoration style is used for the table. Otherwise,
+      standard latex is used only.
+    """
+    with open(input_csv_path, "r") as csv_file, open(output_tex_path, "w") as tex_file:
+        tex_file.write("\\begin{tabular}{")
+
+        for i, row in enumerate(csv.reader(csv_file)):
+            if i == 0:
+                tex_file.write("l" * len(row) + "}\n")
+
+            if i == 0 and contains_header:
+                tex_file.write("\\toprule\n" if use_booktabks else "\\hline\n")
+                tex_file.write(" & ".join(f"\\textbf{{{c}}}" for c in row).replace(
+                    "_", "\\_").replace("%", "\%") + r" \\" + "\n")
+                tex_file.write("\\midrule\n" if use_booktabks else "\\hline\n")
+            else:
+                tex_file.write(" & ".join(row).replace(
+                    "_", "\\_").replace("%", "\%") + r" \\" + "\n")
+
+        tex_file.write("\\bottomrule\n" if use_booktabks else "\\hline\n")
+        tex_file.write("\\end{tabular}\n")
