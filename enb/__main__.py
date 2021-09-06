@@ -115,8 +115,9 @@ class PluginList(argparse.Action):
             if namespace.filter else all_installables
 
         if namespace.exclude:
-            filtered_installables = [i for i in filtered_installables
-                                     if not self.installable_matches_querys(i, namespace.exclude)]
+            filtered_installables = [
+                i for i in filtered_installables
+                if not self.installable_matches_querys(installable=i, query_list=namespace.exclude)]
 
         if namespace.filter and not filtered_installables:
             print(f"No plugin matched the filter criteria ({', '.join(repr(f) for f in namespace.filter)}).")
@@ -133,7 +134,7 @@ class PluginList(argparse.Action):
             for installable in filtered_installables:
                 label = installable.label if installable.label else ''
                 label = f"{label} (privative)" if "privative" in installable.tags else label
-                print(f"{installable.name:>15s} :: ", end="")
+                print(f"{installable.name:>25s} :: ", end="")
                 print("\n".join(textwrap.wrap(label, 100)), end="")
                 print("." if label[0] != "." else "")
                 if enb.config.options.verbose:

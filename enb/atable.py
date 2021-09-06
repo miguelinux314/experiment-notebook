@@ -851,13 +851,20 @@ class ATable(metaclass=MetaTable):
         fill = fill if fill is not None else not options.no_new_results
 
         # Use the provided target indices or discover automatically from the dataset folder
-        target_indices = list(target_indices) if target_indices is not None \
+        target_indices = list(target_indices) if target_indices \
             else get_all_input_files(ext=self.dataset_files_extension)
+
         if not target_indices:
-            raise ValueError("No target indices could be found. "
-                             f"Please double check that the base_dataset_dir={repr(options.base_dataset_dir)} "
-                             f"is correctly set and that you are passing the right value to the "
-                             "`target_indices` argument of get_df().")
+            raise ValueError(f"No target indices could be found at {repr(options.base_dataset_dir)}. "
+                             f"Please double check that:\n"
+                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} "
+                             f"is correctly set, and it contains the expected samples;\n"
+                             f"(b) you are passing the right value to the "
+                             f"`target_indices` argument of get_df() if not using the default;\n"
+                             f"(c) the experiment class you are using has the intended "
+                             f"`dataset_files_extension` attribute set. It is currently "
+                             f"{repr(self.dataset_files_extension)}. If empty, all files under "
+                             f"the dataset folder should be obtained by default.")
 
         # Split the work into one or more chunks, which are completed before moving on to the next one.
         chunk_size = chunk_size if chunk_size is not None else options.chunk_size
@@ -1393,7 +1400,7 @@ class SummaryTable(ATable):
         self.label_to_df = collections.OrderedDict()
         try:
             for label, df in self.split_groups(reference_df=reference_df, include_all_group=include_all_group):
-                label = str(label) # Needed to force labels being displayable strings
+                label = str(label)  # Needed to force labels being displayable strings
                 if label in self.label_to_df:
                     raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
                                      f"Group labels must be unique.")

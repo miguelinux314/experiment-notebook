@@ -157,7 +157,7 @@ class TestSummaryTable(unittest.TestCase):
         summary_table = enb.atable.SummaryTable(full_df=base_df)
         summary_df = summary_table.get_df()
 
-        assert summary_df.iloc[0]["_group_label"].lower() == "all", summary_df.iloc[0]["group_label"]
+        assert summary_df.iloc[0]["group_label"].lower() == "all", summary_df.iloc[0]["group_label"]
         assert summary_df.iloc[0]["group_size"] == len(target_paths)
 
 
