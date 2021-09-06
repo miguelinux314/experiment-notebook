@@ -708,6 +708,8 @@ class CompressionExperiment(experiment.Experiment):
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
             else f"{dataset_info_table.__class__.__name__}_persistence.csv"
 
+        if not codecs:
+            raise ValueError(f"{self}: no codecs were selected for this experiment. At least one is needed.")
         non_subclass_codecs = [c for c in codecs if not isinstance(c, enb.icompression.AbstractCodec)]
         if non_subclass_codecs:
             enb.logger.warn(f"Compression experiment {self.__class__.__name__} received parameter codecs "
