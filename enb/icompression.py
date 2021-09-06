@@ -707,6 +707,16 @@ class CompressionExperiment(experiment.Experiment):
 
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
             else f"{dataset_info_table.__class__.__name__}_persistence.csv"
+
+        non_subclass_codecs = [c for c in codecs if not isinstance(c, enb.icompression.AbstractCodec)]
+        if non_subclass_codecs:
+            enb.logger.warn(f"Compression experiment {self.__class__.__name__} received parameter codecs "
+                            f"with {len(non_subclass_codecs)} objects not inheriting from "
+                            f"enb.icompression.AbstractCodec: "
+                            f"{', '.join(repr(c) for c in non_subclass_codecs)}.\n"
+                            f"You can remove this warning by explicitly inheriting from that class for "
+                            f"the aforementioned instances.")
+
         super().__init__(tasks=codecs,
                          dataset_paths=dataset_paths,
                          csv_experiment_path=csv_experiment_path,

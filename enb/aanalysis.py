@@ -143,9 +143,19 @@ class Analyzer(enb.atable.ATable):
 
         :return: a |DataFrame| instance with analysis results
         """
+        if self.csv_support_path is not None and os.path.exists(self.csv_support_path):
+            # Analyzer classes store their persistence, but they erase when get_df is called,
+            # so that analysis is always performed (which is as expected, since the experiment
+            # results being analyzed cannot be assumed to be the same as the previous invocation
+            # of this analyzer's get_df method).
+            os.remove(self.csv_support_path)
+            enb.logger.info(f"Removed {self.csv_support_path} to allow analysis with {self.__class__.__name__}.")
+
+        srm = selected_render_modes
 
         def normalized_wrapper(self, full_df, target_columns,
                                output_plot_dir, group_by, column_to_properties,
+                               selected_render_modes,
                                **render_kwargs):
             # Get the summary table with the requested data analysis
             summary_table = self.build_summary_atable(
@@ -158,6 +168,8 @@ class Analyzer(enb.atable.ATable):
             finally:
                 options.no_new_results = old_nnr
 
+            selected_render_modes = selected_render_modes if srm is None else srm
+
             # Render all applicable modes
             self.render_all_modes(
                 summary_df=summary_df,
@@ -165,6 +177,7 @@ class Analyzer(enb.atable.ATable):
                 output_plot_dir=output_plot_dir,
                 group_by=group_by,
                 column_to_properties=column_to_properties,
+                selected_render_modes=selected_render_modes,
                 **render_kwargs)
 
             # Return the summary result dataframe
@@ -423,7 +436,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         # every call, instead of relying on persistence (it would make no sense to load
         # the summary for a different input dataset).
         super().__init__(full_df=full_df, column_to_properties=analyzer.column_to_properties,
-                         copy_df=False, csv_support_path=None,
+                         copy_df=False, csv_support_path=analyzer.csv_support_path,
                          group_by=group_by,
                          include_all_group=(include_all_group if include_all_group is not None
                                             else analyzer.show_global))

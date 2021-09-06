@@ -87,6 +87,8 @@ def get_all_subclasses(*base_classes):
     """Return a set of all subclasses of the classes in base_classes,
     which have been defined at this point.
 
+    The base classes are never returned as subclasses.
+
     :param base_classes: the list of classes for which subclasses are to be found
     """
     base_class_set = set(base_classes)

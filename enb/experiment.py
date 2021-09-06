@@ -25,7 +25,7 @@ class ExperimentTask:
         :param param_dict: dictionary of configuration parameters used
           for this task. By default, they are part of the task's name.
         """
-        self.param_dict = dict(param_dict) if param_dict is not None else {}
+        self.param_dict = dict(param_dict) if param_dict is not None else dict()
 
     @property
     def name(self):
@@ -180,13 +180,16 @@ class Experiment(atable.ATable):
         overwrite = overwrite if overwrite is not None else options.force
         target_tasks = list(self.tasks)
 
+        if not self.tasks:
+            raise ValueError(f"No tasks were defined for {self.__class__.__name__}.")
+
         enb.logger.verbose(f"Starting {self.__class__.__name__} with "
                            f"{len(target_tasks)} tasks, "
                            f"{len(target_indices)} indices, and "
                            f"{len(self.column_to_properties)} columns.")
 
-        self.tasks_by_name = collections.OrderedDict({task.name: task for task in target_tasks})
-        target_task_names = [t.name for t in target_tasks]
+        self.tasks_by_name = collections.OrderedDict({str(task.name): task for task in target_tasks})
+        target_task_names = [str(t.name) for t in target_tasks]
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
 
