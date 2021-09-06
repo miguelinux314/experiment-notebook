@@ -214,14 +214,17 @@ class WrapperCodec(AbstractCodec):
             self.compressor_path = compressor_path
         else:
             self.compressor_path = shutil.which(compressor_path)
-            assert self.compressor_path and os.path.isfile(self.compressor_path), \
-                f"{compressor_path} is not available"
         if os.path.exists(decompressor_path):
             self.decompressor_path = decompressor_path
         else:
             self.decompressor_path = shutil.which(decompressor_path)
-            assert self.compressor_path and os.path.isfile(self.decompressor_path), \
-                f"{decompressor_path} is not available"
+
+        if not self.compressor_path or not os.path.isfile(self.compressor_path):
+            raise FileNotFoundError(f"Compressor path {repr(compressor_path)} is not available "
+                                    f"for {self.__class__.__name__}")
+        if not self.decompressor_path or not os.path.isfile(self.decompressor_path):
+            raise FileNotFoundError(f"Decompressor path {repr(compressor_path)} is not available "
+                                    f"for {self.__class__.__name__}")
         self.output_invocation_dir = output_invocation_dir
         if self.output_invocation_dir is not None:
             os.makedirs(self.output_invocation_dir, exist_ok=True)
@@ -291,7 +294,7 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-        enb.logger.info(f"[watch] WrapperCodec:decompress: invocation={invocation}")
+        enb.logger.info(f"WrapperCodec:decompress invocation={invocation}")
         try:
             status, output, measured_time = tcall.get_status_output_time(invocation)
             enb.logger.debug(
@@ -527,6 +530,7 @@ class CompressionExperiment(experiment.Experiment):
     Also, the image_info_row attribute gives access to the image metainformation
     (e.g., geometry)
     """
+    dataset_files_extension = "raw"
     default_file_properties_table_class = enb.isets.ImagePropertiesTable
     check_lossless = True
     row_wrapper_column_name = "_codec_wrapper"
@@ -557,8 +561,8 @@ class CompressionExperiment(experiment.Experiment):
                 try:
                     measured_times = []
 
-                    enb.logger.verbose(f"Executing compression {self.codec.name} on {self.file_path} "
-                                       f"[{options.repetitions} times]")
+                    enb.logger.info(f"Executing compression {self.codec.name} on {self.file_path} "
+                                    f"[{options.repetitions} times]")
                     for repetition_index in range(options.repetitions):
                         enb.logger.info(
                             f"Executing compression {self.codec.name} on {self.file_path} "
@@ -604,7 +608,7 @@ class CompressionExperiment(experiment.Experiment):
                     dir=options.base_tmp_dir)
                 try:
                     measured_times = []
-                    with enb.logger.verbose_context(
+                    with enb.logger.info_context(
                             f"Executing decompression {self.codec.name} on {self.file_path} "
                             f"[{options.repetitions} times]"):
                         for repetition_index in range(options.repetitions):

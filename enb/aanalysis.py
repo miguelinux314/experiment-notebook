@@ -629,7 +629,7 @@ class ScalarNumericSummary(AnalyzerSummary):
                 try:
                     self.column_to_xmin_xmax[column_name] = scipy.stats.describe(finite_series.values).minmax
                 except FloatingPointError as ex:
-                    raise FloatingPointError(f"[watch] finite_series.values={finite_series.values}") from ex
+                    raise FloatingPointError(f"Invalid finite_series.values={finite_series.values}") from ex
             elif len(finite_series) == 1:
                 self.column_to_xmin_xmax[column_name] = [finite_series.values[0], finite_series.values[0]]
             else:
@@ -1904,7 +1904,7 @@ class OverlappedHistogramAnalyzer(HistogramDistributionAnalyzer):
                 y_min=ray.put(y_min), y_max=ray.put(y_max),
                 group_name_order=ray.put(group_name_order)))
 
-        ray.get(result_ids)
+        ray.get(result_ids, timeout=0)
         if options.verbose > 1:
             "TODO: fill csv and write to output_csv_file"
 

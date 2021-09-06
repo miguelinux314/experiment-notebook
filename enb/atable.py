@@ -883,7 +883,8 @@ class ATable(metaclass=MetaTable):
                     f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} "
                     f"(chunk_size={chunk_size}, "
                     f"{100 * i * chunk_size / len(target_indices):.1f}"
-                    f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}%) "
+                    f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
+                    f"of {len(target_indices)} total rows) "
                     f"@ {datetime.datetime.now()}")
                 df = self.get_df_one_chunk(
                     target_indices=chunk, target_columns=target_columns,
@@ -1229,6 +1230,12 @@ class ATable(metaclass=MetaTable):
                           + stack_format.format(msg=stack_start_message) + "\n" + \
                           f"{traceback.format_exc().strip()}\n" \
                           + stack_format.format(msg=stack_end_message)
+                    if isinstance(ex, OSError) and ex.errno == 28:
+                        msg += "\nNOTE: It seems to be an out-of-space error. If your disks have enough space, " \
+                               "you might be running out of space in /dev/shm (or the equivalent in-memory " \
+                               "file used for temporary execution in the experiments by default). If this is the case, " \
+                               "you might need to change enb.config.options.base_tmp_dir to an existing dir in " \
+                               "a partition with enough space, e.g., running with --base_tmp_dir=./tmp.\n"
                     cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
                     enb.logger.error(msg)
                     return cfe

@@ -81,12 +81,12 @@ class PluginInstall(argparse.Action):
             raise ValueError(
                 f"Invalid plugin name {repr(plugin_name)}. Run `enb plugin list` to see available plugins.")
 
-        if os.path.exists(destination_dir):
+        if os.path.exists(destination_dir) and not issubclass(plugin, enb.plugins.Template):
             raise ValueError(f"The destination dir {repr(destination_dir)} already exists. Remove and try again.")
         try:
             plugin.install(installation_dir=destination_dir)
-        except SyntaxError as ex:
-            print(f"Error installing plugin {repr(plugin_name)}: {ex}")
+        except (SyntaxError, ValueError) as ex:
+            enb.logger.error(f"Error installing plugin {repr(plugin_name)}: {ex}")
             sys.exit(1)
 
         # Set status

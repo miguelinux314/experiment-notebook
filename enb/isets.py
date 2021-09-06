@@ -73,7 +73,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("f64")):
             row[_column_name] = 8
         else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+            raise sets.UnkownPropertiesException(f"{self.__class__.__name__}: unknown {_column_name} for {file_path}")
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
@@ -151,6 +151,8 @@ class ImagePropertiesTable(ImageGeometryTable):
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
 
+    dataset_files_extension = "raw"
+
     @atable.column_function([
         atable.ColumnProperties(name="sample_min", label="Min sample value"),
         atable.ColumnProperties(name="sample_max", label="Max sample value")])
@@ -212,6 +214,8 @@ class SampleDistributionTable(ImageGeometryTable):
 
 
 class HistogramFullnessTable1Byte(atable.ATable):
+    dataset_files_extension = "raw"
+
     @atable.column_function(
         "histogram_fullness_1byte", label="Histogram usage fraction (1 byte)",
         plot_min=0, plot_max=1)
@@ -225,6 +229,8 @@ class HistogramFullnessTable1Byte(atable.ATable):
 
 
 class HistogramFullnessTable2Bytes(atable.ATable):
+    dataset_files_extension = "raw"
+
     @atable.column_function(
         "histogram_fullness_2bytes", label="Histogram usage fraction (2 bytes)",
         plot_min=0, plot_max=1)
@@ -238,6 +244,8 @@ class HistogramFullnessTable2Bytes(atable.ATable):
 
 
 class HistogramFullnessTable4Bytes(atable.ATable):
+    dataset_files_extension = "raw"
+
     @atable.column_function(
         "histogram_fullness_4bytes", label="Histogram usage fraction (4 bytes)",
         plot_min=0, plot_max=1)
@@ -265,6 +273,7 @@ class BandEntropyTable(ImageGeometryTable):
 
 
 class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
+    dataset_files_extension = "raw"
 
     def __init__(self, version_base_dir, version_name,
                  original_base_dir=None, csv_support_path=None, check_generated_files=True,
@@ -281,6 +290,8 @@ class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
 
 
 class QuantizedImageVersion(ImageVersionTable):
+    dataset_files_extension = "raw"
+
     def __init__(self, version_base_dir, qstep,
                  original_base_dir=None, csv_support_path=None, check_generated_files=True,
                  original_properties_table=None):

@@ -50,7 +50,7 @@ class FilePropertiesTable(atable.ATable):
     hash_field_name = f"{hash_algorithm}"
     index_name = "file_path"
     base_dir = None
-    default_extension = ""
+    dataset_files_extension = "raw"
 
     def __init__(self, csv_support_path=None, base_dir=None):
         if csv_support_path is None and options.persistence_dir is not None:

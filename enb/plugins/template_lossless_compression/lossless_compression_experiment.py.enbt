@@ -7,10 +7,21 @@ __author__ = "{{user_name}}"
 
 import os
 import enb
+import sys
 from enb.config import options
 import plugins
 
+class LosslessExperiment(enb.icompression.LosslessCompressionExperiment):
+    """Custom data columns can be defined in this class.
+    """
+    pass
+
 if __name__ == '__main__':
+    # If uncommented, it slows down computation but prevents ram hoarding and
+    # out of memory problems with large images:
+
+    # options.base_tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp")
+
     # List of codecs to be analyzed. Can be defined manually or left empty to use all lossless
     # codecs found in ./plugins
     codecs = []
@@ -18,11 +29,14 @@ if __name__ == '__main__':
     if not codecs:
         codecs = [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
                   if not "abstract" in cls.__name__.lower()]
-
-    print(f"[watch] codecs={codecs}")
+    if not codecs:
+        enb.logger.error("The list of codecs is not manually defined, and no LosslessCodec subclass "
+                         "definition could be found in ./plugins. Try `enb plugin list codec` for a list of "
+                         "available plugins. You can change 'codec' for any other search string.")
+        sys.exit(1)
 
     # Create experiment
-    exp = enb.icompression.LosslessCompressionExperiment(codecs=codecs)
+    exp = LosslessExperiment(codecs=codecs)
 
     # Generate pandas dataframe with results. Persistence is automatically added
     df = exp.get_df()

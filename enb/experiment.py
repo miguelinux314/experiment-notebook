@@ -123,7 +123,7 @@ class Experiment(atable.ATable):
         self.tasks = list(tasks)
 
         dataset_paths = dataset_paths if dataset_paths is not None \
-            else enb.atable.get_all_input_files()
+            else enb.atable.get_all_input_files(ext=self.dataset_files_extension)
 
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,
