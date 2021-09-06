@@ -16,7 +16,7 @@ from enb import tarlite
 from enb.config import options
 
 
-class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):
+class JPEG_LS(icompression.LosslessCodec, icompression.NearLosslessCodec, icompression.WrapperCodec):
     max_dimension_size = 65535
 
     def __init__(self, max_error=0, bin_dir=None, output_invocation_dir=None):
