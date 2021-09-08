@@ -434,7 +434,7 @@ class MetaTable(type):
         # Make sure that subclasses do not re-use a base class column
         # function name without it being decorated as column function
         # (unexpected behavior).
-        MetaTable.assert_unreported_overwrite(subclass)
+        MetaTable.set_column_mro(subclass)
 
         # Add pending decorated and column_* methods (declared as columns before subclass existed),
         # in the order they were declared (needed when there are data dependencies between columns).
@@ -476,7 +476,7 @@ class MetaTable(type):
                     raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
                 wrapper = MetaTable.get_auto_column_wrapper(fun=fun)
                 cp = ColumnProperties(name=column_name, fun=wrapper)
-                ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp)
+                ATable.add_column_function(cls=subclass, fun=wrapper, column_properties=cp)
 
         assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
 
@@ -484,23 +484,13 @@ class MetaTable(type):
         return subclass
 
     @staticmethod
-    def assert_unreported_overwrite(subclass):
+    def set_column_mro(subclass):
         """
-        Raise a SyntaxError if any of the methods defined in subclass overwrites
-        (i.e., defines a method with the same name as)
-        a parent's class method and two conditions are met:
+        Redefine column properties that have been defined in the child class, making sure
+        the expected method resolution order (MRO) is maintained.
 
-        - subclass' parent(s) defined the method as a column function
-        - subclass does not use the @|redefines_column| decorator
-
-        If the subclass does use @|redefines_column|, then no error is raised and
-        subclass is updated to reflect this change.
-
-        Note that this syntax restriction is imposed to maintain OOP intuitions true about
-        column functions, or raise the appropriate SyntaxError.
-        Otherwise, the parent's method would be invoked to fill in the |DataFrame|,
-        even though subclass has a method with the same name. This is opposed
-        to basic OOP principles, and thus is not allowed.
+        This method prevents the parent's method be invoked to fill in the |DataFrame|,
+        following intuitive OOP definition.
         """
         for column, properties in subclass.column_to_properties.items():
             try:
@@ -517,17 +507,11 @@ class MetaTable(type):
 
                 if ctp_fun != sc_fun:
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
-                        if hasattr(sc_fun, "_redefines_column"):
-                            properties = copy.copy(properties)
-                            properties.fun = ATable.build_column_function_wrapper(fun=sc_fun,
-                                                                                  column_properties=properties)
-                            subclass.column_to_properties[column] = properties
-                        else:
-                            # NOTE: it is technically possible to change
-                            raise SyntaxError(f"{defining_class_name}'s subclass {subclass.__name__} "
-                                              f"overwrites method {properties.fun.__name__}, "
-                                              f"but it does not decorate it with @enb.atable.column_function "
-                                              f"for column {column} - please add the decorator manually.")
+                        enb.logger.debug(f"Redefining column name {ctp_fun} becomes {sc_fun}")
+                        properties = copy.copy(properties)
+                        properties.fun = ATable.build_column_function_wrapper(
+                            fun=sc_fun, column_properties=properties)
+                        subclass.column_to_properties[column] = properties
 
     @staticmethod
     def get_auto_column_wrapper(fun):
@@ -538,6 +522,11 @@ class MetaTable(type):
         @functools.wraps(fun)
         def wrapper(self, index, row):
             row[_column_name] = fun(self, index, row)
+
+        try:
+            wrapper._redefines_column = fun._redefines_column
+        except AttributeError as ex:
+            pass
 
         return wrapper
 
@@ -766,6 +755,11 @@ class ATable(metaclass=MetaTable):
             finally:
                 globals.clear()
                 globals.update(old_globals)
+
+        try:
+            fun_wrapper._redefines_column = fun._redefines_column
+        except AttributeError:
+            pass
 
         return fun_wrapper
 
