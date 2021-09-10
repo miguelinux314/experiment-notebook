@@ -10,7 +10,6 @@ import os
 import tempfile
 import time
 import collections
-import recordclass
 import functools
 import shutil
 import math
@@ -32,42 +31,52 @@ from enb.atable import indices_to_internal_loc
 from enb.config import options
 
 
-class CompressionResults(recordclass.RecordClass):
+class CompressionResults:
     """Base class that defines the minimal fields that are returned by a
     call to a coder's compress() method (or produced by
-    the CompressionExperiment instance)
+    the CompressionExperiment instance).
     """
-    # codec_name: codec's reported_name
-    # codec_param_dict: dictionary of parameters to the codec
-    # original_path: path to the input original file
-    # compressed_path: path to the output compressed file# list of file paths containing side information
-    # side_info_files: list of file paths with side information
-    # compression_time_seconds: effective average compression time in seconds
-    codec_name: str = None
-    codec_param_dict: dict = None
-    original_path: str = None
-    compressed_path: str = None
-    side_info_files: list = None
-    compression_time_seconds: float = None
+
+    def __init__(self, codec_name=None, codec_param_dict=None, original_path=None,
+                 compressed_path=None, side_info_files=[], compression_time_seconds=None):
+        """
+        :param codec_name: codec's reported_name
+        :param codec_param_dict: dictionary of parameters to the codec
+        :param original_path: path to the input original file
+        :param compressed_path: path to the output compressed file
+        :param side_info_files: list of file paths with side information
+        :param compression_time_seconds: effective average compression time in seconds
+        """
+        self.codec_name = codec_name
+        self.codec_param_dict = codec_param_dict
+        self.original_path = original_path
+        self.compressed_path = compressed_path
+        self.side_info_files = side_info_files
+        self.compression_time_seconds = compression_time_seconds
 
 
-class DecompressionResults(recordclass.RecordClass):
+class DecompressionResults:
     """Base class that defines the minimal fields that are returned by a
     call to a coder's decompress() method (or produced by
-    the CompressionExperiment instance)
+    the CompressionExperiment instance).
     """
-    # codec_name: codec's reported name
-    # codec_param_dict: dictionary of parameters to the codec
-    # compressed_path: path to the input compressed path
-    # reconstructed_path: path to the output reconstructed path
-    # side_info_files: list of file paths containing side information
-    # decompression_time_seconds: effective average decompression time in seconds
-    codec_name: str = None
-    codec_param_dict: dict = None
-    compressed_path: str = None
-    reconstructed_path: str = None
-    side_info_files: list = []
-    decompression_time_seconds: float = None
+
+    def __init__(self, codec_name=None, codec_param_dict=None, compressed_path=None,
+                 reconstructed_path=None, side_info_files=[], decompression_time_seconds=None):
+        """
+        :param codec_name: codec's reported_name
+        :param codec_param_dict: dictionary of parameters to the codec
+        :param compressed_path: path to the output compressed file
+        :param reconstructed_path: path to the reconstructed file after decompression
+        :param side_info_files: list of file paths with side information
+        :param decompression_time_seconds: effective decompression time in seconds
+        """
+        self.codec_name = codec_name
+        self.codec_param_dict = codec_param_dict
+        self.compressed_path = compressed_path
+        self.reconstructed_path = reconstructed_path
+        self.side_info_files = side_info_files
+        self.decompression_time_seconds = decompression_time_seconds
 
 
 class CompressionException(Exception):
