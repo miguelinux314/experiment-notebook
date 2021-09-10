@@ -1,6 +1,15 @@
-# Under development v0.3.1
+# 2021/09/10 v0.3.1
 
-- Improved overall stability and aesthetic control over plotting with enb.aanalysis 
+* New features
+  - Added a lossless compression experiment template.
+  - Added csv to latex utility function in misc for easier and faster report making.
+
+* General improvements
+  - Improved overall stability and aesthetic control over plotting with enb.aanalysis
+  - Removed the recordclass package as a dependency, as enb's usage did not justify the package's size
+  - Enhanced clarity and robustness of the setup.py script to simplify installation via pip
+  - Fixed potential method resolution order inconsistencies between class methods and column setters; now
+    the intuitive behavior is better enforced.
 
 # 2021/08/31 v0.3.0
 

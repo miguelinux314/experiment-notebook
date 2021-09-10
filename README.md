@@ -22,7 +22,8 @@ The latest stable version of `enb` can be installed by running:
 
     `pip install enb`
 
-On Windows, the ray library must by installed manually first:
+On Windows, the ray library might need to be installed manually first. See the following link
+for updated information on how to do it: 
 
     `https://docs.ray.io/en/master/installation.html`
 
