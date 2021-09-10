@@ -78,8 +78,10 @@ setup(
     setup_requires=setup_package_list,
 
     install_requires=[
-        "appdirs", "astropy", "astropy", "deprecation", "imageio", "jinja2", "matplotlib", "numpngw", "numpy", "pandas",
-        "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers", "wheel",
+        "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
+        "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers",
+
+        "astropy",
     ],
 
     # This part determines the contents of the installed folder in your python's site-packages location.
