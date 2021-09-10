@@ -10,7 +10,31 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
 import os
-import io
+import importlib
+import sys
+import subprocess
+import setuptools
+
+setup_package_list = ["setuptools", "wheel"]
+
+for module_name in setup_package_list:
+    try:
+        importlib.import_module(module_name)
+    except (ModuleNotFoundError, ImportError) as ex:
+        raise ModuleNotFoundError(
+            f"\n\n{'@' * 80}\n"
+            f"{'@' * 80}\n"
+            "\n"
+            f"Package {module_name} needs to be installed in your python environment "
+            f"to be able to install enb.\n"
+            f"The full list of pre-installation requirements is: "
+            f"{', '.join(setup_package_list)}.\n\n"
+            f"Please run `pip install {' '.join(setup_package_list)}` "
+            f"before installing enb\n\n"
+            f"{'@' * 80}\n"
+            f"{'@' * 80}\n"
+            "\n") from ex
+
 from setuptools import setup, find_packages
 import configparser
 
@@ -51,11 +75,11 @@ setup(
     },
 
     # Dependencies
-    setup_requires=['wheel', 'deprecation'],
+    setup_requires=setup_package_list,
 
     install_requires=[
-        'appdirs', 'astropy', 'astropy', 'deprecation', 'imageio', 'jinja2', 'matplotlib', 'numpngw', 'numpy', 'pandas',
-        'pdf2image', 'psutil', 'ray[default]', 'recordclass', 'redis', 'requests', 'scipy', 'sortedcontainers', 'wheel',
+        "appdirs", "astropy", "astropy", "deprecation", "imageio", "jinja2", "matplotlib", "numpngw", "numpy", "pandas",
+        "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers", "wheel",
     ],
 
     # This part determines the contents of the installed folder in your python's site-packages location.
