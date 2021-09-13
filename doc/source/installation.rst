@@ -57,6 +57,8 @@ The pip command must correspond to the python version for which ray was installe
             pip install -U ray-2.0.0.whl    # run once
             pip install enb                 # run once. Applies to this venv
 
+  You can change python3.8 to 3.6 or newer, according to the version installed in your system.
+
 
 .. note:: Initialization of the `ray` library (used for parallelization) can take a few
   seconds on Windows machines. Actual execution of `enb` code typically takes about the

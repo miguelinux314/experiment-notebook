@@ -1,0 +1,10 @@
+# Added so that no binary is leaked by mistake
+mhdcbpe
+mhdcdwt
+mhdcibpe
+mhdcpack
+mhdctransform
+ccsds122_codec.py
+*.sh
+__init__.py
+

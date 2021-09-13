@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Example showing the basic workflow of the ``enb`` library.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "13/09/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/09/13"
 
 import os
 import glob

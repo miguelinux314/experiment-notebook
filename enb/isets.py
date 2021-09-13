@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Image sets information tables
 """
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/04/01"
 
 import os
 import math
 import numpy as np
 import re
-import collections
 import imageio
-
-import enb.sets
-from enb.config import get_options
-
-options = get_options(from_main=False)
-
+import enb
+from enb.config import options
 from enb import atable
 from enb import sets
-
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "01/04/2020"
 
 
 def entropy(data):
@@ -41,9 +34,10 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
     if matches:
         match = matches[-1]
-        if len(matches) > 1 and options.verbose:
-            print(f"[W]arning: file path {file_path} contains more than one image geometry tag. "
-                  f"Only the last one is considered.")
+        if len(matches) > 1:
+            enb.logger.warn(f"File path {file_path} contains more than one image geometry tag "
+                            f"(matches: {', '.join(repr(m.group(0)) for m in matches)}. "
+                            f"Only the last one is considered")
         component_count, height, width = (int(match[i]) for i in range(3))
         if any(dim < 1 for dim in (width, height, component_count)):
             raise ValueError(f"Invalid dimension tag in {file_path}")
@@ -64,6 +58,9 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
+    dataset_files_extension = "raw"
+
+    # Data type columns
 
     @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
     def set_bytes_per_sample(self, file_path, row):
@@ -76,7 +73,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("f64")):
             row[_column_name] = 8
         else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+            raise sets.UnkownPropertiesException(f"{self.__class__.__name__}: unknown {_column_name} for {file_path}")
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
@@ -108,6 +105,28 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         else:
             raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
 
+    @atable.column_function("dtype", label="Numpy dtype")
+    def set_column_dtype(self, file_path, row):
+        """Set numpy's dtype string
+        """
+        if row["float"]:
+            row[_column_name] = f"f{8 * row['bytes_per_sample']}"
+        else:
+            row[
+                _column_name] = f"{'>' if row['big_endian'] else '<'}{'i' if row['signed'] else 'u'}{row['bytes_per_sample']}"
+
+    @atable.column_function("type_name", label="Type name usable in file names")
+    def set_type_name(self, file_path, row):
+        """Set the type name usable in file names
+        """
+        if row["float"]:
+            row[_column_name] = f"f{8 * row['bytes_per_sample']}"
+        else:
+            row[
+                _column_name] = f"{'s' if row['signed'] else 'u'}{8 * row['bytes_per_sample']}{'be' if row['big_endian'] else 'le'}"
+
+    # Image dimension columns
+
     @atable.column_function("samples", label="Sample count", plot_min=0)
     def set_samples(self, file_path, row):
         """Set the number of samples in the image
@@ -131,6 +150,8 @@ class ImagePropertiesTable(ImageGeometryTable):
     """Properties table for images, with geometry and additional statistical information.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
+
+    dataset_files_extension = "raw"
 
     @atable.column_function([
         atable.ColumnProperties(name="sample_min", label="Min sample value"),
@@ -193,6 +214,8 @@ class SampleDistributionTable(ImageGeometryTable):
 
 
 class HistogramFullnessTable1Byte(atable.ATable):
+    dataset_files_extension = "raw"
+
     @atable.column_function(
         "histogram_fullness_1byte", label="Histogram usage fraction (1 byte)",
         plot_min=0, plot_max=1)
@@ -206,6 +229,8 @@ class HistogramFullnessTable1Byte(atable.ATable):
 
 
 class HistogramFullnessTable2Bytes(atable.ATable):
+    dataset_files_extension = "raw"
+
     @atable.column_function(
         "histogram_fullness_2bytes", label="Histogram usage fraction (2 bytes)",
         plot_min=0, plot_max=1)
@@ -219,6 +244,8 @@ class HistogramFullnessTable2Bytes(atable.ATable):
 
 
 class HistogramFullnessTable4Bytes(atable.ATable):
+    dataset_files_extension = "raw"
+
     @atable.column_function(
         "histogram_fullness_4bytes", label="Histogram usage fraction (4 bytes)",
         plot_min=0, plot_max=1)
@@ -246,6 +273,7 @@ class BandEntropyTable(ImageGeometryTable):
 
 
 class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
+    dataset_files_extension = "raw"
 
     def __init__(self, version_base_dir, version_name,
                  original_base_dir=None, csv_support_path=None, check_generated_files=True,
@@ -262,6 +290,8 @@ class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
 
 
 class QuantizedImageVersion(ImageVersionTable):
+    dataset_files_extension = "raw"
+
     def __init__(self, version_base_dir, qstep,
                  original_base_dir=None, csv_support_path=None, check_generated_files=True,
                  original_properties_table=None):
@@ -269,24 +299,165 @@ class QuantizedImageVersion(ImageVersionTable):
         assert 1 <= qstep <= 65535
         qstep = int(qstep)
         ImageVersionTable.__init__(self, version_base_dir=version_base_dir,
-                         version_name=f"{self.__class__.__name__}_qstep{qstep}",
-                         original_base_dir=original_base_dir,
-                         csv_support_path=csv_support_path,
-                         check_generated_files=check_generated_files,
-                         original_properties_table=original_properties_table)
+                                   version_name=f"{self.__class__.__name__}_qstep{qstep}",
+                                   original_base_dir=original_base_dir,
+                                   csv_support_path=csv_support_path,
+                                   check_generated_files=check_generated_files,
+                                   original_properties_table=original_properties_table)
         self.qstep = qstep
 
     def version(self, input_path, output_path, row):
         img = load_array_bsq(file_or_path=input_path, image_properties_row=row)
         if math.log2(self.qstep) == int(math.log2(self.qstep)):
-            if options.verbose > 3:
-                print("[V]ersioning with shift")
             img >>= int(math.log2(self.qstep))
         else:
-            if options.verbose > 3:
-                print("[V]ersioning with division")
             img //= self.qstep
         dump_array_bsq(array=img, file_or_path=output_path)
+
+
+class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
+    """Read FITS files and convert them to raw files,
+    sorting them by type (integer or float)	and by bits per pixel
+    """
+    fits_extension = "fit"
+    allowed_extensions = ["fit", "fits"]
+    version_name = "FitsToRaw"
+
+    # No need to set  dataset_files_extension here, because get_default_target_indices is overwriten.
+    def __init__(self, original_base_dir, version_base_dir):
+        super().__init__(
+            original_base_dir=original_base_dir,
+            version_base_dir=version_base_dir,
+            original_properties_table=sets.FilePropertiesTable(),
+            version_name=self.version_name,
+            check_generated_files=False)
+
+    def get_default_target_indices(self):
+        indices = []
+        for ext in self.allowed_extensions:
+            indices.extend(enb.atable.get_all_input_files(
+                ext=ext, base_dataset_dir=self.original_base_dir))
+        return indices
+
+    def original_to_versioned_path(self, original_path):
+        if original_path.lower().endswith(".fit"):
+            input_ext = "fit"
+        elif original_path.lower().endswith(".fits"):
+            input_ext = "fits"
+        else:
+            raise ValueError(f"Invalid input extension {original_path}")
+
+        return os.path.join(
+            os.path.dirname(
+                os.path.abspath(original_path)).replace(
+                os.path.abspath(self.original_base_dir),
+                os.path.abspath(self.version_base_dir)),
+            os.path.basename(original_path).replace(
+                f".{input_ext}", f".raw"))
+
+    @enb.atable.redefines_column
+    def set_version_time(self, file_path, row):
+        row[_column_name] = 0
+
+    @enb.atable.redefines_column
+    def set_version_repetitions(self, file_path, row):
+        row[_column_name] = 1
+
+    def version(self, input_path, output_path, row):
+        if input_path.lower().endswith(".fit"):
+            input_ext = ".fit"
+        elif input_path.lower().endswith(".fits"):
+            input_ext = ".fits"
+        else:
+            raise ValueError(f"Invalid extension found in {input_path}")
+
+        hdul = fits.open(input_path)
+        saved_images = 0
+        for hdu_index, hdu in enumerate(hdul):
+            if hdu.header["NAXIS"] == 0:
+                continue
+            data = hdu.data.transpose()
+            header = hdu.header
+
+            if header['BITPIX'] == 8:
+                pass
+            else:
+
+                if header['NAXIS'] == 1:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-1x1x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-1x1x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+                    data = np.expand_dims(data, axis=1)
+                    data = np.expand_dims(data, axis=2)
+
+                elif header['NAXIS'] == 2:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+
+                    data = np.expand_dims(data, axis=2)
+                elif header['NAXIS'] == 3:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+                elif header['NAXIS'] == 4:
+                    if header['BITPIX'] < 0:
+                        name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'float{-header["BITPIX"]}'
+                        enb_type_name = f"f{-header['BITPIX']}"
+                    elif header['BITPIX'] > 0:
+                        name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        dtype_name = f'>u{header["BITPIX"] // 8}'
+                        enb_type_name = f"u{header['BITPIX']}be"
+                    else:
+                        raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+                    data = np.squeeze(data, axis=3)
+                else:
+                    raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
+
+                output_dir = os.path.join(os.path.dirname(os.path.abspath(output_path)), enb_type_name)
+                effective_output_path = os.path.join(
+                    output_dir,
+                    f"{os.path.basename(output_path).replace('.raw', '')}_img{saved_images}{name_label}.raw")
+                os.makedirs(os.path.dirname(effective_output_path), exist_ok=True)
+                if os.path.isfile(effective_output_path) == True:
+                    pass
+                else:
+                    if options.verbose > 2:
+                        print(f"Dumping FITS->raw ({effective_output_path}) from hdu_index={hdu_index}")
+                    enb.isets.dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
+                    fits_header_path = os.path.join(os.path.dirname(os.path.abspath(effective_output_path)).replace(
+                        os.path.abspath(self.version_base_dir),
+                        f"{os.path.abspath(self.version_base_dir)}_headers"),
+                        os.path.basename(effective_output_path).replace('.raw', '') + "-fits_header.txt")
+                    os.makedirs(os.path.dirname(fits_header_path), exist_ok=True)
+                    print(f"[watch] fits_header_path={fits_header_path}")
+                    if os.path.exists(fits_header_path):
+                        os.remove(fits_header_path)
+                    header.totextfile(fits_header_path)
+
+            saved_images += 1
 
 
 def load_array_bsq(file_or_path, image_properties_row,

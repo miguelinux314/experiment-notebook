@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Rull all test modules in the current working dir
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "19/09/2019"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2019/09/19"
 
 import os
+import glob
+import shutil
 import unittest
 import sys
 import argparse
@@ -20,6 +21,11 @@ parser.add_argument("-v", "--verbose", help="Be verbose? Repeat for more", actio
 options = parser.parse_known_args()[0]
 
 if __name__ == '__main__':
+    # Clean any persistence dirs in test/
+    _ = [shutil.rmtree(p)
+         for p in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*.py"))
+         if os.path.isdir(p)]
+
     suite = unittest.TestLoader().discover(os.path.dirname(__file__))
 
     if options.verbose:
@@ -30,4 +36,4 @@ if __name__ == '__main__':
         print(f"{'':-^30s}")
         print()
 
-    unittest.TextTestRunner(verbosity=3).run(suite)
+    unittest.TextTestRunner(verbosity=3, failfast=True).run(suite)

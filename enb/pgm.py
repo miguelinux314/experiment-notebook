@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Module to handle pgm images
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "08/04/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/04/08"
 
 import sys
 import numpy as np
@@ -33,20 +32,22 @@ def read_pgm(input_path, byteorder='>'):
         buffer,
         dtype='u1' if int(maxval) < 256 else byteorder + 'u2',
         count=int(width) * int(height),
-        offset=len(header)).reshape((int(height), int(width))).swapaxes(0,1)
+        offset=len(header)).reshape((int(height), int(width))).swapaxes(0, 1)
+
 
 def write_pgm(array, bytes_per_sample, output_path, byteorder=">"):
-    assert bytes_per_sample in [1,2], f"bytes_per_sample={bytes_per_sample} not supported"
+    assert bytes_per_sample in [1, 2], f"bytes_per_sample={bytes_per_sample} not supported"
     assert len(array.shape) == 2, f"Only 2D arrays can be output as PGM"
-    assert (array.astype(np.int) - array < 2*sys.float_info.epsilon).all(), f"Only integer values can be stored in PGM"
+    assert (array.astype(
+        np.int) - array < 2 * sys.float_info.epsilon).all(), f"Only integer values can be stored in PGM"
     assert array.min() >= 0, f"Only positive values can be stored in PGM"
-    assert array.max() <= 2**(8*bytes_per_sample) - 1, \
+    assert array.max() <= 2 ** (8 * bytes_per_sample) - 1, \
         f"All values should be representable in {bytes_per_sample} bytes " \
         f"(max is {array.max()}, bytes_per_sample={bytes_per_sample})"
     width, height = array.shape
     with open(output_path, "wb") as output_file:
-        output_file.write(f"P5\n{width}\n{height}\n{(2**(8*bytes_per_sample))-1}\n".encode("utf-8"))
-        array.swapaxes(0,1).astype(f"{byteorder}u{bytes_per_sample}").tofile(output_file)
+        output_file.write(f"P5\n{width}\n{height}\n{(2 ** (8 * bytes_per_sample)) - 1}\n".encode("utf-8"))
+        array.swapaxes(0, 1).astype(f"{byteorder}u{bytes_per_sample}").tofile(output_file)
 
 
 def pgm_to_raw(input_path, output_path):

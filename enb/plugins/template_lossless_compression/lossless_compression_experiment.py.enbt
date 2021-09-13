@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""Lossless compression experiment using enb, the Electronic NoteBook library.
+
+See https://github.com/miguelinux314/experiment-notebook for additional documentation.
+"""
+__author__ = "{{user_name}}"
+
+import os
+import enb
+import sys
+from enb.config import options
+import plugins
+
+class LosslessExperiment(enb.icompression.LosslessCompressionExperiment):
+    """Custom data columns can be defined in this class.
+    """
+    pass
+
+if __name__ == '__main__':
+    # If uncommented, it slows down computation but prevents ram hoarding and
+    # out of memory problems with large images:
+
+    # options.base_tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp")
+
+    # List of codecs to be analyzed. Can be defined manually or left empty to use all lossless
+    # codecs found in ./plugins
+    codecs = []
+
+    if not codecs:
+        codecs = [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
+                  if not "abstract" in cls.__name__.lower()]
+    if not codecs:
+        enb.logger.error("The list of codecs is not manually defined, and no LosslessCodec subclass "
+                         "definition could be found in ./plugins. Try `enb plugin list codec` for a list of "
+                         "available plugins. You can change 'codec' for any other search string.")
+        sys.exit(1)
+
+    # Create experiment
+    exp = LosslessExperiment(codecs=codecs)
+
+    # Generate pandas dataframe with results. Persistence is automatically added
+    df = exp.get_df()
+
+    # Plot some relevant results
+    scalar_columns = ["compression_ratio_dr", "bpppc", "compression_time_seconds", "decompression_time_seconds",
+                      "compression_efficiency_1byte_entropy", "compression_efficiency_2byte_entropy"]
+    column_pairs = [("compression_time_seconds", "bpppc"),
+                    ("compression_time_seconds", "compression_efficiency_1byte_entropy"),
+                    ("compression_time_seconds", "compression_efficiency_2byte_entropy"),
+                    ]
+    # Scalar column analysis
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer(
+        # A scalar analysis summary is stored here
+        csv_support_path=os.path.join(options.analysis_dir, "lossless_compression_analysis_scalar.csv"))
+    scalar_analyzer.get_df(
+        # Mandatory params
+        full_df=df,  # the dataframe produced by exp
+        target_columns=scalar_columns,  # the list of ATable column names
+        # Provide plotting hints based on the defined columns
+        column_to_properties=exp.joined_column_to_properties,
+        # Optional params
+        group_by="task_label",  # one can group by any column name
+        selected_render_modes={"histogram"},
+    )
+    # Two column joint analysis
+    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer(
+        csv_support_path=os.path.join(
+            options.analysis_dir, "lossless_compression_analysis_twocolumn.csv"))
+    twoscalar_analyzer.get_df(
+        full_df=df,
+        target_columns=column_pairs,
+        column_to_properties=exp.joined_column_to_properties,
+        group_by="task_label",
+        selected_render_modes={"scatter"},
+    )

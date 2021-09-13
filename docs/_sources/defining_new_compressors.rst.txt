@@ -49,7 +49,7 @@ following example:
 
 
 Further working examples are readily available in the
-`plugin_zip <https://github.com/miguelinux314/experiment-notebook/blob/master/plugins/plugin_zip/zip_codecs.py>`_
+`plugin_zip <https://github.com/miguelinux314/experiment-notebook/blob/master/enb/plugins/plugin_zip/zip_codecs.py>`_
 plugin.
 
 
@@ -115,7 +115,7 @@ To create your plugin and share it with the community,
 
       if `my_module.py` is one of the modules you want to export.
 
-    - Modify `plugins/test_all_codecs/test_all_codecs.py <https://github.com/miguelinux314/experiment-notebook/blob/dev/plugins/test_all_codecs/test_all_codecs.py>`_
+    - Modify `plugins/test_all_codecs/test_all_codecs.py <https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/plugins/test_all_codecs/test_all_codecs.py>`_
       adding an instance of your codec, and verify that it has the expected capabilities.
 
     - Send a pull request to https://github.com/miguelinux314/experiment-notebook/tree/dev

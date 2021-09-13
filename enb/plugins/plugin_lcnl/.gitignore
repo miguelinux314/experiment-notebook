@@ -1,0 +1,11 @@
+# Make sure no binary is ever pushed by mistake
+lcnl_bsq_reader
+lcnl_bsq_writer
+lcnl_decoder
+lcnl_encoder
+lcnl_header_tool
+lcnl_supplementary_tables_decoder
+lcnl_supplementary_tables_encoder
+ldc_decoder
+ldc_encoder
+ldc_header_tool

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Unit tests for the bitstream module
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
+__author__ = "Miguel Hernández-Cabronero"
 
 import os
 import unittest
@@ -10,7 +9,7 @@ import unittest
 import random
 random.seed(0xbadc0f33)
 
-from enb import bitstream
+import bitstream
 
 
 class TestBitstream(unittest.TestCase):

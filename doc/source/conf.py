@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.abspath('..'), '..')))
 
 project = 'Experiment Notebook'
 copyright = '2020, Miguel Hernández-Cabronero'
-author = 'Miguel Hernández-Cabronero'
+author = 'Miguel Hernández-Cabronero, et al.'
 
 # The full version, including alpha/beta/rc tags
 release = 'MIT License'
@@ -43,7 +43,9 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None),
+    'pandas': ('https://pandas.pydata.org/pandas-docs/dev', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
+    'ray': ('https://docs.ray.io/en/master/', None)
 }
 
 # Add any paths that contain templates here, relative to this directory.

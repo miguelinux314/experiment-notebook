@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -38,7 +41,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Using image compression plugins" href="image_compression_plugins.html" />
+    <link rel="next" title="Available image compression codecs" href="image_compression_plugins.html" />
     <link rel="prev" title="Lossless Compression Experiment" href="lossless_compression_example.html" /> 
 </head>
 
@@ -87,9 +90,8 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression</a><ul class="current">
@@ -107,7 +109,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#lossy-data-analysis">Lossy: data analysis</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using image compression plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Available image compression codecs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
@@ -163,8 +165,6 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="contents.html">Contents</a> &raquo;</li>
-        
           <li><a href="image_compression.html">Image compression</a> &raquo;</li>
         
       <li>Lossy Compression Experiment</li>
@@ -215,7 +215,7 @@ cp -r experiment-notebook-master/templates/lossless_compression_example/ .
 <p>This example makes uses of the <cite>plugin_jpeg</cite> and <cite>pugin_mcalic</cite> plugins.
 You need to copy them to the same folder where you are running the experiment (.).
 The following code will do the trick:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r experiment-notebook-master/plugins/<span class="o">{</span>plugin_jpeg, plugin_mcalic<span class="o">}</span> .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r experiment-notebook-master/enb/plugins<span class="o">{</span>plugin_jpeg, plugin_mcalic<span class="o">}</span> .
 </pre></div>
 </div>
 <p>This completes the setup of the experiment</p>
@@ -314,7 +314,7 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 <div class="section" id="lossy-experiment-running">
 <h3>Lossy: experiment running<a class="headerlink" href="#lossy-experiment-running" title="Permalink to this headline">¶</a></h3>
 <p>The lossless compression experiment can now be created, and used to generate a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+77.g3bb31da431)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+540.ga826be1f61)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
 <p>Notice how <cite>show_h_range_bar</cite> and <cite>show_h_std_bar</cite> are employed to signal the range and +/- 1 std in the x axis.
 They can be used in the y axis by replacing <cite>h</cite> with <cite>v</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run experiment and produce figures</span>
@@ -361,7 +361,7 @@ for the JPEG-LS and M-CALIC codecs is shown below as well:</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="image_compression_plugins.html" class="btn btn-neutral float-right" title="Using image compression plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="image_compression_plugins.html" class="btn btn-neutral float-right" title="Available image compression codecs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="lossless_compression_example.html" class="btn btn-neutral float-left" title="Lossless Compression Experiment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
