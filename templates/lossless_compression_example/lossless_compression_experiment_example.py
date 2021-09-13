@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Lossless compression experiment example (uses JPEG-LS)
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "25/11/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/11/25"
 
 import os
 
@@ -27,9 +26,7 @@ if __name__ == '__main__':
     exp = icompression.LosslessCompressionExperiment(codecs=codecs)
 
     # Generate pandas dataframe with results
-    df = exp.get_df(
-        parallel_row_processing=not options.sequential,
-        overwrite=options.force > 0)
+    df = exp.get_df(overwrite=options.force > 0)
 
     # Plot some results
     analyzer = aanalysis.ScalarDistributionAnalyzer()
@@ -42,5 +39,6 @@ if __name__ == '__main__':
         output_csv_file=os.path.join(         # save some statistics 
             options.analysis_dir, "lossless_compression_analysis.csv"),
         column_to_properties=exp.joined_column_to_properties, # contains plotting hints
-        group_by="task_label",                # one can group by any column name                    
+        group_by="task_label",                # one can group by any column name
+        y_max=1,
     )

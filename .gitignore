@@ -1,43 +1,39 @@
-<<<<<<< HEAD
 .idea/
-*/plugin_lcnl/ldc_*
-*/plugin_lcnl/lcnl_*
-*/plugin_fapec/fapec
-*/plugin_fapec/unfapec
-*/plugin_jpeg/jpeg
-*/plugin_jpeg/*zip
-=======
-plugins/plugin_lcnl/ldc_*
-plugins/plugin_lcnl/lcnl_*
-plugins/plugin_fapec/fapec
-plugins/plugin_fapec/unfapec
-plugins/plugin_jpeg/jpeg
-plugins/plugin_flif/flif
-plugins/plugin_fse_huffman/fse
-plugins/plugin_hevc/TAppDecoderStatic
-plugins/plugin_hevc/TAppEncoderStatic
-plugins/plugin_marlin/imageMarlin
-plugins/plugin_jpeg_xl/cjxl
-plugins/plugin_jpeg_xl/djxl
 
-plugins/plugin_mcalic/Mcalic_enc_nl
-plugins/plugin_mcalic/Mcalic_dec_nl
-plugins/plugin_mhdc_transforms/mhdctransform
-plugins/plugin_mhdc_transforms/mhdcdwt
->>>>>>> 3ca41e7be4b55be4e2ce2c6198fb78640d23db2b
+# Ignore compiled binaries for the plugins
+enb/plugins/plugin_flif/flif
+enb/plugins/plugin_fpack/cfitsio-3.49/
+enb/plugins/plugin_fpack/fpack
+enb/plugins/plugin_fpack/funpack
+enb/plugins/plugin_fpc/fpc
+enb/plugins/plugin_fpzip/fpzip
+enb/plugins/plugin_fse_huffman/fse
+enb/plugins/plugin_fse_huffman/fse_git/
+enb/plugins/plugin_hevc/TAppDecoderStatic
+enb/plugins/plugin_hevc/TAppEncoderStatic
+enb/plugins/plugin_jpeg/jpeg
+enb/plugins/plugin_jpeg_xl/cjxl
+enb/plugins/plugin_jpeg_xl/djxl
+enb/plugins/plugin_lz4/lz4
+enb/plugins/plugin_marlin/.travis.yml
+enb/plugins/plugin_marlin/imageMarlin
+enb/plugins/plugin_mcalic/Mcalic_dec_nl
+enb/plugins/plugin_mcalic/Mcalic_enc_nl
+enb/plugins/plugin_spdp/spdp
+enb/plugins/plugin_vvc/DecoderAppStatic
+enb/plugins/plugin_vvc/EncoderAppStatic
+enb/plugins/plugin_zfp/zfp
+enb/plugins/plugin_zstandard/zstd
+enb/plugins/plugin_ndzip/compress
 
-*/plugin_ccsds122/mhdcDecoder.sh
-*/plugin_ccsds122/mhdcEncoder.sh
-*/plugin_ccsds122/mhdcbpe
-*/plugin_ccsds122/mhdcdwt
-*/plugin_ccsds122/mhdcibpe
-*/plugin_ccsds122/mhdcpack
-*/plugin_ccsds122/mhdctransform
+
+enb/plugins/test_all_codecs/analysis/
+enb/plugins/test_all_codecs/data/
 
 doc/build/
 
-/private
-/venv
+private
+venv
 
 /templates/lossy_compression_experiment/persistence_lossy_compression_experiment.py/
 /templates/lossy_compression_experiment/persistence_experiment_ssim.py/
@@ -45,3 +41,8 @@ doc/build/
 
 
 enb.egg-info/
+.eggs
+
+/dist/
+/test/persistence_*
+enb/plugins/plugin_*/build_errors.log

@@ -18,8 +18,9 @@ Some of the main features of ``enb`` are:
   * **Extensible**: you can always add new samples, define new columns and produce new figures.
 
 .. note::
-   ``enb`` is based on well-known python libraries such as ``pandas`` and ``pyplot``.
-   No prior knowledge of these libraries is required, although it is highly recommended.
+   ``enb`` is based on well-known python libraries such as ``pandas``, ``matplotlib`` and ``ray``.
+   No prior knowledge of these libraries is required, although basic understanding of ``pandas``
+   can be most useful.
 
 The following help pages will tour you through the most important features of ``enb``,
 and show minimal examples that you can use as starting point for your projects.
@@ -33,7 +34,6 @@ You can also take a look at the automatically generated :ref:`API<api>`.
    :maxdepth: 1
    :caption: Contents:
 
-   contents
    installation
    basic_workflow
    image_compression

@@ -1,0 +1,65 @@
+
+CFLAGS += -std=gnu++11 -Wall -Wextra -Wcast-qual -Wcast-align -Wstrict-aliasing=1 -Wswitch-enum -Wundef -pedantic  -Wfatal-errors -Werror
+
+CFLAGS += -I./src
+
+CFLAGS += `pkg-config opencv --cflags`
+LFLAGS += `pkg-config opencv --libs`
+
+LFLAGS += -lboost_system -lboost_program_options -lboost_serialization
+LFLAGS += -lz -lrt
+LFLAGS += -lsnappy -lCharLS -lzstd -llz4 -llzo2
+
+
+CFLAGS += -fopenmp
+LFLAGS += -lgomp
+
+CFLAGS += -Ofast
+
+CFLAGS += -g
+
+CFLAGS += -I./ext
+LFLAGS += $(wildcard ./ext/*.a)
+
+
+#CFLAGS += -DNDEBUG
+#CFLAGS += -frename-registers -fopenmp
+#CFLAGS += -fno-unroll-loops
+#CFLAGS += -funroll-all-loops
+#CFLAGS += -fno-align-loops
+#CFLAGS += -fno-align-labels
+#CFLAGS += -fno-tree-vectorize
+#CFLAGS += -falign-functions -falign-labels -falign-jumps -falign-loops -frename-registers -finline-functions
+#CFLAGS += -fomit-frame-pointer
+#CFLAGS += -fmerge-all-constants -fmodulo-sched -fmodulo-sched-allow-regmoves -funsafe-loop-optimizations -floop-unroll-and-jam
+
+PROGDIR?= ./jpegxl_git
+
+.PHONY: default
+default: zip dir dependences jpegxl clean-temp
+
+zip:
+	unzip jpegxl_git.zip
+
+dir:
+	mkdir $(PROGDIR)/build
+	cp $(PROGDIR)/CMakeLists.txt $(PROGDIR)/build
+
+dependences:
+	sh $(PROGDIR)/deps.sh
+	# brew install jpeg-xl
+	# brew install llvm
+	# brew install coreutils cmake giflib jpeg-turbo libpng ninja zlib
+
+jpegxl:
+	cd $(PROGDIR)/build && echo "I'm in build" && \
+	cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. && \
+	cmake --build . -- -j$(nproc) && \
+	cp ./tools/cjxl ../../ && \
+	cp ./tools/djxl ../../
+
+clean: clean-temp
+	rm -rf cjxl djxl
+
+clean-temp:
+	rm -rf jpegxl_git

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Trivial codec implementations, mostly for testing purposes.
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "31/03/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/03/31"
 
 import shutil
 import numpy as np
@@ -18,14 +17,14 @@ class TrivialLosslessCodec(icompression.LosslessCodec):
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         """Compress original_path into compress_path using param_dict as params.
-        :return a CompressionResults instance
+        :return: a CompressionResults instance
         """
         shutil.copyfile(original_path, compressed_path)
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         """Decompress compressed_path into reconstructed_path using param_dict
         as params (if needed).
-        :return a DecompressionResults instance
+        :return: a DecompressionResults instance
         """
         shutil.copyfile(compressed_path, reconstructed_path)
 

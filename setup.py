@@ -1,81 +1,92 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-# ===================
-# Experiment Notebook setup
-# ===================
-#
-# Author: Miguel Hernández Cabronero <miguel.hernandez@uab.cat>
-#
-# ---------------------------------------------
-# INSTALLATION
-#
-# Option 1) from pip
-# 	pip install enb
-#
-# Option 2) install this once
-#  pip install .
-#
-# Option 3) install this and link to track any changes made to the code
-#  pip install .
-#
-# Tip: use pip install -e . to install a live link so that changes are automatically applied to your environment.
-#
-# From https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
+#!/usr/bin/env python3
+"""Installation script for the enb library.
+
+Adapted from https://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/.
+
+Refer to the user manual (https://miguelinux314.github.io/experiment-notebook) for additional information on
+how to install this software.
+"""
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2019/09/19"
+
+import os
+import importlib
+import sys
+import subprocess
+import setuptools
+
+setup_package_list = ["setuptools", "wheel"]
+
+for module_name in setup_package_list:
+    try:
+        importlib.import_module(module_name)
+    except (ModuleNotFoundError, ImportError) as ex:
+        raise ModuleNotFoundError(
+            f"\n\n{'@' * 80}\n"
+            f"{'@' * 80}\n"
+            "\n"
+            f"Package {module_name} needs to be installed in your python environment "
+            f"to be able to install enb.\n"
+            f"The full list of pre-installation requirements is: "
+            f"{', '.join(setup_package_list)}.\n\n"
+            f"Please run `pip install {' '.join(setup_package_list)}` "
+            f"before installing enb\n\n"
+            f"{'@' * 80}\n"
+            f"{'@' * 80}\n"
+            "\n") from ex
 
 from setuptools import setup, find_packages
-import io
-import codecs
-import os
+import configparser
 
-here = os.path.abspath(os.path.dirname(__file__))
-
-
-def read(*filenames, **kwargs):
-    encoding = kwargs.get('encoding', 'utf-8')
-    sep = kwargs.get('sep', '\n')
-    buf = []
-    for filename in filenames:
-        with io.open(filename, encoding=encoding) as f:
-            buf.append(f.read())
-    return sep.join(buf)
-
+# Read the configuration from ./enb/config/enb.ini, section "enb"
+enb_options = configparser.ConfigParser()
+enb_options.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "enb", "config", "enb.ini"))
+enb_options = enb_options["enb"]
 
 setup(
-    # Meta
-    name='enb',
-    version="0.2.7",
-    url='https://github.com/miguelinux314/experiment-notebook',
-    download_url="https://github.com/miguelinux314/experiment-notebook/archive/v0.2.7.tar.gz",
-    license='MIT',
-    author='Miguel Hernandez Cabronero (Universitat Autònoma de Barcelona)',
-    author_email='miguel.hernandez@uab.cat',
-    description='Library to gather and disseminate computer-based experimental results.',
-    long_description=read('README.md'),
-    platforms='any',
+    # Metadata about the project
+    name=enb_options["name"],
+    version=enb_options["version"],
+    url=enb_options["url"],
+    download_url=enb_options["download_url"],
+    license=enb_options["license"],
+    author=enb_options["author"],
+    author_email=enb_options["author_email"],
+    description=enb_options["description"],
+    long_description=enb_options["long_description"],
+    platforms=enb_options["platforms"],
+    python_requires=enb_options["python_requires"],
     classifiers=[
-        'Programming Language :: Python',
-        'Development Status :: 4 - Beta',
-        'Natural Language :: English',
-        'Environment :: Console',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Topic :: Scientific/Engineering',
+        "Programming Language :: Python",
+        f"Development Status :: {enb_options['development_status']}",
+        "Natural Language :: English",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        f"License :: OSI Approved :: {enb_options['license']}",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Topic :: Scientific/Engineering",
     ],
 
     # UI
     entry_points={
-        "console_scripts": ["enb=enb.__main__:enb"]
+        # Main CLI entry point
+        "console_scripts": ["enb=enb.__main__:main"]
     },
 
-    # Setup config
-    setup_requires=['wheel', 'deprecation'],
-    install_requires=[
-        'wheel', 'deprecation', 'pandas', 'psutil', 'ray[default]', 'matplotlib', 'numpy', 'scipy',
-        'recordclass', 'sortedcontainers', 'imageio', 'redis',
-        'sphinx_rtd_theme', 'numpngw', 'astropy', 'deprecation'],
-    packages=find_packages(),
+    # Dependencies
+    setup_requires=setup_package_list,
 
+    install_requires=[
+        "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
+        "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers",
+
+        "astropy",
+    ],
+
+    # This part determines the contents of the installed folder in your python's site-packages location.
+    # MANIFEST.in is assumed to have been updated, i.e., via git hooks.
+    # This allows core plugins and templates to be automatically included.
+    packages=[p for p in find_packages() if p.startswith("enb")],
     include_package_data=True,
 )

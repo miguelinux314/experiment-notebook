@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Unit tests for isets.py
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "07/04/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/04/07"
 
 import unittest
 import tempfile

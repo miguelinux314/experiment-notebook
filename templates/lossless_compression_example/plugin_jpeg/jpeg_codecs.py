@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrappers for the reference JPEG implementation
 """
-__author__ = "Miguel Hernández Cabronero <miguel.hernandez@uab.cat>"
-__date__ = "08/04/2020"
+__author__ = "Miguel Hernández-Cabronero"
+__since__ = "2020/04/08"
 
 import os
 import sortedcontainers
@@ -16,9 +15,7 @@ from enb import isets
 from enb import sets
 from enb import pgm
 from enb import tarlite
-from enb.config import get_options
-
-options = get_options()
+from enb.config import options
 
 
 class JPEG_LS(icompression.NearLosslessCodec, icompression.WrapperCodec):

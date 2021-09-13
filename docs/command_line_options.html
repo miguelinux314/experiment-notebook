@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -87,21 +90,13 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="contents.html">Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line options</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#verbose">Verbose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#execution-options">Execution options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#plot-rendering">Plot rendering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ray">Ray</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-directories">Data directories</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -152,8 +147,6 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="contents.html">Contents</a> &raquo;</li>
-        
       <li>Command-line options</li>
     
     
@@ -178,122 +171,10 @@
 <p>When executing your experiments using enb, you can use the command-line interface (CLI)
 features it includes.</p>
 <p>A set of predefined parameters are available in <cite>enb.config.options</cite>, the single instance
-of the <a class="reference internal" href="api/enb.html#enb.config.AllOptions" title="enb.config.AllOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.AllOptions</span></code></a> class.</p>
+of the <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.AllOptions</span></code> class.</p>
 <p>Your code can then access and modify those global options programmatically with code like</p>
-<p>Users of <cite>enb</cite> can extend the <a class="reference internal" href="api/enb.html#enb.config.AllOptions" title="enb.config.AllOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.AllOptions</span></code></a> to add additional variables.</p>
 <p>When running a script that import enb.config, “-h” can be passed as argument to show
-the following message (might differ from the master branch and depends on your paths)</p>
-<div class="section" id="verbose">
-<h2>Verbose<a class="headerlink" href="#verbose" title="Permalink to this headline">¶</a></h2>
-<p>Do you want to switch error/trace messages on/off? use -v and then check for <cite>options.verbose</cite>.</p>
-<div class="highlight-RST notranslate"><div class="highlight"><pre><span></span>General Options:
-  --verbose, --v        Be verbose? Repeat for more. (default: 0)
-</pre></div>
-</div>
-</div>
-<div class="section" id="execution-options">
-<h2>Execution options<a class="headerlink" href="#execution-options" title="Permalink to this headline">¶</a></h2>
-<p>The following options control the way in which the experiments are executed.</p>
-<div class="highlight-RST notranslate"><div class="highlight"><pre><span></span>Execution Options:
-  --force, --f          Force calculation of pre-existing results. If an error
-                        occurs while re-computing a given index, that index is
-                        dropped from the persistent support. (default: 0)
-  --quick, --q          Be quick? Retrieve a small subset of all files when
-                        requested for all. (default: 0)
-  --sequential, --s     Make computations sequentially instead of distributed
-                        (default: False)
-  --repetitions REPETITIONS
-                        Number of repetitions when calculating execution times.
-                        (default: 1)
-  --columns COLUMNS [COLUMNS ...], ---c COLUMNS [COLUMNS ...]
-                        List of selected column names for computation. If one or
-                        more column names are provided, all others are ignored.
-                        Multiple columns can be expressed, separated by spaces.
-                        (default: None)
-  --exit_on_error       If True, any exception when processing rows aborts the
-                        program. (default: False)
-  --discard_partial_results
-                        Discard partial results when an error is found running the
-                        experiment? Otherwise, they are output to persistent
-                        storage. (default: False)
-  --no_new_results      Don&#39;t compute any new data. (default: False)
-  --chunk_size CHUNK_SIZE, --cs CHUNK_SIZE
-                        Chunk size. Each processed chunk is made persistent before
-                        processing the next one. (default: None)
-</pre></div>
-</div>
-</div>
-<div class="section" id="plot-rendering">
-<h2>Plot rendering<a class="headerlink" href="#plot-rendering" title="Permalink to this headline">¶</a></h2>
-<p>These options are offered so that you can control different aspects
-of the produced plots. It is most effective when used programmatically,
-but it can also be used via the CLI</p>
-<div class="highlight-RST notranslate"><div class="highlight"><pre><span></span>Rendering Options:
-  --no_render, --nr     Don&#39;t actually render data (default: False)
-  --fig_width FIG_WIDTH, --fw FIG_WIDTH
-                        Figure width. Larger values make text look smaller.
-                        (default: 5)
-  --fig_height FIG_HEIGHT, --fig_height FIG_HEIGHT
-                        Figure height. Larger values make text look smaller.
-                        (default: 4)
-  --global_y_label_pos GLOBAL_Y_LABEL_POS
-                        Relative position of the global Y label. Can be negative
-                        (default: -0.01)
-  --legend_column_count LEGEND_COLUMN_COUNT
-                        Number of columns used in plot legends (default: 2)
-  --show_grid           Show major axis grid? (default: False)
-  --displayed_title DISPLAYED_TITLE
-                        Show title in rendered plots? (default: None)
-</pre></div>
-</div>
-</div>
-<div class="section" id="ray">
-<h2>Ray<a class="headerlink" href="#ray" title="Permalink to this headline">¶</a></h2>
-<p>The ray library (<a class="reference external" href="https://github.com/ray-project/ray">https://github.com/ray-project/ray</a>)  allows execution of tasks in
-multiple cores, which can exist in one or more machines. By default, all cores
-of the local machine are employed.</p>
-<div class="highlight-RST notranslate"><div class="highlight"><pre><span></span>Ray Options:
-  --ray_config_file RAY_CONFIG_FILE
-                        Ray server configuration path (must contain IP:port in its
-                        first line) (default:
-                        /experiment-
-                        notebook.git/enb/ray_cluster_head.txt)
-  --ray_cpu_limit RAY_CPU_LIMIT
-                        CPU count limit for ray processes (default: None)
-</pre></div>
-</div>
-</div>
-<div class="section" id="data-directories">
-<h2>Data directories<a class="headerlink" href="#data-directories" title="Permalink to this headline">¶</a></h2>
-<p>There are a few predefined directory roles that can be used across the library.
-Probably the most important one is the <cite>–base_dataset_dir`</cite> option, which determines
-where input samples are looked for by default.</p>
-<div class="highlight-RST notranslate"><div class="highlight"><pre><span></span>Data directories:
-  --base_dataset_dir BASE_DATASET_DIR, --d BASE_DATASET_DIR
-                        Base dir for dataset folders. (default: None)
-  --persistence_dir PERSISTENCE_DIR
-                        Directory where persistence files are to be stored.
-                        (default: /experiment-notebook.git/enb/persistence_config.py)
-  --reconstructed_dir RECONSTRUCTED_DIR
-                        Base directory where reconstructed versions are to be
-                        stored (default: None)
-  --reconstructed_size RECONSTRUCTED_SIZE
-                        If not None, the size of the central region to be rendered
-                        in each component (default: None)
-  --base_version_dataset_dir BASE_VERSION_DATASET_DIR, --vd BASE_VERSION_DATASET_DIR
-                        Base dir for versioned folders. (default: None)
-  --base_tmp_dir BASE_TMP_DIR, --t BASE_TMP_DIR
-                        Temporary dir. (default: /dev/shm)
-  --external_bin_base_dir EXTERNAL_BIN_BASE_DIR
-                        External binary base dir. (default: None)
-  --plot_dir PLOT_DIR   Directory to store produced plots. (default:
-                        /experiment-notebook.git/enb/plots)
-  --analysis_dir ANALYSIS_DIR, --analysis_dir ANALYSIS_DIR
-                        Directory to store analysis results. (default:
-                        /experiment-notebook.git/enb/analysis)
-</pre></div>
-</div>
-</div>
+a full help message.</p>
 </div>
 
 
