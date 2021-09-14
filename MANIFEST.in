@@ -100,6 +100,8 @@ include enb/plugins/plugin_spdp/__plugin__.py
 include enb/plugins/plugin_spdp/README.txt
 include enb/plugins/plugin_spdp/SPDP_11.c
 include enb/plugins/plugin_spdp/spdp_codec.py
+include enb/plugins/plugin_v2f/__plugin__.py
+include enb/plugins/plugin_v2f/v2f_codecs.py
 include enb/plugins/plugin_vvc/Makefile.darwin
 include enb/plugins/plugin_vvc/Makefile.linux
 include enb/plugins/plugin_vvc/__plugin__.py
