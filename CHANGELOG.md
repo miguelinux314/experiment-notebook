@@ -1,5 +1,11 @@
 # Under development v0.3.2
 
+* New features
+  - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests
+
+* General improvements
+  - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not redistributed with enb.
+
 # 2021/09/10 v0.3.1
 
 * New features
