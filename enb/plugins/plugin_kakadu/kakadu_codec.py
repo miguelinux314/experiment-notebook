@@ -128,20 +128,6 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
 
                     psnr_error = abs(self.param_dict['psnr'] - psnr)
 
-                    # print(f"[watch] iteration={iteration}")
-                    # print(f"[watch] mse={mse}")
-                    # print(f"[watch] psnr={psnr}")
-                    #
-                    # print(f"[watch] br_a={br_a}")
-                    # print(f"[watch] br_b={br_b}")
-                    # print(f"[watch] actual_bps={actual_bps}")
-                    # print(f"[watch] self.param_dict['bit_rate'] - actual_bps={self.param_dict['bit_rate'] - actual_bps}")
-                    # print()
-                print(f"[watch] psnr_error={psnr_error}")
-
-
-
-
         else:
             compression_results = icompression.WrapperCodec.compress(
                 self, original_path, compressed_path, original_file_info=original_file_info)
