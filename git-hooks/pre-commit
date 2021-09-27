@@ -8,10 +8,10 @@ cd ../..
 
 # Create a new manifest from scratch with every commit
 echo "Automatic manifest updating..."
-rm -f MANIFEST.in
+rm -f ./MANIFEST.in
 
 # Add everything under enb that has been included in git
-git ls-files | grep "enb/" | awk '{print "include", $1}' | sort >> MANIFEST.in
+git ls-files | grep "enb/" | awk '{print "include", $1}' | sort >> ./MANIFEST.in
 
 echo "... found $(wc -l MANIFEST.in) elements before filtering"
 
