@@ -11,6 +11,7 @@ import pandas as pd
 import ast
 
 import enb.config
+import enb.experiment
 
 options = enb.config.get_options()
 
@@ -43,7 +44,7 @@ if __name__ == '__main__':
     ## Define families of tasks
     all_task_names = lossy_df["task_name"].unique()
     task_families = [
-        enb.aanalysis.TaskFamily(label=label, task_names=task_names)
+        enb.experiment.TaskFamily(label=label, task_names=task_names)
         for label, task_names in [
             ("CCSDS 123 Hybrid",
              [t for t in all_task_names if "CCSDS_LCNL_AdjustedGreenBook" in t and "entropy_coder_type=1" in t]),

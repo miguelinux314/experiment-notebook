@@ -90,7 +90,8 @@ class Experiment(atable.ATable):
                  csv_experiment_path=None,
                  csv_dataset_path=None,
                  dataset_info_table=None,
-                 overwrite_file_properties=False):
+                 overwrite_file_properties=False,
+                 task_families=None):
         """
         :param tasks: an iterable of :py:class:`ExperimentTask` instances. Each test file
           is processed by all defined tasks. For each (file, task) combination,
@@ -116,11 +117,24 @@ class Experiment(atable.ATable):
           persistent storage when available. Note that this parameter does not
           affect whether experiment results are retrieved from persistent storage if available.
           This is controlled via the parameters passed to get_df()
+        :param task_families: if not None, it must be a list of TaskFamily instances. It is used to set the
+          "family_label" column for each row. If the codec is not found within the families, a default
+          label is set indicating so.
         """
         overwrite_file_properties = overwrite_file_properties \
             if overwrite_file_properties is not None else options.force
 
         self.tasks = list(tasks)
+        self.task_families = task_families
+        self.task_name_to_family_label = {}
+        try:
+            for task_family in task_families:
+                for task in task_family:
+                    assert task.name not in self.task_name_to_family_label, \
+                        self.task_name_to_family_label[task.name]
+                    self.task_name_to_family_label[task.name] = task_family.label
+        except TypeError:
+            pass
 
         dataset_paths = dataset_paths if dataset_paths is not None \
             else enb.atable.get_all_input_files(ext=self.dataset_files_extension)
@@ -254,3 +268,44 @@ class Experiment(atable.ATable):
     def set_param_dict(self, index, row):
         file_path, task_name = index
         row[_column_name] = self.tasks_by_name[task_name].param_dict
+
+    @atable.column_function("family_label")
+    def set_family_label(self, index, row):
+        file_path, task_name = index
+        try:
+            row[_column_name] = self.task_name_to_family_label[task_name]
+        except KeyError:
+            row[_column_name] = "No family"
+
+
+class TaskFamily:
+    """Describe a sorted list of task names that identify a family of related
+    results within a DataFrame. Typically, this family will be constructed using
+    task workers (e.g., :class:`icompression.AbstractCodec` instances) that share
+    all configuration values except for a parameter.
+    """
+
+    def __init__(self, label, task_names=None, name_to_label=None):
+        """
+        :param label: Printable name that identifies the family
+        :param task_names: if not None, it must be a list of task names (strings)
+          that are expected to be found in an ATable's DataFrame when analyzing
+          it.
+        :param name_to_label: if not None, it must be a dictionary indexed by
+        task name that contains a displayable version of it
+        """
+        self.label = label
+        self.task_names = task_names if task_names is not None else []
+        self.name_to_label = name_to_label if name_to_label is not None else {}
+
+    def add_task(self, task_name, task_label=None):
+        """
+        Add a new task name to the family (it becomes the last element
+        in self.task_names)
+
+        :param task_name: A new new not previously included in the Family
+        """
+        assert task_name not in self.task_names
+        self.task_names.append(task_name)
+        if task_label:
+            self.name_to_label[task_name] = task_label
