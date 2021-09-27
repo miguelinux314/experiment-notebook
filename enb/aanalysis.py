@@ -29,6 +29,7 @@ import enb.atable
 from enb.atable import get_nonscalar_value
 from enb import plotdata
 from enb.config import options
+from enb.experiment import TaskFamily
 from enb.plotdata import parallel_render_plds_by_group
 from enb.plotdata import render_plds_by_group
 from enb.plotdata import color_cycle
@@ -2725,39 +2726,6 @@ def scalar_dict_to_pds(df, column, column_properties, key_to_x,
         pld.label = group_label
 
     return plot_data_list
-
-
-class TaskFamily:
-    """Describe a sorted list of task names that identify a family of related
-    results within a DataFrame. Typically, this family will be constructed using
-    task workers (e.g., :class:`icompression.AbstractCodec` instances) that share
-    all configuration values except for a parameter.
-    """
-
-    def __init__(self, label, task_names=None, name_to_label=None):
-        """
-        :param label: Printable name that identifies the family
-        :param task_names: if not None, it must be a list of task names (strings)
-          that are expected to be found in an ATable's DataFrame when analyzing
-          it.
-        :param name_to_label: if not None, it must be a dictionary indexed by
-        task name that contains a displayable version of it
-        """
-        self.label = label
-        self.task_names = task_names if task_names is not None else []
-        self.name_to_label = name_to_label if name_to_label is not None else {}
-
-    def add_task(self, task_name, task_label=None):
-        """
-        Add a new task name to the family (it becomes the last element
-        in self.task_names)
-
-        :param task_name: A new new not previously included in the Family
-        """
-        assert task_name not in self.task_names
-        self.task_names.append(task_name)
-        if task_label:
-            self.name_to_label[task_name] = task_label
 
 
 def get_histogram_dicts(df, column):

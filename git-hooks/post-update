@@ -1,9 +1,0 @@
-#!/bin/sh
-# post-update git hook.
-
-# Go to the project's root
-cd $(dirname $0)
-cd ../..
-
-# Update the commit hash in enb.ini
-sed -i "s:commit_hash\s*=.*:commit_hash = $(git log --pretty=format:'%h' -n 1):g" enb/config/enb.ini
