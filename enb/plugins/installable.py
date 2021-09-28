@@ -128,8 +128,7 @@ class Installable(metaclass=InstallableMeta):
         if not os.path.exists(installation_dir):
             os.makedirs(os.path.dirname(installation_dir), exist_ok=True)
 
-        shutil.copytree(os.path.dirname(os.path.abspath(inspect.getfile(cls))), installation_dir,
-                        dirs_exist_ok=True)
+        shutil.copytree(os.path.dirname(os.path.abspath(inspect.getfile(cls))), installation_dir)
 
         # Install any specified pip modules - subprocess is the officially recommended way
         if cls.required_pip_modules:

@@ -7,6 +7,8 @@ __since__ = "2021/02/02"
 import os
 import glob
 import subprocess
+
+import enb.experiment
 from enb.config import options
 
 import enb.icompression
@@ -21,13 +23,13 @@ def get_families_and_codecs():
     all_families = []
 
     # A family is a set of related tasks
-    jpeg_ls_family = enb.aanalysis.TaskFamily(label="JPEG-LS")
+    jpeg_ls_family = enb.experiment.TaskFamily(label="JPEG-LS")
     for c in (plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=m) for m in range(1, 6)):
         all_codecs.append(c)
         jpeg_ls_family.add_task(c.name, f"{c.label} PAE {c.param_dict['m']}")
     all_families.append(jpeg_ls_family)
 
-    hevc_qp_family = enb.aanalysis.TaskFamily(label="HEVC QP")
+    hevc_qp_family = enb.experiment.TaskFamily(label="HEVC QP")
     for c in (plugin_hevc.hevc_codec.HEVC_lossy(qp=qp) for qp in range(1, 51, 5)):
         all_codecs.append(c)
         hevc_qp_family.add_task(c.name, c.label)
