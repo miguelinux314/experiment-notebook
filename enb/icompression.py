@@ -685,7 +685,8 @@ class CompressionExperiment(experiment.Experiment):
                  dataset_info_table=None,
                  overwrite_file_properties=False,
                  reconstructed_dir_path=None,
-                 compressed_copy_dir_path=None):
+                 compressed_copy_dir_path=None,
+                 task_families=None):
         """
         :param codecs: list of :py:class:`AbstractCodec` instances. Note that
           codecs are compatible with the interface of :py:class:`ExperimentTask`.
@@ -710,6 +711,9 @@ class CompressionExperiment(experiment.Experiment):
           to be stored.
         :param compressed_copy_dir_path: if not None, it gives the directory where a copy of the compressed images.
           is to be stored. If may not be generated for images for which all columns are known
+        :param task_families: if not None, it must be a list of TaskFamily instances. It is used to set the
+          "family_label" column for each row. If the codec is not found within the families, a default
+          label is set indicating so.
         """
         table_class = type(dataset_info_table) if dataset_info_table is not None \
             else self.default_file_properties_table_class
@@ -737,7 +741,8 @@ class CompressionExperiment(experiment.Experiment):
                          csv_experiment_path=csv_experiment_path,
                          csv_dataset_path=csv_dataset_path,
                          dataset_info_table=imageinfo_table,
-                         overwrite_file_properties=overwrite_file_properties)
+                         overwrite_file_properties=overwrite_file_properties,
+                         task_families=task_families)
         self.reconstructed_dir_path = reconstructed_dir_path
         self.compressed_copy_dir_path = compressed_copy_dir_path
         # This attribute is automatically set before running the defined column-setting functions,

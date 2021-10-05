@@ -129,10 +129,10 @@ class Experiment(atable.ATable):
         self.task_name_to_family_label = {}
         try:
             for task_family in task_families:
-                for task in task_family:
-                    assert task.name not in self.task_name_to_family_label, \
-                        self.task_name_to_family_label[task.name]
-                    self.task_name_to_family_label[task.name] = task_family.label
+                for task_name in task_family.task_names:
+                    assert task_name not in self.task_name_to_family_label, \
+                        self.task_name_to_family_label[task_name]
+                    self.task_name_to_family_label[task_name] = task_family.label
         except TypeError:
             pass
 
