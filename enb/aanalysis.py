@@ -6,6 +6,7 @@ using pyplot.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/01/01"
 
+import ast
 import functools
 import os
 import itertools
@@ -407,6 +408,11 @@ class Analyzer(enb.atable.ATable):
             f"Typically, the associated AnalyzerSummary needs to be instantiated and returned. "
             f"See enb.aanalysis.Analyzer's documentation.")
 
+    def get_render_column_name(self, column_selection, selected_render_mode):
+        """Return the canonical name for columns containing plottable data instances.
+        """
+        return f"{column_selection}_render-{selected_render_mode}"
+
 
 class AnalyzerSummary(enb.atable.SummaryTable):
     """Base class for the surrogate, dynamic summary tables employed by :class:`enb.aanalysis.Analyzer`
@@ -453,7 +459,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
                         column_selection=column_selection,
                         render_mode=selected_render_mode),
                     column_properties=enb.atable.ColumnProperties(
-                        name=f"{column_selection}_render-{selected_render_mode}",
+                        name=self.analyzer.get_render_column_name(column_selection, selected_render_mode),
                         has_object_values=True))
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
@@ -527,6 +533,8 @@ class ScalarNumericAnalyzer(Analyzer):
     # Fraction between 0 and 1 of the bar width for histogram.
     # Adjust for thinner or thicker vertical bars.
     bar_width_fraction = 1
+    # If True, groups are sorted based on the average value of the column of interest.
+    sort_by_average = False
 
     def update_render_kwargs_one_case(
             self, column_selection, render_mode,
@@ -585,6 +593,28 @@ class ScalarNumericAnalyzer(Analyzer):
                                             column_selection=column_selection,
                                             render_mode=render_mode,
                                             summary_df=summary_df)
+
+        # Obtain the group averages for sorting and displaying purposes
+        plds_by_group = summary_df[
+            self.get_render_column_name(column_selection=column_selection, selected_render_mode=render_mode)]
+        group_avg_tuples = [(group, [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0])
+                            for group, plds in plds_by_group.items()]
+
+        if self.sort_by_average:
+            column_kwargs["group_name_order"] = []
+            for t in sorted(group_avg_tuples, key=lambda t: t[1]):
+                group_name = t[0]
+                try:
+                    group_name = ast.literal_eval(group_name)
+                except ValueError:
+                    pass
+                try:
+                    if not isinstance(group_name, str) and len(group_name) == 1:
+                        group_name = group_name[0]
+                except TypeError:
+                    pass
+
+                column_kwargs["group_name_order"].append(group_name)
 
         return column_kwargs
 
@@ -753,6 +783,7 @@ class ScalarNumericSummary(AnalyzerSummary):
         # (hence the warning(s) above)
         histogram_sum = hist_y_values.sum()
         hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+        # hist_x_values = bin_edges[:-1]
         hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
 
         # Create the plotdata.PlottableData instances for this group
@@ -941,7 +972,6 @@ class TwoNumericSummary(ScalarNumericSummary):
                     continue
                 self.add_scalar_description_columns(column_name=column_name)
 
-                # Compute the global dynamic range of all input samples (before grouping)
                 self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
 
             self.add_twoscalar_description_columns(column_names=x_y_names)

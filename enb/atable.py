@@ -1001,6 +1001,7 @@ class ATable(metaclass=MetaTable):
             # Read CSV from disk
             with enb.logger.info_context("Loading dataframe from persistence"):
                 loaded_df = pd.read_csv(csv_support_path)
+                enb.logger.info(f"Loaded df with {len(loaded_df)} rows")
 
             # Columns defined since the last invocation are initially set to None for all previously
             # existing data.
