@@ -513,16 +513,16 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             sorted_group_names = []
             for group_name in group_name_order:
                 if group_name not in pds_by_group_name:
-                    if options.verbose > 2:
-                        print(f"[W]arning: {group_name} was provided in group_name_order but is not one of the "
-                              f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Ignoring.")
+                    enb.logger.warn(
+                        f"Warning: {repr(group_name)} was provided in group_name_order but is not one of the "
+                        f"produced groups: {sorted(list(pds_by_group_name.keys()))}. Ignoring.")
                 else:
                     sorted_group_names.append(group_name)
             for g in pds_by_group_name.keys():
                 if g not in sorted_group_names:
                     if options.verbose > 2:
-                        print(f"[W]arning: {g} was not provided in group_name_order but is one of the "
-                              f"produce groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
+                        enb.logger.warn(f"Warning: {repr(g)} was not provided in group_name_order but is one of the "
+                                           f"produced groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
                     sorted_group_names.append(g)
 
         if combine_groups:
@@ -563,11 +563,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         if combine_groups:
             assert len(group_axis_list) == 1
-            # group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
             group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
         else:
             group_name_axes = zip(sorted_group_names, group_axis_list)
 
+        # Compute global extrema
         global_x_min = float("inf")
         global_x_max = float("-inf")
         global_y_min = float("inf")
@@ -581,10 +581,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             y_values = np.array(pld.y_values, copy=False)
             if len(y_values) > 0:
                 y_values = y_values[~np.isnan(y_values)]
-
             global_y_min = min(global_y_min, y_values.min() if len(y_values) > 0 else global_y_min)
             global_y_max = max(global_y_min, y_values.max() if len(y_values) > 0 else global_y_min)
-
         if global_x_max - global_x_min > 1:
             global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
             global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
@@ -649,7 +647,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 group_axes.get_yaxis().set_label_position("right")
                 group_axes.set_ylabel(y_labels_by_group_name[group_name]
                                       if group_name in y_labels_by_group_name
-                                      else clean_column_name(group_name),
+                                      else enb.aanalysis.clean_column_name(group_name),
                                       rotation=0, ha="left", va="center")
 
         plt.xlabel(global_x_label)
