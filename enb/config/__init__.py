@@ -73,7 +73,7 @@ From there on, many enb functions adhere to the following principle:
    its value is set based on the properties in `enb.config.options`.
 """
 __author__ = "Miguel Hernández-Cabronero"
-__since__ = "2021/08/1"
+__since__ = "2021/08/01"
 
 # Logging tools
 from .. import log
@@ -92,7 +92,7 @@ def get_banner():
     """
     contents = f" [ Powered by enb (Experiment NoteBook) " \
                f"v{ini.get_key('enb', 'version')}" \
-               f"{'::' + ini.get_key('enb', 'commit_hash') if options.verbose else ''}" \
+               f"{'::' + str(ini.get_key('enb', 'commit_hash')) if options.verbose else ''}" \
                f" ] "
     return f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
 

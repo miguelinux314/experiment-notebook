@@ -3,6 +3,7 @@
 * New features
   - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests
   - Experiments now create a family_label column to simplify analysis
+  - Added support for sorting group rows based on their average value
 
 * General improvements
   - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not redistributed with enb.
