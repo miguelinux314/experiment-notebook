@@ -21,7 +21,8 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
     max_search_iterations = 32
 
     def __init__(self, ht=False, spatial_dwt_levels=5,
-                 lossless=None, bit_rate=None, quality_factor=None, psnr=None):
+                 lossless=None, bit_rate=None, quality_factor=None, psnr=None,
+                 num_threads=0):
         """Kakadu wrapper that does not apply decorrelation across bands, even if more than one is present.
 
             :param ht: if True, the high-throughput version of the Kakadu codec is used
@@ -41,6 +42,7 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
               A binary search is performed to find which quality factor will result in the
               indicated PSNR with the tolerance given by self.psnr_tolerance.
               If psnr is set then lossless must be None or False.
+            :param num_threads: number of threads with which kakadu is to be run. 0 means single thread.
         """
         assert isinstance(ht, bool), "HT must be a boolean (True/False)"
         assert spatial_dwt_levels in range(0, 34), \
@@ -61,6 +63,9 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                 assert psnr > 0, f"Invalid psnr {psnr}"
             lossless = False
 
+        assert num_threads == int(num_threads), f"Invalid number of threads {num_threads}"
+        assert num_threads >= 0, f"Invalid number of threads {num_threads}"
+
         icompression.WrapperCodec.__init__(
             self,
             compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
@@ -71,12 +76,14 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                 lossless=lossless,
                 bit_rate=bit_rate,
                 quality_factor=quality_factor,
-                psnr=psnr))
+                psnr=psnr,
+                num_threads=num_threads))
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"-i {original_path}*{original_file_info['component_count']}" \
                f"@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
                f"-o {compressed_path} -no_info -full -no_weights " \
+               f"-num_threads {self.param_dict['num_threads']} " \
                f"Corder=LRCP " \
                f"Clevels={self.param_dict['spatial_dwt_levels']} " \
                f"Clayers={original_file_info['component_count']} " \
