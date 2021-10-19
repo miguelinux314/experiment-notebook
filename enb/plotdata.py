@@ -707,7 +707,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         # Apply changes to the figure
         if xlim[0] != xlim[1] and not math.isnan(xlim[0]) and not math.isnan(xlim[1]):
             plt.xlim(*xlim)
-        if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]):
+        if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]) \
+                and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
             plt.ylim(*ylim)
 
         show_grid = options.show_grid if show_grid is None else show_grid
