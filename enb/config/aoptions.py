@@ -270,6 +270,13 @@ class RayOptions:
             value = None
         return value
 
+    @OptionsBase.property("noswap", action="store_true")
+    def disable_swap(self, value):
+        """If this flag is used, then swap memory will not be allowed by ray. By default, swap memory is enabled.
+        Note that your system may become unstable if swap memory is used (specially a big portion thereof).
+        """
+        return bool(value)
+
     @OptionsBase.property("wsn", type=str)
     def worker_script_name(self, value):
         """Base name of ray's worker scripts, invoked to run tasks in parallel processes.

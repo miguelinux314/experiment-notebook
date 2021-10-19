@@ -29,6 +29,11 @@ def init_ray(force=False):
     """
     if not ray.is_initialized() or force:
         with logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
+            if not options.disable_swap:
+                # From https://github.com/ray-project/ray/issues/10895 - allow using swap memory when needed,
+                # avoiding early termination of jobs due to that.
+                os.environ["RAY_DEBUG_DISABLE_MEMORY_MONITOR"] = "1"
+
             ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
                      local_mode=options.ray_cpu_limit == 1)
 
