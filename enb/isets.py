@@ -445,14 +445,15 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                     pass
                 else:
                     if options.verbose > 2:
-                        print(f"Dumping FITS->raw ({effective_output_path}) from hdu_index={hdu_index}")
+                        print(f"Dumping FITS->raw ({repr(effective_output_path)}) from hdu_index={hdu_index}")
                     enb.isets.dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
                     fits_header_path = os.path.join(os.path.dirname(os.path.abspath(effective_output_path)).replace(
                         os.path.abspath(self.version_base_dir),
                         f"{os.path.abspath(self.version_base_dir)}_headers"),
                         os.path.basename(effective_output_path).replace('.raw', '') + "-fits_header.txt")
                     os.makedirs(os.path.dirname(fits_header_path), exist_ok=True)
-                    print(f"[watch] fits_header_path={fits_header_path}")
+                    if options.verbose > 2:
+                        print(f"Writing to fits_header_path={repr(fits_header_path)}")
                     if os.path.exists(fits_header_path):
                         os.remove(fits_header_path)
                     header.totextfile(fits_header_path)

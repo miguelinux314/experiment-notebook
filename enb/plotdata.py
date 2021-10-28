@@ -9,6 +9,8 @@ import math
 
 import matplotlib
 
+import enb.atable
+
 matplotlib.use("Agg")
 import matplotlib.ticker
 import numpy as np
@@ -647,7 +649,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 group_axes.get_yaxis().set_label_position("right")
                 group_axes.set_ylabel(y_labels_by_group_name[group_name]
                                       if group_name in y_labels_by_group_name
-                                      else enb.aanalysis.clean_column_name(group_name),
+                                      else enb.atable.clean_column_name(group_name),
                                       rotation=0, ha="left", va="center")
 
         plt.xlabel(global_x_label)
@@ -710,15 +712,21 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]) \
                 and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
             plt.ylim(*ylim)
+            ca = plt.gca()
+            for group_axes in group_axis_list:
+                plt.sca(group_axes)
+                plt.ylim(*ylim)
+            plt.sca(ca)
 
         show_grid = options.show_grid if show_grid is None else show_grid
 
         if show_grid:
-            if combine_groups:
+            ca = plt.gca()
+            plt.grid("major", alpha=0.5)
+            for group_axes in group_axis_list:
+                plt.sca(group_axes)
                 plt.grid("major", alpha=0.5)
-            else:
-                for axes in group_axis_list:
-                    axes.grid("major", alpha=0.5)
+            plt.sca(ca)
 
         with enb.logger.verbose_context(f"Saving plot to {output_plot_path}"):
             plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)

@@ -27,7 +27,7 @@ import pandas as pd
 import ray
 
 import enb.atable
-from enb.atable import get_nonscalar_value
+from enb.atable import get_nonscalar_value, clean_column_name
 from enb import plotdata
 from enb.config import options
 from enb.experiment import TaskFamily
@@ -2780,14 +2780,6 @@ def columnname_to_labels(column_name):
     else:
         x_label, y_label = clean_column_name(column_name), None
     return x_label, y_label
-
-
-def clean_column_name(column_name):
-    """Return a cleaned version of the column name, more indicated for display.
-    """
-    s = column_name.replace("_", " ").strip()
-    s = s[:1].upper() + s[1:]
-    return s
 
 
 def pdf_to_png(input_dir, output_dir, **kwargs):

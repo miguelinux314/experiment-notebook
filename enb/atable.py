@@ -354,7 +354,7 @@ class ColumnProperties:
         """
         self.name = name
         self.fun = fun
-        self.label = label if label is not None else str(name)
+        self.label = label if label is not None else clean_column_name(name)
         self.plot_min = plot_min
         self.plot_max = plot_max
         self.semilog_x = semilog_x
@@ -464,6 +464,8 @@ class MetaTable(type):
                 # Decorated function: the column properties are already present
                 classname, fun, cp_list, kwargs = funname_to_pending_entry[fun.__name__]
                 for cp in cp_list:
+                    if cp.label == cp.name:
+                        cp.label = clean_column_name(cp.name)
                     ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
                 del funname_to_pending_entry[fun.__name__]
             except KeyError:
@@ -475,11 +477,10 @@ class MetaTable(type):
                 if not column_name:
                     raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
                 wrapper = MetaTable.get_auto_column_wrapper(fun=fun)
-                cp = ColumnProperties(name=column_name, fun=wrapper)
+                cp = ColumnProperties(name=column_name, label=clean_column_name(column_name), fun=wrapper)
                 ATable.add_column_function(cls=subclass, fun=wrapper, column_properties=cp)
 
         assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
-
         cls.pendingdefs_classname_fun_columnpropertylist_kwargs.clear()
         return subclass
 
@@ -530,6 +531,12 @@ class MetaTable(type):
 
         return wrapper
 
+def clean_column_name(column_name):
+    """Return a cleaned version of the column name, more indicated for display.
+    """
+    s = column_name.replace("_", " ").strip()
+    s = s[:1].upper() + s[1:]
+    return s
 
 class ATable(metaclass=MetaTable):
     """Automatic table with implicit column definition.
