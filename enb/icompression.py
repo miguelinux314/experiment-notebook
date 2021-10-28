@@ -23,6 +23,7 @@ from scipy import signal
 from scipy.ndimage.filters import convolve
 
 import enb
+import enb.atable
 from enb import atable
 from enb import experiment
 from enb import isets
@@ -134,7 +135,7 @@ class AbstractCodec(experiment.ExperimentTask):
 
     @property
     def label_with_params(self):
-        return self.label + " " + ", ".join(f"{enb.aanalysis.clean_column_name(k)}"
+        return self.label + " " + ", ".join(f"{enb.atable.clean_column_name(k)}"
                                             f"={self.param_dict[k]}"
                                             for k in sorted(self.param_dict.keys()))
 
