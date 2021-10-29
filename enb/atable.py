@@ -534,7 +534,7 @@ class MetaTable(type):
 def clean_column_name(column_name):
     """Return a cleaned version of the column name, more indicated for display.
     """
-    s = column_name.replace("_", " ").strip()
+    s = str(column_name).replace("_", " ").strip()
     s = s[:1].upper() + s[1:]
     return s
 

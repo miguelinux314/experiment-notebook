@@ -114,7 +114,7 @@ class Analyzer(enb.atable.ATable):
                # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
                # in turn manageable through .ini configuration files via the
                # @enb.config.aini.managed_attributes decorator.
-               selected_render_modes=None, show_global=None, show_count=True, plot_title=None,
+               selected_render_modes=None, show_global=None, show_count=True,
                # Rendering options, directly passed to plotdata.render_plds_by_group
                **render_kwargs):
         """
@@ -1136,7 +1136,7 @@ class DictNumericAnalyzer(Analyzer):
                # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
                # in turn manageable through .ini configuration files via the
                # @enb.config.aini.managed_attributes decorator.
-               selected_render_modes=None, show_global=None, show_count=True, plot_title=None,
+               selected_render_modes=None, show_global=None, show_count=True,
                # Rendering options, directly passed to plotdata.render_plds_by_group
                **render_kwargs):
         combined_df = full_df.copy()
@@ -1161,7 +1161,7 @@ class DictNumericAnalyzer(Analyzer):
                               group_by=group_by,
                               column_to_properties=column_to_properties,
                               selected_render_modes=selected_render_modes,
-                              show_global=show_global, show_count=show_count, plot_title=plot_title,
+                              show_global=show_global, show_count=show_count,
                               **render_kwargs)
 
     def update_render_kwargs_one_case(

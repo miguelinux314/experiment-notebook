@@ -559,7 +559,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             group_axis_list = [group_axis_list]
 
         if plot_title:
-            plt.title(plot_title)
+            plt.suptitle(plot_title)
 
         semilog_x, semilog_y = False, semilog_y if semilog_y is not None else semilog_y
 
