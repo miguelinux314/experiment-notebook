@@ -531,7 +531,7 @@ class ScalarNumericAnalyzer(Analyzer):
     # Number of vertical bars in the displayed histograms.
     histogram_bin_count = 50
     # Fraction between 0 and 1 of the bar width for histogram.
-    # Adjust for thinner or thicker vertical bars.
+    # Adjust for thinner or thicker vertical bars. Set to 0 to disable.
     bar_width_fraction = 1
     # If True, groups are sorted based on the average value of the column of interest.
     sort_by_average = False
@@ -560,10 +560,13 @@ class ScalarNumericAnalyzer(Analyzer):
 
         # Update specific rendering kwargs for this analyzer:
         if "global_x_label" not in column_kwargs:
-            column_kwargs["global_x_label"] = column_to_properties[column_selection].label
+            if self.main_alpha <= 0 or self.bar_width_fraction <= 0:
+                column_kwargs["global_x_label"] = f"Average {column_to_properties[column_selection].label}"
+            else:
+                column_kwargs["global_x_label"] = column_to_properties[column_selection].label
 
         if "global_y_label" not in column_kwargs:
-            if self.main_alpha != 0:
+            if self.main_alpha > 0 and self.bar_width_fraction > 0:
                 column_kwargs["global_y_label"] = f"Histogram"
                 if self.secondary_alpha != 0:
                     column_kwargs["global_y_label"] += ", average" if self.show_x_std else " and average"
@@ -575,6 +578,14 @@ class ScalarNumericAnalyzer(Analyzer):
                                 "set to zero. Expect an empty-looking plot.")
             if self.show_x_std:
                 column_kwargs["global_y_label"] += " and $\pm 1\sigma$"
+
+            if self.main_alpha <= 0 or self.bar_width_fraction <= 0:
+                column_kwargs["global_y_label"] = ""
+
+        if self.main_alpha <= 0 or self.bar_width_fraction <= 0:
+            column_kwargs["y_tick_list"] = []
+            column_kwargs["y_tick_label_list"] = []
+
 
         # Calculate axis limits
         if "x_min" not in column_kwargs:
@@ -713,6 +724,12 @@ class ScalarNumericSummary(AnalyzerSummary):
         See `enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case`
         for additional information.
         """
+        if kwargs["render_mode"] == "histogram":
+            return self.compute_scatter_plottable_one_case(*args, **kwargs)
+        else:
+            raise ValueError(f"Invalid reder mode {kwargs['render_mode']}")
+
+    def compute_scatter_plottable_one_case(self, *args, **kwargs):
         _self, group_label, row = args
         group_df = self.label_to_df[group_label]
         column_name = kwargs["column_selection"]
@@ -777,36 +794,42 @@ class ScalarNumericSummary(AnalyzerSummary):
             else:
                 raise ValueError(error_msg)
 
-        # The relative distribution is computed based
-        # on the selected analysis range only, which
-        # may differ from the full column dynamic range
-        # (hence the warning(s) above)
-        histogram_sum = hist_y_values.sum()
-        hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-        # hist_x_values = bin_edges[:-1]
-        hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
-
-        # Create the plotdata.PlottableData instances for this group
         row[_column_name] = []
-        row[_column_name].append(plotdata.BarData(
-            x_values=hist_x_values,
-            y_values=hist_y_values,
-            x_label=self.analyzer.column_to_properties[column_name].label \
-                if column_name in self.analyzer.column_to_properties else clean_column_name(column_name),
-            alpha=self.analyzer.main_alpha,
-            extra_kwargs=dict(
-                width=self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
+
+        if self.analyzer.bar_width_fraction > 0 and self.analyzer.main_alpha > 0:
+            # The relative distribution is computed based
+            # on the selected analysis range only, which
+            # may differ from the full column dynamic range
+            # (hence the warning(s) above)
+            histogram_sum = hist_y_values.sum()
+            hist_x_values = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+            # hist_x_values = bin_edges[:-1]
+            hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
+
+            # Create the plotdata.PlottableData instances for this group
+            row[_column_name].append(plotdata.BarData(
+                x_values=hist_x_values,
+                y_values=hist_y_values,
+                x_label=self.analyzer.column_to_properties[column_name].label \
+                    if column_name in self.analyzer.column_to_properties else clean_column_name(column_name),
+                alpha=self.analyzer.main_alpha,
+                extra_kwargs=dict(
+                    width=self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
+
         if self.analyzer.secondary_alpha > 0:
-            y_min, y_max = hist_y_values.min(), hist_y_values.max()
+            y_min, y_max = (bin_edges[1], bin_edges[-1]) \
+                               if self.analyzer.bar_width_fraction > 0 and self.analyzer.main_alpha > 0 \
+                               else (None, None)
+
             row[_column_name].append(plotdata.ScatterData(
                 x_values=[row[f"{column_name}_avg"]],
-                y_values=[0.5 * (y_min + y_max)],
+                y_values=[0.5 * (y_min + y_max) if y_min is not None and y_max is not None else 0.5],
                 marker_size=4 * self.analyzer.main_marker_size,
                 alpha=self.analyzer.secondary_alpha))
             if self.analyzer.show_x_std:
                 row[_column_name].append(plotdata.ErrorLines(
                     x_values=[row[f"{column_name}_avg"]],
-                    y_values=[0.5 * (y_min + y_max)],
+                    y_values=[0.5 * (y_min + y_max) if y_min is not None and y_max is not None else 0.5],
                     marker_size=0,
                     alpha=self.analyzer.secondary_alpha,
                     err_neg_values=[row[f"{column_name}_std"]],
