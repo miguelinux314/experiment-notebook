@@ -6,6 +6,7 @@ __since__ = "2020/09/13"
 
 import os
 import glob
+import shutil
 import enb.atable
 import enb.aanalysis
 
@@ -60,6 +61,9 @@ def main():
         full_df=result_df,
         target_columns=[("line_count", "word_count")],
         column_to_properties=table.column_to_properties)
+
+    shutil.rmtree("plots_png", ignore_errors=True)
+    enb.aanalysis.pdf_to_png("plots", "plots_png")
 
 
 if __name__ == '__main__':
