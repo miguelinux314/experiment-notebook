@@ -1,4 +1,4 @@
-# Low-complexity near-lossless image compression (LCNL), CCSDS 123.0-B2
+# Low-complexity near-lossless image compression (LCNL), CCSDS 123.0-B-2
 
 The source code and the binaries are not redistributed with enb due to intellectual property issues.
 
