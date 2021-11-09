@@ -49,8 +49,9 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
              width * height * component_count * row["bytes_per_sample"])
         assert row["samples"] == width * height * component_count
     else:
-        raise ValueError("Cannot determine image geometry "
+        enb.logger.debug("Cannot determine image geometry "
                          f"from file name {os.path.basename(file_path)}")
+        return dict()
     return row
 
 
@@ -83,7 +84,8 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("f16", "f32", "f64")):
             row[_column_name] = True
         else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} from {file_path}")
+            enb.logger.debug(f"Unknown {_column_name} from {file_path}. Setting to False.")
+            row[_column_name] = False
 
     @atable.column_function("signed", label="Signed samples")
     def set_signed(self, file_path, row):
@@ -92,7 +94,8 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le", "f16", "f32", "f64")):
             row[_column_name] = True
         else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+            enb.logger.debug(f"Unknown {_column_name} for {file_path}. Setting to False.")
+            row[_column_name] = False
 
     @atable.column_function("big_endian", label="Big endian?")
     def set_big_endian(self, file_path, row):
@@ -103,7 +106,8 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("f16", "f32", "f64")):
             row[_column_name] = True
         else:
-            raise sets.UnkownPropertiesException(f"Unknown {_column_name} for {file_path}")
+            enb.logger.debug(f"Unknown {_column_name} for {file_path}. Setting to False.")
+            row[_column_name] = False
 
     @atable.column_function("dtype", label="Numpy dtype")
     def set_column_dtype(self, file_path, row):
