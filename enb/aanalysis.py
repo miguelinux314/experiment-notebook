@@ -163,6 +163,7 @@ class Analyzer(enb.atable.ATable):
             summary_table = self.build_summary_atable(
                 full_df=full_df, target_columns=target_columns, group_by=group_by,
                 include_all_group=show_global)
+
             old_nnr = options.no_new_results
             try:
                 options.no_new_results = False
@@ -586,7 +587,6 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["y_tick_list"] = []
             column_kwargs["y_tick_label_list"] = []
 
-
         # Calculate axis limits
         if "x_min" not in column_kwargs:
             column_kwargs["x_min"] = float(summary_df[f"{column_selection}_min"].min()) \
@@ -693,20 +693,20 @@ class ScalarNumericSummary(AnalyzerSummary):
     def set_scalar_description(self, *args, **kwargs):
         """Set basic descriptive statistics for the target column
         """
-        _, group_label, row = args
+        _self, group_label, row = args
         column_name = kwargs["column_selection"]
 
-        full_series = self.label_to_df[group_label][column_name]
+        full_series = _self.label_to_df[group_label][column_name]
         finite_series = full_series.replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
 
         if len(full_series) != len(finite_series):
             if len(finite_series) > 0:
-                enb.logger.warn(f"{self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
+                enb.logger.warn(f"{_self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
                                 f"column {repr(column_name)} "
                                 f"is ignoring infinite values ({100 * (1 - len(finite_series) / len(full_series)):.2f}%"
                                 f" of the total).")
             else:
-                enb.logger.warn(f"{self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
+                enb.logger.warn(f"{_self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
                                 f"column {repr(column_name)} "
                                 f"found only infinite values. Several statistics will be nan for this case.")
 
@@ -725,17 +725,17 @@ class ScalarNumericSummary(AnalyzerSummary):
         for additional information.
         """
         if kwargs["render_mode"] == "histogram":
-            return self.compute_scatter_plottable_one_case(*args, **kwargs)
+            return self.compute_histogram_plottable_one_case(*args, **kwargs)
         else:
             raise ValueError(f"Invalid reder mode {kwargs['render_mode']}")
 
-    def compute_scatter_plottable_one_case(self, *args, **kwargs):
+    def compute_histogram_plottable_one_case(self, *args, **kwargs):
         _self, group_label, row = args
-        group_df = self.label_to_df[group_label]
+        group_df = _self.label_to_df[group_label]
         column_name = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
         column_series = group_df[column_name]
-        if render_mode not in self.analyzer.valid_render_modes:
+        if render_mode not in _self.analyzer.valid_render_modes:
             raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
 
         # Only histogram mode is supported in this version of enb
@@ -743,8 +743,8 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         # Set the analysis range based on column properties if provided, or the data's dynamic range.
         try:
-            analysis_range = [self.analyzer.column_to_properties[column_name].plot_min,
-                              self.analyzer.column_to_properties[column_name].plot_max]
+            analysis_range = [_self.analyzer.column_to_properties[column_name].plot_min,
+                              _self.analyzer.column_to_properties[column_name].plot_max]
         except KeyError:
             analysis_range = [None, None]
         analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
@@ -757,7 +757,7 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         finite_only_series = column_series.replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
         if len(finite_only_series) == 0:
-            enb.logger.warn(f"{self.__class__.__name__}: No finite data found for column {repr(column_name)}. "
+            enb.logger.warn(f"{_self.__class__.__name__}: No finite data found for column {repr(column_name)}. "
                             f"No plottable data is produced for this case.")
             row[_column_name] = []
             return
@@ -772,7 +772,7 @@ class ScalarNumericSummary(AnalyzerSummary):
         # some data is not used.
         hist_y_values, bin_edges = np.histogram(
             finite_only_series,
-            bins=self.analyzer.histogram_bin_count,
+            bins=_self.analyzer.histogram_bin_count,
             range=analysis_range, density=False)
 
         # Verify that the histogram uses all data
@@ -796,7 +796,8 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         row[_column_name] = []
 
-        if self.analyzer.bar_width_fraction > 0 and self.analyzer.main_alpha > 0:
+        marker_y_position = 0.5
+        if _self.analyzer.bar_width_fraction > 0 and self.analyzer.main_alpha > 0:
             # The relative distribution is computed based
             # on the selected analysis range only, which
             # may differ from the full column dynamic range
@@ -806,36 +807,33 @@ class ScalarNumericSummary(AnalyzerSummary):
             # hist_x_values = bin_edges[:-1]
             hist_y_values = hist_y_values / histogram_sum if histogram_sum != 0 else hist_y_values
 
+            marker_y_position = 0.5 * (hist_y_values.max() + hist_y_values.min())
+
             # Create the plotdata.PlottableData instances for this group
             row[_column_name].append(plotdata.BarData(
                 x_values=hist_x_values,
                 y_values=hist_y_values,
-                x_label=self.analyzer.column_to_properties[column_name].label \
-                    if column_name in self.analyzer.column_to_properties else clean_column_name(column_name),
-                alpha=self.analyzer.main_alpha,
+                x_label=_self.analyzer.column_to_properties[column_name].label \
+                    if column_name in _self.analyzer.column_to_properties else clean_column_name(column_name),
+                alpha=_self.analyzer.main_alpha,
                 extra_kwargs=dict(
-                    width=self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
+                    width=_self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
 
-        if self.analyzer.secondary_alpha > 0:
-            y_min, y_max = (bin_edges[1], bin_edges[-1]) \
-                               if self.analyzer.bar_width_fraction > 0 and self.analyzer.main_alpha > 0 \
-                               else (None, None)
-
-            row[_column_name].append(plotdata.ScatterData(
+        row[_column_name].append(plotdata.ScatterData(
+            x_values=[row[f"{column_name}_avg"]],
+            y_values=[marker_y_position],
+            marker_size=4 * _self.analyzer.main_marker_size,
+            alpha=_self.analyzer.secondary_alpha))
+        if _self.analyzer.show_x_std:
+            row[_column_name].append(plotdata.ErrorLines(
                 x_values=[row[f"{column_name}_avg"]],
-                y_values=[0.5 * (y_min + y_max) if y_min is not None and y_max is not None else 0.5],
-                marker_size=4 * self.analyzer.main_marker_size,
-                alpha=self.analyzer.secondary_alpha))
-            if self.analyzer.show_x_std:
-                row[_column_name].append(plotdata.ErrorLines(
-                    x_values=[row[f"{column_name}_avg"]],
-                    y_values=[0.5 * (y_min + y_max) if y_min is not None and y_max is not None else 0.5],
-                    marker_size=0,
-                    alpha=self.analyzer.secondary_alpha,
-                    err_neg_values=[row[f"{column_name}_std"]],
-                    err_pos_values=[row[f"{column_name}_std"]],
-                    line_width=self.analyzer.secondary_line_width,
-                    vertical=False))
+                y_values=[marker_y_position],
+                marker_size=0,
+                alpha=_self.analyzer.secondary_alpha,
+                err_neg_values=[row[f"{column_name}_std"]],
+                err_pos_values=[row[f"{column_name}_std"]],
+                line_width=_self.analyzer.secondary_line_width,
+                vertical=False))
 
 
 @enb.config.aini.managed_attributes
