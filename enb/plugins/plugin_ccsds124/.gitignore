@@ -1,0 +1,4 @@
+# Make sure no binary is ever pushed by mistake
+ccsds124_decoder
+ccsds124_encoder_custom
+ccsds124_encoder_periodic

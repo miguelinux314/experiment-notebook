@@ -1126,7 +1126,7 @@ class ATable(metaclass=MetaTable):
 
         # Iterating a progressive getter continues until all rows are obtained
         with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
-                                        f"rows [CPU limit: {enb.config.options.ray_cpu_limit}]",
+                                        f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.ray_cpu_limit}]",
                                         sep="...\n"):
             pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
                                                    iteration_period=self.progress_report_period)

@@ -868,8 +868,11 @@ class CompressionExperiment(experiment.Experiment):
         file_path, codec_name = index
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         assert self.codec_results.compression_results.compressed_path == self.codec_results.decompression_results.compressed_path
-        assert row.image_info_row["bytes_per_sample"] * row.image_info_row["samples"] \
-               == os.path.getsize(self.codec_results.compression_results.original_path)
+        try:
+            assert row.image_info_row["bytes_per_sample"] * row.image_info_row["samples"] \
+                   == os.path.getsize(self.codec_results.compression_results.original_path)
+        except (KeyError, AssertionError) as ex:
+            enb.logger.debug(f"Could not verify valid size. {repr(ex)}")
         hasher = hashlib.sha256()
         with open(self.codec_results.compression_results.compressed_path, "rb") as compressed_file:
             hasher.update(compressed_file.read())
@@ -888,7 +891,11 @@ class CompressionExperiment(experiment.Experiment):
 
     @atable.column_function("bpppc", label="Compressed data rate (bpppc)", plot_min=0)
     def set_bpppc(self, index, row):
-        row[_column_name] = 8 * row["compressed_size_bytes"] / row.image_info_row["samples"]
+        try:
+            row[_column_name] = 8 * row["compressed_size_bytes"] / row.image_info_row["samples"]
+        except KeyError as ex:
+            enb.logger.debug(f"Cannot determine bpppc: {repr(ex)}")
+            assert "compressed_size_bytes" in row
 
     @atable.column_function("compression_ratio_dr", label="Compression ratio", plot_min=0)
     def set_compression_ratio_dr(self, index, row):
