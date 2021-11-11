@@ -748,9 +748,9 @@ class ScalarNumericSummary(AnalyzerSummary):
         except KeyError:
             analysis_range = [None, None]
         analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
-            else _self.column_to_xmin_xmax[column_name][0]
+            else self.column_to_xmin_xmax[column_name][0]
         analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
-            else _self.column_to_xmin_xmax[column_name][1]
+            else self.column_to_xmin_xmax[column_name][1]
         if analysis_range[0] == analysis_range[1]:
             # Avoid unnecessary warnings from matplotlib
             analysis_range = [analysis_range[0], analysis_range[0] + 1]
