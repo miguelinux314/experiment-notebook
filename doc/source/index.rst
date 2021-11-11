@@ -41,6 +41,7 @@ You can also take a look at the automatically generated :ref:`API<api>`.
 
    installation
    basic_workflow
+   experiments
    image_compression
    analyzing_data
    command_line_options
