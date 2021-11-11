@@ -154,9 +154,7 @@ Final steps
 
 We are all set up to retrieve and analyze the results. In the following snippet,
 you can see the how to obtain the `result_df` dataframe and how to display
-messages for those ports found to be open.
-
-.. code-block::python
+messages for those ports found to be open::
 
     if __name__ == '__main__':
         # This is the list of inputs. Each one contains one IP in a single line.
@@ -174,3 +172,12 @@ messages for those ports found to be open.
         for url_file_path, url_df in open_port_df.groupby("file_path"):
             print(f"Found open ports in {open(url_file_path, 'r').read().strip()}:\n - ", end="")
             print("\n - ".join(str(d['port']) for d in url_df["param_dict"]))
+
+An example output could be as follows::
+
+    Found open ports in 192.168.1.1:
+     - 443
+     - 53
+     - 80
+    Found open ports in 192.168.1.2:
+     - 80

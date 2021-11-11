@@ -96,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#experiment-tasks">Experiment tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-rows-are-created-how-are-they-indexed">What rows are created? How are they indexed?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-columns-are-created">What columns are created?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#final-steps">Final steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
@@ -257,7 +258,7 @@ To do so, we follow the same basic idea as in <a class="reference internal" href
 the column-computing functions is now a tuple with two elements:
 the index in the <cite>dataset_info_table</cite> of the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>
 and the <cite>name</cite> property of the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a>.</p>
-<p>In our example, we can simply define a single column, whose value is
+<p>In our example, we can simply define a single column (<cite>port_open</cite>), whose value is
 set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PortExperiment</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">Experiment</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Example experiment that checks whether certain ports are open.</span>
@@ -270,8 +271,20 @@ set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
         <span class="k">return</span> <span class="n">checkport_task</span><span class="o">.</span><span class="n">check_one_port</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
+</div>
+<div class="section" id="final-steps">
+<h2>Final steps<a class="headerlink" href="#final-steps" title="Permalink to this headline">¶</a></h2>
+<p>We are all set up to retrieve and analyze the results. In the following snippet,
+you can see the how to obtain the <cite>result_df</cite> dataframe and how to display
+messages for those ports found to be open.</p>
+<p>An example output could be as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Found</span> <span class="nb">open</span> <span class="n">ports</span> <span class="ow">in</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span><span class="p">:</span>
+ <span class="o">-</span> <span class="mi">443</span>
+ <span class="o">-</span> <span class="mi">53</span>
+ <span class="o">-</span> <span class="mi">80</span>
+<span class="n">Found</span> <span class="nb">open</span> <span class="n">ports</span> <span class="ow">in</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.2</span><span class="p">:</span>
+ <span class="o">-</span> <span class="mi">80</span>
+</pre></div>
 </div>
 </div>
 </div>
