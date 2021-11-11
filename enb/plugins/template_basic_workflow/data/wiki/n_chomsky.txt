@@ -1,0 +1,1854 @@
+{{Redirect|Chomsky}}
+{{pp-move-indef}}
+{{pp|small=yes}}
+{{short description|American linguist, philosopher and activist}}
+{{Use mdy dates|date=July 2019}}
+{{Use American English|date=July 2019}}
+{{Infobox academic
+ | name              = Noam Chomsky
+ | image             = Noam Chomsky portrait 2017 retouched.png
+ | alt               = A photograph of Noam Chomsky
+ | caption           = Chomsky in 2017
+ | birth_name        = Avram Noam Chomsky
+ | birth_date        = {{Birth date and age|mf=yes|1928|12|7}}
+ | birth_place       = [[Philadelphia]], Pennsylvania, U.S.
+ | thesis_title      = Transformational Analysis
+ | thesis_url        = http://repository.upenn.edu/dissertations/AAI0013380/
+ | thesis_year       = 1955
+ | doctoral_advisor  = [[Zellig Harris]]{{sfn|Partee|2015|p=328}}
+ | doctoral_students = {{collapsible list| title = {{nbsp}} | [[Mark Baker (linguist)|Mark Baker]], [[Ray C. Dougherty]], [[C.-T. James Huang]], [[Ray Jackendoff]], [[George Lakoff]], [[Howard Lasnik]], [[Robert Lees (linguist)|Robert Lees]], [[Alec Marantz]], [[James D. McCawley]], [[Barbara Partee]], [[Tanya Reinhart]], [[John R. Ross]]
+ }}
+ | known_for         =
+ | influences        = {{collapsible list| title = {{nbsp}}
+   | <!-- LINGUISTIC & PHILOSOPHICAL INFLUENCES -->
+<!-- per the infobox documentation, each name must be explained in the article's prose and cite a third-party source; those that are not mentioned in the main text will be removed -->
+{{collapsible list| title = Academic | [[J. L. Austin]], [[William Chomsky]], [[C. West Churchman]], [[René Descartes]], [[Galileo]],{{sfn|Chomsky|1991|p=50}} [[Nelson Goodman]], [[Morris Halle]], [[Zellig Harris]], [[Wilhelm von Humboldt]], [[David Hume]],{{sfn|Sperlich|2006|pp=44–45}} [[Roman Jakobson]], [[Immanuel Kant]],{{sfn|Slife|1993|p=115}} [[George Armitage Miller]], [[Pāṇini]], [[Hilary Putnam]],{{sfn|Barsky|1997|p=58}} [[W.&nbsp;V.&nbsp;O. Quine]], [[Bertrand Russell]], [[Ferdinand de Saussure]], [[Marcel-Paul Schützenberger]], [[Alan Turing]],{{sfn|Chomsky|1991|p=50}} [[Ludwig Wittgenstein]]{{sfn|Antony|Hornstein|2003|p=295}}
+   }}
+
+<!-- SOCIAL & POLITICAL INFLUENCES -->
+<!-- per the infobox documentation, each name must be explained in the article's prose and cite a third-party source; those that are not mentioned in the main text will be removed -->
+{{collapsible list| title = Political | [[Mikhail Bakunin]], [[Alex Carey (writer)|Alex Carey]], [[William Chomsky]], [[John Dewey]],{{sfn|Chomsky|2016}} [[Zellig Harris]], [[Wilhelm von Humboldt]],{{sfn|Harbord|1994|p=487}} [[David Hume]],{{sfn|Barsky|2007|p=107}} [[Karl Korsch]], [[Peter Kropotkin]],{{sfn|Barsky|2007|p=107}} [[Karl Liebknecht]], [[Rosa Luxemburg]], [[John Locke]], [[Dwight Macdonald]], [[Paul Mattick]],{{sfn|Barsky|2007|p=107}} [[John Stuart Mill]], [[George Orwell]], [[Anton Pannekoek]], [[Pierre-Joseph Proudhon]],{{sfn|Smith|2004|p=185}} [[Rudolf Rocker]], [[Jean-Jacques Rousseau]],{{sfn|Barsky|2007|p=107}} [[Bertrand Russell]], [[Diego Abad de Santillán]], [[Adam Smith]]{{sfn|Barsky|2007|p=107}}
+   }}
+ }}
+ | influenced        = {{collapsible list| title = {{nbsp}}
+   | <!-- ACADEMIC INFLUENCEES -->
+<!-- per the infobox documentation, each name must be explained in the article's prose and cite a third-party source; those that are not mentioned in the main text will be removed -->
+{{collapsible list| title = In academia | [[John Backus]], [[Derek Bickerton]], [[Julian C. Boyd]], [[Daniel Dennett]],{{sfn|Amid the Philosophers}} [[Daniel Everett]], [[Jerry Fodor]], [[Gilbert Harman]], [[Marc Hauser]], [[Norbert Hornstein]], [[Niels Kaj Jerne]], [[Donald Knuth]], [[Georges J.&nbsp;F. Köhler]], [[Peter Ludlow]], [[Colin McGinn]],{{sfn|Persson|LaFollette|2013}} [[César Milstein]], [[Steven Pinker]],{{sfn|Prickett|2002|p=234}} [[John Searle]],{{sfn|Searle|1972}} [[Neil Smith (linguist)|Neil Smith]], [[Crispin Wright]]{{sfn|Amid the Philosophers}}
+   }}
+
+<!-- SOCIAL AND POLITICAL INFLUENCEES -->
+<!-- per the infobox documentation, each name must be explained in the article's prose and cite a third-party source; those that are not mentioned in the main text will be removed -->
+{{collapsible list| title = In politics | [[Michael Albert]], [[Julian Assange]], [[Bono]],{{sfn|Adams|2003}} [[Jean Bricmont]], [[Hugo Chávez]], [[Zach de la Rocha]], [[Clinton Fernandes]], [[Norman Finkelstein]], [[Robert Fisk]], [[Amy Goodman]], [[Stephen Jay Gould]],{{sfn|Gould|1981}} [[Glenn Greenwald]], [[Christopher Hitchens]],{{sfn|Adams|2003}} [[Naomi Klein]],{{sfn|Adams|2003}} [[Michael Moore]],{{sfn|Adams|2003}} [[John Nichols (journalist)|John Nichols]], [[Ann Nocenti]],{{sfn|Keller|2007}} [[John Pilger]], [[Harold Pinter]],{{sfn|Adams|2003}} [[Arundhati Roy]], [[Edward Said]], [[Aaron Swartz]]{{sfn|Swartz|2006}}
+   }}
+ }}
+ | signature         = Noam Chomsky signature.svg
+ | website           = https://chomsky.info
+ | spouse            = {{Plainlist|
+* {{marriage|[[Carol Chomsky|Carol Doris Schatz]]|1949| December 19, 2008|end=died}}
+* {{marriage|Valeria Wasserman|2014}}
+ }}
+ | children          = 3, including [[Aviva Chomsky|Aviva]]
+ | discipline        = [[Linguistics]], [[analytic philosophy]], [[cognitive science]], [[political criticism]]
+ | work_institutions = {{Plainlist|
+* [[University of Arizona]] (2017–present)
+* [[Massachusetts Institute of Technology]] (1955–present)
+* [[Institute for Advanced Study]] (1958–1959)
+ }}
+ | education         = [[University of Pennsylvania]] ([[Bachelor of Arts|BA]], [[Master of Arts|MA]], PhD)<br />[[Harvard Society of Fellows]] (1951–1955)
+ | awards            = {{collapsible list| title = {{nbsp}} | {{Plainlist|
+* [[Guggenheim Fellowship]] (1971)
+* [[Member of the National Academy of Sciences]] (1972)
+* [[APA Award for Distinguished Scientific Contributions to Psychology]] (1984)
+* [[Orwell Award]] (1987, 1989)
+* [[Kyoto Prize in Basic Sciences]] (1988)
+* [[Helmholtz Medal]] (1996)
+* [[Benjamin Franklin Medal (Franklin Institute)|Benjamin Franklin Medal in Computer and Cognitive Science]] (1999)
+* [[Sydney Peace Prize]] (2011)
+* [[Nuclear Age Peace Foundation]] (2014)
+   }}
+ }}
+}}
+<!--Basic introduction; who he is-->
+'''Avram Noam Chomsky'''{{efn|English: {{IPAc-en|n|oʊ|m|_|ˈ|tʃ|ɒ|m|s|k|i|audio=Noam Chomsky.ogg}}<br /> {{IPA-he|'noʔam 'χomski|lang}} |name=|group=}} (born December 7, 1928) is an American [[linguist]], [[philosopher]], [[cognitive scientist]], [[historian]],{{efn|"In thinking about the Effect of Chomsky's work, we have had to dwell upon the reception of Chomsky's work and the perception of Chomsky as a Jew, a linguist, a philosopher, a historian, a gadfly, an icon, and an anarchist." {{harvcol|Barsky|2007|p=107}}}}{{efn|"Since his ''Cartesian linguistics'' (1966) it has been clear that Chomsky is a superb intellectual historian—a historian of philosophy in the case of his 1966 book, his earliest incursion into the field; later writings (e.g., ''Year 501'') extended the coverage to world history. The lectures just mentioned and other writings take on highly significant and sometimes not properly appreciated, and often misunderstood, developments in the history of science." {{harvcol|Otero|2003|p=416}}}} [[social critic]], and [[political activist]]. Sometimes called "the father of modern linguistics",{{efn|name=father}} Chomsky is also a major figure in [[analytic philosophy]], and is one of the founders of the field of cognitive science. He is Laureate Professor of Linguistics at the [[University of Arizona]] and [[Institute Professor|Institute Professor Emeritus]] at the [[Massachusetts Institute of Technology]] (MIT), and is the author of more than 100 books on topics such as linguistics, war, politics, and mass media. Ideologically, he aligns with [[anarcho-syndicalism]] and [[libertarian socialism]].
+
+<!--Early life up until 1966-->
+Born to [[Ashkenazi Jews|Ashkenazi Jewish]] immigrants in [[Philadelphia]], Chomsky developed an early interest in [[anarchism]] from alternative bookstores in New York City. He studied at the [[University of Pennsylvania]]. During his postgraduate work in the [[Harvard Society of Fellows]], Chomsky developed the theory of [[transformational grammar]] for which he earned his doctorate in 1955. That year he began teaching at MIT, and in 1957 emerged as a significant figure in linguistics with his landmark work ''[[Syntactic Structures]]'', which played a major role in remodeling the study of language. From 1958 to 1959 Chomsky was a [[National Science Foundation]] fellow at the [[Institute for Advanced Study]]. He created or co-created the [[Universal Grammar|universal grammar]] theory, the [[generative grammar]] theory, the [[Chomsky hierarchy]], and the [[minimalist program]]. Chomsky also played a pivotal role in the decline of linguistic [[behaviorism]], and was particularly critical of the work of [[B. F. Skinner]].
+
+<!--Later life post-1967-->
+An outspoken [[Opposition to United States involvement in the Vietnam War|opponent]] of [[Role of the United States in the Vietnam War|U.S. involvement in the Vietnam War]], which he saw as an act of [[American imperialism]], in 1967 Chomsky rose to national attention for his [[Anti-war movement|anti-war]] essay "[[The Responsibility of Intellectuals]]". Associated with the [[New Left]], he was arrested multiple times for his activism and placed on President [[Richard Nixon]]'s [[Nixon's Enemies List|Enemies List]]. While expanding his work in linguistics over subsequent decades, he also became involved in the [[linguistics wars]]. In collaboration with [[Edward S. Herman]], Chomsky later articulated the [[propaganda model]] of [[media criticism]] in ''[[Manufacturing Consent]]'' and worked to expose the [[Indonesian occupation of East Timor]]. His defense of freedom of speech, including [[Holocaust denial]], generated significant controversy in the [[Faurisson affair]] of the 1980s. Since retiring from MIT, he has continued his vocal political activism, including opposing the [[2003 invasion of Iraq]] and supporting the [[Occupy movement]]. Chomsky began teaching at the University of Arizona in 2017.
+
+<!--Brief assessment of Chomsky's reception and legacy:-->
+One of the most cited scholars alive,{{sfn|''MIT Tech Talk''|1992}} Chomsky has influenced a broad array of academic fields. He is widely recognized as having helped to spark the [[cognitive revolution]] in the [[human sciences]], contributing to the development of a new [[Cognitivism (psychology)|cognitivistic]] framework for the study of language and the mind. In addition to his continued scholarship, he remains a leading [[Criticism of United States foreign policy|critic]] of U.S. foreign policy, [[neoliberalism]] and contemporary [[state capitalism]], the [[Israeli–Palestinian conflict]], and mainstream news media. His ideas are highly influential in the [[anti-capitalist]] and [[anti-imperialist]] movements, but have also drawn criticism, with some accusing Chomsky of [[anti-Americanism]].
+
+== Life ==
+===Childhood: 1928–1945===
+Avram Noam Chomsky was born on December 7, 1928, in the [[East Oak Lane, Philadelphia|East Oak Lane]] neighborhood of [[Philadelphia]], Pennsylvania.{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2p=9|3a1=McGilvray|3y=2014|3p=3}} His parents, [[Ze'ev "William" Chomsky]] and Elsie Simonofsky, were Jewish immigrants.{{sfnm|1a1=Barsky|1y=1997|1pp=9–10|2a1=Sperlich|2y=2006|2p=11}} William had fled the [[Russian Empire]] in 1913 to escape conscription and worked in Baltimore [[sweatshop]]s and Hebrew elementary schools before attending university.{{sfn|Barsky|1997|p=9}} After moving to Philadelphia, William became principal of the [[Congregation Mikveh Israel]] religious school and joined the [[Gratz College]] faculty. He placed great emphasis on educating people so that they would be "well integrated, free and independent in their thinking, concerned about improving and enhancing the world, and eager to participate in making life more meaningful and worthwhile for all", a mission that shaped and was subsequently adopted by his son.{{sfn|Barsky|1997|p=11}} Elsie was a teacher and activist born in [[Belarus]]. They met at Mikveh Israel, where they both worked.{{sfnm|1a1=Barsky|1y=1997|1pp=9–10|2a1=Sperlich|2y=2006|2p=11}}
+
+Noam was the Chomskys' first child. His younger brother, David Eli Chomsky, was born five years later, in 1934.{{sfn|Feinberg|1999|p=3}}{{sfnm|1a1=Barsky|1y=1997|1pp=11–13|2a1=Sperlich|2y=2006|2p=11}} The brothers were close, though David was more easygoing while Noam could be very competitive.{{sfn|Barsky|1997|pp=11–13}} Chomsky and his brother were raised Jewish, being taught [[Hebrew]] and regularly involved with discussing the political theories of [[Zionism]]; the family was particularly influenced by the [[Left Zionist]] writings of [[Ahad Ha'am]].{{sfnm|1a1=Barsky|1y=1997|1pp=11–13|2a1=Sperlich|2y=2006|2p=11}} Chomsky faced [[antisemitism]] as a child, particularly from Philadelphia's Irish and German communities.{{sfn|Barsky|1997|p=15}}
+
+Chomsky attended the independent, [[Deweyite]] [[Oak Lane Country Day School]]{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2pp=15–17|3a1=Sperlich|3y=2006|3p=12|4a1=McGilvray|4y=2014|4p=3}} and Philadelphia's [[Central High School (Philadelphia)|Central High School]], where he excelled academically and joined various clubs and societies, but was troubled by the school's hierarchical and regimented teaching methods.{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2pp=21–22|3a1=Sperlich|3y=2006|3p=14|4a1=McGilvray|4y=2014|4p=4}} He also attended Hebrew High School at Gratz College, where his father taught.{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2pp=15–17}}
+
+Chomsky has described his parents as "normal [[Roosevelt Democrats]]" with [[center-left politics]], but relatives involved in the [[International Ladies' Garment Workers' Union]] exposed him to [[socialism]] and [[far-left politics]].{{sfnm|1a1=Barsky|1y=1997|1p=14|2a1=Sperlich|2y=2006|2pp=11, 14–15}} He was substantially influenced by his uncle and the Jewish leftists who frequented his New York City newspaper stand to debate current affairs.{{sfnm|1a1=Barsky|1y=1997|1p=23|2a1=Sperlich|2y=2006|2pp=12, 14–15, 67|3a1=McGilvray|3y=2014|3p=4}} Chomsky himself often visited left-wing and anarchist bookstores when visiting his uncle in the city, voraciously reading political literature.{{sfn|Barsky|1997|p=23}} He wrote his first article at age 10 on the spread of [[fascism]] following [[Catalonia Offensive|the fall of Barcelona]] during the [[Spanish Civil War]]{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2pp=15–17|3a1=Sperlich|3y=2006|3p=13|4a1=McGilvray|4y=2014|4p=3}} and, from the age of 12 or 13, identified with anarchist politics.{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2pp=15–17}} He later described his discovery of anarchism as "a lucky accident"{{sfn|Barsky|1997|pp=17–19}} that made him critical of [[Stalinism]] and other forms of [[Marxism–Leninism]].{{sfnm|1a1=Barsky|1y=1997|1pp=17–19|2a1=Sperlich|2y=2006|2pp=16, 18}}
+
+===University: 1945–1955===
+[[File:Carol Chomsky.jpg|thumb|right|upright=0.85|In 1949 Chomsky married Carol Schatz]]
+
+In 1945, aged 16, Chomsky began a general program of study at the [[University of Pennsylvania]], where he explored philosophy, logic, and languages and developed a primary interest in learning [[Arabic]].{{sfnm|1a1=Barsky|1y=1997|1p=47|2a1=Sperlich|2y=2006|2p=16}} Living at home, he funded his undergraduate degree by teaching Hebrew.{{sfn|Barsky|1997|p=47}} Frustrated with his experiences at the university, he considered dropping out and moving to a [[kibbutz]] in [[Mandatory Palestine]],{{sfn|Sperlich|2006|p=17}} but his intellectual curiosity was reawakened through conversations with the Russian-born linguist [[Zellig Harris]], whom he first met in a political circle in 1947. Harris introduced Chomsky to the field of theoretical linguistics and convinced him to major in the subject.{{sfnm|1a1=Barsky|1y=1997|1pp=48–51|2a1=Sperlich|2y=2006|2pp=18–19, 31}} Chomsky's [[Bachelor of Arts|BA]] honors thesis, "Morphophonemics of Modern Hebrew", applied Harris's methods to the language.{{sfnm|1a1=Barsky|1y=1997|1pp=51–52|2a1=Sperlich|2y=2006|2p=32}} Chomsky revised this thesis for his [[Master of Arts|MA]], which he received from the University of Pennsylvania in 1951; it was subsequently published as a book.{{sfnm|1a1=Barsky|1y=1997|1pp=51–52|2a1=Sperlich|2y=2006|2p=33}} He also developed his interest in philosophy while at university, in particular under the tutelage of [[Nelson Goodman]].{{sfn|Sperlich|2006|p=33}}
+
+From 1951 to 1955 Chomsky was a member of the [[Society of Fellows]] at Harvard University, where he undertook research on what became his doctoral dissertation.{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2p=79|3a1=Sperlich|3y=2006|3p=20}} Having been encouraged by Goodman to apply,{{sfn|Sperlich|2006|p=34}} Chomsky was attracted to Harvard in part because the philosopher [[Willard Van Orman Quine]] was based there. Both Quine and a visiting philosopher, [[J. L. Austin]] of the [[University of Oxford]], strongly influenced Chomsky.{{sfn|Sperlich|2006|pp=33–34}} In 1952 Chomsky published his first academic article, ''Systems of Syntactic Analysis'', which appeared not in a journal of linguistics but in ''[[The Journal of Symbolic Logic]]''.{{sfn|Sperlich|2006|p=34}} Highly critical of the established behaviorist currents in linguistics, in 1954 he presented his ideas at lectures at the [[University of Chicago]] and [[Yale University]].{{sfn|Barsky|1997|p=81}} He had not been registered as a student at Pennsylvania for four years, but in 1955 he submitted a thesis setting out his ideas on [[transformational grammar]]; he was awarded a Doctor of Philosophy degree for it, and it was privately distributed among specialists on microfilm before being published in 1975 as part of ''[[The Logical Structure of Linguistic Theory]]''.{{sfnm|1a1=Barsky|1y=1997|1pp=83–85|2a1=Sperlich|2y=2006|2p=36|3a1=McGilvray|3y=2014|3pp=4–5}} Harvard professor [[George Armitage Miller]] was impressed by Chomsky's thesis and collaborated with him on several technical papers in [[mathematical linguistics]].{{sfn|Sperlich|2006|p=38}} Chomsky's doctorate exempted him from [[compulsory military service]], which was otherwise due to begin in 1955.{{sfn|Sperlich|2006|p=36}}
+
+In 1947 Chomsky began a romantic relationship with [[Carol Doris Schatz]], whom he had known since early childhood. They married in 1949.{{sfnm|1a1=Barsky|1y=1997|1pp=13, 48, 51–52|2a1=Sperlich|2y=2006|2pp=18–19}} After Chomsky was made a Fellow at Harvard, the couple moved to the [[Allston]] area of Boston and remained there until 1965, when they relocated to the suburb of [[Lexington, Massachusetts|Lexington]].{{sfn|Sperlich|2006|p=20}} In 1953 the couple took a Harvard travel grant to Europe, from the United Kingdom through France, Switzerland into Italy,{{sfn|Sperlich|2006|pp=20–21}} and Israel, where they lived in [[Hashomer Hatzair]]'s [[HaZore'a]] [[kibbutz]]. Despite enjoying himself, Chomsky was appalled by the country's Jewish nationalism, [[anti-Arab racism]] and, within the kibbutz's leftist community, [[pro-Stalinism]].{{sfnm|1a1=Barsky|1y=1997|1p=82|2a1=Sperlich|2y=2006|2pp=20–21}}
+
+On visits to New York City, Chomsky continued to frequent the office of the Yiddish anarchist journal ''[[Fraye Arbeter Shtime]]'' and became enamored with the ideas of [[Rudolf Rocker]], a contributor whose work introduced Chomsky to the link between [[anarchism]] and [[classical liberalism]].{{sfnm|1a1=Barsky|1y=1997|1p=24|2a1=Sperlich|2y=2006|2p=13}} Chomsky also read other political thinkers: the anarchists [[Mikhail Bakunin]] and [[Diego Abad de Santillán]], democratic socialists [[George Orwell]], [[Bertrand Russell]], and [[Dwight Macdonald]], and works by Marxists [[Karl Liebknecht]], [[Karl Korsch]], and [[Rosa Luxemburg]].{{sfn|Barsky|1997|pp=24–25}} His readings convinced him of the desirability of an [[anarcho-syndicalist]] society, and he became fascinated by the anarcho-syndicalist communes set up during the [[Spanish Civil War]], as documented in Orwell's ''[[Homage to Catalonia]]'' (1938).{{sfn|Barsky|1997|p=26}} He read the leftist journal ''[[Politics (1940s magazine)|Politics]]'', which furthered his interest in anarchism,{{sfn|Barsky|1997|pp=34–35}} and the [[council communist]] periodical ''[[International Council Correspondence|Living Marxism]]'', though he rejected the orthodoxy of its editor, [[Paul Mattick]].{{sfn|Barsky|1997|p=36}} He was also greatly interested in the Marlenite ideas of the [[Leninist League of the United States]], an anti-Stalinist Marxist–Leninist group, sharing their view that the [[Second World War]] was orchestrated by Western capitalists and the Soviet Union's "[[state capitalists]]" to crush Europe's [[proletariat]].{{sfn|Barsky|1997|pp=43–44}}
+
+===Early career: 1955–1966===
+Chomsky befriended two linguists at the [[Massachusetts Institute of Technology]] (MIT), [[Morris Halle]] and [[Roman Jakobson]], the latter of whom secured him an assistant professor position there in 1955. At MIT, Chomsky spent half his time on a [[mechanical translation]] project and half teaching a course on linguistics and philosophy.{{sfnm|1a1=Lyons|1y=1978|1p=xv|2a1=Barsky|2y=1997|2pp=86–87|3a1=Sperlich|3y=2006|3pp=38–40}} He described MIT as "a pretty free and open place, open to experimentation and without rigid requirements. It was just perfect for someone of my idiosyncratic interests and work."{{sfn|Barsky|1997|p=87}} In 1957 MIT promoted him to the position of [[associate professor]], and from 1957 to 1958 he was also employed by [[Columbia University]] as a visiting professor.{{sfnm|1a1=Lyons|1y=1978|1p=xvi|2a1=Barsky|2y=1997|2p=91}} The Chomskys had their first child that same year, a daughter named [[Aviva Chomsky|Aviva]].{{sfnm|1a1=Barsky|1y=1997|1p=91|2a1=Sperlich|2y=2006|2p=22}} He also published his first book on linguistics, ''[[Syntactic Structures]]'', a work that radically opposed the dominant Harris–[[Leonard Bloomfield|Bloomfield]] trend in the field.{{sfnm|1a1=Barsky|1y=1997|1pp=88–91|2a1=Sperlich|2y=2006|2p=40|3a1=McGilvray|3y=2014|3p=5}} Responses to Chomsky's ideas ranged from indifference to hostility, and his work proved divisive and caused "significant upheaval" in the discipline.{{sfn|Barsky|1997|pp=88–91}} The linguist [[John Lyons (linguist)|John Lyons]] later asserted that ''Syntactic Structures'' "revolutionized the scientific study of language".{{sfn|Lyons|1978|p=1}} From 1958 to 1959 Chomsky was a [[National Science Foundation]] fellow at the [[Institute for Advanced Study]] in [[Princeton, New Jersey]].{{sfnm|1a1=Lyons|1y=1978|1p=xvi|2a1=Barsky|2y=1997|2p=84}}
+
+[[File:MIT Building 10 and the Great Dome, Cambridge MA.jpg|thumb|right|The [[Great Dome (MIT)|Great Dome]] at the Massachusetts Institute of Technology, where Chomsky began working in 1955]]
+
+In 1959, Chomsky published a review of [[B. F. Skinner]]'s 1957 book ''[[Verbal Behavior]]'' in the academic journal ''[[Language (journal)|Language]]'', in which he argued against Skinner's view of language as learned behavior.{{sfnm|1a1=Lyons|1y=1978|1p=6|2a1=Barsky|2y=1997|2pp=96–99|3a1=Sperlich|3y=2006|3p=41|4a1=McGilvray|4y=2014|4p=5}}{{sfn|MacCorquodale|1970|pp=83–99}} The review argued that Skinner ignored the role of human creativity in linguistics and helped to establish Chomsky as an intellectual.{{sfn|Barsky|1997|p=119}} With Halle, Chomsky proceeded to found MIT's graduate program in linguistics. In 1961 he was awarded tenure, becoming a [[full professor]] in the Department of Modern Languages and Linguistics.{{sfnm|1a1=Barsky|1y=1997|1pp=101–102, 119|2a1=Sperlich|2y=2006|2p=23}} Chomsky went on to be appointed plenary speaker at the Ninth [[International Congress of Linguists]], held in 1962 in [[Cambridge, Massachusetts]], which established him as the ''de facto'' spokesperson of American linguistics.{{sfn|Barsky|1997|p=102}} Between 1963 and 1965 he consulted on a military-sponsored project "to establish natural language as an operational language for command and control"; [[Barbara Partee]], a collaborator on this project and then-student of Chomsky, has said this research was justified to the military on the basis that "in the event of a nuclear war, the generals would be underground with some computers trying to manage things, and that it would probably be easier to teach computers to understand English than to teach the generals to program."{{sfn|Knight|2018}}
+
+Chomsky continued to publish his linguistic ideas throughout the decade, including in ''[[Aspects of the Theory of Syntax]]'' (1965), ''Topics in the Theory of Generative Grammar'' (1966), and ''[[Cartesian Linguistics: A Chapter in the History of Rationalist Thought]]'' (1966).{{sfn|Barsky|1997|p=103}} Along with Halle, he also edited the ''[[Studies in Language]]'' series of books for [[Harper and Row]].{{sfn|Barsky|1997|p=104}} As he began to accrue significant academic recognition and honors for his work, Chomsky lectured at the [[University of California, Berkeley]], in 1966.{{sfnm|1a1=Lyons|1y=1978|1p=xvi|2a1=Barsky|2y=1997|2p=120}} His Beckman lectures at [[University of California, Berkeley|Berkeley]] were assembled and published as ''[[Language and Mind]]'' in 1968.{{sfn|Barsky|1997|p=122}} Despite his growing stature, an intellectual falling-out between Chomsky and some of his early colleagues and doctoral students—including [[Paul Postal]], [[John "Haj" Ross]], [[George Lakoff]], and [[James D. McCawley]]—triggered a series of academic debates that came to be known as the "[[Linguistics Wars]]", although they revolved largely around philosophical issues rather than linguistics proper.{{sfn|Sperlich|2006|pp=60–61}}
+
+===Anti-war activism and dissent: 1967–1975===
+{{Quote box
+ | width = 25em
+ | align = left
+ | quote = [I]t does not require very far-reaching, specialized knowledge to perceive that the United States was invading South Vietnam. And, in fact, to take apart the system of illusions and deception which functions to prevent understanding of contemporary reality [is] not a task that requires extraordinary skill or understanding. It requires the kind of normal skepticism and willingness to apply one's analytical skills that almost all people have and that they can exercise.
+ | source = Chomsky on the Vietnam War{{sfn|Barsky|1997|p=114}}<!--Does the secondary source cite the primary source? It would be better to cite the primary source if a direct quotation-->
+}}
+
+Chomsky joined [[protests against U.S. involvement in the Vietnam War]] in 1962, speaking on the subject at small gatherings in churches and homes.{{sfn|Sperlich|2006|p=78}} His 1967 critique of U.S. involvement, "[[The Responsibility of Intellectuals]]", among other contributions to ''[[The New York Review of Books]]'', debuted Chomsky as a public dissident.{{sfnm|1a1=Barsky|1y=1997|1pp=120, 122|2a1=Sperlich|2y=2006|2p=83}} This essay and other political articles were collected and published in 1969 as part of Chomsky's first political book, ''[[American Power and the New Mandarins]]''.{{sfnm|1a1=Lyons|1y=1978|1p=xvii|2a1=Barsky|2y=1997|2pp=123|3a1=Sperlich|3y=2006|3p=83}} He followed this with further political books, including ''At War with Asia'' (1971), ''The Backroom Boys'' (1973), ''For Reasons of State'' (1973), and ''Peace in the Middle East?'' (1975), published by [[Pantheon Books]].{{sfnm|1a1=Lyons|1y=1978|1pp=xvi–xvii|2a1=Barsky|2y=1997|2p=163|3a1=Sperlich|3y=2006|3p=87}} These publications led to Chomsky's association with the American [[New Left]] movement,{{sfnm|1a1=Lyons|1y=1978|1p=5|2a1=Barsky|2y=1997|2p=123}} though he thought little of prominent New Left intellectuals [[Herbert Marcuse]] and [[Erich Fromm]] and preferred the company of activists to that of intellectuals.{{sfn|Barsky|1997|pp=134–135}} Chomsky remained largely ignored by the mainstream press throughout this period.{{sfn|Barsky|1997|pp=162–163}}
+
+He also became involved in left-wing activism. Chomsky refused to pay half his taxes, publicly supported students who [[Vietnam War draft evaders|refused the draft]], and was arrested while participating an [[Anti-war movement|anti-war]] [[teach-in]] outside the Pentagon.{{sfnm|1a1=Lyons|1y=1978|1p=5|2a1=Barsky|2y=1997|2pp=127–129}} During this time, Chomsky co-founded the anti-war collective [[RESIST (non-profit)|RESIST]] with [[Mitchell Goodman]], [[Denise Levertov]], [[William Sloane Coffin]], and [[Dwight Macdonald]].{{sfnm|1a1=Lyons|1y=1978|1p=5|2a1=Barsky|2y=1997|2pp=127–129|3a1=Sperlich|3y=2006|3pp=80–81}} Although he questioned the objectives of the [[1968 student protests]],{{sfn|Barsky|1997|pp=121–122, 131}} Chomsky gave many lectures to student activist groups and, with his colleague Louis Kampf, ran undergraduate courses on politics at MIT independently of the conservative-dominated [[political science]] department.{{sfnm|1a1=Barsky|1y=1997|1p=121|2a1=Sperlich|2y=2006|2p=78}} When student activists campaigned to stop weapons and counterinsurgency research at MIT, Chomsky was sympathetic but felt that the research should remain under MIT's oversight and limited to systems of deterrence and defense.{{sfnm|1a1=Barsky|1y=1997|1pp=121–122, 140-141|2a1=Albert|2y=2006|2p=98|3a1=Knight|3y=2016|3p=34}} In 1970 he visited southeast Asia to lecture at Vietnam's [[Hanoi University of Science and Technology]] and toured war refugee camps in [[Laos]]. In 1973 he helped lead a committee commemorating the 50th anniversary of the [[War Resisters League]].{{sfnm|1a1=Barsky|1y=1997|1p=153|2a1=Sperlich|2y=2006|2pp=24–25, 84–85}}
+
+{{external media
+ | topic = Chomsky participating in the anti-Vietnam War [[March on the Pentagon]], October 21, 1967
+ | image1 = [https://www.gettyimages.com/detail/news-photo/view-of-demonstrators-during-the-march-on-the-pentagon-news-photo/108986037 Chomsky with other public figures]
+ | image2 = [https://www.gettyimages.com/detail/news-photo/view-of-demonstrators-as-they-pass-the-lincoln-memorial-news-photo/152911351 The protesters passing the Lincoln Memorial en route to the Pentagon]
+}}<!--Is this media of the same march that he was arrested at? If so making that connection clearer would improve the value to readers-->
+
+Because of his anti-war activism, Chomsky was arrested on multiple occasions and included on President [[Richard Nixon's master list of political opponents]].{{sfnm|1a1=Barsky|1y=1997|1p=124|2a1=Sperlich|2y=2006|2p=80}} Chomsky was aware of the potential repercussions of his civil disobedience and his wife began studying for her own doctorate in linguistics to support the family in the event of Chomsky's imprisonment or joblessness.{{sfnm|1a1=Barsky|1y=1997|1pp=123–124|2a1=Sperlich|2y=2006|2p=22}} Chomsky's scientific reputation insulated him from administrative action based on his beliefs.{{sfn|Barsky|1997|p=143}}
+
+His work in linguistics continued to gain international recognition as he [[List of honorary degrees awarded to Noam Chomsky|received multiple honorary doctorates]].{{sfnm|1a1=Lyons|1y=1978|1pp=xv–xvi|2a1=Barsky|2y=1997|2pp=120, 143}} He delivered [[public lectures]] at the [[University of Cambridge]], [[Columbia University]] ([[Woodbridge Lectures]]), and [[Stanford University]].{{sfn|Barsky|1997|p=156}} His appearance in a [[Chomsky–Foucault debate|1971 debate]] with French [[continental philosopher]] [[Michel Foucault]] positioned Chomsky as a symbolic figurehead of [[analytic philosophy]].{{sfn|Greif|2015|pp=312–313}} He continued to publish extensively on linguistics, producing ''Studies on Semantics in Generative Grammar'' (1972),{{sfn|Barsky|1997|p=143}} an enlarged edition of ''[[Language and Mind]]'' (1972),{{sfn|Sperlich|2006|p=51}} and ''[[Reflections on Language]]'' (1975).{{sfn|Sperlich|2006|p=51}} In 1974 Chomsky became a [[corresponding fellow of the British Academy]].{{sfn|Barsky|1997|p=156}}
+
+===Edward S. Herman and the Faurisson affair: 1976–1980===
+{{See also|Cambodian genocide denial#Chomsky and Herman|Faurisson affair}}
+[[File:Noam Chomsky (1977).jpg|thumb|left|Chomsky, photographed in 1977]]
+In the late 1970s and 1980s, Chomsky's linguistic publications expanded and clarified his earlier work, addressing his critics and updating his grammatical theory.{{sfn|Barsky|1997|p=175}} His political talks often generated considerable controversy, particularly when he criticized the Israeli government and military.{{sfn|Barsky|1997|pp=167, 170}} In the early 1970s Chomsky began collaborating with [[Edward S. Herman]], who had also published critiques of the U.S. war in Vietnam.{{sfn|Barsky|1997|p=157}} Together they wrote ''[[Counter-Revolutionary Violence: Bloodbaths in Fact & Propaganda]]'', a book that criticized U.S. military involvement in Southeast Asia and the mainstream media's failure to cover it. Warner Modular published it in 1973, but [[Warner Communications|its parent company]] disapproved of the book's contents and ordered all copies destroyed.{{sfnm|1a1=Barsky|1y=1997|1pp=160–162|2a1=Sperlich|2y=2006|2p=86}}
+
+While mainstream publishing options proved elusive, Chomsky found support from [[Michael Albert]]'s [[South End Press]], an activist-oriented publishing company.{{sfn|Sperlich|2006|p=85}} In 1979, South End published Chomsky and Herman's revised ''Counter-Revolutionary Violence'' as the two-volume ''[[The Political Economy of Human Rights]]'',{{sfnm|1a1=Barsky|1y=1997|1p=187|2a1=Sperlich|2y=2006|2p=86}} which compares U.S. media reactions to the [[Khmer Rouge rule of Cambodia|Cambodian genocide]] and the [[Indonesian occupation of East Timor]]. It argues that because Indonesia was a U.S. ally, U.S. media ignored the East Timorese situation while focusing on events in Cambodia, a U.S. enemy.{{sfn|Barsky|1997|p=187}} Chomsky's response included two testimonials before the United Nations' [[Special Committee on Decolonization]], successful encouragement for American media to cover the occupation, and meetings with refugees in [[Lisbon]].{{sfn|Sperlich|2006|p=103}} The Marxist academic [[Steven Lukes]] publicly accused Chomsky of betraying his anarchist ideals and acting as an apologist for Cambodian leader [[Pol Pot]].{{sfn|Lukes|1980}} The controversy damaged Chomsky's reputation,{{sfn|Barsky|1997|pp=187–189}} and he maintains that his critics deliberately printed lies to defame him.{{sfn|Barsky|1997|p=190}}
+
+Chomsky had long publicly criticized [[Nazism]], and [[totalitarianism]] more generally, but his commitment to freedom of speech led him to defend the right of French historian [[Robert Faurisson]] to advocate a position widely characterized as [[Holocaust denial]]. Without Chomsky's knowledge, his plea for Faurisson's freedom of speech was published as the preface to the latter's 1980 book {{lang|fr|Mémoire en défense contre ceux qui m'accusent de falsifier l'histoire}}.{{sfnm|1a1=Barsky|1y=1997|1pp=179–180|2a1=Sperlich|2y=2006|2p=61}} Chomsky was widely condemned for defending Faurisson,{{sfnm|1a1=Barsky|1y=1997|1p=185|2a1=Sperlich|2y=2006|2p=61}} and France's mainstream press accused Chomsky of being a Holocaust denier himself, refusing to publish his rebuttals to their accusations.{{sfn|Barsky|1997|p=184}} Critiquing Chomsky's position, sociologist [[Werner Cohn]] later published an analysis of the affair titled ''Partners in Hate: Noam Chomsky and the Holocaust Deniers''.{{sfn|Barsky|1997|p=78}} The Faurisson affair had a lasting, damaging effect on Chomsky's career,{{sfn|Barsky|1997|p=185}} especially in France.{{sfnm|Birnbaum|2010|Aeschimann|2010}}
+
+===Critique of propaganda and international affairs: 1980–2001===
+{{external media
+ | video1 = [https://www.filmsforaction.org/watch/manufacturing-consent-noam-chomsky-and-the-media/ Manufacturing Consent: Noam Chomsky and the Media], a 1992 documentary exploring Chomsky's work of the same name and its impact
+}}
+
+In 1985, during the [[Nicaraguan Contra War]]—in which the U.S. supported the [[Contras|contra militia]] against the [[Sandinista]] government—Chomsky traveled to [[Managua]] to meet with workers' organizations and refugees of the conflict, giving public lectures on politics and linguistics.{{sfn|Sperlich|2006|pp=91, 92}} Many of these lectures were published in 1987 as ''On Power and Ideology: The Managua Lectures''.{{sfn|Sperlich|2006|p=91}} In 1983 he published ''[[The Fateful Triangle]]'', which argued that the U.S. had continually used the [[Israeli–Palestinian conflict]] for its own ends.{{sfnm|1a1=Sperlich|1y=2006|1p=99|2a1=McGilvray|2y=2014|2p=13}} In 1988, Chomsky visited the [[Palestinian territories]] to witness the impact of Israeli occupation.{{sfn|Sperlich|2006|p=98}}
+
+In 1988, Chomsky and Herman published ''[[Manufacturing Consent: The Political Economy of the Mass Media]]'', in which they outlined their [[propaganda model]] for understanding mainstream media. They argued that even in countries without official censorship, the news is censored through five filters that have great impact on what stories are reported and how they are presented.{{sfnm|1a1=Barsky|1y=1997|1pp=160, 202|2a1=Sperlich|2y=2006|2pp=127–134}} The book was inspired by [[Alex Carey (writer)|Alex Carey]] and adapted into [[Manufacturing Consent: Noam Chomsky and the Media|a 1992 film]].{{sfn|Sperlich|2006|p=136}} In 1989, Chomsky published ''Necessary Illusions: Thought Control in Democratic Societies,'' in which he suggests that democratic citizens, to make a worthwhile democracy, undertake intellectual self-defense against the media and elite intellectual culture that seeks to control them.{{sfn|Sperlich|2006|pp=138–139}} By the 1980s, Chomsky's students had become prominent linguists who, in turn, expanded and revised his linguistic theories.{{sfn|Sperlich|2006|p=53}}
+
+In the 1990s, Chomsky embraced political activism to a greater degree than before.{{sfn|Barsky|1997|p=214}} Retaining his commitment to the cause of East Timorese independence, in 1995 he visited Australia to talk on the issue at the behest of the East Timorese Relief Association and the National Council for East Timorese Resistance.{{sfn|Sperlich|2006|p=104}} The lectures he gave on the subject were published as ''Powers and Prospects'' in 1996.{{sfn|Sperlich|2006|p=104}} As a result of the international publicity Chomsky generated, his biographer Wolfgang Sperlich opined that he did more to aid the cause of East Timorese independence than anyone but the investigative journalist [[John Pilger]].{{sfn|Sperlich|2006|p=107}} After East Timor attained independence from Indonesia in 1999, the Australian-led [[International Force for East Timor]] arrived as a peacekeeping force; Chomsky was critical of this, believing it was designed to secure Australian access to East Timor's oil and gas reserves under the [[Timor Gap Treaty]].{{sfn|Sperlich|2006|pp=109–110}}
+
+===Iraq war criticism and retirement from MIT: 2001–2017===
+[[File:Noam Chomsky Toronto 2011.jpg|thumb|upright=1.2|left|Chomsky speaking in support of the Occupy movement in 2011]]
+
+After the [[September 11 attacks]] in 2001, Chomsky was widely interviewed; [[Seven Stories Press]] collated and published these interviews that October.{{sfn|Sperlich|2006|pp=110–111}} Chomsky argued that the ensuing [[War on Terror]] was not a new development but a continuation of U.S. foreign policy and concomitant rhetoric since at least the Reagan era.{{sfn|Sperlich|2006|p=143}} He gave the [[D.T. Lakdawala]] Memorial Lecture in New Delhi in 2001,{{sfn|''The Hindu''|2001}} and in 2003 visited Cuba at the invitation of the Latin American Association of Social Scientists.{{sfn|Sperlich|2006|p=120}} Chomsky's 2003 ''[[Hegemony or Survival]]'' articulated what he called the United States' "imperial [[grand strategy]]" and critiqued the [[Iraq War]] and other aspects of the War on Terror.{{sfn|Sperlich|2006|pp=114–118}} Chomsky toured internationally with greater regularity during this period.{{sfn|Sperlich|2006|p=120}}
+
+Chomsky retired from MIT in 2002,{{sfn|Weidenfeld|2017}} but continued to conduct research and seminars on campus as an [[:wikt:emeritus|emeritus]].{{sfn|Sperlich|2006|p=10}} That same year he visited Turkey to attend the trial of a publisher who had been accused of treason for printing one of Chomsky's books; Chomsky insisted on being a [[co-defendant]] and amid international media attention the Security Courts dropped the charge on the first day.{{sfn|Sperlich|2006|p=25}} During that trip Chomsky visited Kurdish areas of Turkey and spoke out in favor of the Kurds' human rights.{{sfn|Sperlich|2006|p=25}} A supporter of the [[World Social Forum]], he attended its conferences in Brazil in both 2002 and 2003, also attending the Forum event in India.{{sfn|Sperlich|2006|pp=112–113, 120}}
+
+Chomsky supported the [[Occupy movement]], delivering talks at encampments and producing two works that chronicled its influence: [[Occupy (Chomsky book)|''Occupy'']] (2012), a pamphlet, and ''Occupy: Reflections on Class War, Rebellion and Solidarity'' (2013). He attributed Occupy's growth to a perception that the [[Democratic Party (United States)|Democratic Party]] had abandoned the interests of the white working class.{{sfn|Younge|Hogue|2012}} In March 2014, Chomsky joined the advisory council of the [[Nuclear Age Peace Foundation]],{{sfn|NAPF|2014}} an organization that advocates the global [[abolition of nuclear weapons]], as a senior fellow.{{sfn|Ferguson}} The 2016 documentary ''[[Requiem for the American Dream]]'' summarizes his views on capitalism and [[economic inequality]] through a "75-minute [[teach-in]]".{{sfn|Gold|2016}}
+{{-}}
+
+===University of Arizona: 2017–present===
+In 2017, Chomsky taught a short-term politics course at the [[University of Arizona]] in Tucson{{sfn|Harwood|2016}} and was later hired as a part-time professor in the linguistics department there, with his duties including teaching and public seminars.{{sfn|Ortiz|2017}} His salary is covered by philanthropic donations.{{sfn|Mace}}
+
+Chomsky signed the [[Declaration on the Common Language]] of the [[Croats]], [[Serbs]], [[Bosniaks]] and [[Montenegrins]] in 2018.{{sfn|Vučić|2018}}{{sfn|Bobanović|2018}}
+
+==Linguistic theory==
+{{Quote box
+ | width = 25em
+ | align = left
+ | quote = What started as purely linguistic research&nbsp;... has led, through involvement in political causes and an identification with an older philosophic tradition, to no less than an attempt to formulate an overall theory of man. The roots of this are manifest in the linguistic theory&nbsp;... The discovery of cognitive structures common to the human race but only to humans (species specific), leads quite easily to thinking of unalienable human attributes.
+ | source = [[Edward Marcotte]] on the significance of Chomsky's linguistic theory{{sfn|Baughman et al.|2006}}
+}}
+
+The basis of Chomsky's linguistic theory lies in [[biolinguistics]], the linguistic school that holds that the principles underpinning the structure of language are biologically preset in the human mind and hence genetically inherited.{{sfnm|1a1=Lyons|1y=1978|1p=4|2a1=McGilvray|2y=2014|2pp=2–3}} As such he argues that all humans share the same underlying linguistic structure, irrespective of sociocultural differences.{{sfn|Lyons|1978|p=7}} In adopting this position Chomsky rejects the [[radical behaviorism|radical behaviorist]] psychology of [[B.&nbsp;F. Skinner]], who viewed behavior (including talking and thinking) as a completely learned product of the interactions between organisms and their environments. Accordingly, Chomsky argues that language is a unique evolutionary development of the human species and distinguished from modes of communication used by any other animal species.{{sfnm|1a1=Lyons|1y=1978|1p=6|2a1=McGilvray|2y=2014|2pp=2–3}}{{sfn|Brain From Top To Bottom}} Chomsky's [[Psychological nativism|nativist]], internalist view of language is consistent with the philosophical school of "[[rationalism]]" and contrasts with the anti-nativist, externalist view of language consistent with the philosophical school of "[[empiricism]]",{{sfn|McGilvray|2014|p=11}} which contends that all knowledge, including language, comes from external stimuli.{{sfn|Baughman et al.|2006}}
+
+===Universal grammar===
+{{Main|Universal grammar}}
+
+Since the 1960s Chomsky has maintained that syntactic knowledge is at least partially inborn, implying that children need only learn certain language-specific features of their [[native language]]s. He bases his argument on observations about human [[language acquisition]] and describes a "[[poverty of the stimulus]]": an enormous gap between the linguistic stimuli to which children are exposed and the rich [[linguistic competence]] they attain. For example, although children are exposed to only a very small and finite subset of the allowable [[Sentence (linguistics)|syntactic variants]] within their first language, they somehow acquire the highly organized and systematic ability to understand and produce [[Digital infinity|an infinite number of sentences]], including ones that have never before been uttered, in that language.{{sfn|Dovey|2015}} To explain this, Chomsky reasoned that the primary linguistic data must be supplemented by an [[innate linguistic capacity]]. Furthermore, while a human baby and a kitten are both capable of [[inductive reasoning]], if they are exposed to exactly the same linguistic data, the human will always acquire the ability to understand and produce language, while the kitten will never acquire either ability. Chomsky labeled whatever relevant capacity the human has that the cat lacks the [[language acquisition device]], and suggested that one of linguists' tasks should be to determine what that device is and what constraints it imposes on the range of possible human languages. The universal features that result from these constraints would constitute "universal grammar".{{sfn|Chomsky}}{{sfn|Thornbury|2006|p=234}}{{sfn|O'Grady|2015}} Multiple scholars have challenged universal grammar on the grounds of the evolutionary infeasibility of its genetic basis for language,{{sfnm| 1a1=Christiansen|1a2=Chater|1y=2010|1p=489| 2a1=Ruiter|2a2=Levinson|2y=2010|2p=518}} the lack of universal characteristics between languages,{{sfnm| 1a1=Evans|1a2=Levinson|1y=2009|1p=429| Tomasello|2009|2p=470}} and the unproven link between innate/universal structures and the structures of specific languages.{{sfn|Tomasello|2003|p=284}} Scholar [[Michael Tomasello]] has challenged Chomsky's theory of innate syntactic knowledge as based in logic and not empiricism.{{sfn|Tomasello|1995|p=131}}
+
+===Transformational-generative grammar===
+{{Main|Transformational grammar|Generative grammar|Chomsky hierarchy|Minimalist program}}
+
+[[Transformational-generative grammar]] is a broad theory used to model, encode, and deduce a native speaker's linguistic capabilities.{{sfn|Harlow|2010|p=752}} These models, or "[[formal grammars]]", show the abstract structures of a specific language as they may relate to structures in other languages.{{sfn|Harlow|2010|pp=752–753}} Chomsky developed transformational grammar in the mid-1950s, whereupon it became the dominant syntactic theory in linguistics for two decades.{{sfn|Harlow|2010|p=752}} "Transformations" refers to syntactic relationships within language, e.g., being able to infer that the subject between two sentences is the same person.{{sfn|Harlow|2010|p=753}} Chomsky's theory posits that language consists of both [[deep structures and surface structures]]: Outward-facing surface structures relate phonetic rules into sound, while inward-facing deep structures relate words and conceptual meaning. Transformational-generative grammar uses [[mathematical notation]] to express the rules that govern the connection between meaning and sound (deep and surface structures, respectively). By this theory, linguistic principles can [[generative grammar|mathematically generate]] potential sentences structures in a language.{{sfn|Baughman et al.|2006}}
+
+[[File:Chomsky-hierarchy.svg|thumb|right|upright=0.85|alt=The Chomsky hierarchy|Set inclusions described by the [[Chomsky hierarchy]]]]
+
+Based on this rule-based notation of grammars, <!--needed?{{sfn|Morris|2013|p=189}} --> Chomsky grouped natural languages into a series of four nested subsets and increasingly complex types, together known as the [[Chomsky hierarchy]]. This classification was and remains foundational to [[formal language theory]],{{sfn|Butterfield|Ngondi|Kerr|2016}}<!--is the following needed? It imposes a logical structure across different language classes and provides a basis for understanding the relationship between grammars.--> and relevant to [[theoretical computer science]], especially [[programming language theory]],{{sfn|Knuth|2002}} [[compiler]] construction, and [[automata theory]].{{sfn|Davis|Weyuker|Sigal|1994|p=327}}
+
+Following transformational grammar's heyday through the mid-1970s, a derivative{{sfn|Harlow|2010|p=752}} [[government and binding theory]] became a dominant research framework through the early 1990s<!--{{sfn|Hornstein|2003}} --> (and remains an influential theory{{sfn|Harlow|2010|p=752}}) when linguists turned to a "minimalist" approach to grammar. This research focused on the [[principles and parameters]] framework, which explained children's ability to learn any language by filling open parameters (a set of universal grammar principles) that adapt as the child encounters linguistic data.{{sfn|Hornstein|2003}} The minimalist program, initiated by Chomsky,{{sfn|Szabó|2010}}<!-- see this source if more overview on Chomsky's linguistic background if needed --> asks which minimal principles and parameters theory fits most elegantly, naturally, and simply.{{sfn|Hornstein|2003}} In an attempt to simplify language into a system that relates meaning and sound using the minimum possible faculties, Chomsky dispenses with concepts such as "deep structure" and "surface structure" and instead emphasizes the plasticity of the brain's neural circuits, with which come an infinite number of concepts, or "[[Logical form (linguistics)|logical forms]]".{{sfn|Brain From Top To Bottom}} When exposed to linguistic data, a hearer-speaker's brain proceeds to associate sound and meaning, and the rules of grammar we observe are in fact only the consequences, or side effects, of the way language works. Thus while much of Chomsky's prior research focused on the rules of language, he now focuses on the mechanisms the brain uses to generate these rules and regulate speech.{{sfn|Brain From Top To Bottom}}{{sfn|Fox|1998}}
+
+==Political views==
+{{Quote box
+ | width = 25em
+ | align = right
+ | quote = The second major area to which Chomsky has contributed—and surely the best known in terms of the number of people in his audience and the ease of understanding what he writes and says—is his work on sociopolitical analysis; political, social, and economic history; and critical assessment of current political circumstance. In Chomsky's view, although those in power might—and do—try to obscure their intentions and to defend their actions in ways that make them acceptable to citizens, it is easy for anyone who is willing to be critical and consider the facts to discern what they are up to.
+ | source = [[James McGilvray]], 2014{{sfn|McGilvray|2014|p=12}}
+}}
+
+{{Main|Political positions of Noam Chomsky}}
+
+Chomsky is a prominent political dissident.{{efn|name=dissident}} His political views have changed little since his childhood,{{sfnm|1a1=Barsky|1y=1997|1p=95|2a1=McGilvray|2y=2014|2p=4}} when he was influenced by the emphasis on political activism that was ingrained in Jewish working-class tradition.{{sfn|Sperlich|2006|p=77}} He usually identifies as an [[anarcho-syndicalist]] or a [[libertarian socialist]].{{sfnm|1a1=Sperlich|1y=2006|1p=14|2a1=McGilvray|2y=2014|2pp=17, 158}} He views these positions not as precise political theories but as ideals that he thinks best meet human needs: liberty, community, and freedom of association.{{sfn|McGilvray|2014|p=17}} Unlike some other socialists, such as Marxists, Chomsky believes that politics lies outside the remit of science,{{sfnm|1a1=Sperlich|1y=2006|1p=74|2a1=McGilvray|2y=2014|2p=16}} but he still roots his ideas about an ideal society in empirical data and empirically justified theories.{{sfn|McGilvray|2014|p=222}}
+
+In Chomsky's view, the truth about political realities is systematically distorted or suppressed by an elite [[corporatocracy]], which uses corporate media, advertising, and [[think tanks]] to promote its own propaganda. His work seeks to reveal such manipulations and the truth they obscure.{{sfnm|1a1=Sperlich|1y=2006|1p=8|2a1=McGilvray|2y=2014|2p=158}} Chomsky believes this web of falsehood can be broken by "common sense", critical thinking, and understanding the roles of self-interest and self-deception,{{sfnm|1a1=Sperlich|1y=2006|1p=74|2a1=McGilvray|2y=2014|2pp=12–13}} and that intellectuals abdicate their moral responsibility to tell the truth about the world in fear of losing prestige and funding.{{sfn|McGilvray|2014|p=159}} He argues that, as such an intellectual, it is his duty to use his [[social privilege]], resources, and training to aid popular democracy movements in their struggles.{{sfn|McGilvray|2014|p=161}}
+
+Although he has joined protest marches and organized activist groups, Chomsky's primary political outlets are education and publication. He offers a wide range of political writings{{sfn|McGilvray|2014|p=158}} as well as free lessons and lectures to encourage wider political consciousness.{{sfn|Sperlich|2006|p=71}} He is a member of the [[Industrial Workers of the World]] international union.{{sfn|IWoW biographies}}
+
+=== United States foreign policy ===
+[[File:Noam Chomsky WSF - 2003.jpg|thumb|left|Chomsky at the 2003 [[World Social Forum]], a convention for [[counter-hegemonic globalization]], in [[Porto Alegre]]]]
+
+Chomsky has been a prominent critic of [[American imperialism]];{{sfn|Milne|2009}} he believes that the basic principle of the [[foreign policy of the United States]] is the establishment of "open societies" that are economically and politically controlled by the United States and where U.S.-based businesses can prosper.{{sfn|Sperlich|2006|p=92}} He argues that the U.S. seeks to suppress any movements within these countries that are not compliant with U.S. interests and to ensure that U.S.-friendly governments are placed in power.{{sfn|McGilvray|2014|p=159}} When discussing current events, he emphasizes their place within a wider historical perspective.{{sfn|McGilvray|2014|p=160}} He believes that official, sanctioned historical accounts of U.S. and British extraterritorial operations have consistently whitewashed these nations' actions in order to present them as having benevolent motives in either spreading democracy or, in older instances, spreading Christianity; criticizing these accounts, he seeks to correct them.{{sfn|McGilvray|2014|p=13}} Prominent examples he regularly cites are the actions of the British Empire in India and Africa and the actions of the U.S. in Vietnam, the Philippines, Latin America, and the Middle East.{{sfn|McGilvray|2014|p=13}}
+
+Chomsky's political work has centered heavily on criticizing the actions of the United States.{{sfn|McGilvray|2014|p=160}} He has said he focuses on the U.S. because the country has militarily and economically dominated the world during his lifetime and because its [[liberal democracy|liberal democratic]] electoral system allows the citizenry to influence government policy.{{sfn|McGilvray|2014|pp=14, 160}} His hope is that, by spreading awareness of the impact U.S. foreign policies have on the populations affected by them, he can sway the populations of the U.S. and other countries into opposing the policies.{{sfn|McGilvray|2014|p=13}} He urges people to criticize their governments' motivations, decisions, and actions, to accept responsibility for their own thoughts and actions, and to apply the same standards to others as to themselves.{{sfn|McGilvray|2014|p=18}}
+
+Chomsky has been critical of U.S. involvement in the [[Israeli–Palestinian conflict]], arguing that it has consistently blocked a peaceful settlement.{{sfn|McGilvray|2014|p=159}} Chomsky also criticizes the U.S.'s close ties with Saudi Arabia and involvement in [[Saudi Arabian-led intervention in Yemen]], highlighting that Saudi Arabia has "one of the most grotesque human rights records in the world".{{sfn|''Democracy Now!''|2016}}
+
+{{-}}
+
+===Capitalism and socialism===
+In his youth, Chomsky developed a dislike of [[capitalism]] and the pursuit of material wealth.{{sfn|Sperlich|2006|p=15}} At the same time, he developed a disdain for [[authoritarian socialism]], as represented by the Marxist–Leninist policies of the Soviet Union.{{sfnm|1a1=Barsky|1y=1997|1p=168|2a1=Sperlich|2y=2006|2p=16}} Rather than accepting the common view among U.S. economists that a spectrum exists between total state ownership of the economy and total private ownership, he instead suggests that a spectrum should be understood between total democratic control of the economy and total autocratic control (whether state or private).{{sfn|McGilvray|2014|pp=164–165}} He argues that Western capitalist countries are not really democratic,{{sfn|McGilvray|2014|p=169}} because, in his view, a truly democratic society is one in which all persons have a say in public economic policy.{{sfn|McGilvray|2014|p=170}} He has stated his opposition to [[ruling elites]], among them institutions like the [[IMF]], [[World Bank]], and [[GATT]] (precursor to the [[WTO]]).{{sfn|Barsky|1997|p=211}}
+
+Chomsky highlights that, since the 1970s, [[Wealth inequality in the United States|the U.S. has become increasingly economically unequal]] as a result of the repeal of various financial regulations and the rescinding of the [[Bretton Woods financial control agreement]].{{sfn|McGilvray|2014|p=14}} He characterizes the U.S. as a ''de facto'' [[one-party state]], viewing both the [[Republican Party (United States)|Republican Party]] and [[Democratic Party (United States)|Democratic Party]] as manifestations of a single "Business Party" controlled by corporate and financial interests.{{sfn|McGilvray|2014|pp=14–15}} Chomsky highlights that, within Western capitalist liberal democracies, at least 80% of the population has no control over economic decisions, which are instead in the hands of a management class and ultimately controlled by a small, wealthy elite.{{sfn|McGilvray|2014|p=15}}
+
+Noting the entrenchment of such an economic system, Chomsky believes that change is possible through the organized cooperation of large numbers of people who understand the problem and know how they want to reorganize the economy more equitably.{{sfn|McGilvray|2014|p=15}} Acknowledging that corporate domination of media and government stifles any significant change to this system, he sees reason for optimism in historical examples such as the social rejection of slavery as immoral, the advances in women's rights, and the forcing of government to justify invasions.{{sfn|McGilvray|2014|p=14}} He views violent revolution to overthrow a government as a last resort to be avoided if possible, citing the example of historical revolutions where the population's welfare has worsened as a result of upheaval.{{sfn|McGilvray|2014|p=15}}
+
+Chomsky sees libertarian socialist and anarcho-syndicalist ideas as the descendants of the [[classical liberal]] ideas of the [[Age of Enlightenment]],{{sfnm|1a1=Sperlich|1y=2006|1p=89|2a1=McGilvray|2y=2014|2p=189}} arguing that his ideological position revolves around "nourishing the libertarian and creative character of the human being".{{sfn|Barsky|1997|p=95}} He envisions an anarcho-syndicalist future with direct worker control of the [[means of production]] and government by [[workers' council]]s, who would select representatives to meet together at general assemblies.{{sfn|McGilvray|2014|p=199}} The point of this self-governance is to make each citizen, in [[Thomas Jefferson]]'s words, "a direct participator in the government of affairs."{{sfn|McGilvray|2014|p=210}} He believes that there will be no need for political parties.{{sfn|McGilvray|2014|p=200}} By controlling their productive life, he believes that individuals can gain job satisfaction and a sense of fulfillment and purpose.{{sfn|McGilvray|2014|pp=197, 202}} He argues that unpleasant and unpopular jobs could be fully automated, carried out by workers who are specially remunerated, or shared among everyone.{{sfn|McGilvray|2014|pp=201–202}}
+
+=== Israeli–Palestinian conflict ===
+{{Quote box
+ | width = 25em
+ | align = right
+ | quote = Israel uses sophisticated attack jets and naval vessels to bomb densely-crowded refugee camps, schools, apartment blocks, mosques, and slums to attack a [Palestinian] population that has no air force, no air defense, no navy, no heavy weapons, no artillery units, no mechanized armor, no command in control, no army… and calls it a war. It is not a war, it is murder.
+ | source = Chomsky criticizing Israel, 2012{{sfn|Glaser|2012}}
+}}
+
+Chomsky has written prolifically on the Israeli–Palestinian conflict, aiming to raise public awareness of it.{{sfn|Gendzier|2017|p=314}} He has long endorsed a left binationalist program in Israel and Palestine, seeking to create a democratic state in the [[Levant]] that is home to both Jews and Arabs.{{sfnm|1a1=Barsky|1y=1997|1p=170|2a1=Sperlich|2y=2006|2pp=76–77|3a1=McGilvray|3y=2014|3p=159}} Nevertheless, given the [[realpolitik]] of the situation, he has also considered a [[two-state solution]] on the condition that the nation-states exist on equal terms.{{sfnm|1a1=Sperlich|1y=2006|1p=97|2a1=McGilvray|2y=2014|2p=159}} Chomsky was denied entry to the [[West Bank]] in 2010 because of [[Political positions of Noam Chomsky#Chomsky and the Middle East|his criticisms of Israel]]. He had been invited to deliver a lecture at [[Bir Zeit University]] and was to meet with Palestinian Prime Minister [[Salam Fayyad]].{{sfn|Pilkington|2010}}{{sfn|Bronner|2010}}{{sfn|Al Jazeera|2010}}{{sfn|''Democracy Now!''|2010}} An [[Israeli Foreign Ministry]] spokesman later said that Chomsky was denied entry by mistake.{{sfn|Kalman|2014}}
+
+=== News media and propaganda ===
+{{Main|Propaganda model}}
+
+{{external media
+ | video1 = [https://www.c-span.org/video/?176809-1/depth-noam-chomskyt Chomsky on propaganda and the manufacturing of consent], June 1, 2003
+}}
+
+Chomsky's political writings have largely focused on ideology, [[social and political power]], the media, and state policy.{{sfn|Rai|1995|p=20}} One of his best-known works, ''[[Manufacturing Consent]]'', dissects the media's role in reinforcing and acquiescing to state policies across the political spectrum while marginalizing contrary perspectives. Chomsky asserts that this version of censorship, by government-guided "free market" forces, is subtler and harder to undermine than was the equivalent propaganda system in the Soviet Union.{{sfn|Rai|1995|pp=37–38}} As he argues, the mainstream press is corporate-owned and thus reflects corporate priorities and interests.{{sfn|McGilvray|2014|p=179}} Acknowledging that many American journalists are dedicated and well-meaning, he argues that the mass media's choices of topics and issues, the unquestioned premises on which that coverage rests, and the range of opinions expressed are all constrained to reinforce the state's ideology:{{sfn|McGilvray|2014|p=178}} although mass media will criticize individual politicians and political parties, it will not undermine the wider state-corporate nexus of which it is a part.{{sfn|McGilvray|2014|p=189}} As evidence, he highlights that the U.S. mass media does not employ any socialist journalists or political commentators.{{sfn|McGilvray|2014|p=177}} He also points to examples of important news stories that the U.S. mainstream media has ignored because reporting on them would reflect badly upon the country, including the murder of [[Black Panther Party|Black Panther]] [[Fred Hampton]] with possible [[FBI]] involvement, the massacres in Nicaragua perpetrated by U.S.-funded [[Contras]], and the constant reporting on Israeli deaths without equivalent coverage of the far larger number of Palestinian deaths in that conflict.{{sfn|McGilvray|2014|pp=179–182}} To remedy this situation, Chomsky calls for grassroots democratic control and involvement of the media.{{sfn|McGilvray|2014|p=184}}
+
+Chomsky considers most [[conspiracy theories]] fruitless, distracting substitutes for thinking about policy formation in an institutional framework, where individual manipulation is secondary to broader social imperatives.{{sfn|Rai|1995|p=70}} While not dismissing them outright, he considers them unproductive to challenging power in a substantial way. In response to the labeling of his own ideas as a conspiracy theory, Chomsky has said that it is very rational for the media to manipulate information in order to sell it, like any other business. He asks whether [[General Motors]] would be accused of conspiracy if it deliberately selected what it used or discarded to sell its product.{{sfn|Rai|1995|p=42}}
+
+== Other disciplines ==
+Chomsky has also been active in a number of philosophical fields, including [[philosophy of mind]], [[philosophy of language]], and [[philosophy of science]].{{sfn|McGilvray|2014|p=19}} In these fields he is credited with ushering in the "[[cognitive revolution]]",{{sfn|McGilvray|2014|p=19}} a significant [[paradigm shift]] that rejected [[logical positivism]], the prevailing philosophical methodology of the time, and reframed how philosophers think about [[language]] and the [[mind]].{{sfn|Szabó|2010}} Chomsky views the cognitive revolution as rooted in 17th-century [[Rationalism|rationalist]] ideals.{{sfn|Friesen|2017|p=46}} His position—the idea that the mind contains inherent structures to understand language, perception, and thought—has more in common with rationalism (Enlightenment and Cartesian) than behaviorism.{{sfn|Greif|2015|p=313}} He named one of his key works [[Cartesian linguistics|''Cartesian Linguistics: A Chapter in the History of Rationalist Thought'']] (1966).{{sfn|Friesen|2017|p=46}} In philosophy of language, Chomsky is particularly known for his criticisms of the notion of reference and meaning in human language and his perspective on the nature and function of mental representations.{{sfn|Cipriani|2016|pp=44–60}}
+
+Chomsky's famous [[Chomsky–Foucault debate|1971 debate]] on [[human nature]] with the French philosopher [[Michel Foucault]] was symbolic in positioning Chomsky as the prototypical [[analytic philosopher]] against Foucault, a stalwart of the [[continental philosopher|continental]] tradition.{{sfn|Greif|2015|pp=312–313}} It showed what appeared to be irreconcilable differences between two moral and intellectual luminaries of the 20th century. Foucault's position was that of critique, that human nature could not be conceived in terms foreign to present understanding, while Chomsky held that human nature contained universalities such as a common standard of moral justice as deduced through reason based on what rationally serves human necessity.{{sfn|Greif|2015|p=315}} Chomsky criticized [[postmodernism]] and [[French philosophy]] generally, arguing that the obscure language of postmodern, leftist philosophers gives little aid to the working classes.{{sfnm|1a1=Barsky|1y=1997|1pp=192–195|2a1=Sperlich|2y=2006|2p=53}} He has also debated analytic philosophers, including [[Tyler Burge]], [[Donald Davidson (philosopher)|Donald Davidson]], [[Michael Dummett]], [[Saul Kripke]], [[Thomas Nagel]], [[Hilary Putnam]], [[Willard Van Orman Quine]], and [[John Searle]].{{sfn|Szabó|2010}}
+
+Chomsky's contributions span [[intellectual history|intellectual]] and world history, including history of philosophy.{{sfn|Otero|2003|p=416}} Irony is a recurring characteristic of his writing, as he often implies that his readers know better, which can make them more engaged in the veracity of his claims.{{sfn|McGilvray|2014|p=162}}
+
+==Personal life==
+[[File:Chomsky and others.jpg|thumb|left|Chomsky ''(far right)'' and his wife Valeria ''(second from right)'' with David and Carolee Krieger of the [[Nuclear Age Peace Foundation]], 2014]]
+
+Chomsky endeavors to keep his family life, linguistic scholarship, and political activism strictly separate from one another,{{sfnm|1a1=Barsky|1y=1997|1p=158|2a1=Sperlich|2y=2006|2p=19}} calling himself "scrupulous at keeping my politics out of the classroom".{{sfn|Barsky|1997|p=121}} An intensely private person,{{sfn|Sperlich|2006|p=7}} he is uninterested in appearances and the fame his work has brought him.{{sfn|Barsky|1997|p=116}} He also has little interest in modern art and music.{{sfn|Barsky|1997|pp=206–207}} McGilvray suggests that Chomsky was never motivated by a desire for fame, but impelled to tell what he perceived as the truth and a desire to aid others in doing so.{{sfn|McGilvray|2014|p=230}} Chomsky acknowledges that his income affords him a privileged life compared to the majority of the world's population;{{sfn|Sperlich|2006|p=9}} nevertheless, he characterizes himself as a "worker", albeit one who uses his intellect as his employable skill.{{sfn|McGilvray|2014|p=6}} He reads four or five newspapers daily; in the US, he subscribes to ''[[The Boston Globe]]'', ''[[The New York Times]]'', ''[[The Wall Street Journal]]'', ''[[Financial Times]]'', and ''[[The Christian Science Monitor]]''.{{sfn|Sperlich|2006|p=121}} Chomsky is [[non-religious]], but has expressed approval of forms of religion such as [[liberation theology]].{{sfn|Sperlich|2006|p=69}}
+
+Chomsky has attracted controversy for calling established political and academic figures "corrupt", "fascist", and "fraudulent".{{sfn|Barsky|1997|p=199}} His colleague [[Steven Pinker]] has said that he "portrays people who disagree with him as stupid or evil, using withering scorn in his rhetoric", and that this contributes to the extreme reactions he receives from critics.{{sfn|Jaggi|2001}} Chomsky avoids attending [[academic conferences]], including left-oriented ones such as the Socialist Scholars Conference, preferring to speak to activist groups or hold university seminars for mass audiences.{{sfn|Barsky|1997|p=169}} His approach to academic freedom has led him to support MIT academics whose actions he deplores; in 1969, when Chomsky heard that [[Walt Rostow]], a major architect of the Vietnam war, wanted to return to work at MIT, Chomsky threatened "to protest publicly" if Rostow was denied a position at MIT. In 1989, when Pentagon adviser [[John Deutch]] applied to be president of MIT, Chomsky supported his candidacy. Later, when Deutch became head of the CIA, ''The New York Times'' quoted Chomsky as saying, "He has more honesty and integrity than anyone I've ever met. ... If somebody's got to be running the CIA, I'm glad it's him."{{sfnm|Barsky|1997|1pp=140–141|Chomsky|1996|2pp=135–136|Weiner|1995}}
+
+Chomsky was married to [[Carol Chomsky|Carol]] ({{nee|Carol Doris Schatz}}) from 1949 until her death in 2008.{{sfn|McGilvray|2014|p=6}} They had three children together: [[Aviva Chomsky|Aviva]] (b. 1957), Diane (b. 1960), and Harry (b. 1967).{{sfn|Sperlich|2006|p=22}} In 2014, Chomsky married Valeria Wasserman.{{sfn|''Democracy Now!''|2015}}
+
+==Reception and influence==
+{{Quote box
+ | width = 25em
+ | align = right
+ | quote = [Chomsky's] voice is heard in academia beyond linguistics and philosophy: from computer science to neuroscience, from anthropology to education, mathematics and literary criticism. If we include Chomsky's political activism then the boundaries become quite blurred, and it comes as no surprise that Chomsky is increasingly seen as enemy number one by those who inhabit that wide sphere of reactionary discourse and action.
+ | source = Sperlich, 2006{{sfn|Sperlich|2006|p=60}}
+}}
+
+Chomsky has been a defining Western intellectual figure, central to the field of linguistics and definitive in cognitive science, computer science, philosophy, and psychology.{{sfn|Knight|2016|p=2}} In addition to being known as one of the most important intellectuals of his time,{{efn|name=important}} Chomsky carries a dual legacy as both a "leader in the field" of linguistics and "a figure of enlightenment and inspiration" for [[political dissent]]ers.{{sfn|Barsky|1997|p=191}} Despite his academic success, his political viewpoints and activism have resulted in his being distrusted by the mainstream media apparatus, and he is regarded as being "on the outer margin of acceptability".{{sfn|Sperlich|2006|p=24}} The reception of his work is intertwined with his public image as an anarchist, a [[Gadfly (philosophy and social science)|gadfly]], an historian, a Jew, a linguist, and a philosopher.{{sfn|Barsky|2007|p=107}}
+
+===In academia===
+McGilvray observes that Chomsky inaugurated the "[[cognitive revolution]]" in linguistics,{{sfn|McGilvray|2014|p=5}} and that he is largely responsible for establishing the field as a formal, [[natural science]],{{sfn|McGilvray|2014|p=9}} moving it away from the procedural form of [[structural linguistics]] dominant during the mid-20th century.{{sfn|McGilvray|2014|pp=9–10}} As such, some have called Chomsky "the father of modern linguistics".{{efn|name=father}} Linguist John Lyons further remarked that within a few decades of publication, Chomskyan linguistics had become "the most dynamic and influential" school of thought in the field.{{sfn|Lyons|1978|p=2}} By the 1970s his work had also come to exert a considerable influence on philosophy,{{sfn|Sperlich|2006|p=42}} and a [[Minnesota State University Moorhead]] poll ranked ''Syntactic Structures'' as the single most important work in [[cognitive science]].{{sfn|MSUM Cognitive Sciences}} In addition, his work in [[automata theory]] and the Chomsky hierarchy have become well known in [[computer science]], and he is much cited in [[computational linguistics]].{{sfn|Sperlich|2006|p=39}}{{sfn|Sipser|1997}}{{sfn|Knuth at Stanford University|2003}}
+
+Chomsky's criticisms of behaviorism contributed substantially to the decline of [[behaviorist psychology]];{{sfn|Graham|2019}} in addition, he is generally regarded as one of the primary founders of the field of cognitive science.{{sfn|Harris|2010}}{{sfn|McGilvray|2014|p=19}} Some arguments in [[evolutionary psychology]] are derived from his research results;{{sfn|Massey University|1996}} [[Nim Chimpsky]], a chimpanzee who was the subject of a study in [[animal language acquisition]] at Columbia University, was named after Chomsky in reference to his view of language acquisition as a uniquely human ability.{{sfn|Radick|2007|p=320}}
+
+[[ACM Turing Award]] winner [[Donald Knuth]] credited Chomsky's work with helping him combine his interests in mathematics, linguistics, and computer science.{{sfn|Knuth|2003|p=1}} [[IBM]] computer scientist [[John Backus]], another Turing Award winner, used some of Chomsky's concepts to help him develop [[FORTRAN]], the first widely used high-level [[computer programming language]].{{sfn|Fulton|2007}} The laureates of the 1984 [[Nobel Prize in Physiology or Medicine]]—[[Georges J. F. Köhler]], [[César Milstein]], and [[Niels Kaj Jerne]]—used Chomsky's generative model to explain the human immune system,{{sfn|Nobel Lecture|1984}} equating "components of a generative grammar ... with various features of protein structures."{{sfn|Jerne|1984}} Chomsky's theory of generative grammar has also influenced work in [[music theory]] and [[musical analysis|analysis]].{{sfn|Baroni|Callegari|1982|pp=201–218}}{{sfn|Steedman|1984|pp=52–77}}{{sfn|Rohrmeier|2007|pp=97–100}}
+
+An MIT press release stated that Chomsky was cited within the [[Arts and Humanities Citation Index]] more often than any other living scholar from 1980 to 1992.{{sfn|MIT|1992}} Chomsky was also extensively cited in the [[Social Sciences Citation Index]] and [[Science Citation Index]] during the same time period, with the librarian who conducted the research commenting that the statistics show that "he is very widely read across disciplines and that his work is used by researchers across disciplines ... it seems that you can't write a paper without citing Noam Chomsky."{{sfn|Knight|2016|p=2}} As a result of his influence, there are dueling camps of Chomskyan and non-Chomskyan linguistics, with the disputes between the two camps often acrimonious.{{sfn|Boden|2006|p=593}}
+
+===In politics===
+Chomsky's status as the "most-quoted living author" is credited to his political writings, which vastly outnumber his writings on linguistics.{{sfn|Boden|2006|p=592}} Chomsky biographer Wolfgang B. Sperlich characterizes him as "one of the most notable contemporary champions of the people";{{sfn|Sperlich|2006|p=7}} journalist [[John Pilger]] has described him as a "genuine people's hero; an inspiration for struggles all over the world for that basic decency known as freedom. To a lot of people in the margins—activists and movements—he's unfailingly supportive."{{sfn|Jaggi|2001}} [[Arundhati Roy]] has called him "one of the greatest, most radical public thinkers of our time",{{sfn|Sperlich|2006|p=114}} and [[Edward Said]] thought him "one of the most significant challengers of unjust power and delusions".{{sfn|Jaggi|2001}} [[Fred Halliday]] has said that by the start of the 21st century Chomsky had become a "guru" for the world's anti-capitalist and anti-imperialist movements.{{sfn|Jaggi|2001}} The propaganda model of media criticism that he and Herman developed has been widely accepted in radical media critiques and adopted to some level in mainstream criticism of the media,{{sfn|Sperlich|2006|p=129}} also exerting a significant influence on the growth of [[alternative media]], including radio, publishers, and the Internet, which in turn have helped to disseminate his work.{{sfn|Sperlich|2006|p=142}}
+
+Sperlich also notes that Chomsky has been vilified by corporate interests, particularly in the mainstream press.{{sfn|Sperlich|2006|p=10}} University departments devoted to history and political science rarely include Chomsky's work on their undergraduate syllabi.{{sfn|Barsky|1997|pp=153–154}} Critics have argued that despite publishing widely on social and political issues, Chomsky has no formal expertise in these areas; he has responded that such issues are not as complex as many [[social science|social scientists]] claim and that almost everyone is able to comprehend them regardless of whether they have been academically trained to do so.{{sfn|McGilvray|2014|p=161}} According to McGilvray, many of Chomsky's critics "do not bother quoting his work or quote out of context, distort, and create straw men that cannot be supported by Chomsky's text".{{sfn|McGilvray|2014|p=161}}
+
+Chomsky drew criticism for not calling the [[Srebrenica massacre]] during the [[Bosnian War]] a "genocide", which he said would devalue the word,{{sfn|Braun|2018}} and in appearing to deny [[Ed Vulliamy]]'s reporting on the existence of Bosnian concentration camps. The subsequent editorial correction of his comments, viewed as a capitulation, was criticized by multiple Balkan watchers.{{sfn|Nettelfield|2010|p=142}}
+
+Chomsky's far-reaching criticisms of U.S. foreign policy and the legitimacy of U.S. power have raised controversy. A document obtained pursuant to a [[Freedom of Information Act (United States)|Freedom of Information Act]] (FOIA) request from the U.S. government revealed that the [[Central Intelligence Agency]] (CIA) monitored his activities and for years denied doing so. The CIA also destroyed its files on Chomsky at some point, possibly in violation of federal law.{{sfn|Hudson|2013}} He has often received undercover police protection at MIT and when speaking on the Middle East, but has refused uniformed police protection.{{sfn|Rabbani|2012}} German newspaper ''[[Der Spiegel]]'' described Chomsky as "the Ayatollah of anti-American hatred",{{sfn|Sperlich|2006|p=10}} while [[American conservatism|conservative]] commentator [[David Horowitz]] called him "the most devious, the most dishonest and&nbsp;... the most treacherous intellect in America", whose work is infused with "anti-American dementia" and evidences his "pathological hatred of his own country".{{sfn|Horowitz|2001}} Writing in ''[[Commentary (magazine)|Commentary]]'' magazine, the journalist [[Jonathan Kay]] described Chomsky as "a hard-boiled anti-American monomaniac who simply refuses to believe anything that any American leader says".{{sfn|Kay|2011}}
+
+Chomsky's criticism of Israel has led to his being called a traitor to the Jewish people and an [[anti-Semitism|anti-Semite]].{{sfn|Sperlich|2006|p=100}} Criticizing Chomsky's defense of the right of individuals to engage in Holocaust denial on the grounds that freedom of speech must be extended to all viewpoints, [[Werner Cohn]] called Chomsky "the most important patron" of the [[Neo-Nazism|neo-Nazi]] movement.{{sfn|Cohn|1995|p=37}} The [[Anti-Defamation League]] (ADL), called him a Holocaust denier,{{sfn|Sperlich|2006|p=101}} describing him as a "dupe of intellectual pride so overweening that he is incapable of making distinctions between totalitarian and democratic societies, between oppressors and victims".{{sfn|Sperlich|2006|p=101}} In turn, Chomsky has claimed that the ADL is dominated by "Stalinist types" who oppose democracy in Israel.{{sfn|Sperlich|2006|p=100}} The lawyer [[Alan Dershowitz]] has called Chomsky a "false prophet of the left";{{sfn|Barsky|1997|p=170}} Chomsky called Dershowitz "a complete liar" who is on "a crazed jihad, dedicating much of his life to trying to destroy my reputation".{{sfn|Barsky|1997|pp=170–171}} In early 2016 President [[Recep Tayyip Erdoğan]] of Turkey publicly rebuked Chomsky after he signed an [[open letter]] condemning Erdoğan for his [[Kurdish–Turkish conflict (1978–present)#2015 PKK rebellion|anti-Kurdish repression]] and double standards on terrorism.{{sfn|Weaver|2016}} Chomsky accused Erdoğan of hypocrisy, noting that Erdoğan supports [[al-Qaeda]]'s Syrian affiliate,{{sfn|Sengupta|2015}} the [[al-Nusra Front]].{{sfn|Weaver|2016}}
+
+In February 2020, before attending the 2020 [[Hay Festival]] in [[Abu Dhabi]], [[United Arab Emirates]], Chomsky signed a letter of condemnation of the violation of freedom of speech in the emirate, referring to the arrest of human rights activist [[Ahmed Mansoor]]. Other signers included authors [[Stephen Fry]] and [[Jung Chang]].{{sfn|Flood|2020}}
+
+===Academic achievements, awards, and honors===
+{{See also|List of honorary degrees awarded to Noam Chomsky}}
+[[File:Chomsky and Krieger.jpg|thumb|left|Chomsky receiving an award from the president of the [[Nuclear Age Peace Foundation]], David Krieger (2014)]]
+
+In 1970, the London ''[[The Times|Times]]'' named Chomsky one of the "makers of the twentieth century".{{sfn|Baughman et al.|2006}} He was voted the world's leading [[public intellectual]] in [[The 2005 Global Intellectuals Poll]] jointly conducted by American magazine ''[[Foreign Policy]]'' and British magazine [[Prospect (magazine)|''Prospect'']].{{sfn|''Foreign Policy''|2005}} ''[[New Statesman]]'' readers listed Chomsky among the world's foremost heroes in 2006.{{sfn|Cowley|2006}}
+
+In the United States he is a [[Member of the National Academy of Sciences]], the [[American Academy of Arts and Sciences]], the [[Linguistic Society of America]], the [[American Philosophical Association]], and the [[American Association for the Advancement of Science]].{{sfn|Contemporary Authors Online|2016}} Abroad he is a corresponding fellow of the [[British Academy]], an honorary member of the [[British Psychological Society]], a member of the [[Deutsche Akademie der Naturforscher Leopoldina]],{{sfn|Contemporary Authors Online|2016}} and a foreign member of the Department of Social Sciences of the [[Serbian Academy of Sciences and Arts]].{{sfn|SASA foreign membership|2003}} He received a 1971 [[Guggenheim Fellowship]], the 1984 [[American Psychological Association Award for Distinguished Contributions to Psychology]], the 1988 [[Kyoto Prize in Basic Sciences]], the 1996 [[Helmholtz Medal]],{{sfn|Contemporary Authors Online|2016}} the 1999 [[Benjamin Franklin Medal (Franklin Institute)|Benjamin Franklin Medal in Computer and Cognitive Science]],{{sfn|MIT Linguistics Program|2002}} the 2010 [[Erich Fromm Prize]],{{sfn|Deutsche Presse-Agentur|2010}} and the [[British Academy]]'s 2014 [[Neil and Saras Smith Medal for Linguistics]].{{sfn|British Academy|2014}} He is also a two-time winner of the [[NCTE George Orwell Award for Distinguished Contribution to Honesty and Clarity in Public Language]] (1987 and 1989).{{sfn|Contemporary Authors Online|2016}} He has also received the Rabindranath Tagore Centenary Award from [[The Asiatic Society]].{{sfn|''Soundings''|2002}}
+
+Chomsky received the 2004 [[Carl von Ossietzky|Carl-von-Ossietzky]] Prize from the city of [[Oldenburg (city)|Oldenburg, Germany]], to acknowledge his body of work as a political analyst and media critic.{{sfn|Inventio Musikverlag}} He received an honorary fellowship in 2005 from the [[Literary and Historical Society (University College Dublin)|Literary and Historical Society of University College Dublin]].{{sfn|Soundtracksforthem: Interview|2005}} He received the 2008 President's Medal from the Literary and Debating Society of the [[National University of Ireland, Galway]].{{sfn|Desmond Tutu to speak to Litndeb|2009}} Since 2009, he has been an honorary member of [[International Association of Professional Translators and Interpreters]] (IAPTI).{{sfn|Honorary Members of IAPTI}} He received the University of Wisconsin's A.E. Havens Center's Award for Lifetime Contribution to Critical Scholarship{{sfn|UoW–M|2010}} and was inducted into [[IEEE Intelligent Systems]]' AI's Hall of Fame for "significant contributions to the field of AI and intelligent systems."{{sfn|Digital Journal|2011}} Chomsky has an [[Erdős number]] of four.{{sfn|Erdös Number at Oakland Univ|2017}}
+
+In 2011, the US Peace Memorial Foundation awarded Chomsky the [[US Peace Prize]] for anti-war activities over five decades.{{sfn|US Memorial Peace Foundation}} For his work in human rights, peace, and social criticism, he received the 2011 [[Sydney Peace Prize]]<!--"unfailing courage, critical analysis of power and promotion of human rights"-->,{{sfn|Huxley|2011}} the 2017 [[Seán MacBride Peace Prize]]<!--"for his tireless commitment to peace, his strong critiques to U.S. foreign policy, and his anti-imperialism"-->{{sfn|IPB|2017}} and the Dorothy Eldridge Peacemaker Award.{{sfn|MIT Linguistics Program|2002}}
+
+Chomsky has received honorary doctorates from institutions including the [[University of London]] and the [[University of Chicago]] (1967), [[Loyola University Chicago]] and [[Swarthmore College]] (1970), [[Bard College]] (1971), [[Delhi University]] (1972), and the [[University of Massachusetts]] (1973) [[List of honorary degrees awarded to Noam Chomsky|among others]].{{sfnm|1a1=Lyons|1y=1978|1pp=xv–xvi|2a1=Barsky|2y=1997|2pp=120, 143}} His [[public lectures]] have included the 1969 [[John Locke Lectures]],{{sfn|MIT Linguistics Program|2002}} 1975 [[Whidden Lectures]],{{sfn|Barsky|1997|p=156}} 1977 [[Huizinga Lecture]], and 1988 [[Massey Lectures]], among others.{{sfn|MIT Linguistics Program|2002}}
+
+Various tributes to Chomsky have been dedicated over the years. He is the [[:wikt:eponym|eponym]] for [[Megachile chomskyi|a bee species]],{{sfn|Pensoft (bee)}} a frog species,{{sfn|Páez|2019}} and a building complex at the Indian university [[Jamia Millia Islamia]].{{sfn|JMI|2007}} Actor [[Viggo Mortensen]] and avant-garde guitarist [[Buckethead]] dedicated their 2003 album ''[[Pandemoniumfromamerica]]'' to Chomsky.{{sfn|Viggo Mortensen's Spoken Word & Music CDs}}
+
+== Selected bibliography ==
+{{Main|Noam Chomsky bibliography and filmography}}
+
+{{col-begin}}
+{{col-3}}
+
+'''Linguistics'''
+* ''[[Syntactic Structures]]'' (1957)
+* ''[[Current Issues in Linguistic Theory]]'' (1964)
+* ''[[Aspects of the Theory of Syntax]]'' (1965)
+* ''[[Cartesian Linguistics]]'' (1965)
+* ''[[Language and Mind]]'' (1968)
+* ''[[The Sound Pattern of English]]'' with [[Morris Halle]] (1968)
+* ''[[Reflections on Language]]'' (1975)
+* ''[[Lectures on Government and Binding]]'' (1981)
+* ''[[The Minimalist Program]]'' (1995)
+{{col-3}}
+
+'''Politics'''
+* ''[[American Power and the New Mandarins]]'' (1969)
+* ''[[Counter-Revolutionary Violence: Bloodbaths in Fact & Propaganda]]'' with [[Edward S. Herman]] (1973)
+* ''[[The Political Economy of Human Rights]]'' (1979)
+* ''[[Towards a New Cold War]]'' (1982)
+* ''[[The Fateful Triangle]]'' (1983)
+* ''[[Pirates and Emperors]]'' (1986)
+* ''[[Manufacturing Consent]]'' (1988)
+* ''[[Necessary Illusions]]'' (1989)
+* ''[[Deterring Democracy]]'' (1991)
+* ''[[Letters from Lexington]]'' (1993)
+* ''[[The Prosperous Few and the Restless Many]]'' (1993)
+* ''[[World Orders Old and New]]'' (1994)
+* ''[[Objectivity and Liberal Scholarship]]'' (1997)
+{{col-3}}
+
+* ''[[Profit over People]]'' (1999)
+* ''[[9-11 (Noam Chomsky)|9-11]]'' (2001)
+* ''[[Understanding Power]]'' (2002)
+* ''[[Middle East Illusions]]'' (2003)
+* ''[[Hegemony or Survival]]'' (2003)
+* ''[[Getting Haiti Right This Time]]'' (2004)
+* ''[[Imperial Ambitions]]'' (2005)
+* ''[[Failed States: The Abuse of Power and the Assault on Democracy]]'' (2006)
+* ''[[Interventions]]'' (2007)
+* ''[[Gaza in Crisis]]'' (2010)
+* ''[[Making the Future]]'' (2012)
+* ''[[Occupy (book)|Occupy]]'' (2012)
+* ''[[Requiem for the American Dream (book)|Requiem for the American Dream]]'' (2017)
+{{col-end}}
+
+==See also==
+<!-- Please keep entries in alphabetical order & add a short description [[WP:SEEALSO]] -->
+{{cols}}
+* [[American philosophy]]
+* [[Theory of language]]
+* ''[[The Anti-Chomsky Reader]]''
+* [[Chomsky (surname)]]<!-- Mainly lists NC's relatives. -->
+* [[Knowledge worker]]
+* [[List of linguists#C|List of linguists]]
+* [[List of peace activists]]
+* [[List of pioneers in computer science]]
+{{colend}}
+
+== Notes ==
+{{notelist|40em| refs =<!-- Please keep the following list-defined references (WP:LDR) in alphabetical order by refname -->
+
+{{efn|name=dissident|
+* {{harvnb|Macintyre|2010}}
+* {{harvnb|Burris|2013}}: "Noam Chomsky has built his entire reputation as a political dissident on his command of the facts."
+* {{harvnb|McNeill|2014}}: "[Chomsky is] often dubbed one of the world's most important intellectuals and its leading public dissident..."
+}}
+
+{{efn|name=father|
+* {{harvnb|Fox|1998}}: "Mr. Chomsky&nbsp;... is the father of modern linguistics and remains the field's most influential practitioner."
+* {{harvnb|Tymoczko|Henle|2004|p=101}}: "As the founder of modern linguistics, Noam Chomsky, observed, each of the following sequences of words is nonsense&nbsp;..."
+* {{harvnb|Tanenhaus|2016}}: "At 87, Noam Chomsky, the founder of modern linguistics, remains a vital presence in American intellectual life."
+}}
+
+{{efn|name=important|
+* {{harvnb|McNeill|2014}}: "[Chomsky is] often dubbed one of the world's most important intellectuals ..."
+* {{harvnb|Campbell|2005}}: "Noam Chomsky, the linguistics professor who has become one of the most outspoken critics of US foreign policy, has won a poll that names him as the world's top public intellectual."
+* {{harvnb|Robinson|1979}}: "Judged in terms of the power, range, novelty and influence of his thought, Noam Chomsky is arguably the most important intellectual alive today."
+* {{harvnb|Flint|1995}}: "The man once called the most important intellectual alive keeps his office in ... the campus of the Massachusetts Institute of Technology."
+}}
+
+}}<!-- Please keep the above list-defined references (WP:LDR) in alphabetical order by refname -->
+
+===Citations===
+{{Reflist|20em}}
+
+==Sources==
+{{Refbegin|30em|indent=yes}}
+*{{cite news| title = Noam Chomsky: Thorn in America's side
+ | last = Adams | first = Tim
+ | newspaper = the Guardian
+ | url = https://www.theguardian.com/books/2003/nov/30/highereducation.internationaleducationnews
+ | date = November 30, 2003 | access-date = May 8, 2016
+}}
+*{{cite news| title = Chomsky s'est exposé, il est donc une cible désignée
+ | last = Aeschimann | first = Eric
+ | newspaper = [[Libération]]
+ | language = fr
+ | url = http://www.liberation.fr/monde/0101638536-chomsky-s-est-expose-il-est-donc-une-cible-designee
+ | date = May 31, 2010 | access-date = June 8, 2010
+ | quote = {{lang|fr|Chomsky a été violemment blessé du fait qu'une partie des intellectuels français aient pu le croire en accord avec Faurisson, en contradiction avec tous ses engagements et toute sa vie.}}
+}}
+*{{Cite book| title = Remembering Tomorrow: From the politics of opposition to what we are for
+ | last = Albert | first = Michael | year = 2006
+ | publisher = Seven Stories Press
+ | pages = 97–99
+ | isbn = 978-1583227428
+}}
+*{{Cite book| title = Chomsky and His Critics
+ | editor1-last = Antony | editor1-first = Louise M.
+ | editor2-last = Hornstein | editor2-first = Norbert
+ | year = 2003
+ | publisher = Blackwell Publishing | location = Malden, MA
+ | url = https://archive.org/details/chomskyhiscritic00anto | url-access = limited
+ | page = [https://archive.org/details/chomskyhiscritic00anto/page/n303 295]
+ | isbn = 978-0-631-20021-5
+}}
+*{{cite web| title = Archbishop Desmond Tutu to speak to Litndeb
+ | url = http://www.literaryanddebating.com/press/80-archbishop-desmond-tutu-to-speak-to-litndeb
+ | archive-url = https://web.archive.org/web/20110511134531/http://www.literaryanddebating.com/press/80-archbishop-desmond-tutu-to-speak-to-litndeb
+ | date = January 9, 2009 | access-date = May 10, 2016 | archive-date = May 11, 2011
+ | ref = {{harvid|Desmond Tutu to speak to Litndeb|2009}}
+}}
+*{{cite news| title = Author, activist Noam Chomsky to receive award
+ | publisher = [[University of Wisconsin–Madison]]
+ | url = http://www.news.wisc.edu/17889
+ | date = March 29, 2010 | access-date = May 10, 2016
+ | ref = {{harvid|UoW–M|2010}}
+}}
+*{{Cite book| title = Musical grammars and computer analysis
+ | editor1-last = Baroni | editor1-first = M.
+ | editor2-last = Callegari | editor2-first = L.
+ | year = 1982
+ | publisher = [[Leo S. Olschki Editore]] | location = Firenze
+ | pages = 201–218
+ | isbn = 978-8822232298
+}}
+*{{cite book| title = Noam Chomsky: A Life of Dissent
+ | last = Barsky | first = Robert F. | year = 1997
+ | author-link = Robert Barsky
+ | publisher = [[MIT Press]] | location = Cambridge, MA
+ | isbn = 978-0-262-02418-1
+}}
+*{{Cite book| title = The Chomsky Effect: A Radical Works Beyond the Ivory Tower
+ | last = Barsky | first = Robert F. | year = 2007
+ | publisher = MIT Press
+ | url = https://archive.org/details/chomskyeffectrad00bars | url-access = limited
+ | page = [https://archive.org/details/chomskyeffectrad00bars/page/n125 107]
+ | isbn = 978-0262026246
+}}
+*{{Cite book| chapter = Noam Chomsky
+ | title = American Decades
+ | editor1-last = Baughman | editor1-first = Judith S.
+ | editor2-last = Bondi | editor2-first = Victor
+ | editor3-last = Layman | editor3-first = Richard
+ | editor4-last = McConnell | editor4-first = Tandy
+ | editor5-last = Tompkins | editor5-first = Vincent
+ | publisher = [[Gale (publisher)|Gale]] | location = Detroit, MI
+ | chapter-url = http://link.galegroup.com/apps/doc/K1602000339/BIC?sid=BIC&xid=e006a1d5
+ | date = 2006
+ | ref = {{harvid|Baughman et al.|2006}}
+}}
+*{{cite news| title = Chomsky à Paris: chronique d'un malentendu
+ | last = Birnbaum | first = Jean
+ | newspaper = [[Le Monde]]
+ | language = fr
+ | url = http://www.lemonde.fr/livres/article/2010/06/03/chomsky-a-paris-chronique-d-un-malentendu_1367002_3260.html
+ | date = June 3, 2010 | access-date = June 8, 2010
+ | quote = {{lang|fr|Le pays de Descartes ignore largement ce rationaliste, la patrie des Lumières se dérobe à ce militant de l'émancipation. Il le sait, et c'est pourquoi il n'y avait pas mis les pieds depuis un quart de siècle.}}
+}}
+*{{cite news| title = Chomsky: Hrvati, Srbi i Bošnjaci govore isti jezik
+ | trans-title = Chomsky: Croats, Serbs and Bosniaks Speak the Same Language
+ | last = Bobanović | first = Paula
+ | newspaper = Express.hr | location = Zagreb
+ | language = Serbo-Croatian
+ | url = https://www.express.hr/kultura/chomsky-hrvati-srbi-i-bosnjaci-govore-isti-jezik-14973 | url-status = live
+ | archive-url = https://web.archive.org/web/20180807155526/https://www.express.hr/kultura/chomsky-hrvati-srbi-i-bosnjaci-govore-isti-jezik-14973
+ | date = April 14, 2018 | access-date = July 9, 2018 | archive-date = August 7, 2018
+}}
+*{{Cite book| title = Mind As Machine: a History of Cognitive Science
+ | last = Boden | first = Margaret A. | year = 2006
+ | publisher = Oxford University Press
+ | url = https://archive.org/details/mindasmachinehis0001bode | url-access = registration
+ | isbn = 978-0199241446
+}}
+*{{cite news| title = Dissident intellectual Noam Chomsky at 90
+ | last = Braun | first = Stuart | year = 2018
+ | publisher = Deutsche Welle
+ | url = https://www.dw.com/en/dissident-intellectual-noam-chomsky-at-90/a-46629642
+}}
+*{{cite news| title = British Academy announces 2014 prize and medal winners
+ | publisher = British Academy
+ | url = http://www.britac.ac.uk/news/british-academy-announces-2014-prize-and-medal-winners
+ | date = July 24, 2014 | access-date = July 30, 2017
+ | ref = {{harvid|British Academy|2014}}
+}}
+*{{Cite news| title = Israel Roiled After Chomsky Barred From West Bank
+ | last = Bronner | first = Ethan
+ | newspaper = The New York Times
+ | url = https://www.nytimes.com/2010/05/18/world/middleeast/18chomsky.html
+ | date = May 17, 2010 | access-date = May 4, 2016
+ | issn = 0362-4331
+}}
+*{{Cite news| title = What the Chomsky-Žižek debate tells us about Snowden's NSA revelations
+ | last = Burris | first = Greg
+ | newspaper = [[The Guardian]]
+ | url = https://www.theguardian.com/commentisfree/2013/aug/11/chomsky-zizek-debate-snowden-nsa
+ | date = August 11, 2013
+}}
+*{{Cite book| chapter = Chomsky hierarchy
+ | title = A Dictionary of Computer Science
+ | editor1-last = Butterfield | editor1-first = Andrew
+ | editor2-last = Ngondi | editor2-first = Gerard Ekembe
+ | editor3-last = Kerr | editor3-first = Anne
+ | year = 2016
+ | publisher = Oxford University Press
+ | chapter-url = http://www.oxfordreference.com/view/10.1093/acref/9780199688975.001.0001/acref-9780199688975-e-729
+ | isbn = 978-0-19-968897-5
+}}
+*{{Cite news| title = Chomsky is voted world's top public intellectual
+ | last = Campbell | first = Duncan
+ | newspaper = [[The Guardian]]
+ | url = https://www.theguardian.com/world/2005/oct/18/books.highereducation
+ | date = October 18, 2005
+ | issn = 0261-3077
+}}
+*{{cite web| title = Chomsky
+ | publisher = inventio-musikverlag.de
+ | url = http://www.inventio-musikverlag.de/shop/chomsky/
+ | access-date = May 11, 2016
+ | ref = {{harvid|Inventio Musikverlag}}
+}}
+*{{cite web| title = Chomsky Amid the Philosophers
+ | publisher = University of East Anglia
+ | url = http://www.uea.ac.uk/~j108/chomsky.htm
+ | access-date = January 8, 2014
+ | ref = {{harvid|Amid the Philosophers}}
+}}
+*{{Cite news| title = Chomsky Is Citation Champ
+ | newspaper = [[MIT Tech Talk]]
+ | volume = 36 | number = 27
+ | url = https://news.mit.edu/1992/citation-0415 | via = MIT News
+ | date = April 15, 1992 | access-date = September 21, 2019
+ | ref = {{harvid|''MIT Tech Talk''|1992}}
+}}
+*{{cite news| title = Chomsky is Citation Champ
+ | publisher = [[MIT]]
+ | url = http://web.mit.edu/newsoffice/1992/citation-0415.html
+ | date = April 15, 1992 | access-date = September 3, 2007
+ | ref = {{harvid|MIT|1992}}
+}}
+*{{cite web| title = The 'Chomskyan Era' (excerpted from The Architecture of Language)
+ | last = Chomsky | first = Noam
+ | website = Chomsky.info
+ | url = https://chomsky.info/architecture01/
+ | access-date = January 3, 2017
+}}
+*{{Cite book| title = Linguistics and Cognitive Science: Problems and Mysteries
+ | last = Chomsky | first = Noam | year = 1991
+ | editor-last = Kasher | editor-first = Asa
+ | publisher = Blackwell | location = Oxford
+ | page = 50
+}}
+*{{Cite book| title = Class Warfare: Interviews with David Barsamian
+ | last = Chomsky | first = Noam | year = 1996
+ | publisher = Pluto Press
+ | pages = 135–136
+ | isbn = 978-0745311371
+}}
+*{{Cite web| title = Is the US Ready for Socialism? An Interview With Noam Chomsky
+ | last = Chomsky | first = Noam
+ | interviewer = C.J. Polychroniou
+ | website = [[Truthout]]
+ | url = https://truthout.org/articles/is-the-us-ready-for-socialism-an-interview-with-noam-chomsky/
+ | date = May 18, 2016 | access-date = July 19, 2019
+}} also available, in part, on [https://chomsky.info/05182016/ chomsky.info].
+*{{Cite news| title = Chomsky: Saudi Arabia is the "Center of Radical Islamic Extremism" Now Spreading Among Sunni Muslims
+ | website = [[Democracy Now!]]
+ | url = http://www.democracynow.org/2016/5/17/chomsky_saudi_arabia_is_the_center
+ | date = May 17, 2016
+ | ref = {{harvid|''Democracy Now!''|2016}}
+}}
+*{{Cite journal | title = Language as shaped by the brain
+ | last1 = Christiansen | first1 = Morten H.
+ | last2 = Chater | first2 = Nick
+ | author1-link = Morten H. Christiansen
+ | journal = Behavioral and Brain Sciences
+ | date = October 2010 | volume = 31 | issue = 5 | pages = 489–509
+ | doi = 10.1017/S0140525X08004998 | issn = 1469-1825 | pmid = 18826669
+}}
+*{{cite journal | title = Some reflections on Chomsky's notion of reference
+ | last = Cipriani | first = Enrico
+ | journal = Linguistics Beyond and within
+ | year = 2016 | volume = 2 | pages = 44–60
+}}
+*{{Cite book| title = Partners in Hate: Noam Chomsky and the Holocaust Deniers
+ | last = Cohn | first = Werner | year = 1995
+ | orig-year = First published 1985
+ | publisher = Avukah Press | location = Cambridge, MA
+ | isbn = 978-0-9645897-0-4
+}}
+*{{cite news| title = New Statesman – Heroes of our time – the top 50
+ | last = Cowley | first = Jason
+ | magazine = [[New Statesman]]
+ | url = http://www.newstatesman.com/200605220016 | url-status = dead
+ | archive-url = https://web.archive.org/web/20061227165815/http://www.newstatesman.com/200605220016
+ | date = May 22, 2006 | access-date = December 9, 2015 | archive-date = December 27, 2006
+}}
+*{{cite book| title = Computability, complexity, and languages: fundamentals of theoretical computer science | edition = 2nd
+ | last1 = Davis | first1 = Martin
+ | last2 = Weyuker | first2 = Elaine J.
+ | last3 = Sigal | first3 = Ron
+ | author1-link = Martin Davis (mathematician)
+ | author2-link = Elaine Weyuker
+ | year = 1994
+ | publisher = Academic Press, Harcourt, Brace | location = Boston
+ | url = https://archive.org/details/computabilitycom00davi_405 | url-access = limited
+ | page = [https://archive.org/details/computabilitycom00davi_405/page/n345 327]
+ | isbn = 978-0-12-206382-4
+}}
+*{{cite news| title = Denied Entry: Israel Blocks Noam Chomsky from Entering West Bank to Deliver Speech
+ | website = Democracy Now!
+ | url = http://www.democracynow.org/2010/5/17/denied_entry_israel_blocks_noam_chomsky
+ | date = May 17, 2010 | access-date = May 4, 2016
+ | ref = {{harvid|''Democracy Now!''|2010}}
+}}
+*{{Cite news| title = Noam Chomsky's Theory Of Universal Grammar Is Right; It's Hardwired Into Our Brains
+ | last = Dovey | first = Dana
+ | newspaper = Medical Daily
+ | url = http://www.medicaldaily.com/noam-chomskys-theory-universal-grammar-right-its-hardwired-our-brains-364236
+ | date = December 7, 2015 | access-date = August 4, 2017
+}}
+*{{cite web| title = The Erdös Number Project
+ | publisher = Oakland University
+ | url = http://www.oakland.edu/enp/erdpaths/
+ | date = November 21, 2017 | access-date = December 18, 2017
+ | ref = {{harvid|Erdös Number at Oakland Univ|2017}}
+}}
+*{{Cite news| title = Erich-Fromm-Preis: Noam Chomsky in Stuttgart geehrt
+ | newspaper = [[Stuttgarter Zeitung]]
+ | language = de
+ | agency = [[Deutsche Presse-Agentur]]
+ | url = https://www.stuttgarter-zeitung.de/inhalt.erich-fromm-preis-noam-chomsky-in-stuttgart-geehrt.9bfe6567-b195-45f1-acf4-6d9d19831972.html
+ | date = March 23, 2010 | access-date = August 22, 2019
+ | ref = {{harvid|Deutsche Presse-Agentur|2010}}
+}}
+*{{cite journal | title = The myth of language universals: Language diversity and its importance for cognitive science
+ | last1 = Evans | first1 = Nicholas
+ | last2 = Levinson | first2 = Stephen C.
+ | author1-link = Nicholas Evans (linguist)
+ | author2-link = Stephen C. Levinson
+ | journal = [[Behavioral and Brain Sciences]]
+ | date = October 2009 | volume = 32 | issue = 5 | pages = 429–448
+ | doi = 10.1017/S0140525X0999094X | issn = 1469-1825 | pmid = 19857320
+ | doi-access = free
+}}
+*{{cite web| title = Elsie Chomsky: A Life in Jewish Education
+ | last = Feinberg | first = Harriet
+ | publisher = Brandeis University | location = Cambridge, Mass.
+ | url = http://www.brandeis.edu/hbi/pubs/Feinbergworkingpaper.pdf | url-status = dead
+ | archive-url = https://web.archive.org/web/20080511163046/http://www.brandeis.edu/hbi/pubs/Feinbergworkingpaper.pdf
+ | date = February 1999 | access-date = January 10, 2019 | archive-date = May 11, 2008
+}}
+*{{cite news| title = Tickets on sale for Tucson talk on nuclear war with Noam Chomsky, Daniel Ellsberg
+ | last = Ferguson | first = Joe
+ | newspaper = Arizona Daily Star
+ | url = https://tucson.com/news/local/tickets-on-sale-for-tucson-talk-on-nuclear-war-with/article_66bf8396-1b21-5af5-9843-79bcbf551fd0.html
+ | access-date = July 27, 2018
+}}
+*{{cite news| title = Divided Legacy
+ | last = Flint | first = Anthony
+ | newspaper = [[The Boston Globe]]
+ | page = 25
+ | date = November 19, 1995
+ | id = {{proquest|290754647}} | issn = 0743-1791
+}}
+*{{cite news| title = As Hay festival opens in the UAE, authors condemn free speech abuses
+ | last = Flood | first = Alison
+ | newspaper = The Guardian
+ | url = https://www.theguardian.com/books/2020/feb/24/as-hay-festival-opens-in-the-uae-authors-condemn-free-speech-abuses
+ | date = February 24, 2020 | access-date = February 24, 2020
+}}
+*{{Cite news| title = A Changed Noam Chomsky Simplifies
+ | last = Fox | first = Margalit
+ | newspaper = The New York Times
+ | url = https://www.nytimes.com/1998/12/05/arts/a-changed-noam-chomsky-simplifies.html
+ | date = December 5, 1998 | access-date = February 22, 2016
+ | issn = 0362-4331
+}}
+*{{cite book| title = The Textbook and the Lecture: Education in the Age of New Media
+ | last = Friesen | first = Norm
+ | author-link = Norm Friesen
+ | publisher = [[Johns Hopkins University Press]]
+ | date = December 10, 2017
+ | isbn = 978-1421424347
+}}
+*{{cite news| title = John W. Backus (1924–2007)
+ | last = Fulton | first = Scott M., III
+ | publisher = BetaNews
+ | url = http://betanews.com/2007/03/20/john-w-backus-1924-2007/
+ | date = March 20, 2007
+}}
+*{{cite book| chapter = 15: Noam Chomsky and the Question of Palestine/Israel: Bearing Witness
+ | last = Gendzier | first = Irene | year = 2017
+ | title = The Cambridge Companion to Chomsky | edition = 2nd
+ | editor-last = McGilvray | editor-first = James
+ | publisher = Cambridge University Press
+ | pages = 314–329
+ | isbn = 978-1316738757
+}}
+*{{Cite web| title = It is not a war. It is murder
+ | last = Glaser | first = John
+ | website = [[antiwar.com]]
+ | url = https://www.antiwar.com/blog/2012/11/18/it-is-not-a-war-it-is-murder/ | url-status = live
+ | archive-url = https://web.archive.org/web/20171108175454/http://www.antiwar.com/blog/2012/11/18/it-is-not-a-war-it-is-murder/
+ | date = November 18, 2012 | access-date = June 13, 2019 | archive-date = November 8, 2017
+}}
+*{{Cite news| title = Review: Noam Chomsky Focuses on Financial Inequality in 'Requiem for the American Dream'
+ | last = Gold | first = Daniel M.
+ | newspaper = The New York Times
+ | url = https://www.nytimes.com/2016/01/29/movies/review-noam-chomsky-focuses-on-financial-inequality.html
+ | date = January 28, 2016 | access-date = June 1, 2016
+ | issn = 0362-4331
+}}
+*{{Cite book| title = Official Transcript for Gould's deposition in McLean v. Arkansas
+ | last = Gould | first = S. J. | year = 1981
+ | url = http://www.antievolution.org/projects/mclean/new_site/depos/pf_gould_dep.htm
+}}
+*{{Cite book| chapter = Behaviorism
+ | last = Graham | first = George
+ | title = Stanford Encyclopedia of Philosophy | edition = Spring 2019
+ | title-link = Stanford Encyclopedia of Philosophy
+ | editor-last = Zalta | editor-first = Edward N.
+ | publisher = Metaphysics Research Lab, Stanford University
+ | chapter-url = https://plato.stanford.edu/archives/spr2019/entries/behaviorism/
+ | date = 2019
+}}
+*{{Cite book| title = The Age of the Crisis of Man: Thought and Fiction in America, 1933–1973
+ | title-link = The Age of the Crisis of Man: Thought and Fiction in America, 1933–1973
+ | last = Greif | first = Mark
+ | author-link = Mark Greif
+ | publisher = Princeton University Press | location = Princeton, N.J.
+ | date = 2015
+ | isbn = 978-0-691-14639-3
+}}
+*{{cite book| chapter = Extracts form 'An historian's appraisal of the political writings of Noam Chomsky'
+ | last = Harbord | first = Shaun | year = 1994
+ | title = Noam Chomsky: Critical Assessments, Volumes 2–3
+ | editor-last = Otero | editor-first = Carlos Peregrín
+ | publisher = Taylor & Francis
+ | chapter-url = https://books.google.com/books?id=MRdIAV5IVgoC&pg=PA487
+ | page = 487
+ | isbn = 978-0-415-10694-8
+}}
+*{{Cite book| chapter = Transformational Grammar: Evolution
+ | last = Harlow | first = S. J.
+ | title = Concise Encyclopedia of Philosophy of Language and Linguistics
+ | editor1-last = Barber | editor1-first = Alex
+ | editor2-last = Stainton | editor2-first = Robert J.
+ | publisher = Elsevier
+ | url = https://archive.org/details/conciseencyclope00barb | url-access = limited
+ | date = 2010 | pages = [https://archive.org/details/conciseencyclope00barb/page/n774 752]–770
+ | isbn = 978-0-08-096501-7
+}}
+*{{cite book| chapter = Chomsky's other Revolution
+ | last = Harris | first = R. Allen | year = 2010
+ | title = Chomskyan (R)evolutions
+ | editor-last = Kibbee | editor-first = Douglas A.
+ | publisher = [[John Benjamins Publishing Company]] | location = Amsterdam and Philadelphia, PA
+ | url = https://archive.org/details/chomskyanrevolut00kibb | url-access = limited
+ | pages = [https://archive.org/details/chomskyanrevolut00kibb/page/n249 237]–265
+ | isbn = 978-90-272-1169-9
+}}
+*{{cite news| title = Noam Chomsky to Teach Politics Course In Spring
+ | last = Harwood | first = Lori
+ | newspaper = [[University of Arizona|UA News]]
+ | url = https://uanews.arizona.edu/story/noam-chomsky-teach-politics-course-spring
+ | date = November 21, 2016
+}}
+*{{cite web| title = Honorary Members of IAPTI
+ | publisher = [[International Association of Professional Translators and Interpreters]]
+ | url = https://www.iapti.org/honorary_members/
+ | access-date = December 26, 2016
+ | ref = {{harvid|Honorary Members of IAPTI}}
+}}
+*{{cite news| title = Honors & Awards
+ | magazine = Soundings
+ | url = http://web.mit.edu/shass/soundings/issue_02f/dep_honors_02f.html
+ | date = Fall 2002 | access-date = May 12, 2016
+ | ref = {{harvid|''Soundings''|2002}}
+}}
+*{{Cite book| chapter = Minimalist Program
+ | last = Hornstein | first = Norbert
+ | title = International Encyclopedia of Linguistics
+ | publisher = Oxford University Press
+ | chapter-url = http://www.oxfordreference.com/view/10.1093/acref/9780195139778.001.0001/acref-9780195139778-e-0686
+ | date = 2003
+ | isbn = 978-0-19-513977-8
+}}
+*{{cite web| title = The Sick Mind of Noam Chomsky
+ | last = Horowitz | first = David
+ | website = [[Salon (website)|Salon]]
+ | url = http://www.salon.com/2001/09/26/treason_2/ | url-status = live
+ | archive-url = https://web.archive.org/web/20130506041118/http://www.salon.com/2001/09/26/treason_2
+ | date = September 26, 2001 | archive-date = May 6, 2013
+}}
+*{{cite news| title = Exclusive: After Multiple Denials, CIA Admits to Snooping on Noam Chomsky
+ | last = Hudson | first = John
+ | magazine = Foreign Policy
+ | url = https://foreignpolicy.com/2013/08/13/exclusive-after-multiple-denials-cia-admits-to-snooping-on-noam-chomsky/
+ | date = August 13, 2013 | access-date = December 7, 2016
+}}
+*{{Cite news| title = Sydney Peace Prize goes to Chomsky
+ | last = Huxley | first = John
+ | newspaper = The Sydney Morning Herald
+ | url = https://www.smh.com.au/national/sydney-peace-prize-goes-to-chomsky-20110601-1fgws.html
+ | date = June 2, 2011 | access-date = December 23, 2015
+}}
+*{{cite journal | title = IEEE Computer Society Magazine Honors Artificial Intelligence Leaders
+ | journal = Digital Journal
+ | url = http://www.digitaljournal.com/pr/399442
+ | date = August 24, 2011
+ | ref = {{harvid|Digital Journal|2011}}
+}}
+*{{cite web| title = Interview: Noam Chomsky Speaks Out On Education and Power
+ | website = Soundtracksforthem
+ | url = http://soundtracksforthem.com/blog/?p=81 | url-status = dead
+ | archive-url = https://web.archive.org/web/20110513224447/http://soundtracksforthem.com/blog/?p=81
+ | date = September 20, 2005 | access-date = May 10, 2016 | archive-date = May 13, 2011
+ | ref = {{harvid|Soundtracksforthem: Interview|2005}}
+}}
+*{{cite news| title = Israel: Chomsky ban 'big mistake'
+ | publisher = Al Jazeera
+ | url = http://www.aljazeera.com/news/middleeast/2010/05/201051904343834346.html
+ | date = May 20, 2010 | access-date = May 4, 2016
+ | ref = {{harvid|Al Jazeera|2010}}
+}}
+*{{cite web| title = IWW Biography
+ | publisher = Industrial Workers of the World
+ | url = http://www.iww.org/en/history/biography | url-status = live
+ | archive-url = https://web.archive.org/web/20160317022105/http://www.iww.org/history/biography
+ | access-date = May 9, 2016 | archive-date = March 17, 2016
+ | ref = {{harvid|IWoW biographies}}
+}}
+*{{cite news| title = Conscience of a nation
+ | last = Jaggi | first = Maya
+ | author-link = Maya Jaggi
+ | newspaper = The Guardian
+ | url = https://www.theguardian.com/books/2001/jan/20/society.politics
+ | archive-url = https://web.archive.org/web/20150111052153/http://www.theguardian.com/books/2001/Jan/20/society.politics
+ | date = January 20, 2001 | access-date = May 11, 2016 | archive-date = January 11, 2015
+}}
+*{{cite web| title = Jamia Millia Islamia named a complex honoring Noam Chomsky
+ | publisher = [[Jamia Millia Islamia]]
+ | url = http://jmi.ac.in/bulletinboard/press-releases/latest/Honble_Minister_for_Human_Resource_Development_Shri_Arjun_Singh_visiting_Jamia_Millia_Islamia_on_04_05_2007-459
+ | date = May 3, 2007 | access-date = May 3, 2007
+ | ref = {{harvid|JMI|2007}}
+}}
+*{{cite journal | title = The Generative Grammar of the Immune System
+ | last = Jerne | first = Niels K.
+ | journal = Science
+ | date = December 8, 1984 | volume = 229 | issue = 4718 | pages = 1057–1059
+ | url = https://www.nobelprize.org/uploads/2018/06/jerne-lecture.pdf | url-status = live
+ | archive-url = https://web.archive.org/web/20190703225850/https://www.nobelprize.org/uploads/2018/06/jerne-lecture.pdf
+ | archive-date = July 3, 2019
+ | bibcode = 1985Sci...229.1057J | doi = 10.1126/science.4035345 | pmid = 4035345
+}}
+*{{Cite news| title = Palestinians Divided Over Boycott of Israeli Universities
+ | last = Kalman | first = Matthew
+ | newspaper = [[The New York Times]]
+ | url = https://www.nytimes.com/2014/01/20/world/middleeast/palestinians-divided-over-boycott-of-israeli-universities.html
+ | date = January 19, 2014
+ | issn = 0362-4331
+}}
+*{{cite magazine| title = The Monomania of an Anti-American Prophet
+ | last = Kay | first = Jonathan
+ | magazine = [[Commentary (magazine)|Commentary]]
+ | url = https://www.commentarymagazine.com/culture-civilization/noam-chomskys-monomanical-antiamericanism/ | url-status = live
+ | archive-url = https://web.archive.org/web/20160107055440/https://www.commentarymagazine.com/culture-civilization/noam-chomskys-monomanical-antiamericanism/
+ | date = May 12, 2011 | archive-date = January 7, 2016
+}}
+*{{Cite web| title = Writer, Creator, Journalist, and Uppity Woman: Ann Nocenti
+ | last = Keller | first = Katherine
+ | website = Sequential Tart
+ | url = http://www.sequentialtart.com/article.php?id=737
+ | date = November 12, 2007
+}}
+*{{Cite book| title = Decoding Chomsky: Science and Revolutionary Politics
+ | last = Knight | first = Chris | year = 2016
+ | publisher = Yale University Press
+ | isbn = 978-0300228762
+}}
+*{{Cite news| title = When the Pentagon Looked to Chomsky's Linguistics for their Weapons Systems
+ | last = Knight | first = Chris
+ | website = [[3 Quarks Daily]]
+ | url = http://www.3quarksdaily.com/3quarksdaily/2018/03/when-the-pentagon-looked-to-chomskys-linguistics-for-their-weapons-systems.html
+ | date = March 12, 2018
+}}
+*{{cite book| chapter = Preface
+ | last = Knuth | first = Donald | year = 2002
+ | title = Selected Papers on Computer Languages
+ | publisher = Center for the Study of Language and Information
+ | isbn = 978-1-57586-381-8
+}}
+*{{cite book| chapter = Preface: a mathematical theory of language in which I could use a computer programmer's intuition
+ | last = Knuth | first = Donald E.
+ | title = Selected Papers on Computer Languages
+ | url = https://archive.org/details/selectedpaperson00knut_374 | url-access = limited
+ | date = 2003 | page = [https://archive.org/details/selectedpaperson00knut_374/page/n14 1]
+ | isbn = 1-57586-382-0
+}}
+*{{cite book| title = Knuth: Selected Papers on Computer Languages
+ | publisher = Stanford University
+ | year = 2003
+ | url = http://www-cs-faculty.stanford.edu/~knuth/cl.html
+ | isbn = 1575863812
+ | ref = {{harvid|Knuth at Stanford University|2003}}
+}}
+*{{cite web| title = Lecture 6: Evolutionary Psychology, Problem Solving, and 'Machiavellian' Intelligence
+ | publisher = School of Psychology, Massey University
+ | year = 1996
+ | url = http://evolution.massey.ac.nz/lecture6/lect600.htm
+ | archive-url = https://web.archive.org/web/20070117055247/http://evolution.massey.ac.nz/lecture6/lect600.htm
+ | access-date = September 4, 2007 | archive-date = January 17, 2007
+ | ref = {{harvid|Massey University|1996}}
+}}
+*{{cite news| title = Let me introduce myself – leafcutter bee Megachile chomskyi from Texas
+ | publisher = Pensoft
+ | url = https://www.pensoft.net/news.php?n=230
+ | access-date = May 10, 2016
+ | ref = {{harvid|Pensoft (bee)}}
+}}
+*{{Cite magazine| title = Chomsky's betrayal of truths
+ | last = Lukes | first = Steven
+ | magazine = [[Times Higher Education|The Times Higher Education Supplement (THES)]]
+ | via = libcom.org
+ | url = https://libcom.org/files/lukes_chomsky_debate_1980_1981-2_0.pdf | url-status = live
+ | archive-url = https://web.archive.org/web/20190412103550/https://libcom.org/files/lukes_chomsky_debate_1980_1981-2_0.pdf
+ | date = November 7, 1980 | access-date = March 7, 2018 | archive-date = April 12, 2019
+}}(facsimile copy of Lukes's THES article, together with some of the correspondence it provoked, including from [[Ralph Miliband]], [[Ken Coates]] and others, with Chomsky's response)
+*{{cite book| title = Noam Chomsky | edition = revised
+ | last = Lyons | first = John | year = 1978
+ | author-link = John Lyons (linguist)
+ | publisher = Penguin | location = Harmondsworth
+ | url = https://archive.org/details/noamchomsky0000lyon | url-access = registration
+ | isbn = 978-0-14-004370-9
+}}
+*{{Cite journal | title = On Chomsky's review of Skinner's Verbal Behavior
+ | last = MacCorquodale | first = Kenneth
+ | journal = [[Journal of the Experimental Analysis of Behavior]]
+ | date = January 1970 | volume = 13 | issue = 1 | pages = 83–99
+ | doi = 10.1901/jeab.1970.13-83 | issn = 0022-5002 | pmc = 1333660
+}}
+*{{cite news| title = Linguist Noam Chomsky joins University of Arizona faculty
+ | last = Mace | first = Mikayla
+ | newspaper = Arizona Daily Star
+ | url = https://tucson.com/news/linguist-noam-chomsky-joins-university-of-arizona-faculty/article_5e150bc8-1e7d-528b-afe7-eb3faf1c78f4.html
+ | access-date = July 27, 2018
+}}
+*{{Cite news| title = Chomsky refused entry into West Bank
+ | last = Macintyre | first = Donald
+ | newspaper = [[The Independent]]
+ | url = https://www.independent.co.uk/news/world/middle-east/chomsky-refused-entry-into-west-bank-1975189.html
+ | date = May 17, 2010
+}}
+*{{cite book| title = Chomsky: Language, Mind, Politics | edition = second
+ | last = McGilvray | first = James | year = 2014
+ | publisher = Polity | location = Cambridge
+ | isbn = 978-0-7456-4989-4
+}}
+*{{Cite news| title = Noam Chomsky: Truth to power
+ | last = McNeill | first = David
+ | newspaper = [[The Japan Times]]
+ | url = https://www.japantimes.co.jp/news/2014/02/22/world/politics-diplomacy-world/noam-chomsky-truth-to-power/
+ | date = February 22, 2014
+}}
+*{{Cite news| title = 'US foreign policy is straight out of the mafia' <!-- Deny Citation Bot -->
+ | last = Milne | first = Seumas
+ | newspaper = The Guardian
+ | url = https://www.theguardian.com/world/2009/nov/07/noam-chomsky-us-foreign-policy
+ | date = November 7, 2009
+}}
+* <!--see note in [[#Transformational grammars]]
+{{cite book| chapter = Language Theory
+ | last = Morris | first = Derrick | year = 2013
+ | title = Concise Encyclopedia of Software Engineering
+ | publisher = Elsevier Science
+ | chapter-url = https://books.google.com/books?id=qv8gBQAAQBAJ&pg=PA189
+ | page = 189
+ | isbn = 978-1-4832-8684-6
+}}-->
+*{{cite book| title = Courting Democracy in Bosnia and Herzegovina
+ | last = Nettelfield | first = Lara J. | year = 2010
+ | publisher = Cambridge University Press
+ | url = https://books.google.com/books?id=7Bl9KT9NME0C&pg=PA142
+ | isbn = 978-0521763806
+}}
+*{{cite web| title = Noam Chomsky
+ | publisher = MIT Linguistics Program
+ | year = 2002
+ | url = https://chomsky.info/2002____/ | via = chomsky.info
+ | access-date = January 3, 2017
+ | ref = {{harvid|MIT Linguistics Program|2002}}
+}}
+*{{Cite book| chapter = Noam Chomsky
+ | title = Contemporary Authors Online
+ | title-link = Contemporary Authors Online
+ | publisher = [[Gale (publisher)|Gale]] | location = Detroit, MI
+ | series = Biography in Context
+ | chapter-url = http://link.galegroup.com/apps/doc/H1000017846/BIC?sid=BIC&xid=c79e828a
+ | date = 2016
+ | ref = {{harvid|Contemporary Authors Online|2016}}
+}}
+*{{cite web| title = Noam Chomsky Awarded 2011 US Peace Prize
+ | publisher = US Memorial Peace Foundation
+ | url = https://www.uspeacememorial.org/PEACEPRIZE.htm
+ | access-date = January 7, 2020
+ | ref = {{harvid|US Memorial Peace Foundation}}
+}}
+*{{cite web| title = Noam Chomsky Joins NAPF Advisory Council
+ | publisher = Nuclear Age Peace Foundation
+ | url = https://www.wagingpeace.org/noam-chomsky-joins-napf-advisory-council/
+ | date = March 1, 2014 | access-date = July 27, 2018
+ | ref = {{harvid|NAPF|2014}}
+}}
+*{{cite news| title = Noam Chomsky on Life & Love: Still Going at 86, Renowned Dissident is Newly Married
+ | website = Democracy Now!
+ | url = http://www.democracynow.org/2015/3/3/noam_chomsky_on_life_love_still
+ | date = March 3, 2015 | access-date = May 11, 2016
+ | ref = {{harvid|''Democracy Now!''|2015}}
+}}
+*{{Cite web| title = The Nobel Prize in Physiology or Medicine: Lecture
+ | publisher = [[Nobel Foundation]]
+ | url = https://www.nobelprize.org/prizes/medicine/1984/jerne/lecture/ | url-status = live
+ | archive-url = https://web.archive.org/web/20190703231608/https://www.nobelprize.org/prizes/medicine/1984/jerne/lecture/
+ | date = December 8, 1984 | access-date = June 29, 2019 | archive-date = July 3, 2019
+ | ref = {{harvid|Nobel Lecture|1984}}
+}}
+*{{Cite news| title = MIT claims to have found a "language universal" that ties all languages together
+ | last = O'Grady | first = Cathleen
+ | website = [[Ars Technica]]
+ | url = https://arstechnica.com/science/2015/08/mit-claims-to-have-found-a-language-universal-that-ties-all-languages-together/
+ | date = June 8, 2015
+ | doi = 10.1073/pnas.1502134112
+}}
+*{{cite web| title = The one hundred most influential works in cognitive science
+ | publisher = Center for Cognitive Sciences, Minnesota State University
+ | url = http://web.mnstate.edu/schwartz/cogsci100.htm
+ | access-date = November 29, 2015
+ | ref = {{harvid|MSUM Cognitive Sciences}}
+}}
+*{{cite news| title = Chomsky joins University of Arizona faculty
+ | last = Ortiz | first = Aimee
+ | newspaper = The Boston Globe
+ | url = https://www.bostonglobe.com/metro/2017/08/28/chomsky-joins-university-arizona-faculty/JYdA9TjGk6OeBwa7Q8fPjJ/story.html
+ | date = August 28, 2017
+}}
+*{{Cite book| contribution = Editor's notes to Selection 4 ("Perspectives on language and mind")
+ | contributor-last = Otero | contributor-first = Carlos Peregrín | year = 2003
+ | last = Chomsky | first = Noam
+ | title = Chomsky on Democracy & Education
+ | editor-last = Otero | editor-first = Carlos Peregrín
+ | publisher = Psychology Press
+ | contribution-url = https://books.google.com/books?id=3ORu91WxxL4C&pg=PA416
+ | page = 416
+ | isbn = 978-0415926324
+}}
+*{{cite journal | title = Systematics of Huicundomantis, a new subgenus of Pristimantis (Anura, Strabomantidae) with extraordinary cryptic diversity and eleven new species
+ | last = Páez | first = Nadia
+ | journal = [[ZooKeys]]
+ | year = 2019 | issue = 868 | pages = 1–112
+ | doi = 10.3897/zookeys.868.26766 | issn = 1313-2970 | pmc = 6687670 | pmid = 31406482
+}}
+*{{cite book| chapter = Asking What a Meaning ''Does'': David Lewis's Contribution to Semantics
+ | last = Partee | first = Barbara H. | year = 2015
+ | author-link = Barbara Partee
+ | title = A Companion to David Lewis
+ | editor1-last = Loewer | editor1-first = Barry | editor1-link = Barry Loewer
+ | editor2-last = Schaffer | editor2-first = Jonathan | editor2-link = Jonathan Schaffer
+ | publisher = [[Wiley (publisher)|John Wiley & Sons, Inc.]]
+ | series = Blackwell Companions to Philosophy
+ | chapter-url = https://books.google.com/books?id=z9FuBgAAQBAJ&pg=PA328&lpg=PA32
+ | isbn = 978-1118388181
+}}
+*{{cite book| title = The Blackwell Guide to Ethical Theory | edition = 2nd
+ | editor1-last = Persson | editor1-first = Ingmar
+ | editor2-last = LaFollette | editor2-first = Hugh
+ | year = 2013
+ | publisher = John Wiley & Sons
+ | isbn = 978-1-118-51426-9
+}}
+*{{cite news| title = Noam Chomsky barred by Israelis from lecturing in Palestinian West Bank
+ | last = Pilkington | first = Ed
+ | newspaper = The Guardian
+ | url = https://www.theguardian.com/world/2010/may/16/israel-noam-chomsky-palestinian-west-bank
+ | date = May 16, 2010 | access-date = May 4, 2016
+}}
+*{{cite web| title = Press release: Séan MacBride Peace Prize 2017
+ | publisher = [[International Peace Bureau]] | location = Berlin
+ | url = http://www.ipb.org/wp-content/uploads/2017/09/Press-release_MacBride-Peace-Prize-2017.pdf
+ | date = September 6, 2017 | access-date = December 9, 2017
+ | ref = {{harvid|IPB|2017}}
+}}
+*{{cite book| title = Narrative, Religion and Science: Fundamentalism Versus Irony, 1700–1999
+ | last = Prickett | first = Stephen | year = 2002
+ | publisher = Cambridge University Press
+ | url = https://archive.org/details/narrativereligio00pric | url-access = limited
+ | page = [https://archive.org/details/narrativereligio00pric/page/n243 234]
+ | isbn = 978-0-521-00983-6
+}}
+*{{cite magazine| title = Prospect/FP Top 100 Public Intellectuals Results
+ | magazine = [[Foreign Policy]]
+ | url = https://foreignpolicy.com/2005/10/15/prospectfp-top-100-public-intellectuals-results
+ | archive-url = https://web.archive.org/web/20051025155541/http://www.foreignpolicy.com/story/cms.php?story_id=3260
+ | date = October 15, 2005 | access-date = November 30, 2015 | archive-date = October 25, 2005
+ | ref = {{harvid|''Foreign Policy''|2005}}
+}}
+*{{cite journal | title = Reflections on a Lifetime of Engagement with Zionism, the Palestine Question, and American Empire: An Interview with Noam Chomsky
+ | last = Rabbani | first = Mouin
+ | author-link = Mouin Rabbani
+ | journal = [[Journal of Palestine Studies]]
+ | year = 2012 | volume = 41 | issue = 3 | pages = 92–120
+ | url = http://www.palestine-studies.org/journals.aspx?id=11394&jid=1&href=fulltext | url-status = dead
+ | archive-url = https://web.archive.org/web/20120803030604/http://www.palestine-studies.org/journals.aspx?id=11394&jid=1&href=fulltext
+ | archive-date = August 3, 2012
+ | doi = 10.1525/jps.2012.XLI.3.92
+}}
+*{{cite book| title = The Simian Tongue: The Long Debate about Animal Language
+ | last = Radick | first = Gregory | year = 2007
+ | publisher = University of Chicago Press
+ | url = https://archive.org/details/simiantonguelong00radi/page/320
+ | isbn = 978-0226702247
+}}
+*{{cite book| title = Chomsky's Politics
+ | last = Rai | first = Milan
+ | author-link = Milan Rai
+ | publisher = Verso
+ | url = https://archive.org/details/chomskyspolitics00raim
+ | date = 1995
+ | isbn = 978-1-85984-011-5
+}}
+*{{Cite news| title = The Chomsky Problem
+ | last = Robinson | first = Paul
+ | newspaper = [[The New York Times]]
+ | url = https://www.nytimes.com/1979/02/25/archives/the-chomsky-problem-chomsky.html
+ | date = February 25, 1979
+ | issn = 0362-4331
+}}
+*{{Cite journal | title = A generative grammar approach to diatonic harmonic structure
+ | last = Rohrmeier | first = Martin
+ | editor1-last = Spyridis | editor1-first = Georgaki
+ | editor2-last = Kouroupetroglou | editor2-first = Anagnostopoulou
+ | journal = Proceedings of the 4th Sound and Music Computing Conference
+ | year = 2007 | pages = 97–100
+ | url = http://smc07.uoa.gr/SMC07%20Proceedings/SMC07%20Paper%2015.pdf
+}}
+*{{Cite journal | title = A biological infrastructure for communication underlies the cultural evolution of languages
+ | last1 = Ruiter | first1 = J. P. de
+ | last2 = Levinson | first2 = Stephen C.
+ | author2-link = Stephen Levinson
+ | journal = Behavioral and Brain Sciences
+ | date = October 2010 | volume = 31 | issue = 5 | page = 518
+ | doi = 10.1017/S0140525X08005086 | issn = 1469-1825
+}}
+*{{cite web| title = SASA Member
+ | publisher = [[Serbian Academy of Sciences and Arts]]
+ | url = http://www.sanu.ac.rs/English/Clanstvo/Clan.aspx?arg=1401, | url-status = dead
+ | archive-url = https://web.archive.org/web/20160304111249/http://www.sanu.ac.rs/English/Clanstvo/Clan.aspx?arg=1401,
+ | date = October 30, 2003 | archive-date = March 4, 2016
+ | ref = {{harvid|SASA foreign membership|2003}}
+}}
+*{{cite magazine| title = A Special Supplement: Chomsky's Revolution in Linguistics
+ | last = Searle | first = John R.
+ | magazine = [[The New York Review of Books]]
+ | url = http://www.nybooks.com/articles/archives/1972/jun/29/a-special-supplement-chomskys-revolution-in-lingui/
+ | date = June 29, 1972
+}}
+*{{cite news| title = Turkey and Saudi Arabia alarm the West by backing Islamist extremists the Americans had bombed in Syria
+ | last = Sengupta | first = Kim
+ | newspaper = The Independent
+ | url = https://www.independent.co.uk/news/world/middle-east/syria-crisis-turkey-and-saudi-arabia-shock-western-countries-by-supporting-antiassad-jihadists-10242747.html
+ | date = May 12, 2015
+}}
+*{{cite book| title = Introduction to the Theory of Computation
+ | last = Sipser | first = Michael | year = 1997
+ | author-link = Michael Sipser
+ | publisher = PWS Publishing
+ | url = https://archive.org/details/introductiontoth00sips
+ | isbn = 978-0-534-94728-6
+}}
+*{{cite book| title = Time and Psychological Explanation: The Spectacle of Spain's Tourist Boom and the Reinvention of Difference
+ | last = Slife | first = Brent D. | year = 1993
+ | publisher = SUNY Press
+ | url = https://archive.org/details/timepsychologica0000slif
+ | page = [https://archive.org/details/timepsychologica0000slif/page/115 115]
+ | isbn = 978-0-7914-1469-9
+}}
+*{{Cite book| title = Chomsky: Ideas and Ideals
+ | last = Smith | first = Neil | year = 2004
+ | author-link = Neil Smith (linguist)
+ | publisher = Cambridge University Press
+ | url = https://archive.org/details/chomskyideasidea00smit_676 | url-access = limited
+ | page = [https://archive.org/details/chomskyideasidea00smit_676/page/n200 185]
+ | isbn = 978-0521546881
+}}
+*{{cite book| title = Noam Chomsky
+ | last = Sperlich | first = Wolfgang B. | year = 2006
+ | publisher = Reaktion Books
+ | url = https://archive.org/details/noamchomsky00sper/page/44
+ | isbn = 978-1-86189-269-0
+}}
+*{{Cite journal | title = A Generative Grammar for Jazz Chord Sequences
+ | last = Steedman | first = Mark J.
+ | journal = Music Perception: An Interdisciplinary Journal
+ | date = October 1, 1984 | volume = 2 | issue = 1 | pages = 52–77
+ | doi = 10.2307/40285282 | jstor = 40285282
+}}
+*{{cite web| title = The Book That Changed My Life
+ | last = Swartz | first = Aaron
+ | publisher = Raw Thought
+ | url = http://www.aaronsw.com/weblog/epiphany
+ | date = May 15, 2006 | access-date = January 8, 2014
+}}
+*{{cite book| chapter = Chomsky, Noam Avram (1928–)
+ | last = Szabó | first = Zoltán Gendler | year = 2010
+ | title = The Dictionary of Modern American Philosophers
+ | editor-last = Shook | editor-first = John R.
+ | publisher = Continuum
+ | chapter-url = http://www.oxfordreference.com/view/10.1093/acref/9780199754663.001.0001/acref-9780199754663-e-193
+ | isbn = 978-0-19-975466-3
+}}
+*{{Cite news| title = Noam Chomsky and the Bicycle Theory
+ | last = Tanenhaus | first = Sam
+ | newspaper = The New York Times
+ | url = https://www.nytimes.com/2016/11/06/education/edlife/on-being-noam-chomsky.html
+ | date = October 31, 2016 | access-date = October 31, 2016
+ | issn = 0362-4331
+}}
+*{{cite book| title = An A–Z of ELT (Methodology)
+ | last = Thornbury | first = Scott
+ | publisher = Macmillan Education | location = Oxford
+ | date = 2006 | page = 234
+ | isbn = 978-1405070638
+}}
+*{{Cite journal | title = Language is not an instinct
+ | last = Tomasello | first = Michael
+ | author-link = Michael Tomasello
+ | journal = Cognitive Development
+ | date = January 1, 1995 | volume = 10 | issue = 1 | pages = 131–156
+ | doi = 10.1016/0885-2014(95)90021-7 | issn = 0885-2014
+}}
+*{{cite book| title = Constructing a Language: A Usage-Based Theory of Language Acquisition
+ | last = Tomasello | first = Michael | year = 2003
+ | publisher = [[Harvard University Press]] | location = Cambridge, MA
+ | isbn = 978-0-674-01030-7
+}}
+*{{cite journal | title = Universal grammar is dead
+ | last = Tomasello | first = Michael
+ | journal = [[Behavioral and Brain Sciences]]
+ | date = October 2009 | volume = 32 | issue = 5 | pages = 470–471
+ | doi = 10.1017/S0140525X09990744 | issn = 1469-1825
+}}
+*{{cite web| title = Tool Module: Chomsky's Universal Grammar
+ | work = The Brain From Top To Bottom
+ | publisher = [[McGill University]]
+ | url = http://thebrain.mcgill.ca/flash/capsules/outil_rouge06.html
+ | access-date = December 24, 2015
+ | ref = {{harvid|Brain From Top To Bottom}}
+}}
+*{{Cite book| title = Sweet Reason: A Field Guide to Modern Logic
+ | last1 = Tymoczko | first1 = Tom
+ | last2 = Henle | first2 = Jim
+ | publisher = Springer Science & Business Media
+ | url = https://books.google.com/books?id=LQnsSuvP9dAC
+ | date = April 8, 2004 | page = 101
+ | isbn = 978-0-387-98930-3
+}}
+*{{Cite news| title = U.S., Britain ignored 'culture of terrorism': Chomsky
+ | newspaper = The Hindu
+ | url = http://www.thehindu.com/2001/11/04/stories/0204000j.htm
+ | date = November 4, 2001 | access-date = March 21, 2016
+ | ref = {{harvid|''The Hindu''|2001}}
+}}
+*{{cite web| title = Viggo Mortensen's Spoken Word & Music CDs
+ | url = http://www.viggofanbase.com/cds | url-status = dead
+ | archive-url = https://web.archive.org/web/20101215194045/http://www.viggofanbase.com/cds
+ | access-date = May 10, 2016 | archive-date = December 15, 2010
+ | ref = {{harvid|Viggo Mortensen's Spoken Word & Music CDs}}
+}}
+*{{cite web| title = Noam Chomsky potpisao Deklaraciju o zajedničkom jeziku
+ | trans-title = Noam Chomsky Has Signed the Declaration on the Common Language
+ | last = Vučić | first = Nikola
+ | language = Serbo-Croatian
+ | publisher = [[N1 (TV channel)|N1]] | location = Sarajevo
+ | url = http://ba.n1info.com/a250910/Vijesti/Vijesti/Noam-Chomsky-potpisao-Deklaraciju-o-zajednickom-jeziku.html | url-status = live
+ | archive-url = https://web.archive.org/web/20180501053244/http://ba.n1info.com/a250910/Vijesti/Vijesti/Noam-Chomsky-potpisao-Deklaraciju-o-zajednickom-jeziku.html
+ | date = March 27, 2018 | access-date = June 6, 2018 | archive-date = May 1, 2018
+}}
+*{{Cite news| title = Chomsky hits back at Erdoğan, accusing him of double standards on terrorism
+ | last = Weaver | first = Matthew
+ | newspaper = The Guardian
+ | url = https://www.theguardian.com/us-news/2016/jan/14/chomsky-hits-back-erdogan-double-standards-terrorism-bomb-istanbul
+ | date = January 14, 2016 | access-date = January 14, 2016
+}}
+*{{Cite news| title = Noam Chomsky Is Leaving MIT for the University of Arizona
+ | last = Weidenfeld | first = Lisa
+ | magazine = Boston Magazine
+ | url = https://www.bostonmagazine.com/news/2017/08/29/noam-chomsky-mit-arizona/
+ | date = August 29, 2017 | access-date = June 10, 2019
+ | quote = Chomsky has been at MIT since 1955, and retired in 2002.
+}}
+*{{Cite news| title = The C.I.A.'s most Important Mission: Itself
+ | last = Weiner | first = Tim
+ | newspaper = The New York Times
+ | url = https://www.nytimes.com/1995/12/10/magazine/the-cia-s-most-important-mission-itself.html
+ | date = December 10, 1995
+ | issn = 0362-4331
+}}
+*{{Cite news| title = Noam Chomsky: 'The Occupy movement just lit a spark' – video
+ | last1 = Younge | first1 = Gary
+ | last2 = Hogue | first2 = Kat Keene
+ | newspaper = The Guardian
+ | url = https://www.theguardian.com/world/video/2012/jul/06/noam-chomsky-occupy-movement-spark-video
+ | date = July 6, 2012 | access-date = April 22, 2016
+ | issn = 0261-3077
+}}
+{{Refend}}
+
+==Further reading==
+{{Refbegin|30em}}
+*{{Cite interview| title = American Socrates
+ | interviewer = [[Chris Hedges]]
+ | website = [[Truthdig]]
+ | url = http://www.truthdig.com/report/item/american_socrates_20140615
+ | date = June 15, 2014
+ | ref = none
+}}
+*{{Cite web| title = Presentation by Robert F. Barsky on ''Noam Chomsky: A Life of Dissent''
+ | last = Barsky | first = Robert F.
+ | publisher = [[C-SPAN]]
+ | url = https://www.c-span.org/video/?88099-1/noam-chomsky-life-dissent
+ | date = July 19, 1997
+ | ref = none
+}}
+*{{cite journal | title = A Theory of the Epigenesis of Neuronal Networks by Selective Stabilization of Synapses
+ | last1 = Changeux | first1 = Jean-Pierre
+ | last2 = Courrége | first2 = Philippe
+ | last3 = Danchin | first3 = Antoine
+ | journal = [[Proceedings of the National Academy of Sciences of the United States of America]]
+ | year = 1973 | volume = 70 | issue = 10 | pages = 2974–2978
+ | bibcode = 1973PNAS...70.2974C | doi = 10.1073/pnas.70.10.2974 | pmc = 427150 | pmid = 4517949
+ | ref = none
+}}
+*{{cite journal | title = Reviews: ''Verbal behavior'' by B. F. Skinner
+ | last = Chomsky | first = Noam
+ | journal = [[Language (journal)|Language]]
+ | year = 1959 | volume = 35 | issue = 1 | pages = 26–58
+ | url = https://chomsky.info/1967____/
+ | doi = 10.2307/411334 | jstor = 411334
+ | ref = none
+}}
+*{{cite journal | title = Human nature and the origins of language
+ | last = Chomsky | first = Noam
+ | journal = Radical Anthropology
+ | date = 2008–2009 | issue = 2 | pages = 19–23
+ | url = http://radicalanthropologygroup.org/sites/default/files/journal/journal_02.pdf
+ | ref = none
+}}
+*{{Cite news| title = A Brief History of Anarchism
+ | last = Chomsky | first = Noam
+ | newspaper = [[In These Times]]
+ | url = http://inthesetimes.com/article/16081/a_history_of_anarchism/
+ | date = January 9, 2014
+ | ref = none
+}}
+*{{Cite magazine| title = The World of Our Grandchildren
+ | last = Chomsky | first = Noam
+ | interviewer = David Barsamian
+ | magazine = [[Jacobin (magazine)|Jacobin]]
+ | url = https://www.jacobinmag.com/2015/02/noam-chomsky-interview-jacobin/
+ | date = February 13, 2015a
+ | ref = none
+}}
+*{{Cite AV media| title = Noam Chomsky: Electing the President of An Empire
+ | last = Chomsky | first = Noam
+ | interviewer = [[Abby Martin]]
+ | website = [[Telesur]] English
+ | url = https://www.youtube.com/watch?v=mBZLnfKSa_k | via = YouTube
+ | date = October 24, 2015b
+ | ref = none
+}}
+*{{cite book| title = Don't Sleep, There Are Snakes: Life and Language in the Amazonian Jungle
+ | last = Everett | first = Daniel L. | year = 2008
+ | author-link = Daniel Everett
+ | publisher = [[Pantheon Books]] | location = New York
+ | url = https://archive.org/details/dontsleeptherear00ever
+ | isbn = 978-0-375-42502-8
+ | ref = none
+}}
+*{{cite news| title = Noam Chomsky interview
+ | last = Farndale | first = Nigel
+ | newspaper = [[The Daily Telegraph]]
+ | url = http://www.telegraph.co.uk/culture/books/7865508/Noam-Chomsky-interview.html
+ | access-date = May 15, 2016
+ | ref = none
+}}
+*{{Cite news| title = Carol Chomsky, 78, Linguist and Educator, Dies
+ | last = Fox | first = Margalit
+ | author-link = Margalit Fox
+ | newspaper = The New York Times
+ | url = https://www.nytimes.com/2008/12/21/us/21chomsky-carol.html
+ | date = December 20, 2008 | access-date = December 10, 2015
+ | issn = 0362-4331
+ | ref = none
+}}
+*{{cite journal | title = Teaching Sign Language to a Chimpanzee
+ | last1 = Gardner | first1 = R. A.
+ | last2 = Gardner | first2 = B. T.
+ | journal = [[Science (journal)|Science]]
+ | year = 1969 | volume = 165 | issue = 3894 | pages = 664–672
+ | url = http://www.cog.brown.edu/courses/cg2000/Papers/Chimp69ScienceGardner.pdf
+ | bibcode = 1969Sci...165..664G | citeseerx = 10.1.1.384.4164 | doi = 10.1126/science.165.3894.664 | jstor = 1727877 | pmid = 5793972
+ | ref = none
+}}
+*{{cite book| title = Teaching Sign Language to Chimpanzees
+ | last1 = Gardner | first1 = R. A.
+ | last2 = Gardner | first2 = B. T.
+ | last3 = Van Cantfort | first3 = Thomas E.
+ | year = 1989
+ | publisher = [[SUNY Press]] | location = Albany, NY
+ | url = http://www.sunypress.edu/p-825-teaching-sign-language-to-chimp.aspx | url-status = dead
+ | archive-url = https://web.archive.org/web/20140721030409/http://www.sunypress.edu/p-825-teaching-sign-language-to-chimp.aspx
+ | archive-date = July 21, 2014
+ | isbn = 978-0-88706-965-9
+ | ref = none
+}}
+*{{Cite web| title = IWW Interview with Noam Chomsky: Worker Occupations And The Future Of Radical Labor
+ | publisher = [[Industrial Workers of the World|IWW]]
+ | url = http://www.iww.org/history/library/Chomsky/2009int
+ | date = October 9, 2009
+ | ref = none
+}}
+*{{cite book| title = From Whitney to Chomsky: Essays in the history of American linguistics
+ | last = Joseph | first = John E. | year = 2002
+ | publisher = John Benjamins
+ | volume = Volume 103 | series = Studies in the History of the Language Sciences
+ | doi = 10.1075/sihols.103 | isbn = 978-9027275370
+ | ref = none
+}}
+*{{cite book| chapter = Chomsky's atavistic revolution (with a little help from his enemies)
+ | last = Joseph | first = John E. | year = 2010
+ | author-mask = 1
+ | title = Chomskyan (R)evolutions
+ | editor-last = Kibbee | editor-first = Douglas A.
+ | publisher = John Benjamins
+ | url = https://archive.org/details/chomskyanrevolut00kibb | url-access = limited
+ | pages = [https://archive.org/details/chomskyanrevolut00kibb/page/n13 1]–18
+ | doi = 10.1075/z.154.01jos | isbn = 978-9027211699
+ | ref = none
+}}
+*{{cite journal | title = Théories et politiques de Noam Chomsky
+ | trans-title = Political Theories of Noam Chomsky
+ | last = Joseph | first = John E.
+ | author-mask = 1
+ | journal = Langages
+ | year = 2011 | volume = 182 | number = 2 | pages = 55–68
+ | language = French
+ | doi = 10.3917/lang.182.0055 | issn = 0458-726X
+ | ref = none
+}}
+*{{Cite magazine| title = Noam Chomsky on Where Artificial Intelligence Went Wrong
+ | last = Katz | first = Yarden
+ | magazine = [[The Atlantic]]
+ | url = https://www.theatlantic.com/technology/archive/2012/11/noam-chomsky-on-where-artificial-intelligence-went-wrong/261637/?single_page=true
+ | url-status = live
+ | archive-url = https://archive.today/20130104220252/http://www.theatlantic.com/technology/archive/2012/11/noam-chomsky-on-where-artificial-intelligence-went-wrong/261637/?single_page=true
+ | date = November 1, 2012 | archive-date = January 4, 2013
+ | ref = none
+}}{{cbignore|bot=InternetArchiveBot}}
+*{{cite journal | title = Education according to Chomsky
+ | last = Knoester | first = Matthew
+ | journal = Mind, Culture, and Activity
+ | year = 2003 | volume = 10 | number = 3 | pages = 266–270
+ | doi = 10.1207/s15327884mca1003_10
+ | s2cid = 144284901 | ref = none
+}}
+*{{cite book| chapter = Is Linguistics a Branch of Psychology?
+ | last = Laurence | first = Stephen | year = 2003
+ | title = Epistemology of Language
+ | editor-last = Barker | editor-first = A.
+ | publisher = [[Oxford University Press]] | location = Oxford
+ | chapter-url = http://www.philosophy.dept.shef.ac.uk/papers/IsLingPsych.pdf
+ | pages = 69–106
+ | isbn = 978-0199250585
+ | ref = none
+}}
+*{{cite book| chapter = On some current views of the language universal
+ | last = Lehmann | first = Christian | year = 1982
+ | title = Issues in the Theory of Universal Grammar
+ | editor1-last = Radden | editor1-first = Günter
+ | editor2-last = Dirven | editor2-first = René
+ | publisher = Gunter Narr | location = Tübingen
+ | pages = 75–94
+ | isbn = 978-3-87808-565-2
+ | ref = none
+}}
+*{{Cite book| chapter = Noam Chomsky
+ | title = Key Thinkers in Critical Communication Scholarship: From the Pioneers to the Next Generation
+ | editor1-last = Lent | editor1-first = John A.
+ | editor2-last = Amazeen | editor2-first = Michelle A.
+ | publisher = Palgrave Macmillan
+ | pages = 1–12
+ | chapter-url = https://books.google.com/books?id=fldOCgAAQBAJ&pg=PA1
+ | url = https://books.google.com/books?id=fldOCgAAQBAJ
+ | date = August 5, 2015 | archive-date = June 3, 2016
+ | isbn = 978-1-137-46342-5
+ | ref = none
+}}
+*{{Cite journal | title = AI's Hall of Fame: Computational Linguistics and Cognitive Science
+ | last = Lim | first = Ee-Peng
+ | journal = [[IEEE Intelligent Systems]]
+ | year = 2011 | volume = 26 | issue = 4 | page = 12
+ | url = https://ieeexplore.ieee.org/document/5968105 <!-- Deny Citation Bot -->
+ | doi = 10.1109/MIS.2011.64
+ | ref = none
+}}
+*{{Cite news| title = The NS Interview: Noam Chomsky
+ | last = McDonald | first = Alyssa
+ | magazine = [[New Statesman]]
+ | url = http://www.newstatesman.com/international-politics/2010/09/war-crimes-interview-obama
+ | date = September 2010
+ | ref = none
+}}
+*{{cite book| chapter = The cognitive foundations for reference in a signing orangutan
+ | last = Miles | first = H. Lyn White | year = 1990
+ | title = "Language" and intelligence in monkeys and apes: Comparative developmental perspectives
+ | editor1-last = Gibson | editor1-first = Kathleen Rita
+ | editor2-last = Packer | editor2-first = Sue Taylor
+ | publisher = [[Cambridge University Press]] | location = Cambridge
+ | chapter-url = https://archive.org/details/languageintellig0000unse/page/511
+ | url = https://archive.org/details/languageintellig0000unse | url-access = registration
+ | isbn = 978-0-521-38028-7
+ | ref = none
+}}
+*{{Cite book| title = Understanding Power: The Indispensable Chomsky
+ | editor1-last = Mitchell | editor1-first = Peter R.
+ | editor2-last = Schoeffel | editor2-first = John
+ | year = 2002
+ | publisher = New Press | location = New York
+ | url = https://archive.org/details/understandingpow00chom_0
+ | isbn = 978-1565847033 | oclc = 46936001
+ | ref = none
+}}
+*{{cite journal | title = The social group of wild chimpanzees in the Mahali Mountains
+ | last = Nishida | first = T.
+ | journal = [[Primates (journal)|Primates]]
+ | year = 1968 | volume = 9 | issue = 3 | pages = 167–224
+ | url = http://repository.kulib.kyoto-u.ac.jp/dspace/bitstream/2433/213162/1/yrigk00159.pdf
+ | doi = 10.1007/BF01730971 | hdl = 2433/213162
+ | s2cid = 28751730 | ref = none
+}}
+*{{cite book| title = Music, Language, and the Brain
+ | last = Patel | first = Aniruddh D. | year = 2008
+ | publisher = [[Oxford University Press]] | location = New York
+ | url = https://archive.org/details/isbn_9780195123753 | url-access = registration
+ | isbn = 978-0-19-512375-3
+ | ref = none
+}}
+*{{cite book| title = The Education of Koko
+ | last1 = Patterson | first1 = Francine
+ | last2 = Linden | first2 = Eugene
+ | author1-link = Francine Patterson
+ | author2-link = Eugene Linden (author)
+ | year = 1981
+ | publisher = [[Holt, Rinehart & Winston]] | location = New York, NY
+ | isbn = 978-0-03-046101-9
+ | ref = none
+}}
+*{{cite book| chapter = Some basic traits of language in wild chimpanzees?
+ | last = Plooij | first = F. X. | year = 1978
+ | title = Action, Gesture and Symbol: The Emergence of Language
+ | editor-last = Lock | editor-first = A.
+ | publisher = [[Academic Press]] | location = London
+ | pages = 111–131
+ | isbn = 978-0-12-454050-7
+ | ref = none
+}}
+*{{cite book| chapter = Noam Chomsky
+ | last = Poole | first = Geoffrey | year = 2005
+ | title = Key Thinkers in Linguistics and the Philosophy of Language
+ | editor1-last = Routledge | editor1-first = Christopher
+ | editor2-last = Chapman | editor2-first = Siobhan
+ | publisher = [[Edinburgh University Press]] | location = Edinburgh
+ | pages = 53–59
+ | isbn = 978-0-7486-1757-9
+ | ref = none
+}}
+*{{cite book| title = Public Intellectuals: A Study of Decline | edition = Revised
+ | last = Posner | first = Richard A. | year = 2003
+ | author-link = Richard Posner
+ | publisher = [[Harvard University Press]] | location = Cambridge, MA
+ | isbn = 978-0-674-01246-2
+ | ref = none
+}}
+*{{cite journal | title = 'Gavagai!' or the future history of the animal language controversy
+ | last = Premack | first = D.
+ | journal = Cognition
+ | year = 1985 | volume = 19 | issue = 3 | pages = 207–296
+ | doi = 10.1016/0010-0277(85)90036-8 | pmid = 4017517
+ | s2cid = 39292094 | ref = none
+}}
+*{{cite journal | title = Spontaneous Symbol Acquisition and Communicative Use By Pygmy Chimpanzees (''Pan paniscus'')
+ | last1 = Savage-Rumbaugh | first1 = S.
+ | last2 = McDonald | first2 = K.
+ | last3 = Sevcik | first3 = R. A.
+ | last4 = Hopkins | first4 = W. D.
+ | last5 = Rubert | first5 = E.
+ | journal = [[Journal of Experimental Psychology: General]]
+ | year = 1986 | volume = 115 | issue = 3 | pages = 211–235
+ | url = http://www.cogsci.ucsd.edu/~sereno/170/readings/21-ApeLanguage.pdf
+ | doi = 10.1037/0096-3445.115.3.211 | pmid = 2428917
+ | ref = none
+}}
+*{{cite journal | title = Language learning in two species of apes
+ | last1 = Savage-Rumbaugh | first1 = S.
+ | last2 = Rumbaugh | first2 = D. M.
+ | last3 = McDonald | first3 = K.
+ | author1-link = Sue Savage-Rumbaugh
+ | journal = [[Neuroscience and Biobehavioral Reviews]]
+ | year = 1985 | volume = 9 | issue = 4 | pages = 653–665
+ | doi = 10.1016/0149-7634(85)90012-0 | pmid = 4080283
+ | s2cid = 579851 | ref = none
+}}
+*{{Cite magazine| title = Review of Noam Chomsky: A Life of Dissent, by Robert F. Barsky
+ | last = Shalom | first = Stephen
+ | magazine = [[New Politics (magazine)|New Politics]]
+ | issue = 23
+ | url = http://nova.wpunj.edu/newpolitics/issue23/shalom23.htm | url-status = dead
+ | archive-url = https://web.archive.org/web/20160808085048/http://nova.wpunj.edu/newpolitics/issue23/shalom23.htm
+ | access-date = October 7, 2016 | archive-date = August 8, 2016
+ | ref = none
+}}
+*{{cite magazine| title = At the Birth of Language
+ | last = Tattersall | first = Ian
+ | author-link = Ian Tattersall
+ | magazine = [[The New York Review of Books]]
+ | date = August 18, 2016 | volume = LXIII | number = 13 | pages = 27–28
+ | url = https://www.nybooks.com/articles/2016/08/18/noam-chomsky-robert-berwick-birth-of-language/
+ | ref = none | postscript = ,
+}} a review of {{cite book| title = Why Only Us: Language and Evolution
+ | last1 = Berwick | first1 = Robert C.
+ | last2 = Chomsky | first2 = Noam
+ | publisher = MIT Press
+ | ref = none
+}}
+*{{cite book| title = Nim: A Chimpanzee who Learned Sign Language
+ | last = Terrace | first = Herbert S. | year = 1987
+ | publisher = [[Columbia University Press]] | location = New York, NY
+ | isbn = 978-0-231-06341-8
+ | ref = none
+}}
+{{Refend}}
+
+==External links==
+{{Archival records
+ | qid=Q9049
+ | title=Noam Chomsky personal archives
+ | location=Massachusetts Institute of Technology Libraries, Department of Distinctive Collections
+ | inventory_number=MC-0600
+ | description_URL=https://archivesspace.mit.edu/repositories/2/resources/1305
+}}
+{{Sister project links|wikt=Chomskyan|b=no|s=Author:Noam_Chomsky|n=Interview with US political activist and philosopher Noam Chomsky|v=no|d=Q9049}}
+{{Library resources box|by=yes|onlinebooks=yes|viaf=89803084}}
+* {{Official website|https://chomsky.info/ }}
+* [http://web.mit.edu/linguistics/people/faculty/chomsky/ Noam Chomsky] at [[Massachusetts Institute of Technology|MIT]]
+* [https://chomsky.arizona.edu/ Noam Chomsky University of Arizona homepage]
+* [http://arquivo.pt/wayback/20091001220629/http://www.zmag.org/zspace/noamchomsky Noam Chomsky] at [[Z Communications|Zmag]]
+* {{C-SPAN|Noam Chomsky}}
+* [https://libcom.org/library/noam-chomsky-reading-guide Libcom's "Noam Chomsky – Reading Guide"]
+* [https://www.democracynow.org/appearances/noam_chomsky List of appearances] on ''[[Democracy Now!]]''
+* [https://therealnews.com/?s=Noam+Chomsky&pum_form_popup_id=178694 List of appearances] on ''[[The Real News]]''
+* {{imdb name|159008}}
+* [http://www.aljazeera.com/programmes/aljazeeraworld/2015/10/noam-chomsky-knowledge-power-151014111029879.html ''Noam Chomsky: Knowledge and Power'']. [[Al Jazeera English]], October 2015 (video, 47 mins) – documentary about the life and work of Chomsky
+* Demonstration at Faneuil Hall to protest indictment of the Berrigan brothers: Noam Chomsky speaking with [[Vern Countryman]] and [[George Wald]] at left and [[Howard Zinn]] at the far right, January 1971 (Photo: Jeff Albertson Photograph Collection (PH 57)), Special Collections and University Archives, [http://credo.library.umass.edu/view/zoom/muph057-b004-sl024-i012 Library of the University of Massachusetts: Amherst].
+* [http://discovery.ucl.ac.uk/10080589/1/The-Responsibility-of-Intellectuals.pdf ''The Responsibility of Intellectuals – Reflections by Noam Chomsky and others after 50 years'', 'Open Access Book', UCL Press, 2019.]
+
+{{Noam Chomsky|state=expanded}}
+{{Navboxes
+ | title=Articles related to Noam Chomsky
+ | list1=
+{{MIT}}
+{{Analytic philosophy}}
+{{Communication studies}}
+{{Anarchism}}
+{{Socialism}}
+{{Libertarianism}}
+{{Orwell Award recipients}}
+{{Sydney Peace Prize laureates}}
+{{Social and political philosophy}}
+{{Psychology}}
+{{Evolutionary psychology}}
+}}
+{{Authority control}}
+{{Portal bar|Anarchism|Linguistics|Philosophy|Socialism}}
+{{good article}}
+
+{{DEFAULTSORT:Chomsky, Noam}}
+[[Category:Noam Chomsky| ]]
+[[Category:1928 births]]
+[[Category:20th-century American non-fiction writers]]
+[[Category:20th-century American philosophers]]
+[[Category:20th-century essayists]]
+[[Category:20th-century linguists]]
+[[Category:20th-century philosophers]]
+[[Category:21st-century American non-fiction writers]]
+[[Category:21st-century American philosophers]]
+[[Category:21st-century essayists]]
+[[Category:21st-century linguists]]
+[[Category:21st-century philosophers]]
+[[Category:American academics]]
+[[Category:American anarchists]]
+[[Category:American anti–Iraq War activists]]
+[[Category:American anti–Vietnam War activists]]
+[[Category:American cultural critics]]
+[[Category:American ethicists]]
+[[Category:American male essayists]]
+[[Category:American male non-fiction writers]]
+[[Category:American media critics]]
+[[Category:American people of Belarusian-Jewish descent]]
+[[Category:American people of Ukrainian-Jewish descent]]
+[[Category:American philosophers]]
+[[Category:American philosophy academics]]
+[[Category:American political activists]]
+[[Category:American political philosophers]]
+[[Category:American social commentators]]
+[[Category:American socialists]]
+[[Category:American tax resisters]]
+[[Category:Analytic philosophers]]
+[[Category:Anarcho-syndicalists]]
+[[Category:Anti-capitalists]]
+[[Category:Anti-consumerists]]
+[[Category:Anti-corporate activists]]
+[[Category:Anti-globalization activists]]
+[[Category:Anti-globalization writers]]
+[[Category:Anti-imperialism]]
+[[Category:Anti-poverty advocates]]
+[[Category:Central High School (Philadelphia) alumni]]
+[[Category:Cognitive scientists]]
+[[Category:Communication scholars]]
+[[Category:Consciousness researchers and theorists]]
+[[Category:Contemporary philosophers]]
+[[Category:Corresponding Fellows of the British Academy]]
+[[Category:Criticism of the United States]]
+[[Category:Critics of Marxism]]
+[[Category:Critics of neoconservatism]]
+[[Category:Critics of postmodernism]]
+[[Category:Cultural critics]]
+[[Category:Developmental psycholinguists]]
+[[Category:Dissidents]]
+[[Category:Environmental philosophers]]
+[[Category:Epistemologists]]
+[[Category:Fellows of the Cognitive Science Society]]
+[[Category:Fellows of the Linguistic Society of America]]
+[[Category:Fellows of the Royal Society of Canada]]
+[[Category:Free speech activists]]
+[[Category:Freethought writers]]
+[[Category:Gratz College]]
+[[Category:Harvard Fellows]]
+[[Category:Hebrew linguists]]
+[[Category:History of anarchism]]
+[[Category:History of education]]
+[[Category:History of ideas]]
+[[Category:History of linguistics]]
+[[Category:History of philosophy]]
+[[Category:Industrial Workers of the World members]]
+[[Category:Institute for Advanced Study visiting scholars]]
+[[Category:Jewish anarchists]]
+[[Category:Jewish anti-Zionism in the United States]]
+[[Category:Jewish ethicists]]
+[[Category:Jewish linguists]]
+[[Category:Jewish non-fiction writers]]
+[[Category:Jewish philosophers]]
+[[Category:Jewish socialists]]
+[[Category:Kyoto laureates in Basic Sciences]]
+[[Category:Libertarian socialists]]
+[[Category:Linguistics]]
+[[Category:Linguists from the United States]]
+[[Category:Linguists of English]]
+[[Category:Living people]]
+[[Category:Mass media theorists]]
+[[Category:Massachusetts Institute of Technology faculty]]
+[[Category:Massachusetts socialists]]
+[[Category:Media critics]]
+[[Category:Members of the German Academy of Sciences Leopoldina]]
+[[Category:Members of the Serbian Academy of Sciences and Arts]]
+[[Category:Members of the United States National Academy of Sciences]]
+[[Category:Metaphilosophers]]
+[[Category:Metaphysicians]]
+[[Category:Moral philosophers]]
+[[Category:New Left]]
+[[Category:Non-interventionism]]
+[[Category:Occupy movement in the United States]]
+[[Category:Ontologists]]
+[[Category:Philosophers from Pennsylvania]]
+[[Category:Philosophers of culture]]
+[[Category:Philosophers of economics]]
+[[Category:Philosophers of education]]
+[[Category:Philosophers of ethics and morality]]
+[[Category:Philosophers of history]]
+[[Category:Philosophers of language]]
+[[Category:Philosophers of mind]]
+[[Category:Philosophers of psychology]]
+[[Category:Philosophers of science]]
+[[Category:Philosophers of social science]]
+[[Category:Philosophers of technology]]
+[[Category:Philosophers of war]]
+[[Category:Philosophy academics]]
+[[Category:Philosophy writers]]
+[[Category:Political philosophers]]
+[[Category:Propaganda theorists]]
+[[Category:Rationalists]]
+[[Category:Rationality theorists]]
+[[Category:Recipients of the Neil and Saras Smith Medal for Linguistics]]
+[[Category:Scientists from Philadelphia]]
+[[Category:Signatories of the Declaration on the Common Language]]
+[[Category:Social critics]]
+[[Category:Social philosophers]]
+[[Category:Sustainability advocates]]
+[[Category:Syntacticians]]
+[[Category:Theorists on Western civilization]]
+[[Category:University of Pennsylvania alumni]]
+[[Category:Writers about activism and social change]]
+[[Category:Writers about globalization]]
+[[Category:Writers from Philadelphia]]
+
