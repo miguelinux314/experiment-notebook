@@ -8,10 +8,9 @@ Basic workflow: |ATable|
 This page explains the most basic workflow with ``enb`` with a
 `simple example <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example>`_.
 In this example, |ATable| is subclassed to gather some statistics about a text corpus.
-You can look at the sources in that link, or install a self-contained version with
+You can look at the sources in that link, or install a self-contained version with::
 
-.. code-block::bash
-   enb plugin install basic-workflow your_installation_dir
+   enb plugin install basic-workflow bw
 
 
 Then, classes from the :mod:`enb.aanalysis` module are used to summarize and plot the obtained results.
@@ -221,7 +220,7 @@ automatically contains all columns defined for `WikiTable`:
 
 
 To **define custom columns** for your class, you can add `column_*` methods
-to your |ATable| subclass as in Section 2, or you can use the @`enb.atable.column_function` decorator
+to your |ATable| subclass as in Section 2, or you can use the @enb.atable.column_function decorator
 as in the following example:
 
   .. code-block:: python
@@ -246,7 +245,7 @@ as in the following example:
                 row["status"] = "dead" if "death_place" in contents.lower() else "alive"
 
 
-The @`enb.atable.column_function` decorator is the most general way of defining new
+The @enb.atable.column_function decorator is the most general way of defining new
 columns. In general, to employ it:
 
   * Define a method ``f`` with interface ``f(self, file_path, row)``. The ``file_path``
@@ -259,7 +258,7 @@ columns. In general, to employ it:
 
   * It is not recommended to decorate functions with name starting with `column_`.
 
-  * Methods decorated with  @`enb.atable.column_function` should not return the computed
+  * Methods decorated with  @enb.atable.column_function should not return the computed
     value, but instead assign it to its `row` argument, i.e., they should update
     the current row directly.
 
@@ -350,3 +349,4 @@ of this basic workflow example:
 
     if __name__ == '__main__':
         main()
+
