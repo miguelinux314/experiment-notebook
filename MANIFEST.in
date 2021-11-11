@@ -134,6 +134,16 @@ include enb/plugins/template_basic_workflow/data/wiki/n_chomsky.txt
 include enb/plugins/template_basic_workflow/data/wiki/r_franklin.txt
 include enb/plugins/template_basic_workflow/data/wiki/s_beauvoir.txt
 include enb/plugins/template_basic_workflow/__plugin__.py
+include enb/plugins/template_experiment_example/data/ips/ip1.txt
+include enb/plugins/template_experiment_example/data/ips/ip2.txt
+include enb/plugins/template_experiment_example/data/ips/ip3.txt
+include enb/plugins/template_experiment_example/data/ips/ip4.txt
+include enb/plugins/template_experiment_example/data/ips/ip5.txt
+include enb/plugins/template_experiment_example/data/ips/ip6.txt
+include enb/plugins/template_experiment_example/data/ips/ip7.txt
+include enb/plugins/template_experiment_example/data/ips/ip8.txt
+include enb/plugins/template_experiment_example/experiment_example.py
+include enb/plugins/template_experiment_example/__plugin__.py
 include enb/plugins/template_lossless_compression/lossless_compression_experiment.py.enbt
 include enb/plugins/template_lossless_compression/__plugin__.py
 include enb/plugins/template_lossless_compression/plugins/__init__.py
