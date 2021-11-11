@@ -1,6 +1,6 @@
 import enb.plugins
 
-class WelcomeTemplate(enb.plugins.Template):
+class WelcomeTemplate: #(enb.plugins.Template):
     """Template intended as an introduction project for enb.
     """
     name = "welcome"
