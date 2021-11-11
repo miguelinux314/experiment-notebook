@@ -748,9 +748,9 @@ class ScalarNumericSummary(AnalyzerSummary):
         except KeyError:
             analysis_range = [None, None]
         analysis_range[0] = analysis_range[0] if analysis_range[0] is not None \
-            else self.column_to_xmin_xmax[column_name][0]
+            else _self.column_to_xmin_xmax[column_name][0]
         analysis_range[1] = analysis_range[1] if analysis_range[1] is not None \
-            else self.column_to_xmin_xmax[column_name][1]
+            else _self.column_to_xmin_xmax[column_name][1]
         if analysis_range[0] == analysis_range[1]:
             # Avoid unnecessary warnings from matplotlib
             analysis_range = [analysis_range[0], analysis_range[0] + 1]
@@ -797,7 +797,7 @@ class ScalarNumericSummary(AnalyzerSummary):
         row[_column_name] = []
 
         marker_y_position = 0.5
-        if _self.analyzer.bar_width_fraction > 0 and self.analyzer.main_alpha > 0:
+        if _self.analyzer.bar_width_fraction > 0 and _self.analyzer.main_alpha > 0:
             # The relative distribution is computed based
             # on the selected analysis range only, which
             # may differ from the full column dynamic range
