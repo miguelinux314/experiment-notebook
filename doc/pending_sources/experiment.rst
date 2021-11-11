@@ -1,4 +1,0 @@
-- basic experiment
-- automatic sample recognition (extension?)
-- experimenttask for parameter grouping
-- TaskFamily for analysis

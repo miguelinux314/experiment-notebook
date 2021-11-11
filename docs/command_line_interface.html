@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Command-line interface &mdash; Experiment Notebook MIT License documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Analyzer gallery" href="analyzer_gallery.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
+          
+
+          
+            
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-enb-program">The <cite>enb</cite> program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cli-with-scripts-using-enb">CLI with scripts using <cite>enb</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Experiment Notebook</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Command-line interface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/command_line_interface.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="command-line-interface">
+<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> is friendly with the command line interface (CLI). Two main ways of using the CLI
+with enb:</p>
+<div class="section" id="the-enb-program">
+<h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline">¶</a></h2>
+<p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
+An example output of running <cite>enb -h</cite> (to display usage help) is shown next:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>usage: enb [-h] {plugin,help} ...
+
+CLI to the electronic notebook (enb) framework
+(see https://github.com/miguelinux314/experiment-notebook).
+
+Several subcommands are available; use `enb &lt;subcommand&gt; -h`
+to show help about any specific command.
+
+optional arguments:
+  -h, --help     show this help message and exit
+
+subcommands:
+  Available enb CLI commands.
+
+  {plugin,help}
+    plugin       Install and manage plugins.
+    help         Show this help and exit.
+</pre></div>
+</div>
+<p>Make sure to test:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="nb">list</span>
+</pre></div>
+</div>
+<p>To see a list of all available plugins and project templates that you can use in your experiments.</p>
+</div>
+<div class="section" id="cli-with-scripts-using-enb">
+<h2>CLI with scripts using <cite>enb</cite><a class="headerlink" href="#cli-with-scripts-using-enb" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Passing a valid <cite>–option=value</cite> argument to a script using <cite>enb</cite>.</p></li>
+</ul>
+<p>When executing a script that uses <cite>enb</cite>, you can use the CLI to set different configuration options.
+For instance, to show additional information when running your script, you can pass the additional
+parameter flag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>To make it more verbose (more v’s: more verbosity).</p>
+<p>A set of predefined parameters are available in <cite>enb.config.options</cite>, the single instance
+of the <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.AllOptions</span></code> class.
+When running a script that import enb.config, “-h” can be passed as argument to show
+a help message with all available options.</p>
+<p>All these options (whether provided via the CLI or not) can be read and/or changed with code like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">enb.config</span> <span class="kn">import</span> <span class="n">options</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verbose level: </span><span class="si">{</span><span class="n">enb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="analyzer_gallery.html" class="btn btn-neutral float-left" title="Analyzer gallery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Miguel Hernández-Cabronero.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

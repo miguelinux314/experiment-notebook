@@ -101,7 +101,7 @@
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_options.html">Command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -176,7 +176,10 @@
 <p>This page explains the most basic workflow with <code class="docutils literal notranslate"><span class="pre">enb</span></code> with a
 <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example">simple example</a>.
 In this example, <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> is subclassed to gather some statistics about a text corpus.
-You can look at the sources in that link, or install a self-contained version with</p>
+You can look at the sources in that link, or install a self-contained version with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">basic</span><span class="o">-</span><span class="n">workflow</span> <span class="n">bw</span>
+</pre></div>
+</div>
 <p>Then, classes from the <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module are used to summarize and plot the obtained results.
 A diagram depicting these main stages is shown next. These stages are addressed
 one by one in the remainder of this page.</p>
@@ -356,7 +359,7 @@ automatically contains all columns defined for <cite>WikiTable</cite>:</p>
 </div>
 </div></blockquote>
 <p>To <strong>define custom columns</strong> for your class, you can add <cite>column_*</cite> methods
-to your <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass as in Section 2, or you can use the &#64;`enb.atable.column_function` decorator
+to your <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass as in Section 2, or you can use the &#64;enb.atable.column_function decorator
 as in the following example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">WikiTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
@@ -380,7 +383,7 @@ as in the following example:</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>The &#64;`enb.atable.column_function` decorator is the most general way of defining new
+<p>The &#64;enb.atable.column_function decorator is the most general way of defining new
 columns. In general, to employ it:</p>
 <blockquote>
 <div><ul class="simple">
@@ -391,7 +394,7 @@ is to be stored.</p></li>
 <li><p>Decorate the method with <code class="docutils literal notranslate"><span class="pre">&#64;enb.atable.column_function(column_name)</span></code>, where
 <code class="docutils literal notranslate"><span class="pre">column_name</span></code> is a unique name that identifies the result produced by the method.</p></li>
 <li><p>It is not recommended to decorate functions with name starting with <cite>column_</cite>.</p></li>
-<li><p>Methods decorated with  &#64;`enb.atable.column_function` should not return the computed
+<li><p>Methods decorated with  &#64;enb.atable.column_function should not return the computed
 value, but instead assign it to its <cite>row</cite> argument, i.e., they should update
 the current row directly.</p></li>
 </ul>

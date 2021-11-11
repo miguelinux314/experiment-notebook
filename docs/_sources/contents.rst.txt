@@ -10,6 +10,6 @@ Contents
    experiments
    image_compression
    analyzing_data
-   command_line_options
+   command_line_interface
    api
    thanks

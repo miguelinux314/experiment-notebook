@@ -101,7 +101,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_options.html">Command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -183,18 +183,23 @@ and <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTa
 <p>For this example, we have a <cite>data/urls/</cite> folder containing <cite>.txt</cite> files, each one
 with a single line that is an IP address in plain text. We want to check whether
 certain ports are open in any of these IP addresses.</p>
-<p>Let’s see the steps to create this experiment.</p>
+<p>Let’s see the steps to create this experiment.
+You can look at the sources in that link, or install a self-contained version with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">experiment</span><span class="o">-</span><span class="n">example</span> <span class="n">ee</span>
+</pre></div>
+</div>
 <div class="section" id="the-two-atable-s-of-an-experiment">
 <h2>The two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s of an Experiment<a class="headerlink" href="#the-two-atable-s-of-an-experiment" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class combines two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <cite>dataset_info_table</cite> attribute is set to an <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> instance upon instantiation of
+<li><p>One table contains information about your dataset.
+The <cite>dataset_info_table</cite> attribute is set to an <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> instance upon instantiation of
 the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>. The instance is typically an <a class="reference internal" href="api/enb.html#enb.sets.FilePropertiesTable" title="enb.sets.FilePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FilePropertiesTable</span></code></a>
 subclass, depending on the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclass itself. In other words, different
 experiments may retrieve different aspects from the test corpus files, as needed
 for the experiment.</p></li>
-<li><p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> is a subclass of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> itself.
+<li><p><strong>Experiment is a subclass of ATable</strong>.
 This means that experiment results are retrieved with the instance’s <cite>get_df</cite> method.
 Furthermore, it means you can define as many data columns as you require.
 Nothing prevents you from inheriting from other <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclasses to complete
@@ -208,6 +213,11 @@ We can start defining our experiment class</p>
 <p>Since all of our samples are in <cite>data/ips</cite>, we can simply tell <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>
 where our data folder is, and it will recursively find all files with
 the specified extension:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember: <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> classes inherit from <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>. Check on the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> page
+if you need some help with the <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class.</p>
+</div>
 </div>
 <div class="section" id="experiment-tasks">
 <h2>Experiment tasks<a class="headerlink" href="#experiment-tasks" title="Permalink to this headline">¶</a></h2>
@@ -271,12 +281,42 @@ set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
         <span class="k">return</span> <span class="n">checkport_task</span><span class="o">.</span><span class="n">check_one_port</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since our experiment table has a file path and a task as an index (i.e., row identifier),
+the first line of <cite>column_port_open</cite>  allows you to get both:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">url_file_path</span><span class="p">,</span> <span class="n">task_name</span> <span class="o">=</span> <span class="n">index</span>
+</pre></div>
+</div>
+<p>Then one can use <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>’s <cite>task_by_name</cite> dict to retrieve the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkport_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks_by_name</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="final-steps">
 <h2>Final steps<a class="headerlink" href="#final-steps" title="Permalink to this headline">¶</a></h2>
 <p>We are all set up to retrieve and analyze the results. In the following snippet,
 you can see the how to obtain the <cite>result_df</cite> dataframe and how to display
-messages for those ports found to be open.</p>
+messages for those ports found to be open:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># This is the list of inputs. Each one contains one IP in a single line.</span>
+    <span class="n">enb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">base_dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;./data/ips&quot;</span>
+
+    <span class="c1"># This is the list of tasks to be run</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">CheckPort</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">53</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">443</span><span class="p">,</span> <span class="mi">8008</span><span class="p">]]</span>
+
+    <span class="c1"># Obtain the full table of results</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">PortExperiment</span><span class="p">(</span><span class="n">tasks</span><span class="o">=</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+
+    <span class="c1"># Display a list of observed open ports</span>
+    <span class="n">open_port_df</span> <span class="o">=</span> <span class="n">result_df</span><span class="p">[</span><span class="n">result_df</span><span class="p">[</span><span class="s2">&quot;port_open&quot;</span><span class="p">]]</span>
+    <span class="k">for</span> <span class="n">url_file_path</span><span class="p">,</span> <span class="n">url_df</span> <span class="ow">in</span> <span class="n">open_port_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;file_path&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found open ports in </span><span class="si">{</span><span class="nb">open</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2"> - &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">url_df</span><span class="p">[</span><span class="s2">&quot;param_dict&quot;</span><span class="p">]))</span>
+</pre></div>
+</div>
 <p>An example output could be as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Found</span> <span class="nb">open</span> <span class="n">ports</span> <span class="ow">in</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span><span class="p">:</span>
  <span class="o">-</span> <span class="mi">443</span>

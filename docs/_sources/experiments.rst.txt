@@ -19,23 +19,27 @@ with a single line that is an IP address in plain text. We want to check whether
 certain ports are open in any of these IP addresses.
 
 Let's see the steps to create this experiment.
+You can look at the sources in that link, or install a self-contained version with::
+
+   enb plugin install experiment-example ee
 
 The two |ATable| s of an Experiment
 -----------------------------------
 
 The |Experiment| class combines two |ATable| s:
 
-    - The `dataset_info_table` attribute is set to an |ATable| instance upon instantiation of
+    - One table contains information about your dataset.
+      The `dataset_info_table` attribute is set to an |ATable| instance upon instantiation of
       the |Experiment|. The instance is typically an :class:`enb.sets.FilePropertiesTable`
       subclass, depending on the |Experiment| subclass itself. In other words, different
       experiments may retrieve different aspects from the test corpus files, as needed
       for the experiment.
 
-    -  The |Experiment| is a subclass of |ATable| itself.
-       This means that experiment results are retrieved with the instance's `get_df` method.
-       Furthermore, it means you can define as many data columns as you require.
-       Nothing prevents you from inheriting from other |Experiment| subclasses to complete
-       the set of defined columns.
+    - **Experiment is a subclass of ATable**.
+      This means that experiment results are retrieved with the instance's `get_df` method.
+      Furthermore, it means you can define as many data columns as you require.
+      Nothing prevents you from inheriting from other |Experiment| subclasses to complete
+      the set of defined columns.
 
 The number of rows of the dataframe returned by an |Experiment|'s `get_df` method
 depends on the |ExperimentTask| s used in it.
@@ -56,6 +60,11 @@ the specified extension:
 
     enb.config.options.base_dataset_dir = "./data/ips"
 
+
+.. note::
+
+    Remember: |Experiment| classes inherit from |ATable|. Check on the :doc:`basic_workflow` page
+    if you need some help with the |ATable| class.
 
 Experiment tasks
 ----------------
@@ -149,14 +158,23 @@ set to whatever is returned by our `CheckPort` tasks::
             return checkport_task.check_one_port(url_file_path)
 
 
+.. note::
+
+    Since our experiment table has a file path and a task as an index (i.e., row identifier),
+    the first line of `column_port_open`  allows you to get both::
+
+        url_file_path, task_name = index
+
+    Then one can use |Experiment|'s `task_by_name` dict to retrieve the |ExperimentTask| instance::
+
+        checkport_task = self.tasks_by_name[task_name]
+
 Final steps
 -----------
 
 We are all set up to retrieve and analyze the results. In the following snippet,
 you can see the how to obtain the `result_df` dataframe and how to display
-messages for those ports found to be open.
-
-.. code-block::python
+messages for those ports found to be open::
 
     if __name__ == '__main__':
         # This is the list of inputs. Each one contains one IP in a single line.
