@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Experiments = data + tasks &mdash; Experiment Notebook MIT License documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Image compression experiments" href="image_compression.html" />
+    <link rel="prev" title="Basic workflow: enb.atable.ATable" href="basic_workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
+          
+
+          
+            
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Experiments = data + tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-two-atable-s-of-an-experiment">The two <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code> s of an Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experiment-tasks">Experiment tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-rows-are-created-how-are-they-indexed">What rows are created? How are they indexed?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-columns-are-created">What columns are created?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_options.html">Command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Experiment Notebook</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Experiments = data + tasks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/experiments.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="experiments-data-tasks">
+<h1>Experiments = data + tasks<a class="headerlink" href="#experiments-data-tasks" title="Permalink to this headline">¶</a></h1>
+<p>In the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> page, we saw the most basic usage of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>,
+e.g., a list of inputs, and a list of columns to obtain the results dataframe.</p>
+<p>Often, we want to calculate a set of columns (e.g., metrics) for each element
+in the dataset <strong>and</strong> for each of the defined tasks. For example, we may need
+to run different algorithms, or the same algorithm with different parameters,
+for a fixed test corpus. For this purpose, <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> provides the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>
+and <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> classes.</p>
+<p>For this example, we have a <cite>data/urls/</cite> folder containing <cite>.txt</cite> files, each one
+with a single line that is an IP address in plain text. We want to check whether
+certain ports are open in any of these IP addresses.</p>
+<p>Let’s see the steps to create this experiment.</p>
+<div class="section" id="the-two-atable-s-of-an-experiment">
+<h2>The two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s of an Experiment<a class="headerlink" href="#the-two-atable-s-of-an-experiment" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class combines two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <cite>dataset_info_table</cite> attribute is set to an <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> instance upon instantiation of
+the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>. The instance is typically an <a class="reference internal" href="api/enb.html#enb.sets.FilePropertiesTable" title="enb.sets.FilePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FilePropertiesTable</span></code></a>
+subclass, depending on the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclass itself. In other words, different
+experiments may retrieve different aspects from the test corpus files, as needed
+for the experiment.</p></li>
+<li><p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> is a subclass of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> itself.
+This means that experiment results are retrieved with the instance’s <cite>get_df</cite> method.
+Furthermore, it means you can define as many data columns as you require.
+Nothing prevents you from inheriting from other <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclasses to complete
+the set of defined columns.</p></li>
+</ul>
+</div></blockquote>
+<p>The number of rows of the dataframe returned by an <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>’s <cite>get_df</cite> method
+depends on the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> s used in it.</p>
+<p>For our experiment, we will use a set of <cite>.txt</cite> files, each containing an IP address.
+We can start defining our experiment class</p>
+<p>Since all of our samples are in <cite>data/ips</cite>, we can simply tell <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>
+where our data folder is, and it will recursively find all files with
+the specified extension:</p>
+</div>
+<div class="section" id="experiment-tasks">
+<h2>Experiment tasks<a class="headerlink" href="#experiment-tasks" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> class can be extended or used directly to define the tasks
+that need to be performed for each input sample.</p>
+<ul class="simple">
+<li><p>The <cite>enb.experiment.ExperimentTask.param_dict</cite> attribute can be used to store
+as many parameters as needed.</p></li>
+<li><p>You can create subclasses of <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a>, e.g., with a common method <cite>f</cite>.
+Then, in the definition of your <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> columns, you can call that method
+<cite>f</cite> automatically for each input and each parameter combination, and obtain
+a clean table of results.</p></li>
+</ul>
+<p>In our example, for each input IP address, we want to run the same procedure (checking whether something is open)
+for a selection of parameters (ports). We can do this following these steps:</p>
+<ol class="arabic simple">
+<li><p>Inherit from <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a></p></li>
+<li><p>Set up the <cite>param_dict</cite> attribute based on your needs.</p></li>
+<li><p>Define any number of methods for that task.</p></li>
+</ol>
+<p>The following code illustrates how to do this for our example:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don’t worry if you don’t know what an IP or a port is.
+You can use your own input datasets and tasks, or reuse
+others created by the community.</p>
+</div>
+</div>
+<div class="section" id="what-rows-are-created-how-are-they-indexed">
+<h2>What rows are created? How are they indexed?<a class="headerlink" href="#what-rows-are-created-how-are-they-indexed" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> instances defined for an experiment, along with the dataset
+files used as input determine the rows to be computed.</p>
+<p>For instance, if we have tasks with name properties <cite>CheckPort__port=80</cite> and
+<cite>CheckPort__port=443</cite>, and input files <cite>ip1.txt</cite> and <cite>ip2.txt</cite>,
+then enb will create 4 (2*2) rows, indexed as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s1">&#39;ip1.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=80&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;ip1.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=443&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;ip2.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=80&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;ip2.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=443&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-columns-are-created">
+<h2>What columns are created?<a class="headerlink" href="#what-columns-are-created" title="Permalink to this headline">¶</a></h2>
+<p>You can define as many columns in your <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class as you need.
+To do so, we follow the same basic idea as in <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a>.</p>
+<p>The only difference this time is that the <cite>index</cite> parameter passed to
+the column-computing functions is now a tuple with two elements:
+the index in the <cite>dataset_info_table</cite> of the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>
+and the <cite>name</cite> property of the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a>.</p>
+<p>In our example, we can simply define a single column, whose value is
+set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PortExperiment</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">Experiment</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Example experiment that checks whether certain ports are open.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset_files_extension</span> <span class="o">=</span> <span class="s2">&quot;txt&quot;</span>
+
+    <span class="k">def</span> <span class="nf">column_port_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="n">url_file_path</span><span class="p">,</span> <span class="n">task_name</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="n">checkport_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks_by_name</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">checkport_task</span><span class="o">.</span><span class="n">check_one_port</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="image_compression.html" class="btn btn-neutral float-right" title="Image compression experiments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basic_workflow.html" class="btn btn-neutral float-left" title="Basic workflow: enb.atable.ATable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Miguel Hernández-Cabronero.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
