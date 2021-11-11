@@ -12,8 +12,12 @@
 .. |redefines_column| replace:: :meth:`enb.atable.redefines_column`
 
 .. |aanalysis| replace:: :class:`enb.aanalysis`
+.. |Analyzer| replace:: :class:`enb.aanalysis.Analyzer`
+.. |ScalarNumericAnalyzer| replace:: :class:`enb.aanalysis.ScalarNumericAnalyzer`
 
-.. |experiment| replace:: :class:`enb.experiment`
+.. |experiment| replace:: :mod:`enb.experiment`
 .. |Experiment| replace:: :class:`enb.experiment.Experiment`
+.. |ExperimentTask| replace:: :class:`enb.experiment.ExperimentTask`
 
-..  |DataFrame| replace:: :class:`pandas.DataFrame`
+.. |pandas| replace:: :mod:`pandas`
+.. |DataFrame| replace:: :class:`pandas.DataFrame`

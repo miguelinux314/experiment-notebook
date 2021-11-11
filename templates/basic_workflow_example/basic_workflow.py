@@ -36,8 +36,12 @@ def main():
     sample_paths = glob.glob("./data/wiki/*.txt")
 
     # Step 2: run experiment to gather data
-    table = WikiTable(csv_support_path="persistence_basic_workflow.csv")
+    table = WikiTable() # csv_support_path="persistence_basic_workflow.csv")
     result_df = table.get_df(target_indices=sample_paths)
+
+    # Show part of the returned table for the documentation.
+    print(result_df[["index", "line_count"]])
+
 
     # Step 3: plot results
     #   Distribution of line counts
@@ -62,6 +66,7 @@ def main():
         target_columns=[("line_count", "word_count")],
         column_to_properties=table.column_to_properties)
 
+    # Render a PNG version as well
     shutil.rmtree("plots_png", ignore_errors=True)
     enb.aanalysis.pdf_to_png("plots", "plots_png")
 

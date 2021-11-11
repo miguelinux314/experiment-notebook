@@ -1,9 +1,0 @@
-__atable_index,index,line_count,word_count,status,row_created,row_updated
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/d_knuth.txt',)",./data/wiki/d_knuth.txt,373,6053,alive,2021-11-09T20:41:13.963241,2021-11-09T20:41:13.963775
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/s_beauvoir.txt',)",./data/wiki/s_beauvoir.txt,292,5312,dead,2021-11-09T20:41:13.974075,2021-11-09T20:41:13.974991
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/c_shannon.txt',)",./data/wiki/c_shannon.txt,343,5734,dead,2021-11-09T20:41:13.958426,2021-11-09T20:41:13.959173
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/m_curie.txt',)",./data/wiki/m_curie.txt,538,11316,dead,2021-11-09T20:41:13.976019,2021-11-09T20:41:13.976971
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/r_franklin.txt',)",./data/wiki/r_franklin.txt,419,15509,dead,2021-11-09T20:41:13.952960,2021-11-09T20:41:13.953786
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/a_turing.txt',)",./data/wiki/a_turing.txt,430,15489,dead,2021-11-09T20:41:13.998376,2021-11-09T20:41:13.999124
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/n_chomsky.txt',)",./data/wiki/n_chomsky.txt,1854,20675,alive,2021-11-09T20:41:13.964691,2021-11-09T20:41:13.965541
-"('/data/Dropbox/desarrollo/experiment-notebook.git/templates/basic_workflow_example/data/wiki/k_popper.txt',)",./data/wiki/k_popper.txt,533,13629,dead,2021-11-09T20:41:13.989906,2021-11-09T20:41:13.990375

@@ -6,6 +6,11 @@
 Welcome to the Experiment Notebook
 ===============================================
 
+.. figure:: img/enb_logo.png
+    :width: 15%
+    :alt: |enb| logo
+    :align: center
+
 The Experiment Notebook (from now on, ``enb``) library is designed to help you obtain
 and report computer-based experimental data. Focus on what is new in your
 current experiment, and let ``enb`` deal with the repetitive stuff.
