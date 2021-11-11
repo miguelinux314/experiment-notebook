@@ -5,8 +5,14 @@
 Basic workflow: |ATable|
 ========================
 
-This page explains the most basic workflow with ``enb`` with a `simple example <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example>`_.
+This page explains the most basic workflow with ``enb`` with a
+`simple example <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example>`_.
 In this example, |ATable| is subclassed to gather some statistics about a text corpus.
+You can look at the sources in that link, or install a self-contained version with
+
+.. code-block::bash
+   enb plugin install basic-workflow your_installation_dir
+
 
 Then, classes from the :mod:`enb.aanalysis` module are used to summarize and plot the obtained results.
 A diagram depicting these main stages is shown next. These stages are addressed
