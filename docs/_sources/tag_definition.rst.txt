@@ -14,6 +14,8 @@
 .. |aanalysis| replace:: :class:`enb.aanalysis`
 .. |Analyzer| replace:: :class:`enb.aanalysis.Analyzer`
 .. |ScalarNumericAnalyzer| replace:: :class:`enb.aanalysis.ScalarNumericAnalyzer`
+.. |TwoNumericAnalyzer| replace:: :class:`enb.aanalysis.TwoNumericAnalyzer`
+.. |DictNumericAnalyzer| replace:: :class:`enb.aanalysis.DictNumericAnalyzer`
 
 .. |experiment| replace:: :mod:`enb.experiment`
 .. |Experiment| replace:: :class:`enb.experiment.Experiment`

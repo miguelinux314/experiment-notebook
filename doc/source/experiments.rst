@@ -19,9 +19,9 @@ with a single line that is an IP address in plain text. We want to check whether
 certain ports are open in any of these IP addresses.
 
 Let's see the steps to create this experiment.
-You can look at the sources in that link, or install a self-contained version with::
+You can look at the sources in that link, or install a self-contained version into a new `ee` folder with::
 
-   enb plugin install experiment-example ee
+   enb plugin install port-experiment-example ee
 
 The two |ATable| s of an Experiment
 -----------------------------------
@@ -42,7 +42,13 @@ The |Experiment| class combines two |ATable| s:
       the set of defined columns.
 
 The number of rows of the dataframe returned by an |Experiment|'s `get_df` method
-depends on the |ExperimentTask| s used in it.
+depends on the |ExperimentTask| s used in it. The following figure illustrates how experiments
+are structured.
+
+.. figure:: /_static/experiment_diagram.png
+    :width: 100%
+    :alt: Experiment diagram
+    :align: center
 
 For our experiment, we will use a set of `.txt` files, each containing an IP address.
 We can start defining our experiment class

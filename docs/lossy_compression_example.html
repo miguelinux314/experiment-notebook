@@ -87,11 +87,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression experiments</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Lossy Compression Experiment</a><ul>
@@ -111,7 +112,6 @@
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Analyzing data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
@@ -312,7 +312,7 @@ instances. See <a class="reference internal" href="defining_new_compressors.html
 <div class="section" id="lossy-experiment-running">
 <h3>Lossy: experiment running<a class="headerlink" href="#lossy-experiment-running" title="Permalink to this headline">¶</a></h3>
 <p>The lossless compression experiment can now be created, and used to generate a
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1075.ge9f4496c40)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with all defined columns.</p>
 <p>Notice how <cite>show_h_range_bar</cite> and <cite>show_h_std_bar</cite> are employed to signal the range and +/- 1 std in the x axis.
 They can be used in the y axis by replacing <cite>h</cite> with <cite>v</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run experiment and produce figures</span>
