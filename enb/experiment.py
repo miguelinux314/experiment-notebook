@@ -264,7 +264,7 @@ class Experiment(atable.ATable):
         file_path, task_name = index
         row[_column_name] = self.tasks_by_name[task_name].label
 
-    @atable.column_function("param_dict", has_dict_values=True)
+    @atable.column_function("param_dict")
     def set_param_dict(self, index, row):
         file_path, task_name = index
         row[_column_name] = self.tasks_by_name[task_name].param_dict
