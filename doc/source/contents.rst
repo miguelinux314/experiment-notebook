@@ -8,8 +8,8 @@ Contents
    installation
    basic_workflow
    experiments
-   image_compression
    analyzing_data
+   image_compression
    command_line_interface
    api
    thanks

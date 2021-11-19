@@ -37,13 +37,13 @@ You can also take a look at the automatically generated :ref:`API<api>`.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Documentation contents:
 
    installation
    basic_workflow
    experiments
-   image_compression
    analyzing_data
+   image_compression
    command_line_interface
    api
    thanks

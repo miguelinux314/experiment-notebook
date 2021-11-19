@@ -1,12 +1,17 @@
 # Under development v0.3.2
 
 * New features
-  - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests
-  - Experiments now create a family_label column to simplify analysis
-  - Added support for sorting group rows based on their average value
+  - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests.
+  - Added a wrapper for the upcoming CCSDS 124.0-B-1.
+  - Experiments now create a family_label column to simplify analysis.
+  - Added support for sorting group rows based on their average value.
+  - Improved documentation, including the most recent plotting and command-line tools.
 
 * General improvements
+  - Updated the user manual with the most recent analyzer classes
   - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not redistributed with enb.
+  - Updated the ScalarNumericAnalyzer so that it can display averages (with or without std error bars) without
+    displaying any histogram.
 
 # 2021/09/10 v0.3.1
 
