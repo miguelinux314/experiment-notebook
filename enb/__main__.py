@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Entropy point for the main enb CLI.
+"""Entry point for the main enb CLI.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
@@ -9,6 +9,7 @@ import sys
 import argparse
 import textwrap
 import enb.plugins
+from enb.config import options
 
 
 def CLIParser():
@@ -128,17 +129,28 @@ class PluginList(argparse.Action):
                       f"{', '.join(repr(f) for f in namespace.filter)}, "
                       f"out of {len(all_installables)} available)", end="")
             else:
-                print(". You can add arguments to filter this list, and/or use the --exclude argument", end="")
+                print(". You can add arguments to filter this list, and/or use the --exclude argument.\n"
+                      "Add -v for extra information on the listed plugins", end="")
             print(".\n")
 
             for installable in filtered_installables:
                 label = installable.label if installable.label else ''
                 label = f"{label} (privative)" if "privative" in installable.tags else label
-                print(f"{installable.name:>25s} :: ", end="")
+                while label[-1] == ".":
+                    label = label[:-1]
+                while "  " in label:
+                    label = label.replace("  ", "")
+                label = label.strip()
+                if label:
+                    label = label[0].upper() + label[1:]
+                if options.verbose:
+                    print("-"*20 + f"  {installable.name} :: ", end="")
+                else:
+                    print(f"{installable.name:>25s} :: ", end="")
                 print("\n".join(textwrap.wrap(label, 100)), end="")
-                print("." if label[0] != "." else "")
+                print(".")
                 if enb.config.options.verbose:
-                    indentation_string = " " * (15 + len(" :: "))
+                    indentation_string = " " * (7 + len(" :: "))
                     if installable.authors:
                         print(textwrap.indent
                               (f"* Plugin author{'s' if len(installable.authors) != 1 else ''}:",
@@ -191,7 +203,7 @@ class PluginList(argparse.Action):
         tag_fmt_str = f"{{tag:{max_tag_length}s}}"
         for tag, installable_list in sorted(
                 enb.plugins.installable.InstallableMeta.tag_to_installable.items(),
-                key=lambda t: (-len(t[1]), t[0])):
+                key=lambda t: list(enb.plugins.installable.tag_to_description.keys()).index(t[0])):
             print(f"  - {tag_fmt_str.format(tag=tag)} ({len(installable_list):3d} "
                   f"{'' if len(installable_list) != 1 else ' '}plugin{'s' if len(installable_list) != 1 else ''})",
                   end="")

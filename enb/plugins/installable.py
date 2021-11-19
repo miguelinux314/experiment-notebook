@@ -15,6 +15,7 @@ import shutil
 import requests
 import subprocess
 import textwrap
+import collections
 import enb.misc
 
 
@@ -228,12 +229,11 @@ def list_all_installables(base_class=Installable, ignored_classes=[]):
 
 
 # Lean description of the intention of each tag.
-tag_to_description = {
-    "privative": "Plugins requiring privative (non-free) software, not distributable with enb",
-    "codec": "Data compression/decompression class definitions",
-    "data compression": "Data compression tools",
-    "template": "Templates formatteable into the installation dir",
-    "project": "Project templates",
-    "test": "Plugins for testing purposes",
-    "demo": "Examples to exhibit enb's functionality",
-}
+tag_to_description = collections.OrderedDict()
+tag_to_description["documentation"] = "Documentation examples referenced in the online user manual" 
+tag_to_description["codec"] = "Data compression/decompression class definitions"
+tag_to_description["data compression"] = "Data compression tools"
+tag_to_description["template"] = "Templates formatteable into the installation dir"
+tag_to_description["project"] = "Project templates"
+tag_to_description["test"] = "Plugins for testing purposes"
+tag_to_description["privative"] = "Plugins requiring privative (non-free) software, not distributable with enb"

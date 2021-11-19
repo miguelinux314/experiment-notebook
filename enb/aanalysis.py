@@ -1278,10 +1278,10 @@ class DictNumericSummary(AnalyzerSummary):
         for additional information.
         """
         _self, group_label, row = args
-        group_df = self.label_to_df[group_label]
+        group_df = _self.label_to_df[group_label]
         column_name = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
-        if render_mode not in self.analyzer.valid_render_modes:
+        if render_mode not in _self.analyzer.valid_render_modes:
             raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
 
         # Only one mode is supported in this version of enb
@@ -1292,20 +1292,20 @@ class DictNumericSummary(AnalyzerSummary):
         x_values = []
         avg_values = []
         std_values = []
-        for x, k in enumerate(self.analyzer.column_name_to_keys[column_name]):
+        for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
             values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
             if len(values) > 0:
                 x_values.append(x)
                 avg_values.append(values.mean())
                 std_values.append(values.std())
-            if self.analyzer.show_individual_samples:
+            if _self.analyzer.show_individual_samples:
                 row[_column_name].append(enb.plotdata.ScatterData(x_values=[x] * len(values),
                                                                   y_values=values.values,
                                                                   alpha=self.analyzer.secondary_alpha))
         if render_mode == "line":
             row[_column_name].append(enb.plotdata.LineData(
                 x_values=x_values, y_values=avg_values, alpha=self.analyzer.main_alpha))
-            if self.analyzer.show_y_std:
+            if _self.analyzer.show_y_std:
                 row[_column_name].append(enb.plotdata.ErrorLines(
                     x_values=x_values, y_values=avg_values,
                     err_neg_values=std_values, err_pos_values=std_values,

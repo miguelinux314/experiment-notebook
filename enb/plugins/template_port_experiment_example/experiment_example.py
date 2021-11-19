@@ -46,7 +46,7 @@ if __name__ == '__main__':
     enb.config.options.base_dataset_dir = "./data/ips"
 
     # This is the list of tasks to be run
-    tasks = [CheckPort(port=p) for p in [53, 22, 80, 443, 8008]]
+    tasks = [CheckPort(port=p) for p in [53, 22, 80, 443, 8080]]
 
     # Obtain the full table of results
     exp = PortExperiment(tasks=tasks)

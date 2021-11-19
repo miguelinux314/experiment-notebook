@@ -4,8 +4,8 @@ import enb
 class BasicWorkflowTemplate(enb.plugins.Template):
     """Template for lossless and lossy data compression experiments.
     """
-    name = "experiment-example"
+    name = "basic-workflow"
     author = ["Miguel Hernández-Cabronero"]
-    label = "Self-contained example of a simple enb's experiment."
-    tags = {"project", "data compression", "template"}
+    label = "Basic, self-contained example of enb's workflow"
+    tags = {"project", "data compression", "documentation"}
     tested_on = {"linux"}
