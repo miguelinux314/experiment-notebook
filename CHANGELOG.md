@@ -1,4 +1,4 @@
-# Under development v0.3.2
+# 2021/11/29 v0.3.2
 
 * New features 
   - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests.
