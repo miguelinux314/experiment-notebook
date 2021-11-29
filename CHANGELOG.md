@@ -6,7 +6,7 @@
   - Experiments now create a family_label column to simplify analysis.
   - Added support for sorting group rows based on their average value.
   - Added support for grouping based on enb.experiment.TaskFamily lists to enb.aanalysis.Analyzer.
-  - Improved documentation, including the most recent plotting and command-line tools.
+  - Improved documentation, including the most recent plotting and command-line tools and additions.
 
 * General improvements
   - Updated the user manual with the most recent analyzer classes

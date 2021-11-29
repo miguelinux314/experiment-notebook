@@ -20,6 +20,7 @@
 .. |experiment| replace:: :mod:`enb.experiment`
 .. |Experiment| replace:: :class:`enb.experiment.Experiment`
 .. |ExperimentTask| replace:: :class:`enb.experiment.ExperimentTask`
+.. |TaskFamily| replace:: class:`enb.experiment.TaskFamily`
 
 .. |pandas| replace:: :mod:`pandas`
 .. |DataFrame| replace:: :class:`pandas.DataFrame`

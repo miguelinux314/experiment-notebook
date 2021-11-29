@@ -78,11 +78,4 @@ if __name__ == '__main__':
         global_y_label_pos=-0.01)
 
     # Make a png mirror of all the PDF files (not within enb, yet)
-    for pdf_path in glob.glob(os.path.join(options.plot_dir, "**", "*.pdf"), recursive=True):
-        png_path = pdf_path.replace(os.path.basename(options.plot_dir), "png_plots").replace(".pdf", ".png")
-        os.makedirs(os.path.dirname(png_path), exist_ok=True)
-        invocation = f"convert -density 400 {pdf_path} {png_path}"
-        status, output = subprocess.getstatusoutput(invocation)
-        if status != 0:
-            raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                status, invocation, output))
+    enb.aanalysis.pdf_to_png(options.plot_dir, os.path.join(os.path.dirname(os.path.abspath(__file__)), "png_plots"))
