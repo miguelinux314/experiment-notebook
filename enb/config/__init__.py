@@ -75,6 +75,8 @@ From there on, many enb functions adhere to the following principle:
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
 
+import datetime
+
 # Logging tools
 from .. import log
 # enb.config.ini : file-based config management
@@ -87,6 +89,7 @@ import shutil as _shutil
 options = aoptions.Options()
 assert options is aoptions.Options(), "Singleton not working"
 
+
 def get_banner():
     """Returns the enb banner showing the current version.
     """
@@ -94,7 +97,15 @@ def get_banner():
                f"v{ini.get_key('enb', 'version')}" \
                f"{'::' + str(ini.get_key('enb', 'commit_hash')) if options.verbose else ''}" \
                f" ] "
-    return f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
+    contents = f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
+
+    if options.verbose:
+        contents += f"\nStarted at {datetime.datetime.now()}.\n"
+
+    if options.verbose > 1:
+        contents += f"\n{options}\n"
+
+    return contents
 
 
 def report_configuration():

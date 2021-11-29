@@ -40,6 +40,7 @@ import deprecation
 
 from .. import default_base_dataset_dir, default_persistence_dir, calling_script_dir, is_enb_cli
 from .. import log
+from . import ini
 from . import singleton_cli as _singleton_cli
 
 # Allowed message types
@@ -49,7 +50,16 @@ _logging_level_names = ["core", "error", "warning", "message", "verbose", "infor
 class OptionsBase(_singleton_cli.SingletonCLI):
     """Global options for all modules, without any positional or required argument.
     """
-    pass
+
+    @property
+    def non_default_properties(self):
+        return {k: v for k, v in self._name_to_property.items()
+                if v != ini.get_key("enb.config.options", k)}
+
+    def __str__(self):
+        s = "Summary of enb.config.options:\n\t- "
+        s += "\n\t- ".join(f"{k:30s} = {repr(v)}" for k, v in sorted(self.non_default_properties.items()))
+        return s
 
 
 @_singleton_cli.property_class(OptionsBase)
