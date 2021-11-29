@@ -1,10 +1,11 @@
 # Under development v0.3.2
 
-* New features
+* New features 
   - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests.
   - Added a wrapper for the upcoming CCSDS 124.0-B-1.
   - Experiments now create a family_label column to simplify analysis.
   - Added support for sorting group rows based on their average value.
+  - Added support for grouping based on enb.experiment.TaskFamily lists to enb.aanalysis.Analyzer.
   - Improved documentation, including the most recent plotting and command-line tools.
 
 * General improvements
