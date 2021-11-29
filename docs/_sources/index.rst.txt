@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to the Experiment Notebook
-===============================================
+==================================
 
 .. figure:: img/enb_logo.png
     :width: 15%
@@ -21,6 +21,9 @@ Some of the main features of ``enb`` are:
   * **Persistent**: no need to re-run your experiments: results are automatically saved.
   * **Disseminable**: ``enb`` helps you create figures and tables to report your data.
   * **Extensible**: you can always add new samples, define new columns and produce new figures.
+
+Please visit `the enb github page <https://github.com/miguelinux314/experiment-notebook>`_ for
+full access to the code.
 
 .. note::
    ``enb`` is based on well-known python libraries such as ``pandas``, ``matplotlib`` and ``ray``.
