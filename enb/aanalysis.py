@@ -302,21 +302,10 @@ class Analyzer(enb.atable.ATable):
         return column_kwargs
 
     def get_output_pdf_path(self, column_selection, group_by, output_plot_dir, render_mode):
-        if group_by:
-            if isinstance(group_by, str):
-                group_by_str = group_by
-            elif isinstance(group_by, collections.abc.Iterable):
-                group_by_str = ",".join(group_by)
-            # else:
-            #     group_by_str = str(group_by)
-        else:
-            group_by_str = ""
-        group_by_str = group_by_str if not group_by_str else f"_groupby-{group_by_str}"
-
         return os.path.join(
             output_plot_dir,
             f"{self.__class__.__name__}_"
-            f"{column_selection}{group_by_str}_{render_mode}.pdf")
+            f"{column_selection}_groupby-{get_groupby_str(group_by=group_by)}_{render_mode}.pdf")
 
     @classmethod
     def normalize_parameters(cls, f, group_by, column_to_properties, target_columns,
@@ -463,6 +452,14 @@ class AnalyzerSummary(enb.atable.SummaryTable):
                         name=self.analyzer.get_render_column_name(column_selection, selected_render_mode),
                         has_object_values=True))
 
+    def split_groups(self, reference_df=None, include_all_group=None):
+        try:
+            original_group_by = self.group_by
+            self.group_by = self.group_by if not is_family_grouping(self.group_by) else "family_label"
+            return super().split_groups(reference_df=reference_df, include_all_group=include_all_group)
+        finally:
+            self.group_by = original_group_by
+
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function (after "partialing"-out "column_selection" and "render_mode"),
         that computes the list of enb.plotdata.PlottableData instances that represent
@@ -499,6 +496,32 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         for k, v in ((k, v) for k, v in self.column_to_properties.items() if f"_render-" in k):
             column_to_properties[k] = v
         self.column_to_properties = column_to_properties
+
+def is_family_grouping(group_by):
+    """Return True if and only if group_by is an iterable of one or more enb.experiment.TaskFamily instances.
+    """
+    try:
+        return all(isinstance(e, TaskFamily) for e in group_by)
+    except TypeError:
+        return False
+
+def get_groupby_str(group_by):
+    """Return a string identifying the group_by method.
+    If None, 'None' is returned.
+    If a string is passed, it is returned.
+    If a list of strings is passed, it is formatted adding two underscores as separation.
+    If grouping by family was requested, 'family_label' is returned.
+    """
+    if not group_by:
+        return "None"
+    elif is_family_grouping(group_by=group_by):
+        return "family_label"
+    elif isinstance(group_by, str):
+        return group_by
+    elif isinstance(group_by, collections.abc.Iterable) and all(isinstance(s, str) for s in group_by):
+        return "__".join(group_by)
+    else:
+        raise ValueError(group_by)
 
 
 @enb.config.aini.managed_attributes
@@ -957,7 +980,7 @@ class TwoNumericAnalyzer(Analyzer):
         return os.path.join(
             output_plot_dir,
             f"{self.__class__.__name__}_"
-            f"{','.join(column_selection)}{'_groupby-' + group_by if group_by else ''}_{render_mode}.pdf")
+            f"{','.join(column_selection)}_groupby-{get_groupby_str(group_by=group_by)}_{render_mode}.pdf")
 
     def build_summary_atable(self, full_df, target_columns, group_by, include_all_group):
         return TwoNumericSummary(analyzer=self, full_df=full_df,
@@ -1081,12 +1104,23 @@ class TwoNumericSummary(ScalarNumericSummary):
                     line_width=self.analyzer.secondary_line_width,
                     vertical=True))
         elif render_mode == "line":
-            # Line plots are sorted by x values
-            x_column_series, y_column_series = zip(*sorted(zip(
-                x_column_series.values, y_column_series.values)))
+            if is_family_grouping(group_by=self.group_by):
+                # Family line plots look into the task names and produce
+                # one marker per task, linking same-family tasks with a line.
+                x_values = []
+                y_values = []
+                current_family = [f for f in self.group_by if f.label == group_label][0]
+                for task_name in current_family.task_names:
+                    task_df = group_df[group_df["task_name"] == task_name]
+                    x_values.append(task_df[x_column_name].mean())
+                    y_values.append(task_df[y_column_name].mean())
+            else:
+                # Regular line plots are sorted by x values
+                x_values, y_values = zip(*sorted(zip(
+                    x_column_series.values, y_column_series.values)))
             plds_this_case.append(plotdata.LineData(
-                x_values=x_column_series,
-                y_values=y_column_series,
+                x_values=x_values,
+                y_values=y_values,
                 alpha=self.analyzer.secondary_alpha,
                 marker_size=self.analyzer.main_marker_size - 1))
         else:
