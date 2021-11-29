@@ -161,4 +161,4 @@ class JPEG_LS(icompression.LosslessCodec, icompression.NearLosslessCodec, icompr
 
     @property
     def label(self):
-        return "JPEG-LS"
+        return f"JPEG-LS{' PAE ' + str(self.param_dict['m']) if self.param_dict['m'] > 0 else ''}"
