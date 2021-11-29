@@ -980,7 +980,7 @@ class TwoNumericAnalyzer(Analyzer):
         return os.path.join(
             output_plot_dir,
             f"{self.__class__.__name__}_"
-            f"{','.join(column_selection)}_groupby-{get_groupby_str(group_by=group_by)}_{render_mode}.pdf")
+            f"{'__'.join(column_selection)}_groupby-{get_groupby_str(group_by=group_by)}_{render_mode}.pdf")
 
     def build_summary_atable(self, full_df, target_columns, group_by, include_all_group):
         return TwoNumericSummary(analyzer=self, full_df=full_df,
