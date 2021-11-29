@@ -122,4 +122,13 @@ class V2FCodec(enb.icompression.LosslessCodec,
 
     @property
     def label(self):
-        return "V2F"
+        if self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_LEFT:
+            dec_str = "left"
+        elif self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_2_LEFT:
+            dec_str = "two left"
+        elif self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_JPEGLS:
+            dec_str = "JPEG-LS"
+        else:
+            raise ValueError(self.param_dict["decorrelator_mode"])
+
+        return f"V2F Qstep {self.param_dict['qstep']}, {dec_str}"

@@ -163,8 +163,10 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
 
     @property
     def label(self):
+        rate_str = "" if not self.param_dict["bit_rate"] else f" R = {self.param_dict['bit_rate']}"
+        psnr_str = "" if not self.param_dict["psnr"] else f" PSNR {self.param_dict['psnr']}"
         return f"Kakadu {'HT' if self.param_dict['ht'] else ''}" \
-               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}"
+               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}{rate_str}{psnr_str}"
 
 
 class KakaduMCT(Kakadu2D):
