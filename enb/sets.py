@@ -258,11 +258,12 @@ class FileVersionTable(FilePropertiesTable):
         try:
             version_time_list = self.current_run_version_times[file_path]
         except KeyError:
-            enb.logger.verbose(f"[W]arning: no valid version time was found for {repr(file_path)}. "
-                               f"This is probably due to the versioning table changing the name of the"
-                               f"output files. If the actual versioning time is needed, "
-                               f"you can ovewrite set_version_time in {self.__class__} "
-                               f"looking at the appropriate values in self.current_run_version_times.")
+            if self.check_generated_files:
+                enb.logger.verbose(f"[W]arning: no valid version time was found for {repr(file_path)}. "
+                                   f"This is probably due to the versioning table changing the name of the"
+                                   f"output files. If the actual versioning time is needed, "
+                                   f"you can ovewrite set_version_time in {self.__class__} "
+                                   f"looking at the appropriate values in self.current_run_version_times.")
             version_time_list = [0]
 
         if any(t < 0 for t in version_time_list):
