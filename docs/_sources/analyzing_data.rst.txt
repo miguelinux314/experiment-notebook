@@ -201,3 +201,21 @@ The resulting scatter plot from this call is shown next:
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width,petal_length_groupby-class_scatter.png
 
+
+Grouping by task families
+-------------------------
+
+When |Experiment| is used to obtain dataframes of results, it is typical to have families
+of tasks that were applied separately but are related. This can be used by defining a list
+of |TaskFamily| instances and passing that argument to the `group_by` parameter of `get_df`.
+
+For instance, for an input we might want to run algorithms A and B. Algorithm A is to be run with
+two parameter configurations: A1 and A2, while algorithm B is to be run with configurations B1, B2, B3 and B4.
+In this case, two families would be created, e.g., with labels "Algorithm A" and "Algorithm B",
+with 2 and 4 tasks in them.
+
+In the following figure, an example with 6 algorithms, each with different configurations
+that affect their "Compressed data rate". Please see the :doc:`image_compression` page for a full
+experiment that uses task families and produces plots like the one in the figure.
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png

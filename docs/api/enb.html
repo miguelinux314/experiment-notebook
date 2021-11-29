@@ -232,7 +232,7 @@ using pyplot.</p>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">Analyzer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p>
 <p>Base class for all enb analyzers.</p>
-<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
 In addition, if render_plots is used in that function, one or more figures will be
 produced. What plots are generated (if any) is based on the values of
 the self.selected_render_modes list, which must contain only elements in self.valid_render_modes.</p>
@@ -290,7 +290,7 @@ for documentation on the meaning of each argument.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.Analyzer.get_df">
 <code class="sig-name descname"><span class="pre">get_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
 dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained self.selected_render_modes, which
 must be in self.valid_render_modes.</p>
@@ -316,7 +316,7 @@ must be in self.valid_render_modes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -477,6 +477,52 @@ one group, one target column and one render mode.</p>
 any column the subclass may have defined.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt id="enb.aanalysis.AnalyzerSummary.split_groups">
+<code class="sig-name descname"><span class="pre">split_groups</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.split_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+This splitting is performed based on the value of self.group_by:</p>
+<ul class="simple">
+<li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
+<li><dl class="simple">
+<dt>If it is not None:</dt><dd><ul>
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+In this case, the result pandas’ groupby is returned.</p></li>
+<li><p>It can be a callable with a single argument reference_df.
+In this case, the result of calling that method with reference_df as argument
+is returned by the call to split_groups().</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Subclasses can easily implement grouping custom grouping methods, which must adhere
+to the following constraints:
+- It must return an iterable of group_label, group_df tuples.
+- Unique group_label values must be returned.</p>
+<p>Also note that:</p>
+<ul class="simple">
+<li><p>It is NOT needed that the union of all group_df tuples yield reference_df.</p></li>
+<li><p>It is NOT needed that the intersection of the any two group_df elements is empty.</p></li>
+<li><p>The group_df dataframes normally contain all columns in reference_df, but
+it is NOT mandatory to maintain this behavior.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_df</strong> – if not None, a reference dataframe to split.
+If None, self.reference_df is employed instead.</p></li>
+<li><p><strong>include_all_group</strong> – if True, an “All” group is added, containing all input samples,
+regardless of the groups produced based on groupby. If None, self’s class is queried
+for that attribute.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an iterable of (label, dataframe) tuples.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -523,7 +569,7 @@ for documentation on the meaning of each argument.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.DictNumericAnalyzer.get_df">
 <code class="sig-name descname"><span class="pre">get_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.DictNumericAnalyzer.get_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
 dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained self.selected_render_modes, which
 must be in self.valid_render_modes.</p>
@@ -549,7 +595,7 @@ must be in self.valid_render_modes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -775,7 +821,7 @@ binning keys like an histogram.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.OldAnalyzer.analyze_df">
 <code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.OldAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1116,7 +1162,7 @@ should suffice.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <code class="sig-name descname"><span class="pre">add_scalar_description_columns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 being analyzed.</p>
 </dd></dl>
 
@@ -1422,6 +1468,16 @@ Otherwise, x_label is set using the complete column_name string, and y_label is 
 </dd></dl>
 
 <dl class="py function">
+<dt id="enb.aanalysis.get_groupby_str">
+<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">get_groupby_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.get_groupby_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string identifying the group_by method.
+If None, ‘None’ is returned.
+If a string is passed, it is returned.
+If a list of strings is passed, it is formatted adding two underscores as separation.
+If grouping by family was requested, ‘family_label’ is returned.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="enb.aanalysis.get_histogram_dicts">
 <code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">get_histogram_dicts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.get_histogram_dicts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of dicts, each one representing one histogram stored at row, column
@@ -1470,6 +1526,12 @@ instance is produced per row in df.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="enb.aanalysis.is_family_grouping">
+<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">is_family_grouping</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.is_family_grouping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if and only if group_by is an iterable of one or more enb.experiment.TaskFamily instances.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="enb.aanalysis.pdf_to_png">
 <code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">pdf_to_png</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.pdf_to_png" title="Permalink to this definition">¶</a></dt>
 <dd><p>Take all .pdf files in input dir and save them as .png files into output_dir,
@@ -1511,10 +1573,10 @@ relative distribution, mean and error bars.</p>
 <div class="section" id="enb-atable-automatic-tables-with-implicit-column-definition">
 <h3><a class="reference internal" href="#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: Automatic tables with implicit column definition<a class="headerlink" href="#enb-atable-automatic-tables-with-implicit-column-definition" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="atable-produces-dataframe-instances">
-<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline">¶</a></h4>
+<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline">¶</a></h4>
 <p>This module defines the <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class,
 which is the base for all automatic tables in <a class="reference internal" href="#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
-<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 when their <cite>get_df</cite> method is successfully called. These are powerful dynamic tables
 that can be used directly, and/or passed to some of the tools in the <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 to easily produce figures and tables.</p>
@@ -1559,7 +1621,7 @@ You can reuse existing ATable subclasses directly and/or create new subclasses.<
 </div>
 <p>Our <cite>TableA</cite> class accepts list-like values (e.g., strings) as indices,
 and defines the <cite>index_length</cite> column as the number of elements (e.g., characters) in the index.</p>
-<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
+<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table_a</span> <span class="o">=</span> <span class="n">TableA</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;my_index_name&quot;</span><span class="p">)</span>
 <span class="n">example_indices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ab c&quot;</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>  <span class="c1"># It could be any list of iterables</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">table_a</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">example_indices</span><span class="p">)</span>
@@ -1671,7 +1733,7 @@ but allows easy aggregation and combination of variables.</p></li>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">ATable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Automatic table with implicit column definition.</p>
-<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
+<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
 the requested data. You can use (multiple) inheritance using one or more ATable subclasses
 to combine the columns of those subclasses into the newly defined one. You can then define
 methods with names that begin with <cite>column_</cite>, or using the
@@ -1778,7 +1840,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -1801,7 +1863,7 @@ as given by self.private_index_column set to the <cite>loc</cite> argument passe
 <dl class="py method">
 <dt id="enb.atable.ATable.compute_target_rows">
 <code class="sig-name descname"><span class="pre">compute_target_rows</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
+<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
 given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are known missing values in the requested df, e.g., there are:</p>
 <ul class="simple">
@@ -1831,7 +1893,7 @@ data was present. In that case, the newly computed results replace the old ones.
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
 (i.e., following this class’ column defintion). Each row corresponds to
 one element in target_indices, maintaining the same order.</p>
 </dd>
@@ -1853,7 +1915,7 @@ or fails to set a value to their assigned table cell.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir
@@ -2116,7 +2178,7 @@ so that its returned value is assigned to the row’s column.</p>
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">set_column_mro</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.MetaTable.set_column_mro" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redefine column properties that have been defined in the child class, making sure
 the expected method resolution order (MRO) is maintained.</p>
-<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
+<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
 following intuitive OOP definition.</p>
 </dd></dl>
 
@@ -2172,13 +2234,13 @@ the one provided at initialization is used.</p>
 <dl class="py method">
 <dt id="enb.atable.SummaryTable.split_groups">
 <code class="sig-name descname"><span class="pre">split_groups</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.split_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -2314,7 +2376,7 @@ indexing is consistent across code using <a class="reference internal" href="#en
 <dl class="py function">
 <dt id="enb.atable.get_nonscalar_value">
 <code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">get_nonscalar_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.get_nonscalar_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
+<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
 Return an instance of one of those types.</p>
 <p>If cell_value is a string, ast is employed to parse it.
 If cell_Value is a dict, list or tuple, it is returned without modification.
@@ -2329,8 +2391,8 @@ read directly, and not through <a class="reference internal" href="#enb.atable.A
 <code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">indices_to_internal_loc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.indices_to_internal_loc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given an index string or list of strings, return a single index string
 that uniquely identifies those strings and can be used as an internal index.</p>
-<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
-value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
+<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
+value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
 intentionally not used to maintain a simple, flat structure of tables without nesting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2370,7 +2432,7 @@ its float value or its string value. In the latter case, one level of surroundin
 <dl class="py function">
 <dt id="enb.atable.unpack_index_value">
 <code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">unpack_index_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.unpack_index_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
+<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
 This can be useful to iterate homogeneously regardless of whether single or multiple indices are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2781,7 +2843,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -4673,7 +4735,7 @@ to know what files the experiment should be run on.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1132.g700be617eb)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir
