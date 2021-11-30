@@ -497,6 +497,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
             column_to_properties[k] = v
         self.column_to_properties = column_to_properties
 
+
 def is_family_grouping(group_by):
     """Return True if and only if group_by is an iterable of one or more enb.experiment.TaskFamily instances.
     """
@@ -504,6 +505,7 @@ def is_family_grouping(group_by):
         return all(isinstance(e, TaskFamily) for e in group_by)
     except TypeError:
         return False
+
 
 def get_groupby_str(group_by):
     """Return a string identifying the group_by method.
@@ -1016,7 +1018,15 @@ class TwoNumericSummary(ScalarNumericSummary):
                     continue
                 self.add_scalar_description_columns(column_name=column_name)
 
-                self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
+                try:
+                    self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
+                except FloatingPointError as ex:
+                    if len(full_df) == 1:
+                        self.column_to_xmin_xmax[column_name] = (full_df[column_name][0], full_df[column_name][0])
+                    else:
+                        enb.logger.error(f"column_name={column_name}")
+                        enb.logger.error(f"full_df[column_name].values={full_df[column_name].values}")
+                        raise ex
 
             self.add_twoscalar_description_columns(column_names=x_y_names)
 
@@ -1042,16 +1052,25 @@ class TwoNumericSummary(ScalarNumericSummary):
         """
         _, group_label, row = args
         x_column_name, y_column_name = kwargs["column_selection"]
-        row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
-        row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
-            scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
-        row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
-        row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
-            scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
 
-        lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
-        row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
-        row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
+        if len(self.reference_df) > 1:
+            row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
+            row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
+                scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+            row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
+            row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
+                scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+            lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
+            row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
+            row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
+        else:
+            enb.logger.warn("Cannot set correlation metrics for dataframes of length 1")
+            row[f"{x_column_name}_{y_column_name}_pearson_correlation"] = float("inf")
+            row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = float("inf")
+            row[f"{x_column_name}_{y_column_name}_spearman_correlation"] = float("inf")
+            row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = float("inf")
+            row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = float("inf")
+            row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = float("inf")
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function that computes
