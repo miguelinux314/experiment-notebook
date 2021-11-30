@@ -232,7 +232,7 @@ using pyplot.</p>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">Analyzer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p>
 <p>Base class for all enb analyzers.</p>
-<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
 In addition, if render_plots is used in that function, one or more figures will be
 produced. What plots are generated (if any) is based on the values of
 the self.selected_render_modes list, which must contain only elements in self.valid_render_modes.</p>
@@ -290,7 +290,7 @@ for documentation on the meaning of each argument.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.Analyzer.get_df">
 <code class="sig-name descname"><span class="pre">get_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
 dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained self.selected_render_modes, which
 must be in self.valid_render_modes.</p>
@@ -316,7 +316,7 @@ must be in self.valid_render_modes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -449,7 +449,7 @@ and render mode. Return the updated dict.</p>
 subclasses to gather analysis results and plottable data (when configured to do so).</p>
 <dl class="py attribute">
 <dt id="enb.aanalysis.AnalyzerSummary.column_to_properties">
-<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -480,13 +480,13 @@ any column the subclass may have defined.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.AnalyzerSummary.split_groups">
 <code class="sig-name descname"><span class="pre">split_groups</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.split_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -568,8 +568,8 @@ for documentation on the meaning of each argument.</p>
 
 <dl class="py method">
 <dt id="enb.aanalysis.DictNumericAnalyzer.get_df">
-<code class="sig-name descname"><span class="pre">get_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.DictNumericAnalyzer.get_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
+<code class="sig-name descname"><span class="pre">get_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_to_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.DictNumericAnalyzer.get_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
 dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained self.selected_render_modes, which
 must be in self.valid_render_modes.</p>
@@ -595,7 +595,7 @@ must be in self.valid_render_modes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -701,7 +701,7 @@ and render mode. Return the updated dict.</p>
 <p>Summary table for the DictNumericAnalyzer.</p>
 <dl class="py attribute">
 <dt id="enb.aanalysis.DictNumericSummary.column_to_properties">
-<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.DictNumericSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.DictNumericSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -722,301 +722,11 @@ for additional information.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">HistogramDistributionAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.OldAnalyzer" title="enb.aanalysis.OldAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.OldAnalyzer</span></code></a></p>
-<p>Analyze DFs with vector mappings, i.e., dictionary-like instances from
-value to weights (e.g., counts).</p>
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.alpha_global">
-<code class="sig-name descname"><span class="pre">alpha_global</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.alpha_global" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.alpha_individual">
-<code class="sig-name descname"><span class="pre">alpha_individual</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.25</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.alpha_individual" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a column, where each cell contains a real to real mapping.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>adjust_height</strong> – </p></li>
-<li><p><strong>full_df</strong> – full df from which the column is to be extracted</p></li>
-<li><p><strong>target_columns</strong> – list of column names containing tensor (dictionary) data</p></li>
-<li><p><strong>output_plot_dir</strong> – path of the directory where the plot is to be saved</p></li>
-<li><p><strong>output_csv_file</strong> – path of the csv file where basic analysis results are stored</p></li>
-<li><p><strong>column_to_properties</strong> – dictionary with ColumnProperties entries</p></li>
-<li><p><strong>group_by</strong> – if not None, the name of the column to be used for grouping</p></li>
-<li><p><strong>group_name_order</strong> – if not None, and if group_by is not None,
-it must be the list of group names (values of the group_by) in the order that they are to be displayed.
-If None, group names are sorted alphabetically (case insensitive).</p></li>
-<li><p><strong>show_count</strong> – determines whether the number of element per group should be shown in the group label</p></li>
-<li><p><strong>version_name</strong> – if not None, a string identifying the file version that produced full_df.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.bar_width_fraction">
-<code class="sig-name descname"><span class="pre">bar_width_fraction</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.bar_width_fraction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.color_sequence">
-<code class="sig-name descname"><span class="pre">color_sequence</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['blue',</span> <span class="pre">'orange',</span> <span class="pre">'r',</span> <span class="pre">'g',</span> <span class="pre">'magenta',</span> <span class="pre">'yellow']</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.color_sequence" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.hist_max">
-<code class="sig-name descname"><span class="pre">hist_max</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.hist_max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.hist_min">
-<code class="sig-name descname"><span class="pre">hist_min</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.hist_min" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.histogram_bin_width">
-<code class="sig-name descname"><span class="pre">histogram_bin_width</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.histogram_bin_width" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.histogram_margin">
-<code class="sig-name descname"><span class="pre">histogram_margin</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.3</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.histogram_margin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.semilog_y_min_bound">
-<code class="sig-name descname"><span class="pre">semilog_y_min_bound</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1e-05</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.semilog_y_min_bound" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.HistogramDistributionAnalyzer.subdivision_count">
-<code class="sig-name descname"><span class="pre">subdivision_count</span></code><em class="property"> <span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#enb.aanalysis.HistogramDistributionAnalyzer.subdivision_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt id="enb.aanalysis.HistogramKeyBinner">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">HistogramKeyBinner</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.HistogramKeyBinner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Helper class to transform numeric-to-numeric dicts into other dicts
 binning keys like an histogram.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt id="enb.aanalysis.OldAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">OldAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.OldAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="enb.aanalysis.OldAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.OldAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, producing plots and/or analysis files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>adjust_height</strong> – </p></li>
-<li><p><strong>full_df</strong> – full DataFrame instance with data to be plotted and/or analyzed</p></li>
-<li><p><strong>target_columns</strong> – list of columns to be analyzed. Typically a list of column names, although each subclass may 
-redefine the accepted format (e.g., pairs of column names)</p></li>
-<li><p><strong>output_plot_dir</strong> – path of the directory where the plot/plots is/are to be saved.</p></li>
-<li><p><strong>output_csv_file</strong> – If not None, path of the csv file where basic analysis results are stored.
-The contents of the file are subclass-defined.</p></li>
-<li><p><strong>column_to_properties</strong> – dictionary with ColumnProperties entries. ATable instances provide it
-in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">column_to_properties</span></code> attribute, <code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code> instances can also use the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">joined_column_to_properties</span></code> attribute to obtain both the dataset and experiment’s
-columns.</p></li>
-<li><p><strong>group_by</strong> – if not None, the name of the column to be used for grouping.</p></li>
-<li><p><strong>group_name_order</strong> – if not None, and if group_by is not None,
-it must be the list of group names (values of the group_by) in the order that they are to be displayed.
-If None, group names are sorted alphabetically (case insensitive).</p></li>
-<li><p><strong>show_count</strong> – determines whether the number of element per group should be shown in the group label</p></li>
-<li><p><strong>version_name</strong> – if not None, a string identifying the file version that produced full_df.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="enb.aanalysis.OverlappedHistogramAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">OverlappedHistogramAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.OverlappedHistogramAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.HistogramDistributionAnalyzer" title="enb.aanalysis.HistogramDistributionAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.HistogramDistributionAnalyzer</span></code></a></p>
-<p>Plot multiple overlapped histograms (e.g. dicts from float to float)
-per group, one per row.</p>
-<dl class="py method">
-<dt id="enb.aanalysis.OverlappedHistogramAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.OverlappedHistogramAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.OverlappedHistogramAnalyzer.line_alpha">
-<code class="sig-name descname"><span class="pre">line_alpha</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.3</span></em><a class="headerlink" href="#enb.aanalysis.OverlappedHistogramAnalyzer.line_alpha" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.OverlappedHistogramAnalyzer.line_width">
-<code class="sig-name descname"><span class="pre">line_width</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.OverlappedHistogramAnalyzer.line_width" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="enb.aanalysis.ScalarDictAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">ScalarDictAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.ScalarDictAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.OldAnalyzer" title="enb.aanalysis.OldAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.OldAnalyzer</span></code></a></p>
-<p>Analyzer to plot columns that contain dictionary data with scalar entries.</p>
-<dl class="py method">
-<dt id="enb.aanalysis.ScalarDictAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_to_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_std_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_std_band</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_individual_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_label_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_h_bars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarDictAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>For each target column, analyze dictionary values stored in each cell.
-Scalar analysis is applied on each key found in the dictionaries.</p>
-<p>See &#64;a combine_keys on how to automatically plot columns containing float to float data (integers allowed, too).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>full_df</strong> – df to be analyzer</p></li>
-<li><p><strong>target_columns</strong> – either a string with the name of a column, or a list of column names. In either case,
-all referenced columns must contain dictionary data with scalar (integer, float, etc) values.</p></li>
-<li><p><strong>output_plot_path</strong> – if provided, this will be used for plots generated by this call, after adding the
-column of interest to the name.</p></li>
-<li><p><strong>combine_keys</strong> – <p>if not None, it can be either:</p>
-<ul>
-<li><p>a callable that takes an input dictionary and returns another one. This can be used to combine groups of
-keys into a single one before analysis in an arbitrary way.</p></li>
-<li><p>a string with format ‘histogram’ or ‘histogram(d+)col’. This case expects dictionaries with
-numeric (float or integer) keys and entries. When used, keys are binned in regular intervals
-that conform a partition of the range between the minimum and maximum found keys
-(in all columns of the table). The number of bins is default_bin_count if ‘histogram’ is passed
-as value of this argument, or the positive integer specified in the second format.
-Note that this key combination is only applied when the number of different keys is larger than
-the selected number of bins.</p></li>
-<li><p>None. In this keys table cell keys are not modified before the analysis.</p></li>
-</ul>
-</p></li>
-<li><p><strong>x_max</strong> (<em>x_min</em><em>,</em>) – if not None, they define the minimum and maximum values that are considered. This
-applies only to the case where combine_keys indicates an histogram binning.</p></li>
-<li><p><strong>mass_fraction</strong> – if an histogram combiner is used, and if both x_min and x_max are None, then this
-parameter sets the mass fraction that is actually used in the plot. To do this, the mass center is computed
-for each image, and values are removed around it while the sum of the removed values is below the
-total sum times mass_fraction. If width_fraction is used, this parameter must be 1 or None.</p></li>
-<li><p><strong>epsilon</strong> – when mass_fraction &lt; 1, epsilon determines how finely x keys are searched for. The original
-interval width is multiplied by this value, and the result is used as each search step. The default should
-sufffice in most cases, but values closer to 1 will result in faster rendering.</p></li>
-<li><p><strong>width_fraction</strong> – if both x_min and x_max are None and histogram rendering is selected,
-this parameter allows to control the fraction of the original x-axis interval that is considered
-for analysis. For instance, a value of 0.25 will consider 25% of the original range, centered around
-the mass centroid. If mass_fraction is to be used, this value must be set to None or 1</p></li>
-<li><p><strong>key_to_x</strong> – if None, found keys are sorted alphabetically and placed at 0, 1, …, etc.
-If not None, if must be a dictionary so that dictionary keys (after applying &#64;a combine_keys, if present),
-are all present in key_to_x, and values are real values
-(typically a permutation of the default 0, 1, …, N sequence).</p></li>
-<li><p><strong>key_list</strong> – if not None, it must be a list of the dictionary keys to be displayed, with the desired order.</p></li>
-<li><p><strong>show_std_bar</strong> – if True, vertical error bars are shown centered on each average point, plus/minus one
-standard deviation.</p></li>
-<li><p><strong>show_std_band</strong> – if True, a band of width 2*sigma is added to each line.</p></li>
-<li><p><strong>fig_width</strong> (<em>fig_height</em><em>,</em>) – absolute image size. Affects rendered font size.</p></li>
-<li><p><strong>semilog_y</strong> – use a logarithmic scale for the y axis?</p></li>
-<li><p><strong>semilog_y_base</strong> – use this base if semilog_y is True.</p></li>
-<li><p><strong>show_h_bars</strong> – if True, +/- 0.5 horizontal bars are shown at each data point.
-Useful for coarsely classified data.</p></li>
-<li><p><strong>y_tick_label_list</strong> (<em>y_tick_list</em><em>,</em>) – passed directly to render_render_plds_by_group()</p></li>
-</ul>
-</dd>
-</dl>
-<p>All remaining parameters are as defined in <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Analyzer</span></code></a> or <code class="xref py py-func docutils literal notranslate"><span class="pre">enb.aanalysis.render_plds_by_group()</span></code>.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDictAnalyzer.default_bin_count">
-<code class="sig-name descname"><span class="pre">default_bin_count</span></code><em class="property"> <span class="pre">=</span> <span class="pre">16</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDictAnalyzer.default_bin_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">ScalarDistributionAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.OldAnalyzer" title="enb.aanalysis.OldAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.OldAnalyzer</span></code></a></p>
-<p>Automatic analysis and report of scalar data in pandas’ DataFrames</p>
-<dl class="py method">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_labels_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform an analysis of target_columns, grouping as specified.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>output_csv_file</strong> – path where the CSV report is stored</p></li>
-<li><p><strong>output_plot_dir</strong> – path where the distribution plots are stored. Defaults to options.plotdir</p></li>
-<li><p><strong>target_columns</strong> – list of column names for which an analysis is to be performed.
-A single string is also accepted (as a single column name).</p></li>
-<li><p><strong>column_to_properties</strong> – if not None, a dict indexed by column name (as given
-in the column parameter of the &#64;atable.column_function decorator), entries being
-an atable.ColumnProperties instance</p></li>
-<li><p><strong>group_by</strong> – if not None, analysis is performed after grouping by that column name</p></li>
-<li><p><strong>show_global</strong> – if True, distribution for all entries (without grouping) is also shown</p></li>
-<li><p><strong>version_name</strong> – if not None, the version name is prepended to the x axis’ label</p></li>
-<li><p><strong>global_y_label</strong> – shared y-axis label</p></li>
-</ul>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.bar_alpha">
-<code class="sig-name descname"><span class="pre">bar_alpha</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.bar_alpha" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.bar_width_fraction">
-<code class="sig-name descname"><span class="pre">bar_width_fraction</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.bar_width_fraction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.hist_bin_count">
-<code class="sig-name descname"><span class="pre">hist_bin_count</span></code><em class="property"> <span class="pre">=</span> <span class="pre">50</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.hist_bin_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.histogram_margin">
-<code class="sig-name descname"><span class="pre">histogram_margin</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.2</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.histogram_margin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.secondary_alpha">
-<code class="sig-name descname"><span class="pre">secondary_alpha</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.6</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.secondary_alpha" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.semilog_y_min_bound">
-<code class="sig-name descname"><span class="pre">semilog_y_min_bound</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1e-05</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.semilog_y_min_bound" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.ScalarDistributionAnalyzer.show_count">
-<code class="sig-name descname"><span class="pre">show_count</span></code><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#enb.aanalysis.ScalarDistributionAnalyzer.show_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -1162,13 +872,13 @@ should suffice.</p>
 <dl class="py method">
 <dt id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <code class="sig-name descname"><span class="pre">add_scalar_description_columns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 being analyzed.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="enb.aanalysis.ScalarNumericSummary.column_to_properties">
-<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1190,96 +900,6 @@ for additional information.</p>
 <code class="sig-name descname"><span class="pre">set_scalar_description</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.set_scalar_description" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set basic descriptive statistics for the target column</p>
 </dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="enb.aanalysis.TwoColumnLineAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">TwoColumnLineAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.OldAnalyzer" title="enb.aanalysis.OldAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.OldAnalyzer</span></code></a></p>
-<dl class="py attribute">
-<dt id="enb.aanalysis.TwoColumnLineAnalyzer.alpha">
-<code class="sig-name descname"><span class="pre">alpha</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.alpha" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="enb.aanalysis.TwoColumnLineAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_v_range_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_h_range_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_v_std_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_h_std_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'task_name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnLineAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>adjust_height</strong> – </p></li>
-<li><p><strong>full_df</strong> – full pandas.DataFrame to be analyzed and plotted</p></li>
-<li><p><strong>group_by</strong> – a list of TaskFamily instances. Note that this behavior
-differs from that of other Analyzers, which take a column name.</p></li>
-<li><p><strong>task_column_name</strong> – if provided, the df is grouped by the elements
-of this column instead of “task_name”, using the families provided
-to group_by</p></li>
-<li><p><strong>target_columns</strong> – an iterable of either two column names or
-one or more tuple-like objects with two elements also being column names.
-The first column name gives the one to be used for the x axis,
-the second column for the y axis.</p></li>
-<li><p><strong>output_plot_dir</strong> – directory where the produced plots are to
-be saved</p></li>
-<li><p><strong>output_csv_file</strong> – if not None, a file path were analysis statistics
-are saved</p></li>
-<li><p><strong>column_to_properties</strong> – a dictionary of atable.ColumnProperties
-indexed by their corresponding column name</p></li>
-<li><p><strong>show_global</strong> – if group_by is not None, show_global determines
-whether the whole dataframe (regardless of the group_by column)
-is analyzed as well.</p></li>
-<li><p><strong>group_name_order</strong> – ignored in this class, since group_by already
-provides an order.</p></li>
-<li><p><strong>version_name</strong> – if not None, the version name is prepended to
-the X and Y labels of the plot (does not affect computation).</p></li>
-<li><p><strong>show_markers</strong> – if True, markers are displayed in the Line plot</p></li>
-<li><p><strong>marker_size</strong> – if show_markers is True, this parameters sets
-the displayed marker size</p></li>
-</ul>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="enb.aanalysis.TwoColumnScatterAnalyzer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">TwoColumnScatterAnalyzer</span></code><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.OldAnalyzer" title="enb.aanalysis.OldAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.OldAnalyzer</span></code></a></p>
-<dl class="py attribute">
-<dt id="enb.aanalysis.TwoColumnScatterAnalyzer.alpha">
-<code class="sig-name descname"><span class="pre">alpha</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.alpha" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df">
-<code class="sig-name descname"><span class="pre">analyze_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_individual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.analyze_df" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>adjust_height</strong> – </p></li>
-<li><p><strong>group_name_order</strong> – </p></li>
-<li><p><strong>show_count</strong> – </p></li>
-<li><p><strong>target_columns</strong> – must be a list of tuple-like instances, each with two elements.
-The first element is the name of the column to use for the x axis,
-the second element is the name of the column for the y axis.</p></li>
-<li><p><strong>group_by</strong> – if not None, it must be either a string representing a column
-or a list of TaskFamily instances.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="enb.aanalysis.TwoColumnScatterAnalyzer.marker_size">
-<code class="sig-name descname"><span class="pre">marker_size</span></code><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#enb.aanalysis.TwoColumnScatterAnalyzer.marker_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -1438,7 +1058,7 @@ as well as basic correlation metrics for each pair of columns.</p>
 
 <dl class="py attribute">
 <dt id="enb.aanalysis.TwoNumericSummary.column_to_properties">
-<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.TwoNumericSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.TwoNumericSummary.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1478,54 +1098,6 @@ If grouping by family was requested, ‘family_label’ is returned.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.aanalysis.get_histogram_dicts">
-<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">get_histogram_dicts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.get_histogram_dicts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of dicts, each one representing one histogram stored at row, column
-for al rows in df in the order given by the index.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="enb.aanalysis.get_scalar_min_max_by_column">
-<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">get_scalar_min_max_by_column</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.get_scalar_min_max_by_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a dictionary indexed by column name with minimum and maximum values.
-(useful e.g., for normalized processing of subgroups).</p>
-<p>If column to properties is set, for a column, the minimum and maximum are taken from them.
-None limits are taken from the minimum and maximum values that are not infinite.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="enb.aanalysis.histogram_dist_column_to_pds">
-<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">histogram_dist_column_to_pds</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_xmin_xmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_width_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_individual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual_pd_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_pd_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.histogram_dist_column_to_pds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of PlotData instances graphically an histogram of the contents
-column.</p>
-<p>Each entry dict is normalized so that the maximum y value is 1. One StepData
-instance is produced per row in df.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – df with the data to analyze</p></li>
-<li><p><strong>column</strong> – column to be analyzed</p></li>
-<li><p><strong>bin_width</strong> – width of the histogram bins</p></li>
-</ul>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="enb.aanalysis.histogram_overlap_column_to_pds">
-<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">histogram_overlap_column_to_pds</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.histogram_overlap_column_to_pds" title="Permalink to this definition">¶</a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt id="enb.aanalysis.is_family_grouping">
 <code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">is_family_grouping</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.is_family_grouping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if and only if group_by is an iterable of one or more enb.experiment.TaskFamily instances.</p>
@@ -1547,36 +1119,16 @@ documentation for more information: <a class="reference external" href="https://
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="enb.aanalysis.pool_scalar_into_analysis_df">
-<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">pool_scalar_into_analysis_df</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pooler_suffix_tuples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.pool_scalar_into_analysis_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pull columns into analysis using the poolers in pooler_suffix_tuples, with the specified
-suffixes.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="enb.aanalysis.scalar_column_to_pds">
-<code class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></code><code class="sig-name descname"><span class="pre">scalar_column_to_pds</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_max_by_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_bin_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_width_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilogy_min_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.scalar_column_to_pds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the pooled values and get a list of PlottableData instances with the
-relative distribution, mean and error bars.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0.0. A new set of analyzer classes has been defined. See enb.aanalysis.Analyzer for further information.</p>
-</div>
-</dd></dl>
-
 </div>
 <div class="section" id="module-enb.atable">
 <span id="enb-atable-module"></span><h2>enb.atable module<a class="headerlink" href="#module-enb.atable" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="enb-atable-automatic-tables-with-implicit-column-definition">
 <h3><a class="reference internal" href="#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: Automatic tables with implicit column definition<a class="headerlink" href="#enb-atable-automatic-tables-with-implicit-column-definition" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="atable-produces-dataframe-instances">
-<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline">¶</a></h4>
+<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline">¶</a></h4>
 <p>This module defines the <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class,
 which is the base for all automatic tables in <a class="reference internal" href="#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
-<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 when their <cite>get_df</cite> method is successfully called. These are powerful dynamic tables
 that can be used directly, and/or passed to some of the tools in the <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 to easily produce figures and tables.</p>
@@ -1621,7 +1173,7 @@ You can reuse existing ATable subclasses directly and/or create new subclasses.<
 </div>
 <p>Our <cite>TableA</cite> class accepts list-like values (e.g., strings) as indices,
 and defines the <cite>index_length</cite> column as the number of elements (e.g., characters) in the index.</p>
-<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
+<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table_a</span> <span class="o">=</span> <span class="n">TableA</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;my_index_name&quot;</span><span class="p">)</span>
 <span class="n">example_indices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ab c&quot;</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>  <span class="c1"># It could be any list of iterables</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">table_a</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">example_indices</span><span class="p">)</span>
@@ -1733,7 +1285,7 @@ but allows easy aggregation and combination of variables.</p></li>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">ATable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Automatic table with implicit column definition.</p>
-<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
+<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
 the requested data. You can use (multiple) inheritance using one or more ATable subclasses
 to combine the columns of those subclasses into the newly defined one. You can then define
 methods with names that begin with <cite>column_</cite>, or using the
@@ -1840,7 +1392,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -1863,7 +1415,7 @@ as given by self.private_index_column set to the <cite>loc</cite> argument passe
 <dl class="py method">
 <dt id="enb.atable.ATable.compute_target_rows">
 <code class="sig-name descname"><span class="pre">compute_target_rows</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
+<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
 given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are known missing values in the requested df, e.g., there are:</p>
 <ul class="simple">
@@ -1893,7 +1445,7 @@ data was present. In that case, the newly computed results replace the old ones.
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
 (i.e., following this class’ column defintion). Each row corresponds to
 one element in target_indices, maintaining the same order.</p>
 </dd>
@@ -1915,7 +1467,7 @@ or fails to set a value to their assigned table cell.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir
@@ -2178,7 +1730,7 @@ so that its returned value is assigned to the row’s column.</p>
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">set_column_mro</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.MetaTable.set_column_mro" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redefine column properties that have been defined in the child class, making sure
 the expected method resolution order (MRO) is maintained.</p>
-<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
+<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
 following intuitive OOP definition.</p>
 </dd></dl>
 
@@ -2205,6 +1757,12 @@ automatic persistence, easy plotting, etc.</p></li>
 <p>SummaryTable can be particularly useful as an intermediate step between a complex table’s (or enb.Experiment’s)
 get_df and the analyze_df method of analyzers en <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>.</p>
 <dl class="py method">
+<dt id="enb.atable.SummaryTable.column_group_label">
+<code class="sig-name descname"><span class="pre">column_group_label</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.column_group_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the name of the group in a column.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="enb.atable.SummaryTable.column_group_size">
 <code class="sig-name descname"><span class="pre">column_group_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.column_group_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of elements (rows from full_df) in the group.</p>
@@ -2212,7 +1770,7 @@ get_df and the analyze_df method of analyzers en <a class="reference internal" h
 
 <dl class="py attribute">
 <dt id="enb.atable.SummaryTable.column_to_properties">
-<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.atable.SummaryTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">column_to_properties</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.atable.SummaryTable.column_to_properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2234,13 +1792,13 @@ the one provided at initialization is used.</p>
 <dl class="py method">
 <dt id="enb.atable.SummaryTable.split_groups">
 <code class="sig-name descname"><span class="pre">split_groups</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.split_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -2376,7 +1934,7 @@ indexing is consistent across code using <a class="reference internal" href="#en
 <dl class="py function">
 <dt id="enb.atable.get_nonscalar_value">
 <code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">get_nonscalar_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.get_nonscalar_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
+<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
 Return an instance of one of those types.</p>
 <p>If cell_value is a string, ast is employed to parse it.
 If cell_Value is a dict, list or tuple, it is returned without modification.
@@ -2391,8 +1949,8 @@ read directly, and not through <a class="reference internal" href="#enb.atable.A
 <code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">indices_to_internal_loc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.indices_to_internal_loc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given an index string or list of strings, return a single index string
 that uniquely identifies those strings and can be used as an internal index.</p>
-<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
-value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
+<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
+value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
 intentionally not used to maintain a simple, flat structure of tables without nesting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2432,7 +1990,7 @@ its float value or its string value. In the latter case, one level of surroundin
 <dl class="py function">
 <dt id="enb.atable.unpack_index_value">
 <code class="sig-prename descclassname"><span class="pre">enb.atable.</span></code><code class="sig-name descname"><span class="pre">unpack_index_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.unpack_index_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
+<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
 This can be useful to iterate homogeneously regardless of whether single or multiple indices are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2843,7 +2401,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -4735,7 +4293,7 @@ to know what files the experiment should be run on.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1261.g3352625fbc)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir
@@ -4934,24 +4492,6 @@ for input_path</p></li>
 <dt id="enb.sets.VersioningFailedException">
 <em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">enb.sets.</span></code><code class="sig-name descname"><span class="pre">VersioningFailedException</span></code><a class="headerlink" href="#enb.sets.VersioningFailedException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="enb.sets.get_all_test_files">
-<code class="sig-prename descclassname"><span class="pre">enb.sets.</span></code><code class="sig-name descname"><span class="pre">get_all_test_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.sets.get_all_test_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deprecated - for backwards compatibility only.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version v0.2.7: </span>This will be removed in v1.1.0. Please use atable.get_all_test_files() instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="enb.sets.get_canonical_path">
-<code class="sig-prename descclassname"><span class="pre">enb.sets.</span></code><code class="sig-name descname"><span class="pre">get_canonical_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.sets.get_canonical_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deprecated - for backwards compatibility only.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version v0.2.7: </span>This will be removed in v0.3.0. Please use atable.get_canonical_path() instead.</p>
-</div>
 </dd></dl>
 
 <dl class="py function">

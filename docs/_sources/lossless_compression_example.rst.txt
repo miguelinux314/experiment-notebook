@@ -1,159 +1,177 @@
-.. Description of an image compression experiment example (using icompression.py) 
+.. Description of an image compression experiment example (using icompression.py)
+
+.. include:: ./tag_definition.rst
 
 Lossless Compression Experiment
 ===============================
 
-This page explains the general dynamics of using the :class:`enb.icompression.LosslessCompressionExperiment` class.
-This class is a subclass of :class:`enb.experiment.Experiment`.
- 
-.. note:: This example assumes you have understood the :doc:`basic_workflow` example, and that you have successfully
-  followed the installation instructions in :doc:`installation`.
+This page explains the general dynamics of using the |LosslessCompressionExperiment| class.
+This class is a subclass of |CompressionExperiment|, which performs compression, decompression
+and verifies that lossless compression is achieved.
 
-Lossless: experiment setup
-**************************
 
-You can find the example at `templates/lossless_compression_example <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/lossless_compression_example>`_.
-In Linux, you can clone the latest version with the following steps:
+.. note::
+    * This example assumes you have understood the :doc:`basic_workflow` example, and that you have successfully
+      followed the installation instructions in :doc:`installation`.
 
-.. code-block:: bash
+    * Most ideas applicable to lossless compresesion experiments are also valid for lossy compression,
+      described in the next page.
 
-   wget https://github.com/miguelinux314/experiment-notebook/archive/master.zip
-   unzip master.zip
-   cp -r experiment-notebook-master/templates/lossless_compression_example/ .
-   
-This example makes uses of the `plugin_jpeg` plugin. You need to copy it to the same folder
-where you are running the experiment (.). The following code will do the trick:
+    * The |icompression| and |isets| modules implement most of the functionality specific to image compression
+      experiments.
 
-.. code-block:: bash
+Lossless compression template installation
+------------------------------------------
 
-   cp -r experiment-notebook-master/enb/plugins/plugin_jpeg .
+A template for lossless compression experiments is provided as the `lossless-compression` plugin in enb.
+To install this plugin under the `.lc/` folder, run (after following :doc:`installation`)::
 
-This completes the setup of the experiment
+    enb plugin install lossless-compression lc
 
-Lossless: data curation
-***********************
+You should see a message similar to the following::
 
-Data has been previously curated for you, and placed in the `data/` folder.
+    Template 'lossless-compression' successfully installed into 'lc'.
 
-For image compression experiments, it is needed that:  
+You can check the full code and make your own modifications in `lossless_compression_experiment.py` under the
+installation folder.
 
-    - Images are in RAW (uncompressed) format, preferably with '.raw' extension, 
-      in BSQ in case more than one component is present.
+Data curation
+-------------
 
-    - Images contain a tag such as 'u8be-3x600x800' in their name.
+By default, all `*.raw` images under the `enb.config.options.base_dataset_dir` folder are considered
+as the input dataset. Images can be organized in subfolders as needed. Note that:
+
+    * The `dataset_files_extension` can be changed from `'raw'` to any other extension, or an empty string
+      to recursively search for all files under the `enb.config.options.base_dataset_dir` folder.
+
+    * The `dataset_paths` can be passed to the initializer of
+      |LosslessCompressionExperiment| and other subclasses of |CompressionExperiment|.
+      This overwrites the search under `enb.config.options.base_dataset_dir`.
+
+
+Images used in this experiment need to satisfy the following requirements:
+
+    - Be in raw (uncompressed, fixed-length output) format, preferably with '.raw' extension.
+      BSQ order is assumed in case more than one color component or spectral band is present.
+
+    - Image file names must contain a tag such as 'u8be-3x600x800' in their name.
       
         * *u* or *s* should be used for unsigned or signed data
         * *8*, *16* or *32* indicate the bitdepth in bits of each sample
         * the geometry part of the tag is ZxYxX, where X, Y and Z are, respectively,
-          the images width, height and number of components (bands). 
+          the image's width, height and number of spectral components (bands).
 
-    - Images can be organized in subfolders. This is not mandatory, and it is not used in the current 
-      example.
+In the `lossless-compression` plugin, a sample image `image_u8be-2x128x128.raw` is included
+for ease of reference, and can be removed at any point.
+
+Codec instantiation
+-------------------
+
+Compression experiments use Codecs as |ExperimentTask| subclasses. In particular, |LosslessCompressionExperiment|
+expects subclasses of |LosslessCodec|.
+
+The |enb| library provides a wide range of lossless and lossy codecs that can be installed via
+the command line interface. A list of available codecs can be shown with the following command::
+
+    enb plugin list codec
+
+It is recommended that you install your codec plugins under the `./plugins` folder created under
+the installation dir of  the `lossless-compression` plugin. In this example, we are going to
+install the `zip` codecs plugin as follows::
+
+    enb plugin install zip lc/plugins/zip
+
+Once you have installed all codec plugins, a list of the codecs to be used in the experiment needs to be defined.
+In this example we will be using the following 4 codecs to compare BZIP2 and LZMA at their best
+and worst configuration levels
+
+.. code-block:: python
+
+    codecs = [plugins.zip.LZMA(compression_level=1),
+              plugins.zip.LZMA(compression_level=9),
+              plugins.zip.BZIP2(compression_level=1),
+              plugins.zip.BZIP2(compression_level=9)]
+
+If we are happy with using all codecs installed in `./plugins` with their default initializer,
+we can uncomment the following line of the template instead or in addition of defining our
+custom list of codecs
+
+.. code-block:: python
+
+    codecs += [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
+              if not "abstract" in cls.__name__.lower()]
 
 
-Lossless: execution
-*******************
 
-You just need to execute the following line:
+Lossless experiment execution
+-----------------------------
 
-.. code-block:: bash
-    
-    ./lossless_compression_experiment_example.py
+The `lossless_compression_experiment.py` template is now ready to be run. To do so, simply
+invoke it with::
+
+    python ./lc/lossless_compression_experiment_example.py
 
 This should produce the `plots`, `analysis` folders.
 Furthermore, a `persistence_lossless_compression_experiment_example.py` folder is created
 with persistence information, so that images do not need to be analyzed again, and that
 compression needs not be performed again unless you add any new codecs to your experiment.
 
-Lossless: code
-**************
-
-The `example code <https://github.com/miguelinux314/experiment-notebook/blob/master/templates/lossless_compression_example/lossless_compression_experiment_example.py>`_
-is documented and (hopefully) self-explanatory. 
-
-Lossless: initialization
-------------------------
-
-The initialization is straightforward. Note how the plugin's main module needs to be imported.
+If you check the code, you will see that the following two lines are responsible for the
+actual experiment execution
 
 .. code-block:: python
 
-    import os
-    from enb.config import get_options
-    options = get_options(from_main=False)
-    from enb import icompression
-    from enb import aanalysis
-    import plugin_jpeg.jpeg_codecs
-    
-    
+    exp = LosslessExperiment(codecs=codecs)
+    df = exp.get_df()
 
-Lossless: setup
----------------
-
-A minimal setup is needed so that the experiment can be created and can locate the data of interest.
-
-.. note::
-    The `codecs` list here can contain any number of :class:`enb.icompression.LosslessCodec`
-    instances. See :doc:`defining_new_compressors` for further information.
+where `codecs` is the list of codecs we defined above. The returned |DataFrame| df
+can be used to analyze and plot the obtained results. This is automatically done in
+the template for several columns of interest with the following code. You can check
+the :doc:`analyzing_data` page for more information on how to analyze and plot
+results.
 
 .. code-block:: python
 
-    # Setup global options
-    options.base_dataset_dir = "./data"
+    scalar_columns = ["compression_ratio_dr",
+                      "bpppc", "compression_time_seconds",
+                      "decompression_time_seconds",
+                      "compression_efficiency_1byte_entropy",
+                      "compression_efficiency_2byte_entropy"]
+    column_pairs = [("bpppc", "compression_time_seconds"),
+                    ("compression_time_seconds",
+                     "compression_efficiency_1byte_entropy"),
+                    ("compression_time_seconds",
+                     "compression_efficiency_2byte_entropy")]
 
-    # Define list of codecs
-    codecs = []
-    codecs.append(plugin_jpeg.jpeg_codecs.JPEG_LS(max_error=0))
-
-
-Lossless: experiment running
-----------------------------
-
-The lossless compression experiment can now be created, and used to generate a 
-:class:`pandas.DataFrame` instance with all defined columns.
-
-.. code-block:: python
-    
-    # Create experiment
-    exp = icompression.LosslessCompressionExperiment(codecs=codecs)
-
-    # Generate pandas dataframe with results
-    df = exp.get_df(
-        parallel_row_processing=not options.sequential,
-        overwrite=options.force > 0)
-
-.. note::
-
-    The `compression_ratio_dr``. `bpppc` and `compression_time_seconds` columns
-    are automatically created by the LosslessCompressionExperiment class. You can
-    extend this class with new columns, as described in the :doc:`basic_workflow` example.
-
-.. note::
-
-    Of course, custom analysis of the dataframe is possible for maximum control.
-
-Lossless: data analysis
-***********************
-
-One can perform automatic analysis of the dataframe with :class:`enb.aanalysis.ScalarDistributionAnalyzer`
-and any of the other classes in that module.
-
-.. code-block:: python
-
-    # Plot some results
-    analyzer = aanalysis.ScalarDistributionAnalyzer()
-    target_columns = ["compression_ratio_dr", "bpppc", "compression_time_seconds"]
-    analyzer.analyze_df(
+    # Scalar column analysis
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer(
+        # A scalar analysis summary is stored here
+        csv_support_path=os.path.join(options.analysis_dir,
+        "lossless_compression_analysis_scalar.csv"))
+    scalar_analyzer.get_df(
         # Mandatory params
-        full_df=df,                           # the dataframe produced by exp
-        target_columns=target_columns,        # the list of ATable column names 
+        full_df=df,  # the dataframe produced by exp
+        target_columns=scalar_columns,  # the list of ATable column names
+        # Provide plotting hints based on the defined columns
+        column_to_properties=exp.joined_column_to_properties,
         # Optional params
-        output_csv_file=os.path.join(         # save some statistics 
-            options.analysis_dir, "lossless_compression_analysis.csv"),
-        column_to_properties=exp.joined_column_to_properties, # contains plotting hints
-        group_by="task_label",                # one can group by any column name                    
+        group_by="task_label",  # one can group by any column name
+        selected_render_modes={"histogram"},
     )
-   
 
-An example output is available `here <https://github.com/miguelinux314/experiment-notebook/dev/master/templates/lossless_compression_example/plots/distribution_compression_ratio_dr.pdf>`_
+    # Two column joint analysis
+    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer(
+        csv_support_path=os.path.join(
+            options.analysis_dir, "lossless_compression_analysis_twocolumn.csv"))
+    twoscalar_analyzer.get_df(
+        full_df=df,
+        target_columns=column_pairs,
+        column_to_properties=exp.joined_column_to_properties,
+        group_by="task_label",
+        selected_render_modes={"scatter"},
+    )
 
+An example plot produced by this experiment, e.g., the compressed data rate in bits per sample,
+is shown in the next figure:
+
+.. figure:: _static/lossless_experiment/ScalarNumericAnalyzer_bpppc_groupby-task_label_histogram.png

@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Lossless compression experiment using enb, the Electronic NoteBook library.
+
+See https://github.com/miguelinux314/experiment-notebook for additional documentation.
+"""
+
+import os
+import sys
+
+import enb
+from enb.config import options
+
+# All plugins with codecs installed under plugins/ are automatically imported
+import plugins
+
+
+class LossyExperiment(enb.icompression.LossyCompressionExperiment):
+    """Custom data columns can be defined in this class.
+    If no columns are defined, enb.icompression.LossyCompressionExperiment can
+    be used directly when instantiating the experiment.
+    """
+    pass
+
+
+if __name__ == '__main__':
+    # Temporary compressed and reconstructed files are saved under options.base_tmp_dir.
+    # By default, a memory disk is used if possible. This can be set to a physical partition if
+    # temporary files are expected to be larger than the memory (swap may be used).
+    # options.base_tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp")
+
+    # By default, Experiments and other ATable subclasses read input samples from options.base_dataset_dir,
+    # which defaults to ./datasets. This can be uncommented to use other datasets. Make sure to set
+    # the Experiment or ATable instances' dataset_files_extension member to filter the desired files.
+    # options.base_dataset_dir = "./datasets"
+
+    # Compression experiments use Codecs as ExperimentTask subclasses. A list of codec
+    # instances (each with their desired parameters) needs to be created.
+    # You can install new codecs (run `enb plugin list` to see a list of all available plugins)
+    # into ./plugins and instantiate them at will.
+    codecs = []
+    task_families = []
+
+    # You can install the JPEG-LS plugin with `enb plugin install jpeg plugins/jpeg`
+    # jpegls_family = enb.experiment.TaskFamily("JPEG-LS")
+    # for max_error in range(2, 17):
+    #     codec = plugins.jpeg.JPEG_LS(max_error=max_error)
+    #     jpegls_family.add_task(codec.name, codec.label)
+    #     codecs.append(codec)
+    # task_families.append(jpegls_family)
+
+    # You can install the VVC plugin with `enb plugin install vvc plugins/vvc`
+    # vvc_family = enb.experiment.TaskFamily("VVC")
+    # for qp in range(1, 52, 3):
+    #     codec = plugins.vvc.VVC_lossy(qp=qp)
+    #     vvc_family.add_task(codec.name, codec.label)
+    #     codecs.append(codec)
+    # task_families.append(vvc_family)
+
+    if not codecs:
+        enb.logger.error("No codec has been defined, nor installed under ./plugins. "
+                         "Try `enb plugin list codec` for a list of "
+                         "available plugins. You can change 'codec' for any other search string.")
+        sys.exit(1)
+    task_families = task_families if task_families else None
+
+    # Create experiment.
+    exp = LossyExperiment(codecs=codecs, task_families=task_families)
+
+    # Generate pandas dataframe with results. Persistence is automatically added
+    df = exp.get_df()
+
+    # Selection of potentially relevant columns. You can use any of the columns available in
+    # the experiment class (including any column you defined, e.g., in the LossyExperiment class above).
+    scalar_columns = [
+        "compression_ratio_dr",
+        "bpppc",
+        "compression_efficiency_1byte_entropy",
+        "compression_time_seconds",
+        "decompression_time_seconds",
+        "pae",
+        "psnr_bps", "psnr_dr"]
+    column_pairs = [
+        ("bpppc", "pae"),
+        ("bpppc", "psnr_dr"),
+        ("bpppc", "compression_time_seconds"),
+        ("bpppc", "decompression_time_seconds"),
+    ]
+    # Scalar column analysis
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer(
+        csv_support_path=os.path.join(
+            options.analysis_dir, "analysis_lossy/", "lossy_compression_analysis_scalar.csv"))
+    scalar_analyzer.main_alpha = 0
+    scalar_analyzer.show_x_std = True
+    scalar_analyzer.sort_by_average = True
+    scalar_analyzer.show_individual_samples = False
+    scalar_analyzer.show_global = False
+
+    plot_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plots", "plots_lossy")
+    column_properties = exp.joined_column_to_properties
+    column_properties["pae"].plot_max = 10
+    scalar_analyzer.get_df(
+        full_df=df,
+        target_columns=scalar_columns,
+        column_to_properties=exp.joined_column_to_properties,
+        group_by="task_label",
+        selected_render_modes={"histogram"},
+        output_plot_dir=plot_dir,
+        fig_height=8,
+        show_grid=True,
+    )
+
+    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer(
+        csv_support_path=os.path.join(
+            options.analysis_dir, "analysis_lossy/", "lossy_compression_analysis_twocolumn.csv"))
+    twoscalar_analyzer.show_individual_samples = False
+    twoscalar_analyzer.show_global = False
+    twoscalar_analyzer.get_df(
+        full_df=df,
+        target_columns=column_pairs,
+        column_to_properties=exp.joined_column_to_properties,
+        group_by=task_families,
+        selected_render_modes={"line"},
+        output_plot_dir=plot_dir,
+        show_grid=True,
+    )

@@ -10,8 +10,8 @@ you just need to add new instances of :class:`enb.icompression.AbstractCodec` su
 Notwithstanding, several helper classes have been added to :mod:`enb.icompression` to speed up
 the creation of new codecs
 
-1. Lossless codecs
-------------------
+Lossless codecs
+---------------
 Lossless codecs are expected to be able to reconstruct a mathematically identical representation the original data.
 
 You can define new Lossless codecs by subclassing the :class:`enb.icompression.LosslessCodec` class, like in the
@@ -53,7 +53,7 @@ Further working examples are readily available in the
 plugin.
 
 
-2. Lossy and near lossless codecs
+Lossy and near lossless codecs
 ---------------------------------
 
 Lossy and near-lossless codecs can be defined by subclassing :class:`enb.icompression.LossyCodec` and
@@ -63,7 +63,7 @@ As in the previous example, the `compress(self, original_path, compressed_path, 
 and `decompress(self, compressed_path, reconstructed_path, original_file_info=None)` functions
 need to be specified.
 
-3. Executable wrapper codecs
+Executable wrapper codecs
 ----------------------------
 
 Very often, compressors are implemented as an external tools, and compression and decompression
@@ -99,13 +99,15 @@ The return value of these is a string with the parameters one would type after t
 
 .. _creating_codec_plugins:
 
-4. Packing your codec as a plugin
+Packing your codec as a plugin
 ---------------------------------
 Once you have tested your codec, you might want to release it as a plugin so that other `enb` users can benefit from
 your development.
+
+
 To create your plugin and share it with the community,
 
-    - Put the script and any required binaries in a folder within `plugins/`.
+    - Create a folder with your code
 
     - Add a `__init__.py` file to that folder, with imports such as
 
@@ -113,11 +115,11 @@ To create your plugin and share it with the community,
 
           from . import my_module
 
-      if `my_module.py` is one of the modules you want to export.
+      if `my_module.py` is one of the modules you want to make available .
 
-    - Modify `plugins/test_all_codecs/test_all_codecs.py <https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/plugins/test_all_codecs/test_all_codecs.py>`_
-      adding an instance of your codec, and verify that it has the expected capabilities.
+    - Add a __plugin__.py file such as the one in
+      `plugin_zip's __plugin__.py <https://github.com/miguelinux314/experiment-notebook/blob/master/enb/plugins/plugin_zip/__plugin__.py>`_,
+      updating all needed fields.
 
-    - Send a pull request to https://github.com/miguelinux314/experiment-notebook/tree/dev
-
-A list of currently available codec plugins and their capabilities is available at :doc:`image_compression_plugins`.
+    - Send a pull request to the `dev` branch (https://github.com/miguelinux314/experiment-notebook/tree/dev)
+      or get in touch with the maintainers so that it can be reviewed an published.

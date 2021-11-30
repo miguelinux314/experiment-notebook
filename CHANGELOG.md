@@ -1,3 +1,11 @@
+# Under development v0.3.3
+
+* General improvements
+  - Improved documentation and plugins about lossless and lossy compression templates
+  - Added a lossy compression template
+  - Complete review of the documentation with the new classes
+  - Removed all deprecated methods before v0.3.0.
+
 # 2021/11/29 v0.3.2
 
 * New features 

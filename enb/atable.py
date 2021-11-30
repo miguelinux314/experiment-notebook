@@ -695,8 +695,6 @@ class ATable(metaclass=MetaTable):
             elif isinstance(cp, ColumnProperties):
                 normalized_cp_list.append(cp)
             elif isinstance(cp, collections.abc.Iterable):
-                # Deprecated
-                ATable._normalize_list_of_column_properties()
                 normalized_cp_list.extend(ATable.normalize_column_function_arguments(
                     column_property_list=cp, fun=fun))
             else:
@@ -704,21 +702,6 @@ class ATable(metaclass=MetaTable):
                                   f"{cp} (type {type(cp)}), {fun}, {kwargs} ")
 
         return normalized_cp_list
-
-    @staticmethod
-    @deprecation.deprecated(
-        deprecated_in="0.3.0",
-        removed_in="1.0.0",
-        current_version=enb.config.ini.get_key("enb", "version"),
-        details="Passing a list of column properties such as "
-                "@enb.atable.column_function([cp1,cp2]) instead "
-                "of passing them as positional arguments,"
-                "@enb.atable.column_function(cp1,cp2) is deprecated")
-    def _normalize_list_of_column_properties():
-        """It does nothing. Method defined just to provide deprecation information when
-        the old interface is used.
-        """
-        pass
 
     @classmethod
     def build_column_function_wrapper(cls, fun, column_properties):
@@ -1426,6 +1409,11 @@ class SummaryTable(ATable):
         """Number of elements (rows from full_df) in the group.
         """
         return len(self.label_to_df[index])
+
+    def column_group_label(self, index, row):
+        """Set the name of the group in a column.
+        """
+        return index
 
 
 def string_or_float(cell_value):

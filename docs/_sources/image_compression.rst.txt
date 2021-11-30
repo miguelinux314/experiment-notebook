@@ -1,19 +1,26 @@
 .. Image compression (with icompression.py)
 
+.. include:: ./tag_definition.rst
+
 Image compression experiments
 =============================
 
 The `enb` library can be used to create many types of experiments.
 Specific support is provided for image compression experiments.
-This section deals with image compression experiments
-and how to design and run them with minimal effort.
 
-You will lear how to use and extend templates to quickly define effective experiments.
-Examples and usage help are provided for both lossless and lossy compression regimes.
+This section describes how to quickly create and adapt lossless and lossy
+compression experiments with existing and new codecs. Several |enb| plugins
+are provided which serve as templates for your work.
 
-You will also learn how to employ codec plugins provided in `enb` to further extend your experiments.
+The following plugins are available:
 
-Finally, some tips regarding the creation of new codecs is discussed.
+    * `lossless-compression`
+    * `lossy-compression`
+    * `test-codecs`
+
+You will learn how to use and extend these templates, including
+the definition of new codecs, e.g., wrappers for compression tools
+you want to evaluate.
 
 .. toctree::
    :maxdepth: 1

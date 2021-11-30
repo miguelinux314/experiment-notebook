@@ -26,13 +26,11 @@ class TestScalarToScalar(unittest.TestCase):
             df.loc[len(df)] = pd.Series(dict(dicts=dict(a=i, c=0)))
 
         with tempfile.TemporaryDirectory() as tmp_dir:
-            analyzer = enb.aanalysis.ScalarDictAnalyzer()
-            analyzer.analyze_df(
+            analyzer = enb.aanalysis.DictNumericAnalyzer()
+            analyzer.get_df(
                 full_df=df,
                 target_columns=["dicts"],
-                column_to_properties={"dicts": enb.atable.ColumnProperties(
-                    "dicts", has_dict_values=True)},
-                output_csv_file=os.path.join(tmp_dir, "ignore.csv"),
+                column_to_properties={"dicts": enb.atable.ColumnProperties("dicts", has_dict_values=True)},
                 output_plot_dir=tmp_dir)
 
 
