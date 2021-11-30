@@ -378,22 +378,3 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
             raise ex
 
     return output_path, time_measurements
-
-
-@deprecation.deprecated(deprecated_in="v0.2.7",
-                        removed_in="v1.1.0",
-                        current_version=enb.config.ini.get_key("enb", "version"),
-                        details="Please use atable.get_all_test_files() instead.")
-def get_all_test_files(*args, **kwargs):
-    """Deprecated - for backwards compatibility only.
-    """
-    return atable.get_all_input_files(*args, **kwargs)
-
-
-@deprecation.deprecated(deprecated_in="v0.2.7",
-                        removed_in="v0.3.0",
-                        details="Please use atable.get_canonical_path() instead.")
-def get_canonical_path(*args, **kwargs):
-    """Deprecated - for backwards compatibility only.
-    """
-    return atable.get_canonical_path(*args, **kwargs)

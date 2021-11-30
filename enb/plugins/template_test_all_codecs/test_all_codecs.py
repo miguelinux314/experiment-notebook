@@ -78,7 +78,7 @@ class CodecSummaryTable(enb.atable.SummaryTable):
     }
     availability_modes = [UNAVAILABLE, NOT_LOSSLESS, LOSSLESS]
 
-    def split_groups(self, reference_df=None):
+    def split_groups(self, reference_df=None, include_all_group=None):
         """Each row of the table corresponds to a single codec (label)."""
         reference_df = reference_df if reference_df is not None else self.reference_df
         return reference_df.groupby("task_label")
@@ -91,8 +91,22 @@ class CodecSummaryTable(enb.atable.SummaryTable):
         local_df = self.label_to_df[index]
         type_to_availability = dict()
         for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
-            band_str = f"band{'s' if component_count != 1 else ''}"
-            key = f"{type_name:>6s} {component_count:3d} {band_str:<5s}"
+            if type_name[1] == "8":
+                type_name = f"{type_name[:1]} 8{type_name[2:]}"
+            type_name = f"{type_name[:3]} bit {type_name[3:]}"
+            if type_name[0] == "f":
+                type_name = f"Float {type_name[1:]}"
+            elif type_name[0] == "u":
+                type_name = f"Unsigned int {type_name[1:]}"
+            elif type_name[0] == "s":
+                type_name = f"Signed int {type_name[1:]}"
+
+            if type_name[-2:] == "be":
+                type_name = f"{type_name[:-2]}   big endian"
+            elif type_name[-2:] == "le":
+                type_name = f"{type_name[:-2]} little endian"
+
+            key = f"{type_name} {component_count:02d} bands"
             if not type_df["is_working"].all():
                 type_to_availability[key] = CodecSummaryTable.UNAVAILABLE
             elif type_df["is_lossless"].all():
@@ -163,71 +177,96 @@ if __name__ == '__main__':
     exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
 
+    summary_df = CodecSummaryTable(
+        csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary.csv"),
+        full_df=full_availability_df).get_df()
+    analyzer = enb.aanalysis.DictNumericAnalyzer()
+    
+    all_keys = sorted(list(summary_df.iloc[0]["type_to_availability"].keys()))
+    key_to_x = {k: i for i, k in enumerate(all_keys)}
+    for i in range(4, len(all_keys), 4):
+        for k in all_keys[i:]:
+            key_to_x[k] += 0.4
+    
+    
+    analyzer.get_df(
+        full_df=summary_df,
+        target_columns=["type_to_availability"],
+        group_by="group_label",
+        key_to_x=key_to_x,
+        x_tick_list=[key_to_x[k] for k in all_keys],
+        x_tick_label_list=all_keys,
+        x_tick_label_angle=90,
+        fig_width=10,
+        fig_height=15,
+        y_tick_list=CodecSummaryTable.availability_modes,
+        y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
+                           CodecSummaryTable.availability_modes],
+        group_row_margin=-0.05,
+        y_min=-0.3,
+        y_max=2.3,
+        global_x_label="Data type",
+        show_count=False,
+        global_y_label="Availability"
+    )
 
-    # A little pre-plotting embellishment
-    def save_availability_plot(summary_df, output_plot_path):
-        """Allows plotting of different subsets of the full df.
-        """
+    # # A little pre-plotting embellishment
+    # def save_availability_plot(summary_df, output_plot_path):
+    #     """Allows plotting of different subsets of the full df.
+    #     """
+    #
+    #     def type_to_key(a):
+    #         """Used to consistently sort typenames, e.g., u8be < s16le"""
+    #         type_list = ["u", "s", "f"]
+    #         type_code = type_list.index(a.strip()[0])
+    #         bps_code = int(re.search(r'(\d+)', a).group(1))
+    #         band_count = int(re.search('(\d+) band', a).group(1))
+    #         return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:2d}_{a}"
+    #
+    #     # Define the x tick positions
+    #     all_keys = set()
+    #     for d in summary_df["type_to_availability"]:
+    #         all_keys.update(d.keys())
+    #     all_keys = sorted(all_keys, key=type_to_key)
+    #     key_to_x = {k: i for i, k in enumerate(all_keys)}
+    #     offset = 0
+    #     last_key = all_keys[0]
+    #     for k in all_keys:
+    #         if k.strip()[:3] != last_key.strip()[:3]:
+    #             offset += 1.2
+    #         elif ("be" in last_key and "le" in k) or ("le" in last_key and "be" in k):
+    #             offset += 0.3
+    #         last_key = k
+    #         key_to_x[k] += offset
+    #
+    #     enb.aanalysis.DictNumericAnalyzer().get_df(
+    #         full_df=summary_df,
+    #         target_columns=["type_to_availability"],
+    #         column_to_properties=CodecSummaryTable.column_to_properties,
+    #         group_by="group_label",
+    #         y_tick_list=CodecSummaryTable.availability_modes,
+    #         y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
+    #                            CodecSummaryTable.availability_modes],
+    #         fig_height=0.7 * len(codec_classes),
+    #         fig_width=4 + len(key_to_x) * 0.1,
+    #         show_global=False)
 
-        def type_to_key(a):
-            """Used to consistently sort typenames, e.g., u8be < s16le"""
-            type_list = ["u", "s", "f"]
-            type_code = type_list.index(a.strip()[0])
-            bps_code = int(re.search(r'(\d+)', a).group(1))
-            band_count = int(re.search('(\d+) band', a).group(1))
-            return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:2d}_{a}"
-
-        # Define the x tick positions
-        all_keys = set()
-        for d in summary_df["type_to_availability"]:
-            all_keys.update(d.keys())
-        all_keys = sorted(all_keys, key=type_to_key)
-        key_to_x = {k: i for i, k in enumerate(all_keys)}
-        offset = 0
-        last_key = all_keys[0]
-        for k in all_keys:
-            if k.strip()[:3] != last_key.strip()[:3]:
-                offset += 1.2
-            elif ("be" in last_key and "le" in k) or ("le" in last_key and "be" in k):
-                offset += 0.3
-            last_key = k
-            key_to_x[k] += offset
-
-        enb.aanalysis.ScalarDictAnalyzer().analyze_df(
-            full_df=summary_df,
-            target_columns=["type_to_availability"],
-            column_to_properties=CodecSummaryTable.column_to_properties,
-            group_by="group_label",
-            y_tick_list=CodecSummaryTable.availability_modes,
-            y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
-                               CodecSummaryTable.availability_modes],
-            key_to_x=key_to_x,
-            fig_height=0.7 * len(codec_classes),
-            fig_width=4 + len(key_to_x) * 0.1,
-            output_plot_path=output_plot_path,
-            show_global=False)
-
-
-    # Generate the plots for different subsets of the full results table
-    log_event("Experiment successfully run. Plotting availability analysis...")
-    integer_df = full_availability_df[full_availability_df["float"] == False]
-    signed_df = integer_df[integer_df["signed"] == True]
-    unsigned_df = integer_df[integer_df["signed"] == False]
-    float_df = full_availability_df[full_availability_df["float"] == True]
-    options.no_new_results = False
-    for label, full_df in (
-            ("general", full_availability_df),
-            ("unsigned", unsigned_df),
-            ("signed", signed_df),
-            ("float", float_df)):
-        summary_df = CodecSummaryTable(
-            csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary_{label}.csv"),
-            reference_df=full_df).get_df()
-        save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability_{label}.pdf"))
+    # # Generate the plots for different subsets of the full results table
+    # log_event("Experiment successfully run. Plotting availability analysis...")
+    # integer_df = full_availability_df[full_availability_df["float"] == False]
+    # signed_df = integer_df[integer_df["signed"] == True]
+    # unsigned_df = integer_df[integer_df["signed"] == False]
+    # float_df = full_availability_df[full_availability_df["float"] == True]
+    # options.no_new_results = False
+    #
+    # summary_df = CodecSummaryTable(
+    #     csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary.csv"),
+    #     full_df=full_availability_df).get_df()
+    # save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability.pdf"))
 
     log_event(f"Saving PNG versions of the PDF files...")
     enb.aanalysis.pdf_to_png(input_dir=options.plot_dir, output_dir=options.plot_dir)
     print("Done saving PNGs.")
-    
+
     log_event("Test all codecs successfully completed")
     print(f"You can now see the availability plots in .pdf and .png format at {options.plot_dir}")

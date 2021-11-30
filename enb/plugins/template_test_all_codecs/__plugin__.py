@@ -25,6 +25,9 @@ class TestAllCodecsPlugin(enb.plugins.Template):
         plugin_dir = os.path.join(installation_dir, "plugins")
         os.makedirs(plugin_dir)
         for plugin in codec_plugins:
+            if "privative" in plugin.tags:
+                print(f"\t... skipping privative {plugin.name}")
+                continue
             print(f"\t... installing {plugin.name}...")
             plugin.install(os.path.join(plugin_dir, plugin.name))
         print("All codecs installed.")

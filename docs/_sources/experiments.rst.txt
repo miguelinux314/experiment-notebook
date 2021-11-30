@@ -7,6 +7,8 @@ Experiments = data + tasks
 
 In the :doc:`basic_workflow` page, we saw the most basic usage of |ATable|,
 e.g., a list of inputs, and a list of columns to obtain the results dataframe.
+Here, we discuss the basics of the |Experiment| class, which provides a more
+complete tool for realistic experiments.
 
 Often, we want to calculate a set of columns (e.g., metrics) for each element
 in the dataset **and** for each of the defined tasks. For example, we may need
@@ -207,3 +209,12 @@ An example output could be as follows::
      - 80
     Found open ports in 192.168.1.2:
      - 80
+
+
+What's next?
+------------
+
+In the next section, |enb| tools for analyzing and plotting are discussed.
+
+In :doc:`image_compression`, you can
+topics specifics to experiments related to lossless and lossy image compression.

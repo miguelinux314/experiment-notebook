@@ -140,10 +140,17 @@ include enb/plugins/template_basic_workflow_example/data/wiki/n_chomsky.txt
 include enb/plugins/template_basic_workflow_example/data/wiki/r_franklin.txt
 include enb/plugins/template_basic_workflow_example/data/wiki/s_beauvoir.txt
 include enb/plugins/template_basic_workflow_example/__plugin__.py
+include enb/plugins/template_lossless_compression/datasets/image_u8be-2x128x128.raw
 include enb/plugins/template_lossless_compression/lossless_compression_experiment.py.enbt
 include enb/plugins/template_lossless_compression/__plugin__.py
 include enb/plugins/template_lossless_compression/plugins/__init__.py
 include enb/plugins/template_lossless_compression/README.md
+include enb/plugins/template_lossy_compression/datasets/image1_u8be-1x128x256.raw
+include enb/plugins/template_lossy_compression/datasets/image2_u8be-1x128x256.raw
+include enb/plugins/template_lossy_compression/lossy_compression_experiment.py.enbt
+include enb/plugins/template_lossy_compression/__plugin__.py
+include enb/plugins/template_lossy_compression/plugins/__init__.py
+include enb/plugins/template_lossy_compression/README.md
 include enb/plugins/template_port_experiment_example/data/ips/ip1.txt
 include enb/plugins/template_port_experiment_example/data/ips/ip2.txt
 include enb/plugins/template_port_experiment_example/data/ips/ip3.txt
