@@ -3,7 +3,7 @@
 .. include:: ./tag_definition.rst
 
 Using existing image compression codecs
----------------------------------------
+=======================================
 
 The |enb| library offers a set of codecs that can be installed via the `enb plugin install` interface.
 You can list the available codecs by performing a search among all available plugins::
