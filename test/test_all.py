@@ -13,8 +13,6 @@ import argparse
 import datetime
 
 # So that all tests can use the intended module structure transparently
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--verbose", help="Be verbose? Repeat for more", action="count", default=0)

@@ -60,9 +60,11 @@ class FilePropertiesTable(atable.ATable):
         self.base_dir = base_dir if base_dir is not None else options.base_dataset_dir
 
     def get_df(self, target_indices=None, target_columns=None, fill=True, overwrite=None, chunk_size=None):
-        target_indices = target_indices if target_indices is not None \
-            else enb.atable.get_all_input_files(ext=self.dataset_files_extension,
+        if target_indices is None:
+            target_indices = enb.atable.get_all_input_files(ext=self.dataset_files_extension,
                                                 base_dataset_dir=self.base_dir)
+        else:
+            target_indices = [enb.atable.get_canonical_path(p) for p in target_indices]
 
         return super().get_df(target_indices=target_indices,
                               target_columns=target_columns,

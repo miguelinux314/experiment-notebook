@@ -835,7 +835,7 @@ class ATable(metaclass=MetaTable):
         fill = fill if fill is not None else not options.no_new_results
 
         # Use the provided target indices or discover automatically from the dataset folder
-        target_indices = list(target_indices) if target_indices \
+        target_indices = list(target_indices) if target_indices is not None \
             else get_all_input_files(ext=self.dataset_files_extension)
 
         if not target_indices:
@@ -1478,7 +1478,7 @@ def indices_to_internal_loc(values):
     if isinstance(values, str) or isinstance(values, numbers.Number):
         values = [values]
 
-    values = [os.path.abspath(v) if isinstance(v, str) and os.path.exists(v) else v for v in values]
+    values = [get_canonical_path(v) if isinstance(v, str) and os.path.exists(v) else v for v in values]
 
     return str(tuple(values))
 
@@ -1626,7 +1626,9 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
         key=lambda p: get_canonical_path(p).lower())
 
     # If quick is selected, return at most as many paths as the quick parameter count
-    return sorted_path_list if not options.quick else sorted_path_list[:options.quick]
+    all_input_files = sorted_path_list if not options.quick else sorted_path_list[:options.quick]
+    
+    return all_input_files
 
 
 def get_canonical_path(file_path):
@@ -1634,4 +1636,4 @@ def get_canonical_path(file_path):
     :return: the canonical version of a path to be stored in the database, to make sure
       indexing is consistent across code using |ATable| and its subclasses.
     """
-    return os.path.abspath(os.path.realpath(file_path))
+    return os.path.relpath(file_path, options.project_root)

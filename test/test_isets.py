@@ -19,7 +19,7 @@ from enb import isets
 class TestiSets(unittest.TestCase):
 
     def test_array_load_dump(self):
-        """Test that file properties are correctly obtained and retrieved.
+        """Test that loading and dumping of numpy arrays indexed by [x,y,z] is correctly made.
         """
         width = 4
         height = 2

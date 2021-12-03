@@ -141,8 +141,10 @@ class Experiment(atable.ATable):
         except TypeError:
             pass
 
-        dataset_paths = dataset_paths if dataset_paths is not None \
-            else enb.atable.get_all_input_files(ext=self.dataset_files_extension)
+        if dataset_paths is not None:
+            dataset_paths = [enb.atable.get_canonical_path(p) for p in dataset_paths]
+        else:
+            dataset_paths = enb.atable.get_all_input_files(ext=self.dataset_files_extension)
 
         if csv_dataset_path is None:
             csv_dataset_path = os.path.join(options.persistence_dir,
