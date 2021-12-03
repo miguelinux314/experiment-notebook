@@ -12,8 +12,10 @@ import appdirs as _appdirs
 
 # Make all warnings errors
 import numpy as _np
+
 _np.seterr(all="raise")
 import warnings as _warnings
+
 _warnings.simplefilter('error', UserWarning)
 
 # Current installation dir of enb
@@ -82,9 +84,11 @@ from . import plugins
 if not ray_cluster.on_remote_process():
     # Don't show the banner in each child instance
     log.core(config.get_banner())
-
-    # Show a bye message when exiting from the header process
     import atexit as _atexit
 
-    if not ray_cluster.on_remote_process():
-        _atexit.register(lambda: ray_cluster.stop_ray() if ray.is_initialized() else None)
+    _atexit.register(lambda: ray_cluster.stop_ray() if ray.is_initialized() else None)
+
+    __file__ = _os.path.abspath(__file__)
+
+    if not is_enb_cli:
+        _os.chdir(calling_script_dir)

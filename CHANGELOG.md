@@ -1,6 +1,15 @@
 # Under development v0.3.3
 
+* New features
+    
+  - The project_root attribute has been added to enb.config.options that 
+    points to the directory where the calling script is. 
+    Persistence paths are now stored relative to this project root,
+    and enb **now changes the current working dir to that project root**
+    upon initialization (also applies to remote functions).
+
 * General improvements
+
   - Improved documentation and plugins about lossless and lossy compression templates
   - Added a lossy compression template
   - Complete review of the documentation with the new classes
@@ -8,7 +17,8 @@
 
 # 2021/11/29 v0.3.2
 
-* New features 
+* New features
+
   - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests.
   - Added a wrapper for the upcoming CCSDS 124.0-B-1.
   - Experiments now create a family_label column to simplify analysis.
@@ -17,6 +27,7 @@
   - Improved documentation, including the most recent plotting and command-line tools and additions.
 
 * General improvements
+
   - Updated the user manual with the most recent analyzer classes
   - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not redistributed with enb.
   - Updated the ScalarNumericAnalyzer so that it can display averages (with or without std error bars) without

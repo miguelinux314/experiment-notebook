@@ -774,7 +774,7 @@ class CompressionExperiment(experiment.Experiment):
         file_path, codec_name = index
         codec = self.codecs_by_name[codec_name]
         image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
-
+        
         # A temporary attribute is created with a self.CompressionDecompressionWrapper instance,
         # which allows lazy, at-most-one execution of the compression/decompression process.
         # Column-setting methods can access the wrapper with self.

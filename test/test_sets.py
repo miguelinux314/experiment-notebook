@@ -11,28 +11,30 @@ import os
 import numpy as np
 import shutil
 
+import enb
 import enb.atable
 import enb.sets as sets
 from enb.config import options
-
-target_indices = [enb.atable.get_canonical_path(f)
-                  for f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*.py"), recursive=False)
-                  if os.path.isfile(f) and os.path.getsize(f)]
-
 
 class TestSets(unittest.TestCase):
 
     def test_file_properties(self):
         """Test that file properties are correctly obtained and retrieved.
         """
+        target_indices = [p for p in glob.glob(os.path.join(enb.calling_script_dir, "*.py"))
+                          if os.path.isfile(p)]
+
         # dataset_df = get_result_df()
         with tempfile.NamedTemporaryFile(suffix=".csv") as tmp_file:
             dataset_properties_table = sets.FilePropertiesTable(
                 csv_support_path=tmp_file.name)
 
             # Attempt loading from an empty file, verify it is empty because fill=False
-            empty_property_table = dataset_properties_table.get_df(
-                fill=False, target_indices=target_indices)
+            try:
+                empty_property_table = dataset_properties_table.get_df(
+                    fill=False, target_indices=target_indices)
+            except ValueError:
+                assert len(target_indices) == 0
 
             assert len(empty_property_table) == 0, empty_property_table
             assert empty_property_table.isnull().all().all()
@@ -77,14 +79,13 @@ class TestSets(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             options.persistence_dir = tmp_dir
-
-            fpt = sets.FilePropertiesTable(base_dir=os.path.dirname(os.path.abspath(__file__)))
+            fpt = sets.FilePropertiesTable(base_dir=options.project_root)
             fpt.dataset_files_extension = "py"
             fpt_df = fpt.get_df()
             fpt_df["original_file_path"] = fpt_df["file_path"]
             tvt = TrivialVersionTable(version_base_dir=tmp_dir,
                                       version_name="trivial",
-                                      original_base_dir=os.path.dirname(os.path.abspath(__file__)))
+                                      original_base_dir=options.project_root)
             tvt_df = tvt.get_df()
 
             lsuffix = "_original"

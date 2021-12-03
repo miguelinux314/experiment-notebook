@@ -47,7 +47,7 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
         file_path_to_datatype_dict(file_path, row)
 
         assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
-            (file_path, os.path.getsize(file_path), width, height, component_count,
+            (file_path, os.path.getsize(file_path), width, height, component_count, row["bytes_per_sample"],
              width * height * component_count * row["bytes_per_sample"])
         assert row["samples"] == width * height * component_count
     else:
@@ -72,7 +72,7 @@ def file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["signed"] = False
         existing_dict["float"] = False
     elif "u32be" in base_name:
-        existing_dict["bytes_per_sample"] = 2
+        existing_dict["bytes_per_sample"] = 4
         existing_dict["big_endian"] = True
         existing_dict["signed"] = False
         existing_dict["float"] = False
@@ -82,7 +82,7 @@ def file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["signed"] = False
         existing_dict["float"] = False
     elif "u32le" in base_name:
-        existing_dict["bytes_per_sample"] = 2
+        existing_dict["bytes_per_sample"] = 4
         existing_dict["big_endian"] = False
         existing_dict["signed"] = False
         existing_dict["float"] = False
@@ -97,7 +97,7 @@ def file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["signed"] = True
         existing_dict["float"] = False
     elif "s32be" in base_name:
-        existing_dict["bytes_per_sample"] = 2
+        existing_dict["bytes_per_sample"] = 4
         existing_dict["big_endian"] = True
         existing_dict["signed"] = True
         existing_dict["float"] = False
@@ -107,7 +107,7 @@ def file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["signed"] = True
         existing_dict["float"] = False
     elif "s32le" in base_name:
-        existing_dict["bytes_per_sample"] = 2
+        existing_dict["bytes_per_sample"] = 4
         existing_dict["big_endian"] = False
         existing_dict["signed"] = True
         existing_dict["float"] = False
