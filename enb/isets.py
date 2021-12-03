@@ -44,6 +44,8 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
         row["width"], row["height"], row["component_count"] = \
             width, height, component_count
 
+        file_path_to_datatype_dict(file_path, row)
+
         assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
             (file_path, os.path.getsize(file_path), width, height, component_count,
              width * height * component_count * row["bytes_per_sample"])
@@ -53,6 +55,81 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
                          f"from file name {os.path.basename(file_path)}")
         return dict()
     return row
+
+
+def file_path_to_datatype_dict(file_path, existing_dict=None):
+    existing_dict = existing_dict if existing_dict is not None else dict()
+
+    base_name = os.path.basename(file_path)
+    if "u8be" in base_name:
+        existing_dict["bytes_per_sample"] = 1
+        existing_dict["big_endian"] = True
+        existing_dict["signed"] = False
+        existing_dict["float"] = False
+    elif "u16be" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = True
+        existing_dict["signed"] = False
+        existing_dict["float"] = False
+    elif "u32be" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = True
+        existing_dict["signed"] = False
+        existing_dict["float"] = False
+    elif "u16le" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = False
+        existing_dict["float"] = False
+    elif "u32le" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = False
+        existing_dict["float"] = False
+    elif "s8be" in base_name:
+        existing_dict["bytes_per_sample"] = 1
+        existing_dict["big_endian"] = True
+        existing_dict["signed"] = True
+        existing_dict["float"] = False
+    elif "s16be" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = True
+        existing_dict["signed"] = True
+        existing_dict["float"] = False
+    elif "s32be" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = True
+        existing_dict["signed"] = True
+        existing_dict["float"] = False
+    elif "s16le" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = True
+        existing_dict["float"] = False
+    elif "s32le" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = True
+        existing_dict["float"] = False
+    elif "f16" in base_name:
+        existing_dict["bytes_per_sample"] = 2
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = True
+        existing_dict["float"] = True
+    elif "f32" in base_name:
+        existing_dict["bytes_per_sample"] = 4
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = True
+        existing_dict["float"] = True
+    elif "f64" in base_name:
+        existing_dict["bytes_per_sample"] = 8
+        existing_dict["big_endian"] = False
+        existing_dict["signed"] = True
+        existing_dict["float"] = True
+        
+    existing_dict["samples"] = os.path.getsize(file_path) / existing_dict["bytes_per_sample"]
+
+    return existing_dict
 
 
 class ImageGeometryTable(sets.FilePropertiesTable):
