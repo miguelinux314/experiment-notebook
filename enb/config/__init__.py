@@ -99,12 +99,6 @@ def get_banner():
                f" ] "
     contents = f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
 
-    if options.verbose:
-        contents += f"\nStarted at {datetime.datetime.now()}.\n"
-
-    if options.verbose > 1:
-        contents += f"\n{options}\n"
-
     return contents
 
 

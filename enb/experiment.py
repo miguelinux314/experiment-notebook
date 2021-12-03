@@ -130,6 +130,11 @@ class Experiment(atable.ATable):
         try:
             for task_family in task_families:
                 for task_name in task_family.task_names:
+                    if task_name in self.task_name_to_family_label:
+                        raise ValueError(f"Found task_name {repr(task_name)} in family {task_family.label} "
+                                         f"that was already present in family {self.task_name_to_family_label[task_name]}. "
+                                         f"No duplicates are allowed.")
+
                     assert task_name not in self.task_name_to_family_label, \
                         self.task_name_to_family_label[task_name]
                     self.task_name_to_family_label[task_name] = task_family.label
