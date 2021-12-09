@@ -44,7 +44,7 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
         row["width"], row["height"], row["component_count"] = \
             width, height, component_count
 
-        file_path_to_datatype_dict(file_path, row)
+        _file_path_to_datatype_dict(file_path, row)
 
         assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
             (file_path, os.path.getsize(file_path), width, height, component_count, row["bytes_per_sample"],
@@ -57,7 +57,7 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
     return row
 
 
-def file_path_to_datatype_dict(file_path, existing_dict=None):
+def _file_path_to_datatype_dict(file_path, existing_dict=None):
     existing_dict = existing_dict if existing_dict is not None else dict()
 
     base_name = os.path.basename(file_path)
@@ -542,7 +542,7 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
             saved_images += 1
 
 
-def load_array_bsq(file_or_path, image_properties_row,
+def load_array_bsq(file_or_path, image_properties_row=None,
                    width=None, height=None, component_count=None, dtype=None):
     """Load a numpy array indexed by [x,y,z] from file_or_path using
     the geometry information in image_properties_row.
@@ -553,7 +553,8 @@ def load_array_bsq(file_or_path, image_properties_row,
       width, height, component_count, bytes_per_sample, signed, big_endian and float
       keys should be present to determine the read parameters. The remaining arguments overwrite
       those defined in image_properties_row (if image_properties_row is not None and if present).
-      If None, none of the remaining parameters can be None.
+      If None, image geometry is attempted to be obtained from the image path. If this fails,
+      none of the remaining parameters can be None.
     :param width: if not None, force the read to assume this image width
     :param height: if not None, force the read to assume this image height
     :param component_count: if not None, force the read to assume this number of components (bands)
@@ -562,9 +563,12 @@ def load_array_bsq(file_or_path, image_properties_row,
     :return: a 3-D numpy array with the image data, which can be indexed as [x,y,z].
     """
     if image_properties_row is None:
-        assert not any(v is None for v in (width, height, component_count, dtype)), \
-            f"image_properties_row={image_properties_row} but some None in " \
-            f"(width, height, component_count, dtype): {(width, height, component_count, dtype)}."
+        try:
+            image_properties_row = file_path_to_geometry_dict(file_or_path)
+        except ValueError:
+            assert not any(v is None for v in (width, height, component_count, dtype)), \
+                f"image_properties_row={image_properties_row} but some None in " \
+                f"(width, height, component_count, dtype): {(width, height, component_count, dtype)}."
     width = width if width is not None else image_properties_row["width"]
     height = height if height is not None else image_properties_row["height"]
     component_count = component_count if component_count is not None else image_properties_row["component_count"]
