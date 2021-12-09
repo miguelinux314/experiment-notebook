@@ -74,6 +74,7 @@ class TestSets(unittest.TestCase):
                 self.dataset_files_extension = "py"
 
             def version(self, input_path, output_path, row):
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
                 shutil.copy(input_path, output_path)
                 assert os.path.getsize(input_path) == os.path.getsize(output_path)
 

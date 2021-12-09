@@ -576,7 +576,7 @@ def load_array_bsq(file_or_path, image_properties_row,
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     """Dump an array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
     i.e., the concatenation of each component (z axis), each component in raster
-    order.
+    order. Parent folders are created if not already existing.
 
     :param file_or_path: It can be either a file-like object, or a string-like
       object. If it is a file, contents are writen without altering the file
@@ -588,6 +588,7 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     :param force_big_endian: if True, a copy of the array is made and its bytes are swapped before outputting
       data to file. This parameter is ignored if dtype is provided.
     """
+    os.makedirs(os.path.dirname(file_or_path), exist_ok=True)
     try:
         assert not file_or_path.closed, f"Cannot dump to a closed file"
         open_here = False
