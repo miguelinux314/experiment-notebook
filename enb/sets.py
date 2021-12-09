@@ -18,6 +18,7 @@ import ray
 import time
 import deprecation
 import glob
+import functools
 
 import enb
 from enb import atable
@@ -122,7 +123,7 @@ class FileVersionTable(FilePropertiesTable):
     Subclasses may be defined so that they inherit from other classes and can apply more complex versioning.
     """
 
-    def __init__(self, version_base_dir, version_name,
+    def __init__(self, version_base_dir, version_name="",
                  original_properties_table=None,
                  original_base_dir=None,
                  csv_support_path=None,
@@ -220,35 +221,13 @@ class FileVersionTable(FilePropertiesTable):
         overwrite = overwrite if overwrite is not None else options.force
 
         assert all(index == enb.atable.get_canonical_path(index) for index in target_indices)
-        original_df = self.original_properties_table.get_df(target_indices=target_indices,
+
+        _ = self.original_properties_table.get_df(target_indices=target_indices,
                                                             target_columns=target_columns)
-
-        target_indices = [enb.atable.get_canonical_path(index)
-                          for index in target_indices]
-        version_indices = [self.original_to_versioned_path(index)
-                           for index in target_indices]
-
-        version_fun_id = ray.put(self.version)
-        overwrite_id = ray.put(overwrite)
-        original_df_id = ray.put(original_df)
-        options_id = ray.put(options)
-        versioning_result_ids = []
-        for original_path, version_path in zip(target_indices, version_indices):
-            input_path_id = ray.put(original_path)
-            output_path_id = ray.put(version_path)
-            versioning_result_ids.append(ray_version_one_path.remote(
-                version_fun=version_fun_id, input_path=input_path_id,
-                output_path=output_path_id, overwrite=overwrite_id,
-                original_info_df=original_df_id,
-                check_generated_files=ray.put(self.check_generated_files),
-                options=options_id))
-        for output_file_path, time_list in ray.get(versioning_result_ids):
-            self.current_run_version_times[output_file_path] = time_list
 
         return FilePropertiesTable.get_df(
             self,
-            target_indices=[p for p in glob.glob(os.path.join(self.version_base_dir, "**", "*"), recursive=True)
-                            if os.path.isfile(p)],
+            target_indices=target_indices,
             target_columns=target_columns, overwrite=overwrite)
 
     @atable.column_function("original_file_path")
@@ -257,40 +236,13 @@ class FileVersionTable(FilePropertiesTable):
 
     @atable.column_function("version_time", label="Versioning time (s)")
     def set_version_time(self, file_path, row):
-        try:
-            version_time_list = self.current_run_version_times[file_path]
-        except KeyError:
-            if self.check_generated_files:
-                enb.logger.verbose(f"[W]arning: no valid version time was found for {repr(file_path)}. "
-                                   f"This is probably due to the versioning table changing the name of the"
-                                   f"output files. If the actual versioning time is needed, "
-                                   f"you can ovewrite set_version_time in {self.__class__} "
-                                   f"looking at the appropriate values in self.current_run_version_times.")
-            version_time_list = [0]
+        time_before = time.time()
+        self.version(
+            input_path=file_path,
+            output_path=self.original_to_versioned_path(original_path=file_path),
+            row=row)
+        row[_column_name] = time.time() - time_before
 
-        if any(t < 0 for t in version_time_list):
-            raise atable.CorruptedTableError(
-                "A negative versioning time measurement was found "
-                f"for {file_path} using {self.__class__.__name__}. Most likely, the transformed version "
-                f"already existed, the table did not contain {_column_name}, "
-                f"and options.force(={options.force}) is not set to True")
-
-        if not version_time_list:
-            raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
-                                             f"but it was not versioned in this run.")
-        row[_column_name] = sum(version_time_list) / len(version_time_list)
-
-    @atable.column_function("version_time_repetitions", label="Repetitions for obtaining versioning time")
-    def set_version_repetitions(self, file_path, row):
-        try:
-            version_time_list = self.current_run_version_times[file_path]
-            if not version_time_list:
-                raise atable.CorruptedTableError(f"{_column_name} was not set for {file_path}, "
-                                                 f"but it was not versioned in this run.")
-            row[_column_name] = len(version_time_list)
-        except KeyError:
-            # This is how we signal that no data has been gathered (see set_version_time)
-            row[_column_name] = 0
 
     def column_version_name(self, file_path, row):
         """Automatically add the version name as a column
