@@ -311,6 +311,13 @@ class RayOptions:
         """
         return float(value) if float(value) <= 0 else 0
 
+    @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
+    def ray_port(self, value):
+        """Ray port used.
+        """
+        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+        return int(value)
+
 
 @_singleton_cli.property_class(OptionsBase)
 class RenderingOptions:

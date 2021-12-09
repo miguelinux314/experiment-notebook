@@ -10,6 +10,7 @@ import os
 import datetime
 import ray
 import builtins
+import subprocess
 
 from . import config
 from .config import options
@@ -17,35 +18,92 @@ from . import log
 from .log import logger
 
 
-def init_ray(force=False):
-    """Initialize the ray cluster if it wasn't initialized before.
+class HeadNode:
+    """Class used to initialize and stop a ray head node.
 
-    If a ray configuration file is given in the options
-    (must contain IP:port in the first line), then this method attempts joining
-    the cluster. Otherwise, a new (local) cluster is created.
-
-    :param force: if True, ray is initialized even if it was already running
-      (generally problematic, specially if jobs are running)
+    The stop() method must be called after start(),
+    or a ray cluster will remain active.
     """
-    if not ray.is_initialized() or force:
+
+    def __init__(self, ray_port):
+        assert 1 < ray_port < 65535
+        self.ray_port = int(ray_port)
+
+    def start(self):
+        with logger.verbose_context(f"\nStoping any previous instance of ray..."):
+            invocation = "ray stop"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+        with logger.verbose_context(f"Starting ray on port {self.ray_port}"):
+            invocation = f"ray start --head --port {self.ray_port}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+        with logger.verbose_context(f"Initializing ray, conecting to port {self.ray_port}"):
+            ray.init(f"0.0.0.0:{self.ray_port}")
+
+    def stop(self):
+        # This tiny delay allows error messages from child processes to reach the
+        # orchestrating process for logging.
+        # It might need to be tuned for distributed computation across networks.
+        time.sleep(options.preshutdown_wait_seconds)
+
+        with logger.info_context("Shutting down ray cluster"):
+            ray.shutdown()
+
+        with logger.info_context("Stopping head node"):
+            invocation = "ray stop"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+    @property
+    def status_str(self):
+        """Return a string reporting the status of the cluster"""
+        return f"The current enb/ray cluster consists of:\n" \
+               f"\t- {len(ray.nodes())} nodes\n" \
+               f"\t- {int(ray.cluster_resources()['CPU'])} virtual CPU cores.\n" \
+               f"\t- {int(ray.cluster_resources()['GPU']) if 'GPU' in ray.cluster_resources() else 0} GPU devices."
+
+# Single HeadNode instance that controls the ray cluster
+_head_node = None
+
+
+def init_ray():
+    """Initialize the ray cluster if it wasn't initialized before.
+    """
+    global _head_node
+
+    if not ray.is_initialized():
+        if _head_node is not None:
+            _head_node.stop()
+
         # Initialize cluster of workers
         with logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
             if not options.disable_swap:
                 # From https://github.com/ray-project/ray/issues/10895 - allow using swap memory when needed,
                 # avoiding early termination of jobs due to that.
                 os.environ["RAY_DEBUG_DISABLE_MEMORY_MONITOR"] = "1"
-            ray.init(num_cpus=options.ray_cpu_limit, include_dashboard=False,
-                     local_mode=options.ray_cpu_limit == 1)
+
+            _head_node = HeadNode(options.ray_port)
+            _head_node.start()
+            logger.info(_head_node.status_str)
+    else:
+        logger.debug(f"Called init_ray with ray alredy initialized")
 
 
 def stop_ray():
+    global _head_node
+
     if ray.is_initialized:
-        with logger.info_context("Shutting down ray cluster"):
-            # This tiny delay allows error messages from child processes to reach the
-            # orchestrating process for logging.
-            # It might need to be tuned for distributed computation across networks.
-            time.sleep(options.preshutdown_wait_seconds)
-            ray.shutdown()
+        assert _head_node is not None
+        _head_node.stop()
 
 
 def on_remote_process():
