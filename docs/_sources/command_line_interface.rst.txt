@@ -31,11 +31,43 @@ An example output of running `enb -h` (to display usage help) is shown next::
         help         Show this help and exit.
 
 
-Make sure to test::
+Plugin and template installation
+--------------------------------
 
-    enb plugin list
+The |enb| library comes packed with several plugins and templates. To access them, one can use `enb pluginp`.
+In particular, `enb plugin -h` shows all available options:
 
-To see a list of all available plugins and project templates that you can use in your experiments.
+.. code-block:: text
+
+    usage: enb plugin [-h] {install,list} ...
+
+    optional arguments:
+      -h, --help      show this help message and exit
+
+    subcommands:
+      Plugin subcommands
+
+      {install,list}
+        install       Install an available plugin.
+        list          List available plugins.
+
+To install a plugin or template, use the following syntax
+
+.. code-block:: bash
+
+    enb plugin install <plugin-name> <destination-folder>
+
+For example, `enb plugin install zip ./codecs/zip_codecs` should produce something similar to:
+
+
+.. code-block:: text
+
+    ............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
+
+    Installing zip into [...]/codecs/zip_codecs...
+    Building zip into [...]/codecs/zip_codecs...
+    Plugin 'zip' successfully installed into './codecs/zip_codecs'.
+
 
 CLI with scripts using `enb`
 ----------------------------
@@ -44,7 +76,9 @@ CLI with scripts using `enb`
 
 When executing a script that uses `enb`, you can use the CLI to set different configuration options.
 For instance, to show additional information when running your script, you can pass the additional
-parameter flag::
+parameter flag:
+
+.. code-block:: text
 
     --verbose=2
 
@@ -56,7 +90,9 @@ When running a script that import enb.config, "-h" can be passed as argument to 
 a help message with all available options.
 
 
-All these options (whether provided via the CLI or not) can be read and/or changed with code like the following::
+All these options (whether provided via the CLI or not) can be read and/or changed with code like the following:
+
+.. code-block:: python
 
     from enb.config import options
     print(f"Verbose level: {enb.config.verbose}")

@@ -188,7 +188,7 @@ with a single line that is an IP address in plain text. We want to check whether
 certain ports are open in any of these IP addresses.</p>
 <p>Let’s see the steps to create this experiment.
 You can look at the sources in that link, or install a self-contained version into a new <cite>ee</cite> folder with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">port</span><span class="o">-</span><span class="n">experiment</span><span class="o">-</span><span class="n">example</span> <span class="n">ee</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install port-experiment-example ee
 </pre></div>
 </div>
 <div class="section" id="the-two-atable-s-of-an-experiment">
@@ -260,10 +260,10 @@ files used as input determine the rows to be computed.</p>
 <p>For instance, if we have tasks with name properties <cite>CheckPort__port=80</cite> and
 <cite>CheckPort__port=443</cite>, and input files <cite>ip1.txt</cite> and <cite>ip2.txt</cite>,
 then enb will create 4 (2*2) rows, indexed as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s1">&#39;ip1.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=80&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">&#39;ip1.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=443&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">&#39;ip2.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=80&#39;</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">&#39;ip2.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;CheckPort__port=443&#39;</span><span class="p">),</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(&#39;ip1.txt&#39;, &#39;CheckPort__port=80&#39;),
+(&#39;ip1.txt&#39;, &#39;CheckPort__port=443&#39;),
+(&#39;ip2.txt&#39;, &#39;CheckPort__port=80&#39;),
+(&#39;ip2.txt&#39;, &#39;CheckPort__port=443&#39;),
 </pre></div>
 </div>
 </div>
@@ -325,12 +325,12 @@ messages for those ports found to be open:</p>
 </pre></div>
 </div>
 <p>An example output could be as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Found</span> <span class="nb">open</span> <span class="n">ports</span> <span class="ow">in</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span><span class="p">:</span>
- <span class="o">-</span> <span class="mi">443</span>
- <span class="o">-</span> <span class="mi">53</span>
- <span class="o">-</span> <span class="mi">80</span>
-<span class="n">Found</span> <span class="nb">open</span> <span class="n">ports</span> <span class="ow">in</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.2</span><span class="p">:</span>
- <span class="o">-</span> <span class="mi">80</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found open ports in 192.168.1.1:
+ - 443
+ - 53
+ - 80
+Found open ports in 192.168.1.2:
+ - 80
 </pre></div>
 </div>
 </div>

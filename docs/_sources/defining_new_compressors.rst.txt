@@ -119,7 +119,8 @@ To create your plugin and share it with the community,
 
     - Add a __plugin__.py file such as the one in
       `plugin_zip's __plugin__.py <https://github.com/miguelinux314/experiment-notebook/blob/master/enb/plugins/plugin_zip/__plugin__.py>`_,
-      updating all needed fields.
+      updating all needed fields. This contains basic metainformation for |enb| to be able to dynamically
+      find and install your plugin.
 
-    - Send a pull request to the `dev` branch (https://github.com/miguelinux314/experiment-notebook/tree/dev)
+    - Send a pull request to the `dev` `branch <https://github.com/miguelinux314/experiment-notebook/tree/dev>`_
       or get in touch with the maintainers so that it can be reviewed an published.

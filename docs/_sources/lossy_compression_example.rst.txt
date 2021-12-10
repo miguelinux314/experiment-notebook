@@ -13,16 +13,20 @@ Lossy compression template installation
 ------------------------------------------
 
 Example code that serves as template for your lossy compression experiments can be installed
-via the following command line command::
+via the following command line command:
+
+.. code-block:: bash
 
     enb install lossy-compression lc
 
 In addition, we are going to install some lossy codecs from the ones listed
 with `enb plugin list codec`. Namely, JPEG-LS and the Versatile Video Coder (VVC).
 These can be easily installed as enb plugins. Please be patient with the installation,
-which compiles both tools from source::
+which compiles both tools from source:
 
-    enb plugin install jpeg lc/plugins/jpeg
+.. code-block:: bash
+
+    enb plugin install jpeg lc/plugins/jpeg;
     enb plugin install vvc lc/plugins/vvc
 
 Dataset curation
@@ -68,7 +72,9 @@ Lossy experiment execution
 --------------------------
 
 The `lossless_compression_experiment.py` template is now ready to be run. To do so, simply
-invoke it with::
+invoke it with:
+
+.. code-block:: bash
 
     python ./lc/lossy_compression_experiment_example.py
 

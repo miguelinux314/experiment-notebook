@@ -6,11 +6,15 @@ Using existing image compression codecs
 =======================================
 
 The |enb| library offers a set of codecs that can be installed via the `enb plugin install` interface.
-You can list the available codecs by performing a search among all available plugins::
+You can list the available codecs by performing a search among all available plugins:
+
+.. code-block:: bash
 
     enb plugin list codec
 
-And then, for instance to install the `zip` plugin one can simply run::
+And then, for instance to install the `zip` plugin one can simply run:
+
+.. code-block:: bash
 
     enb plugin install zip installation_folder
 
@@ -18,11 +22,15 @@ Codec availabily
 ----------------
 
 Different codecs are available for different data types and bit depths. If you want to test
-all publicly available codecs, you can install the `test-codecs` plugin with::
+all publicly available codecs, you can install the `test-codecs` plugin with:
+
+.. code-block:: bash
 
     enb plugin install test-codecs tc
 
-and then run the `test_all_codecs.py` script, e.g., with::
+and then run the `test_all_codecs.py` script, e.g., with:
+
+.. code-block:: bash
 
     python tc/test_all_codecs.py
 

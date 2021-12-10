@@ -26,14 +26,15 @@ One numeric column
 ------------------
 
 In this scenario, we want to analyze a column of scalar values, typically integers and floats.
-Here we will be using the Iris dataset, which we can load with::
+Here we will be using the Iris dataset, which we can load with:
+
+.. code-block:: python
 
     import pandas as pd
     iris_df = pd.read_csv("./input_csv/iris_dataset.csv")
 
 This particular dataframe has the `sepal_length`, `sepal_width`, `petal_length`, `petal_width` and `class` columns defined.
 We can analyze the general petal and sepal dimensions using the **`get_df`** method of |ScalarNumericAnalyzer|
-
 
 .. code-block:: python
 

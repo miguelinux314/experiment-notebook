@@ -42,7 +42,9 @@ be one sequence, etc.
 
 
 In this basic example, each sample is the text source of a Wikipedia article. We have
-the following files under the `./data/wiki/` folder::
+the following files under the `./data/wiki/` folder:
+
+.. code-block:: text
 
     a_turing.txt
     c_shannon.txt
@@ -108,7 +110,9 @@ For instance, you can access and print the `line_count` column as follows:
 
     print(result_df[["index", "line_count"]])
 
-Which should produce something similar to the following (ignoring the private column `__atable_index`)::
+Which should produce something similar to the following (ignoring the private column `__atable_index`):
+
+.. code-block:: text
 
                        index  line_count
      ./data/wiki/d_knuth.txt         373
