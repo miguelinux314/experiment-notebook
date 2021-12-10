@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.abspath('..'), '..')))
 # -- Project information -----------------------------------------------------
 
 project = 'Experiment Notebook'
-copyright = '2020, Miguel Hernández-Cabronero'
+copyright = '2020-*, Miguel Hernández-Cabronero'
 author = 'Miguel Hernández-Cabronero, et al.'
 
 # The full version, including alpha/beta/rc tags
@@ -40,6 +40,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
+    "sphinxcontrib.programoutput",
 ]
 
 intersphinx_mapping = {
@@ -103,8 +104,7 @@ if not os.path.exists("_static/example_basic_workflow.zip") \
 # Re-generate module autodoc
 cwd = os.getcwd()
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-shutil.rmtree("doc/source/api/")
+shutil.rmtree("doc/source/api/", ignore_errors=True)
 invocation = "sphinx-apidoc -o doc/source/api enb"
 status, output = subprocess.getstatusoutput(invocation)
 if status != 0:

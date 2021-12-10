@@ -3,6 +3,8 @@
 
 .. |enb| replace:: :mod:`enb`
 
+.. |options| replace:: `enb.config.options`
+
 .. |atable| replace:: :class:`enb.atable`
 .. |ATable| replace:: :class:`enb.atable.ATable`
 .. |MetaTable| replace:: :class:`enb.atable.MetaTable`
