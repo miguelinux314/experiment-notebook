@@ -179,22 +179,22 @@
 <h1>Using existing image compression codecs<a class="headerlink" href="#using-existing-image-compression-codecs" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library offers a set of codecs that can be installed via the <cite>enb plugin install</cite> interface.
 You can list the available codecs by performing a search among all available plugins:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="nb">list</span> <span class="n">codec</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin list codec
 </pre></div>
 </div>
 <p>And then, for instance to install the <cite>zip</cite> plugin one can simply run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="nb">zip</span> <span class="n">installation_folder</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install zip installation_folder
 </pre></div>
 </div>
 <div class="section" id="codec-availabily">
 <h2>Codec availabily<a class="headerlink" href="#codec-availabily" title="Permalink to this headline">¶</a></h2>
 <p>Different codecs are available for different data types and bit depths. If you want to test
 all publicly available codecs, you can install the <cite>test-codecs</cite> plugin with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">test</span><span class="o">-</span><span class="n">codecs</span> <span class="n">tc</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install test-codecs tc
 </pre></div>
 </div>
 <p>and then run the <cite>test_all_codecs.py</cite> script, e.g., with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">tc</span><span class="o">/</span><span class="n">test_all_codecs</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tc/test_all_codecs.py
 </pre></div>
 </div>
 <p>It will produce a set of plots describing the codecs

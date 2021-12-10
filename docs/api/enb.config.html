@@ -390,6 +390,13 @@ avoiding out-of-RAM crashes at the cost of potentially slower execution time.</p
 </dd></dl>
 
 <dl class="py method">
+<dt id="enb.config.aoptions.DirOptions.project_root">
+<code class="sig-name descname"><span class="pre">project_root</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.project_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>If set, data paths relative to the invoked script’s paths are stored instead of their
+absolute path counterparts.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="enb.config.aoptions.DirOptions.reconstructed_dir">
 <code class="sig-name descname"><span class="pre">reconstructed_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.reconstructed_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base directory where reconstructed versions are to be stored.</p>
@@ -584,6 +591,12 @@ it afterwards will not change ray cpu limits.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="enb.config.aoptions.RayOptions.ray_port">
+<code class="sig-name descname"><span class="pre">ray_port</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ray port used.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="enb.config.aoptions.RayOptions.worker_script_name">
 <code class="sig-name descname"><span class="pre">worker_script_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.worker_script_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base name of ray’s worker scripts, invoked to run tasks in parallel processes.
@@ -678,7 +691,9 @@ by this amount on each direction.</p>
 <code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">propagates_options</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.propagates_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for local (as opposed to ray.remote) functions so that they
 propagate options properly to child workers.
-The decorated function must accept an “options” argument.</p>
+The decorated function must accept an “options” argument.
+Furthermore, the current working dir is set to the project root so that
+any relative paths stored are correctly handled.</p>
 </dd></dl>
 
 <dl class="py function">

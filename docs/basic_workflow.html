@@ -204,15 +204,15 @@ the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" 
 </div></blockquote>
 <p>In this basic example, each sample is the text source of a Wikipedia article. We have
 the following files under the <cite>./data/wiki/</cite> folder:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_turing</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">c_shannon</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">d_knuth</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">k_popper</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">m_curie</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">n_chomsky</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">r_franklin</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">s_beauvoir</span><span class="o">.</span><span class="n">txt</span>
-<span class="n">scientific_method</span><span class="o">.</span><span class="n">txt</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>a_turing.txt
+c_shannon.txt
+d_knuth.txt
+k_popper.txt
+m_curie.txt
+n_chomsky.txt
+r_franklin.txt
+s_beauvoir.txt
+scientific_method.txt
 </pre></div>
 </div>
 <p>We will want to tell <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> that these are our input
@@ -249,23 +249,23 @@ from <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result_df</span> <span class="o">=</span> <span class="n">WikiTable</span><span class="p">()</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">sample_paths</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here, <cite>result_df</cite> is a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance contains one row per element in <cite>sample_paths</cite>.
+<p>Here, <cite>result_df</cite> is a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance contains one row per element in <cite>sample_paths</cite>.
 The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> provides tools for analyzing and plotting results for columns you define.
-Notwithstanding, you can use <cite>result_df</cite> directly as the full-fledged <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> dataframe it is.
+Notwithstanding, you can use <cite>result_df</cite> directly as the full-fledged <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> dataframe it is.
 For instance, you can access and print the <cite>line_count</cite> column as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">result_df</span><span class="p">[[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;line_count&quot;</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>Which should produce something similar to the following (ignoring the private column <cite>__atable_index</cite>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                     <span class="n">index</span>  <span class="n">line_count</span>
-   <span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">d_knuth</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">373</span>
-<span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">s_beauvoir</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">292</span>
- <span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">c_shannon</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">343</span>
-   <span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">m_curie</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">538</span>
-<span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">r_franklin</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">419</span>
-  <span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">a_turing</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">430</span>
- <span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">n_chomsky</span><span class="o">.</span><span class="n">txt</span>        <span class="mi">1854</span>
-  <span class="o">./</span><span class="n">data</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">k_popper</span><span class="o">.</span><span class="n">txt</span>         <span class="mi">533</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                     index  line_count
+   ./data/wiki/d_knuth.txt         373
+./data/wiki/s_beauvoir.txt         292
+ ./data/wiki/c_shannon.txt         343
+   ./data/wiki/m_curie.txt         538
+./data/wiki/r_franklin.txt         419
+  ./data/wiki/a_turing.txt         430
+ ./data/wiki/n_chomsky.txt        1854
+  ./data/wiki/k_popper.txt         533
 </pre></div>
 </div>
 </div>
@@ -284,7 +284,7 @@ with the default interfaces of these libraries.</p></li>
 <cite>R</cite>/<cite>SPSS</cite>/<cite>Office</cite> to conduct your analysis.</p></li>
 </ol>
 <p>In all cases, the result dataframe may be further manipulated if needed,
-e.g., using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a>’ grouping and selection interface. For instance, rows with certain values in a column
+e.g., using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a>’ grouping and selection interface. For instance, rows with certain values in a column
 may need to be discarded from the analysis.</p>
 <p>Using approach (1) above, i.e., pure <cite>enb</cite>, there are several tools at your avail
 to analyze and report one or more data columns from a dataframe returned by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>’s <cite>get_df</cite> method.</p>
@@ -293,7 +293,7 @@ to analyze and report one or more data columns from a dataframe returned by <a c
 <ul class="simple">
 <li><p>The :doc:` analyzing_data` page provides detailed information on how to analyze and plot
 different types of data with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>, using the <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module.</p></li>
-<li><p>You can use <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> tools also for <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained from <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances
+<li><p>You can use <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> tools also for <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained from <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances
 directly obtained from CSV files (e.g., produced by some other tool).</p></li>
 </ul>
 </div>
@@ -314,7 +314,7 @@ plot related to the <cite>line_count</cite> column defined above.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
 </ul>
 </div>
 <p>Note that several grouping options are available when reporting data.

@@ -20,10 +20,8 @@ The `enb` Python 3 library that can help you:
 
 The latest stable version of `enb` can be installed by running:
 
-    `pip install enb`
+    pip install enb
 
-On Windows, the ray library might need to be installed manually first. See the following link
-for updated information on how to do it: 
-
-    `https://docs.ray.io/en/master/installation.html`
+On Windows, the ray library might need to be installed manually first. See the following page
+for updated information on how to do it: https://docs.ray.io/en/master/installation.html.
 
