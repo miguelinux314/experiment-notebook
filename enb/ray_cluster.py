@@ -38,7 +38,7 @@ class HeadNode:
                     status, invocation, output))
 
         with logger.verbose_context(f"Starting ray on port {self.ray_port}"):
-            invocation = f"ray start --head --port {self.ray_port} " \
+            invocation = f"ray start --head --include-dashboard false --port {self.ray_port} " \
                        + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
