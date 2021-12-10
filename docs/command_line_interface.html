@@ -1,73 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Command-line interface &mdash; Experiment Notebook MIT License documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>enb command-line tools &mdash; Experiment Notebook MIT License documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API" href="api.html" />
     <link rel="prev" title="Defining new codecs" href="defining_new_compressors.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> Experiment Notebook
-          
-
-          
-            
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,28 +37,20 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#the-enb-program">The <cite>enb</cite> program</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#plugin-and-template-installation">Plugin and template installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-enb-program">The <cite>enb</cite> program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#listing-available-plugins-and-templates">Listing available plugins and templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugin-and-template-installation">Plugin and template installation</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#cli-with-scripts-using-enb">CLI with scripts using <cite>enb</cite></a></li>
 </ul>
 </li>
@@ -104,85 +58,51 @@
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Experiment Notebook</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Command-line interface</li>
-    
-    
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/command_line_interface.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="command-line-interface">
-<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="enb-command-line-tools">
+<h1><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> command-line tools<a class="headerlink" href="#enb-command-line-tools" title="Permalink to this headline"></a></h1>
 <p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> is friendly with the command line interface (CLI). Two main ways of using the CLI
 with enb:</p>
-<div class="section" id="the-enb-program">
-<h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Using the <cite>enb</cite> program from the command line</p></li>
+<li><p>Setting the values of <cite>enb.config.options</cite> from the command line when invoking your enb-using scripts.</p></li>
+</ul>
+<p>Each way is explored in the following sections</p>
+<section id="the-enb-program">
+<h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
-An example output of running <cite>enb -h</cite> (to display usage help) is shown next:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>usage: enb [-h] {plugin,help} ...
+An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
+
+usage: enb [-h] {plugin,help} ...
 
 CLI to the electronic notebook (enb) framework
 (see https://github.com/miguelinux314/experiment-notebook).
 
-Several subcommands are available; use `enb &lt;subcommand&gt; -h`
+Several subcommands are available; use `enb &lt;subcommand&gt; -h` 
 to show help about any specific command.
 
 optional arguments:
@@ -196,24 +116,64 @@ subcommands:
     help         Show this help and exit.
 </pre></div>
 </div>
-</div>
-<div class="section" id="plugin-and-template-installation">
-<h2>Plugin and template installation<a class="headerlink" href="#plugin-and-template-installation" title="Permalink to this headline">¶</a></h2>
+<section id="listing-available-plugins-and-templates">
+<h3>Listing available plugins and templates<a class="headerlink" href="#listing-available-plugins-and-templates" title="Permalink to this headline"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library comes packed with several plugins and templates. To access them, one can use <cite>enb pluginp</cite>.
-In particular, <cite>enb plugin -h</cite> shows all available options:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: enb plugin [-h] {install,list} ...
+In particular, <cite>enb plugin -h</cite> shows all available options.</p>
+<p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
+and/or <cite>-v</cite> for extra details.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
 
-optional arguments:
-  -h, --help      show this help message and exit
+Showing 30 plugins. You can add arguments to filter this list, and/or use the --exclude argument.
+Add -v for extra information on the listed plugins.
 
-subcommands:
-  Plugin subcommands
+         analysis-gallery :: Self-contained gallery of data analysis and plotting examples using aanalysis.
+           basic-workflow :: Basic, self-contained example of enb&#39;s workflow.
+               ccsds122x1 :: Wrappers for CCSDS 122.1 (privative).
+               ccsds124x0 :: Wrappers for CCSDS 124.0-B-1 (privative).
+                    fapec :: Wrappers for FAPEC (privative).
+                     flif :: Wrapper for the FLIF compressor.
+                    fpack :: Wrapper for the FPACK compressor.
+                      fpc :: FPC codec wrapers.
+                    fpzip :: Wrappers for FPZIP codecs.
+                      fse :: Wrappers for FSE codecs.
+                     hdf5 :: Codec wrappers for the h5py library.
+                     hevc :: Wrapper for the HEVC / H.265 codec.
+                     jpeg :: Reference JPEG and JPEG-LS implementation.
+                   jpegxl :: Wrapper for a reference JPEG-XL implementation.
+                   kakadu :: Wrappers for Kakadu JPEG 2000 (privative).
+                     lcnl :: Wrappers for LCNL CCSDS 123.0-B-2 (privative).
+     lossless-compression :: Template for lossless compression experiments.
+        lossy-compression :: Template for lossy compression experiments.
+                      lz4 :: Wraper for a LZ4 codec.
+                   marlin :: Marlin-based image compressor.
+                   mcalic :: Wraper for E. Magli et al.&#39;s M-CALIC codec.
+                    ndzip :: Wrapper for ndzip.
+  port-experiment-example :: Self-contained example using the basic usage of enb&#39;s experiment class.
+                     spdp :: Wrapper for the spdp codec.
+              test-codecs :: Install all codec plugins verify their availability.
+                      v2f :: Plugin allowing compression based on Variable-to-Fixed (V2F) codes (forest) (privative).
+                      vvc :: Wrapper for the VVC / H.266 codec.
+                      zfp :: Wrapper for the zfp library.
+                      zip :: Assortment of lz-based and bzip-based codecs.
+                     zstd :: Zstandard library wrapper.
 
-  {install,list}
-    install       Install an available plugin.
-    list          List available plugins.
+The following plugin tags have been defined and can be used for filtering:
+
+  - documentation    (  3 plugins) Documentation examples referenced in the online user manual.
+  - codec            ( 24 plugins) Data compression/decompression class definitions.
+  - data compression ( 29 plugins) Data compression tools.
+  - template         (  6 plugins) Templates formatteable into the installation dir.
+  - project          (  3 plugins) Project templates.
+  - test             (  1  plugin) Plugins for testing purposes.
+  - privative        (  6 plugins) Plugins requiring privative (non-free) software, not distributable with enb.
+
+Run with -v for authorship and additional information, with -h for full help.
 </pre></div>
 </div>
+</section>
+<section id="plugin-and-template-installation">
+<h3>Plugin and template installation<a class="headerlink" href="#plugin-and-template-installation" title="Permalink to this headline"></a></h3>
 <p>To install a plugin or template, use the following syntax</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install &lt;plugin-name&gt; &lt;destination-folder&gt;
 </pre></div>
@@ -226,19 +186,246 @@ Building zip into [...]/codecs/zip_codecs...
 Plugin &#39;zip&#39; successfully installed into &#39;./codecs/zip_codecs&#39;.
 </pre></div>
 </div>
-</div>
-<div class="section" id="cli-with-scripts-using-enb">
-<h2>CLI with scripts using <cite>enb</cite><a class="headerlink" href="#cli-with-scripts-using-enb" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Passing a valid <cite>–option=value</cite> argument to a script using <cite>enb</cite>.</p></li>
-</ul>
-<p>When executing a script that uses <cite>enb</cite>, you can use the CLI to set different configuration options.
-For instance, to show additional information when running your script, you can pass the additional
-parameter flag:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>--verbose=2
+</section>
+</section>
+<section id="cli-with-scripts-using-enb">
+<h2>CLI with scripts using <cite>enb</cite><a class="headerlink" href="#cli-with-scripts-using-enb" title="Permalink to this headline"></a></h2>
+<p>If your script includes <cite>import enb</cite>, then you can pass <cite>–option=value</cite> arguments when invoking
+it to set the values of <cite>enb.config.options</cite>.</p>
+<p>In addition, to get a list of all of all available options, you can run your script with the <cite>-h</cite>
+options. An example option of this is shown next:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]] [-f] [-q]
+                         [--render_only] [--cs CS] [--rep REP] [--fsn]
+                         [-c COLUMNS [COLUMNS ...]] [--prp PRP]
+                         [-d BASE_DATASET_DIR] [--persistence PERSISTENCE]
+                         [--reconstructed RECONSTRUCTED] [--vd VD] [-t TMP]
+                         [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
+                         [--plot_dir PLOT_DIR] [--analysis ANALYSIS]
+                         [--project_root PROJECT_ROOT] [--cpu CPU] [--noswap]
+                         [--wsn WSN] [--pws PWS] [--ray_port RAY_PORT] [--nr]
+                         [--fw FW] [--fh FH]
+                         [--horizontal_margin HORIZONTAL_MARGIN]
+                         [--vertical_margin VERTICAL_MARGIN] [--ylpos YLPOS]
+                         [--legend_count LEGEND_COUNT] [--show_grid]
+                         [--title TITLE] [--grm GRM]
+                         [--selected_log_level {core,error,warning,message,verbose,informative,debug}]
+                         [--default_print_level {core,error,warning,message,verbose,informative,debug}]
+                         [--log_print {True,False}]
+                         [--log_level_prefix {True,False}]
+                         [--show_prefix_level {core,error,warning,message,verbose,informative,debug}]
+
+A number of options can be set via the command line interface, then accessed
+via enb.config.options.property_name. All of them are optional, and may be
+interpreted differently by enb core modules and client code.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+General Options:
+  Group of uncategorized options.
+
+  -v, --verbose         Be verbose? Repeat for more. Change at any time to
+                        increase the logger&#39;s verbosity. (default: 0)
+  --ini [INI [INI ...]], --extra_ini_paths [INI [INI ...]]
+                        Additional .ini files to be used to attain file-based
+                        configurations, in addition to the default ones
+                        (system, user and project). If defined more than once,
+                        the last definition sets the list instead of appending
+                        to a common list of extra ini paths. (default: [])
+
+Execution Options:
+  General execution options.
+
+  -f, --force, --overwrite
+                        Force calculation of pre-existing results, if
+                        available? Note that should an error occur while re-
+                        computing a given index, that index is dropped from
+                        the persistent support. (default: 0)
+  -q, --fast, --quick   Perform a quick test with a subset of the input
+                        samples? If specified q&gt;0 times, a subset of the first
+                        q target indices is employed in most get_df methods
+                        from ATable instances (default: 0)
+  --render_only, --no_new_data, --no_new_results
+                        If True, ATable&#39;s get_df method relies entirely on the
+                        loaded persistence data, no new rows are computed.
+                        This can be useful to speed up the rendering process,
+                        for instance to try different aesthetic plotting
+                        options. (default: False)
+  --cs CS, --chunk_size CS
+                        Chunk size used when running ATable&#39;s get_df(). Each
+                        processed chunk is made persistent before processing
+                        the next one. This parameter can be used to control
+                        the trade-off between error tolerance and overall
+                        speed. (default: None)
+  --rep REP, --rep_count REP, --repetitions REP, --repetition_count REP
+                        Number of repetitions when calculating execution
+                        times. This value allows computation of more reliable
+                        execution times in some experiments, but is normally
+                        most representative in combination with -s to use a
+                        single execution process at a time. (default: 1)
+  --fsn, --force_sanity_checks
+                        If this flag is used, extra sanity checks are
+                        performed by enb during the execution of this script.
+                        The trade-off for rare error condition detection is a
+                        slower execution time. (default: False)
+  -c COLUMNS [COLUMNS ...], --columns COLUMNS [COLUMNS ...], --selected_columns COLUMNS [COLUMNS ...]
+                        List of selected column names for computation. If one
+                        or more column names are provided, all others are
+                        ignored. Multiple columns can be expressed, separated
+                        by spaces. Don&#39;t use this argument unless you know
+                        what you are doing, or expect potential exceptions.
+                        (default: None)
+  --prp PRP, --progress_report_period PRP
+                        Default minimum time in seconds between progress
+                        report updates, when get_df() is invoked and
+                        computation is being processed in parallel. (default:
+                        5)
+
+Dir Options:
+  Options regarding default data directories.
+
+  -d BASE_DATASET_DIR, --base_dataset_dir BASE_DATASET_DIR
+                        Directory to be used as source of input files for
+                        indices in the get_df method of tables and
+                        experiments. It should be an existing, readable
+                        directory. (default:
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/datasets)
+  --persistence PERSISTENCE, --persistence_dir PERSISTENCE
+                        Directory where persistence files are to be stored.
+                        (default: /data/Dropbox/desarrollo/experiment-notebook
+                        .git/enb/plugins/template_basic_workflow_example/persi
+                        stence_basic_workflow.py)
+  --reconstructed RECONSTRUCTED, --reconstructed_dir RECONSTRUCTED
+                        Base directory where reconstructed versions are to be
+                        stored. (default: None)
+  --vd VD, --version_target_dir VD, --base_version_dataset_dir VD
+                        Base dir for versioned folders. (default:
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/datasets)
+  -t TMP, --tmp TMP, --tmp_dir TMP, --base_tmp_dir TMP
+                        Temporary dir used for intermediate data storage. This
+                        can be useful when experiments make heavy use of tmp
+                        and memory is limited, avoiding out-of-RAM crashes at
+                        the cost of potentially slower execution time. The dir
+                        is created when defined if necessary. (default:
+                        /dev/shm)
+  --external_bin_base_dir EXTERNAL_BIN_BASE_DIR
+                        External binary base dir. In case a centralized
+                        repository is defined at the project or system level.
+                        (default: None)
+  --plot_dir PLOT_DIR   Directory to store produced plots. (default:
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/plots)
+  --analysis ANALYSIS, --analysis_dir ANALYSIS
+                        Directory to store analysis results. (default:
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/analysis)
+  --project_root PROJECT_ROOT
+                        If set, data paths relative to the invoked script&#39;s
+                        paths are stored instead of their absolute path
+                        counterparts. (default:
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example)
+
+Ray Options:
+  Options related to the ray library, used for parallel/distributed
+  computing.
+
+  --cpu CPU, --ray_cpu_limit CPU
+                        Maximum number of virtual CPUs to use in the ray
+                        cluster. If set to None or any number n &lt;= 0, then no
+                        limits are set in terms of virtual CPU usage.
+                        IMPORTANT: this value is only considered when
+                        initializing a ray cluster. Therefore, changing it
+                        afterwards will not change ray cpu limits. (default:
+                        None)
+  --noswap, --disable_swap
+                        If this flag is used, then swap memory will not be
+                        allowed by ray. By default, swap memory is enabled.
+                        Note that your system may become unstable if swap
+                        memory is used (specially a big portion thereof).
+                        (default: False)
+  --wsn WSN, --worker_script_name WSN
+                        Base name of ray&#39;s worker scripts, invoked to run
+                        tasks in parallel processes. You don&#39;t need to change
+                        this unless you want to use custom ray workers.
+                        (default: default_worker.py)
+  --pws PWS, --preshutdown_wait_seconds PWS
+                        A wait period can be held before shutting down ray.
+                        This allows displaying messages produced by child
+                        processes (e.g., stack traces) in case of abrupt
+                        termination of enb client code. (default: 0.5)
+  --ray_port RAY_PORT   Ray port used. (default: 6379)
+
+Rendering Options:
+  Options affecting the rendering of figures.
+
+  --nr, --norender, --no_render
+                        If set, some rendering options will be skipped.
+                        (default: False)
+  --fw FW, --width FW, --fig_width FW
+                        Figure width. Larger values may make text look smaller
+                        when the image is scaled to a constant size. (default:
+                        5.0)
+  --fh FH, --height FH, --fig_height FH
+                        Figure height. Larger values may make text look
+                        smaller when the image is scaled to a constant size.
+                        (default: 4.0)
+  --horizontal_margin HORIZONTAL_MARGIN
+                        Horizontal margin, which effectively expands the
+                        (x_min, x_max) limits by this amount on each
+                        direction. (default: 0)
+  --vertical_margin VERTICAL_MARGIN
+                        Vertical margin, which effectively expands the (y_min,
+                        y_max) limits by this amount on each direction.
+                        (default: 0)
+  --ylpos YLPOS, --global_y_label_pos YLPOS
+                        Relative position of the global Y label. Can be
+                        negative or positive. Intended as a quick hack when
+                        left y-axis ticks are longer or shorter than the
+                        default assumptions. (default: -0.01)
+  --legend_count LEGEND_COUNT, --legend_column_count LEGEND_COUNT
+                        Number of columns used in plot legends. (default: 2)
+  --show_grid           Show axis grid lines? (default: False)
+  --title TITLE, --global_title TITLE, --displayed_title TITLE
+                        When this property is not None, displayed plots will
+                        typically include its value as the main title.
+                        (default: None)
+  --grm GRM, --group_row_margin GRM
+
+Logging Options:
+  Options controlling what and how is printed and/or logged to files.
+
+  --selected_log_level {core,error,warning,message,verbose,informative,debug}
+                        Maximum log level / minimum priority required when
+                        printing messages. (default: message)
+  --default_print_level {core,error,warning,message,verbose,informative,debug}
+                        Selects the default log level equivalent to a regular
+                        print-like message. It is most effective when combined
+                        with log_print set to True. (default: message)
+  --log_print {True,False}
+                        If True, the default print command is substituted by
+                        enb&#39;s logging system when enb is imported. (default:
+                        True)
+  --log_level_prefix {True,False}
+                        If True, logged messages include a prefix, e.g., based
+                        on their priority. (default: True)
+  --show_prefix_level {core,error,warning,message,verbose,informative,debug}
 </pre></div>
 </div>
-<p>To make it more verbose (more v’s: more verbosity).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>.ini files in the project root are searched for to look for default values for the
+attributes of <cite>enb.config.options</cite>. You can copy and modify the default enb.ini template to your project
+if you would like to use file-based configuration.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also modify <cite>enb.config.options</cite> in your code as in <cite>enb.config.options.verbose = 5</cite>.
+If you do, this is applied after the CLI parameter recognicion, and therefore overwrites
+any values set via <cite>–option=value</cite>.</p>
+</div>
 <p>A set of predefined parameters are available in <cite>enb.config.options</cite>, the single instance
 of the <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.AllOptions</span></code> class.
 When running a script that import enb.config, “-h” can be passed as argument to show
@@ -248,55 +435,38 @@ a help message with all available options.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verbose level: </span><span class="si">{</span><span class="n">enb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="defining_new_compressors.html" class="btn btn-neutral float-left" title="Defining new codecs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Miguel Hernández-Cabronero.
-
-    </p>
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

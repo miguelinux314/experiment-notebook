@@ -187,8 +187,7 @@ This would automatically produce an image like the following:
     :width: 100%
 
 Grouping is not restricted to |ScalarNumericAnalyzer|. It can be used with other |Analyzer| classes such as
-|TwoNumericAnalyzer|, as in the following code
-
+|TwoNumericAnalyzer|, as in the following code:
 
 .. code-block:: python
 
