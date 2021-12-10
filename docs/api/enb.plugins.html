@@ -1,73 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>enb.plugins package &mdash; Experiment Notebook MIT License documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Thanks" href="../thanks.html" />
     <link rel="prev" title="enb.config package" href="enb.config.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> Experiment Notebook
-          
-
-          
-            
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,26 +37,15 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="enb.html">enb package</a><ul class="current">
@@ -108,7 +59,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ray_cluster">enb.ray_cluster module</a></li>
@@ -125,133 +76,89 @@
 <li class="toctree-l1"><a class="reference internal" href="../thanks.html">Thanks</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Experiment Notebook</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../api.html">API</a> &raquo;</li>
-        
           <li><a href="modules.html">enb</a> &raquo;</li>
-        
           <li><a href="enb.html">enb package</a> &raquo;</li>
-        
       <li>enb.plugins package</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/api/enb.plugins.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="enb-plugins-package">
-<h1>enb.plugins package<a class="headerlink" href="#enb-plugins-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-enb.plugins.installable">
-<span id="enb-plugins-installable-module"></span><h2>enb.plugins.installable module<a class="headerlink" href="#module-enb.plugins.installable" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="enb-plugins-package">
+<h1>enb.plugins package<a class="headerlink" href="#enb-plugins-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-enb.plugins.installable">
+<span id="enb-plugins-installable-module"></span><h2>enb.plugins.installable module<a class="headerlink" href="#module-enb.plugins.installable" title="Permalink to this headline"></a></h2>
 <p>Installable interface used for plugins and templates.</p>
 <dl class="py class">
-<dt id="enb.plugins.installable.Installable">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></code><code class="sig-name descname"><span class="pre">Installable</span></code><a class="headerlink" href="#enb.plugins.installable.Installable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">Installable</span></span><a class="headerlink" href="#enb.plugins.installable.Installable" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Common interface to all Installable types, e.g., Plugins and Templates.</p>
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.authors">
-<code class="sig-name descname"><span class="pre">authors</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.authors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.authors">
+<span class="sig-name descname"><span class="pre">authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.authors" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.installable.Installable.build">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">build</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.build" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.build">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.build" title="Permalink to this definition"></a></dt>
 <dd><p>Method called after the main installation body, that allows further building customization
 by Installable subclasses. By default, nothing is done.</p>
 <p>Note that the installation dir is created before calling build.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.contrib_authors">
-<code class="sig-name descname"><span class="pre">contrib_authors</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.contrib_authors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.contrib_authors">
+<span class="sig-name descname"><span class="pre">contrib_authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.contrib_authors" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.contrib_download_url_name">
-<code class="sig-name descname"><span class="pre">contrib_download_url_name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.contrib_download_url_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.contrib_download_url_name">
+<span class="sig-name descname"><span class="pre">contrib_download_url_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.contrib_download_url_name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.contrib_reference_urls">
-<code class="sig-name descname"><span class="pre">contrib_reference_urls</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.contrib_reference_urls" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.contrib_reference_urls">
+<span class="sig-name descname"><span class="pre">contrib_reference_urls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.contrib_reference_urls" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.extra_requirements_message">
-<code class="sig-name descname"><span class="pre">extra_requirements_message</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.extra_requirements_message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.extra_requirements_message">
+<span class="sig-name descname"><span class="pre">extra_requirements_message</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.extra_requirements_message" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.installable.Installable.get_help">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_help</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.get_help" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.get_help">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.get_help" title="Permalink to this definition"></a></dt>
 <dd><p>Return help about this Installable.
 By default, the docstring of the selected class is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.installable.Installable.install">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">install</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.install" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.install">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.install" title="Permalink to this definition"></a></dt>
 <dd><p>Install this Installable into installation_dir. By default, copy all contents
 of the Installable’s source dir and install the declared pip requirements.</p>
 <dl class="field-list simple">
@@ -263,78 +170,78 @@ it is removed before installation</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.label">
-<code class="sig-name descname"><span class="pre">label</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.label" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.label" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.name">
-<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.installable.Installable.repr">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">repr</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.repr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.repr">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">repr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.repr" title="Permalink to this definition"></a></dt>
 <dd><p>Get a terse representation of this Installable.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.required_pip_modules">
-<code class="sig-name descname"><span class="pre">required_pip_modules</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.required_pip_modules" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.required_pip_modules">
+<span class="sig-name descname"><span class="pre">required_pip_modules</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.required_pip_modules" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.tags">
-<code class="sig-name descname"><span class="pre">tags</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.tags" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.tags" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.Installable.tested_on">
-<code class="sig-name descname"><span class="pre">tested_on</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.tested_on" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.tested_on">
+<span class="sig-name descname"><span class="pre">tested_on</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.tested_on" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.plugins.installable.InstallableMeta">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></code><code class="sig-name descname"><span class="pre">InstallableMeta</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.InstallableMeta" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.InstallableMeta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">InstallableMeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.InstallableMeta" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
 <p>Installable classes are not meant to be instantiated, just to be defined to declare
 the presence of Installables. This metaclass is used to perform basic checks on the
 declared Installable subclasses.</p>
 <dl class="py attribute">
-<dt id="enb.plugins.installable.InstallableMeta.installable_file_name">
-<code class="sig-name descname"><span class="pre">installable_file_name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__plugin__.py'</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.installable_file_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.InstallableMeta.installable_file_name">
+<span class="sig-name descname"><span class="pre">installable_file_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'__plugin__.py'</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.installable_file_name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.InstallableMeta.name_to_installable">
-<code class="sig-name descname"><span class="pre">name_to_installable</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.name_to_installable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.InstallableMeta.name_to_installable">
+<span class="sig-name descname"><span class="pre">name_to_installable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.name_to_installable" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.InstallableMeta.tag_to_installable">
-<code class="sig-name descname"><span class="pre">tag_to_installable</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.tag_to_installable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.InstallableMeta.tag_to_installable">
+<span class="sig-name descname"><span class="pre">tag_to_installable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.tag_to_installable" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.installable.InstallableMeta.valid_tested_on_strings">
-<code class="sig-name descname"><span class="pre">valid_tested_on_strings</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'linux',</span> <span class="pre">'macos',</span> <span class="pre">'windows'}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.valid_tested_on_strings" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.InstallableMeta.valid_tested_on_strings">
+<span class="sig-name descname"><span class="pre">valid_tested_on_strings</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'linux',</span> <span class="pre">'macos',</span> <span class="pre">'windows'}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.valid_tested_on_strings" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.plugins.installable.import_all_installables">
-<code class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></code><code class="sig-name descname"><span class="pre">import_all_installables</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.import_all_installables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.import_all_installables">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">import_all_installables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.import_all_installables" title="Permalink to this definition"></a></dt>
 <dd><p>Import all public enb Installables.</p>
 <p>These are recognized by containing a __plugin__.py file in
 them and a installable definition.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.plugins.installable.list_all_installables">
-<code class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></code><code class="sig-name descname"><span class="pre">list_all_installables</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">base_class=&lt;class</span> <span class="pre">'enb.plugins.installable.Installable'&gt;</span></em>, <em class="sig-param"><span class="pre">ignored_classes=[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.list_all_installables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.installable.list_all_installables">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">list_all_installables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_class=&lt;class</span> <span class="pre">'enb.plugins.installable.Installable'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_classes=[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.list_all_installables" title="Permalink to this definition"></a></dt>
 <dd><p>Get a list of all known enb installables, sorted by name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -347,13 +254,13 @@ installable with name set to None is also excluded</p></li>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-enb.plugins.plugin">
-<span id="enb-plugins-plugin-module"></span><h2>enb.plugins.plugin module<a class="headerlink" href="#module-enb.plugins.plugin" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-enb.plugins.plugin">
+<span id="enb-plugins-plugin-module"></span><h2>enb.plugins.plugin module<a class="headerlink" href="#module-enb.plugins.plugin" title="Permalink to this headline"></a></h2>
 <p>Tools define plugin installables.</p>
 <dl class="py class">
-<dt id="enb.plugins.plugin.Plugin">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></code><code class="sig-name descname"><span class="pre">Plugin</span></code><a class="headerlink" href="#enb.plugins.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><a class="headerlink" href="#enb.plugins.plugin.Plugin" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.installable.Installable</span></code></a></p>
 <p>Plugins are self-contained, python modules that may assume enb is installed.</p>
 <ul class="simple">
@@ -369,13 +276,13 @@ not-None <cite>extra_requirements_message</cite>.</p></li>
 which imports all symbols from all .py modules in the plugin.</p></li>
 </ul>
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.Plugin.authors">
-<code class="sig-name descname"><span class="pre">authors</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.authors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.authors">
+<span class="sig-name descname"><span class="pre">authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.authors" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.plugin.Plugin.build">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">build</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.build" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.build">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.build" title="Permalink to this definition"></a></dt>
 <dd><p>Perform any additional retrieval, compilation and setup necessary for this plugin
 to be importable and usable. By default:</p>
 <ul class="simple">
@@ -388,8 +295,8 @@ to be importable and usable. By default:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.plugin.Plugin.install">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">install</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.install" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.install">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.install" title="Permalink to this definition"></a></dt>
 <dd><p>Make a copy of this plugin into installation_dir, ready to be imported.
 By default, a verbatim copy of the source plugin’s dir is made.
 Any previous contents in installation_dir are overwritten.
@@ -405,36 +312,36 @@ is raised (plugins are intended to be self-contained, isolated python modules).<
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.Plugin.label">
-<code class="sig-name descname"><span class="pre">label</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.label" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.label" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.Plugin.name">
-<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.Plugin.tags">
-<code class="sig-name descname"><span class="pre">tags</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.tags" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.tags" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.plugins.plugin.PluginMake">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></code><code class="sig-name descname"><span class="pre">PluginMake</span></code><a class="headerlink" href="#enb.plugins.plugin.PluginMake" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginMake</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginMake" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin.Plugin</span></code></a></p>
 <p>Plugin that assumes the existence of a valid Makefile in the installation folder,
 and uses it for building the plugin.</p>
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.PluginMake.authors">
-<code class="sig-name descname"><span class="pre">authors</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.authors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake.authors">
+<span class="sig-name descname"><span class="pre">authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.authors" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.plugin.PluginMake.build">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">build</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginMake.build" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake.build">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginMake.build" title="Permalink to this definition"></a></dt>
 <dd><p>Perform any additional retrieval, compilation and setup necessary for this plugin
 to be importable and usable. By default:</p>
 <ul class="simple">
@@ -447,36 +354,36 @@ to be importable and usable. By default:</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.PluginMake.label">
-<code class="sig-name descname"><span class="pre">label</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.label" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.label" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.PluginMake.name">
-<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.plugin.PluginMake.tags">
-<code class="sig-name descname"><span class="pre">tags</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.tags" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginMake.tags" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-enb.plugins.template">
-<span id="enb-plugins-template-module"></span><h2>enb.plugins.template module<a class="headerlink" href="#module-enb.plugins.template" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-enb.plugins.template">
+<span id="enb-plugins-template-module"></span><h2>enb.plugins.template module<a class="headerlink" href="#module-enb.plugins.template" title="Permalink to this headline"></a></h2>
 <p>Tools to define Templates.</p>
 <p>Templates are very similar to plugins, but use jinja to transform <cite>.enbt</cite> template files upon installation.</p>
 <dl class="py class">
-<dt id="enb.plugins.template.MetaTemplate">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></code><code class="sig-name descname"><span class="pre">MetaTemplate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.MetaTemplate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.MetaTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">MetaTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.MetaTemplate" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.InstallableMeta" title="enb.plugins.installable.InstallableMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.installable.InstallableMeta</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.plugins.template.Template">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></code><code class="sig-name descname"><span class="pre">Template</span></code><a class="headerlink" href="#enb.plugins.template.Template" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">Template</span></span><a class="headerlink" href="#enb.plugins.template.Template" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.installable.Installable</span></code></a></p>
 <p>Base class to define templates. Subclasses must be defined in the __plugin__.py file of the template’s
 source dir.</p>
@@ -490,18 +397,18 @@ passed as arguments to the template installation CLI, and programmatically.</p><
 by default to the installation dir.</p></li>
 </ul>
 <dl class="py attribute">
-<dt id="enb.plugins.template.Template.authors">
-<code class="sig-name descname"><span class="pre">authors</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.template.Template.authors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.authors">
+<span class="sig-name descname"><span class="pre">authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.template.Template.authors" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.template.Template.get_field_parser">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_field_parser</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_field_parser" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.get_field_parser">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_field_parser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_field_parser" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.plugins.template.Template.install">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">install</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.install" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.install">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.install" title="Permalink to this definition"></a></dt>
 <dd><p>Install a template into the given dir. See super().install for more information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -524,35 +431,35 @@ a SyntaxError is raised.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.template.Template.label">
-<code class="sig-name descname"><span class="pre">label</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.template.Template.label" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.template.Template.label" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.template.Template.name">
-<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.template.Template.name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.template.Template.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.template.Template.required_fields_to_help">
-<code class="sig-name descname"><span class="pre">required_fields_to_help</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.template.Template.required_fields_to_help" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.required_fields_to_help">
+<span class="sig-name descname"><span class="pre">required_fields_to_help</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.template.Template.required_fields_to_help" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.template.Template.tags">
-<code class="sig-name descname"><span class="pre">tags</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.template.Template.tags" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.template.Template.tags" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.plugins.template.Template.templatable_extension">
-<code class="sig-name descname"><span class="pre">templatable_extension</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'.enbt'</span></em><a class="headerlink" href="#enb.plugins.template.Template.templatable_extension" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.plugins.template.Template.templatable_extension">
+<span class="sig-name descname"><span class="pre">templatable_extension</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.enbt'</span></em><a class="headerlink" href="#enb.plugins.template.Template.templatable_extension" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-enb.plugins">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-enb.plugins">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins" title="Permalink to this headline"></a></h2>
 <p>The core functionality of enb is extended by means of plugins and templates. These derive from Installable,
 a class that by default copies the Installable’s source contents and runs the subclass’ build() method.
 Python libraries available via pip can be defined for Installables, which are attempted to be satisfied before invoking
@@ -560,55 +467,38 @@ the build method.</p>
 <p>Plugins are conceived self-contained, python modules that can assume the enb library is installed.</p>
 <p>Templates are very similar to plugins, but use jinja to transform <cite>.enbt</cite> template files upon installation.</p>
 <p>Please refer to each submodule for further information.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../thanks.html" class="btn btn-neutral float-right" title="Thanks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="enb.config.html" class="btn btn-neutral float-left" title="enb.config package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../thanks.html" class="btn btn-neutral float-right" title="Thanks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Miguel Hernández-Cabronero.
-
-    </p>
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

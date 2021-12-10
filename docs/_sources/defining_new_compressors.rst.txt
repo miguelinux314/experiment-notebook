@@ -1,5 +1,7 @@
 .. Defining new codecs (using icompression.py)
 
+.. include:: ./tag_definition.rst
+
 Defining new codecs
 ===================
 
