@@ -80,7 +80,6 @@ setup(
     install_requires=[
         "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
         "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers",
-
         "astropy",
     ],
 
