@@ -1474,7 +1474,9 @@ class PDFToPNG(enb.sets.FileVersionTable):
     def version(self, input_path, output_path, row):
         with enb.logger.info_context(f"{self.__class__.__name__}: {input_path} -> {output_path}...\n"):
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
-            pdf2image.convert_from_path(pdf_path=input_path).save(output_path)
+            imgs = pdf2image.convert_from_path(pdf_path=input_path)
+            assert len(imgs) == 1
+            imgs[0].save(output_path)
 
 def pdf_to_png(input_dir, output_dir, **kwargs):
     """Take all .pdf files in input dir and save them as .png files into output_dir,
