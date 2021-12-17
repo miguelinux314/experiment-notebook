@@ -1462,6 +1462,8 @@ class PDFToPNG(enb.sets.FileVersionTable):
     """Take all .pdf files in input dir and save them as .png files into output_dir,
     maintining the relative folder structure.
     """
+    dataset_files_extension = "pdf"
+
     def __init__(self, input_pdf_dir, output_png_dir, csv_support_path=None):
         super().__init__(version_name="pdf_to_png",
                          original_base_dir=input_pdf_dir,
