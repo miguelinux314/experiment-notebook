@@ -13,6 +13,7 @@ import itertools
 import math
 import collections
 import collections.abc
+import tempfile
 
 import deprecation
 import sortedcontainers
@@ -1457,6 +1458,21 @@ def columnname_to_labels(column_name):
         x_label, y_label = clean_column_name(column_name), None
     return x_label, y_label
 
+class PDFToPNG(enb.sets.FileVersionTable):
+    """Take all .pdf files in input dir and save them as .png files into output_dir,
+    maintining the relative folder structure.
+    """
+    def __init__(self, input_pdf_dir, output_png_dir, csv_support_path=None):
+        super().__init__(version_name="pdf_to_png",
+                         original_base_dir=input_pdf_dir,
+                         version_base_dir=output_png_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=True)
+
+    def version(self, input_path, output_path, row):
+        with enb.logger.info_context(f"{self.__class__.__name__}: {input_path} -> {output_path}...\n"):
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            pdf2image.convert_from_path(pdf_path=input_path).save(output_path)
 
 def pdf_to_png(input_dir, output_dir, **kwargs):
     """Take all .pdf files in input dir and save them as .png files into output_dir,
@@ -1469,11 +1485,13 @@ def pdf_to_png(input_dir, output_dir, **kwargs):
       documentation for more information: https://github.com/Belval/pdf2image,
       https://pdf2image.readthedocs.io/en/latest/reference.html#functions
     """
-    input_dir = os.path.abspath(input_dir)
-    output_dir = os.path.abspath(output_dir)
-    assert os.path.isdir(input_dir)
-    for input_path in glob.glob(os.path.join(input_dir, "**", "*.pdf"), recursive=True):
-        output_path = f"{input_path.replace(input_dir, output_dir)[:-4]}.png"
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        kwargs["fmt"] = "png"
-        _ = [img.save(output_path) for img in pdf2image.convert_from_path(pdf_path=input_path, **kwargs)]
+    with tempfile.NamedTemporaryFile() as tmp_file:
+        PDFToPNG(input_pdf_dir=input_dir, output_png_dir=output_dir, csv_support_path=tmp_file.name).get_df()
+    # input_dir = os.path.abspath(input_dir)
+    # output_dir = os.path.abspath(output_dir)
+    # assert os.path.isdir(input_dir)
+    # for input_path in glob.glob(os.path.join(input_dir, "**", "*.pdf"), recursive=True):
+    #     output_path = f"{input_path.replace(input_dir, output_dir)[:-4]}.png"
+    #     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    #     kwargs["fmt"] = "png"
+    #     _ = [img.save(output_path) for img in pdf2image.convert_from_path(pdf_path=input_path, **kwargs)]
