@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 
 import enb.plugins
@@ -11,6 +12,10 @@ class TestAllCodecsPlugin(enb.plugins.Template):
     contrib_reference_urls = ["https://github.com/miguelinux314/experiment-notebook"]
     tags = {"data compression", "test"}
     tested_on = {"linux"}
+    required_fields_to_help = {"include_privative_codecs": "It indicates whether privative codecs "
+                                                           "(those for which codec binaries and sources are not available) "
+                                                           "are included in the test.\n"
+                                                           "Must be 'True' or 'False'. "}
 
     @classmethod
     def build(cls, installation_dir):
@@ -24,10 +29,15 @@ class TestAllCodecsPlugin(enb.plugins.Template):
         print(f"Installing {len(codec_plugins)} codecs...")
         plugin_dir = os.path.join(installation_dir, "plugins")
         os.makedirs(plugin_dir)
+
         for plugin in codec_plugins:
-            if "privative" in plugin.tags:
+            assert cls.get_fields()["include_privative_codecs"] == "True" or cls.get_fields()[
+                "include_privative_codecs"] == "False", \
+                f"Invalid choice for 'include_privative_codecs': {cls.get_fields()['include_privative_codecs']}"
+            if "privative" in plugin.tags and cls.get_fields()["include_privative_codecs"] == "False":
                 print(f"\t... skipping privative {plugin.name}")
                 continue
+            print("\n" + "-"*shutil.get_terminal_size().columns + "\n")
             print(f"\t... installing {plugin.name}...")
             plugin.install(os.path.join(plugin_dir, plugin.name))
         print("All codecs installed.")
