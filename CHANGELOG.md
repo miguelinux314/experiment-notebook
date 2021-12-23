@@ -1,4 +1,27 @@
-# Under development v0.3.3
+# CHANGELOG
+
+The following updates have been highlighted for each release.
+Note that `enb` employs a `MAYOR`.`MINOR`.`REVISION` format. 
+Given a code initially developed for one `enb` version and then executed in another (newer) version:
+
+- If `MAYOR` and `MINOR` are identical, backwards compatibility is provided.
+  Some deprecation warnings might appear, which typically require small changes in your scripts.
+
+- If `MAYOR` is identical by `MINOR` differs, minor code changes might be required if
+  any deprecated parts are still used. Otherwise, deprecation warnings are turned into full errors.
+
+- If `MAYOR` is larger, specific code changes might be needed for your code.
+  So far, a single `MAYOR` version (0) is used. The next mayor version (1) is 
+  expected to be backwards compatible with the latest release of the 0 mayor branch.
+
+# Next release (under development)
+
+## v0.3.3
+
+**Important**: Removed all deprecated methods scheduled for removal for v0.3.0 (Aug 31).
+  This breaks compatibility with the v0.2.* versions, although most encountered
+  issues can be easily overcome by using the new enb.aanalyis.Analyzer subclasses
+  and their `get_def()` method instead of the old `analyze_df()`.
 
 * New features
     
@@ -10,12 +33,13 @@
 
 * General improvements
 
-  - Improved documentation and plugins about lossless and lossy compression templates
-  - Added a lossy compression template
-  - Complete review of the documentation with the new classes
-  - Removed all deprecated methods before v0.3.0.
+  - Improved documentation and plugins about lossless and lossy compression templates.
+  - Added a lossy compression template.
+  - Complete review of the documentation with the new classes.
 
-# 2021/11/29 v0.3.2
+# Stable version
+
+## 2021/11/29 v0.3.2
 
 * New features
 
@@ -33,7 +57,9 @@
   - Updated the ScalarNumericAnalyzer so that it can display averages (with or without std error bars) without
     displaying any histogram.
 
-# 2021/09/10 v0.3.1
+# Version history
+
+## 2021/09/10 v0.3.1
 
 * New features
   - Added a lossless compression experiment template.
@@ -46,7 +72,7 @@
   - Fixed potential method resolution order inconsistencies between class methods and column setters; now
     the intuitive behavior is better enforced.
 
-# 2021/08/31 v0.3.0
+## 2021/08/31 v0.3.0
 
 Version 0.3.0 is packed with new features and general performance improvements. At the same time, significant backwards
 compatibility is preserved with the 0.2 version family:
@@ -75,7 +101,7 @@ Improvements and other changes
 - Added several new image compression codec plugins with floating point support, based on the `h5py` library.
 - The sequential option is removed, in favor of setting the maximum number of cpus to 1.
 
-# 2021/07/14 v0.2.8
+## 2021/07/14 v0.2.8
 
 * New functions:
 
@@ -118,7 +144,7 @@ Improvements and other changes
           and `options.property = x` are supported as before
           (except for any additional value checks that may now be performed).
 
-# 2021/06/30 v0.2.7
+## 2021/06/30 v0.2.7
 
 * New functions:
 
@@ -158,7 +184,7 @@ Improvements and other changes
 
     - Fixed FITS codec endianness
 
-# 2021/05/13 v0.2.6
+## 2021/05/13 v0.2.6
 
 * New functions:
 
@@ -181,7 +207,7 @@ Improvements and other changes
 
 * Docs are now displayed on the public site automatically point to the dev banch
 
-# 2021/04/27 v0.2.5
+## 2021/04/27 v0.2.5
 
 - Improved enb compatibility with Windows and MacOS
 
@@ -196,7 +222,7 @@ Improvements and other changes
 - Added support for floating-point images (numpy f16, f32, f64)
 - Added support for FITs images
 
-# 2021/03/05 v0.2.4
+## 2021/03/05 v0.2.4
 
 - Added new codec plugins:
     * Kakadu
