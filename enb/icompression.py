@@ -847,6 +847,12 @@ class CompressionExperiment(experiment.Experiment):
             del self.codec_results
             self.codec_results = None
 
+            try:
+                del self.codec_results
+            except AttributeError:
+                pass
+
+
         return processed_row
 
     @atable.column_function("compressed_size_bytes", label="Compressed data size (Bytes)", plot_min=0)
