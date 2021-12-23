@@ -181,14 +181,13 @@ if __name__ == '__main__':
         csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary.csv"),
         full_df=full_availability_df).get_df()
     analyzer = enb.aanalysis.DictNumericAnalyzer()
-    
+
     all_keys = sorted(list(summary_df.iloc[0]["type_to_availability"].keys()))
     key_to_x = {k: i for i, k in enumerate(all_keys)}
     for i in range(4, len(all_keys), 4):
         for k in all_keys[i:]:
             key_to_x[k] += 0.4
-    
-    
+
     analyzer.get_df(
         full_df=summary_df,
         target_columns=["type_to_availability"],
@@ -209,60 +208,6 @@ if __name__ == '__main__':
         show_count=False,
         global_y_label="Availability"
     )
-
-    # # A little pre-plotting embellishment
-    # def save_availability_plot(summary_df, output_plot_path):
-    #     """Allows plotting of different subsets of the full df.
-    #     """
-    #
-    #     def type_to_key(a):
-    #         """Used to consistently sort typenames, e.g., u8be < s16le"""
-    #         type_list = ["u", "s", "f"]
-    #         type_code = type_list.index(a.strip()[0])
-    #         bps_code = int(re.search(r'(\d+)', a).group(1))
-    #         band_count = int(re.search('(\d+) band', a).group(1))
-    #         return f"{type_code:05d}_{bps_code:05d}_{0 if 'be' in a else 1}_{band_count:2d}_{a}"
-    #
-    #     # Define the x tick positions
-    #     all_keys = set()
-    #     for d in summary_df["type_to_availability"]:
-    #         all_keys.update(d.keys())
-    #     all_keys = sorted(all_keys, key=type_to_key)
-    #     key_to_x = {k: i for i, k in enumerate(all_keys)}
-    #     offset = 0
-    #     last_key = all_keys[0]
-    #     for k in all_keys:
-    #         if k.strip()[:3] != last_key.strip()[:3]:
-    #             offset += 1.2
-    #         elif ("be" in last_key and "le" in k) or ("le" in last_key and "be" in k):
-    #             offset += 0.3
-    #         last_key = k
-    #         key_to_x[k] += offset
-    #
-    #     enb.aanalysis.DictNumericAnalyzer().get_df(
-    #         full_df=summary_df,
-    #         target_columns=["type_to_availability"],
-    #         column_to_properties=CodecSummaryTable.column_to_properties,
-    #         group_by="group_label",
-    #         y_tick_list=CodecSummaryTable.availability_modes,
-    #         y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
-    #                            CodecSummaryTable.availability_modes],
-    #         fig_height=0.7 * len(codec_classes),
-    #         fig_width=4 + len(key_to_x) * 0.1,
-    #         show_global=False)
-
-    # # Generate the plots for different subsets of the full results table
-    # log_event("Experiment successfully run. Plotting availability analysis...")
-    # integer_df = full_availability_df[full_availability_df["float"] == False]
-    # signed_df = integer_df[integer_df["signed"] == True]
-    # unsigned_df = integer_df[integer_df["signed"] == False]
-    # float_df = full_availability_df[full_availability_df["float"] == True]
-    # options.no_new_results = False
-    #
-    # summary_df = CodecSummaryTable(
-    #     csv_support_path=os.path.join(options.persistence_dir, f"persistence_summary.csv"),
-    #     full_df=full_availability_df).get_df()
-    # save_availability_plot(summary_df, os.path.join(options.plot_dir, f"codec_availability.pdf"))
 
     log_event(f"Saving PNG versions of the PDF files...")
     enb.aanalysis.pdf_to_png(input_dir=options.plot_dir, output_dir=options.plot_dir)
