@@ -50,6 +50,37 @@ class Template(Installable, metaclass=MetaTemplate):
     templatable_extension = ".enbt"
 
     @classmethod
+    def get_fields(cls, original_fields=None):
+        try:
+            return cls._fields
+        except AttributeError:
+            # If there are required fields, satisfy them or fail
+            fields = dict(original_fields) if original_fields is not None else dict()
+            if cls.required_fields_to_help:
+                ini_cli_fields, unused_options = cls.get_field_parser().parse_known_args()
+                # Syntax is "plugin install <template> <installation>, so
+                # four non-parsed options are expected
+                assert len(unused_options) >= 4, (sys.argv, ini_cli_fields, unused_options)
+                unused_options = unused_options[4:]
+                for field_name in cls.required_fields_to_help:
+                    if field_name not in fields:
+                        try:
+                            fields[field_name] = getattr(ini_cli_fields, field_name)
+                            assert fields[field_name] is not None
+                        except (KeyError, AssertionError) as ex:
+                            raise SyntaxError(
+                                f"Missing field {repr(field_name)}. Help for {field_name}:\n"
+                                f"{cls.required_fields_to_help[field_name]}\n\n"
+                                f"Invoke again with --{field_name}=\"your value\" or with -h for additional help.\n") from ex
+                if unused_options:
+                    print(f"Warning: unused option{'s' if len(unused_options) > 1 else ''}. \n  - ", end="")
+                    print('\n  - '.join(repr(o) for o in unused_options))
+                    print(f"NOTE: You can use '' or \"\" to define fields with spaces in them.")
+                    print()
+            cls._fields = fields
+            return fields
+
+    @classmethod
     def install(cls, installation_dir, overwrite_destination=False, fields=None):
         """Install a template into the given dir. See super().install for more information.
 
@@ -67,28 +98,7 @@ class Template(Installable, metaclass=MetaTemplate):
           a SyntaxError is raised.
         """
         # If there are required fields, satisfy them or fail
-        fields = dict(fields) if fields is not None else dict()
-        if cls.required_fields_to_help:
-            ini_cli_fields, unused_options = cls.get_field_parser().parse_known_args()
-            # Syntax is "plugin install <template> <installation>, so
-            # four non-parsed options are expected
-            assert len(unused_options) >= 4, (sys.argv, ini_cli_fields, unused_options)
-            unused_options = unused_options[4:]
-
-            for field_name in cls.required_fields_to_help:
-                if field_name not in fields:
-                    try:
-                        fields[field_name] = getattr(ini_cli_fields, field_name)
-                        assert fields[field_name] is not None
-                    except (KeyError, AssertionError) as ex:
-                        raise SyntaxError(
-                            f"Missing field {repr(field_name)}.\n\n"
-                            f"Invoke again with --{field_name}=\"your value\" or with -h for additional help.\n") from ex
-            if unused_options:
-                print(f"Warning: unused option{'s' if len(unused_options) > 1 else ''}. \n  - ", end="")
-                print('\n  - '.join(repr(o) for o in unused_options))
-                print(f"NOTE: You can use '' or \"\" to define fields with spaces in them.")
-                print()
+        fields = cls.get_fields(original_fields=fields)
 
         template_src_dir = os.path.dirname(os.path.abspath(inspect.getfile(cls)))
         for input_path in glob.glob(os.path.join(template_src_dir, "**", "*"), recursive=True):
