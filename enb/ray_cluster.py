@@ -4,13 +4,16 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
 
+import string
 import time
 import sys
 import os
 import datetime
-import ray
 import builtins
 import subprocess
+import random
+
+import ray
 
 from . import config
 from .config import options
@@ -26,7 +29,7 @@ class HeadNode:
     """
 
     def __init__(self, ray_port):
-        assert 1 < ray_port < 65535
+        assert 1025 <= ray_port <= 65535
         self.ray_port = int(ray_port)
 
     def start(self):
@@ -36,17 +39,21 @@ class HeadNode:
             if status != 0:
                 raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
                     status, invocation, output))
+        options._session_password = ''.join(random.choices(string.ascii_letters, k=64))
 
         with logger.verbose_context(f"Starting ray on port {self.ray_port}"):
-            invocation = f"ray start --head --include-dashboard false --port {self.ray_port} " \
-                       + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
+            invocation = f"ray start --head " \
+                         f"--include-dashboard false " \
+                         f"--port {self.ray_port} " \
+                         f"--redis-password='{options._session_password}' " \
+                         + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
                     status, invocation, output))
 
         with logger.verbose_context(f"Initializing ray, conecting to port {self.ray_port}"):
-            ray.init(f"0.0.0.0:{self.ray_port}")
+            ray.init(f"0.0.0.0:{self.ray_port}", _redis_password=options._session_password)
 
     def stop(self):
         # This tiny delay allows error messages from child processes to reach the
@@ -64,6 +71,11 @@ class HeadNode:
                 raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
                     status, invocation, output))
 
+        try:
+            del options._session_password
+        except AttributeError:
+            pass
+
     @property
     def status_str(self):
         """Return a string reporting the status of the cluster"""
@@ -71,6 +83,7 @@ class HeadNode:
                f"\t- {len(ray.nodes())} nodes\n" \
                f"\t- {int(ray.cluster_resources()['CPU'])} virtual CPU cores.\n" \
                f"\t- {int(ray.cluster_resources()['GPU']) if 'GPU' in ray.cluster_resources() else 0} GPU devices."
+
 
 # Single HeadNode instance that controls the ray cluster
 _head_node = None
