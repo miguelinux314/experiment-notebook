@@ -234,6 +234,6 @@ tag_to_description["documentation"] = "Documentation examples referenced in the 
 tag_to_description["codec"] = "Data compression/decompression class definitions"
 tag_to_description["data compression"] = "Data compression tools"
 tag_to_description["template"] = "Templates formatteable into the installation dir"
-tag_to_description["project"] = "Project templates"
+tag_to_description["project"] = "Project templates, including configuration files"
 tag_to_description["test"] = "Plugins for testing purposes"
 tag_to_description["privative"] = "Plugins requiring privative (non-free) software, not distributable with enb"

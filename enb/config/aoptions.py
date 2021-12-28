@@ -313,10 +313,29 @@ class RayOptions:
 
     @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
     def ray_port(self, value):
-        """Ray port used.
+        """Ray port and first port that need to be open in case a cluster
+        is to be set up. Refer to https://miguelinux314.github.io/experiment-notebook/installation.html
+        for further information on this.
         """
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
         return int(value)
+
+    @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
+    def ray_max_cluster_size(self, value):
+        """Maximum number of clients allowed in the cluster.
+        Useful to know what ports need to be open. See
+        https://miguelinux314.github.io/experiment-notebook/installation.html.
+        """
+        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+        return int(value)
+
+    @OptionsBase.property(type=str)
+    def ssh_cluster_csv_path(self, value):
+        """Path to the CSV file containing a enb ssh cluster configuration.
+        See https://miguelinux314.github.io/experiment-notebook/installation.html.
+        """
+        assert os.path.exists(value)
+        return str(value)
 
 
 @_singleton_cli.property_class(OptionsBase)
