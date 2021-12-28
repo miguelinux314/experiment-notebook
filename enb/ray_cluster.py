@@ -17,7 +17,6 @@ import random
 import pandas as pd
 import socket
 import ray
-import logging
 import psutil
 import signal
 
@@ -69,8 +68,7 @@ class HeadNode:
 
         with logger.info_context(f"Initializing ray client on local port {self.ray_port}"):
             ray.init(address=f"localhost:{self.ray_port}",
-                     _redis_password=options._session_password,
-                     logging_level=logging.CRITICAL)
+                     _redis_password=options._session_password)
 
         if options.ssh_cluster_csv_path:
             if not os.path.exists(options.ssh_cluster_csv_path):
@@ -95,30 +93,25 @@ class HeadNode:
         # It might need to be tuned for distributed computation across networks.
         time.sleep(options.preshutdown_wait_seconds)
 
+        with logger.info_context("Stopping ray server"):
+            invocation = "ray stop --force"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+        with logger.info_context("Disconnecting from ray"):
+            ray.shutdown()
+
+        if self.remote_nodes:
+            with logger.info_context("Stopping remote nodes...\n", msg_after=f"disconnected all remote nodes."):
+                for rn in self.remote_nodes:
+                    rn.disconnect()
+
         try:
-            logging.basicConfig(level=logging.CRITICAL)
-
-            with logger.info_context("Stopping ray server"):
-                invocation = "ray stop --force"
-                status, output = subprocess.getstatusoutput(invocation)
-                if status != 0:
-                    raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                        status, invocation, output))
-
-            with logger.info_context("Disconnecting from ray"):
-                ray.shutdown()
-
-            if self.remote_nodes:
-                with logger.info_context("Stopping remote nodes...\n", msg_after=f"disconnected all remote nodes."):
-                    for rn in self.remote_nodes:
-                        rn.disconnect()
-
-            try:
-                del options._session_password
-            except AttributeError:
-                pass
-        finally:
-            logging.basicConfig(level=logging.INFO)
+            del options._session_password
+        except AttributeError:
+            pass
 
     def parse_cluster_config_csv(self, csv_path):
         """Read a CSV defining remote nodes and return a list with as many RemoteNode as

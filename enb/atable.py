@@ -194,13 +194,13 @@ import collections
 import collections.abc
 import copy
 import datetime
-import deprecation
 import functools
 import glob
 import inspect
 import itertools
 import math
 import os
+import sys
 import pandas as pd
 import pickle
 import ray
@@ -531,12 +531,14 @@ class MetaTable(type):
 
         return wrapper
 
+
 def clean_column_name(column_name):
     """Return a cleaned version of the column name, more indicated for display.
     """
     s = str(column_name).replace("_", " ").strip()
     s = s[:1].upper() + s[1:]
     return s
+
 
 class ATable(metaclass=MetaTable):
     """Automatic table with implicit column definition.
@@ -1615,7 +1617,9 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     # Set the input dataset dir
     base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
-        raise ValueError(f"Cannot get input samples from {base_dataset_dir} (path not found or not a dir).")
+        enb.logger.warn(f"Cannot get input samples from {base_dataset_dir} (path not found or not a dir). "
+                        f"Using [sys.argv[0]] = [{os.path.basename(sys.argv[0])}] instead.")
+        return [os.path.basename(sys.argv[0])]
 
     # Recursively get all files, filtering only those that match the extension, if provided.
     sorted_path_list = sorted(
@@ -1627,7 +1631,7 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
 
     # If quick is selected, return at most as many paths as the quick parameter count
     all_input_files = sorted_path_list if not options.quick else sorted_path_list[:options.quick]
-    
+
     return all_input_files
 
 
