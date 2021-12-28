@@ -6,6 +6,7 @@ __since__ = "2019/11/21"
 
 import string
 import math
+import threading
 import time
 import sys
 import os
@@ -58,7 +59,7 @@ class HeadNode:
                          f"--object-manager-port {self.ray_port + 3} " \
                          f"--gcs-server-port  {self.ray_port + 4} " \
                          f"--min-worker-port  {self.ray_port + 5} " \
-                         f"--max-worker-port  {self.ray_port + 5 + options.ray_max_cluster_size} " \
+                         f"--max-worker-port  {options.ray_port + options.ray_port_count - 1} " \
                          f"--redis-password='{options._session_password}' " \
                          + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
@@ -98,7 +99,7 @@ class HeadNode:
             logging.basicConfig(level=logging.CRITICAL)
 
             with logger.info_context("Stopping ray server"):
-                invocation = "ray stop"
+                invocation = "ray stop --force"
                 status, output = subprocess.getstatusoutput(invocation)
                 if status != 0:
                     raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
@@ -198,7 +199,7 @@ class RemoteNode:
                          f"--node-manager-port {options.ray_port + 2} " \
                          f"--object-manager-port {options.ray_port + 3} " \
                          f"--min-worker-port  {options.ray_port + 5} " \
-                         f"--max-worker-port  {options.ray_port + 5 + options.ray_max_cluster_size} " \
+                         f"--max-worker-port  {options.ray_port + options.ray_port_count - 1} " \
                          f"--redis-password='{options._session_password}' " \
                          + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
@@ -217,6 +218,8 @@ class RemoteNode:
         self.mount_popen = subprocess.Popen(
             invocation, stdout=subprocess.PIPE,
             preexec_fn=os.setsid, shell=True)
+
+        threading.Thread(target=self.mount_popen.communicate, daemon=True).start()
 
     def disconnect(self):
         assert not on_remote_process()
