@@ -218,7 +218,6 @@ class PluginList(argparse.Action):
               f"{' with -v for authorship and additional information,' if not enb.config.options.verbose else ''}"
               " with -h for full help.")
 
-
 def main():
     cli_parser = CLIParser()
     options, unused_options = cli_parser.parse_known_args()

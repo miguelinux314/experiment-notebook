@@ -102,7 +102,9 @@ class Template(Installable, metaclass=MetaTemplate):
 
         template_src_dir = os.path.dirname(os.path.abspath(inspect.getfile(cls)))
         for input_path in glob.glob(os.path.join(template_src_dir, "**", "*"), recursive=True):
-            if os.path.basename(input_path) in ["__pycache__", "__plugin__.py"]:
+            if "__pycache__" in input_path:
+                continue
+            if os.path.basename(input_path) == "__plugin__.py":
                 continue
 
             # By default, the original structure and file names are preserved.

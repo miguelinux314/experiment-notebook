@@ -5,6 +5,7 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
 
 import string
+import math
 import time
 import sys
 import os
@@ -12,8 +13,12 @@ import datetime
 import builtins
 import subprocess
 import random
-
+import pandas as pd
+import socket
 import ray
+import logging
+import psutil
+import signal
 
 from . import config
 from .config import options
@@ -29,22 +34,31 @@ class HeadNode:
     """
 
     def __init__(self, ray_port):
-        assert 1025 <= ray_port <= 65535
+        assert 1025 <= ray_port <= 65500
         self.ray_port = int(ray_port)
+        # List of RemoteNode instances started by this head node
+        self.remote_nodes = []
+        self.ip_address = self.get_node_ip()
 
     def start(self):
-        with logger.verbose_context(f"\nStoping any previous instance of ray..."):
-            invocation = "ray stop"
+        with logger.info_context(f"Stoping any previous instance of ray..."):
+            invocation = "ray stop --force"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
                     status, invocation, output))
-        options._session_password = ''.join(random.choices(string.ascii_letters, k=64))
+        options._session_password = ''.join(random.choices(string.ascii_letters, k=128))
 
-        with logger.verbose_context(f"Starting ray on port {self.ray_port}"):
+        with logger.info_context(f"Starting ray on port {self.ray_port}"):
             invocation = f"ray start --head " \
                          f"--include-dashboard false " \
                          f"--port {self.ray_port} " \
+                         f"--ray-client-server-port {self.ray_port + 1} " \
+                         f"--node-manager-port {self.ray_port + 2} " \
+                         f"--object-manager-port {self.ray_port + 3} " \
+                         f"--gcs-server-port  {self.ray_port + 4} " \
+                         f"--min-worker-port  {self.ray_port + 5} " \
+                         f"--max-worker-port  {self.ray_port + 5 + options.ray_max_cluster_size} " \
                          f"--redis-password='{options._session_password}' " \
                          + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
@@ -52,8 +66,27 @@ class HeadNode:
                 raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
                     status, invocation, output))
 
-        with logger.verbose_context(f"Initializing ray, conecting to port {self.ray_port}"):
-            ray.init(f"0.0.0.0:{self.ray_port}", _redis_password=options._session_password)
+        with logger.info_context(f"Initializing ray client on local port {self.ray_port}"):
+            ray.init(address=f"localhost:{self.ray_port}",
+                     _redis_password=options._session_password,
+                     logging_level=logging.CRITICAL)
+
+        if options.ssh_cluster_csv_path:
+            if not os.path.exists(options.ssh_cluster_csv_path):
+                raise ValueError(f"The cluster configuration file {options.ssh_cluster_csv_path} does not exist. "
+                                 f"Either set enb.config.options.ssh_cluster_csv_path to None to disable multinode "
+                                 f"clustering, or to an existing file. See "
+                                 f"https://miguelinux314.github.io/experiment-notebook/installation.html "
+                                 f"for more details.")
+
+            self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
+            with logger.info_context(f"Connecting {len(self.remote_nodes)} remote nodes.",
+                                     msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
+                for rn in self.remote_nodes:
+                    with logger.info_context(f"Connecting to {rn}"):
+                        rn.connect()
+
+            logger.info("All nodes connected")
 
     def stop(self):
         # This tiny delay allows error messages from child processes to reach the
@@ -61,20 +94,57 @@ class HeadNode:
         # It might need to be tuned for distributed computation across networks.
         time.sleep(options.preshutdown_wait_seconds)
 
-        with logger.info_context("Shutting down ray cluster"):
-            ray.shutdown()
-
-        with logger.info_context("Stopping head node"):
-            invocation = "ray stop"
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
-
         try:
-            del options._session_password
-        except AttributeError:
-            pass
+            logging.basicConfig(level=logging.CRITICAL)
+
+            with logger.info_context("Stopping ray server"):
+                invocation = "ray stop"
+                status, output = subprocess.getstatusoutput(invocation)
+                if status != 0:
+                    raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                        status, invocation, output))
+
+            with logger.info_context("Disconnecting from ray"):
+                ray.shutdown()
+
+            if self.remote_nodes:
+                with logger.info_context("Stopping remote nodes...\n", msg_after=f"disconnected all remote nodes."):
+                    for rn in self.remote_nodes:
+                        rn.disconnect()
+
+            try:
+                del options._session_password
+            except AttributeError:
+                pass
+        finally:
+            logging.basicConfig(level=logging.INFO)
+
+    def parse_cluster_config_csv(self, csv_path):
+        """Read a CSV defining remote nodes and return a list with as many RemoteNode as
+        data rows in the CSV.
+        """
+
+        def clean_value(s, default_value=None):
+            return s if (isinstance(s, str) and s) or not math.isnan(s) else default_value
+
+        return [RemoteNode(
+            address=clean_value(row["address"], None),
+            ssh_user=clean_value(row["ssh_user"], os.getlogin()),
+            ssh_port=clean_value(row["ssh_port"], 22),
+            local_ssh_file=clean_value(row["local_ssh_file"], None),
+            head_node_address=self.ip_address)
+            for _, row in pd.read_csv(csv_path).iterrows()]
+
+    def get_node_ip(self):
+        """Adapted from https://stackoverflow.com/a/166589/992926.
+        """
+        assert not on_remote_process()
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self._head_node_address = s.getsockname()[0]
+        s.close()
+        return self._head_node_address
 
     @property
     def status_str(self):
@@ -87,6 +157,92 @@ class HeadNode:
 
 # Single HeadNode instance that controls the ray cluster
 _head_node = None
+
+
+class RemoteNode:
+    """Represent a remote node of the cluster, with tools to connect via ssh.
+    """
+    remote_node_folder_path = "~/.enb_remote"
+
+    def __init__(self, address, ssh_port, head_node_address, ssh_user=None, local_ssh_file=None):
+        self.address = address
+        self.ssh_user = ssh_user
+        self.head_node_address = head_node_address
+        self.ssh_port = ssh_port
+        self.local_ssh_file = local_ssh_file
+        self.mount_popen = None
+
+    def connect(self):
+        assert not on_remote_process()
+
+        # Create remote_node_folder_path on the remote host if not existing
+        with logger.info_context(f"Creating remote mount point on {self.address}"):
+            invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                         f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                         f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                         f"mkdir -p {self.remote_node_folder_path}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+        # Mount the project root on remote_node_folder_path - use a separate process
+        self.mount_project_remotely()
+
+        with logger.info_context(f"Starting ray process on {self.address}"):
+            invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                         f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                         f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                         f"ray start --address {self.head_node_address}:{options.ray_port} " \
+                         f"--ray-client-server-port {options.ray_port + 1} " \
+                         f"--node-manager-port {options.ray_port + 2} " \
+                         f"--object-manager-port {options.ray_port + 3} " \
+                         f"--min-worker-port  {options.ray_port + 5} " \
+                         f"--max-worker-port  {options.ray_port + 5 + options.ray_max_cluster_size} " \
+                         f"--redis-password='{options._session_password}' " \
+                         + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+    def mount_project_remotely(self):
+        # Mount the project root on remote_node_folder_path
+        invocation = f"dpipe /usr/lib/openssh/sftp-server = " \
+                     f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                     f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                     f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                     f"sshfs :{options.project_root} {self.remote_node_folder_path} -C -o sshfs_sync -o slave"
+
+        self.mount_popen = subprocess.Popen(
+            invocation, stdout=subprocess.PIPE,
+            preexec_fn=os.setsid, shell=True)
+
+    def disconnect(self):
+        assert not on_remote_process()
+
+        # Create remote_node_folder_path on the remote host if not existing
+        with logger.info_context(f"Disconnecting {self.address} (stopping ray)"):
+            invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                         f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                         f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                         f"ray stop --force"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+        target_str = f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                     f"sshfs :{options.project_root}"
+        for proc in psutil.process_iter():
+            cmd_str = " ".join(proc.cmdline())
+            if target_str in cmd_str:
+                os.kill(proc.pid, signal.SIGTERM)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(address={self.address}, " \
+               f"ssh_port={self.ssh_port}, ssh_user={self.ssh_user}, " \
+               f"local_ssh_file={self.local_ssh_file})"
 
 
 def init_ray():
@@ -107,7 +263,7 @@ def init_ray():
 
             _head_node = HeadNode(options.ray_port)
             _head_node.start()
-            logger.info(_head_node.status_str)
+            logger.verbose(_head_node.status_str)
     else:
         logger.debug(f"Called init_ray with ray alredy initialized")
 
