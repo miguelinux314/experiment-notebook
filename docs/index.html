@@ -4,9 +4,10 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to the Experiment Notebook &mdash; Experiment Notebook MIT License documentation</title>
+  <title>Experiment Notebook user manual &mdash; Experiment Notebook MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -29,6 +30,9 @@
             <a href="#" class="icon icon-home"> Experiment Notebook
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
+              <div class="version">
+                v0.3.3
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -44,7 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -63,9 +68,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to the Experiment Notebook</li>
+      <li>Experiment Notebook user manual</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -73,21 +79,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-the-experiment-notebook">
-<h1>Welcome to the Experiment Notebook<a class="headerlink" href="#welcome-to-the-experiment-notebook" title="Permalink to this headline"></a></h1>
+  <section id="experiment-notebook-user-manual">
+<h1>Experiment Notebook user manual<a class="headerlink" href="#experiment-notebook-user-manual" title="Permalink to this headline"></a></h1>
 <figure class="align-center">
-<a class="reference internal image-reference" href="_images/enb_logo.png"><img alt="|enb| logo" src="_images/enb_logo.png" style="width: 15%;" /></a>
+<a class="reference external image-reference" href="#"><img alt="|enb| logo" src="_images/enb_logo.png" style="width: 25%;" /></a>
 </figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <p>The Experiment Notebook (from now on, <code class="docutils literal notranslate"><span class="pre">enb</span></code>) library is designed to help you obtain
 and report computer-based experimental data. Focus on what is new in your
 current experiment, and let <code class="docutils literal notranslate"><span class="pre">enb</span></code> deal with the repetitive stuff.</p>
 <p>Some of the main features of <code class="docutils literal notranslate"><span class="pre">enb</span></code> are:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Flexible</strong>: you can easily adapt the provided examples to suit your needs.</p></li>
-<li><p><strong>Persistent</strong>: no need to re-run your experiments: results are automatically saved.</p></li>
-<li><p><strong>Disseminable</strong>: <code class="docutils literal notranslate"><span class="pre">enb</span></code> helps you create figures and tables to report your data.</p></li>
-<li><p><strong>Extensible</strong>: you can always add new samples, define new columns and produce new figures.</p></li>
+<li><p><strong>Flexible</strong>: With a few lines of code, you can easily
+create custom experiments and/or analyze the results you want.
+<cite>enb</cite> provides an easy Python interface and out-of-the-box templates and examples
+and this user manual to get you started in no time.
+By default, only standard packages need to be installed.</p></li>
+<li><p><strong>Disseminable and reproducible</strong>: <code class="docutils literal notranslate"><span class="pre">enb</span></code> offers simple and complex tools to create
+figures and tables to report your data.
+You can also distribute your project folder and let others
+verify and re-run your experiment.</p></li>
+<li><p><strong>Persistent</strong>: With <cite>enb</cite>, all intermediate results are periodically stored and kept after an
+experiement is completed. This way, you don’t need to run all computations over and over again.
+This applies to others running your experiments on other computers.</p></li>
+<li><p><strong>Extensible</strong>: you can always add new samples, define new columns and produce new figures.
+You will only need to obtain results for the newly defined data columns or samples.</p></li>
+<li><p><strong>Parallel in nature</strong>: you can use all the CPUs / GPUs in your local machine, and even
+distribute the load across a cluster of computers.</p></li>
 </ul>
 </div></blockquote>
 <p>Please visit <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook">the enb github page</a> for
@@ -113,7 +134,8 @@ You can also take a look at the automatically generated <a class="reference inte
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>

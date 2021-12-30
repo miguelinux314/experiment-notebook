@@ -7,6 +7,7 @@
   <title>Defining new codecs &mdash; Experiment Notebook MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -18,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="enb command-line tools" href="command_line_interface.html" />
+    <link rel="next" title="The enb command-line tools" href="command_line_interface.html" />
     <link rel="prev" title="Using existing image compression codecs" href="image_compression_plugins.html" /> 
 </head>
 
@@ -30,6 +31,9 @@
             <a href="index.html" class="icon icon-home"> Experiment Notebook
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
+              <div class="version">
+                v0.3.3
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -57,9 +61,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html#listing-available-plugins-and-templates">Listing available plugins and templates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html#plugin-and-template-installation">Plugin and template installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -81,7 +84,8 @@
           <li><a href="image_compression.html">Image compression experiments</a> &raquo;</li>
       <li>Defining new codecs</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/defining_new_compressors.rst.txt" rel="nofollow"> View page source</a>
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -111,8 +115,6 @@ following example:</p>
       <span class="n">param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">param_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">param_dict</span>
       <span class="n">param_dict</span><span class="p">[</span><span class="s2">&quot;compression_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compression_level</span>
       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">param_dict</span><span class="o">=</span><span class="n">param_dict</span><span class="p">)</span>
-      <span class="sd">&quot;&quot;&quot;Apply the LZ77 algorithm and Huffman coding to the file using zlib.</span>
-<span class="sd">      &quot;&quot;&quot;</span>
 
   <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_path</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">original_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">original_file</span><span class="p">,</span> \
@@ -200,7 +202,7 @@ or get in touch with the maintainers so that it can be reviewed an published.</p
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="image_compression_plugins.html" class="btn btn-neutral float-left" title="Using existing image compression codecs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="command_line_interface.html" class="btn btn-neutral float-right" title="enb command-line tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="command_line_interface.html" class="btn btn-neutral float-right" title="The enb command-line tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

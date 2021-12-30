@@ -7,6 +7,7 @@
   <title>Data analysis and plotting with enb &mdash; Experiment Notebook MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -30,6 +31,9 @@
             <a href="index.html" class="icon icon-home"> Experiment Notebook
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
+              <div class="version">
+                v0.3.3
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -52,9 +56,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html#listing-available-plugins-and-templates">Listing available plugins and templates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html#plugin-and-template-installation">Plugin and template installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
@@ -75,7 +78,8 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/analyzing_data.rst.txt" rel="nofollow"> View page source</a>
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -88,7 +92,7 @@
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1350.gbc17343f93)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1534.g9512393987)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
