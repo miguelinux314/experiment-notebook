@@ -731,29 +731,37 @@ class ATable(metaclass=MetaTable):
 
         # Create a wrapper that adds some temporary globals
         @functools.wraps(fun)
-        def fun_wrapper(self, index, row):
+        def column_function_wrapper(self, index, row):
+            # The _column_name and _column_properties globals are
+            # defined to help define more concise column functions.
             if isinstance(fun, functools.partial):
                 globals = fun.func.__globals__
             else:
                 globals = fun.__globals__
-
             old_globals = dict(globals)
             globals.update(_column_name=column_properties.name,
                            _column_properties=column_properties)
+            
+            # The current working dir is updated for remote processes in the head or the remote nodes
             try:
+                original_wd = os.getcwd()
+                if ray_cluster.on_remote_node():
+                    os.chdir(os.path.expanduser("~/.enb_remote"))
+
                 returned_value = fun(self, index, row)
                 if returned_value is not None:
                     row[column_properties.name] = returned_value
             finally:
                 globals.clear()
                 globals.update(old_globals)
+                os.chdir(original_wd)
 
         try:
-            fun_wrapper._redefines_column = fun._redefines_column
+            column_function_wrapper._redefines_column = fun._redefines_column
         except AttributeError:
             pass
 
-        return fun_wrapper
+        return column_function_wrapper
 
     @property
     def indices(self):
@@ -1174,7 +1182,7 @@ class ATable(metaclass=MetaTable):
                                 if fun.__name__.startwith(MetaTable.automatic_column_function_prefix) else ""))
                     enb.logger.info(f"Already called function {fun.__name__} <{self.__class__.__name__}>")
                     continue
-                if options.columns and column not in options.columns:
+                if options.selected_columns and column not in options.selected_columns:
                     enb.logger.info(f"Skipping non-selected column {column}")
                     continue
 
@@ -1617,7 +1625,7 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     # Set the input dataset dir
     base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
-        enb.logger.warn(f"Cannot get input samples from {base_dataset_dir} (path not found or not a dir). "
+        enb.logger.info(f"Cannot get input samples from {base_dataset_dir} (path not found or not a dir). "
                         f"Using [sys.argv[0]] = [{os.path.basename(sys.argv[0])}] instead.")
         return [os.path.basename(sys.argv[0])]
 

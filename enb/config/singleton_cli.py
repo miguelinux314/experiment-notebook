@@ -421,7 +421,7 @@ class SingletonCLI(metaclass=Singleton):
                 name_to_property = object.__getattribute__(self, "_name_to_property")
                 name = alias_to_name[item]
                 return name_to_property[name]
-            except KeyError as ex:
+            except KeyError:
                 return object.__getattribute__(self, item)
 
     def __setattr__(self, key, value):
