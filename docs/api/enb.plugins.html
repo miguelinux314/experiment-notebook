@@ -7,6 +7,7 @@
   <title>enb.plugins package &mdash; Experiment Notebook MIT License documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -30,6 +31,9 @@
             <a href="../index.html" class="icon icon-home"> Experiment Notebook
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
+              <div class="version">
+                v0.3.3
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +49,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="enb.html">enb package</a><ul class="current">
@@ -95,7 +100,8 @@
           <li><a href="enb.html">enb package</a> &raquo;</li>
       <li>enb.plugins package</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/enb.plugins.rst.txt" rel="nofollow"> View page source</a>
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -229,6 +235,14 @@ declared Installable subclasses.</p>
 <span class="sig-name descname"><span class="pre">valid_tested_on_strings</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'linux',</span> <span class="pre">'macos',</span> <span class="pre">'windows'}</span></em><a class="headerlink" href="#enb.plugins.installable.InstallableMeta.valid_tested_on_strings" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.plugins.installable.get_installable_by_name">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">get_installable_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.get_installable_by_name" title="Permalink to this definition"></a></dt>
+<dd><p>Search among all defined installables for one with exactly the name provided.
+:param name: name of the installable
+:raises KeyError: if name cannot be found</p>
 </dd></dl>
 
 <dl class="py function">
@@ -404,6 +418,11 @@ by default to the installation dir.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.template.Template.get_field_parser">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_field_parser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_field_parser" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.template.Template.get_fields">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_fields" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

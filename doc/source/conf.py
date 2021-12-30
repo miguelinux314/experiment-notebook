@@ -19,13 +19,16 @@ import zipfile
 import glob
 import shutil
 import subprocess
+import enb
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.abspath('..'), '..')))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Experiment Notebook'
-copyright = '2020-*, Miguel Hernández-Cabronero'
-author = 'Miguel Hernández-Cabronero, et al.'
+project = "Experiment Notebook"
+version = f"v{enb.config.ini.get_key('enb', 'version')}"
+release = version
+copyright = f"2020-*, Miguel Hernández-Cabronero"
+author = "Miguel Hernández-Cabronero, et al."
 
 # The full version, including alpha/beta/rc tags
 release = 'MIT License'
@@ -70,37 +73,29 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = [
+    'css/enb-rtd.css',
+]
+
+
+#
+html_context = {
+    'display_github': True,
+}
+
+html_theme_options = {
+    'display_version': True,
+}
+
+rst_prolog = """
+:github_url: https://github.com/miguelinux314/experiment-notebook
+"""
+
 html_logo = "img/enb_logo_small.png"
 
-# Output static examples
-# Basic example
-if not os.path.exists("_static/example_basic_workflow.zip") \
-        or not os.path.exists("_static/distribution_line_count.pdf") \
-        or not os.path.exists("_static/persistence_basic_workflow.csv") \
-        or not os.path.exists("_static/distribution_word_count.pdf"):
-    cwd = os.getcwd()
-    os.chdir("examples")
-    invocation = "./basic_workflow.py"
-    status, output = subprocess.getstatusoutput(invocation)
-    if status != 0:
-        raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-            status, invocation, output))
-    status, output = subprocess.getstatusoutput(invocation)
-    if status != 0:
-        raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-            status, invocation, output))
-    os.chdir(cwd)
+# pygments_style = "gruvbox-light"
+pygments_style = "zenburn"
 
-    # Basic Workflow Example
-    shutil.copy("examples/plots/distribution_line_count.pdf", "_static")
-    shutil.copy("examples/plots/distribution_word_count.pdf", "_static")
-    shutil.copy("examples/persistence_basic_workflow.csv", "_static")
-    with zipfile.ZipFile("_static/example_basic_workflow.zip", "w") as zip_file:
-        zip_file.write("examples/basic_workflow.py", arcname="basic_workflow.py")
-        for f in glob.glob("examples/data/wiki/*"):
-            zip_file.write(f, arcname=f.replace("examples/", ""))
-
-            
 # Re-generate module autodoc
 cwd = os.getcwd()
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))

@@ -166,6 +166,7 @@ plot related to the `line_count` column defined above.
     analysis_df = enb.aanalysis.ScalarNumericAnalyzer().get_df(
         full_df=result_df,
         target_columns=["line_count"])
+
     # Save analysis dataframe to CSV.
     os.makedirs("analysis", exist_ok=True)
     analysis_df.to_csv("analysis/line_count_analysis.csv")

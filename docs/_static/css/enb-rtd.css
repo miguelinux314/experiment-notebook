@@ -1,0 +1,48 @@
+a {
+    color: #c58b03;
+}
+
+a:hover {
+    color: #ffd08e;
+}
+
+.wy-side-nav-search .wy-dropdown > a:hover, .wy-side-nav-search > a:hover {
+    color: #463101;
+    background-color: #f3ac05;
+}
+
+.wy-side-nav-search {
+    background-color: #f3ac05;
+}
+
+.wy-nav-side {
+    background-color: #3f3f3f;
+}
+
+.wy-nav-top {
+    background-color: #f3ac05;
+}
+
+.wy-menu-vertical li.current {
+    background: #ffd08e;
+}
+
+.wy-menu-vertical li.toctree-l2.current > a, .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
+    background: #ffa513;
+}
+
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #f3ac05;
+}
+
+.wy-side-nav-search > div.version {
+    color: #713884;
+}
+
+.wy-nav-content-wrap {
+    background: none;
+}
+
+.rst-content .note > .admonition-title {
+    background: #835b96;
+}

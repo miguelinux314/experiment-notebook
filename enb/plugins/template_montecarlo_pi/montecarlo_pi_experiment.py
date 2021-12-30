@@ -47,4 +47,4 @@ if __name__ == '__main__':
     total_samples = df["sample_size"].sum()
     estimated_pi_value = (df["estimated_pi_value"] * df["sample_size"]).sum() / total_samples
     different_nodes = len(df["computed_on_ip"].unique())
-    print(f"Computed pi ~ {estimated_pi_value} using {total_samples} total samples on {different_nodes} nodes.")
+    print(f"Approximated pi ~ {estimated_pi_value} using {total_samples} total samples on {different_nodes} nodes.")

@@ -11,5 +11,6 @@ Contents
    analyzing_data
    image_compression
    command_line_interface
+   cluster_setup
    api
    thanks

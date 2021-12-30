@@ -31,8 +31,6 @@ following example:
         param_dict = dict() if param_dict is None else param_dict
         param_dict["compression_level"] = compression_level
         super().__init__(param_dict=param_dict)
-        """Apply the LZ77 algorithm and Huffman coding to the file using zlib.
-        """
 
     def compress(self, original_path, compressed_path, original_file_info):
         with open(original_path, "rb") as original_file, \

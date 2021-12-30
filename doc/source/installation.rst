@@ -100,4 +100,5 @@ branch is checked out) with
     cd experiment-notebook.git
     pip install -e .
 
-Feel free to submit pull_requests for your desired contributions.
+Feel free to `submit pull_requests <https://github.com/miguelinux314/experiment-notebook/pulls>`_
+for your desired contributions.

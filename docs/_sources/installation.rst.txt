@@ -3,6 +3,13 @@
 Installation
 ============
 
+This page provides help on how to install `enb` in a single computer.
+
+Instructions are provided for Linux, Windows and Mac.
+
+If you want to set up a cluster of multiple computers for distributed
+execution of your experiments, see :doc:`cluster_setup`.
+
 Linux
 -----
 
@@ -19,7 +26,6 @@ or, if you don't have root's privileges:
 .. code-block:: bash
 
   pip install enb --user
-
 
 Windows and MacOS
 -----------------
@@ -63,5 +69,36 @@ The pip command must correspond to the python version for which ray was installe
 
 
 .. note:: Initialization of the `ray` library (used for parallelization) can take a few
-  seconds on Windows machines. Actual execution of `enb` code typically takes about the
-  same time on all platforms.
+  seconds on Windows machines.
+
+Sources and development version
+-------------------------------
+
+.. note:: You may safely skip this section unless you intend to study or develop `enb`.
+
+To get the latest version of enb, you can clone the enb with
+
+.. code-block:: bash
+
+    git clone https://github.com/miguelinux314/experiment-notebook.git
+    cd experiment-notebook.git
+
+You can access the development version with
+
+.. code-block:: bash
+
+    git clone https://github.com/miguelinux314/experiment-notebook.git
+    cd experiment-notebook.git
+    git checkout dev
+
+You can install a symbolic link to your local copy of the code (for whichever
+branch is checked out) with
+
+.. code-block:: bash
+
+    git clone https://github.com/miguelinux314/experiment-notebook.git
+    cd experiment-notebook.git
+    pip install -e .
+
+Feel free to `submit pull_requests <https://github.com/miguelinux314/experiment-notebook/pulls>`_
+for your desired contributions.
