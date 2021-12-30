@@ -141,7 +141,7 @@ class Template(Installable, metaclass=MetaTemplate):
                     f"and options.force={options.force}. Run with -f to overwrite.")
 
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
-            shutil.copyfile(input_path, output_path)
+            shutil.copy(input_path, output_path)
 
         cls.build(installation_dir=installation_dir)
         print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")

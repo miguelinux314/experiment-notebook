@@ -92,5 +92,5 @@ if not ray_cluster.on_remote_process():
 
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
-        print(f"[watch] os.getcwd()={_os.getcwd()}")
+
         

@@ -53,8 +53,15 @@ class OptionsBase(_singleton_cli.SingletonCLI):
 
     @property
     def non_default_properties(self):
-        return {k: v for k, v in self._name_to_property.items()
-                if v != ini.get_key("enb.config.options", k)}
+        non_default_properties = dict()
+        for k, v in self._name_to_property.items():
+            try:
+                if v == ini.get_key("enb.config.options", k):
+                    continue
+            except KeyError:
+                pass
+            non_default_properties[k] = v
+        return non_default_properties
 
     def __str__(self):
         s = "Summary of enb.config.options:\n\t- "
@@ -143,16 +150,15 @@ class ExecutionOptions:
         """
         return bool(value)
 
-    @OptionsBase.property("c", "selected_columns", nargs="+", type=str)
-    def columns(self, value):
+    @OptionsBase.property(nargs="+", type=str)
+    def selected_columns(self, value):
         """List of selected column names for computation.
 
         If one or more column names are provided,
         all others are ignored. Multiple columns can be expressed,
         separated by spaces.
-        Don't use this argument unless you know what you are doing, or expect potential exceptions.
         """
-        assert value, f"At least one column must be defined"
+        assert value, f"If provided, at least one column must be defined"
 
     @OptionsBase.property("prp", type=float)
     def progress_report_period(self, value):

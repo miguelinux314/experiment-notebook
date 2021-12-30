@@ -129,7 +129,7 @@ class PluginList(argparse.Action):
                       f"{', '.join(repr(f) for f in namespace.filter)}, "
                       f"out of {len(all_installables)} available)", end="")
             else:
-                print(". You can add arguments to filter this list, and/or use the --exclude argument.\n"
+                print(".\nYou can add arguments to filter this list, and/or use the --exclude argument.\n"
                       "Add -v for extra information on the listed plugins", end="")
             print(".\n")
 

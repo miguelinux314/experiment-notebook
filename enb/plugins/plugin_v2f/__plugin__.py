@@ -3,7 +3,7 @@ import enb.plugins
 
 class V2FCodecPlugin(enb.plugins.Plugin):
     name = "v2f"
-    label = "Plugin allowing compression based on Variable-to-Fixed (V2F) codes (forest)"
+    label = "Wrapper of a codec based on V2F forests"
     tags = {"data compression", "codec", "privative"}
     contrib_authors = ["Miguel Hernández-Cabronero"]
     tested_on = {"linux"}

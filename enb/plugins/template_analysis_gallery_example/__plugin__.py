@@ -6,6 +6,6 @@ class PlotGalleryTemplate(enb.plugins.Template):
     """
     name = "analysis-gallery"
     author = ["Miguel Hernández-Cabronero"]
-    label = "Self-contained gallery of data analysis and plotting examples using aanalysis."
+    label = "Self-contained gallery of data analysis and plotting examples."
     tags = {"documentation"}
     tested_on = {"linux"}

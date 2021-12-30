@@ -228,12 +228,23 @@ def list_all_installables(base_class=Installable, ignored_classes=[]):
                   key=lambda c: c.name.lower())
 
 
+def get_installable_by_name(name):
+    """Search among all defined installables for one with exactly the name provided.
+    :param name: name of the installable
+    :raises KeyError: if name cannot be found
+    """
+    for installable in list_all_installables():
+        if installable.name == name:
+            return installable
+    raise KeyError(f"Cannot find installable {repr(name)}")
+
+
 # Lean description of the intention of each tag.
 tag_to_description = collections.OrderedDict()
-tag_to_description["documentation"] = "Documentation examples referenced in the online user manual" 
+tag_to_description["documentation"] = "Documentation examples referenced in the user manual"
 tag_to_description["codec"] = "Data compression/decompression class definitions"
 tag_to_description["data compression"] = "Data compression tools"
 tag_to_description["template"] = "Templates formatteable into the installation dir"
 tag_to_description["project"] = "Project templates, including configuration files"
 tag_to_description["test"] = "Plugins for testing purposes"
-tag_to_description["privative"] = "Plugins requiring privative (non-free) software, not distributable with enb"
+tag_to_description["privative"] = "Plugins requiring additional privative software"

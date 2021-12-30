@@ -1,7 +1,7 @@
 .. include:: ./tag_definition.rst
 
-|enb| command-line tools
-========================
+The `enb` command-line tools
+============================
 
 |enb| is friendly with the command line interface (CLI). Two main ways of using the CLI
 with enb:
@@ -84,5 +84,5 @@ All these options (whether provided via the CLI or not) can be read and/or chang
 .. code-block:: python
 
     from enb.config import options
-    print(f"Verbose level: {enb.config.verbose}")
+    print(f"Verbose level: {options.verbose}")
 
