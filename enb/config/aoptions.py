@@ -179,7 +179,7 @@ class DirOptions:
         """
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
-    @OptionsBase.property("d", action=_singleton_cli.ReadableDirAction, default=default_base_dataset_dir)
+    @OptionsBase.property("d", action=_singleton_cli.ReadableOrCreableDirAction, default=default_base_dataset_dir)
     def base_dataset_dir(self, value):
         """Directory to be used as source of input files for indices in the get_df method
         of tables and experiments.
@@ -187,7 +187,7 @@ class DirOptions:
         It should be an existing, readable directory.
         """
         value = os.path.relpath(value, self.project_root)
-        _singleton_cli.ReadableDirAction.assert_valid_value(value)
+        _singleton_cli.ReadableOrCreableDirAction.assert_valid_value(value)
         return value
 
     @OptionsBase.property("persistence", action=_singleton_cli.WritableOrCreableDirAction,

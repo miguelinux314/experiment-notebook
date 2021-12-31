@@ -747,7 +747,7 @@ class ATable(metaclass=MetaTable):
                 original_wd = os.getcwd()
                 if ray_cluster.on_remote_process():
                     if ray_cluster.on_remote_node():
-                        os.chdir(os.path.expanduser("~/.enb_remote"))
+                        os.chdir(os.path.expanduser(ray_cluster.RemoteNode.remote_project_mount_path))
                     else:
                         os.chdir(options.project_root)
 

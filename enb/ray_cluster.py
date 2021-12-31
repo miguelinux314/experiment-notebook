@@ -172,7 +172,7 @@ _head_node = None
 class RemoteNode:
     """Represent a remote node of the cluster, with tools to connect via ssh.
     """
-    remote_node_folder_path = "~/.enb_remote"
+    remote_project_mount_path = "~/.enb_remote"
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None):
         self.address = address
@@ -205,7 +205,7 @@ class RemoteNode:
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                          f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                         f"mkdir -p {self.remote_node_folder_path}"
+                         f"mkdir -p {self.remote_project_mount_path}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise RuntimeError(f"Error creating remote mount point on {self}.\n"
@@ -237,7 +237,7 @@ class RemoteNode:
                      f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                      f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                      f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                     f"sshfs :{options.project_root} {self.remote_node_folder_path} -C -o sshfs_sync -o slave"
+                     f"sshfs :{options.project_root} {self.remote_project_mount_path} -C -o sshfs_sync -o slave"
 
         self.mount_popen = subprocess.Popen(
             invocation, stdout=subprocess.PIPE,
