@@ -172,6 +172,12 @@ class ExecutionOptions:
 class DirOptions:
     """Options regarding default data directories.
     """
+    @OptionsBase.property(action=_singleton_cli.ReadableDirAction, default=calling_script_dir)
+    def project_root(self, value):
+        """If set, data paths relative to the invoked script's paths are stored instead of their
+        absolute path counterparts.
+        """
+        _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     @OptionsBase.property("d", action=_singleton_cli.ReadableDirAction, default=default_base_dataset_dir)
     def base_dataset_dir(self, value):
@@ -180,21 +186,27 @@ class DirOptions:
 
         It should be an existing, readable directory.
         """
+        value = os.path.relpath(value, self.project_root)
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
+        return value
 
     @OptionsBase.property("persistence", action=_singleton_cli.WritableOrCreableDirAction,
                           default=default_persistence_dir)
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
         """
+        value = os.path.relpath(value, self.project_root)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        return value
 
     # Reconstructed version dir
     @OptionsBase.property("reconstructed", action=_singleton_cli.WritableOrCreableDirAction)
     def reconstructed_dir(self, value):
         """Base directory where reconstructed versions are to be stored.
         """
+        value = os.path.relpath(value, self.project_root)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        return value
 
     # Versioned data dir
     @OptionsBase.property("vd", "version_target_dir", action=_singleton_cli.WritableOrCreableDirAction,
@@ -202,7 +214,9 @@ class DirOptions:
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
+        value = os.path.relpath(value, self.project_root)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        return value
 
     # Temp dir
     for default_tmp_dir in ["/dev/shm", "/var/run", tempfile.gettempdir()]:
@@ -225,7 +239,6 @@ class DirOptions:
 
         The dir is created when defined if necessary.
         """
-        os.makedirs(value, exist_ok=True)
         _singleton_cli.WritableDirAction.assert_valid_value(value)
 
     # Base dir for external binaries (e.g., codecs or other tools)
@@ -252,7 +265,9 @@ class DirOptions:
     def plot_dir(self, value):
         """Directory to store produced plots.
         """
+        value = os.path.relpath(value, self.project_root)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        return value
 
     # Output analysis dir
     default_analysis_dir = os.path.join(calling_script_dir, "analysis") \
@@ -263,14 +278,9 @@ class DirOptions:
     def analysis_dir(self, value):
         """Directory to store analysis results.
         """
+        value = os.path.relpath(value, self.project_root)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
-
-    @OptionsBase.property(action=_singleton_cli.ReadableDirAction, default=calling_script_dir)
-    def project_root(self, value):
-        """If set, data paths relative to the invoked script's paths are stored instead of their
-        absolute path counterparts.
-        """
-        _singleton_cli.ReadableDirAction.assert_valid_value(value)
+        return value
 
 
 @_singleton_cli.property_class(OptionsBase)
