@@ -124,8 +124,8 @@ class WritableDirAction(ExistingDirAction):
 
 
 class WritableOrCreableDirAction(ExistingDirAction):
-    """ArgumentParser action that verifies that argument is either an existing dir
-    or a path where a new folder can be created
+    """ArgumentParser action that verifies that argument is either an existing writable dir
+    or a writable parent exists.
     """
 
     @classmethod
@@ -134,11 +134,22 @@ class WritableOrCreableDirAction(ExistingDirAction):
         and is writable.
         """
         try:
-            ReadableDirAction.assert_valid_value(target_dir)
+            WritableDirAction.assert_valid_value(target_dir)
         except AssertionError:
             if os.path.dirname(target_dir) and not os.access(os.path.dirname(target_dir), os.W_OK):
                 raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
+class ReadableOrCreableDirAction(ExistingDirAction):
+    @classmethod
+    def assert_valid_value(cls, target_dir):
+        """Assert that target_dir is a readable dir, or its parent exists
+        and is writable.
+        """
+        try:
+            ReadableDirAction.assert_valid_value(target_dir)
+        except AssertionError:
+            if os.path.dirname(target_dir) and not os.access(os.path.dirname(target_dir), os.W_OK):
+                raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
 class PositiveFloatAction(ValidationAction):
     """Check that a numerical value is greater than zero.

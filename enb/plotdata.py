@@ -370,7 +370,7 @@ def parallel_render_plds_by_group(
     try:
 
         if enb.ray_cluster.on_remote_node():
-            os.chdir(os.path.expanduser("~/.enb_remote"))
+            os.chdir(os.path.expanduser(enb.ray_cluster.RemoteNode.remote_project_mount_path))
         else:
             os.chdir(options.project_root)
 
