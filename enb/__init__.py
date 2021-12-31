@@ -93,4 +93,5 @@ if not ray_cluster.on_remote_process():
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
 
-        
+# Run the setter functions on the default values too, allowing validation and normalization
+config.options.update(config.options, trigger_events=True)

@@ -741,12 +741,15 @@ class ATable(metaclass=MetaTable):
             old_globals = dict(globals)
             globals.update(_column_name=column_properties.name,
                            _column_properties=column_properties)
-            
+
             # The current working dir is updated for remote processes in the head or the remote nodes
             try:
                 original_wd = os.getcwd()
-                if ray_cluster.on_remote_node():
-                    os.chdir(os.path.expanduser("~/.enb_remote"))
+                if ray_cluster.on_remote_process():
+                    if ray_cluster.on_remote_node():
+                        os.chdir(os.path.expanduser("~/.enb_remote"))
+                    else:
+                        os.chdir(options.project_root)
 
                 returned_value = fun(self, index, row)
                 if returned_value is not None:
@@ -1648,4 +1651,7 @@ def get_canonical_path(file_path):
     :return: the canonical version of a path to be stored in the database, to make sure
       indexing is consistent across code using |ATable| and its subclasses.
     """
-    return os.path.relpath(file_path, options.project_root)
+    if file_path[0] == os.sep:
+        return os.path.relpath(file_path, options.project_root)
+    else:
+        return file_path

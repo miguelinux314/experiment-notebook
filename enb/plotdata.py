@@ -367,28 +367,38 @@ def parallel_render_plds_by_group(
         plot_title=None, show_legend=True):
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
     """
-    return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
-                                column_properties=column_properties, global_x_label=global_x_label,
-                                horizontal_margin=horizontal_margin, vertical_margin=vertical_margin,
-                                y_min=y_min, y_max=y_max,
-                                force_monochrome_group=force_monochrome_group,
-                                x_min=x_min, x_max=x_max,
-                                y_labels_by_group_name=y_labels_by_group_name,
-                                color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                combine_groups=combine_groups, semilog_y_min_bound=semilog_y_min_bound,
-                                group_row_margin=group_row_margin,
-                                group_name_order=group_name_order,
-                                fig_width=fig_width, fig_height=fig_height,
-                                global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
-                                show_grid=show_grid,
-                                x_tick_list=x_tick_list,
-                                x_tick_label_list=x_tick_label_list,
-                                x_tick_label_angle=x_tick_label_angle,
-                                y_tick_list=y_tick_list,
-                                y_tick_label_list=y_tick_label_list,
-                                semilog_y=semilog_y, semilog_y_base=semilog_y_base,
-                                plot_title=plot_title,
-                                show_legend=show_legend)
+    try:
+
+        if enb.ray_cluster.on_remote_node():
+            os.chdir(os.path.expanduser("~/.enb_remote"))
+        else:
+            os.chdir(options.project_root)
+
+        return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
+                                    column_properties=column_properties, global_x_label=global_x_label,
+                                    horizontal_margin=horizontal_margin, vertical_margin=vertical_margin,
+                                    y_min=y_min, y_max=y_max,
+                                    force_monochrome_group=force_monochrome_group,
+                                    x_min=x_min, x_max=x_max,
+                                    y_labels_by_group_name=y_labels_by_group_name,
+                                    color_by_group_name=color_by_group_name, global_y_label=global_y_label,
+                                    combine_groups=combine_groups, semilog_y_min_bound=semilog_y_min_bound,
+                                    group_row_margin=group_row_margin,
+                                    group_name_order=group_name_order,
+                                    fig_width=fig_width, fig_height=fig_height,
+                                    global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
+                                    show_grid=show_grid,
+                                    x_tick_list=x_tick_list,
+                                    x_tick_label_list=x_tick_label_list,
+                                    x_tick_label_angle=x_tick_label_angle,
+                                    y_tick_list=y_tick_list,
+                                    y_tick_label_list=y_tick_label_list,
+                                    semilog_y=semilog_y, semilog_y_base=semilog_y_base,
+                                    plot_title=plot_title,
+                                    show_legend=show_legend)
+    except Exception as ex:
+        enb.logger.error(f"Error rendering to {output_plot_path} (cwd={os.getcwd()}: {repr(ex)}")
+        raise ex
 
 
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
@@ -728,7 +738,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.grid("major", alpha=0.5)
             plt.sca(ca)
 
-        with enb.logger.verbose_context(f"Saving plot to {output_plot_path}"):
+
+        with enb.logger.verbose_context(f"Saving plot to {output_plot_path} "):
             plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
 
         plt.close()

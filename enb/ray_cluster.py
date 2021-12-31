@@ -75,7 +75,8 @@ class HeadNode:
         with logger.info_context(f"Initializing ray client on local port {self.ray_port}"):
             ray.init(address=f"localhost:{self.ray_port}",
                      _redis_password=self.session_password,
-                     logging_level=logging.CRITICAL)
+                     runtime_env=dict(working_dir=options.project_root),
+                     logging_level=logging.CRITICAL if options.verbose <= 1 else logging.INFO)
 
 
         if options.ssh_cluster_csv_path:
@@ -319,11 +320,13 @@ def on_remote_node():
     running on a node different from the head.
     """
     if not on_remote_process():
+        print("Base process")
         return False
-    try:
-        return options._name_to_property["head_address"] != get_node_ip()
-    except AttributeError as ex:
-        return False
+    else:
+        try:
+            return options._name_to_property["head_address"] != get_node_ip()
+        except KeyError:
+            return False
 
 def get_node_ip():
     """Get the current IP address of this node.
