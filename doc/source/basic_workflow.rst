@@ -150,7 +150,7 @@ Using approach (1) above, i.e., pure `enb`, there are several tools at your avai
 to analyze and report one or more data columns from a dataframe returned by |ATable|'s `get_df` method.
 
 .. note::
-    * The :doc:` analyzing_data` page provides detailed information on how to analyze and plot
+    * The :doc:`analyzing_data` page provides detailed information on how to analyze and plot
       different types of data with |enb|, using the |aanalysis| module.
     * You can use |aanalysis| tools also for |DataFrame| instances obtained from |DataFrame| instances
       directly obtained from CSV files (e.g., produced by some other tool).
