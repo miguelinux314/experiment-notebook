@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""Automatic analysis and report of of pandas :class:`pandas.DataFrames`
-(e.g., produced by :class:`enb.experiment.Experiment` instances)
-using pyplot.
+"""Project module for ML
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
 __since__ = "2021/09/01"

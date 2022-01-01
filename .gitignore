@@ -46,3 +46,5 @@ enb.egg-info/
 /dist/
 /test/persistence_*
 enb/plugins/plugin_*/build_errors.log
+
+TODO.txt
