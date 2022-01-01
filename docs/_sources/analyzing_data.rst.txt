@@ -53,7 +53,7 @@ This renders a basic plot with information about the distribution, the average, 
 as shown in the next figure. The returned `analysis_df` dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.
 
-.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_sepal_width_histogram.png
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png
     :width: 100%
 
 Two numeric columns
@@ -83,7 +83,7 @@ method that analyzes and plots
 In addition to the `analysis_df` dataframe with numeric results, this will produce a scatter plot like the following,
 which also shows +/- 1 horizontal and vertical standard deviations.
 
-.. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png
     :width: 100%
 
 Columns with dictionaries
@@ -160,7 +160,7 @@ count per mode for each of the selected groups (given in the `block_size` column
 
 The resulting figure is shown below
 
-.. figure:: _static/analysis_gallery/DictNumericAnalyzer_mode_count_groupby-block_size_line.png
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
     :width: 100%
 
 
@@ -199,7 +199,7 @@ Grouping is not restricted to |ScalarNumericAnalyzer|. It can be used with other
 
 The resulting scatter plot from this call is shown next:
 
-.. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width,petal_length_groupby-class_scatter.png
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png
 
 
 Grouping by task families
@@ -218,4 +218,4 @@ In the following figure, an example with 6 algorithms, each with different confi
 that affect their "Compressed data rate". Please see the :doc:`image_compression` page for a full
 experiment that uses task families and produces plots like the one in the figure.
 
-.. figure:: _static/analysis_gallery/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png
+.. figure:: _static/lossy_experiment/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png
