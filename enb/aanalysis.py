@@ -97,8 +97,9 @@ class Analyzer(enb.atable.ATable):
                                   f"list of available modes ({repr(self.valid_render_modes)}")
 
     def get_df(self, full_df, target_columns,
-        output_plot_dir=None, group_by=None, reference_group=None, column_to_properties=None,
-        selected_render_modes=None, show_global=None, show_count=True, **render_kwargs):
+               selected_render_modes=None,
+               output_plot_dir=None, group_by=None, reference_group=None, column_to_properties=None,
+               show_global=None, show_count=True, **render_kwargs):
         """
         Analyze a :class:`pandas.DataFrame` instance, optionally producing plots, and returning the computed
         dataframe with the analysis results.
@@ -110,9 +111,11 @@ class Analyzer(enb.atable.ATable):
         to automatically transform None values into their defaults.
 
         :param full_df: full DataFrame instance with data to be plotted and/or analyzed.
-        :param target_columns: columns to be analyzed. Typically a list of column names, although
+        :param target_columns: columns to be analyzed. Typically, a list of column names, although
           each subclass may redefine the accepted format (e.g., pairs of column names). If None,
           all scalar, non string columns are used.
+        :param selected_render_modes: a potentially empty list of mode names, all of which
+          must be in self.valid_render_modes. Each mode represents a type of analysis or plotting.
         :param group_by: if not None, the name of the column to be used for grouping.
         :param reference_group: if not None, the reference against which data are to be analyzed.
           Its meaning is defined by the Analyzer subclass, although typically it can be
@@ -124,8 +127,6 @@ class Analyzer(enb.atable.ATable):
           in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
           columns.
-        :param selected_render_modes: a potentially empty list of mode names, all of which
-          must be in self.valid_render_modes
         :param show_global: if True, a group containing all elements is also included in the analysis
 
         :return: a |DataFrame| instance with analysis results
@@ -140,14 +141,16 @@ class Analyzer(enb.atable.ATable):
 
         srm = selected_render_modes
 
-        def normalized_wrapper(self, full_df, target_columns, reference_group,
-                               output_plot_dir, group_by, column_to_properties,
-                               selected_render_modes,
+        def normalized_wrapper(self, full_df, target_columns, output_plot_dir,
+                               selected_render_modes, group_by, reference_group,
+                               column_to_properties,
                                **render_kwargs):
             # Get the summary table with the requested data analysis
             summary_table = self.build_summary_atable(
-                full_df=full_df, target_columns=target_columns, reference_group=reference_group,
+                full_df=full_df,
+                target_columns=target_columns,
                 group_by=group_by,
+                reference_group=reference_group,
                 include_all_group=show_global)
 
             old_nnr = options.no_new_results
@@ -1207,9 +1210,35 @@ class DictNumericAnalyzer(Analyzer):
         self.column_name_to_keys = {}
 
     def get_df(self, full_df, target_columns,
-               key_to_x=None,
+               selected_render_modes=None,
                output_plot_dir=None, group_by=None, reference_group=None, column_to_properties=None,
-               selected_render_modes=None, show_global=None, show_count=True, **render_kwargs):
+               show_global=None, show_count=True,
+               key_to_x=None,
+               **render_kwargs):
+        """Analyze and plot columns containing dictionaries with numeric data.
+
+        :param full_df: full DataFrame instance with data to be plotted and/or analyzed.
+        :param target_columns: columns to be analyzed. Typically, a list of column names, although
+          each subclass may redefine the accepted format (e.g., pairs of column names). If None,
+          all scalar, non string columns are used.
+        :param selected_render_modes: a potentially empty list of mode names, all of which
+          must be in self.valid_render_modes. Each mode represents a type of analysis or plotting.
+        :param group_by: if not None, the name of the column to be used for grouping.
+        :param reference_group: if not None, the reference against which data are to be analyzed.
+          Its meaning is defined by the Analyzer subclass, although typically it can be
+          the name of a column, the name of a group (if grouping is enabled), or a TaskFamily instance
+          (when grouping by task families). If None, it is ignored.
+        :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
+          If None, the default output plots path given by `enb.config.options` is used.
+        :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
+          in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
+          :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
+          columns.
+        :param show_global: if True, a group containing all elements is also included in the analysis
+        :param key_to_x: if provided, it can be a mapping between the keys found in the column data dictionaries,
+          and the x value in which they should be plotted.
+
+        :return: a |DataFrame| instance with analysis results"""
         try:
             self.key_to_x = dict(key_to_x) if key_to_x is not None else key_to_x
 
