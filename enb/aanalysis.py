@@ -57,6 +57,8 @@ class Analyzer(enb.atable.ATable):
     show_count = True
     # Show a group containing all elements?
     show_global = False
+    # If a reference group is used as baseline, should it be shown in the analysis itself?
+    show_reference_group = False
     # Main marker size
     main_marker_size = 4
     # Secondary (e.g., individual data) marker size
@@ -117,10 +119,7 @@ class Analyzer(enb.atable.ATable):
         :param selected_render_modes: a potentially empty list of mode names, all of which
           must be in self.valid_render_modes. Each mode represents a type of analysis or plotting.
         :param group_by: if not None, the name of the column to be used for grouping.
-        :param reference_group: if not None, the reference against which data are to be analyzed.
-          Its meaning is defined by the Analyzer subclass, although typically it can be
-          the name of a column, the name of a group (if grouping is enabled), or a TaskFamily instance
-          (when grouping by task families). If None, it is ignored.
+        :param reference_group: if not None, the reference group name against which data are to be analyzed.
         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
           If None, the default output plots path given by `enb.config.options` is used.
         :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
@@ -156,7 +155,7 @@ class Analyzer(enb.atable.ATable):
             old_nnr = options.no_new_results
             try:
                 options.no_new_results = False
-                summary_df = summary_table.get_df(reference_df=full_df)
+                summary_df = summary_table.get_df()
             finally:
                 options.no_new_results = old_nnr
 
@@ -224,6 +223,19 @@ class Analyzer(enb.atable.ATable):
                     show_global=show_global, show_count=show_count,
                     **(dict(render_kwargs) if render_kwargs is not None else dict()))
 
+                if reference_group is not None:
+                    if not self.show_reference_group:
+                        # Remove the plottable data for the reference group if one is used
+                        filtered_plds = {k: v for k, v in column_kwargs["pds_by_group_name"].items()
+                                         if k != reference_group}
+                        if len(column_kwargs["pds_by_group_name"]) <= len(filtered_plds):
+                            raise ValueError(f"Invalid reference_group {repr(reference_group)} not found.")
+                        column_kwargs["pds_by_group_name"] = filtered_plds
+
+                    # The remaining groups are added a vertical line at 0 to better signal the difference
+                    for k, v in column_kwargs["pds_by_group_name"].items():
+                        v.insert(0, plotdata.VerticalLine(x_position=0, alpha=0.3, line_width=0.5, color="black"))
+
                 # All arguments to the parallel rendering function are ready; their associated tasks as created
                 render_ids.append(enb.plotdata.parallel_render_plds_by_group.remote(
                     **{k: ray.put(v) for k, v in column_kwargs.items()}))
@@ -266,7 +278,10 @@ class Analyzer(enb.atable.ATable):
 
         # Get the output path. Plots are overwritten by default
         column_kwargs["output_plot_path"] = self.get_output_pdf_path(
-            column_selection, group_by, output_plot_dir, render_mode)
+            column_selection=column_selection,
+            group_by=group_by, reference_group=reference_group,
+            output_plot_dir=output_plot_dir,
+            render_mode=render_mode)
         column_kwargs["pds_by_group_name"] = {
             group_label: group_plds for group_label, group_plds
             in sorted(summary_df[["group_label", f"{column_selection}_render-{render_mode}"]].values,
@@ -295,11 +310,19 @@ class Analyzer(enb.atable.ATable):
 
         return column_kwargs
 
-    def get_output_pdf_path(self, column_selection, group_by, output_plot_dir, render_mode):
+    def get_output_pdf_path(self, column_selection, group_by, reference_group, output_plot_dir, render_mode):
+        if isinstance(column_selection, str):
+            column_selection_str = column_selection
+        else:
+            column_selection_str = "__vs__".join(column_selection)
+
         return os.path.join(
             output_plot_dir,
-            f"{self.__class__.__name__}_"
-            f"{column_selection}_groupby-{get_groupby_str(group_by=group_by)}_{render_mode}.pdf")
+            f"{self.__class__.__name__}-"
+            f"{column_selection_str}-{render_mode}" +
+            (f"-groupby__{get_groupby_str(group_by=group_by)}" if group_by else "") +
+            (f"-referencegroup__{reference_group}" if reference_group else "") +
+            ".pdf")
 
     @classmethod
     def normalize_parameters(cls, f, group_by, column_to_properties, target_columns,
@@ -424,7 +447,8 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         :param analyzer: :class:`enb.aanalysis.Analyzer` subclass instance corresponding to this summary table.
         :param full_df: full dataframe specified for analysis.
         :param target_columns: columns for which an analysis is being requested.
-        :param reference_group: reference column or group to be used in the analysis.
+        :param reference_group: if not None, it must be the name of one group, which is used as baseline.
+          Different subclasses may implement this in different ways.
         :param group_by: grouping configuration for this summary. See the specific subclass help for more inforamtion.
         :param include_all_group: if True, an "All" group with all input samples is included in the analysis.
         """
@@ -437,6 +461,9 @@ class AnalyzerSummary(enb.atable.SummaryTable):
                          include_all_group=(include_all_group if include_all_group is not None
                                             else analyzer.show_global))
         self.analyzer = analyzer
+        self.reference_group = reference_group
+        self.group_by = group_by
+        self.include_all_group = include_all_group
 
         # Add columns that compute the list of plotting elements of each group, if needed
         for selected_render_mode in self.analyzer.selected_render_modes:
@@ -593,6 +620,9 @@ class ScalarNumericAnalyzer(Analyzer):
             else:
                 column_kwargs["global_x_label"] = column_to_properties[column_selection].label
 
+            if reference_group is not None:
+                column_kwargs["global_x_label"] += f" difference vs. {reference_group} average"
+
         if "global_y_label" not in column_kwargs:
             if self.main_alpha > 0 and self.bar_width_fraction > 0:
                 column_kwargs["global_y_label"] = f"Histogram"
@@ -671,8 +701,10 @@ class ScalarNumericSummary(AnalyzerSummary):
     Note that dynamically in this context implies that modifying the returned instance's class columns does
     not affect the definition of other instances of this class.
 
-    Note that in most cases, the columns returned by default
-    should suffice.
+    Note that in most cases, the columns returned by default should suffice.
+
+    If a reference_group is provided, its average is computed and subtracted from all values when
+    generating the plot.
     """
 
     def __init__(self, analyzer, full_df, target_columns, reference_group, group_by, include_all_group):
@@ -683,8 +715,10 @@ class ScalarNumericSummary(AnalyzerSummary):
             self=self,
             analyzer=analyzer, full_df=full_df, target_columns=target_columns,
             reference_group=reference_group, group_by=group_by, include_all_group=include_all_group)
-
+        self.target_columns = target_columns
         self.column_to_xmin_xmax = {}
+        self.set_reference_averages()
+
         for column_name in target_columns:
             if column_name not in full_df.columns:
                 raise ValueError(f"Invalid column name selection {repr(column_name)}. "
@@ -706,6 +740,31 @@ class ScalarNumericSummary(AnalyzerSummary):
                 self.column_to_xmin_xmax[column_name] = [None, None]
 
         self.move_render_columns_back()
+
+    def set_reference_averages(self):
+        if self.reference_group is not None:
+            if self.group_by is None:
+                raise ValueError(f"Cannot use a not-None reference_group if group_by is None "
+                                 f"(here is {repr(self.reference_group)})")
+
+            for group_label, group_df in self.split_groups():
+                if group_label == self.reference_group:
+                    self.reference_avg_by_column = {
+                        c: group_df[group_df[c].notna()][c].mean()
+                        for c in self.target_columns
+                    }
+
+                    self.reference_df = self.reference_df.copy()
+                    for c, avg in self.reference_avg_by_column.items():
+                        self.reference_df[c] -= avg
+                    break
+            else:
+                found_groups_str = ','.join(repr(label) for label, _ in self.split_groups(
+                    reference_df=self.reference_df, include_all_group=self.include_all_group))
+                raise ValueError(f"Cannot find {self.reference_group} "
+                                 f"among defined groups ({found_groups_str})")
+        else:
+            self.reference_avg_by_column = None
 
     def add_scalar_description_columns(self, column_name):
         """Add the scalar description columns for a given column_name in the |DataFrame| instance
@@ -763,7 +822,8 @@ class ScalarNumericSummary(AnalyzerSummary):
         column_name = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
         reference_group = kwargs["reference_group"]
-        column_series = group_df[column_name]
+        column_series = group_df[column_name].copy()
+
         if render_mode not in _self.analyzer.valid_render_modes:
             raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
 
@@ -799,16 +859,22 @@ class ScalarNumericSummary(AnalyzerSummary):
         # Use numpy to obtain the absolute mass distribution of the data.
         # density=False is used so that we can detect the case where
         # some data is not used.
+        if self.reference_group is not None:
+            analysis_range = (self.reference_df[column_name].min(),
+                              self.reference_df[column_name].max())
+
         hist_y_values, bin_edges = np.histogram(
             finite_only_series,
             bins=_self.analyzer.histogram_bin_count,
-            range=analysis_range, density=False)
+            range=analysis_range,
+            density=False)
 
         # Verify that the histogram uses all data
         if sum(hist_y_values) != len(finite_only_series):
             justified_difference = False
             error_msg = f"Not all samples are included in the scalar value histogram for {column_name} " \
-                        f"({sum(hist_y_values)} used out of {len(column_series)})."
+                        f"({sum(hist_y_values)} used out of {len(column_series)}). " \
+                        f"The used range was [{analysis_range[0]}, {analysis_range[0]}]."
             if math.isinf(row[f"{column_name}_min"]) or math.isinf(row[f"{column_name}_max"]):
                 error_msg += f" Note that infinite values have been found in the column, " \
                              f"which are not included in the analysis."
@@ -982,12 +1048,6 @@ class TwoNumericAnalyzer(Analyzer):
             column_kwargs["group_row_margin"] = 0.2 * len(summary_df)
 
         return column_kwargs
-
-    def get_output_pdf_path(self, column_selection, group_by, output_plot_dir, render_mode):
-        return os.path.join(
-            output_plot_dir,
-            f"{self.__class__.__name__}_"
-            f"{'__'.join(column_selection)}_groupby-{get_groupby_str(group_by=group_by)}_{render_mode}.pdf")
 
     def build_summary_atable(self, full_df, target_columns, reference_group, group_by, include_all_group):
         return TwoNumericSummary(analyzer=self, full_df=full_df, reference_group=reference_group,
@@ -1224,10 +1284,7 @@ class DictNumericAnalyzer(Analyzer):
         :param selected_render_modes: a potentially empty list of mode names, all of which
           must be in self.valid_render_modes. Each mode represents a type of analysis or plotting.
         :param group_by: if not None, the name of the column to be used for grouping.
-        :param reference_group: if not None, the reference against which data are to be analyzed.
-          Its meaning is defined by the Analyzer subclass, although typically it can be
-          the name of a column, the name of a group (if grouping is enabled), or a TaskFamily instance
-          (when grouping by task families). If None, it is ignored.
+        :param reference_group: if not None, the reference group name against which data are to be analyzed.
         :param output_plot_dir: path of the directory where the plot/plots is/are to be saved.
           If None, the default output plots path given by `enb.config.options` is used.
         :param column_to_properties: dictionary with ColumnProperties entries. ATable instances provide it
@@ -1262,8 +1319,8 @@ class DictNumericAnalyzer(Analyzer):
             return super().get_df(full_df=combined_df,
                                   target_columns=target_columns,
                                   output_plot_dir=output_plot_dir,
-                                  reference_group=reference_group,
                                   group_by=group_by,
+                                  reference_group=reference_group,
                                   column_to_properties=column_to_properties,
                                   selected_render_modes=selected_render_modes,
                                   show_global=show_global, show_count=show_count,

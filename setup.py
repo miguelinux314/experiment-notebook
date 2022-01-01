@@ -11,9 +11,6 @@ __since__ = "2019/09/19"
 
 import os
 import importlib
-import sys
-import subprocess
-import setuptools
 
 setup_package_list = ["setuptools", "wheel"]
 

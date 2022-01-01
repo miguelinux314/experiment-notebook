@@ -34,7 +34,7 @@ class PlottableData:
 
     def __init__(self, data=None, axis_labels=None, label=None,
                  extra_kwargs=None, alpha=None, legend_column_count=None,
-                 marker=None,
+                 marker=None, color=None,
                  marker_size=None):
         self.data = data
         self.axis_labels = axis_labels
@@ -44,6 +44,7 @@ class PlottableData:
         self.legend_column_count = legend_column_count if legend_column_count is not None else self.legend_column_count
         self.marker = marker
         self.marker_size = marker_size
+        self.color = color if color is not None else self.color
 
     def render(self, axes=None):
         """Render data in current figure.
@@ -348,6 +349,38 @@ class HorizontalBand(PlottableData2D):
                        ncol=self.legend_column_count, facecolor=(1, 1, 1, 0))
 
 
+class HorizontalLine(PlottableData):
+    """Draw a horizontal line across the whole subplot.
+    """
+
+    def __init__(self, y_position, line_width=1, line_style='-', **kwargs):
+        super().__init__(**kwargs)
+        self.y_position = y_position
+        self.line_width = line_width
+        self.line_style = line_style
+
+    def render(self, axes=None):
+        axes = plt if axes is None else axes
+        axes.axhline(y=self.y_position, color=self.color, linestyle=self.line_style,
+                     alpha=self.alpha)
+
+
+class VerticalLine(PlottableData):
+    """Draw a horizontal line across the whole subplot.
+    """
+
+    def __init__(self, x_position, line_width=1, line_style='-', **kwargs):
+        super().__init__(**kwargs)
+        self.x_position = x_position
+        self.line_width = line_width
+        self.line_style = line_style
+
+    def render(self, axes=None):
+        axes = plt if axes is None else axes
+        axes.axvline(x=self.x_position, color=self.color, linestyle=self.line_style,
+                     alpha=self.alpha)
+
+
 @enb.ray_cluster.remote()
 def parallel_render_plds_by_group(
         pds_by_group_name, output_plot_path, column_properties,
@@ -455,8 +488,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param global_y_label_pos: position of the global y label. Needed if the y axis has ticks with
         long labels.
     :param legend_column_count: when the legend is shown, use this many columns.
-    :param force_monochrome_group: if True, all plottable data in each group is set to the same color,
-        defined by color_cycle.
+    :param force_monochrome_group: if True, all plottable data with non-None color in each group
+      is set to the same color, defined by color_cycle.
     
     Axis configuration:
     
@@ -495,13 +528,12 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param plot_title: title to be displayed.
     :param show_legend: if True, legends are added to the plot.
     """
-    with enb.logger.verbose_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
-                                    sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
+    with enb.logger.info_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
+                                 sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
         if len(pds_by_group_name) < 1:
-            if options.verbose > 1:
-                print("[W]arning: trying to render an empty pds_by_group_name dict. "
-                      f"output_plot_path={output_plot_path}, column_properties={column_properties}. "
-                      f"No analysis is performed.")
+            enb.logger.info("Warning: trying to render an empty pds_by_group_name dict. "
+                            f"output_plot_path={output_plot_path}, column_properties={column_properties}. "
+                            f"No analysis is performed.")
             return
 
         legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
@@ -589,6 +621,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         global_y_min = float("inf")
         global_y_max = float("-inf")
         for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
+            if not isinstance(pld, PlottableData2D):
+                continue
             x_values = np.array(pld.x_values, copy=False)
             if len(x_values) > 0:
                 x_values = x_values[~np.isnan(x_values)]
@@ -616,7 +650,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 pld.y_label = None
                 d = dict()
                 if force_monochrome_group:
-                    pld.color = group_color
+                    pld.color = group_color if pld.color is None else pld.color
                 d.update(color=pld.color)
                 try:
                     pld.extra_kwargs.update(d)
@@ -745,7 +779,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.grid("major", alpha=0.5)
             plt.sca(ca)
 
-        with enb.logger.verbose_context(f"Saving plot to {output_plot_path} "):
+        with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
             plt.savefig(output_plot_path, bbox_inches="tight")
             if output_plot_path.endswith(".pdf"):
                 plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300, transparent=True)

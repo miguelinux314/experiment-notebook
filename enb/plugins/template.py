@@ -14,6 +14,7 @@ import glob
 import shutil
 import tempfile
 import jinja2
+import stat
 
 from .installable import Installable, InstallableMeta
 import enb.config
@@ -117,6 +118,8 @@ class Template(Installable, metaclass=MetaTemplate):
                 os.makedirs(output_path, exist_ok=True)
                 continue
 
+            input_is_executable = os.access(input_path, os.X_OK)
+
             # Files ending in '.enbt' will be identified as templates, processed and stripped of their extension.
             is_templatable = os.path.isfile(input_path) \
                              and os.path.basename(input_path).endswith(cls.templatable_extension)
@@ -142,6 +145,8 @@ class Template(Installable, metaclass=MetaTemplate):
 
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             shutil.copy(input_path, output_path)
+            if input_is_executable:
+                os.chmod(output_path, os.stat(output_path).st_mode | stat.S_IEXEC)
 
         cls.build(installation_dir=installation_dir)
         print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")

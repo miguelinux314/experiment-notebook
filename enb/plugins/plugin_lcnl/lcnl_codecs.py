@@ -51,7 +51,7 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
             param_dict["restricted_code_options_flag"] = restricted_code_options_flag
         for p in (ldc_encoder_path, ldc_decoder_path, ldc_header_tool_path):
             assert os.path.isfile(p), f"Binary {p} does not exist"
-            assert os.access(p, os.X_OK), f"Binary {p} is not executable"
+            assert os.access(p, os.EX_OK), f"Binary {p} is not executable"
         icompression.WrapperCodec.__init__(
             self, compressor_path=ldc_encoder_path,
             decompressor_path=ldc_decoder_path, param_dict=param_dict)
