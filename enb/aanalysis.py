@@ -232,10 +232,6 @@ class Analyzer(enb.atable.ATable):
                             raise ValueError(f"Invalid reference_group {repr(reference_group)} not found.")
                         column_kwargs["pds_by_group_name"] = filtered_plds
 
-                    # The remaining groups are added a vertical line at 0 to better signal the difference
-                    for k, v in column_kwargs["pds_by_group_name"].items():
-                        v.insert(0, plotdata.VerticalLine(x_position=0, alpha=0.3, line_width=0.5, color="black"))
-
                 # All arguments to the parallel rendering function are ready; their associated tasks as created
                 render_ids.append(enb.plotdata.parallel_render_plds_by_group.remote(
                     **{k: ray.put(v) for k, v in column_kwargs.items()}))
@@ -392,10 +388,16 @@ class Analyzer(enb.atable.ATable):
             #                   any(isinstance(pld, cls) for cls in (enb.plotdata.LineData))
             # candidate_plds = (pld for pld in pld_list if isinstance(pld, plotdata.LineData))
             for pld in pld_list:
-                global_x_min = min(global_x_min, min(pld.x_values) if len(pld.x_values) > 0 else global_x_min)
-                global_x_max = max(global_x_max, max(pld.x_values) if len(pld.x_values) > 0 else global_x_max)
-                global_y_min = min(global_y_min, min(pld.y_values) if len(pld.y_values) > 0 else global_y_min)
-                global_y_max = max(global_y_max, max(pld.y_values) if len(pld.y_values) > 0 else global_y_max)
+                try:
+                    global_x_min = min(global_x_min, min(pld.x_values) if len(pld.x_values) > 0 else global_x_min)
+                    global_x_max = max(global_x_max, max(pld.x_values) if len(pld.x_values) > 0 else global_x_max)
+                except AttributeError:
+                    assert not isinstance(pld, plotdata.PlottableData2D)
+                try:
+                    global_y_min = min(global_y_min, min(pld.y_values) if len(pld.y_values) > 0 else global_y_min)
+                    global_y_max = max(global_y_max, max(pld.y_values) if len(pld.y_values) > 0 else global_y_max)
+                except AttributeError:
+                    assert not isinstance(pld, plotdata.PlottableData2D)
         if "y_min" not in column_kwargs:
             column_kwargs["y_min"] = global_y_min
         if "y_max" not in column_kwargs:
@@ -464,6 +466,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         self.reference_group = reference_group
         self.group_by = group_by
         self.include_all_group = include_all_group
+        self.target_columns = target_columns
 
         # Add columns that compute the list of plotting elements of each group, if needed
         for selected_render_mode in self.analyzer.selected_render_modes:
@@ -478,6 +481,8 @@ class AnalyzerSummary(enb.atable.SummaryTable):
                     column_properties=enb.atable.ColumnProperties(
                         name=self.analyzer.get_render_column_name(column_selection, selected_render_mode),
                         has_object_values=True))
+
+        self.apply_reference_bias()
 
     def split_groups(self, reference_df=None, include_all_group=None):
         try:
@@ -524,6 +529,15 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         for k, v in ((k, v) for k, v in self.column_to_properties.items() if f"_render-" in k):
             column_to_properties[k] = v
         self.column_to_properties = column_to_properties
+
+    def apply_reference_bias(self):
+        """By default, no action is performed relative to the presence of a reference group,
+        and not bias is introduced in the dataframe. Subclasses may overwrite this.
+        """
+        if self.reference_group:
+            enb.logger.warning(f"A reference group {repr(self.reference_group)} is selected "
+                               f"but {self.__class__} does not implement its apply_reference_bias method.")
+        return
 
 
 def is_family_grouping(group_by):
@@ -715,9 +729,7 @@ class ScalarNumericSummary(AnalyzerSummary):
             self=self,
             analyzer=analyzer, full_df=full_df, target_columns=target_columns,
             reference_group=reference_group, group_by=group_by, include_all_group=include_all_group)
-        self.target_columns = target_columns
         self.column_to_xmin_xmax = {}
-        self.set_reference_averages()
 
         for column_name in target_columns:
             if column_name not in full_df.columns:
@@ -741,7 +753,11 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         self.move_render_columns_back()
 
-    def set_reference_averages(self):
+    def apply_reference_bias(self):
+        """Compute the average value of the reference group for each target column and
+        subtract it from the dataframe being analyzed. If not reference group is present, 
+        no action is performed.
+        """
         if self.reference_group is not None:
             if self.group_by is None:
                 raise ValueError(f"Cannot use a not-None reference_group if group_by is None "
@@ -930,6 +946,9 @@ class ScalarNumericSummary(AnalyzerSummary):
                 line_width=_self.analyzer.secondary_line_width,
                 vertical=False))
 
+        if self.reference_group:
+            row[_column_name].append(plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
+
 
 @enb.config.aini.managed_attributes
 class TwoNumericAnalyzer(Analyzer):
@@ -1001,9 +1020,11 @@ class TwoNumericAnalyzer(Analyzer):
         except (KeyError, TypeError):
             y_column_properties = enb.atable.ColumnProperties(y_column_name)
         if "global_x_label" not in column_kwargs:
-            column_kwargs["global_x_label"] = x_column_properties.label
+            column_kwargs["global_x_label"] = x_column_properties.label + \
+                                              (f" difference vs. {reference_group} average" if reference_group else "")
         if "global_y_label" not in column_kwargs:
-            column_kwargs["global_y_label"] = y_column_properties.label
+            column_kwargs["global_y_label"] = y_column_properties.label + \
+                                              (f" difference vs. {reference_group} average" if reference_group else "")
 
         # Calculate axis limits
         if "x_min" not in column_kwargs:
@@ -1071,6 +1092,7 @@ class TwoNumericSummary(ScalarNumericSummary):
             self=self, analyzer=analyzer, full_df=full_df,
             target_columns=target_columns, reference_group=reference_group,
             group_by=group_by, include_all_group=include_all_group)
+        self.apply_reference_bias()
 
         # Add columns that compute the summary information
         self.column_to_xmin_xmax = {}
@@ -1096,6 +1118,40 @@ class TwoNumericSummary(ScalarNumericSummary):
             self.add_twoscalar_description_columns(column_names=x_y_names)
 
         self.move_render_columns_back()
+
+    def apply_reference_bias(self):
+        """Compute the average value of the reference group for each target column and
+        subtract it from the dataframe being analyzed. If not reference group is present,
+        no action is performed.
+        """
+        if self.reference_group is not None:
+            if self.group_by is None:
+                raise ValueError(f"Cannot use a not-None reference_group if group_by is None "
+                                 f"(here is {repr(self.reference_group)})")
+
+            for group_label, group_df in self.split_groups():
+                if group_label == self.reference_group:
+                    target_columns = set()
+                    for c1, c2 in self.target_columns:
+                        target_columns.add(c1)
+                        target_columns.add(c2)
+
+                    self.reference_avg_by_column = {
+                        c: group_df[group_df[c].notna()][c].mean()
+                        for c in target_columns
+                    }
+
+                    self.reference_df = self.reference_df.copy()
+                    for c, avg in self.reference_avg_by_column.items():
+                        self.reference_df[c] -= avg
+                    break
+            else:
+                found_groups_str = ','.join(repr(label) for label, _ in self.split_groups(
+                    reference_df=self.reference_df, include_all_group=self.include_all_group))
+                raise ValueError(f"Cannot find {self.reference_group} "
+                                 f"among defined groups ({found_groups_str})")
+        else:
+            self.reference_avg_by_column = None
 
     def add_twoscalar_description_columns(self, column_names):
         """Add columns that compute several statistics considering two columns jointly, e.g., their correlation.
@@ -1212,6 +1268,22 @@ class TwoNumericSummary(ScalarNumericSummary):
             raise SyntaxError(f"Invalid render mode {repr(render_mode)} not within the "
                               f"supported ones for {self.analyzer.__class__.__name__} "
                               f"({repr(self.analyzer.valid_render_modes)}")
+
+        # Plot the reference lines only once per plot to maintain the desired alpha
+        if reference_group is not None and \
+                ((group_label == sorted(self.label_to_df.keys())[0] and group_label != reference_group)
+                        or (sorted(self.label_to_df.keys())[0] == reference_group
+                            and sorted(self.label_to_df.keys())[0] == group_label)):
+            plds_this_case.append(plotdata.VerticalLine(
+                x_position=self.reference_avg_by_column[x_column_name],
+                color="black",
+                alpha=0.3,
+                line_width=1))
+            plds_this_case.append(plotdata.HorizontalLine(
+                y_position=self.reference_avg_by_column[y_column_name],
+                color="black",
+                alpha=0.3,
+                line_width=1))
 
         return plds_this_case
 

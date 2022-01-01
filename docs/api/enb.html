@@ -368,6 +368,13 @@ and render mode. Return the updated dict.</p>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.SummaryTable" title="enb.atable.SummaryTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.SummaryTable</span></code></a></p>
 <p>Base class for the surrogate, dynamic summary tables employed by <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a>
 subclasses to gather analysis results and plottable data (when configured to do so).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.apply_reference_bias">
+<span class="sig-name descname"><span class="pre">apply_reference_bias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.apply_reference_bias" title="Permalink to this definition"></a></dt>
+<dd><p>By default, no action is performed relative to the presence of a reference group,
+and not bias is introduced in the dataframe. Subclasses may overwrite this.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.column_to_properties">
 <span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.column_to_properties" title="Permalink to this definition"></a></dt>
@@ -834,6 +841,14 @@ generating the plot.</p>
 being analyzed.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.apply_reference_bias">
+<span class="sig-name descname"><span class="pre">apply_reference_bias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.apply_reference_bias" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the average value of the reference group for each target column and
+subtract it from the dataframe being analyzed. If not reference group is present, 
+no action is performed.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.column_to_properties">
 <span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.column_to_properties" title="Permalink to this definition"></a></dt>
@@ -852,11 +867,6 @@ a list of <cite>enb.plotdata.PlottableData elements</cite> for this case (group,
 <p>See <cite>enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case</cite>
 for additional information.</p>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.set_reference_averages">
-<span class="sig-name descname"><span class="pre">set_reference_averages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.set_reference_averages" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.set_scalar_description">
@@ -1013,6 +1023,14 @@ as well as basic correlation metrics for each pair of columns.</p>
 <dt class="sig sig-object py" id="enb.aanalysis.TwoNumericSummary.add_twoscalar_description_columns">
 <span class="sig-name descname"><span class="pre">add_twoscalar_description_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoNumericSummary.add_twoscalar_description_columns" title="Permalink to this definition"></a></dt>
 <dd><p>Add columns that compute several statistics considering two columns jointly, e.g., their correlation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.TwoNumericSummary.apply_reference_bias">
+<span class="sig-name descname"><span class="pre">apply_reference_bias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoNumericSummary.apply_reference_bias" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the average value of the reference group for each target column and
+subtract it from the dataframe being analyzed. If not reference group is present,
+no action is performed.</p>
 </dd></dl>
 
 <dl class="py attribute">

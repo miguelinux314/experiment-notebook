@@ -362,7 +362,7 @@ class HorizontalLine(PlottableData):
     def render(self, axes=None):
         axes = plt if axes is None else axes
         axes.axhline(y=self.y_position, color=self.color, linestyle=self.line_style,
-                     alpha=self.alpha)
+                     lw=self.line_width, alpha=self.alpha)
 
 
 class VerticalLine(PlottableData):
@@ -378,7 +378,7 @@ class VerticalLine(PlottableData):
     def render(self, axes=None):
         axes = plt if axes is None else axes
         axes.axvline(x=self.x_position, color=self.color, linestyle=self.line_style,
-                     alpha=self.alpha)
+                     lw=self.line_width, alpha=self.alpha)
 
 
 @enb.ray_cluster.remote()

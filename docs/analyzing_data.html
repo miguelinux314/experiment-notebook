@@ -53,7 +53,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#columns-with-dictionaries">Columns with dictionaries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-task-families">Grouping by task families</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#making-baseline-comparisons">Making baseline comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-baseline-comparisons">Making baseline comparisons</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-with-scalarnumericanalyzer">Example with <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-with-twonumericanalyzer">Example with <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
@@ -279,7 +283,10 @@ experiment that uses task families and produces plots like the one in the figure
 analysis and plotting on the differences against that baseline.</p>
 <p>For the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses and render modes that support it, it suffices to pass
 <cite>reference_group=”group name”</cite> when calling <cite>get_df</cite>. Here, <cite>“group name”</cite> is one
-of the group labels derived from the <cite>group_by</cite> selection. For example,</p>
+of the group labels derived from the <cite>group_by</cite> selection.</p>
+<section id="example-with-scalarnumericanalyzer">
+<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-scalarnumericanalyzer" title="Permalink to this headline"></a></h3>
+<p>The following snippet shows how to use the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> to show differences against a group.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iris_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/iris_dataset.csv&quot;</span><span class="p">)</span>
 <span class="n">scalar_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
@@ -289,9 +296,7 @@ of the group labels derived from the <cite>group_by</cite> selection. For exampl
     <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_numeric_reference&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>In the current version, only the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> class supports <cite>reference_group</cite> values
-different from <cite>None</cite>. An example output plot using <cite>‘Iris-versicolor’</cite> as the reference group
-is shown in the following figure:</p>
+<p>The resulting plot is shown in the next figure.</p>
 <figure class="align-default">
 <img alt="_images/ScalarNumericAnalyzer-sepal_width-histogram-groupby__class-referencegroup__Iris-versicolor.png" src="_images/ScalarNumericAnalyzer-sepal_width-histogram-groupby__class-referencegroup__Iris-versicolor.png" />
 </figure>
@@ -301,8 +306,27 @@ analyzer instance’s <cite>show_reference_group</cite> attribute, i.e.,</p>
 </pre></div>
 </div>
 <p>before calling <cite>get_df</cite>.</p>
-<p>Or setting the desired values in an <cite>*.ini</cite> file
-(see the <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/config/enb.ini">full .ini configuration file</a>) placed in the project’s root.</p>
+</section>
+<section id="example-with-twonumericanalyzer">
+<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Permalink to this headline"></a></h3>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a similar sintax as <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
+Both the <cite>line</cite> and <cite>scatter</cite> render modes are available.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;two_numeric_reference&quot;</span><span class="p">),</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The plots resulting from the above snippet are shown next.</p>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" />
+</figure>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" />
+</figure>
+</section>
 </section>
 </section>
 
