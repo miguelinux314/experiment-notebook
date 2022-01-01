@@ -160,7 +160,7 @@ count per mode for each of the selected groups (given in the `block_size` column
 
 The resulting figure is shown below
 
-.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
+.. figure:: _static/analysis_gallery/DictNumericAnalyzer_mode_count_groupby-block_size_line.png
     :width: 100%
 
 
