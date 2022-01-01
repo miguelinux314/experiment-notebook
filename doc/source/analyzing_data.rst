@@ -228,7 +228,12 @@ analysis and plotting on the differences against that baseline.
 
 For the |Analyzer| subclasses and render modes that support it, it suffices to pass
 `reference_group="group name"` when calling `get_df`. Here, `"group name"` is one
-of the group labels derived from the `group_by` selection. For example,
+of the group labels derived from the `group_by` selection.
+
+Example with |ScalarNumericAnalyzer|
+____________________________________
+
+The following snippet shows how to use the |ScalarNumericAnalyzer| to show differences against a group.
 
 .. code-block:: python
 
@@ -240,9 +245,7 @@ of the group labels derived from the `group_by` selection. For example,
         reference_group="Iris-versicolor",
         output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_reference"))
 
-In the current version, only the |ScalarNumericAnalyzer| class supports `reference_group` values
-different from `None`. An example output plot using `'Iris-versicolor'` as the reference group
-is shown in the following figure:
+The resulting plot is shown in the next figure.
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-sepal_width-histogram-groupby__class-referencegroup__Iris-versicolor.png
 
@@ -255,5 +258,23 @@ analyzer instance's `show_reference_group` attribute, i.e.,
 
 before calling `get_df`.
 
-Or setting the desired values in an `*.ini` file
-(see the `full .ini configuration file <https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/config/enb.ini>`_) placed in the project's root.
+Example with |TwoNumericAnalyzer|
+_________________________________
+
+The |TwoNumericAnalyzer| class has a similar sintax as |ScalarNumericAnalyzer|.
+Both the `line` and `scatter` render modes are available.
+
+.. code-block:: python
+
+    two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+    analysis_df = two_numeric_analyzer.get_df(
+        full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
+        output_plot_dir=os.path.join(options.plot_dir, "two_numeric_reference"),
+        group_by="class", reference_group="Iris-versicolor",
+    )
+
+The plots resulting from the above snippet are shown next.
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png
