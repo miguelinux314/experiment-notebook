@@ -92,7 +92,7 @@
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1534.g9512393987)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
@@ -129,7 +129,7 @@ column names present in the dataframe being analyzed.</p>
 as shown in the next figure. The returned <cite>analysis_df</cite> dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_sepal_width_histogram.png"><img alt="_images/ScalarNumericAnalyzer_sepal_width_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_histogram.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png"><img alt="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" style="width: 100%;" /></a>
 </figure>
 </section>
 <section id="two-numeric-columns">
@@ -154,7 +154,7 @@ containing two column names, e.g.: <cite>(“columnA”, “columnB”)</cite>.<
 <p>In addition to the <cite>analysis_df</cite> dataframe with numeric results, this will produce a scatter plot like the following,
 which also shows +/- 1 horizontal and vertical standard deviations.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png"><img alt="_images/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png"><img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" style="width: 100%;" /></a>
 </figure>
 </section>
 <section id="columns-with-dictionaries">
@@ -221,7 +221,7 @@ Rendering options are discussed in a later section.</p>
 </div>
 <p>The resulting figure is shown below</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png"><img alt="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" src="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png"><img alt="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" src="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" style="width: 100%;" /></a>
 </figure>
 </section>
 <section id="grouping-by-a-column-s-value">
@@ -253,7 +253,7 @@ as follows:</p>
 </div>
 <p>The resulting scatter plot from this call is shown next:</p>
 <figure class="align-default">
-<img alt="_images/TwoNumericAnalyzer_sepal_width,petal_length_groupby-class_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width,petal_length_groupby-class_scatter.png" />
+<img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" />
 </figure>
 </section>
 <section id="grouping-by-task-families">

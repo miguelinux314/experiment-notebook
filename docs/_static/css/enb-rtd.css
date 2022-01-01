@@ -1,9 +1,25 @@
+div.wy-grid-for-nav, div.wy-nav-content, body.wy-body-for-nav {
+    background-color: #dddddd;
+}
+
 a {
     color: #c58b03;
 }
 
 a:hover {
-    color: #ffd08e;
+    color: #f3ac05;
+}
+
+.btn-neutral {
+    background-color: #3f3f3f !important;
+    color: #c58b03 !important;
+    border-radius: 10px;
+}
+
+.btn-neutral:hover {
+    background-color: #3f3f3f !important;
+    color: #f3ac05 !important;
+    border-radius: 5px;
 }
 
 .wy-side-nav-search .wy-dropdown > a:hover, .wy-side-nav-search > a:hover {
@@ -43,6 +59,14 @@ a:hover {
     background: none;
 }
 
+.wy-nav-content {
+    max-width: 900px;
+}
+
 .rst-content .note > .admonition-title {
     background: #835b96;
+}
+
+div.rst-content .note {
+    background: #c8cde7;
 }

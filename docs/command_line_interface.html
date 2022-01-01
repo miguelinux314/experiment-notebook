@@ -206,13 +206,13 @@ options. An example option of this is shown next:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]] [-f] [-q]
                          [--no_new_data] [--cs CS] [--rep REP] [--fsn]
                          [--selected_columns SELECTED_COLUMNS [SELECTED_COLUMNS ...]]
-                         [--prp PRP] [-d BASE_DATASET_DIR]
-                         [--persistence PERSISTENCE]
+                         [--prp PRP] [--project_root PROJECT_ROOT]
+                         [-d BASE_DATASET_DIR] [--persistence PERSISTENCE]
                          [--reconstructed RECONSTRUCTED] [--vd VD] [-t TMP]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
                          [--plot_dir PLOT_DIR] [--analysis ANALYSIS]
-                         [--project_root PROJECT_ROOT] [--cpu CPU] [--noswap]
-                         [--wsn WSN] [--pws PWS] [--ray_port RAY_PORT]
+                         [--cpu CPU] [--noswap] [--wsn WSN] [--pws PWS]
+                         [--ray_port RAY_PORT]
                          [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
                          [--nr] [--fw FW] [--fh FH]
                          [--horizontal_margin HORIZONTAL_MARGIN]
@@ -293,6 +293,12 @@ Execution Options:
 Dir Options:
   Options regarding default data directories.
 
+  --project_root PROJECT_ROOT
+                        If set, data paths relative to the invoked script&#39;s
+                        paths are stored instead of their absolute path
+                        counterparts. (default:
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example)
   -d BASE_DATASET_DIR, --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
@@ -330,12 +336,6 @@ Dir Options:
                         Directory to store analysis results. (default:
                         /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
                         lugins/template_basic_workflow_example/analysis)
-  --project_root PROJECT_ROOT
-                        If set, data paths relative to the invoked script&#39;s
-                        paths are stored instead of their absolute path
-                        counterparts. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example)
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed
