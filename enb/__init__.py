@@ -6,23 +6,21 @@ Please see https://github.com/miguelinux314/experiment-notebook for further info
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
 
-import ast
-import os
 import os as _os
 import sys as _sys
+import ast as _ast
+import importlib as _importlib
 import appdirs as _appdirs
+import numpy as _np
+import warnings as _warnings
+import ray as _ray
+import atexit as _atexit
 
 # Make all warnings errors
-import numpy as _np
-
 _np.seterr(all="raise")
-import warnings as _warnings
-
 _warnings.simplefilter('error', UserWarning)
 
 # Current installation dir of enb
-import ray
-
 enb_installation_dir = _os.path.dirname(_os.path.abspath(__file__))
 
 # User configuration dir (e.g., ~/.config/enb in many linux distributions)
@@ -44,7 +42,7 @@ default_persistence_dir = _os.path.join(calling_script_dir, f"persistence_{_os.p
 # Are we currently running the main enb CLI or the CLI for a host script? True means main enb CLI.
 is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
-# Pre-definition tools
+# Basic tools among core modules
 from . import misc
 # Logging tools
 from . import log
@@ -72,36 +70,26 @@ from . import experiment
 ## Data analysis (e.g., plotting) modules
 from . import plotdata
 from . import aanalysis
-
-# TODO: move image compression modules into an optional plugin
-# Image compression modules
+## Image compression modules
 from . import icompression
 from . import isets
 from . import pgm
-
-# Plugin support
+# Plugin and template support
 from . import plugins
 
 # Set up ray and other remaining logging aspects
 if not ray_cluster.on_remote_process():
     # Don't show the banner in each child instance
     log.core(config.get_banner())
-    import atexit as _atexit
-
-    _atexit.register(lambda: ray_cluster.stop_ray() if ray.is_initialized() else None)
-
+    _atexit.register(lambda: ray_cluster.stop_ray() if _ray.is_initialized() else None)
     __file__ = _os.path.abspath(__file__)
-
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
-
-    config.options._initial_module_names = list(m.__name__ for m in _sys.modules.values()
-                                                if hasattr(m, "__name__"))
+    config.options._initial_module_names = list(
+        m.__name__ for m in _sys.modules.values() if hasattr(m, "__name__"))
 
 # Run the setter functions on the default values too, allowing validation and normalization
 config.options.update(config.options, trigger_events=True)
-
-modules_loaded_on_startup = list(_sys.modules.values())
 
 # An environment variable is passed to the children processes
 # for them to be able to import all modules that were
@@ -109,14 +97,15 @@ modules_loaded_on_startup = list(_sys.modules.values())
 # functions to fail the deserialization process
 # due to missing definitions.
 if ray_cluster.on_remote_process():
-    needed_plugins = os.environ['_needed_modules']
-
-    import ast as _ast
-    needed_plugins = _ast.literal_eval(needed_plugins)
-
-    import importlib as _importlib
-    for module_name in sorted(needed_plugins):
+    _imported_modules = set()
+    for _module_name in sorted(_ast.literal_eval(_os.environ['_needed_modules'])):
         try:
-            _importlib.import_module(module_name)
-        except ImportError as ex:
-            logger.debug(f"Error importing module {repr(module_name)}: {repr(ex)}")
+            _importlib.import_module(_module_name)
+            _imported_modules.add(_module_name)
+        except ImportError as _ex:
+            _module_parts = _module_name.split(".")
+            for i in range(1, len(_module_parts) - 1):
+                if ".".join(_module_parts[:i]) in _imported_modules:
+                    break
+                else:
+                    logger.error(f"Error importing module {repr(_module_name)}: {repr(_ex)}.")
