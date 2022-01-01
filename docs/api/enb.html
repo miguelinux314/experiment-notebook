@@ -221,10 +221,7 @@ all scalar, non string columns are used.</p></li>
 <li><p><strong>selected_render_modes</strong> – a potentially empty list of mode names, all of which
 must be in self.valid_render_modes. Each mode represents a type of analysis or plotting.</p></li>
 <li><p><strong>group_by</strong> – if not None, the name of the column to be used for grouping.</p></li>
-<li><p><strong>reference_group</strong> – if not None, the reference against which data are to be analyzed.
-Its meaning is defined by the Analyzer subclass, although typically it can be
-the name of a column, the name of a group (if grouping is enabled), or a TaskFamily instance
-(when grouping by task families). If None, it is ignored.</p></li>
+<li><p><strong>reference_group</strong> – if not None, the reference group name against which data are to be analyzed.</p></li>
 <li><p><strong>output_plot_dir</strong> – path of the directory where the plot/plots is/are to be saved.
 If None, the default output plots path given by <cite>enb.config.options</cite> is used.</p></li>
 <li><p><strong>column_to_properties</strong> – dictionary with ColumnProperties entries. ATable instances provide it
@@ -242,7 +239,7 @@ columns.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.get_output_pdf_path">
-<span class="sig-name descname"><span class="pre">get_output_pdf_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_output_pdf_path" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_output_pdf_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_output_pdf_path" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -334,6 +331,11 @@ These overwriting methods are encouraged to call enb.aanalysis.Analyzer.update_r
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.show_legend">
 <span class="sig-name descname"><span class="pre">show_legend</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#enb.aanalysis.Analyzer.show_legend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.Analyzer.show_reference_group">
+<span class="sig-name descname"><span class="pre">show_reference_group</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#enb.aanalysis.Analyzer.show_reference_group" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -500,10 +502,7 @@ all scalar, non string columns are used.</p></li>
 <li><p><strong>selected_render_modes</strong> – a potentially empty list of mode names, all of which
 must be in self.valid_render_modes. Each mode represents a type of analysis or plotting.</p></li>
 <li><p><strong>group_by</strong> – if not None, the name of the column to be used for grouping.</p></li>
-<li><p><strong>reference_group</strong> – if not None, the reference against which data are to be analyzed.
-Its meaning is defined by the Analyzer subclass, although typically it can be
-the name of a column, the name of a group (if grouping is enabled), or a TaskFamily instance
-(when grouping by task families). If None, it is ignored.</p></li>
+<li><p><strong>reference_group</strong> – if not None, the reference group name against which data are to be analyzed.</p></li>
 <li><p><strong>output_plot_dir</strong> – path of the directory where the plot/plots is/are to be saved.
 If None, the default output plots path given by <cite>enb.config.options</cite> is used.</p></li>
 <li><p><strong>column_to_properties</strong> – dictionary with ColumnProperties entries. ATable instances provide it
@@ -825,8 +824,9 @@ and render mode. Return the updated dict.</p>
 independent column definitions.</p>
 <p>Note that dynamically in this context implies that modifying the returned instance’s class columns does
 not affect the definition of other instances of this class.</p>
-<p>Note that in most cases, the columns returned by default
-should suffice.</p>
+<p>Note that in most cases, the columns returned by default should suffice.</p>
+<p>If a reference_group is provided, its average is computed and subtracted from all values when
+generating the plot.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <span class="sig-name descname"><span class="pre">add_scalar_description_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition"></a></dt>
@@ -852,6 +852,11 @@ a list of <cite>enb.plotdata.PlottableData elements</cite> for this case (group,
 <p>See <cite>enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case</cite>
 for additional information.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.set_reference_averages">
+<span class="sig-name descname"><span class="pre">set_reference_averages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.set_reference_averages" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.set_scalar_description">
@@ -905,11 +910,6 @@ for documentation on the meaning of each argument.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.TwoNumericAnalyzer.common_group_scale">
 <span class="sig-name descname"><span class="pre">common_group_scale</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#enb.aanalysis.TwoNumericAnalyzer.common_group_scale" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.aanalysis.TwoNumericAnalyzer.get_output_pdf_path">
-<span class="sig-name descname"><span class="pre">get_output_pdf_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.TwoNumericAnalyzer.get_output_pdf_path" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -4003,6 +4003,24 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="enb.plotdata.HorizontalLine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">HorizontalLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.HorizontalLine" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData" title="enb.plotdata.PlottableData"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData</span></code></a></p>
+<p>Draw a horizontal line across the whole subplot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plotdata.HorizontalLine.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.HorizontalLine.render" title="Permalink to this definition"></a></dt>
+<dd><p>Render data in current figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> – if not None, those axes are used for plotting instead of plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="enb.plotdata.LineData">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">LineData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'o'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.LineData" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData2D" title="enb.plotdata.PlottableData2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData2D</span></code></a></p>
@@ -4021,7 +4039,7 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plotdata.PlottableData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">PlottableData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.PlottableData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">PlottableData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.PlottableData" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.plotdata.PlottableData.alpha">
@@ -4145,6 +4163,24 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.plotdata.VerticalLine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">VerticalLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.VerticalLine" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData" title="enb.plotdata.PlottableData"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData</span></code></a></p>
+<p>Draw a horizontal line across the whole subplot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plotdata.VerticalLine.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.VerticalLine.render" title="Permalink to this definition"></a></dt>
+<dd><p>Render data in current figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> – if not None, those axes are used for plotting instead of plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.plotdata.render_plds_by_group">
 <span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">render_plds_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pds_by_group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_x_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_monochrome_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_min_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_row_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_labels_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.render_plds_by_group" title="Permalink to this definition"></a></dt>
@@ -4181,8 +4217,8 @@ displayed. If None, alphabetical, case-insensitive order is applied.</p></li>
 <li><p><strong>global_y_label_pos</strong> – position of the global y label. Needed if the y axis has ticks with
 long labels.</p></li>
 <li><p><strong>legend_column_count</strong> – when the legend is shown, use this many columns.</p></li>
-<li><p><strong>force_monochrome_group</strong> – if True, all plottable data in each group is set to the same color,
-defined by color_cycle.</p></li>
+<li><p><strong>force_monochrome_group</strong> – if True, all plottable data with non-None color in each group
+is set to the same color, defined by color_cycle.</p></li>
 </ul>
 </dd>
 </dl>

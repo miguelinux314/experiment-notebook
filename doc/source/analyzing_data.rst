@@ -219,3 +219,41 @@ that affect their "Compressed data rate". Please see the :doc:`image_compression
 experiment that uses task families and produces plots like the one in the figure.
 
 .. figure:: _static/lossy_experiment/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png
+
+Making baseline comparisons
+---------------------------
+
+When grouping is used, it is possible to select one of the groups as baseline and then perform
+analysis and plotting on the differences against that baseline.
+
+For the |Analyzer| subclasses and render modes that support it, it suffices to pass
+`reference_group="group name"` when calling `get_df`. Here, `"group name"` is one
+of the group labels derived from the `group_by` selection. For example,
+
+.. code-block:: python
+
+    iris_df = pd.read_csv("./input_csv/iris_dataset.csv")
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+    analysis_df = scalar_analyzer.get_df(
+        full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        group_by="class",
+        reference_group="Iris-versicolor",
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_reference"))
+
+In the current version, only the |ScalarNumericAnalyzer| class supports `reference_group` values
+different from `None`. An example output plot using `'Iris-versicolor'` as the reference group
+is shown in the following figure:
+
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-sepal_width-histogram-groupby__class-referencegroup__Iris-versicolor.png
+
+You can choose whether the group used as baseline is employed or not, by setting your
+analyzer instance's `show_reference_group` attribute, i.e.,
+
+.. code-block:: python
+
+    scalar_analyzer.show_reference_group = False
+
+before calling `get_df`.
+
+Or setting the desired values in an `*.ini` file
+(see the `full .ini configuration file <https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/config/enb.ini>`_) placed in the project's root.

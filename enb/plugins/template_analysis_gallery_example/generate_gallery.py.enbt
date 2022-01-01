@@ -6,8 +6,6 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/02/01"
 
 import os
-import subprocess
-import glob
 import pandas as pd
 import ast
 
@@ -15,7 +13,6 @@ import enb
 from enb.config import options
 
 if __name__ == '__main__':
-
     iris_df = pd.read_csv("./input_csv/iris_dataset.csv")
 
     # Scalar numeric analysis
@@ -77,5 +74,10 @@ if __name__ == '__main__':
         fig_height=5,
         global_y_label_pos=-0.01)
 
-    # Make a png mirror of all the PDF files (not within enb, yet)
-    enb.aanalysis.pdf_to_png(options.plot_dir, os.path.join(os.path.dirname(os.path.abspath(__file__)), "png_plots"))
+    # Use a reference group with scalar values
+    analysis_df = scalar_analyzer.get_df(
+        full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        group_by="class",
+        reference_group="Iris-versicolor",
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_reference"),
+    )

@@ -185,36 +185,32 @@ if __name__ == '__main__':
     all_keys = sorted(list(summary_df.iloc[0]["type_to_availability"].keys()))
 
 
-    for key_filter in (None, "Signed", "Unsigned", "Float",
-                       "8 bit", "16 bit", "32 bit"):
-        if key_filter is not None:
-            continue
-        selected_keys = [k for k in all_keys if key_filter is None or key_filter in k]
-        key_to_x = {k: i for i, k in enumerate(selected_keys)}
-        for i in range(4, len(selected_keys), 4):
-            for k in all_keys[i:]:
-                key_to_x[k] += 0.4
+    selected_keys = all_keys
+    key_to_x = {k: i for i, k in enumerate(selected_keys)}
+    for i in range(4, len(selected_keys), 4):
+        for k in all_keys[i:]:
+            key_to_x[k] += 1.75
 
-        analyzer.get_df(
-            full_df=summary_df,
-            target_columns=["type_to_availability"],
-            group_by="group_label",
-            key_to_x=key_to_x,
-            x_tick_list=[key_to_x[k] for k in selected_keys],
-            x_tick_label_list=selected_keys,
-            x_tick_label_angle=90,
-            fig_width=10,
-            fig_height=15,
-            y_tick_list=CodecSummaryTable.availability_modes,
-            y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
-                               CodecSummaryTable.availability_modes],
-            group_row_margin=-0.05,
-            y_min=-0.3,
-            y_max=2.3,
-            global_x_label="Data type",
-            show_count=False,
-            global_y_label="Availability"
-        )
+    analyzer.get_df(
+        full_df=summary_df,
+        target_columns=["type_to_availability"],
+        group_by="group_label",
+        key_to_x=key_to_x,
+        x_tick_list=[key_to_x[k] for k in selected_keys],
+        x_tick_label_list=selected_keys,
+        x_tick_label_angle=90,
+        fig_width=10,
+        fig_height=15,
+        y_tick_list=CodecSummaryTable.availability_modes,
+        y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
+                           CodecSummaryTable.availability_modes],
+        group_row_margin=-0.25,
+        y_min=-0.3,
+        y_max=2.3,
+        global_x_label="Data type",
+        show_count=False,
+        global_y_label="Availability"
+    )
 
     log_event("Test all codecs successfully completed")
     print(f"You can now see the availability plots in .pdf and .png format at {options.plot_dir}")
