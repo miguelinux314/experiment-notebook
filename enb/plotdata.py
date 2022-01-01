@@ -59,6 +59,14 @@ class PlottableData:
         """
         raise NotImplementedError()
 
+    def render_legend(self, axes=None):
+        axes = plt if axes is None else axes
+        legend = plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+
+                            ncol=self.legend_column_count, edgecolor=((0, 0, 0, 0.2)))
+        legend.get_frame().set_alpha(None)
+        legend.get_frame().set_facecolor((1, 1, 1, 0))
+
     def __repr__(self):
         return f"{self.__class__.__name__}(color={repr(self.color)})"
 
@@ -154,8 +162,7 @@ class LineData(PlottableData2D):
             axes = plt if axes is None else axes
             self.render_axis_labels(axes=axes)
             if self.label is not None and self.legend_column_count != 0:
-                plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                           ncol=self.legend_column_count)
+                self.render_legend(axes=axes)
         finally:
             self.extra_kwargs = original_kwargs
 
@@ -173,8 +180,7 @@ class ScatterData(PlottableData2D):
                      **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
-            axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                        ncol=self.legend_column_count)
+            self.render_legend(axes=axes)
 
 
 class BarData(PlottableData2D):
@@ -187,8 +193,7 @@ class BarData(PlottableData2D):
                  **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
-            axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                        ncol=self.legend_column_count)
+            self.render_legend(axes=axes)
 
     def shift_y(self, constant):
         try:
@@ -208,8 +213,7 @@ class StepData(PlottableData2D):
                   where=self.where, **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
-            plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                       ncol=self.legend_column_count)
+            self.render_legend(axes=axes)
 
 
 class ErrorLines(PlottableData2D):
@@ -341,7 +345,7 @@ class HorizontalBand(PlottableData2D):
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
             plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                       ncol=self.legend_column_count)
+                       ncol=self.legend_column_count, facecolor=(1, 1, 1, 0))
 
 
 @enb.ray_cluster.remote()
@@ -534,7 +538,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 if g not in sorted_group_names:
                     if options.verbose > 2:
                         enb.logger.warn(f"Warning: {repr(g)} was not provided in group_name_order but is one of the "
-                                           f"produced groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
+                                        f"produced groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
                     sorted_group_names.append(g)
 
         if combine_groups:
@@ -679,29 +683,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         group_row_margin += (len(pds_by_group_name) - 6) / 24
         plt.subplots_adjust(hspace=group_row_margin)
 
-        if x_tick_list is not None:
-            if not x_tick_label_list:
-                plt.xticks(x_tick_list)
-            else:
-                plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
-            plt.minorticks_off()
-        if x_tick_label_list is not None:
-            assert x_tick_list is not None
-        if x_tick_list is None and x_tick_label_angle is not None:
-            plt.xticks(rotation=x_tick_label_angle)
-
-        for group_axes in group_axis_list:
-            plt.sca(group_axes)
-            if y_tick_list is not None:
-                if not y_tick_label_list:
-                    plt.yticks(y_tick_list)
-                else:
-                    plt.yticks(y_tick_list, y_tick_label_list)
-                group_axes.minorticks_off()
-            if y_tick_label_list is not None:
-                assert y_tick_list is not None
-            plt.yticks()
-
         # Set the axis limits
         xlim = [global_x_min, global_x_max]
         ylim = [global_y_min, global_y_max]
@@ -728,6 +709,32 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.ylim(*ylim)
             plt.sca(ca)
 
+        if xlim[1] < 1e-2:
+            x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
+
+        if x_tick_list is not None:
+            if not x_tick_label_list:
+                plt.xticks(x_tick_list)
+            else:
+                plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
+            plt.minorticks_off()
+        if x_tick_label_list is not None:
+            assert x_tick_list is not None
+        if x_tick_list is None and x_tick_label_angle is not None:
+            plt.xticks(rotation=x_tick_label_angle)
+
+        for group_axes in group_axis_list:
+            plt.sca(group_axes)
+            if y_tick_list is not None:
+                if not y_tick_label_list:
+                    plt.yticks(y_tick_list)
+                else:
+                    plt.yticks(y_tick_list, y_tick_label_list)
+                group_axes.minorticks_off()
+            if y_tick_label_list is not None:
+                assert y_tick_list is not None
+            plt.yticks()
+
         show_grid = options.show_grid if show_grid is None else show_grid
 
         if show_grid:
@@ -738,8 +745,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.grid("major", alpha=0.5)
             plt.sca(ca)
 
-
         with enb.logger.verbose_context(f"Saving plot to {output_plot_path} "):
-            plt.savefig(output_plot_path, bbox_inches="tight", dpi=300)
+            plt.savefig(output_plot_path, bbox_inches="tight")
+            if output_plot_path.endswith(".pdf"):
+                plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300, transparent=True)
 
         plt.close()

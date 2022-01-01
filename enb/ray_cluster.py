@@ -20,6 +20,7 @@ import socket
 import ray
 import psutil
 import signal
+import glob
 
 from . import config
 from .config import options
@@ -73,11 +74,25 @@ class HeadNode:
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
         with logger.info_context(f"Initializing ray client on local port {self.ray_port}"):
+            # The exported environment consists of all *.py files.
+            # Furthermore, the list of current modules minus the ones found after
+            # initializing enb is passed as an environment variable to
+            # allow the needed imports before remote methods are invoked.
+            excludes = [os.path.relpath(p, options.project_root)
+                        for p in glob.glob(os.path.join(options.project_root, "**", "*"), recursive=True)
+                        if os.path.isfile(p) and not p.endswith(".py")]
+
+            modules_needed_remotely = [m.__name__ for m in sys.modules.values()
+                                if hasattr(m, "__name__") and m.__name__ not in options._initial_module_names
+                                       and not m.__name__.startswith("_")]
+
             ray.init(address=f"localhost:{self.ray_port}",
                      _redis_password=self.session_password,
-                     runtime_env=dict(working_dir=options.project_root),
+                     runtime_env=dict(working_dir=options.project_root,
+                                      excludes=excludes,
+                                      env_vars=dict(_needed_modules=str(modules_needed_remotely))),
+                     # runtime_env=dict(py_modules=py_modules),
                      logging_level=logging.CRITICAL if options.verbose <= 1 else logging.INFO)
-
 
         if options.ssh_cluster_csv_path:
             if not os.path.exists(options.ssh_cluster_csv_path):
@@ -102,7 +117,7 @@ class HeadNode:
                         self.remote_nodes = connected_nodes
                         raise ex
 
-            logger.info("All nodes connected")
+            logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
 
     def stop(self):
         # This tiny delay allows error messages from child processes to reach the
@@ -198,7 +213,6 @@ class RemoteNode:
             if status != 0:
                 raise RuntimeError(f"Error stopping remote ray process on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
-
 
         # Create remote_node_folder_path on the remote host if not existing
         with logger.info_context(f"Creating remote mount point on {self.address}"):
@@ -315,6 +329,7 @@ def on_remote_process():
     """
     return os.path.basename(sys.argv[0]) == options.worker_script_name
 
+
 def on_remote_node():
     """Return True if and only if the call is performed from a remote ray process
     running on a node different from the head.
@@ -328,6 +343,7 @@ def on_remote_node():
         except KeyError:
             return False
 
+
 def get_node_ip():
     """Get the current IP address of this node.
     """
@@ -336,6 +352,7 @@ def get_node_ip():
     address = s.getsockname()[0]
     s.close()
     return address
+
 
 class ProgressiveGetter:
     """When an instance is created, the computation of the requested list of ray ids is started

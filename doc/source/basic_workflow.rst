@@ -6,7 +6,7 @@ Basic workflow: |ATable|
 ========================
 
 This page explains the most basic workflow with ``enb`` with a
-`simple example <https://github.com/miguelinux314/experiment-notebook/tree/master/templates/basic_workflow_example>`_.
+`simple example <https://github.com/miguelinux314/experiment-notebook/tree/dev/enb/plugins/template_basic_workflow_example>`_.
 In this example, |ATable| is subclassed to gather some statistics about a text corpus.
 You can look at the sources in that link, or install a self-contained version with::
 
@@ -171,7 +171,7 @@ plot related to the `line_count` column defined above.
     os.makedirs("analysis", exist_ok=True)
     analysis_df.to_csv("analysis/line_count_analysis.csv")
 
-You can `download the resulting figure <https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/basic_workflow_example/plots/ScalarNumericAnalyzer_line_count_histogram.pdf>`_.
+You can `download the resulting figure <_static/basic_workflow/ScalarNumericAnalyzer_line_count_groupby-None_histogram.pdf>`_.
 
 .. note::
 
@@ -201,9 +201,12 @@ then one can make a grouped analysis with the following code snippet:
                 group_by="status")
 
 
-A sample plot produced by this `full script <https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/basic_workflow_example/basic_workflow.py>`_ is shown next.
+A sample plot produced by this `full script <https://raw.githubusercontent.com/miguelinux314/experiment-notebook/master/enb/plugins/template_basic_workflow_example/basic_workflow.py>`_ is shown next.
 
-.. image:: https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/basic_workflow_example/plots_png/ScalarNumericAnalyzer_word_count_groupby-status_histogram.png
+.. figure:: _static/basic_workflow/ScalarNumericAnalyzer_word_count_groupby-status_histogram.png
+    :width: 100%
+
+
 
 **5 - Adding more columns**
 ---------------------------
@@ -280,7 +283,7 @@ columns. In general, to employ it:
 
 |
 
-Putting everything together, here's the `full source code <https://github.com/miguelinux314/experiment-notebook/raw/dev/templates/basic_workflow_example/basic_workflow.py>`_
+Putting everything together, here's the `full source code <https://raw.githubusercontent.com/miguelinux314/experiment-notebook/master/enb/plugins/template_basic_workflow_example/basic_workflow.py>`_
 of this basic workflow example:
 
 .. code-block:: python
