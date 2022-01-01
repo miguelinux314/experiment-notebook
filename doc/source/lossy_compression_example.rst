@@ -166,4 +166,4 @@ results with |enb|.
 An example plot produced by this experiment, e.g., the compressed data rate in bits per sample,
 is shown in the next figure:
 
-.. figure:: _static/lossy_experiment/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png
+.. figure:: _static/lossy_experiment/TwoNumericAnalyzer_bpppc__pae_groupby-family_label_line.png

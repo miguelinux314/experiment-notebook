@@ -63,6 +63,11 @@ class OptionsBase(_singleton_cli.SingletonCLI):
             non_default_properties[k] = v
         return non_default_properties
 
+    def normalize_dir_value(self, value):
+        if value[0] == os.sep:
+            value = os.path.relpath(value, self.project_root)
+        return value
+
     def __str__(self):
         s = "Summary of enb.config.options:\n\t- "
         s += "\n\t- ".join(f"{k:30s} = {repr(v)}" for k, v in sorted(self.non_default_properties.items()))
@@ -186,7 +191,7 @@ class DirOptions:
 
         It should be an existing, readable directory.
         """
-        value = os.path.relpath(value, self.project_root)
+        value = self.normalize_dir_value(value=value)
         _singleton_cli.ReadableOrCreableDirAction.assert_valid_value(value)
         return value
 
@@ -195,7 +200,7 @@ class DirOptions:
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
         """
-        value = os.path.relpath(value, self.project_root)
+        value = self.normalize_dir_value(value=value)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
         return value
 
@@ -204,7 +209,7 @@ class DirOptions:
     def reconstructed_dir(self, value):
         """Base directory where reconstructed versions are to be stored.
         """
-        value = os.path.relpath(value, self.project_root)
+        value = self.normalize_dir_value(value=value)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
         return value
 
@@ -214,7 +219,7 @@ class DirOptions:
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
         """
-        value = os.path.relpath(value, self.project_root)
+        value = self.normalize_dir_value(value=value)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
         return value
 
@@ -265,7 +270,7 @@ class DirOptions:
     def plot_dir(self, value):
         """Directory to store produced plots.
         """
-        value = os.path.relpath(value, self.project_root)
+        value = self.normalize_dir_value(value=value)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
         return value
 
@@ -278,7 +283,7 @@ class DirOptions:
     def analysis_dir(self, value):
         """Directory to store analysis results.
         """
-        value = os.path.relpath(value, self.project_root)
+        value = self.normalize_dir_value(value=value)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
         return value
 

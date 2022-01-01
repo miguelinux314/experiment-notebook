@@ -49,7 +49,7 @@ The number of rows of the dataframe returned by an |Experiment|'s `get_df` metho
 depends on the |ExperimentTask| s used in it. The following figure illustrates how experiments
 are structured.
 
-.. figure:: /_static/experiment_diagram.png
+.. figure:: img/experiment_diagram.png
     :width: 100%
     :alt: Experiment diagram
     :align: center

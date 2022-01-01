@@ -6,6 +6,8 @@ Please see https://github.com/miguelinux314/experiment-notebook for further info
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
 
+import ast
+import os
 import os as _os
 import sys as _sys
 import appdirs as _appdirs
@@ -93,5 +95,28 @@ if not ray_cluster.on_remote_process():
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
 
+    config.options._initial_module_names = list(m.__name__ for m in _sys.modules.values()
+                                                if hasattr(m, "__name__"))
+
 # Run the setter functions on the default values too, allowing validation and normalization
 config.options.update(config.options, trigger_events=True)
+
+modules_loaded_on_startup = list(_sys.modules.values())
+
+# An environment variable is passed to the children processes
+# for them to be able to import all modules that were
+# imported after loading enb. This prevents the remote
+# functions to fail the deserialization process
+# due to missing definitions.
+if ray_cluster.on_remote_process():
+    needed_plugins = os.environ['_needed_modules']
+
+    import ast as _ast
+    needed_plugins = _ast.literal_eval(needed_plugins)
+
+    import importlib as _importlib
+    for module_name in sorted(needed_plugins):
+        try:
+            _importlib.import_module(module_name)
+        except ImportError as ex:
+            logger.debug(f"Error importing module {repr(module_name)}: {repr(ex)}")

@@ -12,6 +12,7 @@ The `enb` core is firmly supported by the following key libraries:
 * `matplotlib <https://matplotlib.org/>`_
 * `ray <https://docs.ray.io/>`_
 * `numpy <https://numpy.org/>`_
+* `ssh <https://www.openssh.com/>`_ and `sshfs <https://github.com/libfuse/sshfs>`_
 
 Several other are also essential: please see the requirements in `setup.py` for more details.
 
