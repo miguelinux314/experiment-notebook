@@ -18,7 +18,7 @@ class MontecarloPiExperiment(enb.experiment.Experiment):
     def column_computed_on_ip(self, index, row):
         """Register the node that computed this particular sample.
         """
-        return enb.ray_cluster.get_node_ip()
+        return enb.parallel_ray.get_node_ip()
 
     def column_estimated_pi_value(self, index, row):
         """Make a Montecarlo approximation of pi.

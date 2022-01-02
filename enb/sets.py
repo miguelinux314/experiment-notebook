@@ -265,8 +265,7 @@ class FileVersionTable(FilePropertiesTable):
         row[_column_name] = file_dir
 
 
-@ray.remote
-@config.propagates_options
+@enb.parallel.parallel()
 def ray_version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, check_generated_files,
                          options):
     """Run the versioning of one path.

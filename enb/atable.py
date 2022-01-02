@@ -208,7 +208,7 @@ import traceback
 import shutil
 
 import enb.config
-from enb import ray_cluster
+from enb import parallel_ray
 from enb.config import options
 from enb.misc import get_defining_class_name
 
@@ -745,9 +745,9 @@ class ATable(metaclass=MetaTable):
             # The current working dir is updated for remote processes in the head or the remote nodes
             try:
                 original_wd = os.getcwd()
-                if ray_cluster.on_remote_process():
-                    if ray_cluster.on_remote_node():
-                        os.chdir(os.path.expanduser(ray_cluster.RemoteNode.remote_project_mount_path))
+                if parallel_ray.on_parallel_process():
+                    if parallel_ray.on_remote_node():
+                        os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
                     else:
                         os.chdir(options.project_root)
 
@@ -840,7 +840,7 @@ class ATable(metaclass=MetaTable):
         # ATable subclasses make automatic use of ray's parallelization
         # capabilities. This initializes the ray subsystem if it was not
         # up already.
-        ray_cluster.init_ray()
+        parallel_ray.init_ray()
 
         target_columns = target_columns if target_columns is not None else list(self.column_to_properties.keys())
 
@@ -1108,28 +1108,24 @@ class ATable(metaclass=MetaTable):
         target_locs = target_locs if target_locs is None else [indices_to_internal_loc(v) for v in target_indices]
 
         # Start computation of new and updated rows in parallel
-        filtered_df_id = ray.put(target_df)
-        column_fun_tuples_id = ray.put(column_fun_tuples)
-        overwrite_id = ray.put(overwrite)
-        self_id = ray.put(self)
-        pending_ids = [parallel_compute_one_row.remote(
-            atable_instance=self_id,
-            filtered_df=filtered_df_id,
-            index=ray.put(index), loc=ray.put(loc),
-            column_fun_tuples=column_fun_tuples_id,
-            overwrite=overwrite_id)
+        pending_ids = [parallel_compute_one_row.start(
+            atable_instance=self,
+            filtered_df=target_df,
+            index=index, loc=loc,
+            column_fun_tuples=column_fun_tuples,
+            overwrite=overwrite)
             for index, loc in zip(target_indices, target_locs)]
 
         # Iterating a progressive getter continues until all rows are obtained
         with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
                                         f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.ray_cpu_limit}]",
                                         sep="...\n"):
-            pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=pending_ids,
+            pg = enb.parallel_ray.ProgressiveGetter(ray_id_list=pending_ids,
                                                    iteration_period=self.progress_report_period)
             for _ in pg:
                 enb.logger.verbose(pg.report())
             enb.logger.verbose(pg.report())
-            computed_series = ray.get(pending_ids)
+            computed_series = enb.parallel.get(pending_ids)
 
         # Verify that everything went well
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
@@ -1509,7 +1505,7 @@ def unpack_index_value(input):
         return list(input)
 
 
-@enb.ray_cluster.remote()
+@enb.parallel.parallel()
 def parallel_compute_one_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite):
     """Ray wrapper for :meth:`ATable.process_row`
     """

@@ -12,7 +12,7 @@ import time
 
 class TestRay(unittest.TestCase):
     def test_ray_is_automatically_started(self):
-        enb.ray_cluster.init_ray()
+        enb.parallel_ray.init_ray()
         assert ray.is_initialized()
 
     def test_progress_run(self):
@@ -31,7 +31,7 @@ class TestRay(unittest.TestCase):
         target_ids = [wait_a.remote(ray.put(_)) for _ in range(5)] \
                      + [wait_b.remote(ray.put(_)) for _ in range(5)]
 
-        pg = enb.ray_cluster.ProgressiveGetter(ray_id_list=target_ids, iteration_period=0.6)
+        pg = enb.parallel_ray.ProgressiveGetter(ray_id_list=target_ids, iteration_period=0.6)
 
         for i, _ in enumerate(pg):
             assert len(pg.completed_ids) < len(target_ids)
