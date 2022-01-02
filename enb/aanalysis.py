@@ -17,7 +17,6 @@ import numbers
 import pdf2image
 import numpy as np
 import scipy.stats
-import ray
 
 import enb.atable
 from enb.atable import clean_column_name
@@ -233,15 +232,17 @@ class Analyzer(enb.atable.ATable):
                         column_kwargs["pds_by_group_name"] = filtered_plds
 
                 # All arguments to the parallel rendering function are ready; their associated tasks as created
-                render_ids.append(enb.plotdata.parallel_render_plds_by_group.remote(
-                    **{k: ray.put(v) for k, v in column_kwargs.items()}))
+                render_ids.append(enb.plotdata.parallel_render_plds_by_group.start(
+                    **column_kwargs))
+
 
         # Wait until all rendering tasks are done while updating about progress
-        with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}..."):
-            for progress_report in enb.ray_cluster.ProgressiveGetter(
+        with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
+            for progress_report in enb.parallel_ray.ProgressiveGetter(
                     ray_id_list=render_ids,
                     iteration_period=self.progress_report_period):
                 enb.logger.verbose(progress_report.report())
+
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,

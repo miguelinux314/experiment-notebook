@@ -13,7 +13,6 @@ import importlib as _importlib
 import appdirs as _appdirs
 import numpy as _np
 import warnings as _warnings
-import ray as _ray
 import atexit as _atexit
 
 # Make all warnings errors
@@ -51,14 +50,15 @@ from . import config
 # Logging tools
 from .log import logger
 # ray for parallelization
-from . import ray_cluster
+from . import parallel
+from . import parallel_ray
 
 # Setup logging so that it is used from here on. Done here to avoid circular dependencies.
 logger.selected_log_level = log.get_level(name=config.options.selected_log_level,
                                           lower_priority=config.options.verbose)
 logger.show_prefixes = config.options.log_level_prefix
 logger.show_prefix_level = logger.get_level(name=config.options.show_prefix_level)
-if config.options.log_print and not ray_cluster.on_remote_process():
+if config.options.log_print and not parallel_ray.on_parallel_process():
     logger.replace_print()
 
 # Remaining core modules
@@ -78,10 +78,10 @@ from . import pgm
 from . import plugins
 
 # Set up ray and other remaining logging aspects
-if not ray_cluster.on_remote_process():
+if not parallel_ray.on_parallel_process():
     # Don't show the banner in each child instance
     log.core(config.get_banner())
-    _atexit.register(lambda: ray_cluster.stop_ray() if _ray.is_initialized() else None)
+    _atexit.register(lambda: parallel_ray.stop_ray() if parallel_ray.is_ray_initialized() else None)
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
@@ -96,7 +96,7 @@ config.options.update(config.options, trigger_events=True)
 # imported after loading enb. This prevents the remote
 # functions to fail the deserialization process
 # due to missing definitions.
-if ray_cluster.on_remote_process():
+if parallel_ray.on_parallel_process():
     _imported_modules = set()
     for _module_name in sorted(_ast.literal_eval(_os.environ['_needed_modules'])):
         try:

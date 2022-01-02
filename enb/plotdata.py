@@ -381,7 +381,7 @@ class VerticalLine(PlottableData):
                      lw=self.line_width, alpha=self.alpha)
 
 
-@enb.ray_cluster.remote()
+@enb.parallel.parallel()
 def parallel_render_plds_by_group(
         pds_by_group_name, output_plot_path, column_properties,
         global_x_label, global_y_label,
@@ -405,9 +405,8 @@ def parallel_render_plds_by_group(
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
     """
     try:
-
-        if enb.ray_cluster.on_remote_node():
-            os.chdir(os.path.expanduser(enb.ray_cluster.RemoteNode.remote_project_mount_path))
+        if enb.parallel_ray.on_remote_node():
+            os.chdir(os.path.expanduser(enb.parallel_ray.RemoteNode.remote_project_mount_path))
         else:
             os.chdir(options.project_root)
 
@@ -465,7 +464,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     
     When applicable, None values are substituted by
     default values given enb.config.options (guaranteed to be updated thanks to the
-    @enb.ray_cluster.remote decorator) and the current context.
+    @enb.parallel.parallel decorator) and the current context.
     
     Mandatory parameters:
     
@@ -780,6 +779,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             plt.sca(ca)
 
         with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
+            if os.path.dirname(output_plot_path):
+                os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
             plt.savefig(output_plot_path, bbox_inches="tight")
             if output_plot_path.endswith(".pdf"):
                 plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300, transparent=True)
