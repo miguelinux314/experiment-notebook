@@ -456,8 +456,10 @@ def get(ids, **kwargs):
     return ray.get(ids, **kwargs)
 
 
-def get_completed_pending_ids(ids):
-    ray.wait(ids, num_returns=len(ids), timeout=0)
+def get_completed_pending_ids(ids, timeout=0):
+    """Return the list of completed and pending ids.
+    """
+    return ray.wait(ids, num_returns=len(ids), timeout=timeout)
 
 
 def fix_imports():

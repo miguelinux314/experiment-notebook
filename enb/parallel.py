@@ -45,19 +45,19 @@ def get(ids, **kwargs):
         return local_get(ids, **kwargs)
 
 
-def get_completed_pending_ids(ids):
+def get_completed_pending_ids(ids, timeout=0):
     """Given a list of ids returned by start calls, return two lists:
     the first one with the input ids that are ready, and the second
     one with the input ids that are not.
     """
     if parallel_ray.is_ray_enabled():
-        parallel_ray.get_completed_pending_ids(ids)
+        return parallel_ray.get_completed_pending_ids(ids, timeout=timeout)
     else:
         completed_ids = []
         pending_ids = []
         for input_id in ids:
             try:
-                get([input_id], timeout=0)
+                get([input_id], timeout=timeout)
                 completed_ids.append(input_id)
             except concurrent.futures.TimeoutError:
                 pending_ids.append(input_id)
@@ -68,11 +68,11 @@ def get_completed_pending_ids(ids):
 def local_parallel(*args, **kwargs):
     """Decorator for methods intended to run in parallel in the local machine.
     """
+
     def wrapper(f):
         logger.debug(f"Wrapping {f} with multiprocess")
         f.start = lambda *args, **kwargs: local_future_call(f, args, kwargs)
         return f
-
 
     return wrapper
 
@@ -86,20 +86,16 @@ def local_future_call(f, args, kwargs):
         _multiprocess_pool = concurrent.futures.ProcessPoolExecutor(
             config.options.ray_cpu_limit if config.options.ray_cpu_limit or config.options.ray_cpu_limit else None)
     submission = _multiprocess_pool.submit(f, *args, **kwargs)
-    
+
     print(f"[watch] submission={submission}")
-    
+
     print(f"[watch] f={f}")
     print(f"[watch] args={args}")
     print(f"[watch] kwargs={kwargs}")
-    
+
     # print(f"[watch] enb.FilePropertiesTable.set_corpus={enb.FilePropertiesTable.set_corpus}")
-    
-    
-    
+
     print(f"[watch] submission.result()={submission.result()}")
-    
-    
 
     return submission
 
@@ -171,8 +167,9 @@ class ProgressiveGetter:
         """Wait for up to timeout seconds or until ray completes computation
         of all pending tasks. Update the list of completed and pending tasks.
         """
-        timeout = timeout if timeout is not None else self.iteration_period
-        self.completed_ids, self.pending_ids = get_completed_pending_ids(self.full_id_list)
+        self.completed_ids, self.pending_ids = get_completed_pending_ids(
+            self.full_id_list,
+            timeout=timeout if timeout is not None else self.iteration_period)
 
         try:
             if not self.pending_ids and self.end_time is None:
