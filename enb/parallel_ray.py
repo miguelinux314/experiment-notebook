@@ -11,7 +11,6 @@ import threading
 import time
 import sys
 import os
-import datetime
 import builtins
 import subprocess
 import random
@@ -20,6 +19,8 @@ import psutil
 import signal
 import glob
 import platform
+import ast
+import importlib
 
 import enb
 from . import config
@@ -38,11 +39,22 @@ except ImportError as ex:
         logger.debug(f"Could not import ray: {repr(ex)}. Try 'pip install ray'.")
 
 
-def check_ray_present():
+def is_ray_present():
+    """Return True if and only if ray is available and the current platform is one
+    of the supported for ray clustering (currently only linux).
+    """
     if not _ray_present:
-        raise RuntimeError("The ray module is not present, try installing it first.")
+        return False
     if not platform.system().lower() == "linux":
-        raise RuntimeError("Ray clusters are only supported on linux.")
+        return False
+    return True
+
+
+def is_ray_enabled():
+    """Return True if and only if ray is installed, we are on a supported platform and a cluster
+    configuration file is selected.
+    """
+    return is_ray_present() and config.options.ssh_cluster_csv_path
 
 
 class HeadNode:
@@ -53,7 +65,12 @@ class HeadNode:
     """
 
     def __init__(self, ray_port, ray_port_count):
-        check_ray_present()
+        if not is_ray_present():
+            if platform.system().lower() == "linux":
+                raise RuntimeError("The ray module is not present or is not available. "
+                                   "You can install it with 'pip install ray'.")
+            else:
+                raise RuntimeError(f"Parallelization using ray is only supported on linux.")
 
         assert ray_port == int(ray_port), ray_port
         assert ray_port_count == int(ray_port_count), ray_port_count
@@ -138,12 +155,12 @@ class HeadNode:
             logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
 
     def stop(self):
-        # This tiny delay allows error messages from child processes to reach the
-        # orchestrating process for logging.
-        # It might need to be tuned for distributed computation across networks.
-        time.sleep(options.preshutdown_wait_seconds)
+        with logger.info_context("Stopping ray server."):
+            # This tiny delay allows error messages from child processes to reach the
+            # orchestrating process for logging.
+            # It might need to be tuned for distributed computation across networks.
+            time.sleep(options.preshutdown_wait_seconds)
 
-        with logger.info_context("Stopping ray server"):
             invocation = "ray stop --force"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
@@ -208,7 +225,8 @@ class RemoteNode:
     remote_project_mount_path = "~/.enb_remote"
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None):
-        check_ray_present()
+        assert is_ray_present()
+
         self.address = address
         self.ssh_user = ssh_user
         self.ssh_port = ssh_port
@@ -344,13 +362,15 @@ def on_parallel_process():
     """Return True if and only if the call is made from a parallel ray process,
     which can be running in the head node or any of the parallel nodes (if any is present).
     """
-    return os.path.basename(sys.argv[0]) == options.worker_script_name
+    return is_ray_present() and os.path.basename(sys.argv[0]) == options.worker_script_name
 
 
 def on_remote_node():
     """Return True if and only if the call is performed from a parallel ray process
     running on a node different from the head.
     """
+    if not is_ray_present():
+        return False
     if not on_parallel_process():
         print("Base process")
         return False
@@ -362,107 +382,7 @@ def on_remote_node():
 
 
 def is_ray_initialized():
-    return ray.is_initialized
-
-
-class ProgressiveGetter:
-    """When an instance is created, the computation of the requested list of ray ids is started
-    in parallel the background (unless they are already running).
-
-    The returned instance is an iterable object. Each to next() with this instance will either
-    return the instance if any tasks are still running, or raise StopIteration if all are complete.
-    Therefore, instances of this class can be used as the right operand of `in` in for loops.
-
-    A main application of this for-loop approach is to periodically run a code snippet (e.g., for logging)
-    while the computation is performed in the background. The loop will continue until all tasks are completed.
-    One can then call `ray.get(ray_id_list)` and retrieve the obtained results without any expected delay.
-
-    Note that the for-loop body will always be executed at least once, namely after every potentially
-    blocking call to :meth:`ray.wait`.
-    """
-
-    def __init__(self, ray_id_list, weight_list=None, iteration_period=1):
-        """
-        Start the computation of ray_id_list in the background, and get ready to receive next() requests.
-
-        :param ray_id_list: list of ray ids that are to be processed
-        :param weight_list: if not None, a list of the same length as ray_id list, which contains
-          nonnegative values that describe the weight of each task. If provided, they should be highly correlated
-          with the computation time of each associated task to provide accurate completion time estimations.
-        :param iteration_period: a non-negative value that determines the wait period allowed for ray to
-          obtain new results when next() is used. When using this instance in a for loop, it determines approximately
-          the periodicity with which the loop body will be executed.
-        """
-        iteration_period = float(iteration_period)
-        if iteration_period < 0:
-            raise ValueError(f"Invalid iteration period {iteration_period}: it cannot be negative (but it can be zero)")
-        self.full_id_list = list(ray_id_list)
-        self.weight_list = weight_list if weight_list is not None else [1] * len(self.full_id_list)
-        self.id_to_weight = {i: w for i, w in zip(self.full_id_list, self.weight_list)}
-        self.iteration_period = iteration_period
-        self.pending_ids = list(self.full_id_list)
-        self.completed_ids = []
-        self.update_finished_tasks(timeout=0)
-        self.start_time = time.time_ns()
-        self.end_time = None
-
-    def update_finished_tasks(self, timeout=None):
-        """Wait for up to timeout seconds or until ray completes computation
-        of all pending tasks. Update the list of completed and pending tasks.
-        """
-        timeout = timeout if timeout is not None else self.iteration_period
-        self.completed_ids, self.pending_ids = ray.wait(
-            self.full_id_list, num_returns=len(self.full_id_list), timeout=timeout)
-
-        try:
-            if not self.pending_ids and self.end_time is None:
-                self.end_time = time.time_ns()
-        except AttributeError:
-            self.end_time = time.time_ns()
-
-        assert len(self.completed_ids) + len(self.pending_ids) == len(self.full_id_list)
-
-    def report(self):
-        """Return a string that represents the current state of this progressive run.
-        """
-        if self.pending_ids:
-            running_nanos = time.time_ns() - self.start_time
-        else:
-            running_nanos = self.end_time - self.start_time
-        seconds = max(0, running_nanos / 1e9)
-        seconds, minutes = seconds - 60 * (seconds // 60), seconds // 60
-        minutes, hours = int(minutes % 60), int(minutes // 60)
-
-        total_weight = sum(self.id_to_weight.values())
-        completed_weight = sum(self.id_to_weight[i] for i in self.completed_ids)
-
-        time_str = f"{hours:02d}h {minutes:02d}min {seconds:02.3f}s"
-        percentage_str = f"{100 * (completed_weight / total_weight):0.1f}%"
-        now_str = f"(current time: {datetime.datetime.now()})"
-
-        if self.pending_ids:
-            return f"Progress report ({percentage_str}): " \
-                   f"{len(self.completed_ids)} / {len(self.full_id_list)} completed tasks. " \
-                   f"Elapsed time: {time_str} {now_str}."
-
-        else:
-            return f"Progress report: completed all {len(self.full_id_list)} tasks in " \
-                   f"{time_str} {now_str}."
-
-    def __iter__(self):
-        """This instance is itself iterable.
-        """
-        return self
-
-    def __next__(self):
-        """When next(self) is invoked (directly or using for x in self),
-        the lists of complete and pending elements are updated.
-        If there are no pending tasks, StopIteration is raised.
-        """
-        self.update_finished_tasks()
-        if not self.pending_ids:
-            raise StopIteration
-        return self
+    return is_ray_present() and ray.is_initialized
 
 
 def parallel(*args, **kwargs):
@@ -473,6 +393,8 @@ def parallel(*args, **kwargs):
     kwargs["num_gpus"] = kwargs["num_gpus"] if "num_gpus" in kwargs else 0
 
     def ray_remote_wrapper(f):
+        enb.logger.debug(f"Wrapping {f} with ray")
+
         def remote_method_wrapper(_opts, *a, **k):
             """Wrapper for the decorated function f, that updates enb.config.options before f is called.
             """
@@ -490,20 +412,24 @@ def parallel(*args, **kwargs):
             """Wrapper for ray's `.parallel()` method invoked in the local side.
             It makes sure that `remote_side_wrapper` receives the options argument.
             """
-            try:
+            if is_ray_enabled():
                 try:
-                    current_print = builtins.print
-                    builtins.print = logger._original_print
-                except AttributeError:
-                    pass
+                    try:
+                        current_print = builtins.print
+                        builtins.print = logger._original_print
+                    except AttributeError:
+                        pass
 
-                # apply ray.put to all arguments before passing them 
-                return method_proxy.ray_remote(
-                    ray.put(dict(config.options.items())),
-                    *[ray.put(argument) for argument in a],
-                    **{key: ray.put(value) for key, value in k.items()})
-            finally:
-                builtins.print = current_print
+                    # apply ray.put to all arguments before passing them
+                    return method_proxy.ray_remote(
+                        ray.put(dict(config.options.items())),
+                        *[ray.put(argument) for argument in a],
+                        **{key: ray.put(value) for key, value in k.items()})
+                finally:
+                    builtins.print = current_print
+            else:
+                # Fallback to the basic multiprocessing method if the ray cluster was not enabled
+                return enb.parallel.local_future_call(f, args, kwargs)
 
         # method_proxy.remote = local_side_remote
         # method_proxy.start = method_proxy.remote
@@ -515,7 +441,42 @@ def parallel(*args, **kwargs):
     return ray_remote_wrapper
 
 
+def chdir_project_root():
+    """When invoked, it changes the current working dir to the project's root.
+    """
+    if parallel_ray.on_parallel_process() and parallel_ray.on_parallel_process():
+        os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
+    else:
+        os.chdir(options.project_root)
+
+
 def get(ids, **kwargs):
     """Call ray's get method with the given arguments.
     """
     return ray.get(ids, **kwargs)
+
+
+def get_completed_pending_ids(ids):
+    ray.wait(ids, num_returns=len(ids), timeout=0)
+
+
+def fix_imports():
+    """An environment variable is passed to the children processes
+    for them to be able to import all modules that were
+    imported after loading enb. This prevents the remote
+    functions to fail the deserialization process
+    due to missing definitions.
+    """
+    if on_parallel_process():
+        imported_modules = set()
+        for module_name in sorted(ast.literal_eval(os.environ['_needed_modules'])):
+            try:
+                importlib.import_module(module_name)
+                imported_modules.add(module_name)
+            except ImportError as _ex:
+                module_parts = module_name.split(".")
+                for i in range(1, len(module_parts) - 1):
+                    if ".".join(module_parts[:i]) in imported_modules:
+                        break
+                    else:
+                        logger.error(f"Error importing module {repr(module_name)}: {repr(_ex)}.")

@@ -238,8 +238,8 @@ class Analyzer(enb.atable.ATable):
 
         # Wait until all rendering tasks are done while updating about progress
         with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
-            for progress_report in enb.parallel_ray.ProgressiveGetter(
-                    ray_id_list=render_ids,
+            for progress_report in enb.parallel.ProgressiveGetter(
+                    id_list=render_ids,
                     iteration_period=self.progress_report_period):
                 enb.logger.verbose(progress_report.report())
 

@@ -49,7 +49,7 @@ from . import log
 from . import config
 # Logging tools
 from .log import logger
-# ray for parallelization
+# Paralellization modules
 from . import parallel
 from . import parallel_ray
 
@@ -58,6 +58,7 @@ logger.selected_log_level = log.get_level(name=config.options.selected_log_level
                                           lower_priority=config.options.verbose)
 logger.show_prefixes = config.options.log_level_prefix
 logger.show_prefix_level = logger.get_level(name=config.options.show_prefix_level)
+
 if config.options.log_print and not parallel_ray.on_parallel_process():
     logger.replace_print()
 
@@ -77,35 +78,23 @@ from . import pgm
 # Plugin and template support
 from . import plugins
 
-# Set up ray and other remaining logging aspects
+# Setup to be run only when enb is imported
 if not parallel_ray.on_parallel_process():
-    # Don't show the banner in each child instance
+    # Setup common to
     log.core(config.get_banner())
-    _atexit.register(lambda: parallel_ray.stop_ray() if parallel_ray.is_ray_initialized() else None)
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
-    config.options._initial_module_names = list(
-        m.__name__ for m in _sys.modules.values() if hasattr(m, "__name__"))
+
+    if parallel_ray.is_ray_present():
+        _atexit.register(lambda: parallel_ray.stop_ray())
+        # The list of modules loaded so far passed to any possible ray remote
+        # nodes so that they don't attempt to load them again.
+        config.options._initial_module_names = list(
+            m.__name__ for m in _sys.modules.values() if hasattr(m, "__name__"))
 
 # Run the setter functions on the default values too, allowing validation and normalization
 config.options.update(config.options, trigger_events=True)
 
-# An environment variable is passed to the children processes
-# for them to be able to import all modules that were
-# imported after loading enb. This prevents the remote
-# functions to fail the deserialization process
-# due to missing definitions.
-if parallel_ray.on_parallel_process():
-    _imported_modules = set()
-    for _module_name in sorted(_ast.literal_eval(_os.environ['_needed_modules'])):
-        try:
-            _importlib.import_module(_module_name)
-            _imported_modules.add(_module_name)
-        except ImportError as _ex:
-            _module_parts = _module_name.split(".")
-            for i in range(1, len(_module_parts) - 1):
-                if ".".join(_module_parts[:i]) in _imported_modules:
-                    break
-                else:
-                    logger.error(f"Error importing module {repr(_module_name)}: {repr(_ex)}.")
+# Remote process invoked with ray need to have some imports added
+parallel_ray.fix_imports()
