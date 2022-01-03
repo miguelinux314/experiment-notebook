@@ -75,8 +75,8 @@ setup(
     setup_requires=setup_package_list,
 
     install_requires=[
-        "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
-        "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers",
+        "pathos", "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
+        "pdf2image", "psutil", "ray[default]", "requests", "scipy", "sortedcontainers",
         "astropy",
     ],
 

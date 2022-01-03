@@ -140,6 +140,7 @@ class WritableOrCreableDirAction(ExistingDirAction):
                     and not os.access(os.path.dirname(target_dir), os.W_OK):
                 raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
+
 class ReadableOrCreableDirAction(ExistingDirAction):
     @classmethod
     def assert_valid_value(cls, target_dir):
@@ -152,6 +153,7 @@ class ReadableOrCreableDirAction(ExistingDirAction):
             if os.path.dirname(os.path.dirname(target_dir)) \
                     and not os.access(os.path.dirname(target_dir), os.W_OK):
                 raise ValueError(f"{target_dir} is not a directory and cannot be created")
+
 
 class PositiveFloatAction(ValidationAction):
     """Check that a numerical value is greater than zero.

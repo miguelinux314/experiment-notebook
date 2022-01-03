@@ -61,6 +61,7 @@ class OptionsBase(_singleton_cli.SingletonCLI):
             except KeyError:
                 pass
             non_default_properties[k] = v
+        non_default_properties["verbose"] = self.verbose
         return non_default_properties
 
     def normalize_dir_value(self, value):
@@ -294,6 +295,11 @@ class DirOptions:
 class RayOptions:
     """Options related to the ray library, used for parallel/distributed computing.
     """
+    @OptionsBase.property(action="store_true")
+    def no_ray(self, value):
+        """If set, no ray is employed.
+        """
+        return value
 
     @OptionsBase.property("cpu", type=int)
     def ray_cpu_limit(self, value):

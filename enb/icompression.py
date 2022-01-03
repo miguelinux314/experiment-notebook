@@ -778,7 +778,10 @@ class CompressionExperiment(experiment.Experiment):
         # A temporary attribute is created with a self.CompressionDecompressionWrapper instance,
         # which allows lazy, at-most-one execution of the compression/decompression process.
         # Column-setting methods can access the wrapper with self.
-        assert self.codec_results is None
+        try:
+            assert self.codec_results is None
+        except AttributeError:
+            pass
         try:
             self.codec_results = self.CompressionDecompressionWrapper(
                 file_path=file_path, codec=codec,

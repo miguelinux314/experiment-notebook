@@ -834,8 +834,7 @@ class ATable(metaclass=MetaTable):
         # i.e., if ray is installed, the current platform is supported, and
         # a cluster configuration file was found. Otherwise, the multiprocessing
         # library is employed. See the parallel_decorator and parallel_ray modules for more information.
-        if parallel_ray.is_ray_enabled():
-            parallel_ray.init_ray()
+        enb.parallel.init()
 
         target_columns = target_columns if target_columns is not None else list(self.column_to_properties.keys())
 
@@ -1227,7 +1226,14 @@ class ATable(metaclass=MetaTable):
                                "you might need to change enb.config.options.base_tmp_dir to an existing dir in " \
                                "a partition with enough space, e.g., running with --base_tmp_dir=./tmp.\n"
                     cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
-                    enb.logger.error(msg)
+
+                    if enb.config.options.verbose > 0:
+                        # Tests can set the verbose level to less than 0 to avoid showing errors on
+                        # specific points of their code
+                        enb.logger.error(repr(ex) + f".\nverbose={options.verbose} :: id(options)={id(options)} "
+                                               f"::id(options.verbose)={id(options.verbose)} ;;"
+                                               f"id(enb.config.options)={id(enb.config.options)}")
+
                     return cfe
 
             for index_name, index_value in zip(self.indices, unpack_index_value(index)):
