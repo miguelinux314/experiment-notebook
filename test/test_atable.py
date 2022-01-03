@@ -134,8 +134,6 @@ class TestFailingTable(unittest.TestCase):
             #     nodes=enb.config.options.ray_cpu_limit
             #     if enb.config.options.ray_cpu_limit and enb.config.options.ray_cpu_limit > 0
             #     else None)
-            enb.parallel.FallbackFuture.pathos_pool.clear()
-            enb.parallel.FallbackFuture.pathos_pool = None
             ft.get_df(target_indices=target_indices)
             raise RuntimeError("The previous call should have failed")
         except enb.atable.ColumnFailedError as ex:
