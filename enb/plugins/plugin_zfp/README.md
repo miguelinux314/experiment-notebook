@@ -93,8 +93,8 @@ Compression parameters (needed with -i):
       minexp : min bit plane # coded (-1074 for all bit planes)
 Execution parameters:
   -x serial : serial compression (default)
-  -x omp[=threads[,chunk_size]] : OpenMP parallel compression
-  -x cuda : CUDA fixed rate parallel compression/decompression
+  -x omp[=threads[,chunk_size]] : OpenMP parallel_decorator compression
+  -x cuda : CUDA fixed rate parallel_decorator compression/decompression
 Examples:
   -i file : read uncompressed file and compress to memory
   -z file : read compressed file and decompress to memory

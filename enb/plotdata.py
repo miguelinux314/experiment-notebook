@@ -405,7 +405,7 @@ def parallel_render_plds_by_group(
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
     """
     try:
-        if enb.parallel_ray.on_remote_node():
+        if enb.parallel_ray.is_remote_node():
             os.chdir(os.path.expanduser(enb.parallel_ray.RemoteNode.remote_project_mount_path))
         else:
             os.chdir(options.project_root)

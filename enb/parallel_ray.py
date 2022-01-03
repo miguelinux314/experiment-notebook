@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tools to execute functions in parallel using the ray library
+"""Tools to execute functions in parallel_decorator using the ray library
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
@@ -54,7 +54,7 @@ def is_ray_enabled():
     """Return True if and only if ray is installed, we are on a supported platform and a cluster
     configuration file is selected.
     """
-    return is_ray_present() and config.options.ssh_cluster_csv_path
+    return is_ray_present() and platform.system().lower() == "linux"
 
 
 class HeadNode:
@@ -66,11 +66,8 @@ class HeadNode:
 
     def __init__(self, ray_port, ray_port_count):
         if not is_ray_present():
-            if platform.system().lower() == "linux":
-                raise RuntimeError("The ray module is not present or is not available. "
+            raise RuntimeError("The ray module is not present or is not available. "
                                    "You can install it with 'pip install ray'.")
-            else:
-                raise RuntimeError(f"Parallelization using ray is only supported on linux.")
 
         assert ray_port == int(ray_port), ray_port
         assert ray_port_count == int(ray_port_count), ray_port_count
@@ -113,7 +110,7 @@ class HeadNode:
             # The exported environment consists of all *.py files.
             # Furthermore, the list of current modules minus the ones found after
             # initializing enb is passed as an environment variable to
-            # allow the needed imports before parallel methods are invoked.
+            # allow the needed imports before parallel_decorator methods are invoked.
             excludes = [os.path.relpath(p, options.project_root)
                         for p in glob.glob(os.path.join(options.project_root, "**", "*"), recursive=True)
                         if os.path.isfile(p) and not p.endswith(".py")]
@@ -196,7 +193,7 @@ class HeadNode:
     def get_node_ip(self):
         """Adapted from https://stackoverflow.com/a/166589/992926.
         """
-        assert not on_parallel_process()
+        assert not is_parallel_process()
 
         try:
             return self._head_node_address
@@ -238,7 +235,7 @@ class RemoteNode:
             self.cpu_limit = None
 
     def connect(self):
-        assert not on_parallel_process()
+        assert not is_parallel_process()
 
         # Create remote_node_folder_path on the remote host if not existing
         with logger.info_context(f"Stopping ray on {self.address}"):
@@ -251,15 +248,15 @@ class RemoteNode:
                 raise RuntimeError(f"Error stopping remote ray process on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
-        # Create remote_node_folder_path on the parallel host if not existing
-        with logger.info_context(f"Creating parallel mount point on {self.address}"):
+        # Create remote_node_folder_path on the parallel_decorator host if not existing
+        with logger.info_context(f"Creating parallel_decorator mount point on {self.address}"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                          f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
                          f"mkdir -p {self.remote_project_mount_path}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise RuntimeError(f"Error creating parallel mount point on {self}.\n"
+                raise RuntimeError(f"Error creating parallel_decorator mount point on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
         # Mount the project root on remote_node_folder_path - use a separate process
@@ -279,7 +276,7 @@ class RemoteNode:
                          + (f" --num-cpus {self.cpu_limit}" if self.cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise RuntimeError(f"Error starting parallel ray on {self}.\n"
+                raise RuntimeError(f"Error starting parallel_decorator ray on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
     def mount_project_remotely(self):
@@ -297,9 +294,9 @@ class RemoteNode:
         threading.Thread(target=self.mount_popen.communicate, daemon=True).start()
 
     def disconnect(self):
-        assert not on_parallel_process()
+        assert not is_parallel_process()
 
-        # Create remote_node_folder_path on the parallel host if not existing
+        # Create remote_node_folder_path on the parallel_decorator host if not existing
         with logger.info_context(f"Disconnecting {self.address} (stopping ray)"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
@@ -358,20 +355,20 @@ def stop_ray():
         _head_node.stop()
 
 
-def on_parallel_process():
-    """Return True if and only if the call is made from a parallel ray process,
-    which can be running in the head node or any of the parallel nodes (if any is present).
+def is_parallel_process():
+    """Return True if and only if the call is made from a parallel_decorator ray process,
+    which can be running in the head node or any of the parallel_decorator nodes (if any is present).
     """
     return is_ray_present() and os.path.basename(sys.argv[0]) == options.worker_script_name
 
 
-def on_remote_node():
-    """Return True if and only if the call is performed from a parallel ray process
+def is_remote_node():
+    """Return True if and only if the call is performed from a parallel_decorator ray process
     running on a node different from the head.
     """
     if not is_ray_present():
         return False
-    if not on_parallel_process():
+    if not is_parallel_process():
         print("Base process")
         return False
     else:
@@ -385,9 +382,9 @@ def is_ray_initialized():
     return is_ray_present() and ray.is_initialized
 
 
-def parallel(*args, **kwargs):
+def parallel_decorator(*args, **kwargs):
     """Wrapper of the @`ray.remote` decorator that automatically updates enb.config.options
-    for parallel processes, so that they always access the intended configuration.
+    for parallel_decorator processes, so that they always access the intended configuration.
     """
     kwargs["num_cpus"] = kwargs["num_cpus"] if "num_cpus" in kwargs else 1
     kwargs["num_gpus"] = kwargs["num_gpus"] if "num_gpus" in kwargs else 0
@@ -409,27 +406,23 @@ def parallel(*args, **kwargs):
         method_proxy.ray_remote = method_proxy.remote
 
         def local_side_remote(*a, **k):
-            """Wrapper for ray's `.parallel()` method invoked in the local side.
+            """Wrapper for ray's `.parallel_decorator()` method invoked in the local side.
             It makes sure that `remote_side_wrapper` receives the options argument.
             """
-            if is_ray_enabled():
+            try:
                 try:
-                    try:
-                        current_print = builtins.print
-                        builtins.print = logger._original_print
-                    except AttributeError:
-                        pass
+                    current_print = builtins.print
+                    builtins.print = logger._original_print
+                except AttributeError:
+                    pass
 
-                    # apply ray.put to all arguments before passing them
-                    return method_proxy.ray_remote(
-                        ray.put(dict(config.options.items())),
-                        *[ray.put(argument) for argument in a],
-                        **{key: ray.put(value) for key, value in k.items()})
-                finally:
-                    builtins.print = current_print
-            else:
-                # Fallback to the basic multiprocessing method if the ray cluster was not enabled
-                return enb.parallel.local_future_call(f, args, kwargs)
+                # apply ray.put to all arguments before passing them
+                return method_proxy.ray_remote(
+                    ray.put(dict(config.options.items())),
+                    *[ray.put(argument) for argument in a],
+                    **{key: ray.put(value) for key, value in k.items()})
+            finally:
+                builtins.print = current_print
 
         # method_proxy.remote = local_side_remote
         # method_proxy.start = method_proxy.remote
@@ -439,15 +432,6 @@ def parallel(*args, **kwargs):
         return method_proxy
 
     return ray_remote_wrapper
-
-
-def chdir_project_root():
-    """When invoked, it changes the current working dir to the project's root.
-    """
-    if parallel_ray.on_parallel_process() and parallel_ray.on_parallel_process():
-        os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
-    else:
-        os.chdir(options.project_root)
 
 
 def get(ids, **kwargs):
@@ -469,7 +453,7 @@ def fix_imports():
     functions to fail the deserialization process
     due to missing definitions.
     """
-    if on_parallel_process():
+    if is_parallel_process():
         imported_modules = set()
         for module_name in sorted(ast.literal_eval(os.environ['_needed_modules'])):
             try:

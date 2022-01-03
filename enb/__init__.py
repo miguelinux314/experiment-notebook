@@ -59,7 +59,7 @@ logger.selected_log_level = log.get_level(name=config.options.selected_log_level
 logger.show_prefixes = config.options.log_level_prefix
 logger.show_prefix_level = logger.get_level(name=config.options.show_prefix_level)
 
-if config.options.log_print and not parallel_ray.on_parallel_process():
+if config.options.log_print and not parallel_ray.is_parallel_process():
     logger.replace_print()
 
 # Remaining core modules
@@ -79,7 +79,7 @@ from . import pgm
 from . import plugins
 
 # Setup to be run only when enb is imported
-if not parallel_ray.on_parallel_process():
+if not parallel_ray.is_parallel_process():
     # Setup common to
     log.core(config.get_banner())
     __file__ = _os.path.abspath(__file__)
