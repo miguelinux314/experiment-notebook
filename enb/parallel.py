@@ -9,9 +9,6 @@ import os
 import time
 import datetime
 
-# import multiprocessing
-import concurrent.futures
-
 from . import config
 from .config import options
 from . import log
@@ -22,27 +19,32 @@ from . import parallel_ray
 def parallel(*args, **kwargs):
     """Decorator for methods intended to run in parallel.
 
-    On linux platforms, methods are run via ray, and the *args and **kwargs arguments are passed
-    to the `@ray.remote` decorator. On other platforms, the multiprocessing library is employed.
+    When ray is available, the .remote() call is performed on the ray decorated function.
+    When it is not, a fallback parallelization method is used.
 
     To run a parallel method `f`, call `f.start` with the arguments you want to pass to f.
     An id object is returned immediately. The result can then be retrieved by calling
     `enb.parallel.get` with the id object.
 
-    Important: parallel calls should not read or modify global variables.
-    The only exception is enb.config.options, which can be read from parallel calls.
+    Important: parallel calls should not generally read or modify global variables.
+    The main exception is enb.config.options, which can be read from parallel calls.
     """
-    if parallel_ray.is_ray_enabled():
-        return parallel_ray.parallel(*args, **kwargs)
+    if parallel_ray.is_ray_present():
+        return parallel_ray.parallel_decorator(*args, **kwargs)
     else:
-        return local_parallel(*args, **kwargs)
+        return fallback_parallel_decorator(*args, **kwargs)
 
 
 def get(ids, **kwargs):
-    if parallel_ray.is_ray_enabled():
+    """Get results for the started ids passed as arguments.
+
+    If timeout is part of kwargs, at most those many seconds are waited.
+    Otherwise, this is a blocking call.
+    """
+    if parallel_ray.is_ray_present():
         return parallel_ray.get(ids, **kwargs)
     else:
-        return local_get(ids, **kwargs)
+        return fallback_get(ids, **kwargs)
 
 
 def get_completed_pending_ids(ids, timeout=0):
@@ -53,51 +55,23 @@ def get_completed_pending_ids(ids, timeout=0):
     if parallel_ray.is_ray_enabled():
         return parallel_ray.get_completed_pending_ids(ids, timeout=timeout)
     else:
-        completed_ids = []
-        pending_ids = []
-        for input_id in ids:
-            try:
-                get([input_id], timeout=timeout)
-                completed_ids.append(input_id)
-            except concurrent.futures.TimeoutError:
-                pending_ids.append(input_id)
-
-        return completed_ids, pending_ids
+        return fallback_get(ids=ids, timeout=timeout), []
 
 
-def local_parallel(*args, **kwargs):
+def fallback_parallel_decorator(*args, **kwargs):
     """Decorator for methods intended to run in parallel in the local machine.
     """
 
     def wrapper(f):
-        logger.debug(f"Wrapping {f} with multiprocess")
+        logger.debug(f"Wrapping {f} with fallback")
         f.start = lambda *args, **kwargs: local_future_call(f, args, kwargs)
         return f
 
     return wrapper
 
 
-_multiprocess_pool = None
-
-
 def local_future_call(f, args, kwargs):
-    global _multiprocess_pool
-    if _multiprocess_pool is None:
-        _multiprocess_pool = concurrent.futures.ProcessPoolExecutor(
-            config.options.ray_cpu_limit if config.options.ray_cpu_limit or config.options.ray_cpu_limit else None)
-    submission = _multiprocess_pool.submit(f, *args, **kwargs)
-
-    print(f"[watch] submission={submission}")
-
-    print(f"[watch] f={f}")
-    print(f"[watch] args={args}")
-    print(f"[watch] kwargs={kwargs}")
-
-    # print(f"[watch] enb.FilePropertiesTable.set_corpus={enb.FilePropertiesTable.set_corpus}")
-
-    print(f"[watch] submission.result()={submission.result()}")
-
-    return submission
+    return f(*args, **kwargs)
 
 
 def on_multiprocess_error(*args, **kwargs):
@@ -106,16 +80,16 @@ def on_multiprocess_error(*args, **kwargs):
     print(f"[watch] kwargs={kwargs}")
 
 
-def local_get(ids, **kwargs):
-    """Method to get the results of methods decorated with enb.parallel.multiprocess_parallel.
+def fallback_get(ids, **kwargs):
+    """Fallback get method when ray is not available.
     """
-    return [async_result.result(**kwargs) for async_result in ids]
+    return ids
 
 
 def chdir_project_root():
     """When invoked, it changes the current working dir to the project's root.
     """
-    if parallel_ray.on_parallel_process() and parallel_ray.on_remote_node():
+    if parallel_ray.is_parallel_process() and parallel_ray.is_remote_node():
         os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
     else:
         os.chdir(options.project_root)

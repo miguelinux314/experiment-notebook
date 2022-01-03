@@ -833,7 +833,7 @@ class ATable(metaclass=MetaTable):
         # Parallelization with ray is only used if it is enabled at this point,
         # i.e., if ray is installed, the current platform is supported, and
         # a cluster configuration file was found. Otherwise, the multiprocessing
-        # library is employed. See the parallel and parallel_ray modules for more information.
+        # library is employed. See the parallel_decorator and parallel_ray modules for more information.
         if parallel_ray.is_ray_enabled():
             parallel_ray.init_ray()
 
@@ -1102,7 +1102,7 @@ class ATable(metaclass=MetaTable):
         # Get the list of pandas Series instances (table rows) corresponding to target_indices.
         target_locs = target_locs if target_locs is None else [indices_to_internal_loc(v) for v in target_indices]
 
-        # Start computation of new and updated rows in parallel
+        # Start computation of new and updated rows in parallel_decorator
         pending_ids = [parallel_compute_one_row.start(
             atable_instance=self,
             filtered_df=target_df,

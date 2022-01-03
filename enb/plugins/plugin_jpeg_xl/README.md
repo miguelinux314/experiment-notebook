@@ -175,7 +175,7 @@ Other arguments to benchmark_xl include:
 *   `--output_extension`: selects the format used to output decoded images.
 *   `--num_threads`: number of codec instances that will independently
     encode/decode images, or 0.
-*   `--inner_threads`: how many threads each instance should use for parallel
+*   `--inner_threads`: how many threads each instance should use for parallel_decorator
     encoding/decoding, or 0.
 *   `--encode_reps`/`--decode_reps`: how many times to repeat encoding/decoding
     each image, for more consistent measurements (we recommend 10).
