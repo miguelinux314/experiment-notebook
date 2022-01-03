@@ -83,8 +83,11 @@ class Ini(metaclass=_Singleton):
     def update_from_path(self, ini_path):
         """Update the current configuration by reading the contents of ini_path.
         """
-        self.config_parser.read(ini_path)
-        self.used_config_paths.append(ini_path)
+        try:
+            self.config_parser.read(ini_path)
+            self.used_config_paths.append(ini_path)
+        except configparser.ParsingError as ex:
+            print(f"Selected invalid ini path {ini_path}: {repr(ex)}.\nContinuing without this file.")
 
     def get_key(self, section, name):
         """Return a read key value in the given section (if existing),
