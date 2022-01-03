@@ -8,6 +8,7 @@ import functools
 import os
 import time
 import datetime
+import pathos
 
 from . import config
 from .config import options
@@ -15,6 +16,32 @@ from . import log
 from .log import logger
 from . import parallel_ray
 
+
+def init():
+    """If ray is present, this method initializes it.
+    If the fallback engine is used, it is ensured that all globals
+    are correctly shared with the pool.
+    """
+    if parallel_ray.is_ray_enabled():
+        parallel_ray.init_ray()
+    else:
+        fallback_init()
+
+def fallback_init():
+    """Initialization of the fallback engine. This needs to be called before
+    each parallelization, or globals used in the pool might be updated.
+    """
+    if FallbackFuture.pathos_pool is not None:
+        FallbackFuture.pathos_pool.clear()
+        FallbackFuture.pathos_pool = None
+
+def chdir_project_root():
+    """When invoked, it changes the current working dir to the project's root.
+    """
+    if parallel_ray.is_parallel_process() and parallel_ray.is_remote_node():
+        os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
+    else:
+        os.chdir(options.project_root)
 
 def parallel(*args, **kwargs):
     """Decorator for methods intended to run in parallel.
@@ -29,7 +56,7 @@ def parallel(*args, **kwargs):
     Important: parallel calls should not generally read or modify global variables.
     The main exception is enb.config.options, which can be read from parallel calls.
     """
-    if parallel_ray.is_ray_present():
+    if parallel_ray.is_ray_enabled():
         return parallel_ray.parallel_decorator(*args, **kwargs)
     else:
         return fallback_parallel_decorator(*args, **kwargs)
@@ -41,7 +68,7 @@ def get(ids, **kwargs):
     If timeout is part of kwargs, at most those many seconds are waited.
     Otherwise, this is a blocking call.
     """
-    if parallel_ray.is_ray_present():
+    if parallel_ray.is_ray_enabled():
         return parallel_ray.get(ids, **kwargs)
     else:
         return fallback_get(ids, **kwargs)
@@ -55,44 +82,75 @@ def get_completed_pending_ids(ids, timeout=0):
     if parallel_ray.is_ray_enabled():
         return parallel_ray.get_completed_pending_ids(ids, timeout=timeout)
     else:
-        return fallback_get(ids=ids, timeout=timeout), []
+        return fallback_get_completed_pending_ids(ids, timeout=timeout)
 
 
-def fallback_parallel_decorator(*args, **kwargs):
+class FallbackFuture:
+    """The fallback future is invoked when get is called.
+    """
+    current_id = 0
+    pathos_pool = None
+
+    def __init__(self, f, args, kwargs):
+        if self.__class__.pathos_pool is None:
+            self.__class__.pathos_pool = pathos.pools.ProcessPool(
+                nodes=options.ray_cpu_limit if options.ray_cpu_limit and options.ray_cpu_limit > 0
+                else None)
+        self.f = f
+        self.args = args
+        self.kwargs = kwargs
+        self.current_id = self.__class__.current_id
+        self.__class__.current_id += 1
+        self.pathos_result = self.pathos_pool.apipe(f, *args, **kwargs)
+
+    def get(self, **kwargs):
+        return self.pathos_result.get(**kwargs)
+
+    def ready(self):
+        return self.pathos_result.ready()
+
+    def __hash__(self):
+        return hash(self.current_id)
+
+
+def fallback_parallel_decorator(*decorator_args, **decorator_kwargs):
     """Decorator for methods intended to run in parallel in the local machine.
     """
 
     def wrapper(f):
-        logger.debug(f"Wrapping {f} with fallback")
-        f.start = lambda *args, **kwargs: local_future_call(f, args, kwargs)
+        f.start = lambda *_args, **_kwargs: FallbackFuture(f=f, args=_args, kwargs=_kwargs)
         return f
 
     return wrapper
 
 
-def local_future_call(f, args, kwargs):
-    return f(*args, **kwargs)
-
-
-def on_multiprocess_error(*args, **kwargs):
-    print(f"Error on multiprocess call:")
-    print(f"[watch] args={args}")
-    print(f"[watch] kwargs={kwargs}")
-
-
 def fallback_get(ids, **kwargs):
     """Fallback get method when ray is not available.
     """
-    return ids
+    return [fallback_future.get(**kwargs) for fallback_future in ids]
 
-
-def chdir_project_root():
-    """When invoked, it changes the current working dir to the project's root.
+def fallback_get_completed_pending_ids(ids, timeout=0):
+    """Get two lists, one for completed and one for pending fallback ids.
     """
-    if parallel_ray.is_parallel_process() and parallel_ray.is_remote_node():
-        os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
-    else:
-        os.chdir(options.project_root)
+    complete = []
+    pending = []
+    for fallback_future in ids:
+        if fallback_future.ready():
+            complete.append(fallback_future)
+        else:
+            pending.append(fallback_future)
+
+    if pending and timeout:
+        time.sleep(timeout)
+        complete = []
+        pending = []
+        for fallback_future in ids:
+            if fallback_future.ready():
+                complete.append(fallback_future)
+            else:
+                pending.append(fallback_future)
+
+    return complete, pending
 
 
 class ProgressiveGetter:

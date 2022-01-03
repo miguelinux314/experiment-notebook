@@ -39,7 +39,7 @@ except ImportError as ex:
         logger.debug(f"Could not import ray: {repr(ex)}. Try 'pip install ray'.")
 
 
-def is_ray_present():
+def is_ray_enabled():
     """Return True if and only if ray is available and the current platform is one
     of the supported for ray clustering (currently only linux).
     """
@@ -47,14 +47,9 @@ def is_ray_present():
         return False
     if not platform.system().lower() == "linux":
         return False
+    if options.no_ray:
+        return False
     return True
-
-
-def is_ray_enabled():
-    """Return True if and only if ray is installed, we are on a supported platform and a cluster
-    configuration file is selected.
-    """
-    return is_ray_present() and platform.system().lower() == "linux"
 
 
 class HeadNode:
@@ -65,9 +60,9 @@ class HeadNode:
     """
 
     def __init__(self, ray_port, ray_port_count):
-        if not is_ray_present():
+        if not is_ray_enabled():
             raise RuntimeError("The ray module is not present or is not available. "
-                                   "You can install it with 'pip install ray'.")
+                               "You can install it with 'pip install ray'.")
 
         assert ray_port == int(ray_port), ray_port
         assert ray_port_count == int(ray_port_count), ray_port_count
@@ -222,7 +217,7 @@ class RemoteNode:
     remote_project_mount_path = "~/.enb_remote"
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None):
-        assert is_ray_present()
+        assert is_ray_enabled()
 
         self.address = address
         self.ssh_user = ssh_user
@@ -345,8 +340,6 @@ def init_ray():
             _head_node.start()
             options.head_address = _head_node.get_node_ip()
             logger.verbose(_head_node.status_str)
-    else:
-        logger.debug(f"Called init_ray with ray alredy initialized")
 
 
 def stop_ray():
@@ -359,14 +352,14 @@ def is_parallel_process():
     """Return True if and only if the call is made from a parallel_decorator ray process,
     which can be running in the head node or any of the parallel_decorator nodes (if any is present).
     """
-    return is_ray_present() and os.path.basename(sys.argv[0]) == options.worker_script_name
+    return is_ray_enabled() and os.path.basename(sys.argv[0]) == options.worker_script_name
 
 
 def is_remote_node():
     """Return True if and only if the call is performed from a parallel_decorator ray process
     running on a node different from the head.
     """
-    if not is_ray_present():
+    if not is_ray_enabled():
         return False
     if not is_parallel_process():
         print("Base process")
@@ -379,7 +372,7 @@ def is_remote_node():
 
 
 def is_ray_initialized():
-    return is_ray_present() and ray.is_initialized
+    return is_ray_enabled() and ray.is_initialized
 
 
 def parallel_decorator(*args, **kwargs):

@@ -86,7 +86,7 @@ if not parallel_ray.is_parallel_process():
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
 
-    if parallel_ray.is_ray_present():
+    if parallel_ray.is_ray_enabled():
         _atexit.register(lambda: parallel_ray.stop_ray())
         # The list of modules loaded so far passed to any possible ray remote
         # nodes so that they don't attempt to load them again.
