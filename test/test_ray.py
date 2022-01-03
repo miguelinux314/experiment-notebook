@@ -31,7 +31,7 @@ class TestRay(unittest.TestCase):
         target_ids = [wait_a.remote(ray.put(_)) for _ in range(5)] \
                      + [wait_b.remote(ray.put(_)) for _ in range(5)]
 
-        pg = enb.parallel_ray.ProgressiveGetter(ray_id_list=target_ids, iteration_period=0.6)
+        pg = enb.parallel.ProgressiveGetter(id_list=target_ids, iteration_period=0.6)
 
         for i, _ in enumerate(pg):
             assert len(pg.completed_ids) < len(target_ids)

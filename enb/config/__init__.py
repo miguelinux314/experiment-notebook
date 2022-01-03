@@ -41,12 +41,13 @@ Option configuration in enb is centralized through enb.config.options. Several k
 
     - The default values for enb.config.options and its CLI is obtained through enb.config.ini, described below.
 
+
 An important note should be made about the interaction between enb.config.options and ray.
 When ray spawns new (local or remote) processes to serve as workers, the Options singleton
 is initialized for each of those process, with the catch that ray does **not** pass the user's CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
 To mitigate this problem, an `options` parameter is defined and passed to many these functions,
-e.g., with `f.remote(options=ray.put(enb.config.options))` if f is your `@ray.remote`-decorated function.
+e.g., with `f.remote(options=ray.put(enb.config.options))` if f is your `@enb.parallel.parallel`-decorated function.
 The `@enb.config.propagates_options` decorator provides a slightly cleaner way of automating
 this mitigation.
 

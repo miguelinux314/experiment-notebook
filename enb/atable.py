@@ -203,7 +203,6 @@ import os
 import sys
 import pandas as pd
 import pickle
-import ray
 import traceback
 import shutil
 
@@ -508,7 +507,8 @@ class MetaTable(type):
 
                 if ctp_fun != sc_fun:
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
-                        enb.logger.debug(f"Redefining column name {ctp_fun} becomes {sc_fun}")
+                        enb.logger.debug(f"Redefining column {ctp_fun}."
+                                         f"It now becomes {sc_fun}")
                         properties = copy.copy(properties)
                         properties.fun = ATable.build_column_function_wrapper(
                             fun=sc_fun, column_properties=properties)
@@ -744,20 +744,13 @@ class ATable(metaclass=MetaTable):
 
             # The current working dir is updated for remote processes in the head or the remote nodes
             try:
-                original_wd = os.getcwd()
-                if parallel_ray.on_parallel_process():
-                    if parallel_ray.on_remote_node():
-                        os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
-                    else:
-                        os.chdir(options.project_root)
-
+                enb.parallel.chdir_project_root()
                 returned_value = fun(self, index, row)
                 if returned_value is not None:
                     row[column_properties.name] = returned_value
             finally:
                 globals.clear()
                 globals.update(old_globals)
-                os.chdir(original_wd)
 
         try:
             column_function_wrapper._redefines_column = fun._redefines_column
@@ -837,10 +830,12 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is encountered
           processing the data.
         """
-        # ATable subclasses make automatic use of ray's parallelization
-        # capabilities. This initializes the ray subsystem if it was not
-        # up already.
-        parallel_ray.init_ray()
+        # Parallelization with ray is only used if it is enabled at this point,
+        # i.e., if ray is installed, the current platform is supported, and
+        # a cluster configuration file was found. Otherwise, the multiprocessing
+        # library is employed. See the parallel and parallel_ray modules for more information.
+        if parallel_ray.is_ray_enabled():
+            parallel_ray.init_ray()
 
         target_columns = target_columns if target_columns is not None else list(self.column_to_properties.keys())
 
@@ -1120,8 +1115,9 @@ class ATable(metaclass=MetaTable):
         with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
                                         f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.ray_cpu_limit}]",
                                         sep="...\n"):
-            pg = enb.parallel_ray.ProgressiveGetter(ray_id_list=pending_ids,
-                                                   iteration_period=self.progress_report_period)
+            pg = enb.parallel.ProgressiveGetter(
+                id_list=pending_ids,
+                iteration_period=self.progress_report_period)
             for _ in pg:
                 enb.logger.verbose(pg.report())
             enb.logger.verbose(pg.report())
