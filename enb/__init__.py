@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Electronic Notebook (enb) library.
+"""Experiment notebook (enb) library.
 
 Please see https://github.com/miguelinux314/experiment-notebook for further information.
 """
