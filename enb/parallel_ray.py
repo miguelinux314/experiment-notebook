@@ -1,31 +1,63 @@
 #!/usr/bin/env python3
-"""Tools to connect to ray clusters
+"""Tools to execute functions in parallel_decorator using the ray library
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
 
 import logging
+import shutil
 import string
 import math
 import threading
 import time
 import sys
 import os
-import datetime
 import builtins
 import subprocess
 import random
 import pandas as pd
-import socket
-import ray
 import psutil
 import signal
 import glob
+import platform
+import ast
+import importlib
+import textwrap
 
+import enb
 from . import config
 from .config import options
 from . import log
 from .log import logger
+
+# Ray is only expected to be available on linux nodes when clustering is desired.
+try:
+    import ray
+
+    _ray_present = True
+except ImportError as ex:
+    _ray_present = False
+
+_ssh_present = shutil.which("ssh") is not None
+_sshfs_present = shutil.which("sshfs") is not None
+_dpipe_present = shutil.which("dpipe") is not None
+_ray_cli_present = shutil.which("ray") is not None
+
+
+def is_ray_enabled():
+    """Return True if and only if ray is available and the current platform is one
+    of the supported for ray clustering (currently only linux).
+    """
+    if not _ray_present:
+        return False
+    elif platform.system().lower() == "windows":
+        return False
+    elif not _ray_present:
+        logger.debug("The ray library is available but the ray command is not available. Please fix your path.")
+        return False
+    elif options.no_ray:
+        return False
+    return True
 
 
 class HeadNode:
@@ -36,6 +68,10 @@ class HeadNode:
     """
 
     def __init__(self, ray_port, ray_port_count):
+        if not is_ray_enabled():
+            raise RuntimeError("The ray module is not present or is not available. "
+                               "You can install it with 'pip install ray'.")
+
         assert ray_port == int(ray_port), ray_port
         assert ray_port_count == int(ray_port_count), ray_port_count
         assert 1025 <= ray_port, ray_port
@@ -77,13 +113,13 @@ class HeadNode:
             # The exported environment consists of all *.py files.
             # Furthermore, the list of current modules minus the ones found after
             # initializing enb is passed as an environment variable to
-            # allow the needed imports before remote methods are invoked.
+            # allow the needed imports before parallel_decorator methods are invoked.
             excludes = [os.path.relpath(p, options.project_root)
                         for p in glob.glob(os.path.join(options.project_root, "**", "*"), recursive=True)
                         if os.path.isfile(p) and not p.endswith(".py")]
 
             modules_needed_remotely = [m.__name__ for m in sys.modules.values()
-                                if hasattr(m, "__name__") and m.__name__ not in options._initial_module_names
+                                       if hasattr(m, "__name__") and m.__name__ not in options._initial_module_names
                                        and not m.__name__.startswith("_")]
 
             ray.init(address=f"localhost:{self.ray_port}",
@@ -95,37 +131,50 @@ class HeadNode:
                      logging_level=logging.CRITICAL if options.verbose <= 1 else logging.INFO)
 
         if options.ssh_cluster_csv_path:
-            if not os.path.exists(options.ssh_cluster_csv_path):
-                raise ValueError(f"The cluster configuration file was set to {repr(options.ssh_cluster_csv_path)}"
-                                 f"but it does not exist. "
-                                 f"Either set enb.config.options.ssh_cluster_csv_path to None "
-                                 f"or to an existing file. See "
-                                 f"https://miguelinux314.github.io/experiment-notebook/installation.html "
-                                 f"for more details.")
+            failing_tool = None
+            if not _ssh_present:
+                failing_tool = "ssh"
+            elif not _sshfs_present:
+                failing_tool = "sshfs"
+            elif not _dpipe_present:
+                failing_tool = "dpipe"
+            if failing_tool:
+                enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
+                                f"but {failing_tool} was not found in the path. "
+                                f"No remote nodes will be used in this session.\n"
+                                f"Please install {failing_tool} in your system and/or fix the path it and retry.")
+            else:
+                if not os.path.exists(options.ssh_cluster_csv_path):
+                    raise ValueError(f"The cluster configuration file was set to {repr(options.ssh_cluster_csv_path)}"
+                                     f"but it does not exist. "
+                                     f"Either set enb.config.options.ssh_cluster_csv_path to None "
+                                     f"or to an existing file. See "
+                                     f"https://miguelinux314.github.io/experiment-notebook/installation.html "
+                                     f"for more details.")
 
-            self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
-            with logger.info_context(f"Connecting {len(self.remote_nodes)} remote nodes.",
-                                     msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
-                connected_nodes = []
-                for rn in self.remote_nodes:
-                    try:
+                self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
+                with logger.info_context(f"Connecting {len(self.remote_nodes)} remote nodes.",
+                                         msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
+                    connected_nodes = []
+                    for rn in self.remote_nodes:
                         with logger.info_context(f"Connecting to {rn}"):
-                            rn.connect()
-                            connected_nodes.append(rn)
-                    except Exception as ex:
-                        # Only nodes connected up to this point need to be disconnected.
-                        self.remote_nodes = connected_nodes
-                        raise ex
+                            try:
+                                rn.connect()
+                                connected_nodes.append(rn)
+                            except RuntimeError as ex:
+                                print(
+                                    f"Error connecting to {rn}: {repr(ex)}. Execution will continue without this node.")
+                    self.remote_nodes = connected_nodes
 
-            logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
+                logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
 
     def stop(self):
-        # This tiny delay allows error messages from child processes to reach the
-        # orchestrating process for logging.
-        # It might need to be tuned for distributed computation across networks.
-        time.sleep(options.preshutdown_wait_seconds)
+        with logger.info_context("Stopping ray server."):
+            # This tiny delay allows error messages from child processes to reach the
+            # orchestrating process for logging.
+            # It might need to be tuned for distributed computation across networks.
+            time.sleep(options.preshutdown_wait_seconds)
 
-        with logger.info_context("Stopping ray server"):
             invocation = "ray stop --force"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
@@ -161,12 +210,12 @@ class HeadNode:
     def get_node_ip(self):
         """Adapted from https://stackoverflow.com/a/166589/992926.
         """
-        assert not on_remote_process()
+        assert not is_parallel_process()
 
         try:
             return self._head_node_address
         except AttributeError:
-            self._head_node_address = get_node_ip()
+            self._head_node_address = enb.misc.get_node_ip()
             return self._head_node_address
 
     @property
@@ -190,6 +239,8 @@ class RemoteNode:
     remote_project_mount_path = "~/.enb_remote"
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None):
+        assert is_ray_enabled()
+
         self.address = address
         self.ssh_user = ssh_user
         self.ssh_port = ssh_port
@@ -201,7 +252,7 @@ class RemoteNode:
             self.cpu_limit = None
 
     def connect(self):
-        assert not on_remote_process()
+        assert not is_parallel_process()
 
         # Create remote_node_folder_path on the remote host if not existing
         with logger.info_context(f"Stopping ray on {self.address}"):
@@ -214,15 +265,15 @@ class RemoteNode:
                 raise RuntimeError(f"Error stopping remote ray process on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
-        # Create remote_node_folder_path on the remote host if not existing
-        with logger.info_context(f"Creating remote mount point on {self.address}"):
+        # Create remote_node_folder_path on the parallel_decorator host if not existing
+        with logger.info_context(f"Creating parallel_decorator mount point on {self.address}"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                          f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
                          f"mkdir -p {self.remote_project_mount_path}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise RuntimeError(f"Error creating remote mount point on {self}.\n"
+                raise RuntimeError(f"Error creating parallel_decorator mount point on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
         # Mount the project root on remote_node_folder_path - use a separate process
@@ -242,7 +293,7 @@ class RemoteNode:
                          + (f" --num-cpus {self.cpu_limit}" if self.cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise RuntimeError(f"Error starting remote ray on {self}.\n"
+                raise RuntimeError(f"Error starting parallel_decorator ray on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
     def mount_project_remotely(self):
@@ -260,9 +311,9 @@ class RemoteNode:
         threading.Thread(target=self.mount_popen.communicate, daemon=True).start()
 
     def disconnect(self):
-        assert not on_remote_process()
+        assert not is_parallel_process()
 
-        # Create remote_node_folder_path on the remote host if not existing
+        # Create remote_node_folder_path on the parallel_decorator host if not existing
         with logger.info_context(f"Disconnecting {self.address} (stopping ray)"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
@@ -309,159 +360,53 @@ def init_ray():
             _head_node = HeadNode(ray_port=options.ray_port,
                                   ray_port_count=options.ray_port_count)
             _head_node.start()
-            options.head_address = get_node_ip()
+            options.head_address = _head_node.get_node_ip()
             logger.verbose(_head_node.status_str)
-    else:
-        logger.debug(f"Called init_ray with ray alredy initialized")
 
 
 def stop_ray():
     global _head_node
-
-    if ray.is_initialized:
-        assert _head_node is not None
+    if _head_node is not None:
         _head_node.stop()
 
 
-def on_remote_process():
-    """Return True if and only if the call is made from a remote ray process,
-    which can be running in the head node or any of the remote nodes (if any is present).
+def is_parallel_process():
+    """Return True if and only if the call is made from a parallel_decorator ray process,
+    which can be running in the head node or any of the parallel_decorator nodes (if any is present).
     """
-    return os.path.basename(sys.argv[0]) == options.worker_script_name
+    return is_ray_enabled() and os.path.basename(sys.argv[0]) == options.worker_script_name
 
 
-def on_remote_node():
-    """Return True if and only if the call is performed from a remote ray process
+def is_remote_node():
+    """Return True if and only if the call is performed from a parallel_decorator ray process
     running on a node different from the head.
     """
-    if not on_remote_process():
+    if not is_ray_enabled():
+        return False
+    if not is_parallel_process():
         print("Base process")
         return False
     else:
         try:
-            return options._name_to_property["head_address"] != get_node_ip()
+            return options._name_to_property["head_address"] != enb.misc.get_node_ip()
         except KeyError:
             return False
 
 
-def get_node_ip():
-    """Get the current IP address of this node.
-    """
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    address = s.getsockname()[0]
-    s.close()
-    return address
+def is_ray_initialized():
+    return is_ray_enabled() and ray.is_initialized
 
 
-class ProgressiveGetter:
-    """When an instance is created, the computation of the requested list of ray ids is started
-    in parallel the background (unless they are already running).
-
-    The returned instance is an iterable object. Each to next() with this instance will either
-    return the instance if any tasks are still running, or raise StopIteration if all are complete.
-    Therefore, instances of this class can be used as the right operand of `in` in for loops.
-
-    A main application of this for-loop approach is to periodically run a code snippet (e.g., for logging)
-    while the computation is performed in the background. The loop will continue until all tasks are completed.
-    One can then call `ray.get(ray_id_list)` and retrieve the obtained results without any expected delay.
-
-    Note that the for-loop body will always be executed at least once, namely after every potentially
-    blocking call to :meth:`ray.wait`.
-    """
-
-    def __init__(self, ray_id_list, weight_list=None, iteration_period=1):
-        """
-        Start the computation of ray_id_list in the background, and get ready to receive next() requests.
-
-        :param ray_id_list: list of ray ids that are to be processed
-        :param weight_list: if not None, a list of the same length as ray_id list, which contains
-          nonnegative values that describe the weight of each task. If provided, they should be highly correlated
-          with the computation time of each associated task to provide accurate completion time estimations.
-        :param iteration_period: a non-negative value that determines the wait period allowed for ray to
-          obtain new results when next() is used. When using this instance in a for loop, it determines approximately
-          the periodicity with which the loop body will be executed.
-        """
-        iteration_period = float(iteration_period)
-        if iteration_period < 0:
-            raise ValueError(f"Invalid iteration period {iteration_period}: it cannot be negative (but it can be zero)")
-        self.full_id_list = list(ray_id_list)
-        self.weight_list = weight_list if weight_list is not None else [1] * len(self.full_id_list)
-        self.id_to_weight = {i: w for i, w in zip(self.full_id_list, self.weight_list)}
-        self.iteration_period = iteration_period
-        self.pending_ids = list(self.full_id_list)
-        self.completed_ids = []
-        self.update_finished_tasks(timeout=0)
-        self.start_time = time.time_ns()
-        self.end_time = None
-
-    def update_finished_tasks(self, timeout=None):
-        """Wait for up to timeout seconds or until ray completes computation
-        of all pending tasks. Update the list of completed and pending tasks.
-        """
-        timeout = timeout if timeout is not None else self.iteration_period
-        self.completed_ids, self.pending_ids = ray.wait(
-            self.full_id_list, num_returns=len(self.full_id_list), timeout=timeout)
-
-        try:
-            if not self.pending_ids and self.end_time is None:
-                self.end_time = time.time_ns()
-        except AttributeError:
-            self.end_time = time.time_ns()
-
-        assert len(self.completed_ids) + len(self.pending_ids) == len(self.full_id_list)
-
-    def report(self):
-        """Return a string that represents the current state of this progressive run.
-        """
-        if self.pending_ids:
-            running_nanos = time.time_ns() - self.start_time
-        else:
-            running_nanos = self.end_time - self.start_time
-        seconds = max(0, running_nanos / 1e9)
-        seconds, minutes = seconds - 60 * (seconds // 60), seconds // 60
-        minutes, hours = int(minutes % 60), int(minutes // 60)
-
-        total_weight = sum(self.id_to_weight.values())
-        completed_weight = sum(self.id_to_weight[i] for i in self.completed_ids)
-
-        time_str = f"{hours:02d}h {minutes:02d}min {seconds:02.3f}s"
-        percentage_str = f"{100 * (completed_weight / total_weight):0.1f}%"
-        now_str = f"(current time: {datetime.datetime.now()})"
-
-        if self.pending_ids:
-            return f"Progress report ({percentage_str}): " \
-                   f"{len(self.completed_ids)} / {len(self.full_id_list)} completed tasks. " \
-                   f"Elapsed time: {time_str} {now_str}."
-
-        else:
-            return f"Progress report: completed all {len(self.full_id_list)} tasks in " \
-                   f"{time_str} {now_str}."
-
-    def __iter__(self):
-        """This instance is itself iterable.
-        """
-        return self
-
-    def __next__(self):
-        """When next(self) is invoked (directly or using for x in self),
-        the lists of complete and pending elements are updated.
-        If there are no pending tasks, StopIteration is raised.
-        """
-        self.update_finished_tasks()
-        if not self.pending_ids:
-            raise StopIteration
-        return self
-
-
-def remote(*args, **kwargs):
-    """Decorator of the @`ray.remote` decorator that automatically updates enb.config.options
-    for remote processes, so that they always access the intended configuration.
+def parallel_decorator(*args, **kwargs):
+    """Wrapper of the @`ray.remote` decorator that automatically updates enb.config.options
+    for parallel_decorator processes, so that they always access the intended configuration.
     """
     kwargs["num_cpus"] = kwargs["num_cpus"] if "num_cpus" in kwargs else 1
     kwargs["num_gpus"] = kwargs["num_gpus"] if "num_gpus" in kwargs else 0
 
-    def enb_remote_wrapper(f):
+    def ray_remote_wrapper(f):
+        enb.logger.debug(f"Wrapping {f} with ray")
+
         def remote_method_wrapper(_opts, *a, **k):
             """Wrapper for the decorated function f, that updates enb.config.options before f is called.
             """
@@ -476,7 +421,7 @@ def remote(*args, **kwargs):
         method_proxy.ray_remote = method_proxy.remote
 
         def local_side_remote(*a, **k):
-            """Wrapper for ray's `.remote()` method invoked in the local side.
+            """Wrapper for ray's `.parallel_decorator()` method invoked in the local side.
             It makes sure that `remote_side_wrapper` receives the options argument.
             """
             try:
@@ -486,12 +431,53 @@ def remote(*args, **kwargs):
                 except AttributeError:
                     pass
 
-                return method_proxy.ray_remote(_opts=ray.put(dict(config.options.items())), *a, **k)
+                # apply ray.put to all arguments before passing them
+                return method_proxy.ray_remote(
+                    ray.put(dict(config.options.items())),
+                    *[ray.put(argument) for argument in a],
+                    **{key: ray.put(value) for key, value in k.items()})
             finally:
                 builtins.print = current_print
 
-        method_proxy.remote = local_side_remote
+        # method_proxy.remote = local_side_remote
+        # method_proxy.start = method_proxy.remote
+        del method_proxy.remote
+        method_proxy.start = local_side_remote
 
         return method_proxy
 
-    return enb_remote_wrapper
+    return ray_remote_wrapper
+
+
+def get(ids, **kwargs):
+    """Call ray's get method with the given arguments.
+    """
+    return ray.get(ids, **kwargs)
+
+
+def get_completed_pending_ids(ids, timeout=0):
+    """Return the list of completed and pending ids.
+    """
+    return ray.wait(ids, num_returns=len(ids), timeout=timeout)
+
+
+def fix_imports():
+    """An environment variable is passed to the children processes
+    for them to be able to import all modules that were
+    imported after loading enb. This prevents the remote
+    functions to fail the deserialization process
+    due to missing definitions.
+    """
+    if is_parallel_process():
+        imported_modules = set()
+        for module_name in sorted(ast.literal_eval(os.environ['_needed_modules'])):
+            try:
+                importlib.import_module(module_name)
+                imported_modules.add(module_name)
+            except ImportError as _ex:
+                module_parts = module_name.split(".")
+                for i in range(1, len(module_parts) - 1):
+                    if ".".join(module_parts[:i]) in imported_modules:
+                        break
+                    else:
+                        logger.error(f"Error importing module {repr(module_name)}: {repr(_ex)}.")

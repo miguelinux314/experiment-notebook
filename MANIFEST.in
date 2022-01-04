@@ -14,6 +14,8 @@ include enb/log.py
 include enb/__main__.py
 include enb/misc.py
 include enb/ml.py
+include enb/parallel.py
+include enb/parallel_ray.py
 include enb/pgm.py
 include enb/plotdata.py
 include enb/plugins/__init__.py
@@ -169,7 +171,6 @@ include enb/plugins/template.py
 include enb/plugins/template_test_all_codecs/generate_test_images.py
 include enb/plugins/template_test_all_codecs/__plugin__.py
 include enb/plugins/template_test_all_codecs/test_all_codecs.py
-include enb/ray_cluster.py
 include enb/sets.py
 include enb/tarlite.py
 include enb/tcall.py

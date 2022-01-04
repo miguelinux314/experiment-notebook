@@ -26,7 +26,7 @@ An important note should be made about the interaction between enb.config.option
 When ray spawns new (local or remote) processes to serve as workers, the Options singleton
 is initialized for each of those process, with the catch that ray does **not** pass the user's CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
-To mitigate this problem, the @`enb.ray_cluster.remote` decorator is provided in substitution of :meth:`ray.remote`
+To mitigate this problem, the @`enb.parallel_ray.remote` decorator is provided in substitution of :meth:`ray.remote`
 so that options at the time of calling the remote method are available to that method at
 its regular location (enb.config.options).
 """
@@ -61,6 +61,7 @@ class OptionsBase(_singleton_cli.SingletonCLI):
             except KeyError:
                 pass
             non_default_properties[k] = v
+        non_default_properties["verbose"] = self.verbose
         return non_default_properties
 
     def normalize_dir_value(self, value):
@@ -70,7 +71,9 @@ class OptionsBase(_singleton_cli.SingletonCLI):
 
     def __str__(self):
         s = "Summary of enb.config.options:\n\t- "
-        s += "\n\t- ".join(f"{k:30s} = {repr(v)}" for k, v in sorted(self.non_default_properties.items()))
+        s += "\n\t- ".join(f"{k:30s} = {repr(v)}"
+                           for k, v in sorted(self.non_default_properties.items())
+                           if k[0] != "_")
         return s
 
 
@@ -292,6 +295,11 @@ class DirOptions:
 class RayOptions:
     """Options related to the ray library, used for parallel/distributed computing.
     """
+    @OptionsBase.property(action="store_true")
+    def no_ray(self, value):
+        """If set, no ray is employed.
+        """
+        return value
 
     @OptionsBase.property("cpu", type=int)
     def ray_cpu_limit(self, value):

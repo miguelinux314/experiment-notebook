@@ -65,9 +65,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.misc">enb.misc module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-enb.parallel">enb.parallel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-enb.parallel_ray">enb.parallel_ray module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.plotdata">enb.plotdata module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-enb.ray_cluster">enb.ray_cluster module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.sets">enb.sets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.tarlite">enb.tarlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-enb.tcall">enb.tcall module</a></li>
@@ -146,7 +147,7 @@ using pyplot.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">Analyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p>
 <p>Base class for all enb analyzers.</p>
-<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
 In addition, if render_plots is used in that function, one or more figures will be
 produced. What plots are generated (if any) is based on the values of
 the self.selected_render_modes list, which must contain only elements in self.valid_render_modes.</p>
@@ -205,7 +206,7 @@ for documentation on the meaning of each argument.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.get_df">
 <span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition"></a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
 dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained self.selected_render_modes, which
 must be in self.valid_render_modes.</p>
@@ -232,7 +233,7 @@ columns.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -408,13 +409,13 @@ any column the subclass may have defined.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -522,7 +523,7 @@ and the x value in which they should be plotted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -837,7 +838,7 @@ generating the plot.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <span class="sig-name descname"><span class="pre">add_scalar_description_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition"></a></dt>
-<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 being analyzed.</p>
 </dd></dl>
 
@@ -1102,10 +1103,10 @@ documentation for more information: <a class="reference external" href="https://
 <section id="enb-atable-automatic-tables-with-implicit-column-definition">
 <h3><a class="reference internal" href="#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: Automatic tables with implicit column definition<a class="headerlink" href="#enb-atable-automatic-tables-with-implicit-column-definition" title="Permalink to this headline"></a></h3>
 <section id="atable-produces-dataframe-instances">
-<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
+<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
 <p>This module defines the <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class,
 which is the base for all automatic tables in <a class="reference internal" href="#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
-<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 when their <cite>get_df</cite> method is successfully called. These are powerful dynamic tables
 that can be used directly, and/or passed to some of the tools in the <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 to easily produce figures and tables.</p>
@@ -1150,7 +1151,7 @@ You can reuse existing ATable subclasses directly and/or create new subclasses.<
 </div>
 <p>Our <cite>TableA</cite> class accepts list-like values (e.g., strings) as indices,
 and defines the <cite>index_length</cite> column as the number of elements (e.g., characters) in the index.</p>
-<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
+<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table_a</span> <span class="o">=</span> <span class="n">TableA</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;my_index_name&quot;</span><span class="p">)</span>
 <span class="n">example_indices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ab c&quot;</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>  <span class="c1"># It could be any list of iterables</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">table_a</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">example_indices</span><span class="p">)</span>
@@ -1262,7 +1263,7 @@ but allows easy aggregation and combination of variables.</p></li>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">ATable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Automatic table with implicit column definition.</p>
-<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
+<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
 the requested data. You can use (multiple) inheritance using one or more ATable subclasses
 to combine the columns of those subclasses into the newly defined one. You can then define
 methods with names that begin with <cite>column_</cite>, or using the
@@ -1369,7 +1370,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -1392,7 +1393,7 @@ as given by self.private_index_column set to the <cite>loc</cite> argument passe
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.compute_target_rows">
 <span class="sig-name descname"><span class="pre">compute_target_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
+<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
 given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are known missing values in the requested df, e.g., there are:</p>
 <ul class="simple">
@@ -1422,7 +1423,7 @@ data was present. In that case, the newly computed results replace the old ones.
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
 (i.e., following this class’ column defintion). Each row corresponds to
 one element in target_indices, maintaining the same order.</p>
 </dd>
@@ -1444,7 +1445,7 @@ or fails to set a value to their assigned table cell.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir
@@ -1707,7 +1708,7 @@ so that its returned value is assigned to the row’s column.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_column_mro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.MetaTable.set_column_mro" title="Permalink to this definition"></a></dt>
 <dd><p>Redefine column properties that have been defined in the child class, making sure
 the expected method resolution order (MRO) is maintained.</p>
-<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
+<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
 following intuitive OOP definition.</p>
 </dd></dl>
 
@@ -1769,13 +1770,13 @@ the one provided at initialization is used.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.SummaryTable.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -1911,7 +1912,7 @@ indexing is consistent across code using <a class="reference internal" href="#en
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.get_nonscalar_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">get_nonscalar_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.get_nonscalar_value" title="Permalink to this definition"></a></dt>
-<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
+<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
 Return an instance of one of those types.</p>
 <p>If cell_value is a string, ast is employed to parse it.
 If cell_Value is a dict, list or tuple, it is returned without modification.
@@ -1926,8 +1927,8 @@ read directly, and not through <a class="reference internal" href="#enb.atable.A
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">indices_to_internal_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.indices_to_internal_loc" title="Permalink to this definition"></a></dt>
 <dd><p>Given an index string or list of strings, return a single index string
 that uniquely identifies those strings and can be used as an internal index.</p>
-<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
-value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
+<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
+value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
 intentionally not used to maintain a simple, flat structure of tables without nesting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1967,7 +1968,7 @@ its float value or its string value. In the latter case, one level of surroundin
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.unpack_index_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">unpack_index_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.unpack_index_value" title="Permalink to this definition"></a></dt>
-<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
+<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
 This can be useful to iterate homogeneously regardless of whether single or multiple indices are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2378,7 +2379,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -3821,6 +3822,12 @@ which have been defined at this point.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="enb.misc.get_node_ip">
+<span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">get_node_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.get_node_ip" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current IP address of this node.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="enb.misc.remove_argparse_action">
 <span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">remove_argparse_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.remove_argparse_action" title="Permalink to this definition"></a></dt>
 <dd><p>Entirely remove an action from a parser, from its subparsers and groups if it exists.
@@ -3868,7 +3875,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -3920,6 +3927,269 @@ calculated again. If none, options</p></li>
 <dd></dd></dl>
 
 </dd></dl>
+
+</section>
+<section id="module-enb.parallel">
+<span id="enb-parallel-module"></span><h2>enb.parallel module<a class="headerlink" href="#module-enb.parallel" title="Permalink to this headline"></a></h2>
+<p>Abstraction layer to provide parallel processing both locally and on ray clusters.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.parallel.FallbackFuture">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">FallbackFuture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.FallbackFuture" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The fallback future is invoked when get is called.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.parallel.FallbackFuture.current_id">
+<span class="sig-name descname"><span class="pre">current_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#enb.parallel.FallbackFuture.current_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel.FallbackFuture.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.FallbackFuture.get" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.parallel.FallbackFuture.pathos_pool">
+<span class="sig-name descname"><span class="pre">pathos_pool</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.parallel.FallbackFuture.pathos_pool" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel.FallbackFuture.ready">
+<span class="sig-name descname"><span class="pre">ready</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.FallbackFuture.ready" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.parallel.ProgressiveGetter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">ProgressiveGetter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.ProgressiveGetter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>When an instance is created, the computation of the requested list of calls is started
+in parallel the background (unless they are already running).</p>
+<p>The returned instance is an iterable object. Each to next() with this instance will either
+return the instance if any tasks are still running, or raise StopIteration if all are complete.
+Therefore, instances of this class can be used as the right operand of <cite>in</cite> in for loops.</p>
+<p>A main application of this for-loop approach is to periodically run a code snippet (e.g., for logging)
+while the computation is performed in the background. The loop will continue until all tasks are completed.
+One can then call <cite>ray.get(ray_id_list)</cite> and retrieve the obtained results without any expected delay.</p>
+<p>Note that the for-loop body will always be executed at least once, namely after every potentially
+blocking call to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.wait()</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel.ProgressiveGetter.report">
+<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.ProgressiveGetter.report" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string that represents the current state of this progressive run.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel.ProgressiveGetter.update_finished_tasks">
+<span class="sig-name descname"><span class="pre">update_finished_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.ProgressiveGetter.update_finished_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Wait for up to timeout seconds or until ray completes computation
+of all pending tasks. Update the list of completed and pending tasks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.chdir_project_root">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">chdir_project_root</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.chdir_project_root" title="Permalink to this definition"></a></dt>
+<dd><p>When invoked, it changes the current working dir to the project’s root.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.fallback_get">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">fallback_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.fallback_get" title="Permalink to this definition"></a></dt>
+<dd><p>Fallback get method when ray is not available.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.fallback_get_completed_pending_ids">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">fallback_get_completed_pending_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.fallback_get_completed_pending_ids" title="Permalink to this definition"></a></dt>
+<dd><p>Get two lists, one for completed and one for pending fallback ids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.fallback_init">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">fallback_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.fallback_init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialization of the fallback engine. This needs to be called before
+each parallelization, or globals used in the pool might be updated.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.fallback_parallel_decorator">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">fallback_parallel_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">decorator_args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">decorator_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.fallback_parallel_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator for methods intended to run in parallel in the local machine.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.get">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.get" title="Permalink to this definition"></a></dt>
+<dd><p>Get results for the started ids passed as arguments.</p>
+<p>If timeout is part of kwargs, at most those many seconds are waited.
+Otherwise, this is a blocking call.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.get_completed_pending_ids">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">get_completed_pending_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.get_completed_pending_ids" title="Permalink to this definition"></a></dt>
+<dd><p>Given a list of ids returned by start calls, return two lists:
+the first one with the input ids that are ready, and the second
+one with the input ids that are not.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.init">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.init" title="Permalink to this definition"></a></dt>
+<dd><p>If ray is present, this method initializes it.
+If the fallback engine is used, it is ensured that all globals
+are correctly shared with the pool.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.parallel">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.parallel" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator for methods intended to run in parallel.</p>
+<p>When ray is available, the .remote() call is performed on the ray decorated function.
+When it is not, a fallback parallelization method is used.</p>
+<p>To run a parallel method <cite>f</cite>, call <cite>f.start</cite> with the arguments you want to pass to f.
+An id object is returned immediately. The result can then be retrieved by calling
+<cite>enb.parallel.get</cite> with the id object.</p>
+<p>Important: parallel calls should not generally read or modify global variables.
+The main exception is enb.config.options, which can be read from parallel calls.</p>
+</dd></dl>
+
+</section>
+<section id="module-enb.parallel_ray">
+<span id="enb-parallel-ray-module"></span><h2>enb.parallel_ray module<a class="headerlink" href="#module-enb.parallel_ray" title="Permalink to this headline"></a></h2>
+<p>Tools to execute functions in parallel_decorator using the ray library</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.parallel_ray.HeadNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">HeadNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_port_count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.HeadNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class used to initialize and stop a ray head node.</p>
+<p>The stop() method must be called after start(),
+or a ray cluster will remain active.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.HeadNode.get_node_ip">
+<span class="sig-name descname"><span class="pre">get_node_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.HeadNode.get_node_ip" title="Permalink to this definition"></a></dt>
+<dd><p>Adapted from <a class="reference external" href="https://stackoverflow.com/a/166589/992926">https://stackoverflow.com/a/166589/992926</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.HeadNode.parse_cluster_config_csv">
+<span class="sig-name descname"><span class="pre">parse_cluster_config_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.HeadNode.parse_cluster_config_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Read a CSV defining remote nodes and return a list with as many RemoteNode as
+data rows in the CSV.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.HeadNode.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.HeadNode.start" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.parallel_ray.HeadNode.status_str">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status_str</span></span><a class="headerlink" href="#enb.parallel_ray.HeadNode.status_str" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string reporting the status of the cluster</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.HeadNode.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.HeadNode.stop" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">RemoteNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ssh_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represent a remote node of the cluster, with tools to connect via ssh.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode.connect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode.disconnect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode.mount_project_remotely">
+<span class="sig-name descname"><span class="pre">mount_project_remotely</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode.mount_project_remotely" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode.remote_project_mount_path">
+<span class="sig-name descname"><span class="pre">remote_project_mount_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'~/.enb_remote'</span></em><a class="headerlink" href="#enb.parallel_ray.RemoteNode.remote_project_mount_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.fix_imports">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">fix_imports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.fix_imports" title="Permalink to this definition"></a></dt>
+<dd><p>An environment variable is passed to the children processes
+for them to be able to import all modules that were
+imported after loading enb. This prevents the remote
+functions to fail the deserialization process
+due to missing definitions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.get">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.get" title="Permalink to this definition"></a></dt>
+<dd><p>Call ray’s get method with the given arguments.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.get_completed_pending_ids">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">get_completed_pending_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.get_completed_pending_ids" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of completed and pending ids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.init_ray">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">init_ray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.init_ray" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the ray cluster if it wasn’t initialized before.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.is_parallel_process">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">is_parallel_process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.is_parallel_process" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if and only if the call is made from a parallel_decorator ray process,
+which can be running in the head node or any of the parallel_decorator nodes (if any is present).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.is_ray_enabled">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">is_ray_enabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.is_ray_enabled" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if and only if ray is available and the current platform is one
+of the supported for ray clustering (currently only linux).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.is_ray_initialized">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">is_ray_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.is_ray_initialized" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.is_remote_node">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">is_remote_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.is_remote_node" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if and only if the call is performed from a parallel_decorator ray process
+running on a node different from the head.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.parallel_decorator">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">parallel_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.parallel_decorator" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper of the &#64;`ray.remote` decorator that automatically updates enb.config.options
+for parallel_decorator processes, so that they always access the intended configuration.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel_ray.stop_ray">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">stop_ray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.stop_ray" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-enb.pgm">
@@ -4207,7 +4477,7 @@ Each group is rendered in a row (subplot), with a shared X axis.
 Groups can also be combined into a single row (subplot), i.e., rending all plottable data into that single subplot.</p>
 <p>When applicable, None values are substituted by
 default values given enb.config.options (guaranteed to be updated thanks to the
-&#64;enb.ray_cluster.remote decorator) and the current context.</p>
+&#64;enb.parallel.parallel decorator) and the current context.</p>
 <p>Mandatory parameters:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4296,142 +4566,6 @@ Only used when y_tick_list is not None.</p></li>
 </dd></dl>
 
 </section>
-<section id="module-enb.ray_cluster">
-<span id="enb-ray-cluster-module"></span><h2>enb.ray_cluster module<a class="headerlink" href="#module-enb.ray_cluster" title="Permalink to this headline"></a></h2>
-<p>Tools to connect to ray clusters</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="enb.ray_cluster.HeadNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">HeadNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_port_count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.HeadNode" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class used to initialize and stop a ray head node.</p>
-<p>The stop() method must be called after start(),
-or a ray cluster will remain active.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.HeadNode.get_node_ip">
-<span class="sig-name descname"><span class="pre">get_node_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.HeadNode.get_node_ip" title="Permalink to this definition"></a></dt>
-<dd><p>Adapted from <a class="reference external" href="https://stackoverflow.com/a/166589/992926">https://stackoverflow.com/a/166589/992926</a>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.HeadNode.parse_cluster_config_csv">
-<span class="sig-name descname"><span class="pre">parse_cluster_config_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.HeadNode.parse_cluster_config_csv" title="Permalink to this definition"></a></dt>
-<dd><p>Read a CSV defining remote nodes and return a list with as many RemoteNode as
-data rows in the CSV.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.HeadNode.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.HeadNode.start" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.ray_cluster.HeadNode.status_str">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status_str</span></span><a class="headerlink" href="#enb.ray_cluster.HeadNode.status_str" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string reporting the status of the cluster</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.HeadNode.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.HeadNode.stop" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="enb.ray_cluster.ProgressiveGetter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">ProgressiveGetter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.ProgressiveGetter" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>When an instance is created, the computation of the requested list of ray ids is started
-in parallel the background (unless they are already running).</p>
-<p>The returned instance is an iterable object. Each to next() with this instance will either
-return the instance if any tasks are still running, or raise StopIteration if all are complete.
-Therefore, instances of this class can be used as the right operand of <cite>in</cite> in for loops.</p>
-<p>A main application of this for-loop approach is to periodically run a code snippet (e.g., for logging)
-while the computation is performed in the background. The loop will continue until all tasks are completed.
-One can then call <cite>ray.get(ray_id_list)</cite> and retrieve the obtained results without any expected delay.</p>
-<p>Note that the for-loop body will always be executed at least once, namely after every potentially
-blocking call to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.wait()</span></code>.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.ProgressiveGetter.report">
-<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.ProgressiveGetter.report" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string that represents the current state of this progressive run.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.ProgressiveGetter.update_finished_tasks">
-<span class="sig-name descname"><span class="pre">update_finished_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.ProgressiveGetter.update_finished_tasks" title="Permalink to this definition"></a></dt>
-<dd><p>Wait for up to timeout seconds or until ray completes computation
-of all pending tasks. Update the list of completed and pending tasks.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="enb.ray_cluster.RemoteNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">RemoteNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ssh_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.RemoteNode" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represent a remote node of the cluster, with tools to connect via ssh.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.RemoteNode.connect">
-<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.RemoteNode.connect" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.RemoteNode.disconnect">
-<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.RemoteNode.disconnect" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.ray_cluster.RemoteNode.mount_project_remotely">
-<span class="sig-name descname"><span class="pre">mount_project_remotely</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.RemoteNode.mount_project_remotely" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="enb.ray_cluster.RemoteNode.remote_project_mount_path">
-<span class="sig-name descname"><span class="pre">remote_project_mount_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'~/.enb_remote'</span></em><a class="headerlink" href="#enb.ray_cluster.RemoteNode.remote_project_mount_path" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.ray_cluster.get_node_ip">
-<span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">get_node_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.get_node_ip" title="Permalink to this definition"></a></dt>
-<dd><p>Get the current IP address of this node.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.ray_cluster.init_ray">
-<span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">init_ray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.init_ray" title="Permalink to this definition"></a></dt>
-<dd><p>Initialize the ray cluster if it wasn’t initialized before.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.ray_cluster.on_remote_node">
-<span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">on_remote_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.on_remote_node" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the call is performed from a remote ray process
-running on a node different from the head.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.ray_cluster.on_remote_process">
-<span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">on_remote_process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.on_remote_process" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the call is made from a remote ray process,
-which can be running in the head node or any of the remote nodes (if any is present).</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.ray_cluster.remote">
-<span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.remote" title="Permalink to this definition"></a></dt>
-<dd><p>Decorator of the &#64;`ray.remote` decorator that automatically updates enb.config.options
-for remote processes, so that they always access the intended configuration.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.ray_cluster.stop_ray">
-<span class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></span><span class="sig-name descname"><span class="pre">stop_ray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.stop_ray" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
 <section id="module-enb.sets">
 <span id="enb-sets-module"></span><h2>enb.sets module<a class="headerlink" href="#module-enb.sets" title="Permalink to this headline"></a></h2>
 <p>Locate, analyze, expose and catalogue dataset entries.</p>
@@ -4466,7 +4600,7 @@ to know what files the experiment should be run on.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1544.gcea27b47b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1566.gd06fb91278)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir

@@ -2,9 +2,11 @@
 
 import os
 import glob
+import pickle
 import unittest
 import string
 import numpy as np
+import pathos
 
 import enb.atable
 import enb.atable as atable
@@ -122,26 +124,27 @@ class TestATable(unittest.TestCase):
 
 class TestFailingTable(unittest.TestCase):
     def test_always_failing_column(self):
+        ft = FailingTable()
+        target_indices = string.ascii_letters
+        original_verbose = enb.config.options.verbose
+
         try:
-            # Disable logging of expected errors
-            old_verbose = enb.config.options.verbose
-            enb.config.options.verbose -= len(enb.logger.name_to_level)
-
-            class FailingTable(enb.atable.ATable):
-                def column_failing(self, index, row):
-                    raise NotImplementedError("I am expected to crash - no worries!")
-
-            ft = FailingTable()
-            target_indices = string.ascii_letters
-            try:
-                ft.get_df(target_indices=target_indices)
-                enb.config.options.verbose = old_verbose
-                raise RuntimeError("The previous call should have failed")
-            except enb.atable.ColumnFailedError as ex:
-                assert len(ex.exception_list) == len(target_indices)
-                pass
+            enb.config.options.verbose = -1
+            ft.get_df(target_indices=target_indices)
+            enb.config.options.verbose = original_verbose
+            raise RuntimeError("The previous call should have failed")
+        except enb.atable.ColumnFailedError as ex:
+            assert len(ex.exception_list) == len(target_indices)
+            pass
+        except (NotImplementedError, pickle.PickleError):
+            pass
         finally:
-            enb.config.options.verbose = old_verbose
+            enb.config.options.verbose = original_verbose
+
+
+class FailingTable(enb.atable.ATable):
+    def column_failing(self, index, row):
+        raise NotImplementedError("I am expected to crash - no worries!")
 
 
 class TestSummaryTable(unittest.TestCase):
@@ -161,39 +164,42 @@ class TestSummaryTable(unittest.TestCase):
         assert summary_df.iloc[0]["group_size"] == len(target_paths)
 
 
+class CustomType:
+    def __init__(self, custom_prop):
+        self.custom_prop = custom_prop
+        self.other_prop = 2 * custom_prop
+
+
 class TestObjectColumns(unittest.TestCase):
     def test_object_values(self):
-        class CustomType:
-            def __init__(self, custom_prop):
-                self.custom_prop = custom_prop
-                self.other_prop = 2 * custom_prop
-
-        class TypesTable(enb.atable.ATable):
-            @enb.atable.column_function(
-                "uppercase",
-                "lowercase",
-                enb.atable.ColumnProperties(
-                    "first_last_iterable",
-                    label="First and last characters of the index",
-                    has_iterable_values=True),
-                enb.atable.ColumnProperties(
-                    "first_last_dict",
-                    label="First and last characters of the index",
-                    has_dict_values=True),
-                enb.atable.ColumnProperties(
-                    "custom_type_column", has_object_values=True)
-            )
-            def set_columns(self, index, row):
-                row["uppercase"] = index.upper()
-                row["lowercase"] = index.lower()
-                row["first_last_iterable"] = (index[0], index[-1]) if index else []
-                row["first_last_dict"] = dict(first=index[0], last=index[-1]) if index else {}
-                row["custom_type_column"] = CustomType(custom_prop=len(index))
-
         df = TypesTable().get_df(target_indices=string.ascii_letters)
-        assert np.all(df["custom_type_column"].apply(type) == CustomType)
+        assert np.all(df["custom_type_column"].apply(type).str.endswith(CustomType.__name__)), \
+            ", ".join(str(type(t)) for t in df["custom_type_column"].unique())
         assert np.all(df["custom_type_column"].apply(lambda ct: ct.custom_prop) == 1)
         assert np.all(df["custom_type_column"].apply(lambda ct: ct.other_prop) == 2)
+
+
+class TypesTable(enb.atable.ATable):
+    @enb.atable.column_function(
+        "uppercase",
+        "lowercase",
+        enb.atable.ColumnProperties(
+            "first_last_iterable",
+            label="First and last characters of the index",
+            has_iterable_values=True),
+        enb.atable.ColumnProperties(
+            "first_last_dict",
+            label="First and last characters of the index",
+            has_dict_values=True),
+        enb.atable.ColumnProperties(
+            "custom_type_column", has_object_values=True)
+    )
+    def set_columns(self, index, row):
+        row["uppercase"] = index.upper()
+        row["lowercase"] = index.lower()
+        row["first_last_iterable"] = (index[0], index[-1]) if index else []
+        row["first_last_dict"] = dict(first=index[0], last=index[-1]) if index else {}
+        row["custom_type_column"] = CustomType(custom_prop=len(index))
 
 
 if __name__ == '__main__':

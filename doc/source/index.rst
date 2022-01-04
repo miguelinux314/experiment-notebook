@@ -39,15 +39,22 @@ Some of the main features of ``enb`` are:
     You will only need to obtain results for the newly defined data columns or samples.
 
   * **Parallel in nature**: you can use all the CPUs / GPUs in your local machine, and even
-    distribute the load across a cluster of computers.
+    distribute the load across a cluster of computers (clusters only supported on Linux and MacOS).
 
 Please visit `the enb github page <https://github.com/miguelinux314/experiment-notebook>`_ for
 full access to the code.
 
 .. note::
-   ``enb`` is based on well-known python libraries such as ``pandas``, ``matplotlib`` and ``ray``.
+   ``enb`` is based on well-known python libraries such as ``pandas`` and ``matplotlib``.
    No prior knowledge of these libraries is required, although basic understanding of ``pandas``
    can be most useful.
+
+.. note::
+   Clustering support is provided only on Linux and MacOS systems. The `ray` library
+   as well as the `ssh` and `sshfs` tools are employed for this purpose.
+   If `ray` is not available, e.g., on Windows, the `pathos` library is employed for
+   parallelization, and no clustering support is provided.
+   See full details for multi-computer parallelization in :doc:`cluster_setup`.
 
 The following help pages will tour you through the most important features of ``enb``,
 and show minimal examples that you can use as starting point for your projects.

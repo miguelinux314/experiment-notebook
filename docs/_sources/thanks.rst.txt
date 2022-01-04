@@ -6,18 +6,25 @@ Big thanks to all these people/projects without which `enb` would not be possibl
 Core libraries
 ++++++++++++++
 
-The `enb` core is firmly supported by the following key libraries:
+The `enb` core is firmly supported by
 
 * `pandas <https://pandas.pydata.org/>`_
 * `matplotlib <https://matplotlib.org/>`_
-* `ray <https://docs.ray.io/>`_
 * `numpy <https://numpy.org/>`_
-* `ssh <https://www.openssh.com/>`_ and `sshfs <https://github.com/libfuse/sshfs>`_
+* `pathos <https://uqfoundation.github.io/project/pathos>`_
 
-Several other are also essential: please see the requirements in `setup.py` for more details.
+and, for multi-computer processing, by
+
+* `ray <https://docs.ray.io/>`_
+* `ssh <https://www.openssh.com/>`_
+* `sshfs <https://github.com/libfuse/sshfs>`_
+* `vde2 <https://github.com/virtualsquare/vde-2>`_
+
+Several other are also essential and their contribution greatly appreciated.
+Please see the requirements in `setup.py` for more details.
 
 Special thanks to all contributors to `python <https://www.python.org/about/>`_ itself.
-Without them, this library would have never been on time.
+Without them, this library would not be here.
 
 Plugin libraries
 ++++++++++++++++

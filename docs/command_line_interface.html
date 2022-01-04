@@ -204,15 +204,15 @@ it to set the values of <cite>enb.config.options</cite>.</p>
 <p>In addition, to get a list of all of all available options, you can run your script with the <cite>-h</cite>
 options. An example option of this is shown next:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]] [-f] [-q]
-                         [--no_new_data] [--cs CS] [--rep REP] [--fsn]
+                         [--render_only] [--cs CS] [--rep REP] [--fsn]
                          [--selected_columns SELECTED_COLUMNS [SELECTED_COLUMNS ...]]
                          [--prp PRP] [--project_root PROJECT_ROOT]
                          [-d BASE_DATASET_DIR] [--persistence PERSISTENCE]
                          [--reconstructed RECONSTRUCTED] [--vd VD] [-t TMP]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
                          [--plot_dir PLOT_DIR] [--analysis ANALYSIS]
-                         [--cpu CPU] [--noswap] [--wsn WSN] [--pws PWS]
-                         [--ray_port RAY_PORT]
+                         [--no_ray] [--cpu CPU] [--noswap] [--wsn WSN]
+                         [--pws PWS] [--ray_port RAY_PORT]
                          [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
                          [--nr] [--fw FW] [--fh FH]
                          [--horizontal_margin HORIZONTAL_MARGIN]
@@ -256,7 +256,7 @@ Execution Options:
                         samples? If specified q&gt;0 times, a subset of the first
                         q target indices is employed in most get_df methods
                         from ATable instances (default: 0)
-  --no_new_data, --render_only, --no_new_results
+  --render_only, --no_new_data, --no_new_results
                         If True, ATable&#39;s get_df method relies entirely on the
                         loaded persistence data, no new rows are computed.
                         This can be useful to speed up the rendering process,
@@ -341,6 +341,7 @@ Ray Options:
   Options related to the ray library, used for parallel/distributed
   computing.
 
+  --no_ray              If set, no ray is employed. (default: False)
   --cpu CPU, --ray_cpu_limit CPU
                         Maximum number of virtual CPUs to use in the ray
                         cluster. If set to None or any number n &lt;= 0, then no

@@ -97,39 +97,63 @@
 computers.</p>
 <p>This cluster employs <cite>ray</cite>, <cite>ssh</cite> and <cite>sshfs</cite>, and does not require docker, k8s, AWS or anything similar.
 You will most easily set up all these tools on linux.</p>
+<p>Multi-computer processing is only supported in <cite>enb</cite> in platforms where <cite>ray</cite> is available and working,
+to the best of our knowledge only Linux and MacOS. This feature is known not to work on Windows and
+disabled by default on that platform.</p>
 <section id="first-installation">
 <h2>First installation<a class="headerlink" href="#first-installation" title="Permalink to this headline"></a></h2>
-<p>In each computer of the cluster, you will need to do the following once.</p>
+<p>In each computer of the cluster, you will need to do the following (once).</p>
 <blockquote>
 <div><ol class="arabic">
 <li><p><strong>Python version</strong></p>
-<p>Install the same version of Python, e.g. 3.8.</p>
+<p>Install the same version of Python, 3.6 or newer. The revision number after 3.x is not important,
+e.g., 3.9.8 should be compatible with 3.9.9.</p>
 </li>
 <li><p><strong>Install enb</strong>
-See <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for instructions on how to install <cite>enb</cite> in a single computer.</p></li>
-</ol>
-<ol class="arabic" start="2">
-<li><p><strong>Check ray version</strong></p>
+See <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for instructions on how to install <cite>enb</cite> in a single computer.
+In a nutshell:</p>
 <blockquote>
-<div><p>You need to install the same version of the <cite>ray</cite> library in all nodes, e.g., specifying
-the exact version you want with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="nv">ray</span><span class="o">==</span><span class="m">1</span>.9.1
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
 </pre></div>
 </div>
 </div></blockquote>
+<p>Instructions for installing cluster-specific packages is shown below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If your code or the plugins you install require additional runtime dependencies,
+these will need to be installed manually in all nodes in the cluster.</p>
+</div>
 </li>
-</ol>
-<ol class="arabic" start="4">
+<li><p><strong>Install and configure ray</strong></p>
+<blockquote>
+<div><ul>
+<li><dl>
+<dt><strong>Check ray version</strong></dt><dd><p>The <cite>ray</cite> library is installed by default on non-Windows platforms.
+However, you need to make sure that all nodes have the same version
+of <cite>ray</cite> installed. To install a specific node with pip, you can use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]==</span><span class="m">1</span>.9.1
+</pre></div>
+</div>
+<p>You will also need to make sure that the <cite>ray</cite> command is present in your PATH.</p>
+</dd>
+</dl>
+</li>
 <li><p><strong>Open ray ports</strong></p>
-<p>Several ports need to be open in every node involved in the computation, including
-the head and the remote nodes.</p>
-<p>You will need to open <cite>enb.config.options.ray_port_count</cite> consecutive ports, starting
-with and including <cite>enb.config.options.ray_port</cite>.
-You can set those programatically in your script before calling <cite>get_df</cite>, or in the
-CLI, e.g., with the <cite>–ray_port</cite> and <cite>–ray_port_count</cite> parameters.</p>
-<p>The values for <cite>ray_port</cite> and <cite>ray_port_count</cite> are 11000 and 500, respectively. Therefore,
-ports 11000-11499 will be employed by default.</p>
-<p>If you use <cite>ufw</cite> for firewalling, the following command can do that for you:</p>
+<blockquote>
+<div><p>Several ports need to be open in every node involved in the computation, including
+the head and the remote nodes. These are used by ray for communication between the nodes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>It is critical to open</strong> ports on all machines for <cite>enb</cite> clusters to work.</p>
+</div>
+<p>The exact ports needed on each cluster is given by the <cite>enb.config.options.ray_port</cite>
+and <cite>enb.config.options.ray_port_count</cite> variables when the first call to <cite>get_df</cite> is made.
+More specifically, ports from <cite>enb.config.options.ray_port</cite> to
+<cite>enb.config.options.ray_port + enb.config.options.ray_port_count - 1</cite> (both included)
+are required.</p>
+<p>The default values for <cite>ray_port</cite> and <cite>ray_port_count</cite> are 11000 and 500, respectively.
+For these, ports 11000 to 11499 should be open.
+If you use <cite>ufw</cite> for firewalling, you can use or adapt the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo ufw allow proto tcp from any to any port <span class="m">11000</span>:11499 comment <span class="s1">&#39;enb-ray&#39;</span>
 </pre></div>
 </div>
@@ -142,12 +166,22 @@ for all information on what a ray cluster entails.</p>
 <p><strong>DON’T OPEN CLUSTER PORTS TO AN UNPROTECTED NETWORK</strong>.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<ol class="arabic" start="5">
 <li><p><strong>Install and setup ssh</strong></p>
-<p>In the <em>head</em> node starting the execution (the one that runs all non-parallel tasks), you need to set up
+<p>In the <em>head</em> node starting the execution (the one that runs all non-parallel_decorator tasks), you need to set up
 an <cite>ssh</cite> client.</p>
+<p>You can install them on debian/ubuntu derivates with:</p>
 <blockquote>
-<div><div class="admonition note">
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install openssh-client openssh-server
+</pre></div>
+</div>
+<div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You may want to create a specific ssh key for this purpose, e.g., with <cite>ssh-keygen</cite>.</p>
 </div>
@@ -171,6 +205,19 @@ You can install it on debian/ubuntu derivates with:</p>
 </div>
 </div></blockquote>
 </div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p><strong>Install vde2</strong></p></li>
+</ol>
+<blockquote>
+<div><p>The <cite>vde2</cite> package provides the <cite>dpipe</cite> tool, which is also employed for remotely mounting the
+project folder on each remote node.
+You can install it on debian/ubuntu derivates with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install vde2
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
 </div></blockquote>
 </section>
 <section id="running-distributed-experiments">
@@ -190,7 +237,8 @@ the following columns:</p>
 <li><p><cite>ssh_port</cite>: the remote node’s port where ssh is listening. If left blank, the default port (22) is used.</p></li>
 <li><p><cite>local_ssh_file</cite>: path to the ssh identity file for connecting to the remote node. If left blank,
 ssh’s default key is employed.</p></li>
-<li><p><cite>cpu_limit</cite>: maximum number of CPUs to be used on this machine. If &lt;= 0, then no limit is set for the node.
+<li><p><cite>cpu_limit</cite>: maximum number of CPUs to be used on the remote node machine.
+If &lt;= 0, then no limit is set for the node.
 Note that the number of CPUs to be used on the head node is given by <cite>enb.config.options.ray_cpu_limit</cite>.</p></li>
 </ul>
 <p>For instance, we you have a single remote node on 192.168.1.3 with ssh listening on port 22,

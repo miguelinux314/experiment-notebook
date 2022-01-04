@@ -65,19 +65,6 @@ class TestSets(unittest.TestCase):
         """Test versioning with a table that simply copies the original file.
         """
 
-        class TrivialVersionTable(sets.FileVersionTable):
-            """Trivial FileVersionTable that makes an identical copy of the original
-            """
-
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
-                self.dataset_files_extension = "py"
-
-            def version(self, input_path, output_path, row):
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                shutil.copy(input_path, output_path)
-                assert os.path.getsize(input_path) == os.path.getsize(output_path)
-
         with tempfile.TemporaryDirectory() as tmp_dir:
             options.persistence_dir = tmp_dir
             fpt = sets.FilePropertiesTable(base_dir=options.project_root)
@@ -108,6 +95,18 @@ class TestSets(unittest.TestCase):
                         f"Columns {column} and {version_column} differ: " \
                         f"{joint_df[joint_df[column] != joint_df[version_column]][[column, version_column]].iloc[0]}"
 
+class TrivialVersionTable(sets.FileVersionTable):
+    """Trivial FileVersionTable that makes an identical copy of the original
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dataset_files_extension = "py"
+
+    def version(self, input_path, output_path, row):
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        shutil.copy(input_path, output_path)
+        assert os.path.getsize(input_path) == os.path.getsize(output_path)
 
 if __name__ == '__main__':
     unittest.main()

@@ -11,58 +11,88 @@ computers.
 This cluster employs `ray`, `ssh` and `sshfs`, and does not require docker, k8s, AWS or anything similar.
 You will most easily set up all these tools on linux.
 
+Multi-computer processing is only supported in `enb` in platforms where `ray` is available and working,
+to the best of our knowledge only Linux and MacOS. This feature is known not to work on Windows and
+disabled by default on that platform.
+
 First installation
 ------------------
 
-In each computer of the cluster, you will need to do the following once.
+In each computer of the cluster, you will need to do the following (once).
 
     1. **Python version**
 
-       Install the same version of Python, e.g. 3.8.
+       Install the same version of Python, 3.6 or newer. The revision number after 3.x is not important,
+       e.g., 3.9.8 should be compatible with 3.9.9.
 
     2. **Install enb**
        See :doc:`installation` for instructions on how to install `enb` in a single computer.
+       In a nutshell:
 
-    2. **Check ray version**
+            .. code-block:: bash
 
-        You need to install the same version of the `ray` library in all nodes, e.g., specifying
-        the exact version you want with:
+                pip install enb
 
-        .. code:: bash
+       Instructions for installing cluster-specific packages is shown below.
 
-            pip install ray==1.9.1
+       .. note::
 
-    4. **Open ray ports**
+            If your code or the plugins you install require additional runtime dependencies,
+            these will need to be installed manually in all nodes in the cluster.
 
-       Several ports need to be open in every node involved in the computation, including
-       the head and the remote nodes.
+    3. **Install and configure ray**
 
-       You will need to open `enb.config.options.ray_port_count` consecutive ports, starting
-       with and including `enb.config.options.ray_port`.
-       You can set those programatically in your script before calling `get_df`, or in the
-       CLI, e.g., with the `--ray_port` and `--ray_port_count` parameters.
+        * **Check ray version**
+            The `ray` library is installed by default on non-Windows platforms.
+            However, you need to make sure that all nodes have the same version
+            of `ray` installed. To install a specific node with pip, you can use:
 
-       The values for `ray_port` and `ray_port_count` are 11000 and 500, respectively. Therefore,
-       ports 11000-11499 will be employed by default.
+            .. code:: bash
 
-       If you use `ufw` for firewalling, the following command can do that for you:
+                pip install ray[default]==1.9.1
 
-       .. code:: bash
+            You will also need to make sure that the `ray` command is present in your PATH.
 
-            sudo ufw allow proto tcp from any to any port 11000:11499 comment 'enb-ray'
+        * **Open ray ports**
 
-       Please refer to your firewall documentation should you need a more restrictive rule configuration.
+           Several ports need to be open in every node involved in the computation, including
+           the head and the remote nodes. These are used by ray for communication between the nodes.
 
-        .. warning::
-            You are encouraged to read the `ray configuration manual <https://docs.ray.io/en/latest/configure.html>`_
-            for all information on what a ray cluster entails.
+           .. note::
+                **It is critical to open** ports on all machines for `enb` clusters to work.
 
-            **DON'T OPEN CLUSTER PORTS TO AN UNPROTECTED NETWORK**.
+           The exact ports needed on each cluster is given by the `enb.config.options.ray_port`
+           and `enb.config.options.ray_port_count` variables when the first call to `get_df` is made.
+           More specifically, ports from `enb.config.options.ray_port` to
+           `enb.config.options.ray_port + enb.config.options.ray_port_count - 1` (both included)
+           are required.
+
+           The default values for `ray_port` and `ray_port_count` are 11000 and 500, respectively.
+           For these, ports 11000 to 11499 should be open.
+           If you use `ufw` for firewalling, you can use or adapt the following command:
+
+           .. code:: bash
+
+                sudo ufw allow proto tcp from any to any port 11000:11499 comment 'enb-ray'
+
+           Please refer to your firewall documentation should you need a more restrictive rule configuration.
+
+            .. warning::
+                You are encouraged to read the `ray configuration manual <https://docs.ray.io/en/latest/configure.html>`_
+                for all information on what a ray cluster entails.
+
+                **DON'T OPEN CLUSTER PORTS TO AN UNPROTECTED NETWORK**.
 
     5. **Install and setup ssh**
 
-       In the *head* node starting the execution (the one that runs all non-parallel tasks), you need to set up
+       In the *head* node starting the execution (the one that runs all non-parallel_decorator tasks), you need to set up
        an `ssh` client.
+
+       You can install them on debian/ubuntu derivates with:
+
+        .. code:: bash
+
+           sudo apt install openssh-client openssh-server
 
         .. note:: You may want to create a specific ssh key for this purpose, e.g., with `ssh-keygen`.
 
@@ -80,6 +110,16 @@ In each computer of the cluster, you will need to do the following once.
         .. code:: bash
 
            sudo apt install sshfs
+
+    7. **Install vde2**
+
+      The `vde2` package provides the `dpipe` tool, which is also employed for remotely mounting the
+      project folder on each remote node.
+      You can install it on debian/ubuntu derivates with:
+
+        .. code:: bash
+
+           sudo apt install vde2
 
 Running distributed experiments
 -------------------------------
@@ -102,7 +142,8 @@ the following columns:
 - `ssh_port`: the remote node's port where ssh is listening. If left blank, the default port (22) is used.
 - `local_ssh_file`: path to the ssh identity file for connecting to the remote node. If left blank,
   ssh's default key is employed.
-- `cpu_limit`: maximum number of CPUs to be used on this machine. If <= 0, then no limit is set for the node.
+- `cpu_limit`: maximum number of CPUs to be used on the remote node machine.
+  If <= 0, then no limit is set for the node.
   Note that the number of CPUs to be used on the head node is given by `enb.config.options.ray_cpu_limit`.
 
 For instance, we you have a single remote node on 192.168.1.3 with ssh listening on port 22,

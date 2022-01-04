@@ -17,7 +17,7 @@ options = get_options(from_main=False)
 import enb.sets
 import enb.isets
 import enb.icompression
-import enb.ray_cluster
+import enb.parallel_ray
 import enb.tcall
 import enb.atable as atable
 
@@ -246,7 +246,7 @@ def apply_transform(
         reconstructed_dir_path = os.path.join(tmp_dir, "reconstructed_dir")
         os.makedirs(reconstructed_dir_path, exist_ok=True)
 
-        enb.ray_cluster.init_ray()
+        enb.parallel_ray.init_ray()
 
         original_target_files = enb.atable.get_all_input_files()
 
