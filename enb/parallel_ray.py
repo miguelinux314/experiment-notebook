@@ -38,6 +38,11 @@ try:
 except ImportError as ex:
     _ray_present = False
 
+_ssh_present = shutil.which("ssh") is not None
+_sshfs_present = shutil.which("sshfs") is not None
+_dpipe_present = shutil.which("dpipe") is not None
+_ray_cli_present = shutil.which("ray") is not None
+
 
 def is_ray_enabled():
     """Return True if and only if ray is available and the current platform is one
@@ -45,9 +50,12 @@ def is_ray_enabled():
     """
     if not _ray_present:
         return False
-    if not platform.system().lower() == "linux":
+    elif platform.system().lower() == "windows":
         return False
-    if options.no_ray:
+    elif not _ray_present:
+        logger.debug("The ray library is available but the ray command is not available. Please fix your path.")
+        return False
+    elif options.no_ray:
         return False
     return True
 
@@ -123,28 +131,42 @@ class HeadNode:
                      logging_level=logging.CRITICAL if options.verbose <= 1 else logging.INFO)
 
         if options.ssh_cluster_csv_path:
-            if not os.path.exists(options.ssh_cluster_csv_path):
-                raise ValueError(f"The cluster configuration file was set to {repr(options.ssh_cluster_csv_path)}"
-                                 f"but it does not exist. "
-                                 f"Either set enb.config.options.ssh_cluster_csv_path to None "
-                                 f"or to an existing file. See "
-                                 f"https://miguelinux314.github.io/experiment-notebook/installation.html "
-                                 f"for more details.")
+            failing_tool = None
+            if not _ssh_present:
+                failing_tool = "ssh"
+            elif not _sshfs_present:
+                failing_tool = "sshfs"
+            elif not _dpipe_present:
+                failing_tool = "dpipe"
+            if failing_tool:
+                enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
+                                f"but {failing_tool} was not found in the path. "
+                                f"No remote nodes will be used in this session.\n"
+                                f"Please install {failing_tool} in your system and/or fix the path it and retry.")
+            else:
+                if not os.path.exists(options.ssh_cluster_csv_path):
+                    raise ValueError(f"The cluster configuration file was set to {repr(options.ssh_cluster_csv_path)}"
+                                     f"but it does not exist. "
+                                     f"Either set enb.config.options.ssh_cluster_csv_path to None "
+                                     f"or to an existing file. See "
+                                     f"https://miguelinux314.github.io/experiment-notebook/installation.html "
+                                     f"for more details.")
 
-            self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
-            with logger.info_context(f"Connecting {len(self.remote_nodes)} remote nodes.",
-                                     msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
-                connected_nodes = []
-                for rn in self.remote_nodes:
-                    with logger.info_context(f"Connecting to {rn}"):
-                        try:
-                            rn.connect()
-                            connected_nodes.append(rn)
-                        except RuntimeError as ex:
-                            print(f"Error connecting to {rn}: {repr(ex)}. Execution will continue without this node.")
-                self.remote_nodes = connected_nodes
+                self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
+                with logger.info_context(f"Connecting {len(self.remote_nodes)} remote nodes.",
+                                         msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
+                    connected_nodes = []
+                    for rn in self.remote_nodes:
+                        with logger.info_context(f"Connecting to {rn}"):
+                            try:
+                                rn.connect()
+                                connected_nodes.append(rn)
+                            except RuntimeError as ex:
+                                print(
+                                    f"Error connecting to {rn}: {repr(ex)}. Execution will continue without this node.")
+                    self.remote_nodes = connected_nodes
 
-            logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
+                logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
 
     def stop(self):
         with logger.info_context("Stopping ray server."):

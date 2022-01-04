@@ -22,7 +22,7 @@ a:hover {
     border-radius: 5px;
 }
 
-.wy-side-nav-search .wy-dropdown > a:hover, .wy-side-nav-search > a:hover {
+.wy-side-nav-search .wy-dropdown > a:hover, .wy-side-nav-search > a:hover, .wy-menu-vertical li.current a:hover {
     color: #463101;
     background-color: #f3ac05;
 }
@@ -47,6 +47,10 @@ a:hover {
     background: #ffa513;
 }
 
+.wy-menu-vertical li.toctree-l1.current > a {
+    background-color: #dddddd;
+}
+
 .wy-menu-vertical header, .wy-menu-vertical p.caption {
     color: #f3ac05;
 }
@@ -69,4 +73,14 @@ a:hover {
 
 div.rst-content .note {
     background: #c8cde7;
+}
+
+.wy-side-nav-search input[type="text"] {
+    border: solid 2px #3f3f3f;
+    background-color: #dddddd;
+}
+
+.rst-content div[class^="highlight"] {
+    box-shadow: 3px 3px 5px black;
+    border: solid 1px #f3ac05;
 }

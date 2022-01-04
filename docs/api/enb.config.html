@@ -65,9 +65,10 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel">enb.parallel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel_ray">enb.parallel_ray module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ray_cluster">enb.ray_cluster module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.sets">enb.sets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tarlite">enb.tarlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tcall">enb.tcall module</a></li>
@@ -226,7 +227,7 @@ their default values.</p></li>
 When ray spawns new (local or remote) processes to serve as workers, the Options singleton
 is initialized for each of those process, with the catch that ray does <strong>not</strong> pass the user’s CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
-To mitigate this problem, the &#64;`enb.ray_cluster.remote` decorator is provided in substitution of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.remote()</span></code>
+To mitigate this problem, the &#64;`enb.parallel_ray.remote` decorator is provided in substitution of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.remote()</span></code>
 so that options at the time of calling the remote method are available to that method at
 its regular location (enb.config.options).</p>
 <dl class="py class">
@@ -489,6 +490,12 @@ results in <cite>sys.argv</cite> differing in the orchestrating and host process
 <span class="sig-name descname"><span class="pre">disable_swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.disable_swap" title="Permalink to this definition"></a></dt>
 <dd><p>If this flag is used, then swap memory will not be allowed by ray. By default, swap memory is enabled.
 Note that your system may become unstable if swap memory is used (specially a big portion thereof).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.no_ray">
+<span class="sig-name descname"><span class="pre">no_ray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.no_ray" title="Permalink to this definition"></a></dt>
+<dd><p>If set, no ray is employed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -976,7 +983,7 @@ When ray spawns new (local or remote) processes to serve as workers, the Options
 is initialized for each of those process, with the catch that ray does <strong>not</strong> pass the user’s CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
 To mitigate this problem, an <cite>options</cite> parameter is defined and passed to many these functions,
-e.g., with <cite>f.remote(options=ray.put(enb.config.options))</cite> if f is your <cite>&#64;ray.remote</cite>-decorated function.
+e.g., with <cite>f.remote(options=ray.put(enb.config.options))</cite> if f is your <cite>&#64;enb.parallel.parallel</cite>-decorated function.
 The <cite>&#64;enb.config.propagates_options</cite> decorator provides a slightly cleaner way of automating
 this mitigation.</p>
 <p>## enb.config.ini file-based configuration</p>
