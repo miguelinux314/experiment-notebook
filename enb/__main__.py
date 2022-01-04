@@ -17,7 +17,7 @@ def CLIParser():
     """
     cli_parser = argparse.ArgumentParser(
         prog="enb",
-        description="CLI to the electronic notebook (enb) framework\n"
+        description="CLI to the experiment notebook (enb) framework\n"
                     "(see https://github.com/miguelinux314/experiment-notebook).\n\n"
                     "Several subcommands are available; use `enb <subcommand> -h` \n"
                     "to show help about any specific command.",

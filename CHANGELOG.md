@@ -14,9 +14,9 @@ Given a code initially developed for one `enb` version and then executed in anot
   So far, a single `MAYOR` version (0) is used. The next mayor version (1) is 
   expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Next release (under development)
+# Stable version
 
-## v0.3.3
+## 2021/01/04 v0.3.3
 
 **Important**: Removed all deprecated methods scheduled for removal for v0.3.0 (Aug 31).
   This breaks compatibility with the v0.2.* versions, although most encountered
@@ -24,7 +24,12 @@ Given a code initially developed for one `enb` version and then executed in anot
   and their `get_def()` method instead of the old `analyze_df()`.
 
 * New features
-    
+
+  - Added ssh-based multi-computer processing. 
+  
+  - Added the `reference_group` parameter to the `get_df` method of `enb.aanalysis.Analayzer` subclasses,
+    wich allows displaying differences against the average of one group (`group_by` must be used).
+  
   - The project_root attribute has been added to enb.config.options that 
     points to the directory where the calling script is. 
     Persistence paths are now stored relative to this project root,
@@ -33,11 +38,12 @@ Given a code initially developed for one `enb` version and then executed in anot
 
 * General improvements
 
+  - Simplified the installation process on Windows, added support when ray is not prsent.
   - Improved documentation and plugins about lossless and lossy compression templates.
   - Added a lossy compression template.
   - Complete review of the documentation with the new classes.
 
-# Stable version
+# Version history
 
 ## 2021/11/29 v0.3.2
 
@@ -56,8 +62,6 @@ Given a code initially developed for one `enb` version and then executed in anot
   - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not redistributed with enb.
   - Updated the ScalarNumericAnalyzer so that it can display averages (with or without std error bars) without
     displaying any histogram.
-
-# Version history
 
 ## 2021/09/10 v0.3.1
 
