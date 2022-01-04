@@ -98,56 +98,35 @@ execution of your experiments, see <a class="reference internal" href="cluster_s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
 </pre></div>
 </div>
-<p>or, if you don’t have root’s privileges:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You might need to call the following instead if you are not using a virtual environment or
+and you don’t have root privileges:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb --user
 </pre></div>
 </div>
+</div>
+<p>If you would like multi-computer parallelization, please install the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite>
+(for the <cite>dpipe</cite> command) packages.
+On Debian, Ubuntu and derivatives this can be achieved by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install openssh-client openssh-server sshfs vde2
+</pre></div>
+</div>
+<p>The <cite>enb</cite> library will show a warning and proceed locally if any of these tools are not available.
+Please see <a class="reference internal" href="cluster_setup.html"><span class="doc">Configuring enb in a cluster of computers</span></a> for full information on how to set up a cluster.</p>
 </section>
 <section id="windows-and-macos">
 <h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Permalink to this headline"></a></h2>
-<p>The <cite>enb</cite> library is also available on Windows and MacOS via pip.</p>
-<p>You will typically need to follow these steps to have <cite>enb</cite> working on your box:</p>
-<blockquote>
-<div><ol class="arabic">
-<li><p><a class="reference external" href="https://docs.ray.io/en/master/installation.html">Download</a> the <cite>ray</cite> python library
-<em>for the python version you want to use</em> (a <cite>.whl</cite> file).
-(a dependency of the library).</p></li>
-<li><p>Install the ray library, e.g.,</p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pìp install -U ray-2.0.0.dev0-cp38-cp38-macosx_10_13_x86_64.whl
+<p>Installation of <cite>enb</cite> for Windows and MacOS can be performed via pip:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">enb</span>
 </pre></div>
 </div>
-</div></blockquote>
-</li>
-<li><p>Install <cite>enb</cite> via pip, e.g.,</p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb --user
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-</ol>
-</div></blockquote>
-<p>The pip command must correspond to the python version for which ray was installed.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you are developing for enb, it is highly recommended to used a virtual environment.
-To do so, for instance for python3.8, the complete setup would be:</p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/usr/bin/python3.8 -m venv venv <span class="c1"># run only once</span>
-<span class="nb">source</span> venv/bin/active          <span class="c1"># run once per session</span>
-pip install -U ray-2.0.0.whl    <span class="c1"># run once</span>
-pip install enb                 <span class="c1"># run once. Applies to this venv</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p>You can change python3.8 to 3.6 or newer, according to the version installed in your system.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Initialization of the <cite>ray</cite> library (used for parallelization) can take a few
-seconds on Windows machines.</p>
-</div>
+<p>Related (external) resources:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/downloads/">Python installer download</a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/venv.html">Creation of virtual environments on Windows</a></p></li>
+<li><p><a class="reference external" href="https://sourabhbajaj.com/mac-setup/Python/virtualenv.html">Python installation and virtual environment setup on MacOS</a></p></li>
+</ul>
 </section>
 <section id="sources-and-development-version">
 <h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Permalink to this headline"></a></h2>
@@ -155,7 +134,7 @@ seconds on Windows machines.</p>
 <p class="admonition-title">Note</p>
 <p>You may safely skip this section unless you intend to study or develop <cite>enb</cite>.</p>
 </div>
-<p>To get the latest version of enb, you can clone the enb with</p>
+<p>To get the latest version of enb, you can clone <cite>enb</cite> with</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/miguelinux314/experiment-notebook.git
 <span class="nb">cd</span> experiment-notebook.git
 </pre></div>
@@ -175,6 +154,11 @@ pip install -e .
 </div>
 <p>Feel free to <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/pulls">submit pull_requests</a>
 for your desired contributions.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The development version is discouraged for inexperienced users. Use with caution and report
+any bugs you would like removed.</p>
+</div>
 </section>
 </section>
 

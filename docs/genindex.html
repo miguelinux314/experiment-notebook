@@ -253,6 +253,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.parallel.chdir_project_root">chdir_project_root() (in module enb.parallel)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.CompressionExperiment.check_lossless">check_lossless (enb.icompression.CompressionExperiment attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
@@ -425,7 +427,7 @@
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.compute_target_rows">compute_target_rows() (enb.atable.ATable method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.RemoteNode.connect">connect() (enb.ray_cluster.RemoteNode method)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.RemoteNode.connect">connect() (enb.parallel_ray.RemoteNode method)</a>
 </li>
       <li><a href="api/enb.html#enb.context.ContextGroup.context_count_by_index">context_count_by_index (enb.context.ContextGroup property)</a>
 </li>
@@ -454,6 +456,8 @@
       <li><a href="api/enb.html#enb.misc.csv_to_latex_tabular">csv_to_latex_tabular() (in module enb.misc)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.StructuralSimilarity.cumpute_MSSIM">cumpute_MSSIM() (enb.icompression.StructuralSimilarity method)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel.FallbackFuture.current_id">current_id (enb.parallel.FallbackFuture attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -545,7 +549,7 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RayOptions.disable_swap">disable_swap() (enb.config.aoptions.RayOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.RemoteNode.disconnect">disconnect() (enb.ray_cluster.RemoteNode method)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.RemoteNode.disconnect">disconnect() (enb.parallel_ray.RemoteNode method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RenderingOptions.displayed_title">displayed_title() (enb.config.aoptions.RenderingOptions method)</a>
 </li>
@@ -656,12 +660,28 @@
 </li>
       </ul></li>
       <li>
+    enb.parallel
+
+      <ul>
+        <li><a href="api/enb.html#module-enb.parallel">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.parallel_ray
+
+      <ul>
+        <li><a href="api/enb.html#module-enb.parallel_ray">module</a>
+</li>
+      </ul></li>
+      <li>
     enb.pgm
 
       <ul>
         <li><a href="api/enb.html#module-enb.pgm">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plotdata
 
@@ -669,8 +689,6 @@
         <li><a href="api/enb.html#module-enb.plotdata">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins
 
@@ -697,13 +715,6 @@
 
       <ul>
         <li><a href="api/enb.plugins.html#module-enb.plugins.template">module</a>
-</li>
-      </ul></li>
-      <li>
-    enb.ray_cluster
-
-      <ul>
-        <li><a href="api/enb.html#module-enb.ray_cluster">module</a>
 </li>
       </ul></li>
       <li>
@@ -771,23 +782,35 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.parallel.fallback_get">fallback_get() (in module enb.parallel)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel.fallback_get_completed_pending_ids">fallback_get_completed_pending_ids() (in module enb.parallel)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel.fallback_init">fallback_init() (in module enb.parallel)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel.fallback_parallel_decorator">fallback_parallel_decorator() (in module enb.parallel)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel.FallbackFuture">FallbackFuture (class in enb.parallel)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RenderingOptions.fig_height">fig_height() (enb.config.aoptions.RenderingOptions method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RenderingOptions.fig_width">fig_width() (enb.config.aoptions.RenderingOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.file_path_to_geometry_dict">file_path_to_geometry_dict() (in module enb.isets)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable">FilePropertiesTable (class in enb.sets)</a>
 </li>
       <li><a href="api/enb.html#enb.sets.FileVersionTable">FileVersionTable (class in enb.sets)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.isets.FitsVersionTable.fits_extension">fits_extension (enb.isets.FitsVersionTable attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.FitsVersionTable">FitsVersionTable (class in enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.FITSWrapperCodec">FITSWrapperCodec (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.fix_imports">fix_imports() (in module enb.parallel_ray)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.force">force() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
@@ -801,6 +824,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.config.html#enb.config.aoptions.GeneralOptions">GeneralOptions (class in enb.config.aoptions)</a>
 </li>
+      <li><a href="api/enb.html#enb.parallel.FallbackFuture.get">get() (enb.parallel.FallbackFuture method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.parallel.get">(in module enb.parallel)</a>
+</li>
+        <li><a href="api/enb.html#enb.parallel_ray.get">(in module enb.parallel_ray)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.atable.get_all_input_files">get_all_input_files() (in module enb.atable)</a>
 </li>
       <li><a href="api/enb.html#enb.misc.get_all_subclasses">get_all_subclasses() (in module enb.misc)</a>
@@ -815,6 +846,12 @@
 </li>
       <li><a href="api/enb.html#enb.atable.get_class_that_defined_method">get_class_that_defined_method() (in module enb.atable)</a>
 </li>
+      <li><a href="api/enb.html#enb.parallel.get_completed_pending_ids">get_completed_pending_ids() (in module enb.parallel)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.parallel_ray.get_completed_pending_ids">(in module enb.parallel_ray)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_compression_params">get_compression_params() (enb.icompression.WrapperCodec method)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.get_dataset_info_row">get_dataset_info_row() (enb.experiment.Experiment method)</a>
@@ -847,12 +884,12 @@
         <li><a href="api/enb.html#enb.sets.FileVersionTable.get_df">(enb.sets.FileVersionTable method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.atable.ATable.get_df_one_chunk">get_df_one_chunk() (enb.atable.ATable method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aini.AdditionalIniParser.get_extra_ini_paths">get_extra_ini_paths() (enb.config.aini.AdditionalIniParser method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.plugins.html#enb.plugins.template.Template.get_field_parser">get_field_parser() (enb.plugins.template.Template class method)</a>
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.template.Template.get_fields">get_fields() (enb.plugins.template.Template class method)</a>
@@ -873,10 +910,10 @@
       </ul></li>
       <li><a href="api/enb.html#enb.atable.ATable.get_matlab_struct_str">get_matlab_struct_str() (enb.atable.ATable method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.HeadNode.get_node_ip">get_node_ip() (enb.ray_cluster.HeadNode method)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.HeadNode.get_node_ip">get_node_ip() (enb.parallel_ray.HeadNode method)</a>
 
       <ul>
-        <li><a href="api/enb.html#enb.ray_cluster.get_node_ip">(in module enb.ray_cluster)</a>
+        <li><a href="api/enb.html#enb.misc.get_node_ip">(in module enb.misc)</a>
 </li>
       </ul></li>
       <li><a href="api/enb.html#enb.atable.get_nonscalar_value">get_nonscalar_value() (in module enb.atable)</a>
@@ -919,7 +956,7 @@
 </li>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable.hash_field_name">hash_field_name (enb.sets.FilePropertiesTable attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.HeadNode">HeadNode (class in enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.HeadNode">HeadNode (class in enb.parallel_ray)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer.histogram_bin_count">histogram_bin_count (enb.aanalysis.ScalarNumericAnalyzer attribute)</a>
 </li>
@@ -975,12 +1012,14 @@
 </li>
       <li><a href="api/enb.html#enb.log.Logger.info_context">info_context() (enb.log.Logger method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.config.html#enb.config.aini.Ini">Ini (class in enb.config.aini)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.init_ray">init_ray() (in module enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.parallel.init">init() (in module enb.parallel)</a>
 </li>
+      <li><a href="api/enb.html#enb.parallel_ray.init_ray">init_ray() (in module enb.parallel_ray)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.install">install() (enb.plugins.installable.Installable class method)</a>
 
       <ul>
@@ -1006,6 +1045,14 @@
       <li><a href="api/enb.html#enb.isets.iproperties_to_name_tag">iproperties_to_name_tag() (in module enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.is_family_grouping">is_family_grouping() (in module enb.aanalysis)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.is_parallel_process">is_parallel_process() (in module enb.parallel_ray)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.is_ray_enabled">is_ray_enabled() (in module enb.parallel_ray)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.is_ray_initialized">is_ray_initialized() (in module enb.parallel_ray)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.is_remote_node">is_remote_node() (in module enb.parallel_ray)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.SingletonCLI.items">items() (enb.config.singleton_cli.SingletonCLI method)</a>
 </li>
@@ -1185,6 +1232,10 @@
 </li>
         <li><a href="api/enb.html#module-enb.ml">enb.ml</a>
 </li>
+        <li><a href="api/enb.html#module-enb.parallel">enb.parallel</a>
+</li>
+        <li><a href="api/enb.html#module-enb.parallel_ray">enb.parallel_ray</a>
+</li>
         <li><a href="api/enb.html#module-enb.pgm">enb.pgm</a>
 </li>
         <li><a href="api/enb.html#module-enb.plotdata">enb.plotdata</a>
@@ -1197,8 +1248,6 @@
 </li>
         <li><a href="api/enb.plugins.html#module-enb.plugins.template">enb.plugins.template</a>
 </li>
-        <li><a href="api/enb.html#module-enb.ray_cluster">enb.ray_cluster</a>
-</li>
         <li><a href="api/enb.html#module-enb.sets">enb.sets</a>
 </li>
         <li><a href="api/enb.html#module-enb.tarlite">enb.tarlite</a>
@@ -1208,7 +1257,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.ray_cluster.RemoteNode.mount_project_remotely">mount_project_remotely() (enb.ray_cluster.RemoteNode method)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.RemoteNode.mount_project_remotely">mount_project_remotely() (enb.parallel_ray.RemoteNode method)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.AnalyzerSummary.move_render_columns_back">move_render_columns_back() (enb.aanalysis.AnalyzerSummary method)</a>
 </li>
@@ -1244,6 +1293,8 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.no_new_results">no_new_results() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
+      <li><a href="api/enb.config.html#enb.config.aoptions.RayOptions.no_ray">no_ray() (enb.config.aoptions.RayOptions method)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RenderingOptions.no_render">no_render() (enb.config.aoptions.RenderingOptions method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.OptionsBase.non_default_properties">non_default_properties (enb.config.aoptions.OptionsBase property)</a>
@@ -1264,16 +1315,12 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.ray_cluster.on_remote_node">on_remote_node() (in module enb.ray_cluster)</a>
-</li>
-      <li><a href="api/enb.html#enb.ray_cluster.on_remote_process">on_remote_process() (in module enb.ray_cluster)</a>
-</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.Options">Options (class in enb.config.aoptions)</a>
+</li>
+      <li><a href="api/enb.config.html#enb.config.aoptions.OptionsBase">OptionsBase (class in enb.config.aoptions)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.config.html#enb.config.aoptions.OptionsBase">OptionsBase (class in enb.config.aoptions)</a>
-</li>
       <li><a href="api/enb.html#enb.isets.FitsVersionTable.original_to_versioned_path">original_to_versioned_path() (enb.isets.FitsVersionTable method)</a>
 
       <ul>
@@ -1286,9 +1333,15 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.ray_cluster.HeadNode.parse_cluster_config_csv">parse_cluster_config_csv() (enb.ray_cluster.HeadNode method)</a>
+      <li><a href="api/enb.html#enb.parallel.parallel">parallel() (in module enb.parallel)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.parallel_decorator">parallel_decorator() (in module enb.parallel_ray)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel_ray.HeadNode.parse_cluster_config_csv">parse_cluster_config_csv() (enb.parallel_ray.HeadNode method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.PathAction">PathAction (class in enb.config.singleton_cli)</a>
+</li>
+      <li><a href="api/enb.html#enb.parallel.FallbackFuture.pathos_pool">pathos_pool (enb.parallel.FallbackFuture attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.pdf_to_png">pdf_to_png() (in module enb.aanalysis)</a>
 </li>
@@ -1314,12 +1367,12 @@
         <li><a href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer.plot_title">(enb.aanalysis.TwoNumericAnalyzer attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.plotdata.PlottableData">PlottableData (class in enb.plotdata)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData2D">PlottableData2D (class in enb.plotdata)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.plugins.html#enb.plugins.plugin.Plugin">Plugin (class in enb.plugins.plugin)</a>
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.plugin.PluginMake">PluginMake (class in enb.plugins.plugin)</a>
@@ -1340,7 +1393,7 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.progress_report_period">progress_report_period() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.ProgressiveGetter">ProgressiveGetter (class in enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.parallel.ProgressiveGetter">ProgressiveGetter (class in enb.parallel)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.DirOptions.project_root">project_root() (enb.config.aoptions.DirOptions method)</a>
 </li>
@@ -1386,6 +1439,8 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.ReadableOrCreableDirAction">ReadableOrCreableDirAction (class in enb.config.singleton_cli)</a>
 </li>
+      <li><a href="api/enb.html#enb.parallel.FallbackFuture.ready">ready() (enb.parallel.FallbackFuture method)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.DirOptions.reconstructed_dir">reconstructed_dir() (enb.config.aoptions.DirOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.redefines_column">redefines_column() (enb.atable.ATable class method)</a>
@@ -1394,11 +1449,9 @@
         <li><a href="api/enb.html#enb.atable.redefines_column">(in module enb.atable)</a>
 </li>
       </ul></li>
-      <li><a href="api/enb.html#enb.ray_cluster.remote">remote() (in module enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.RemoteNode.remote_project_mount_path">remote_project_mount_path (enb.parallel_ray.RemoteNode attribute)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.RemoteNode.remote_project_mount_path">remote_project_mount_path (enb.ray_cluster.RemoteNode attribute)</a>
-</li>
-      <li><a href="api/enb.html#enb.ray_cluster.RemoteNode">RemoteNode (class in enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.RemoteNode">RemoteNode (class in enb.parallel_ray)</a>
 </li>
       <li><a href="api/enb.html#enb.misc.remove_argparse_action">remove_argparse_action() (in module enb.misc)</a>
 </li>
@@ -1442,7 +1495,7 @@
 </li>
       <li><a href="api/enb.html#enb.log.Logger.replace_print">replace_print() (enb.log.Logger method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.ProgressiveGetter.report">report() (enb.ray_cluster.ProgressiveGetter method)</a>
+      <li><a href="api/enb.html#enb.parallel.ProgressiveGetter.report">report() (enb.parallel.ProgressiveGetter method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.report_configuration">report_configuration() (in module enb.config)</a>
 </li>
@@ -1718,15 +1771,15 @@
       </ul></li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RayOptions.ssh_cluster_csv_path">ssh_cluster_csv_path() (enb.config.aoptions.RayOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.HeadNode.start">start() (enb.ray_cluster.HeadNode method)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.HeadNode.start">start() (enb.parallel_ray.HeadNode method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.HeadNode.status_str">status_str (enb.ray_cluster.HeadNode property)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.HeadNode.status_str">status_str (enb.parallel_ray.HeadNode property)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.StepData">StepData (class in enb.plotdata)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.HeadNode.stop">stop() (enb.ray_cluster.HeadNode method)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.HeadNode.stop">stop() (enb.parallel_ray.HeadNode method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.stop_ray">stop_ray() (in module enb.ray_cluster)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.stop_ray">stop_ray() (in module enb.parallel_ray)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.string_or_float">string_or_float() (in module enb.atable)</a>
 </li>
@@ -1796,7 +1849,7 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.SingletonCLI.update">update() (enb.config.singleton_cli.SingletonCLI method)</a>
 </li>
-      <li><a href="api/enb.html#enb.ray_cluster.ProgressiveGetter.update_finished_tasks">update_finished_tasks() (enb.ray_cluster.ProgressiveGetter method)</a>
+      <li><a href="api/enb.html#enb.parallel.ProgressiveGetter.update_finished_tasks">update_finished_tasks() (enb.parallel.ProgressiveGetter method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

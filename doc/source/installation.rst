@@ -21,62 +21,50 @@ You may install it easily with pip,
 
    pip install enb
 
-or, if you don't have root's privileges:
+.. note::
+
+    You might need to call the following instead if you are not using a virtual environment or
+    and you don't have root privileges:
+
+    .. code-block:: bash
+
+          pip install enb --user
+
+If you would like multi-computer parallelization, please install the `ssh` (server and client), `sshfs` and `vde2`
+(for the `dpipe` command) packages.
+On Debian, Ubuntu and derivatives this can be achieved by:
 
 .. code-block:: bash
 
-  pip install enb --user
+    sudo apt install openssh-client openssh-server sshfs vde2
+
+The `enb` library will show a warning and proceed locally if any of these tools are not available.
+Please see :doc:`cluster_setup` for full information on how to set up a cluster.
 
 Windows and MacOS
 -----------------
 
-The `enb` library is also available on Windows and MacOS via pip.
+Installation of `enb` for Windows and MacOS can be performed via pip:
 
-You will typically need to follow these steps to have `enb` working on your box:
+.. code-block:: python
 
-    1. `Download <https://docs.ray.io/en/master/installation.html>`_ the `ray` python library
-       *for the python version you want to use* (a `.whl` file).
-       (a dependency of the library).
-
-    2. Install the ray library, e.g.,
-
-        .. code-block:: bash
-
-            pìp install -U ray-2.0.0.dev0-cp38-cp38-macosx_10_13_x86_64.whl
-
-    3. Install `enb` via pip, e.g.,
-
-        .. code-block:: bash
-
-            pip install enb --user
-
-The pip command must correspond to the python version for which ray was installed.
+    pip install enb
 
 
-.. note ::
+Related (external) resources:
 
-  If you are developing for enb, it is highly recommended to used a virtual environment.
-  To do so, for instance for python3.8, the complete setup would be:
-
-        .. code-block:: bash
-
-            /usr/bin/python3.8 -m venv venv # run only once
-            source venv/bin/active          # run once per session
-            pip install -U ray-2.0.0.whl    # run once
-            pip install enb                 # run once. Applies to this venv
-
-  You can change python3.8 to 3.6 or newer, according to the version installed in your system.
+* `Python installer download <https://www.python.org/downloads/>`_
+* `Creation of virtual environments on Windows <https://docs.python.org/3/library/venv.html>`_
+* `Python installation and virtual environment setup on MacOS <https://sourabhbajaj.com/mac-setup/Python/virtualenv.html>`_
 
 
-.. note:: Initialization of the `ray` library (used for parallelization) can take a few
-  seconds on Windows machines.
 
 Sources and development version
 -------------------------------
 
 .. note:: You may safely skip this section unless you intend to study or develop `enb`.
 
-To get the latest version of enb, you can clone the enb with
+To get the latest version of enb, you can clone `enb` with
 
 .. code-block:: bash
 
@@ -102,3 +90,8 @@ branch is checked out) with
 
 Feel free to `submit pull_requests <https://github.com/miguelinux314/experiment-notebook/pulls>`_
 for your desired contributions.
+
+.. warning::
+
+    The development version is discouraged for inexperienced users. Use with caution and report
+    any bugs you would like removed.

@@ -108,16 +108,24 @@ This applies to others running your experiments on other computers.</p></li>
 <li><p><strong>Extensible</strong>: you can always add new samples, define new columns and produce new figures.
 You will only need to obtain results for the newly defined data columns or samples.</p></li>
 <li><p><strong>Parallel in nature</strong>: you can use all the CPUs / GPUs in your local machine, and even
-distribute the load across a cluster of computers.</p></li>
+distribute the load across a cluster of computers (clusters only supported on Linux and MacOS).</p></li>
 </ul>
 </div></blockquote>
 <p>Please visit <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook">the enb github page</a> for
 full access to the code.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">enb</span></code> is based on well-known python libraries such as <code class="docutils literal notranslate"><span class="pre">pandas</span></code>, <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> and <code class="docutils literal notranslate"><span class="pre">ray</span></code>.
+<p><code class="docutils literal notranslate"><span class="pre">enb</span></code> is based on well-known python libraries such as <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.
 No prior knowledge of these libraries is required, although basic understanding of <code class="docutils literal notranslate"><span class="pre">pandas</span></code>
 can be most useful.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Clustering support is provided only on Linux and MacOS systems. The <cite>ray</cite> library
+as well as the <cite>ssh</cite> and <cite>sshfs</cite> tools are employed for this purpose.
+If <cite>ray</cite> is not available, e.g., on Windows, the <cite>pathos</cite> library is employed for
+parallelization, and no clustering support is provided.
+See full details for multi-computer parallelization in <a class="reference internal" href="cluster_setup.html"><span class="doc">Configuring enb in a cluster of computers</span></a>.</p>
 </div>
 <p>The following help pages will tour you through the most important features of <code class="docutils literal notranslate"><span class="pre">enb</span></code>,
 and show minimal examples that you can use as starting point for your projects.
