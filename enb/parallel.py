@@ -140,8 +140,9 @@ def fallback_get_completed_pending_ids(ids, timeout=0):
         else:
             pending.append(fallback_future)
 
-    if pending and timeout:
-        time.sleep(timeout)
+    time_before = time.time()
+    while pending and time.time() - time_before < timeout:
+        time.sleep(0.1)
         complete = []
         pending = []
         for fallback_future in ids:
@@ -149,6 +150,7 @@ def fallback_get_completed_pending_ids(ids, timeout=0):
                 complete.append(fallback_future)
             else:
                 pending.append(fallback_future)
+
 
     return complete, pending
 

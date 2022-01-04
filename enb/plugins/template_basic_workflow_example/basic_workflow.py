@@ -15,7 +15,7 @@ class WikiTable(enb.atable.ATable):
     # Methods that start with column_ are automatically recognized as such.
     # They just need to return the intended value.
     def column_line_count(self, file_path, row):
-        with open(file_path, "r") as input_file:
+        with open(file_path, encoding="utf-8", mode="r") as input_file:
             return sum(1 for line in input_file)
 
     # More information about a column can be provided
@@ -25,7 +25,7 @@ class WikiTable(enb.atable.ATable):
         enb.atable.ColumnProperties(name="word_count", label="Word count", plot_min=0),
         "status")
     def set_word_count(self, file_path, row):
-        with open(file_path, "r") as input_file:
+        with open(file_path, mode="r", encoding="utf-8") as input_file:
             contents = input_file.read()
             row["word_count"] = len(contents.split())
             row["status"] = "dead" if "death_place" in contents.lower() else "alive"
@@ -65,10 +65,6 @@ def main():
         full_df=result_df,
         target_columns=[("line_count", "word_count")],
         column_to_properties=table.column_to_properties)
-
-    # Render a PNG version as well
-    shutil.rmtree("plots_png", ignore_errors=True)
-    enb.aanalysis.pdf_to_png("plots", "plots_png")
 
 
 if __name__ == '__main__':

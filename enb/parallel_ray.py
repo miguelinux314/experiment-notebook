@@ -5,6 +5,7 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
 
 import logging
+import shutil
 import string
 import math
 import threading
@@ -21,6 +22,7 @@ import glob
 import platform
 import ast
 import importlib
+import textwrap
 
 import enb
 from . import config
@@ -35,8 +37,6 @@ try:
     _ray_present = True
 except ImportError as ex:
     _ray_present = False
-    if platform.system().lower() == "linux":
-        logger.debug(f"Could not import ray: {repr(ex)}. Try 'pip install ray'.")
 
 
 def is_ray_enabled():

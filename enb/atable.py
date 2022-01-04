@@ -1227,12 +1227,10 @@ class ATable(metaclass=MetaTable):
                                "a partition with enough space, e.g., running with --base_tmp_dir=./tmp.\n"
                     cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
 
-                    if enb.config.options.verbose > 0:
+                    if enb.config.options.verbose >= 0:
                         # Tests can set the verbose level to less than 0 to avoid showing errors on
                         # specific points of their code
-                        enb.logger.error(repr(ex) + f".\nverbose={options.verbose} :: id(options)={id(options)} "
-                                               f"::id(options.verbose)={id(options.verbose)} ;;"
-                                               f"id(enb.config.options)={id(enb.config.options)}")
+                        enb.logger.error(msg)
 
                     return cfe
 
