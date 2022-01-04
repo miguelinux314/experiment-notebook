@@ -32,6 +32,7 @@ import ast
 import configparser
 import textwrap
 
+import enb
 from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
 from ..misc import Singleton as _Singleton, class_to_fqn
 
@@ -87,7 +88,8 @@ class Ini(metaclass=_Singleton):
             self.config_parser.read(ini_path)
             self.used_config_paths.append(ini_path)
         except configparser.ParsingError as ex:
-            print(f"Selected invalid ini path {ini_path}: {repr(ex)}.\nContinuing without this file.")
+            print(f"Found invalid ini path {ini_path} ({repr(ex).strip()}). "
+                  f"Any configuration in this file will be ignored.")
 
     def get_key(self, section, name):
         """Return a read key value in the given section (if existing),

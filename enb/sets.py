@@ -14,15 +14,10 @@ __since__ = "2019/09/18"
 
 import os
 import hashlib
-import ray
 import time
-import deprecation
-import glob
-import functools
 
 import enb
 from enb import atable
-from enb import config
 from enb.atable import get_canonical_path
 
 options = enb.config.options
@@ -265,10 +260,9 @@ class FileVersionTable(FilePropertiesTable):
         row[_column_name] = file_dir
 
 
-@ray.remote
-@config.propagates_options
-def ray_version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, check_generated_files,
-                         options):
+@enb.parallel.parallel()
+def parallel_version_one_path(version_fun, input_path, output_path, overwrite, original_info_df, check_generated_files,
+                              options):
     """Run the versioning of one path.
     """
     return version_one_path_local(version_fun=version_fun, input_path=input_path, output_path=output_path,

@@ -372,7 +372,7 @@ or via .ini configuration files.</p>
 <dd><p>Render all target modes and columns into output_plot_dir, with file names based
 on self’s class name, the target column and the target render mode.</p>
 <p>Subclasses may overwrite their update_render_kwargs_one_case method to customize the rendering
-parameters that are passed to the parallel rendering function from enb.plotdata.
+parameters that are passed to the parallel_decorator rendering function from enb.plotdata.
 These overwriting methods are encouraged to call enb.aanalysis.Analyzer.update_render_kwargs_one_case
 (directly or indirectly) so make sure all necessary parameters reach the rendering function.</p>
 </dd></dl>
@@ -4201,7 +4201,7 @@ Only used when y_tick_list is not None.</p></li>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.ray_cluster.</span></code><code class="sig-name descname"><span class="pre">ProgressiveGetter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.ray_cluster.ProgressiveGetter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>When an instance is created, the computation of the requested list of ray ids is started
-in parallel the background (unless they are already running).</p>
+in parallel_decorator the background (unless they are already running).</p>
 <p>The returned instance is an iterable object. Each to next() with this instance will either
 return the instance if any tasks are still running, or raise StopIteration if all are complete.
 Therefore, instances of this class can be used as the right operand of <cite>in</cite> in for loops.</p>

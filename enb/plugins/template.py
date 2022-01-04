@@ -124,29 +124,31 @@ class Template(Installable, metaclass=MetaTemplate):
             is_templatable = os.path.isfile(input_path) \
                              and os.path.basename(input_path).endswith(cls.templatable_extension)
 
-            if is_templatable:
-                tmp_input_file = tempfile.NamedTemporaryFile()
-                templated_path = tmp_input_file.name
-
-                with open(templated_path, "w") as templated_file:
-                    jinja_env = jinja2.Environment(
-                        loader=jinja2.FileSystemLoader("/"),
-                        autoescape=jinja2.select_autoescape())
-                    template = jinja_env.get_template(os.path.abspath(input_path))
-                    templated_file.write(template.render(**fields))
-
-                input_path = templated_path
-                output_path = output_path[:-len(cls.templatable_extension)]
-
-            if os.path.exists(output_path) and not options.force:
-                raise ValueError(
-                    f"Error installing template {cls.name}: output file {repr(output_path)} already exists "
-                    f"and options.force={options.force}. Run with -f to overwrite.")
-
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
-            shutil.copy(input_path, output_path)
-            if input_is_executable:
-                os.chmod(output_path, os.stat(output_path).st_mode | stat.S_IEXEC)
+            if is_templatable:
+                with tempfile.NamedTemporaryFile(mode="w+") as templated_file:
+                    jinja_env = jinja2.Environment(
+                        loader=jinja2.FileSystemLoader(os.path.dirname(os.path.abspath(input_path))),
+                        autoescape=jinja2.select_autoescape())
+                    template = jinja_env.get_template(os.path.basename(input_path))
+                    templated_file.write(template.render(**fields))
+                    templated_file.flush()
+                    templated_file.seek(0)
+                    if os.path.exists(output_path[:-len(cls.templatable_extension)]) and not options.force:
+                        raise ValueError(
+                            f"Error installing template {cls.name}: output file {repr(output_path)} already exists "
+                            f"and options.force={options.force}. Run with -f to overwrite.")
+                    with open(output_path[:-len(cls.templatable_extension)], "w") as output_file:
+                        output_file.write(templated_file.read())
+                    if input_is_executable:
+                        os.chmod(output_path[:-len(cls.templatable_extension)],
+                                 os.stat(output_path[:-len(cls.templatable_extension)]).st_mode | stat.S_IEXEC)
+            else:
+                if os.path.exists(output_path) and not options.force:
+                    raise ValueError(
+                        f"Error installing template {cls.name}: output file {repr(output_path)} already exists "
+                        f"and options.force={options.force}. Run with -f to overwrite.")
+                shutil.copy(input_path, output_path)
 
         cls.build(installation_dir=installation_dir)
         print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")

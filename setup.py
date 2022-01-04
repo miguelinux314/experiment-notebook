@@ -11,6 +11,7 @@ __since__ = "2019/09/19"
 
 import os
 import importlib
+import platform
 
 setup_package_list = ["setuptools", "wheel"]
 
@@ -75,10 +76,9 @@ setup(
     setup_requires=setup_package_list,
 
     install_requires=[
-        "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
-        "pdf2image", "psutil", "ray[default]", "redis", "requests", "scipy", "sortedcontainers",
-        "astropy",
-    ],
+        "pathos", "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
+        "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
+        "astropy"] + (["ray[default]"] if platform.system().lower() != "windows" else []),
 
     # This part determines the contents of the installed folder in your python's site-packages location.
     # MANIFEST.in is assumed to have been updated, i.e., via git hooks.

@@ -7,9 +7,13 @@ may use misc tools at definition time.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/11"
 
+import builtins
+import os
+import sys
 import csv
-import textwrap
 import re
+import contextlib
+import socket
 
 
 def get_defining_class_name(f):
@@ -175,3 +179,13 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True, 
 
         tex_file.write("\\bottomrule\n" if use_booktabks else "\\hline\n")
         tex_file.write("\\end{tabular}\n")
+
+
+def get_node_ip():
+    """Get the current IP address of this node.
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    address = s.getsockname()[0]
+    s.close()
+    return address
