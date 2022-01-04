@@ -14,6 +14,13 @@ Given a code initially developed for one `enb` version and then executed in anot
   So far, a single `MAYOR` version (0) is used. The next mayor version (1) is 
   expected to be backwards compatible with the latest release of the 0 mayor branch.
 
+
+# Next release (under development)
+
+## v0.3.4
+
+(No relevant changes yet)
+
 # Stable version
 
 ## 2021/01/04 v0.3.3
