@@ -129,12 +129,9 @@ class TestFailingTable(unittest.TestCase):
         original_verbose = enb.config.options.verbose
 
         try:
-            enb.config.options.verbose = -100
-            # enb.parallel.FallbackFuture.pathos_pool = pathos.pools.ProcessPool(
-            #     nodes=enb.config.options.ray_cpu_limit
-            #     if enb.config.options.ray_cpu_limit and enb.config.options.ray_cpu_limit > 0
-            #     else None)
+            enb.config.options.verbose = -1
             ft.get_df(target_indices=target_indices)
+            enb.config.options.verbose = original_verbose
             raise RuntimeError("The previous call should have failed")
         except enb.atable.ColumnFailedError as ex:
             assert len(ex.exception_list) == len(target_indices)

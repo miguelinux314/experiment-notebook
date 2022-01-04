@@ -8,12 +8,13 @@ __since__ = "2020/03/31"
 
 import os as _os
 import sys as _sys
-import ast as _ast
-import importlib as _importlib
+import shutil as _shutil
+import textwrap as _textwrap
 import appdirs as _appdirs
 import numpy as _np
 import warnings as _warnings
 import atexit as _atexit
+import platform as _platform
 
 # Make all warnings errors
 _np.seterr(all="raise")
@@ -82,6 +83,21 @@ from . import plugins
 if not parallel_ray.is_parallel_process():
     # Setup common to
     log.core(config.get_banner())
+
+    if config.options.verbose:
+        if not parallel_ray.is_ray_enabled() and _platform.system().lower() == "linux" and not config.options.no_ray:
+                print(_textwrap.indent(
+                    f"Ray not found. Executing with fallback parallelization engine.\n"
+                    f"Note that you can install ray for faster execution and cluster support, e.g., with:\n\n\tpip install ray[default]\n\n"
+                    f"You can disable this warning by passing --no_ray in the command line.\n\n",
+                    prefix=" "*(_shutil.get_terminal_size().columns // 10)))
+        elif parallel_ray.is_ray_enabled():
+            print("Using ray for parallelization.")
+        else:
+            print("Using fallback pathos for parallelization.")
+
+
+
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
