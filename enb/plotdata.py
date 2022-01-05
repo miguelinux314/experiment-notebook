@@ -584,7 +584,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             for i, g in enumerate(sorted_group_names):
                 if show_legend:
                     if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
-                        pds_by_group_name[g][0].label = g
+                        try:
+                            pds_by_group_name[g][0].label = g
+                        except IndexError:
+                            # Ignore empty groups
+                            continue
                 for pld in pds_by_group_name[g]:
                     pld.marker = marker_cycle[i]
 
