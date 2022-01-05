@@ -14,17 +14,22 @@ Given a code initially developed for one `enb` version and then executed in anot
   So far, a single `MAYOR` version (0) is used. The next mayor version (1) is 
   expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Stable version
+# Latest stable version
 
-## v0.3.4
+## 2022/01/05 v0.3.4
 
-(No relevant changes yet)
+Mostly bugfixes and cleanup in this version.
 
-# Stable version
+- Stability improvement on Windows platforms.
+- General documentation enhancement, including README.
+- Fixed small bugs in the `montecarlo-pi` plugin.
+- Renamed the `enb.config.options.ray_cpu` attribute into `enb.config.options.cpu_limit`.
 
-## 2021/01/04 v0.3.3
+# Version history
 
-**Important**: Removed all deprecated methods scheduled for removal for v0.3.0 (Aug 31).
+## 2022/01/04 v0.3.3
+
+**Important**: Removed all deprecated methods scheduled for removal for v0.3.0 (Aug 31, 2021).
   This breaks compatibility with the v0.2.* versions, although most encountered
   issues can be easily overcome by using the new enb.aanalyis.Analyzer subclasses
   and their `get_def()` method instead of the old `analyze_df()`.
@@ -48,8 +53,6 @@ Given a code initially developed for one `enb` version and then executed in anot
   - Improved documentation and plugins about lossless and lossy compression templates.
   - Added a lossy compression template.
   - Complete review of the documentation with the new classes.
-
-# Version history
 
 ## 2021/11/29 v0.3.2
 

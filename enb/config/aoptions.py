@@ -105,6 +105,18 @@ class GeneralOptions:
 class ExecutionOptions:
     """General execution options.
     """
+    @OptionsBase.property(type=int)
+    def cpu_limit(self, value):
+        """Maximum number of CPUs to use for computation in this machine
+        See https://miguelinux314.github.io/experiment-notebook/cluster_setup.html for
+        details on how to set the resources employed in remote computation nodes.
+        """
+        if value is None:
+            return value
+        value = int(value)
+        if value <= 0:
+            value = None
+        return value
 
     @OptionsBase.property("f", "overwrite", action="count")
     def force(self, value):
@@ -299,21 +311,6 @@ class RayOptions:
     def no_ray(self, value):
         """If set, no ray is employed.
         """
-        return value
-
-    @OptionsBase.property("cpu", type=int)
-    def ray_cpu_limit(self, value):
-        """Maximum number of virtual CPUs to use in the ray cluster.
-        If set to None or any number n <= 0, then no limits are set in terms of virtual CPU usage.
-
-        IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
-        it afterwards will not change ray cpu limits.
-        """
-        if value is None:
-            return value
-        value = int(value)
-        if value <= 0:
-            value = None
         return value
 
     @OptionsBase.property("noswap", action="store_true")

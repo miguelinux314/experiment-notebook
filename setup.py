@@ -78,7 +78,8 @@ setup(
     install_requires=[
         "pathos", "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
         "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
-        "astropy"] + (["ray[default]"] if platform.system().lower() != "windows" else []),
+        "astropy",
+        "ray ; platform_system != 'Windows'"],
 
     # This part determines the contents of the installed folder in your python's site-packages location.
     # MANIFEST.in is assumed to have been updated, i.e., via git hooks.

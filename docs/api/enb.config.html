@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.3
+                v0.3.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -64,7 +64,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel">enb.parallel module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel_ray">enb.parallel_ray module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
@@ -163,7 +163,7 @@ valid python literals (essentially numbers, lists, dicts, tuples, booleans and N
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.config.aini.Ini.global_ini_path">
-<span class="sig-name descname"><span class="pre">global_ini_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/data/Dropbox/desarrollo/experiment-notebook.git/enb/config/enb.ini'</span></em><a class="headerlink" href="#enb.config.aini.Ini.global_ini_path" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">global_ini_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/miguelinux/Dropbox/desarrollo/experiment-notebook.git/enb/config/enb.ini'</span></em><a class="headerlink" href="#enb.config.aini.Ini.global_ini_path" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -329,6 +329,14 @@ absolute path counterparts.</p>
 <dd><p>Chunk size used when running ATable’s get_df().
 Each processed chunk is made persistent before processing the next one.
 This parameter can be used to control the trade-off between error tolerance and overall speed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.cpu_limit">
+<span class="sig-name descname"><span class="pre">cpu_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.cpu_limit" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum number of CPUs to use for computation in this machine
+See <a class="reference external" href="https://miguelinux314.github.io/experiment-notebook/cluster_setup.html">https://miguelinux314.github.io/experiment-notebook/cluster_setup.html</a> for
+details on how to set the resources employed in remote computation nodes.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -503,15 +511,6 @@ Note that your system may become unstable if swap memory is used (specially a bi
 <span class="sig-name descname"><span class="pre">preshutdown_wait_seconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.preshutdown_wait_seconds" title="Permalink to this definition"></a></dt>
 <dd><p>A wait period can be held before shutting down ray. This allows displaying messages produced by
 child processes (e.g., stack traces) in case of abrupt termination of enb client code.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.ray_cpu_limit">
-<span class="sig-name descname"><span class="pre">ray_cpu_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_cpu_limit" title="Permalink to this definition"></a></dt>
-<dd><p>Maximum number of virtual CPUs to use in the ray cluster.
-If set to None or any number n &lt;= 0, then no limits are set in terms of virtual CPU usage.</p>
-<p>IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
-it afterwards will not change ray cpu limits.</p>
 </dd></dl>
 
 <dl class="py method">
