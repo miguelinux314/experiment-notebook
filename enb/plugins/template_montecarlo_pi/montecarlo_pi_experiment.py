@@ -4,6 +4,8 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/12/27"
 
+import platform
+
 import numpy as np
 import enb
 
@@ -18,7 +20,7 @@ class MontecarloPiExperiment(enb.experiment.Experiment):
     def column_computed_on_ip(self, index, row):
         """Register the node that computed this particular sample.
         """
-        return enb.parallel_ray.get_node_ip()
+        return enb.misc.get_node_ip()
 
     def column_estimated_pi_value(self, index, row):
         """Make a Montecarlo approximation of pi.
@@ -34,8 +36,9 @@ if __name__ == '__main__':
     sample_count = 128
 
     if enb.config.options.ssh_cluster_csv_path is None:
-        print("enb.config.options.ssh_cluster_csv_path is not set. "
-              "You can do so with --ssh_cluster_csv_path=enb_cluster.csv")
+        if enb.parallel_ray.is_ray_enabled():
+            print("enb.config.options.ssh_cluster_csv_path is not set. "
+                  "You can do so with --ssh_cluster_csv_path=enb_cluster.csv .")
     else:
         print(f"Using cluster configuration file at {enb.config.options.ssh_cluster_csv_path}")
 

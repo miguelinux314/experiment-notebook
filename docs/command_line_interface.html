@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.3
+                v0.3.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -101,11 +101,11 @@ with enb:</p>
 <h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.4 ] ................
 
 usage: enb [-h] {plugin,help} ...
 
-CLI to the electronic notebook (enb) framework
+CLI to the experiment notebook (enb) framework
 (see https://github.com/miguelinux314/experiment-notebook).
 
 Several subcommands are available; use `enb &lt;subcommand&gt; -h` 
@@ -128,7 +128,7 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.4 ] ................
 
 Showing 32 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
@@ -297,27 +297,30 @@ Dir Options:
                         If set, data paths relative to the invoked script&#39;s
                         paths are stored instead of their absolute path
                         counterparts. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example)
   -d BASE_DATASET_DIR, --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
                         experiments. It should be an existing, readable
                         directory. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/datasets)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/data
+                        sets)
   --persistence PERSISTENCE, --persistence_dir PERSISTENCE
                         Directory where persistence files are to be stored.
-                        (default: /data/Dropbox/desarrollo/experiment-notebook
-                        .git/enb/plugins/template_basic_workflow_example/persi
-                        stence_basic_workflow.py)
+                        (default:
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/pers
+                        istence_basic_workflow.py)
   --reconstructed RECONSTRUCTED, --reconstructed_dir RECONSTRUCTED
                         Base directory where reconstructed versions are to be
                         stored. (default: None)
   --vd VD, --version_target_dir VD, --base_version_dataset_dir VD
                         Base dir for versioned folders. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/datasets)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/data
+                        sets)
   -t TMP, --tmp TMP, --tmp_dir TMP, --base_tmp_dir TMP
                         Temporary dir used for intermediate data storage. This
                         can be useful when experiments make heavy use of tmp
@@ -330,12 +333,14 @@ Dir Options:
                         repository is defined at the project or system level.
                         (default: None)
   --plot_dir PLOT_DIR   Directory to store produced plots. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/plots)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/plot
+                        s)
   --analysis ANALYSIS, --analysis_dir ANALYSIS
                         Directory to store analysis results. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/analysis)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/anal
+                        ysis)
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed

@@ -94,7 +94,7 @@ class FallbackFuture:
     def __init__(self, f, args, kwargs):
         if self.__class__.pathos_pool is None:
             self.__class__.pathos_pool = pathos.pools.ProcessPool(
-                nodes=options.ray_cpu_limit if options.ray_cpu_limit and options.ray_cpu_limit > 0
+                nodes=options.cpu_limit if options.cpu_limit and options.cpu_limit > 0
                 else None)
         self.f = f
         self.args = args

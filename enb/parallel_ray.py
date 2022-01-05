@@ -103,7 +103,7 @@ class HeadNode:
                          f"--min-worker-port  {self.ray_port + 5} " \
                          f"--max-worker-port  {self.ray_port + self.ray_port_count - 1} " \
                          f"--redis-password='{self.session_password}' " \
-                         + (f" --num-cpus {options.ray_cpu_limit}" if options.ray_cpu_limit else "")
+                         + (f" --num-cpus {options.cpu_limit}" if options.cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise RuntimeError(f"Error starting head ray process\n"
@@ -128,7 +128,7 @@ class HeadNode:
                                       excludes=excludes,
                                       env_vars=dict(_needed_modules=str(modules_needed_remotely))),
                      # runtime_env=dict(py_modules=py_modules),
-                     logging_level=logging.CRITICAL if options.verbose <= 1 else logging.INFO)
+                     logging_level=logging.CRITICAL if options.verbose <= 2 else logging.INFO)
 
         if options.ssh_cluster_csv_path:
             failing_tool = None
@@ -169,6 +169,15 @@ class HeadNode:
                 logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
 
     def stop(self):
+        if self.remote_nodes:
+            with logger.info_context("Stopping remote nodes...\n", msg_after=f"disconnected all remote nodes."):
+                for rn in self.remote_nodes:
+                    rn.disconnect()
+            self.remote_nodes = []
+
+        with logger.info_context("Disconnecting from ray"):
+            ray.shutdown()
+
         with logger.info_context("Stopping ray server."):
             # This tiny delay allows error messages from child processes to reach the
             # orchestrating process for logging.
@@ -180,15 +189,6 @@ class HeadNode:
             if status != 0:
                 logger.error("Error stopping ray process. You might need to run `ray stop` manually.\n"
                              f"Command: {repr(invocation)}. Ouput:\n{output}")
-
-        with logger.info_context("Disconnecting from ray"):
-            ray.shutdown()
-
-        if self.remote_nodes:
-            with logger.info_context("Stopping remote nodes...\n", msg_after=f"disconnected all remote nodes."):
-                for rn in self.remote_nodes:
-                    rn.disconnect()
-            self.remote_nodes = []
 
     def parse_cluster_config_csv(self, csv_path):
         """Read a CSV defining remote nodes and return a list with as many RemoteNode as
@@ -351,7 +351,7 @@ def init_ray():
             _head_node.stop()
 
         # Initialize cluster of workers
-        with logger.info_context(f"Initializing ray cluster [CPUlimit={options.ray_cpu_limit}]"):
+        with logger.info_context(f"Initializing ray cluster [CPUlimit={options.cpu_limit}]"):
             if not options.disable_swap:
                 # From https://github.com/ray-project/ray/issues/10895 - allow using swap memory when needed,
                 # avoiding early termination of jobs due to that.
