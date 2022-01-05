@@ -235,14 +235,12 @@ class Analyzer(enb.atable.ATable):
                 render_ids.append(enb.plotdata.parallel_render_plds_by_group.start(
                     **column_kwargs))
 
-
         # Wait until all rendering tasks are done while updating about progress
         with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
             for progress_report in enb.parallel.ProgressiveGetter(
                     id_list=render_ids,
                     iteration_period=self.progress_report_period):
                 enb.logger.verbose(progress_report.report())
-
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -279,6 +277,8 @@ class Analyzer(enb.atable.ATable):
             group_by=group_by, reference_group=reference_group,
             output_plot_dir=output_plot_dir,
             render_mode=render_mode)
+
+        # Set the list of plottable data instances per group
         column_kwargs["pds_by_group_name"] = {
             group_label: group_plds for group_label, group_plds
             in sorted(summary_df[["group_label", f"{column_selection}_render-{render_mode}"]].values,
@@ -385,9 +385,6 @@ class Analyzer(enb.atable.ATable):
         global_y_min = float("inf")
         global_y_max = float("-inf")
         for pld_list in summary_df[f"{column_selection}_render-{render_mode}"]:
-            # candidate_plds = (pld for pld in pld_list if isinstance()
-            #                   any(isinstance(pld, cls) for cls in (enb.plotdata.LineData))
-            # candidate_plds = (pld for pld in pld_list if isinstance(pld, plotdata.LineData))
             for pld in pld_list:
                 try:
                     global_x_min = min(global_x_min, min(pld.x_values) if len(pld.x_values) > 0 else global_x_min)
@@ -699,6 +696,28 @@ class ScalarNumericAnalyzer(Analyzer):
 
                 column_kwargs["group_name_order"].append(group_name)
 
+        # Fix the patterns used in the bars in the combined case
+        if ("combine_groups" in column_kwargs and column_kwargs["combine_groups"]) \
+                or ("combine_groups" not in column_kwargs and self.combine_groups):
+
+            # Combined histograms do not allow shoing means.
+            column_kwargs["pds_by_group_name"] = {
+                k: [pld for pld in v
+                    if not isinstance(pld, plotdata.ScatterData)
+                    and not isinstance(pld, plotdata.ErrorLines)]
+                for k, v in column_kwargs["pds_by_group_name"].items()
+            }
+
+            for i, ((group_name, group_pds), pattern) in enumerate(zip(
+                    sorted(column_kwargs["pds_by_group_name"].items()),
+                    plotdata.pattern_cycle)):
+                for pld in group_pds:
+                    if isinstance(pld, plotdata.BarData):
+                        pld.pattern = pattern
+
+            column_kwargs["global_y_label"] = "Relative frequency"
+
+
         return column_kwargs
 
     def build_summary_atable(self, full_df, target_columns, reference_group, group_by, include_all_group):
@@ -838,7 +857,6 @@ class ScalarNumericSummary(AnalyzerSummary):
         group_df = _self.label_to_df[group_label]
         column_name = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
-        reference_group = kwargs["reference_group"]
         column_series = group_df[column_name].copy()
 
         if render_mode not in _self.analyzer.valid_render_modes:
@@ -930,6 +948,8 @@ class ScalarNumericSummary(AnalyzerSummary):
                 alpha=_self.analyzer.main_alpha,
                 extra_kwargs=dict(
                     width=_self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
+
+        kwargs
 
         row[_column_name].append(plotdata.ScatterData(
             x_values=[row[f"{column_name}_avg"]],
@@ -1273,8 +1293,8 @@ class TwoNumericSummary(ScalarNumericSummary):
         # Plot the reference lines only once per plot to maintain the desired alpha
         if reference_group is not None and \
                 ((group_label == sorted(self.label_to_df.keys())[0] and group_label != reference_group)
-                        or (sorted(self.label_to_df.keys())[0] == reference_group
-                            and sorted(self.label_to_df.keys())[0] == group_label)):
+                 or (sorted(self.label_to_df.keys())[0] == reference_group
+                     and sorted(self.label_to_df.keys())[0] == group_label)):
             plds_this_case.append(plotdata.VerticalLine(
                 x_position=self.reference_avg_by_column[x_column_name],
                 color="black",
@@ -1521,7 +1541,7 @@ class DictNumericSummary(AnalyzerSummary):
                     x_values.append(x)
                 avg_values.append(values.mean())
                 std_values.append(values.std())
-                if _self.analyzer.show_individual_samples:
+                if _self.analyzer.show_individual_samples and self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0:
                     row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values[-1:] * len(values),
                                                                       y_values=values.values,
                                                                       alpha=self.analyzer.secondary_alpha))

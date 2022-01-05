@@ -6,6 +6,7 @@ __since__ = "2019/09/10"
 
 import os
 import math
+import pickle
 
 import matplotlib
 
@@ -24,6 +25,7 @@ from enb.misc import CircularList
 
 marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "2", "H", "X", "1", "d", "<", ">", "+"])
 color_cycle = CircularList([f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(5, 6))])
+pattern_cycle = CircularList(["//", "\\\\", "OO", "**"])
 
 
 class PlottableData:
@@ -185,12 +187,18 @@ class ScatterData(PlottableData2D):
 
 
 class BarData(PlottableData2D):
-    def __init__(self, marker_size=1, **kwargs):
+    pattern = None
+
+    def __init__(self, marker_size=1, pattern=None, **kwargs):
         super().__init__(marker_size=marker_size, **kwargs)
+        self.pattern = pattern
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
-        axes.bar(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
+        axes.bar(self.x_values, self.y_values, label=self.label,
+                 alpha=self.alpha if not self.pattern else self.alpha * 0.75,
+                 hatch=self.pattern,
+                 edgecolor=matplotlib.colors.colorConverter.to_rgba(self.color, 0.9) if self.color else None,
                  **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:

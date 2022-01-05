@@ -10,7 +10,6 @@ import time
 import datetime
 import pathos
 
-from . import config
 from .config import options
 from . import log
 from .log import logger
