@@ -18,7 +18,7 @@ Given a code initially developed for one `enb` version and then executed in anot
 
 ## v0.3.5
 
-(no relevant changes yet)
+- Improved the `combine_groups` option for |Analyzer| subclasses, including `documentation <https://miguelinux314.github.io/experiment-notebook/analyzing_data.html#combining-groups>`_.
 
 
 # Latest stable version

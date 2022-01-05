@@ -38,8 +38,8 @@ if __name__ == '__main__':
     codecs = []
 
     # All plugins installed in ./plugins can be instantiated automatically with the following snippet.
-    # codecs += [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
-    #           if not "abstract" in cls.__name__.lower()]
+    codecs += [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
+              if not "abstract" in cls.__name__.lower()]
 
     if not codecs:
         enb.logger.error("No codec has been defined, nor installed under ./plugins. "
