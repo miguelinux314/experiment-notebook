@@ -225,10 +225,11 @@ class Analyzer(enb.atable.ATable):
                 if reference_group is not None:
                     if not self.show_reference_group:
                         # Remove the plottable data for the reference group if one is used
-                        filtered_plds = {k: v for k, v in column_kwargs["pds_by_group_name"].items()
-                                         if k != reference_group}
-                        if len(column_kwargs["pds_by_group_name"]) <= len(filtered_plds):
-                            raise ValueError(f"Invalid reference_group {repr(reference_group)} not found.")
+                        # Keep the group itself to maintain the produced colors.
+                        if reference_group not in column_kwargs["pds_by_group_name"]:
+                            raise ValueError(f"Requested reference_group {repr(reference_group)} not found.")
+                        filtered_plds = {k: v if k != reference_group else []
+                                         for k, v in column_kwargs["pds_by_group_name"].items()}
                         column_kwargs["pds_by_group_name"] = filtered_plds
 
                 # All arguments to the parallel rendering function are ready; their associated tasks as created
@@ -948,8 +949,6 @@ class ScalarNumericSummary(AnalyzerSummary):
                 alpha=_self.analyzer.main_alpha,
                 extra_kwargs=dict(
                     width=_self.analyzer.bar_width_fraction * (bin_edges[1] - bin_edges[0]))))
-
-        kwargs
 
         row[_column_name].append(plotdata.ScatterData(
             x_values=[row[f"{column_name}_avg"]],
