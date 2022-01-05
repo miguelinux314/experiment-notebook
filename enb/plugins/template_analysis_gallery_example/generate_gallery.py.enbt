@@ -74,7 +74,8 @@ if __name__ == '__main__':
         fig_height=5,
         global_y_label_pos=-0.01)
 
-    # Use a reference group with one scalar value
+    # Use a reference group
+    ## One scalar value
     analysis_df = scalar_analyzer.get_df(
         full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
         group_by="class",
@@ -82,11 +83,50 @@ if __name__ == '__main__':
         output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_reference"),
     )
 
-    # Use a reference group with two scalar values
-    ## Scatter analysis
+    ## Two scalar values: scatter and line
     two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
     analysis_df = two_numeric_analyzer.get_df(
         full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
         output_plot_dir=os.path.join(options.plot_dir, "two_numeric_reference"),
         group_by="class", reference_group="Iris-versicolor",
     )
+
+    # Generate combined plots
+    scalar_analyzer.get_df(
+        full_df=iris_df,
+        target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        group_by="class",
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_combined_groups"),
+        combine_groups=True,
+        legend_column_count=3,
+    )
+
+    # Generate combined, reference plots
+    scalar_analyzer.show_reference_group = False
+    scalar_analyzer.get_df(
+        full_df=iris_df,
+        target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        group_by="class",
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_combined_reference"),
+        combine_groups=True,
+        legend_column_count=3,
+        reference_group="Iris-versicolor",
+    )
+
+    # Dict with combined groups
+    numeric_dict_analyzer = enb.aanalysis.DictNumericAnalyzer()
+    numeric_dict_analyzer.secondary_alpha = 0
+    analysis_df = numeric_dict_analyzer.get_df(
+        output_plot_dir="./plots/numeric_dict_combined_groups",
+        full_df=hevc_df,
+        target_columns=["mode_count"],
+        group_by="block_size",
+        column_to_properties=column_to_properties,
+        group_name_order=sorted(hevc_df["block_size"].unique()),
+
+        # Rendering options
+        x_tick_label_angle=90,
+        fig_width=7.5,
+        fig_height=5,
+        global_y_label_pos=-0.01,
+        combine_groups=True)

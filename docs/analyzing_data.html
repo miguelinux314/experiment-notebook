@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.4
+                v0.3.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,8 +51,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#one-numeric-column">One numeric column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#two-numeric-columns">Two numeric columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#columns-with-dictionaries">Columns with dictionaries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grouping-with-scalarnumericanalysis">Grouping with ScalarNumericAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grouping-with-other-analyzer-subclasses">Grouping with other Analyzer subclasses</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-task-families">Grouping by task families</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#combining-groups">Combining groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#making-baseline-comparisons">Making baseline comparisons</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example-with-scalarnumericanalyzer">Example with <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-with-twonumericanalyzer">Example with <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a></li>
@@ -97,7 +102,7 @@
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1569.ga6c1f6ccce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
@@ -231,15 +236,18 @@ Rendering options are discussed in a later section.</p>
 </section>
 <section id="grouping-by-a-column-s-value">
 <h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
+<section id="grouping-with-scalarnumericanalysis">
+<h3>Grouping with ScalarNumericAnalysis<a class="headerlink" href="#grouping-with-scalarnumericanalysis" title="Permalink to this headline"></a></h3>
 <p>Often, we want to group the dataframe’s rows based on the value of a given column, and then analyze others.</p>
 <p>We achieve this by passing that the grouping column’s name as the <strong>group_by</strong> keyword
 when calling ScalarNumericAnalyzer’s <cite>get_df</cite> method.</p>
 <p>Continuing with the Iris experiment above, we can show results grouped by <cite>class</cite> (present in the original <cite>.csv</cite>)
 as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
-    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
-                                     <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
     <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -247,6 +255,9 @@ as follows:</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png"><img alt="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" src="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" style="width: 100%;" /></a>
 </figure>
+</section>
+<section id="grouping-with-other-analyzer-subclasses">
+<h3>Grouping with other Analyzer subclasses<a class="headerlink" href="#grouping-with-other-analyzer-subclasses" title="Permalink to this headline"></a></h3>
 <p>Grouping is not restricted to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>. It can be used with other <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes such as
 <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>, as in the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
@@ -260,6 +271,7 @@ as follows:</p>
 <figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" />
 </figure>
+</section>
 </section>
 <section id="grouping-by-task-families">
 <h2>Grouping by task families<a class="headerlink" href="#grouping-by-task-families" title="Permalink to this headline"></a></h2>
@@ -275,6 +287,35 @@ that affect their “Compressed data rate”. Please see the <a class="reference
 experiment that uses task families and produces plots like the one in the figure.</p>
 <figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png" src="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png" />
+</figure>
+</section>
+<section id="combining-groups">
+<h2>Combining groups<a class="headerlink" href="#combining-groups" title="Permalink to this headline"></a></h2>
+<p>The <cite>combine_groups</cite> argument can be passed to get_df or set in the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> instance.
+If selected, all groups are shown in the same subplot. In this case, the average and standard deviation
+values are automatically removed for clarity. An example of this output can be found next:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_combined_groups&quot;</span><span class="p">),</span>
+    <span class="n">legend_column_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">combine_groups</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__combine_groups.png" src="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__combine_groups.png" />
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Groups are automatically combined for <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>, but are optional for <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a>.
+An example is provided next:</p>
+<figure class="align-default">
+<img alt="_images/DictNumericAnalyzer-mode_count-line-groupby__block_size__combine_groups.png" src="_images/DictNumericAnalyzer-mode_count-line-groupby__block_size__combine_groups.png" />
 </figure>
 </section>
 <section id="making-baseline-comparisons">
@@ -306,11 +347,29 @@ analyzer instance’s <cite>show_reference_group</cite> attribute, i.e.,</p>
 </pre></div>
 </div>
 <p>before calling <cite>get_df</cite>.</p>
+<p>Note that you can combine <cite>reference_group</cite> and <cite>combine_groups</cite> if you want. An example
+where both options are used is shown next:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_reference_group</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_combined_reference&quot;</span><span class="p">),</span>
+    <span class="n">combine_groups</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">legend_column_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class-referencegroup__Iris-versicolor__combine_groups.png" src="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class-referencegroup__Iris-versicolor__combine_groups.png" />
+</figure>
 </section>
 <section id="example-with-twonumericanalyzer">
 <h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Permalink to this headline"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a similar sintax as <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
-Both the <cite>line</cite> and <cite>scatter</cite> render modes are available.</p>
+Both the <cite>line</cite> and <cite>scatter</cite> render modes are available. If none is selected,
+both are employed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
     <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>

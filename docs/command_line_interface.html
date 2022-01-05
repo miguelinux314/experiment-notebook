@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.4
+                v0.3.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -101,7 +101,7 @@ with enb:</p>
 <h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.4 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
 
 usage: enb [-h] {plugin,help} ...
 
@@ -128,7 +128,7 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.4 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
 
 Showing 32 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
@@ -203,16 +203,17 @@ Plugin &#39;zip&#39; successfully installed into &#39;./codecs/zip_codecs&#39;.
 it to set the values of <cite>enb.config.options</cite>.</p>
 <p>In addition, to get a list of all of all available options, you can run your script with the <cite>-h</cite>
 options. An example option of this is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]] [-f] [-q]
-                         [--render_only] [--cs CS] [--rep REP] [--fsn]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]]
+                         [--cpu_limit CPU_LIMIT] [-f] [-q] [--no_new_data]
+                         [--cs CS] [--rep REP] [--fsn]
                          [--selected_columns SELECTED_COLUMNS [SELECTED_COLUMNS ...]]
                          [--prp PRP] [--project_root PROJECT_ROOT]
                          [-d BASE_DATASET_DIR] [--persistence PERSISTENCE]
                          [--reconstructed RECONSTRUCTED] [--vd VD] [-t TMP]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
                          [--plot_dir PLOT_DIR] [--analysis ANALYSIS]
-                         [--no_ray] [--cpu CPU] [--noswap] [--wsn WSN]
-                         [--pws PWS] [--ray_port RAY_PORT]
+                         [--no_ray] [--noswap] [--wsn WSN] [--pws PWS]
+                         [--ray_port RAY_PORT]
                          [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
                          [--nr] [--fw FW] [--fh FH]
                          [--horizontal_margin HORIZONTAL_MARGIN]
@@ -247,6 +248,13 @@ General Options:
 Execution Options:
   General execution options.
 
+  --cpu_limit CPU_LIMIT
+                        Maximum number of CPUs to use for computation in this
+                        machine See
+                        https://miguelinux314.github.io/experiment-
+                        notebook/cluster_setup.html for details on how to set
+                        the resources employed in remote computation nodes.
+                        (default: None)
   -f, --force, --overwrite
                         Force calculation of pre-existing results, if
                         available? Note that should an error occur while re-
@@ -256,7 +264,7 @@ Execution Options:
                         samples? If specified q&gt;0 times, a subset of the first
                         q target indices is employed in most get_df methods
                         from ATable instances (default: 0)
-  --render_only, --no_new_data, --no_new_results
+  --no_new_data, --render_only, --no_new_results
                         If True, ATable&#39;s get_df method relies entirely on the
                         loaded persistence data, no new rows are computed.
                         This can be useful to speed up the rendering process,
@@ -297,30 +305,27 @@ Dir Options:
                         If set, data paths relative to the invoked script&#39;s
                         paths are stored instead of their absolute path
                         counterparts. (default:
-                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
-                        k.git/enb/plugins/template_basic_workflow_example)
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example)
   -d BASE_DATASET_DIR, --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
                         experiments. It should be an existing, readable
                         directory. (default:
-                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
-                        k.git/enb/plugins/template_basic_workflow_example/data
-                        sets)
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/datasets)
   --persistence PERSISTENCE, --persistence_dir PERSISTENCE
                         Directory where persistence files are to be stored.
-                        (default:
-                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
-                        k.git/enb/plugins/template_basic_workflow_example/pers
-                        istence_basic_workflow.py)
+                        (default: /data/Dropbox/desarrollo/experiment-notebook
+                        .git/enb/plugins/template_basic_workflow_example/persi
+                        stence_basic_workflow.py)
   --reconstructed RECONSTRUCTED, --reconstructed_dir RECONSTRUCTED
                         Base directory where reconstructed versions are to be
                         stored. (default: None)
   --vd VD, --version_target_dir VD, --base_version_dataset_dir VD
                         Base dir for versioned folders. (default:
-                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
-                        k.git/enb/plugins/template_basic_workflow_example/data
-                        sets)
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/datasets)
   -t TMP, --tmp TMP, --tmp_dir TMP, --base_tmp_dir TMP
                         Temporary dir used for intermediate data storage. This
                         can be useful when experiments make heavy use of tmp
@@ -333,28 +338,18 @@ Dir Options:
                         repository is defined at the project or system level.
                         (default: None)
   --plot_dir PLOT_DIR   Directory to store produced plots. (default:
-                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
-                        k.git/enb/plugins/template_basic_workflow_example/plot
-                        s)
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/plots)
   --analysis ANALYSIS, --analysis_dir ANALYSIS
                         Directory to store analysis results. (default:
-                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
-                        k.git/enb/plugins/template_basic_workflow_example/anal
-                        ysis)
+                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
+                        lugins/template_basic_workflow_example/analysis)
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed
   computing.
 
   --no_ray              If set, no ray is employed. (default: False)
-  --cpu CPU, --ray_cpu_limit CPU
-                        Maximum number of virtual CPUs to use in the ray
-                        cluster. If set to None or any number n &lt;= 0, then no
-                        limits are set in terms of virtual CPU usage.
-                        IMPORTANT: this value is only considered when
-                        initializing a ray cluster. Therefore, changing it
-                        afterwards will not change ray cpu limits. (default:
-                        None)
   --noswap, --disable_swap
                         If this flag is used, then swap memory will not be
                         allowed by ray. By default, swap memory is enabled.

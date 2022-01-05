@@ -167,24 +167,33 @@ The resulting figure is shown below
 Grouping by a column's value
 ----------------------------
 
+Grouping with ScalarNumericAnalysis
+___________________________________
+
 Often, we want to group the dataframe's rows based on the value of a given column, and then analyze others.
 
 We achieve this by passing that the grouping column's name as the **group_by** keyword
 when calling ScalarNumericAnalyzer's `get_df` method.
 
 Continuing with the Iris experiment above, we can show results grouped by `class` (present in the original `.csv`)
-as follows::
+as follows:
+
+.. code-block:: python
 
     analyzer = enb.aanalysis.ScalarNumericAnalyzer()
     analysis_df = analyzer.get_df(
-        full_df=iris_df, target_columns=["sepal_length", "sepal_width",
-                                         "petal_length", "petal_width"],
+        full_df=iris_df,
+        target_columns=["sepal_length", "sepal_width",
+                         "petal_length", "petal_width"],
         group_by="class")
 
 This would automatically produce an image like the following:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
     :width: 100%
+
+Grouping with other Analyzer subclasses
+_______________________________________
 
 Grouping is not restricted to |ScalarNumericAnalyzer|. It can be used with other |Analyzer| classes such as
 |TwoNumericAnalyzer|, as in the following code:
@@ -219,6 +228,36 @@ that affect their "Compressed data rate". Please see the :doc:`image_compression
 experiment that uses task families and produces plots like the one in the figure.
 
 .. figure:: _static/lossy_experiment/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png
+
+Combining groups
+----------------
+
+The `combine_groups` argument can be passed to get_df or set in the |ScalarNumericAnalyzer| instance.
+If selected, all groups are shown in the same subplot. In this case, the average and standard deviation
+values are automatically removed for clarity. An example of this output can be found next:
+
+.. code-block:: python
+
+    enb.aanalysis.ScalarNumericAnalyzer().get_df(
+        full_df=iris_df,
+        target_columns=["sepal_length", "sepal_width",
+                        "petal_length", "petal_width"],
+        group_by="class",
+        output_plot_dir=os.path.join(
+            options.plot_dir, "scalar_combined_groups"),
+        legend_column_count=3,
+        combine_groups=True,
+    )
+
+
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__combine_groups.png
+
+|
+
+Groups are automatically combined for |TwoNumericAnalyzer|, but are optional for |DictNumericAnalyzer|.
+An example is provided next:
+
+.. figure:: _static/analysis_gallery/DictNumericAnalyzer-mode_count-line-groupby__block_size__combine_groups.png
 
 Making baseline comparisons
 ---------------------------
@@ -258,11 +297,30 @@ analyzer instance's `show_reference_group` attribute, i.e.,
 
 before calling `get_df`.
 
+Note that you can combine `reference_group` and `combine_groups` if you want. An example
+where both options are used is shown next:
+
+.. code-block:: python
+
+    scalar_analyzer.show_reference_group = False
+    scalar_analyzer.get_df(
+        full_df=iris_df,
+        target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        group_by="class",
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_combined_reference"),
+        combine_groups=True,
+        legend_column_count=3,
+        reference_group="Iris-versicolor",
+    )
+
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-histogram-groupby__class-referencegroup__Iris-versicolor__combine_groups.png
+
 Example with |TwoNumericAnalyzer|
 _________________________________
 
 The |TwoNumericAnalyzer| class has a similar sintax as |ScalarNumericAnalyzer|.
-Both the `line` and `scatter` render modes are available.
+Both the `line` and `scatter` render modes are available. If none is selected,
+both are employed.
 
 .. code-block:: python
 
