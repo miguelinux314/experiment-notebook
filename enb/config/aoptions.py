@@ -105,6 +105,7 @@ class GeneralOptions:
 class ExecutionOptions:
     """General execution options.
     """
+
     @OptionsBase.property(type=int)
     def cpu_limit(self, value):
         """Maximum number of CPUs to use for computation in this machine
@@ -192,6 +193,7 @@ class ExecutionOptions:
 class DirOptions:
     """Options regarding default data directories.
     """
+
     @OptionsBase.property(action=_singleton_cli.ReadableDirAction, default=calling_script_dir)
     def project_root(self, value):
         """If set, data paths relative to the invoked script's paths are stored instead of their
@@ -307,6 +309,7 @@ class DirOptions:
 class RayOptions:
     """Options related to the ray library, used for parallel/distributed computing.
     """
+
     @OptionsBase.property(action="store_true")
     def no_ray(self, value):
         """If set, no ray is employed.
@@ -360,7 +363,10 @@ class RayOptions:
         """Path to the CSV file containing a enb ssh cluster configuration.
         See https://miguelinux314.github.io/experiment-notebook/installation.html.
         """
-        assert os.path.exists(value)
+        if not os.path.exists(value):
+            print(f"Selected ssh_cluster_csv_path={repr(value)}, but it is not a valid file. "
+                  f"Setting to None instead.")
+            value = None
         return str(value)
 
 
