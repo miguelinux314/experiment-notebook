@@ -6,7 +6,8 @@ __since__ = "2019/09/10"
 
 import os
 import math
-import contextlib
+import itertools
+import glob
 import matplotlib
 
 import enb.atable
@@ -392,7 +393,11 @@ def get_available_styles():
     """Get a list of all styles available for plotting. 
     It is guaranteed to include at least all of matplotlib's styles.
     """
-    return sorted(str(s) for s in matplotlib.style.available if s[0] != "_")
+    return sorted(itertools.chain(
+        (str(s) for s in matplotlib.style.available if s[0] != "_"),
+        (os.path.basename(p) for p in glob.glob(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", "*"))
+         if os.path.isfile(p)),
+        ("xkcd",)))
 
 @enb.parallel.parallel()
 def parallel_render_plds_by_group(
@@ -416,7 +421,7 @@ def parallel_render_plds_by_group(
         y_tick_list=None, y_tick_label_list=None,
         plot_title=None, show_legend=True,
         # Matplotlib styles
-        style_list=("default",)):
+        style_list=tuple()):
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
     """
     try:
@@ -449,7 +454,7 @@ def parallel_render_plds_by_group(
                                     show_legend=show_legend,
                                     style_list=style_list)
     except Exception as ex:
-        enb.logger.error(f"Error rendering to {output_plot_path} (cwd={os.getcwd()}: {repr(ex)}")
+        enb.logger.error(f"Error rendering to {output_plot_path}:\n{repr(ex)}")
         raise ex
 
 
@@ -619,7 +624,20 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
 
         # Render all gathered data with the selected configuration
-        with plt.style.context(style_list if style_list else ["default"]):
+        with plt.style.context([]):
+            # Apply selected styles in the given order, based on a default context
+            for style in (style_list if style_list is not None else []):
+                if style in matplotlib.style.available or os.path.isfile(style):
+                    # Matplotlib style name or full path
+                    plt.style.use(style)
+                elif os.path.isfile(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style))):
+                    # Path relative to enb's custom mpl_styles
+                    plt.style.use(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style)))
+                elif style == "xkcd":
+                    plt.xkcd(length=0)
+                else:
+                    raise ValueError(f"Unrecognized style {repr(style)}.")
+                
             fig_width = options.fig_width if fig_width is None else fig_width
             fig_height = options.fig_height if fig_height is None else fig_height
 
@@ -747,10 +765,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 if global_y_label_pos is None:
                     global_y_label_pos = 0.03
                     try:
-                        global_y_label_pos -= 0.06 * max(0, ((float(plt.rcParams['axes.labelsize']) / 5) - 1))
+                        global_y_label_pos -= 0.06 * max(0, ((float(plt.rcParams['axes.labelsize']) / 10)))
                     except ValueError:
                         # Default is medium, no adjust needed
-                        global_y_label_pos = 0
+                        pass
+
+                if style_list and "xkcd" in style_list:
+                    global_y_label_pos -= 0.075
                 
                 # # fig.text(global_y_label_pos, 0.5, global_y_label, va='center', ha='center', rotation='vertical')
                 fig.text(global_y_label_pos, 0.5, global_y_label, va="center", ha="left", rotation="vertical",
@@ -832,7 +853,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
                 plt.savefig(output_plot_path, bbox_inches="tight")
                 if output_plot_path.endswith(".pdf"):
-                    plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight")
+                    plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300)
 
             plt.close()
 
