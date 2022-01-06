@@ -60,6 +60,16 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+def skip(app, what, name, obj, would_skip, options):
+    if name.startswith("_") and not name in ("__init__",):
+        return True
+    if any(name == s for s in ("__doc__", "__dict__", "__module__")):
+        return True
+    
+    return False
+
+def setup(app):
+    app.connect("autodoc-skip-member", skip)
 
 # -- Options for HTML output -------------------------------------------------
 

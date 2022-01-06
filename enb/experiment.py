@@ -288,18 +288,17 @@ class Experiment(atable.ATable):
 class TaskFamily:
     """Describe a sorted list of task names that identify a family of related
     results within a DataFrame. Typically, this family will be constructed using
-    task workers (e.g., :class:`icompression.AbstractCodec` instances) that share
+    task workers (e.g., :class:`enb.icompression.AbstractCodec` instances) that share
     all configuration values except for a parameter.
     """
 
     def __init__(self, label, task_names=None, name_to_label=None):
-        """
-        :param label: Printable name that identifies the family
+        """:param label: Printable name that identifies the family
         :param task_names: if not None, it must be a list of task names (strings)
           that are expected to be found in an ATable's DataFrame when analyzing
           it.
         :param name_to_label: if not None, it must be a dictionary indexed by
-        task name that contains a displayable version of it
+          task name that contains a displayable version of it.
         """
         self.label = label
         self.task_names = task_names if task_names is not None else []

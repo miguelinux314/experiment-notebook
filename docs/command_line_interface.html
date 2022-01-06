@@ -103,7 +103,7 @@ with enb:</p>
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
 
-usage: enb [-h] {plugin,help} ...
+usage: enb [-h] {plugin,show,help} ...
 
 CLI to the experiment notebook (enb) framework
 (see https://github.com/miguelinux314/experiment-notebook).
@@ -112,14 +112,15 @@ Several subcommands are available; use `enb &lt;subcommand&gt; -h`
 to show help about any specific command.
 
 optional arguments:
-  -h, --help     show this help message and exit
+  -h, --help          show this help message and exit
 
 subcommands:
   Available enb CLI commands.
 
-  {plugin,help}
-    plugin       Install and manage plugins.
-    help         Show this help and exit.
+  {plugin,show,help}
+    plugin            Install and manage plugins.
+    show              Show useful information about enb and enb projects.
+    help              Show this help and exit.
 </pre></div>
 </div>
 <section id="listing-available-plugins-and-templates">
@@ -130,7 +131,7 @@ In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 and/or <cite>-v</cite> for extra details.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
 
-Showing 32 plugins.
+Showing 34 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
 Add -v for extra information on the listed plugins.
 
@@ -139,6 +140,7 @@ Add -v for extra information on the listed plugins.
                ccsds122x1 :: Wrappers for CCSDS 122.1 (privative).
                ccsds124x0 :: Wrappers for CCSDS 124.0-B-1 (privative).
            cluster-config :: Template of a CSV configuration file for enb clusters.
+                  enb.ini :: Copy a full enb.ini configuration in the destination project folder.
                     fapec :: Wrappers for FAPEC (privative).
                      flif :: Wrapper for the FLIF compressor.
                     fpack :: Wrapper for the FPACK compressor.
@@ -155,6 +157,7 @@ Add -v for extra information on the listed plugins.
         lossy-compression :: Template for lossy compression experiments.
                       lz4 :: Wraper for a LZ4 codec.
                    marlin :: Marlin-based image compressor.
+             matplotlibrc :: Copy matplotlib&#39;s default rc file into the destination directory.
                    mcalic :: Wraper for E. Magli et al.&#39;s M-CALIC codec.
             montecarlo-pi :: Demo project that approximates pi in a distributed way.
                     ndzip :: Wrapper for ndzip.
@@ -172,8 +175,8 @@ The following plugin tags have been defined and can be used for filtering:
   - documentation    (  4 plugins) Documentation examples referenced in the user manual.
   - codec            ( 24 plugins) Data compression/decompression class definitions.
   - data compression ( 28 plugins) Data compression tools.
-  - template         (  8 plugins) Templates formatteable into the installation dir.
-  - project          (  4 plugins) Project templates, including configuration files.
+  - template         ( 10 plugins) Templates formatteable into the installation dir.
+  - project          (  6 plugins) Project templates, including configuration files.
   - test             (  1  plugin) Plugins for testing purposes.
   - privative        (  6 plugins) Plugins requiring additional privative software.
 
@@ -204,22 +207,32 @@ it to set the values of <cite>enb.config.options</cite>.</p>
 <p>In addition, to get a list of all of all available options, you can run your script with the <cite>-h</cite>
 options. An example option of this is shown next:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]]
-                         [--cpu_limit CPU_LIMIT] [-f] [-q] [--no_new_data]
-                         [--cs CS] [--rep REP] [--fsn]
+                         [--cpu_limit CPU_LIMIT] [-f] [-q] [--render_only]
+                         [--chunk_size CHUNK_SIZE] [--repetitions REPETITIONS]
+                         [--force_sanity_checks]
                          [--selected_columns SELECTED_COLUMNS [SELECTED_COLUMNS ...]]
-                         [--prp PRP] [--project_root PROJECT_ROOT]
-                         [-d BASE_DATASET_DIR] [--persistence PERSISTENCE]
-                         [--reconstructed RECONSTRUCTED] [--vd VD] [-t TMP]
+                         [--progress_report_period PROGRESS_REPORT_PERIOD]
+                         [--project_root PROJECT_ROOT]
+                         [--base_dataset_dir BASE_DATASET_DIR]
+                         [--persistence_dir PERSISTENCE_DIR]
+                         [--reconstructed_dir RECONSTRUCTED_DIR]
+                         [--base_version_dataset_dir BASE_VERSION_DATASET_DIR]
+                         [--base_tmp_dir BASE_TMP_DIR]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
-                         [--plot_dir PLOT_DIR] [--analysis ANALYSIS]
-                         [--no_ray] [--noswap] [--wsn WSN] [--pws PWS]
+                         [--plot_dir PLOT_DIR] [--analysis_dir ANALYSIS_DIR]
+                         [--no_ray] [--disable_swap]
+                         [--worker_script_name WORKER_SCRIPT_NAME]
+                         [--preshutdown_wait_seconds PRESHUTDOWN_WAIT_SECONDS]
                          [--ray_port RAY_PORT]
                          [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
-                         [--nr] [--fw FW] [--fh FH]
+                         [--no_render] [--fig_width FIG_WIDTH]
+                         [--fig_height FIG_HEIGHT]
                          [--horizontal_margin HORIZONTAL_MARGIN]
-                         [--vertical_margin VERTICAL_MARGIN] [--ylpos YLPOS]
-                         [--legend_count LEGEND_COUNT] [--show_grid]
-                         [--title TITLE] [--grm GRM]
+                         [--vertical_margin VERTICAL_MARGIN]
+                         [--global_y_label_pos GLOBAL_Y_LABEL_POS]
+                         [--legend_column_count LEGEND_COLUMN_COUNT]
+                         [--show_grid] [--global_title GLOBAL_TITLE]
+                         [--group_row_margin GROUP_ROW_MARGIN]
                          [--selected_log_level {core,error,warning,message,verbose,informative,debug}]
                          [--default_print_level {core,error,warning,message,verbose,informative,debug}]
                          [--log_print {True,False}]
@@ -260,29 +273,30 @@ Execution Options:
                         available? Note that should an error occur while re-
                         computing a given index, that index is dropped from
                         the persistent support. (default: 0)
-  -q, --fast, --quick   Perform a quick test with a subset of the input
+  -q, --quick           Perform a quick test with a subset of the input
                         samples? If specified q&gt;0 times, a subset of the first
                         q target indices is employed in most get_df methods
                         from ATable instances (default: 0)
-  --no_new_data, --render_only, --no_new_results
+  --render_only, --no_new_results
                         If True, ATable&#39;s get_df method relies entirely on the
                         loaded persistence data, no new rows are computed.
                         This can be useful to speed up the rendering process,
                         for instance to try different aesthetic plotting
-                        options. (default: False)
-  --cs CS, --chunk_size CS
+                        options. Use this option only if you know you need it.
+                        (default: False)
+  --chunk_size CHUNK_SIZE
                         Chunk size used when running ATable&#39;s get_df(). Each
                         processed chunk is made persistent before processing
                         the next one. This parameter can be used to control
                         the trade-off between error tolerance and overall
                         speed. (default: None)
-  --rep REP, --rep_count REP, --repetitions REP, --repetition_count REP
+  --repetitions REPETITIONS
                         Number of repetitions when calculating execution
                         times. This value allows computation of more reliable
                         execution times in some experiments, but is normally
                         most representative in combination with -s to use a
                         single execution process at a time. (default: 1)
-  --fsn, --force_sanity_checks
+  --force_sanity_checks
                         If this flag is used, extra sanity checks are
                         performed by enb during the execution of this script.
                         The trade-off for rare error condition detection is a
@@ -292,7 +306,7 @@ Execution Options:
                         or more column names are provided, all others are
                         ignored. Multiple columns can be expressed, separated
                         by spaces. (default: None)
-  --prp PRP, --progress_report_period PRP
+  --progress_report_period PROGRESS_REPORT_PERIOD
                         Default minimum time in seconds between progress
                         report updates, when get_df() is invoked and
                         computation is being processed in parallel. (default:
@@ -307,26 +321,26 @@ Dir Options:
                         counterparts. (default:
                         /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
                         lugins/template_basic_workflow_example)
-  -d BASE_DATASET_DIR, --base_dataset_dir BASE_DATASET_DIR
+  --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
                         experiments. It should be an existing, readable
                         directory. (default:
                         /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
                         lugins/template_basic_workflow_example/datasets)
-  --persistence PERSISTENCE, --persistence_dir PERSISTENCE
+  --persistence_dir PERSISTENCE_DIR
                         Directory where persistence files are to be stored.
                         (default: /data/Dropbox/desarrollo/experiment-notebook
                         .git/enb/plugins/template_basic_workflow_example/persi
                         stence_basic_workflow.py)
-  --reconstructed RECONSTRUCTED, --reconstructed_dir RECONSTRUCTED
+  --reconstructed_dir RECONSTRUCTED_DIR
                         Base directory where reconstructed versions are to be
                         stored. (default: None)
-  --vd VD, --version_target_dir VD, --base_version_dataset_dir VD
+  --base_version_dataset_dir BASE_VERSION_DATASET_DIR
                         Base dir for versioned folders. (default:
                         /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
                         lugins/template_basic_workflow_example/datasets)
-  -t TMP, --tmp TMP, --tmp_dir TMP, --base_tmp_dir TMP
+  --base_tmp_dir BASE_TMP_DIR
                         Temporary dir used for intermediate data storage. This
                         can be useful when experiments make heavy use of tmp
                         and memory is limited, avoiding out-of-RAM crashes at
@@ -340,7 +354,7 @@ Dir Options:
   --plot_dir PLOT_DIR   Directory to store produced plots. (default:
                         /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
                         lugins/template_basic_workflow_example/plots)
-  --analysis ANALYSIS, --analysis_dir ANALYSIS
+  --analysis_dir ANALYSIS_DIR
                         Directory to store analysis results. (default:
                         /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
                         lugins/template_basic_workflow_example/analysis)
@@ -350,18 +364,17 @@ Ray Options:
   computing.
 
   --no_ray              If set, no ray is employed. (default: False)
-  --noswap, --disable_swap
-                        If this flag is used, then swap memory will not be
+  --disable_swap        If this flag is used, then swap memory will not be
                         allowed by ray. By default, swap memory is enabled.
                         Note that your system may become unstable if swap
                         memory is used (specially a big portion thereof).
                         (default: False)
-  --wsn WSN, --worker_script_name WSN
+  --worker_script_name WORKER_SCRIPT_NAME
                         Base name of ray&#39;s worker scripts, invoked to run
                         tasks in parallel processes. You don&#39;t need to change
                         this unless you want to use custom ray workers.
                         (default: default_worker.py)
-  --pws PWS, --preshutdown_wait_seconds PWS
+  --preshutdown_wait_seconds PRESHUTDOWN_WAIT_SECONDS
                         A wait period can be held before shutting down ray.
                         This allows displaying messages produced by child
                         processes (e.g., stack traces) in case of abrupt
@@ -386,14 +399,13 @@ Ray Options:
 Rendering Options:
   Options affecting the rendering of figures.
 
-  --nr, --norender, --no_render
-                        If set, some rendering options will be skipped.
+  --no_render           If set, some rendering options will be skipped.
                         (default: False)
-  --fw FW, --width FW, --fig_width FW
+  --fig_width FIG_WIDTH
                         Figure width. Larger values may make text look smaller
                         when the image is scaled to a constant size. (default:
                         5.0)
-  --fh FH, --height FH, --fig_height FH
+  --fig_height FIG_HEIGHT
                         Figure height. Larger values may make text look
                         smaller when the image is scaled to a constant size.
                         (default: 4.0)
@@ -405,19 +417,20 @@ Rendering Options:
                         Vertical margin, which effectively expands the (y_min,
                         y_max) limits by this amount on each direction.
                         (default: 0)
-  --ylpos YLPOS, --global_y_label_pos YLPOS
+  --global_y_label_pos GLOBAL_Y_LABEL_POS
                         Relative position of the global Y label. Can be
                         negative or positive. Intended as a quick hack when
                         left y-axis ticks are longer or shorter than the
-                        default assumptions. (default: -0.01)
-  --legend_count LEGEND_COUNT, --legend_column_count LEGEND_COUNT
+                        default assumptions. If None is selected, the position
+                        is attempted to set automatically. (default: None)
+  --legend_column_count LEGEND_COLUMN_COUNT
                         Number of columns used in plot legends. (default: 2)
   --show_grid           Show axis grid lines? (default: False)
-  --title TITLE, --global_title TITLE, --displayed_title TITLE
+  --global_title GLOBAL_TITLE
                         When this property is not None, displayed plots will
                         typically include its value as the main title.
                         (default: None)
-  --grm GRM, --group_row_margin GRM
+  --group_row_margin GROUP_ROW_MARGIN
 
 Logging Options:
   Options controlling what and how is printed and/or logged to files.
@@ -441,7 +454,7 @@ Logging Options:
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a href="#id1"><span class="problematic" id="id2">*</span></a>.ini files in the project root are searched for to look for default values for the
+<p><cite>*.ini</cite> files in the project root are searched for to look for default values for the
 attributes of <cite>enb.config.options</cite>. You can copy and modify the default enb.ini template to your project
 if you would like to use file-based configuration.</p>
 </div>

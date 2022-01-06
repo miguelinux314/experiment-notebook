@@ -8,4 +8,4 @@ class PortExperimentTemplate(enb.plugins.Template):
     author = ["Miguel Hernández-Cabronero"]
     label = "Self-contained port scanning experiment example"
     tags = {"documentation"}
-    tested_on = {"linux"}
+    tested_on = {"linux", "windows"}

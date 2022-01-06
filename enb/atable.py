@@ -278,17 +278,13 @@ class ColumnFailedError(CorruptedTableError):
 
 
 class ColumnProperties:
-    """
-    All columns defined in an |ATable| subclass have a corresponding |ColumnProperties| instance,
+    """All columns defined in an |ATable| subclass have a corresponding |ColumnProperties| instance,
     which provides metainformation about it. Its main uses are providing plotting
     cues and to allow non-scalar data (tuples, lists and dicts).
-
     Once an |ATable| subclass c is defined, `c.column_to_properties` contains a mapping from
     a column's name to its ColumnProperties instance.
-
     It is possible to change attributes of column properties instances, and to replace
     the ColumnProperties instances in `column_to_properties`.
-
     For instance, one may want to
     plot a column with its original cues first, and then create a second version with semi-logarithmic
     axes. Then it would suffice to use |aanalysis| tools with the |ATable| subclass default `column_to_properties`
@@ -308,11 +304,13 @@ class ColumnProperties:
                  **extra_attributes):
         """
         Column-function linking:
+        
         :param name: unique name that identifies a column.
         :param fun: function to be invoked to fill a column value. If None, |enb| will set this for you
           when you define columns with `column_` or |column_function|.
-
-        Type specification (mutually exclusive)
+          
+        Type specification (mutually exclusive).
+        
         :param has_dict_values: set to True if and only if the column cells contain value mappings (i.e., dicts),
           as opposed to scalar values. Both keys and values should be valid scalar values (numeric, string or boolean).
           It cannot be True if any other type is specified.
@@ -321,21 +319,23 @@ class ColumnProperties:
         :param has_object_values: set to True if and only if the column cells contain general python objects
           that can be pickled an unpickled.
 
-        The `has_ast_values` property of the ColumnProperties instance will return true if and only if
-        iterable or dict values are used.
+        .. note:: The `has_ast_values` property of the ColumnProperties instance will return true if and only if
+          iterable or dict values are used.
 
         Plot rendering hints:
+        
         :param label: descriptive label of the column, intended to be displayed in plot (e.g., axes) labels
         :param plot_min: minimum value to be plotted for the column. For histograms,
           this refers to the range of key (X-axis) values.
         :param plot_max: minimum value to be plotted for the column. For histograms,
           this refers to the range of key (X-axis) values.
-        :param semilog_x: True if a log scale should be used in the X axis
-        :param semilog_y: True if a log scale should be used in the Y axis
-        :param semilog_x_base: log base to use if semilog_x is true
-        :param semilog_y_base: log base to use if semilog_y is true
+        :param semilog_x: True if a log scale should be used in the X axis.
+        :param semilog_y: True if a log scale should be used in the Y axis.
+        :param semilog_x_base: log base to use if semilog_x is true.
+        :param semilog_y_base: log base to use if semilog_y is true.
 
         Parameters specific to histograms, only applicable when has_dict_values is True.
+        
         :param hist_bin_width: histogram bin used when calculating distributions
         :param hist_label_dict: None, or a dictionary with x-value to label dict
         :param secondary_label: secondary label for the column, i.e., the Y axis
@@ -347,7 +347,8 @@ class ColumnProperties:
         :param hist_label: if not None, the label to be shown globally in the Y axis.
 
         User-defined attributes:
-        :param **extra_extra_attributes: any parameters passed are set as attributes of the created
+        
+        :param extra_attributes: any parameters passed are set as attributes of the created
           instance (with __setattr__). These attributes are not directly used by |enb|'s core,
           but can be safely used by client code.
         """
@@ -550,17 +551,15 @@ class ATable(metaclass=MetaTable):
     `@enb.atable.column_function` decorator on them.
 
     See |atable| for more detailed help and examples.
+ 
     """
-    # Default input sample extension. If affects the result of enb.atable.get_all_test_files,
-    # filtering out any file that does not end with the given string. Leave empty not to filter out
-    # any file found in the data dir.
-    #
-    # Update in subclasses as needed
+    #: Default input sample extension.
+    #: If affects the result of `enb.atable.get_all_test_files`,
     dataset_files_extension = ""
-
-    # Name of the index used internally
+    #: Name of the index used internally.
     private_index_column = "__atable_index"
-    # Column names in this list are not retrieved nor saved to persistence, even if they are defined.
+    #: Column names in this list are not retrieved nor saved to persistence, 
+    #: even if they are defined.
     ignored_columns = []
 
     def __init__(self, index="index", csv_support_path=None, column_to_properties=None,
@@ -586,6 +585,11 @@ class ATable(metaclass=MetaTable):
         self.index = index
         self.csv_support_path = csv_support_path
         if column_to_properties is not None:
+            #: The `column_properties` attribute keeps track of what columns 
+            #: have been defined, and the methods that need to be called to computed them.
+            #: The keys of this attribute can be used to determine the columns defined in a given 
+            #: class or instance. The values are |ColumnProperties| instances, which can be set
+            #: manually after definition and before calling |Analyzer| subclasses' `get_df`.
             self.column_to_properties = collections.OrderedDict(column_to_properties)
 
         # Add the row_created and row_updated columns. The latter is updated by enb

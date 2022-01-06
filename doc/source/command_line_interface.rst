@@ -64,12 +64,12 @@ options. An example option of this is shown next:
 
 .. program-output:: python ../../enb/plugins/template_basic_workflow_example/basic_workflow.py -h
 
-.. note:: *.ini files in the project root are searched for to look for default values for the
+.. note:: `*.ini` files in the project root are searched for to look for default values for the
   attributes of |options|. You can copy and modify the default enb.ini template to your project
   if you would like to use file-based configuration.
 
 .. note:: You can also modify |options| in your code as in `enb.config.options.verbose = 5`.
-  If you do, this is applied after the CLI parameter recognicion, and therefore overwrites
+  If you do, this is applied after the CLI parameter recognition, and therefore overwrites
   any values set via `--option=value`.
 
 

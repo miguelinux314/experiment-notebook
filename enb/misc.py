@@ -113,7 +113,8 @@ class Singleton(type):
 
     def __call__(cls, *args, **kwargs):
         """This method replaces the regular initializer of classes with this as their metaclass.
-        *args and **kwargs are passed directly to their initializer and do not otherwise affect the Singleton behavior.
+        `*args` and `**kwargs` are passed directly to their initializer and do not otherwise affect 
+        the Singleton behavior.
         """
         try:
             return cls._instances[cls]

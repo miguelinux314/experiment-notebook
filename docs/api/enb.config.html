@@ -137,6 +137,11 @@ case ignorant, order. No recursive folder search is performed.</p></li>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></span><span class="sig-name descname"><span class="pre">AdditionalIniParser</span></span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></p>
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aini.AdditionalIniParser.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aini.AdditionalIniParser.get_extra_ini_paths">
 <span class="sig-name descname"><span class="pre">get_extra_ini_paths</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser.get_extra_ini_paths" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -148,6 +153,17 @@ case ignorant, order. No recursive folder search is performed.</p></li>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></span><span class="sig-name descname"><span class="pre">Ini</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class of the enb.config.ini object, that exposes file-defined configurations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aini.Ini.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.config.aini.Ini.all_ini_paths">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_ini_paths</span></span><a class="headerlink" href="#enb.config.aini.Ini.all_ini_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of all used ini paths.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.config.aini.Ini.extra_ini_paths">
 <span class="sig-name descname"><span class="pre">extra_ini_paths</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.config.aini.Ini.extra_ini_paths" title="Permalink to this definition"></a></dt>
@@ -357,9 +373,9 @@ The trade-off for rare error condition detection is a slower execution time.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.no_new_results">
 <span class="sig-name descname"><span class="pre">no_new_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.no_new_results" title="Permalink to this definition"></a></dt>
-<dd><p>If True, ATable’s get_df method relies entirely on the loaded persistence data, no new rows are computed.</p>
-<p>This can be useful to speed up the rendering process, for instance to try different
-aesthetic plotting options.</p>
+<dd><p>If True, ATable’s get_df method relies entirely on the loaded persistence data, no new rows are computed.
+This can be useful to speed up the rendering process, for instance to try different
+aesthetic plotting options. Use this option only if you know you need it.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -551,12 +567,6 @@ You don’t need to change this unless you want to use custom ray workers.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Options affecting the rendering of figures.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.displayed_title">
-<span class="sig-name descname"><span class="pre">displayed_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.displayed_title" title="Permalink to this definition"></a></dt>
-<dd><p>When this property is not None, displayed plots will typically include its value as the main title.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_height">
 <span class="sig-name descname"><span class="pre">fig_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_height" title="Permalink to this definition"></a></dt>
 <dd><p>Figure height.</p>
@@ -571,11 +581,17 @@ You don’t need to change this unless you want to use custom ray workers.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.global_title">
+<span class="sig-name descname"><span class="pre">global_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.global_title" title="Permalink to this definition"></a></dt>
+<dd><p>When this property is not None, displayed plots will typically include its value as the main title.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.global_y_label_pos">
 <span class="sig-name descname"><span class="pre">global_y_label_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.global_y_label_pos" title="Permalink to this definition"></a></dt>
 <dd><p>Relative position of the global Y label.</p>
 <p>Can be negative or positive. Intended as a quick hack when left y-axis ticks are longer or shorter
-than the default assumptions.</p>
+than the default assumptions. If None is selected, the position is attempted to set automatically.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -782,6 +798,12 @@ Properties are defined using the decorated function’s name.</p>
 play a role as setters of new variable values.</p></li>
 </ul>
 </div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializer guaranteed to be called once thanks to the Singleton metaclass.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.assert_setter_signature">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_setter_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.assert_setter_signature" title="Permalink to this definition"></a></dt>
