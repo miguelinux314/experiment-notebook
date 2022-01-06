@@ -1,0 +1,6 @@
+axes.labelsize      : 12
+font.size           : 12
+xtick.labelsize     : 12
+ytick.labelsize     : 12
+savefig.transparent : true
+savefig.dpi         : 300

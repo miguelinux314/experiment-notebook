@@ -88,7 +88,7 @@ class Analyzer(enb.atable.ATable):
     # If True, display group legends when applicable
     show_legend = True
     # If not None, it must be a list of matplotlibrc styles (names or file paths)
-    style_list = None
+    style_list = []
 
     def __init__(self, csv_support_path=None, column_to_properties=None, progress_report_period=None):
         super().__init__(csv_support_path=csv_support_path,

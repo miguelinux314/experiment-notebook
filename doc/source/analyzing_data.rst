@@ -608,3 +608,6 @@ Each element in `style_list` must be one of the following:
     Therefore, you can compose themes just like one would in 
     Matplotlib `<https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles>`_.
 
+.. warning:: Not all styles are intended for professional usage (-:
+
+    .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png
