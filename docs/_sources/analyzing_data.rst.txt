@@ -336,3 +336,275 @@ The plots resulting from the above snippet are shown next.
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png
+
+
+Customizing plot appearance
+---------------------------
+
+If the default plot appearance does not suit you (axis limits, font size, color scheme, logarithmic scale, etc.),
+`enb` offers several ways of customizing them, described in the following subsections.
+
+Choosing a plot type
+____________________
+
+You can change the type of plot by selecting one of the available |Analyzer| classes.
+See above for examples on all available classes.
+
+Some analyzers provide several render modes. You can select one or more of them by
+passing the `selected_render_modes` argument to your `get_df` calls. 
+By default, all render modes in an |Analyzer| are used.
+
+Modifying your Analyzers
+________________________
+
+The |Analyzer| classes themselves have several attributes that affect the way they
+produce plots. Some examples common to all |Analyzer| instances are as follows.
+
+.. code-block:: text
+
+        # Main title to be displayed
+        plot_title = None
+        # Show the number of elements in each group?
+        show_count = True
+        # Show a group containing all elements?
+        show_global = False
+        # If a reference group is used as baseline, should it be shown in the analysis itself?
+        show_reference_group = True
+        # If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
+        show_x_std = False
+        # If applicable, show a vertical +/- 1 standard deviation bar centered on the average
+        show_y_std = False
+        # Main marker size
+        main_marker_size = 4
+        # Secondary (e.g., individual data) marker size
+        secondary_marker_size = 2
+        # Main plot element alpha
+        main_alpha = 0.5
+        # Secondary plot element alpha (often overlaps with data using main_alpha)
+        secondary_alpha = 0.5
+        # If a semilog y axis is used, y_min will be at least this large to avoid math domain errors
+        semilog_y_min_bound = 1e-5
+        # Thickness of the main plot lines
+        main_line_width = 2
+        # Thickness of secondary plot lines
+        secondary_line_width = 1
+        # Margin between group rows (if there is more than one)
+        group_row_margin = 0.2
+        # If more than one group is displayed, when applicable, adjust plots to use the same scale in every subplot?
+        common_group_scale = True
+        # If more than one group is present, they are shown in the same subplot
+        # instead of in different rows
+        combine_groups = False
+        # If True, display group legends when applicable
+        show_legend = True
+
+
+
+Default values for these attributes can be set by placing a file with `.ini` extension
+in your project root (where your scripts are placed). This file should contain a subset
+of the attributes defined in the 
+`full enb.ini configuration file <https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/config/enb.ini>`_.
+
+.. note:: Attributes must be stored in sections with name given by the |Analyzer| class, e.g.,
+    `'[enb.aanalysis.Analyzer]'` or `'[enb.aanalysis.ScalarNumericAnalyzer]'`.
+
+
+You can install a copy of the full configuration file and then modify it as needed with:
+
+    .. code-block:: bash
+
+        enb plugin install enb.ini ./your_project_folder/
+
+Once an |Analyzer| has been instantiated, its attributes can be modified like any other object.
+Attribute values are independently read for each call to `get_df`.
+
+
+.. _column_hints:
+
+Setting column plotting hints
+_____________________________
+   
+All columns defined in |ATable| subclasses (including |Experiment| subclasses) 
+have a corresponding |ColumnProperties| instance. 
+
+These instances contain rendering hints when plotting that column such as:
+
+- axis labels (e.g., `label='Average duration (s)'`)
+- plot limits (e.g., `plot_min=0`, `plot_max=60`, which can also be set to None for automatic limits) 
+- axis type (e.g., `semilog_x=True`)
+
+As detailed in :doc:`basic_workflow`, these hints can be set when defining custom columns, e.g.,
+
+.. code-block:: python
+
+    class MyTable(enb.atable.ATable):
+        @enb.atable.column_function(enb.atable.ColumnProperties(
+            name="average_duration_seconds",
+            label="Average duration (s)",
+            plot_min=0,
+            plot_max=60))
+        def set_average_duration_seconds(self, file_path, row):
+            row[_column_name] = # ... your code here
+    
+One can then pass the `column_to_properties` argument to an Analyzer's `get_df` method, e.g.,
+
+.. code-block:: python
+
+    mt = MyTable()
+    df = # ... e.g., mt.get_df(), see examples above  
+    enb.aanalysis.ScalarNumericAnalyzer().get_df(
+        full_df=df, 
+        column_to_properties=mt.column_to_properties)
+        
+See :meth:`enb.atable.ColumnProperties.__init__` for full details on all available attributes.
+        
+.. note:: 
+
+    * You can modify |ColumnProperties| instances after they have been associated to a column, e.g.,
+      
+      .. code-block:: python
+         
+         mt.column_properties["average_duration_seconds"].plot_max = 30
+      
+      
+    * You can create your own dictionary indexed by column name, containing |ColumnProperties| instances,
+      and then pass it to `get_df`, e.g.,:
+
+      .. code-block:: python
+         
+         enb.aanalysis.ScalarNumericAnalyzer().get_df(
+            full_df=df, 
+            column_to_properties=dict(average_duration_seconds=enb.atable.ColumnProperties(
+                plot_min=0, plot_max=30, label=r"$\Gamma$ routine execution time (seconds)")))
+      
+      
+
+    * |Experiment| subclasses also offer the `joined_column_to_properties` property, which
+       contains the columns defined in that experiment, and in the |ATable| subclass employed
+       for the dataset (see :doc:`experiments` for more information about experiments), e.g.:
+
+      .. code-block:: python
+            
+            # Initialize and run experiment 
+            exp = MyExperimentClass()
+            df = exp.get_df()
+            
+            # Analyze results
+            scalar_columns = ["column_A", "column_B"]
+            scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+            scalar_analyzer.get_df(
+                full_df=df,  target_columns=scalar_columns,
+                group_by="task_label",  selected_render_modes={"histogram"},
+                
+                # Experiments offer the `joined_column_to_properties` property
+                column_to_properties=exp.joined_column_to_properties,
+            )
+
+.. _kwargs:
+
+Setting `**render_kwargs` when calling `Analyzer.get_df`
+________________________________________________________
+
+The `get_df` method of all |Analyzer| subclasses accept a `**render_kwargs` parameter.
+
+.. note:: Values passed in this parameter overwrite those defined in `column_properties`.
+
+You can add one or more `key=value` arguments to the `get_df` call, as shown in the following example.
+
+.. code-block:: python
+
+    numeric_dict_analyzer = enb.aanalysis.DictNumericAnalyzer()
+    hevc_df = pd.read_csv("./input_csv/hevc_frame_prediction.csv") 
+    numeric_dict_analyzer.secondary_alpha = 0
+    analysis_df = numeric_dict_analyzer.get_df(
+        full_df=hevc_df,
+        target_columns=["mode_count"],
+        group_by="block_size",
+        column_to_properties=column_to_properties,
+        group_name_order=sorted(hevc_df["block_size"].unique()),
+
+        # Rendering options
+        x_tick_label_angle=90,
+        fig_width=7.5,
+        fig_height=5,
+        global_y_label_pos=-0.01)
+
+Here, the labels of the x ticks are rotated 90 degrees, the figure dimensions are changed, and the global y
+axis label is moved to account for very long y-axis labels.
+
+Please refer to :meth:`enb.plotdata.render_plds_by_group` for a list of all available parameters.
+Note that the `pds_by_group_name` parameter and others are automatically set by your choice of |Analyzer| subclass.
+
+.. _styles:
+
+Using styles
+____________
+
+The `enb` library employs `matplotlib` for plotting. 
+Matplotlib's `styling features <https://matplotlib.org/stable/tutorials/introductory/customizing.html>`_
+are available in two ways:
+
+1. You can set the `style_list` attribute of your |Analyzer| subclass (default value or instance attribute).
+
+2. You can pass the `style_list` argument to the call to `get_df` of your |Analyzer| subclass.
+
+For instance, to set Matlplotlib's dark style, the following code can be used:
+
+.. code-block:: python
+
+    ## Option 1: modify analyzer instance
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+    scalar_analyzer.style_list = ["dark_background"]
+    analysis_df = scalar_analyzer.get_df(
+        full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_dark", "instance"),
+        group_by="class")
+    
+    ## Option 2: use get_df's **kwargs
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+    analysis_df = scalar_analyzer.get_df(
+        full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_dark", "kwargs"),
+        group_by="class",
+        style_list=["dark_background"])
+
+Each element in `style_list` must be one of the following:
+
+* One of Matplotlib's style names (e.g., `"dark_background", "bmh", etc) configured in your machine.
+  You can check out the `gallery of matplotlib's default styles <https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html>`_.
+
+* One of enb's predefined style names.
+
+  .. note:: You can get a list of all available style names from the CLI with
+        
+      .. code-block:: bash 
+            
+            enb show styles
+
+      or within python with 
+
+      .. code-block:: python
+        
+            enb.plotdata.get_available_styles()
+            
+      An example output is as follows:
+
+        .. program-output:: enb show styles | tail -n+3
+            :shell:
+
+* The path of a matplotlib rc style. 
+
+  See `matplotlib's rc file documentation <https://matplotlib.org/stable/tutorials/introductory/customizing.html#the-matplotlibrc-file>`_
+  for more information on how to create and modify this type of files.
+
+  You can install an editable copy of Matplotlib's default rc file with:
+
+    .. code-block:: bash
+
+        enb plugin install matplotlibrc .
+
+.. note:: You can select any number of styles for your plots.
+    When a list of styles is used for a plot, its elements are processed from left to right.
+    Therefore, you can compose themes just like one would in 
+    Matplotlib `<https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles>`_.
+

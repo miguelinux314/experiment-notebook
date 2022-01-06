@@ -37,7 +37,8 @@ def CLIParser():
         help="Name of the plugin to be installed.")
     cli_parser.plugin_parser.install_parser.add_argument(
         "destination_dir",
-        help="Path to the directory that will contain the installed plugin.")
+        help="Path to the directory that will contain the installed plugin. Defaults to the working dir.",
+        default="")
     cli_parser.plugin_parser.install_parser.add_argument(
         # Used to trigger the desired call and save the return status
         nargs=0, dest="", action=PluginInstall)
@@ -60,6 +61,18 @@ def CLIParser():
     cli_parser.plugin_parser.list_parser.add_argument(
         # Used to trigger the desired call and save the return status
         nargs=0, dest="", action=PluginList)
+
+    # # show subcommand
+    cli_parser.show_parser = cli_parser.subparsers.add_parser("show", help="Show useful information about enb and enb projects.")
+    cli_parser.show_parser.subparsers = cli_parser.show_parser.add_subparsers(
+        description="Show subcommands", dest="subcommand", required=True)
+    ## show styles
+    cli_parser.show_parser.styles_parser = cli_parser.show_parser.subparsers.add_parser(
+        "styles", help="Show available style names for plotting.")
+    cli_parser.show_parser.styles_parser.add_argument(
+        "filter", nargs="*", help="Show only styles containing this string.")
+    cli_parser.show_parser.styles_parser.add_argument(
+        nargs=0, dest="", action=ShowStyles)
 
     # Help command
     cli_parser.help_parser = cli_parser.subparsers.add_parser("help", help="Show this help and exit.")
@@ -92,7 +105,6 @@ class PluginInstall(argparse.Action):
 
         # Set status
         setattr(namespace, self.dest, 0)
-
 
 class PluginList(argparse.Action):
     """Action for listing available plugins.
@@ -217,6 +229,13 @@ class PluginList(argparse.Action):
         print("Run"
               f"{' with -v for authorship and additional information,' if not enb.config.options.verbose else ''}"
               " with -h for full help.")
+
+class ShowStyles(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        import enb
+        print(f"The following styles are available for plotting:\n\n\t- ", end="")
+        print(f"\n\t- ".join(repr(s) for s in enb.plotdata.get_available_styles()))
+        
 
 def main():
     cli_parser = CLIParser()

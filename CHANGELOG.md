@@ -1,25 +1,30 @@
 # CHANGELOG
 
-The following updates have been highlighted for each release.
-Note that `enb` employs a `MAYOR`.`MINOR`.`REVISION` format. 
-Given a code initially developed for one `enb` version and then executed in another (newer) version:
+The following updates have been highlighted for each release. Note that `enb` employs a `MAYOR`.`MINOR`.`REVISION`
+format. Given a code initially developed for one `enb` version and then executed in another (newer) version:
 
-- If `MAYOR` and `MINOR` are identical, backwards compatibility is provided.
-  Some deprecation warnings might appear, which typically require small changes in your scripts.
+- If `MAYOR` and `MINOR` are identical, backwards compatibility is provided. Some deprecation warnings might appear,
+  which typically require small changes in your scripts.
 
-- If `MAYOR` is identical by `MINOR` differs, minor code changes might be required if
-  any deprecated parts are still used. Otherwise, deprecation warnings are turned into full errors.
+- If `MAYOR` is identical by `MINOR` differs, minor code changes might be required if any deprecated parts are still
+  used. Otherwise, deprecation warnings are turned into full errors.
 
-- If `MAYOR` is larger, specific code changes might be needed for your code.
-  So far, a single `MAYOR` version (0) is used. The next mayor version (1) is 
-  expected to be backwards compatible with the latest release of the 0 mayor branch.
+- If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
+  used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
 # Development (potentially unstable) version
 
 ## v0.3.5
 
-- Improved the `combine_groups` option for |Analyzer| subclasses, including `documentation <https://miguelinux314.github.io/experiment-notebook/analyzing_data.html#combining-groups>`_.
+- Introduced the `enb show` command to show some useful information. Run `enb show -h` for more details.
 
+- Added the `'enb.ini'` plugin that allows installation of an editable configuration file for enb.
+
+- Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
+
+- Added documentation on how to customize the appearance of plots.
+
+- Improved the `combine_groups` option for |Analyzer| subclasses, and its documentation.
 
 # Latest stable version
 
@@ -36,61 +41,60 @@ Mostly bugfixes and cleanup in this version.
 
 ## 2022/01/04 v0.3.3
 
-**Important**: Removed all deprecated methods scheduled for removal for v0.3.0 (Aug 31, 2021).
-  This breaks compatibility with the v0.2.* versions, although most encountered
-  issues can be easily overcome by using the new enb.aanalyis.Analyzer subclasses
-  and their `get_def()` method instead of the old `analyze_df()`.
+**Important**: Removed all deprecated methods scheduled for removal for v0.3.0 (Aug 31, 2021). This breaks compatibility
+with the v0.2.* versions, although most encountered issues can be easily overcome by using the new enb.aanalyis.Analyzer
+subclasses and their `get_def()` method instead of the old `analyze_df()`.
 
 * New features
 
-  - Added ssh-based multi-computer processing. 
-  
-  - Added the `reference_group` parameter to the `get_df` method of `enb.aanalysis.Analayzer` subclasses,
-    wich allows displaying differences against the average of one group (`group_by` must be used).
-  
-  - The project_root attribute has been added to enb.config.options that 
-    points to the directory where the calling script is. 
-    Persistence paths are now stored relative to this project root,
-    and enb **now changes the current working dir to that project root**
-    upon initialization (also applies to remote functions).
+    - Added ssh-based multi-computer processing.
+
+    - Added the `reference_group` parameter to the `get_df` method of `enb.aanalysis.Analayzer` subclasses, wich allows
+      displaying differences against the average of one group (`group_by` must be used).
+
+    - The project_root attribute has been added to enb.config.options that points to the directory where the calling
+      script is. Persistence paths are now stored relative to this project root, and enb **now changes the current
+      working dir to that project root**
+      upon initialization (also applies to remote functions).
 
 * General improvements
 
-  - Simplified the installation process on Windows, added support when ray is not prsent.
-  - Improved documentation and plugins about lossless and lossy compression templates.
-  - Added a lossy compression template.
-  - Complete review of the documentation with the new classes.
+    - Simplified the installation process on Windows, added support when ray is not prsent.
+    - Improved documentation and plugins about lossless and lossy compression templates.
+    - Added a lossy compression template.
+    - Complete review of the documentation with the new classes.
 
 ## 2021/11/29 v0.3.2
 
 * New features
 
-  - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests.
-  - Added a wrapper for the upcoming CCSDS 124.0-B-1.
-  - Experiments now create a family_label column to simplify analysis.
-  - Added support for sorting group rows based on their average value.
-  - Added support for grouping based on enb.experiment.TaskFamily lists to enb.aanalysis.Analyzer.
-  - Improved documentation, including the most recent plotting and command-line tools and additions.
+    - Added a wrapper for codecs for a yet-to-be-released variable-to-fixed (V2F) forests.
+    - Added a wrapper for the upcoming CCSDS 124.0-B-1.
+    - Experiments now create a family_label column to simplify analysis.
+    - Added support for sorting group rows based on their average value.
+    - Added support for grouping based on enb.experiment.TaskFamily lists to enb.aanalysis.Analyzer.
+    - Improved documentation, including the most recent plotting and command-line tools and additions.
 
 * General improvements
 
-  - Updated the user manual with the most recent analyzer classes
-  - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not redistributed with enb.
-  - Updated the ScalarNumericAnalyzer so that it can display averages (with or without std error bars) without
-    displaying any histogram.
+    - Updated the user manual with the most recent analyzer classes
+    - Updated the documentation for the LCNL/CCSDS 123.0-B-2 codec: the binaries are now publicly available but not
+      redistributed with enb.
+    - Updated the ScalarNumericAnalyzer so that it can display averages (with or without std error bars) without
+      displaying any histogram.
 
 ## 2021/09/10 v0.3.1
 
 * New features
-  - Added a lossless compression experiment template.
-  - Added csv to latex utility function in misc for easier and faster report making.
+    - Added a lossless compression experiment template.
+    - Added csv to latex utility function in misc for easier and faster report making.
 
 * General improvements
-  - Improved overall stability and aesthetic control over plotting with enb.aanalysis
-  - Removed the recordclass package as a dependency, as enb's usage did not justify the package's size
-  - Enhanced clarity and robustness of the setup.py script to simplify installation via pip
-  - Fixed potential method resolution order inconsistencies between class methods and column setters; now
-    the intuitive behavior is better enforced.
+    - Improved overall stability and aesthetic control over plotting with enb.aanalysis
+    - Removed the recordclass package as a dependency, as enb's usage did not justify the package's size
+    - Enhanced clarity and robustness of the setup.py script to simplify installation via pip
+    - Fixed potential method resolution order inconsistencies between class methods and column setters; now the
+      intuitive behavior is better enforced.
 
 ## 2021/08/31 v0.3.0
 

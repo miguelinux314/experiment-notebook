@@ -6,13 +6,12 @@ __since__ = "2019/09/10"
 
 import os
 import math
-import pickle
-
+import contextlib
 import matplotlib
 
 import enb.atable
-
 matplotlib.use("Agg")
+
 import matplotlib.ticker
 import numpy as np
 import collections
@@ -389,6 +388,12 @@ class VerticalLine(PlottableData):
                      lw=self.line_width, alpha=self.alpha)
 
 
+def get_available_styles():
+    """Get a list of all styles available for plotting. 
+    It is guaranteed to include at least all of matplotlib's styles.
+    """
+    return sorted(str(s) for s in matplotlib.style.available if s[0] != "_")
+
 @enb.parallel.parallel()
 def parallel_render_plds_by_group(
         pds_by_group_name, output_plot_path, column_properties,
@@ -409,7 +414,9 @@ def parallel_render_plds_by_group(
         y_labels_by_group_name=None,
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
         y_tick_list=None, y_tick_label_list=None,
-        plot_title=None, show_legend=True):
+        plot_title=None, show_legend=True,
+        # Matplotlib styles
+        style_list=("default",)):
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
     """
     try:
@@ -439,7 +446,8 @@ def parallel_render_plds_by_group(
                                     y_tick_label_list=y_tick_label_list,
                                     semilog_y=semilog_y, semilog_y_base=semilog_y_base,
                                     plot_title=plot_title,
-                                    show_legend=show_legend)
+                                    show_legend=show_legend,
+                                    style_list=style_list)
     except Exception as ex:
         enb.logger.error(f"Error rendering to {output_plot_path} (cwd={os.getcwd()}: {repr(ex)}")
         raise ex
@@ -465,7 +473,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
                          y_tick_list=None, y_tick_label_list=None,
                          plot_title=None,
-                         show_legend=True):
+                         show_legend=True,
+                         # Matplotlib styles
+                         style_list=("default",),
+                         ):
     """Render lists of plotdata.PlottableData instances indexed by group name.
     Each group is rendered in a row (subplot), with a shared X axis.
     Groups can also be combined into a single row (subplot), i.e., rending all plottable data into that single subplot.
@@ -534,6 +545,12 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     
     :param plot_title: title to be displayed.
     :param show_legend: if True, legends are added to the plot.
+    
+    Matplotlib styles:
+    
+    :param style_list: list of valid style arguments recognized by `matplotlib.use`. Each element can be any
+      of matplotlib's default styles or a path to a valid matplotlibrc. Styles are applied from left to right, 
+      overwriting definitions without warning. By default, matplotlib's "default" mode is applied. 
     """
     with enb.logger.info_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
                                  sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
@@ -601,200 +618,222 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if os.path.dirname(output_plot_path):
             os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
 
-        fig_width = options.fig_width if fig_width is None else fig_width
-        fig_height = options.fig_height if fig_height is None else fig_height
-        global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
+        # Render all gathered data with the selected configuration
+        with plt.style.context(style_list if style_list else ["default"]):
+            fig_width = options.fig_width if fig_width is None else fig_width
+            fig_height = options.fig_height if fig_height is None else fig_height
 
-        fig, group_axis_list = plt.subplots(
-            nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
-            ncols=1, sharex=True, sharey=combine_groups,
-            figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
+            fig, group_axis_list = plt.subplots(
+                nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
+                ncols=1, sharex=True, sharey=combine_groups,
+                figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
 
-        if combine_groups:
-            group_axis_list = [group_axis_list]
-        elif len(sorted_group_names) == 1:
-            group_axis_list = [group_axis_list]
+            if combine_groups:
+                group_axis_list = [group_axis_list]
+            elif len(sorted_group_names) == 1:
+                group_axis_list = [group_axis_list]
 
-        if plot_title:
-            plt.suptitle(plot_title)
+            if plot_title:
+                plt.suptitle(plot_title)
 
-        semilog_x, semilog_y = False, semilog_y if semilog_y is not None else semilog_y
+            semilog_x, semilog_y = False, semilog_y if semilog_y is not None else semilog_y
 
-        if combine_groups:
-            assert len(group_axis_list) == 1
-            group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
-        else:
-            group_name_axes = zip(sorted_group_names, group_axis_list)
-
-        # Compute global extrema
-        global_x_min = float("inf")
-        global_x_max = float("-inf")
-        global_y_min = float("inf")
-        global_y_max = float("-inf")
-        for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
-            if not isinstance(pld, PlottableData2D):
-                continue
-            x_values = np.array(pld.x_values, copy=False)
-            if len(x_values) > 0:
-                x_values = x_values[~np.isnan(x_values)]
-            global_x_min = min(global_x_min, x_values.min() if len(x_values) > 0 else global_x_min)
-            global_x_max = max(global_x_min, x_values.max() if len(x_values) > 0 else global_x_min)
-            y_values = np.array(pld.y_values, copy=False)
-            if len(y_values) > 0:
-                y_values = y_values[~np.isnan(y_values)]
-            global_y_min = min(global_y_min, y_values.min() if len(y_values) > 0 else global_y_min)
-            global_y_max = max(global_y_min, y_values.max() if len(y_values) > 0 else global_y_min)
-        if global_x_max - global_x_min > 1:
-            global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
-            global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
-        if global_y_max - global_y_min > 1:
-            global_y_min = math.floor(global_y_min) if not math.isinf(global_y_min) else global_y_min
-            global_y_max = math.ceil(global_y_max) if not math.isinf(global_y_max) else global_y_max
-        if column_properties:
-            global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
-            global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
-
-        for i, (group_name, group_axes) in enumerate(group_name_axes):
-            group_color = color_by_group_name[group_name]
-            for pld in pds_by_group_name[group_name]:
-                pld.x_label = None
-                pld.y_label = None
-                d = dict()
-                if force_monochrome_group:
-                    pld.color = group_color if pld.color is None else pld.color
-                d.update(color=pld.color)
-                try:
-                    pld.extra_kwargs.update(d)
-                except AttributeError:
-                    pld.extra_kwargs = d
-
-                try:
-                    pld.render(axes=group_axes)
-                except Exception as ex:
-                    raise Exception(f"Error rendering {pld} -- {group_name} -- {output_plot_path}") from ex
-                semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
-                semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
-
-        for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
-            if y_min != y_max:
-                group_axes.set_ylim(y_min, y_max)
-
-            if semilog_x:
-                x_base = column_properties.semilog_x_base if column_properties is not None else 10
-                group_axes.semilogx(base=x_base)
-                group_axes.get_xaxis().set_major_locator(matplotlib.ticker.LogLocator(base=x_base))
+            if combine_groups:
+                assert len(group_axis_list) == 1
+                group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
             else:
-                group_axes.get_xaxis().set_major_locator(
-                    matplotlib.ticker.MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
-                group_axes.get_xaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+                group_name_axes = zip(sorted_group_names, group_axis_list)
 
-            if semilog_y:
-                base_y = column_properties.semilog_y_base if column_properties is not None else semilog_y_base
-                group_axes.semilogy(base=base_y)
-                if combine_groups or len(sorted_group_names) <= 2:
-                    numticks = 11
-                elif len(sorted_group_names) <= 5 and not column_properties.semilog_y:
-                    numticks = 6
-                elif len(sorted_group_names) <= 10:
-                    numticks = 4
+            # Compute global extrema
+            global_x_min = float("inf")
+            global_x_max = float("-inf")
+            global_y_min = float("inf")
+            global_y_max = float("-inf")
+            for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
+                if not isinstance(pld, PlottableData2D):
+                    continue
+                x_values = np.array(pld.x_values, copy=False)
+                if len(x_values) > 0:
+                    x_values = x_values[~np.isnan(x_values)]
+                global_x_min = min(global_x_min, x_values.min() if len(x_values) > 0 else global_x_min)
+                global_x_max = max(global_x_min, x_values.max() if len(x_values) > 0 else global_x_min)
+                y_values = np.array(pld.y_values, copy=False)
+                if len(y_values) > 0:
+                    y_values = y_values[~np.isnan(y_values)]
+                global_y_min = min(global_y_min, y_values.min() if len(y_values) > 0 else global_y_min)
+                global_y_max = max(global_y_min, y_values.max() if len(y_values) > 0 else global_y_min)
+            if global_x_max - global_x_min > 1:
+                global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
+                global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
+            if global_y_max - global_y_min > 1:
+                global_y_min = math.floor(global_y_min) if not math.isinf(global_y_min) else global_y_min
+                global_y_max = math.ceil(global_y_max) if not math.isinf(global_y_max) else global_y_max
+            if column_properties:
+                global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
+                global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
+
+            for i, (group_name, group_axes) in enumerate(group_name_axes):
+                group_color = color_by_group_name[group_name]
+                for pld in pds_by_group_name[group_name]:
+                    pld.x_label = None
+                    pld.y_label = None
+                    d = dict()
+                    if force_monochrome_group:
+                        pld.color = group_color if pld.color is None else pld.color
+                    d.update(color=pld.color)
+                    try:
+                        pld.extra_kwargs.update(d)
+                    except AttributeError:
+                        pld.extra_kwargs = d
+
+                    try:
+                        pld.render(axes=group_axes)
+                    except Exception as ex:
+                        raise Exception(f"Error rendering {pld} -- {group_name} -- {output_plot_path}") from ex
+                    semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
+                    semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
+
+            for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
+                if y_min != y_max:
+                    group_axes.set_ylim(y_min, y_max)
+
+                if semilog_x:
+                    x_base = column_properties.semilog_x_base if column_properties is not None else 10
+                    group_axes.semilogx(base=x_base)
+                    group_axes.get_xaxis().set_major_locator(matplotlib.ticker.LogLocator(base=x_base))
                 else:
-                    numticks = 3
-                group_axes.get_yaxis().set_major_locator(matplotlib.ticker.LogLocator(base=base_y, numticks=numticks))
-                group_axes.grid(True, "major", axis="y", alpha=0.2)
-            else:
-                group_axes.get_yaxis().set_major_locator(matplotlib.ticker.MaxNLocator(nbins="auto", integer=False))
-                group_axes.get_yaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
-            if not combine_groups:
-                group_axes.get_yaxis().set_label_position("right")
-                group_axes.set_ylabel(y_labels_by_group_name[group_name]
-                                      if group_name in y_labels_by_group_name
-                                      else enb.atable.clean_column_name(group_name),
-                                      rotation=0, ha="left", va="center")
+                    group_axes.get_xaxis().set_major_locator(
+                        matplotlib.ticker.MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
+                    group_axes.get_xaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
 
-        plt.xlabel(global_x_label)
-        if column_properties and column_properties.hist_label_dict is not None:
-            x_tick_values = sorted(column_properties.hist_label_dict.keys())
-            x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
-            plt.xticks(x_tick_values, x_tick_labels)
+                if semilog_y:
+                    base_y = column_properties.semilog_y_base if column_properties is not None else semilog_y_base
+                    group_axes.semilogy(base=base_y)
+                    if combine_groups or len(sorted_group_names) <= 2:
+                        numticks = 11
+                    elif len(sorted_group_names) <= 5 and not column_properties.semilog_y:
+                        numticks = 6
+                    elif len(sorted_group_names) <= 10:
+                        numticks = 4
+                    else:
+                        numticks = 3
+                    group_axes.get_yaxis().set_major_locator(
+                        matplotlib.ticker.LogLocator(base=base_y, numticks=numticks))
+                    group_axes.grid(True, "major", axis="y", alpha=0.2)
+                else:
+                    group_axes.get_yaxis().set_major_locator(matplotlib.ticker.MaxNLocator(nbins="auto", integer=False))
+                    group_axes.get_yaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+                if not combine_groups:
+                    group_axes.get_yaxis().set_label_position("right")
+                    group_axes.set_ylabel(y_labels_by_group_name[group_name]
+                                          if group_name in y_labels_by_group_name
+                                          else enb.atable.clean_column_name(group_name),
+                                          rotation=0, ha="left", va="center")
 
-        if global_y_label:
-            fig.text(global_y_label_pos, 0.5, global_y_label, va='center', rotation='vertical')
+            plt.xlabel(global_x_label)
+            if column_properties and column_properties.hist_label_dict is not None:
+                x_tick_values = sorted(column_properties.hist_label_dict.keys())
+                x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
+                plt.xticks(x_tick_values, x_tick_labels)
 
-        if options.displayed_title is not None:
-            plt.suptitle(options.displayed_title)
+            if global_y_label:
+                # global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
+                # try:
+                #     global_y_label_pos = 0.025 - 0.06 * max(0, float(plt.rcParams['axes.labelsize']) / 7.5)
+                # except ValueError:
+                #     # Default is medium, no adjust needed
+                #     global_y_label_pos = 0
+                # print(f"[watch] global_y_label_pos={global_y_label_pos}")
+                if global_y_label_pos is None:
+                    global_y_label_pos = 0.03
+                    try:
+                        global_y_label_pos -= 0.06 * max(0, ((float(plt.rcParams['axes.labelsize']) / 5) - 1))
+                    except ValueError:
+                        # Default is medium, no adjust needed
+                        global_y_label_pos = 0
+                
+                # # fig.text(global_y_label_pos, 0.5, global_y_label, va='center', ha='center', rotation='vertical')
+                fig.text(global_y_label_pos, 0.5, global_y_label, va="center", ha="left", rotation="vertical",
+                         transform=fig.transFigure,
+                         fontsize=plt.rcParams['axes.labelsize'])
 
-        group_row_margin = group_row_margin if group_row_margin is not None else float(
-            enb.config.options.group_row_margin)
-        group_row_margin += (len(pds_by_group_name) - 6) / 24
-        plt.subplots_adjust(hspace=group_row_margin)
+            if options.global_title is not None:
+                plt.suptitle(options.global_title)
 
-        # Set the axis limits
-        xlim = [global_x_min, global_x_max]
-        ylim = [global_y_min, global_y_max]
-        xlim[0] = xlim[0] if x_min is None else x_min
-        xlim[1] = xlim[1] if x_max is None else x_max
-        ylim[0] = ylim[0] if y_min is None else y_min
-        ylim[1] = ylim[1] if y_max is None else y_max
-        # Translate relative margin to absolute margin
-        horizontal_margin = horizontal_margin if horizontal_margin is not None else options.horizontal_margin
-        vertical_margin = vertical_margin if vertical_margin is not None else options.vertical_margin
-        h_margin = horizontal_margin * (xlim[1] - xlim[0])
-        v_margin = vertical_margin * (ylim[1] - ylim[0])
-        xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
-        ylim = [ylim[0] - v_margin, ylim[1] + v_margin]
-        # Apply changes to the figure
-        if xlim[0] != xlim[1] and not math.isnan(xlim[0]) and not math.isnan(xlim[1]):
-            plt.xlim(*xlim)
-        if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]) \
-                and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
-            plt.ylim(*ylim)
-            ca = plt.gca()
-            for group_axes in group_axis_list:
-                plt.sca(group_axes)
+            group_row_margin = group_row_margin if group_row_margin is not None else float(
+                enb.config.options.group_row_margin)
+            group_row_margin += (len(pds_by_group_name) - 6) / 24
+            plt.subplots_adjust(hspace=group_row_margin)
+
+            # Set the axis limits
+            xlim = [global_x_min, global_x_max]
+            ylim = [global_y_min, global_y_max]
+            xlim[0] = xlim[0] if x_min is None else x_min
+            xlim[1] = xlim[1] if x_max is None else x_max
+            ylim[0] = ylim[0] if y_min is None else y_min
+            ylim[1] = ylim[1] if y_max is None else y_max
+            # Translate relative margin to absolute margin
+            horizontal_margin = horizontal_margin if horizontal_margin is not None else options.horizontal_margin
+            vertical_margin = vertical_margin if vertical_margin is not None else options.vertical_margin
+            h_margin = horizontal_margin * (xlim[1] - xlim[0])
+            v_margin = vertical_margin * (ylim[1] - ylim[0])
+            xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
+            ylim = [ylim[0] - v_margin, ylim[1] + v_margin]
+            # Apply changes to the figure
+            if xlim[0] != xlim[1] and not math.isnan(xlim[0]) and not math.isnan(xlim[1]):
+                plt.xlim(*xlim)
+            if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]) \
+                    and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
                 plt.ylim(*ylim)
-            plt.sca(ca)
+                ca = plt.gca()
+                for group_axes in group_axis_list:
+                    plt.sca(group_axes)
+                    plt.ylim(*ylim)
+                plt.sca(ca)
 
-        if xlim[1] < 1e-2:
-            x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
+            if xlim[1] < 1e-2:
+                x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
 
-        if x_tick_list is not None:
-            if not x_tick_label_list:
-                plt.xticks(x_tick_list)
-            else:
-                plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
-            plt.minorticks_off()
-        if x_tick_label_list is not None:
-            assert x_tick_list is not None
-        if x_tick_list is None and x_tick_label_angle is not None:
-            plt.xticks(rotation=x_tick_label_angle)
-
-        for group_axes in group_axis_list:
-            plt.sca(group_axes)
-            if y_tick_list is not None:
-                if not y_tick_label_list:
-                    plt.yticks(y_tick_list)
+            if x_tick_list is not None:
+                if not x_tick_label_list:
+                    plt.xticks(x_tick_list)
                 else:
-                    plt.yticks(y_tick_list, y_tick_label_list)
-                group_axes.minorticks_off()
-            if y_tick_label_list is not None:
-                assert y_tick_list is not None
-            plt.yticks()
+                    plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
+                plt.minorticks_off()
+            if x_tick_label_list is not None:
+                assert x_tick_list is not None
+            if x_tick_list is None and x_tick_label_angle is not None:
+                plt.xticks(rotation=x_tick_label_angle)
 
-        show_grid = options.show_grid if show_grid is None else show_grid
-
-        if show_grid:
-            ca = plt.gca()
-            plt.grid("major", alpha=0.5)
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
+                if y_tick_list is not None:
+                    if not y_tick_label_list:
+                        plt.yticks(y_tick_list)
+                    else:
+                        plt.yticks(y_tick_list, y_tick_label_list)
+                    group_axes.minorticks_off()
+                if y_tick_label_list is not None:
+                    assert y_tick_list is not None
+                plt.yticks()
+
+            show_grid = options.show_grid if show_grid is None else show_grid
+
+            if show_grid:
+                ca = plt.gca()
                 plt.grid("major", alpha=0.5)
-            plt.sca(ca)
+                for group_axes in group_axis_list:
+                    plt.sca(group_axes)
+                    plt.grid("major", alpha=0.5)
+                plt.sca(ca)
 
-        with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
-            if os.path.dirname(output_plot_path):
-                os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
-            plt.savefig(output_plot_path, bbox_inches="tight")
-            if output_plot_path.endswith(".pdf"):
-                plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300, transparent=True)
+            with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
+                if os.path.dirname(output_plot_path):
+                    os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
+                plt.savefig(output_plot_path, bbox_inches="tight")
+                if output_plot_path.endswith(".pdf"):
+                    plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight")
 
-        plt.close()
+            plt.close()
+
+    

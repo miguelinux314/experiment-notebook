@@ -78,8 +78,14 @@ class Ini(metaclass=_Singleton):
         self.update_from_path(self.global_ini_path)
         if os.path.exists(self.user_ini_path):
             self.update_from_path(self.user_ini_path)
-        for ini_path in itertools.chain(self.local_ini_paths, self.extra_ini_paths):
+        for ini_path in self.all_ini_paths:
             self.update_from_path(ini_path)
+
+    @property
+    def all_ini_paths(self):
+        """Get a list of all used ini paths.
+        """
+        return tuple(itertools.chain(self.local_ini_paths, self.extra_ini_paths))
 
     def update_from_path(self, ini_path):
         """Update the current configuration by reading the contents of ini_path.

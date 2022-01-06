@@ -8,4 +8,4 @@ class PlotGalleryTemplate(enb.plugins.Template):
     author = ["Miguel Hernández-Cabronero"]
     label = "Self-contained gallery of data analysis and plotting examples."
     tags = {"documentation"}
-    tested_on = {"linux"}
+    tested_on = {"linux", "windows"}

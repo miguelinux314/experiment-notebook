@@ -130,3 +130,20 @@ if __name__ == '__main__':
         fig_height=5,
         global_y_label_pos=-0.01,
         combine_groups=True)
+    
+    # Example with styles
+    ## Option 1: modify analyzer instance
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+    scalar_analyzer.style_list = ["dark_background"]
+    analysis_df = scalar_analyzer.get_df(
+        full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_dark", "instance"),
+        group_by="class")
+    
+    ## Option 2: use get_df's **kwargs
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+    analysis_df = scalar_analyzer.get_df(
+        full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_dark", "kwargs"),
+        group_by="class",
+        style_list=["dark_background"])

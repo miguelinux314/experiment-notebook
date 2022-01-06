@@ -8,4 +8,4 @@ class BasicWorkflowTemplate(enb.plugins.Template):
     author = ["Miguel Hernández-Cabronero"]
     label = "Basic, self-contained example of enb's workflow"
     tags = {"project", "data compression", "documentation"}
-    tested_on = {"linux"}
+    tested_on = {"linux", "windows"}

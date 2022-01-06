@@ -128,7 +128,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @OptionsBase.property("q", "fast", action="count")
+    @OptionsBase.property("q", action="count")
     def quick(self, value):
         """Perform a quick test with a subset of the input samples?
 
@@ -137,16 +137,15 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @OptionsBase.property("no_new_data", "render_only", action="store_true")
+    @OptionsBase.property("render_only", action="store_true")
     def no_new_results(self, value):
         """If True, ATable's get_df method relies entirely on the loaded persistence data, no new rows are computed.
-
         This can be useful to speed up the rendering process, for instance to try different
-        aesthetic plotting options.
+        aesthetic plotting options. Use this option only if you know you need it.
         """
         return bool(value)
 
-    @OptionsBase.property("cs", type=int)
+    @OptionsBase.property(type=int)
     def chunk_size(self, value):
         """Chunk size used when running ATable's get_df().
         Each processed chunk is made persistent before processing the next one.
@@ -154,8 +153,7 @@ class ExecutionOptions:
         """
         return int(value)
 
-    @OptionsBase.property("rep", "repetition_count", "rep_count",
-                          action=_singleton_cli.PositiveIntegerAction)
+    @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
     def repetitions(self, value):
         """Number of repetitions when calculating execution times.
 
@@ -164,7 +162,7 @@ class ExecutionOptions:
         """
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
-    @OptionsBase.property("fsn", action="store_true")
+    @OptionsBase.property(action="store_true")
     def force_sanity_checks(self, value):
         """If this flag is used, extra sanity checks are performed by enb during the execution of this script.
         The trade-off for rare error condition detection is a slower execution time.
@@ -181,7 +179,7 @@ class ExecutionOptions:
         """
         assert value, f"If provided, at least one column must be defined"
 
-    @OptionsBase.property("prp", type=float)
+    @OptionsBase.property(type=float)
     def progress_report_period(self, value):
         """Default minimum time in seconds between progress report updates,
          when get_df() is invoked and computation is being processed in parallel.
@@ -201,7 +199,7 @@ class DirOptions:
         """
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
-    @OptionsBase.property("d", action=_singleton_cli.ReadableOrCreableDirAction, default=default_base_dataset_dir)
+    @OptionsBase.property(action=_singleton_cli.ReadableOrCreableDirAction, default=default_base_dataset_dir)
     def base_dataset_dir(self, value):
         """Directory to be used as source of input files for indices in the get_df method
         of tables and experiments.
@@ -212,7 +210,7 @@ class DirOptions:
         _singleton_cli.ReadableOrCreableDirAction.assert_valid_value(value)
         return value
 
-    @OptionsBase.property("persistence", action=_singleton_cli.WritableOrCreableDirAction,
+    @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction,
                           default=default_persistence_dir)
     def persistence_dir(self, value):
         """Directory where persistence files are to be stored.
@@ -222,7 +220,7 @@ class DirOptions:
         return value
 
     # Reconstructed version dir
-    @OptionsBase.property("reconstructed", action=_singleton_cli.WritableOrCreableDirAction)
+    @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction)
     def reconstructed_dir(self, value):
         """Base directory where reconstructed versions are to be stored.
         """
@@ -231,7 +229,7 @@ class DirOptions:
         return value
 
     # Versioned data dir
-    @OptionsBase.property("vd", "version_target_dir", action=_singleton_cli.WritableOrCreableDirAction,
+    @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction,
                           default=default_base_dataset_dir)
     def base_version_dataset_dir(self, value):
         """Base dir for versioned folders.
@@ -250,8 +248,7 @@ class DirOptions:
     else:
         default_tmp_dir = os.path.expanduser("~/enb_tmp")
 
-    @OptionsBase.property("t", "tmp", "tmp_dir",
-                          action=_singleton_cli.WritableOrCreableDirAction,
+    @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction,
                           default=default_tmp_dir)
     def base_tmp_dir(self, value):
         """Temporary dir used for intermediate data storage.
@@ -295,8 +292,7 @@ class DirOptions:
     default_analysis_dir = os.path.join(calling_script_dir, "analysis") \
         if not is_enb_cli else "./analysis"
 
-    @OptionsBase.property("analysis",
-                          action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
+    @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
     def analysis_dir(self, value):
         """Directory to store analysis results.
         """
@@ -316,14 +312,14 @@ class RayOptions:
         """
         return value
 
-    @OptionsBase.property("noswap", action="store_true")
+    @OptionsBase.property(action="store_true")
     def disable_swap(self, value):
         """If this flag is used, then swap memory will not be allowed by ray. By default, swap memory is enabled.
         Note that your system may become unstable if swap memory is used (specially a big portion thereof).
         """
         return bool(value)
 
-    @OptionsBase.property("wsn", type=str)
+    @OptionsBase.property(type=str)
     def worker_script_name(self, value):
         """Base name of ray's worker scripts, invoked to run tasks in parallel processes.
         You don't need to change this unless you want to use custom ray workers.
@@ -333,7 +329,7 @@ class RayOptions:
                               f"including any extension, and without any path indication. Found {value} instead")
         return str(value)
 
-    @OptionsBase.property("pws", type=str)
+    @OptionsBase.property(type=str)
     def preshutdown_wait_seconds(self, value):
         """A wait period can be held before shutting down ray. This allows displaying messages produced by
         child processes (e.g., stack traces) in case of abrupt termination of enb client code.
@@ -375,13 +371,13 @@ class RenderingOptions:
     """Options affecting the rendering of figures.
     """
 
-    @OptionsBase.property("nr", "norender", action="store_true")
+    @OptionsBase.property(action="store_true")
     def no_render(self, value):
         """If set, some rendering options will be skipped.
         """
         return bool(value)
 
-    @OptionsBase.property("fw", "width", action=_singleton_cli.PositiveFloatAction)
+    @OptionsBase.property(action=_singleton_cli.PositiveFloatAction)
     def fig_width(self, value):
         """Figure width.
 
@@ -389,7 +385,7 @@ class RenderingOptions:
         """
         _singleton_cli.PositiveFloatAction.assert_valid_value(value)
 
-    @OptionsBase.property("fh", "height", action=_singleton_cli.PositiveFloatAction)
+    @OptionsBase.property(action=_singleton_cli.PositiveFloatAction)
     def fig_height(self, value):
         """Figure height.
 
@@ -411,16 +407,16 @@ class RenderingOptions:
         """
         _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
 
-    @OptionsBase.property("ylpos", type=float)
+    @OptionsBase.property(type=float, default=None)
     def global_y_label_pos(self, value):
         """Relative position of the global Y label.
 
         Can be negative or positive. Intended as a quick hack when left y-axis ticks are longer or shorter
-        than the default assumptions.
+        than the default assumptions. If None is selected, the position is attempted to set automatically.
         """
         return float(value)
 
-    @OptionsBase.property("legend_count", action=_singleton_cli.PositiveIntegerAction)
+    @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
     def legend_column_count(self, value):
         """Number of columns used in plot legends.
         """
@@ -432,13 +428,13 @@ class RenderingOptions:
         """
         return bool(value)
 
-    @OptionsBase.property("title", "global_title", type=str)
-    def displayed_title(self, value):
+    @OptionsBase.property(type=str)
+    def global_title(self, value):
         """When this property is not None, displayed plots will typically include its value as the main title.
         """
         return str(value)
 
-    @OptionsBase.property("grm", action=_singleton_cli.NonnegativeFloatAction)
+    @OptionsBase.property(action=_singleton_cli.NonnegativeFloatAction)
     def group_row_margin(self, value):
         _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
         return float(value)

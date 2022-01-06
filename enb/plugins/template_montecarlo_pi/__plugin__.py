@@ -9,7 +9,7 @@ class MontecarloPiTemplate(enb.plugins.Template):
     author = ["Miguel Hernández-Cabronero"]
     label = "Demo project that approximates pi in a distributed way"
     tags = {"documentation"}
-    tested_on = {"linux"}
+    tested_on = {"linux", "windows"}
 
     @classmethod
     def build(cls, installation_dir):

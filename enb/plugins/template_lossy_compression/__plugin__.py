@@ -12,7 +12,7 @@ class CompressionExperimentTemplate(enb.plugins.Template):
     author = ["Miguel Hernández-Cabronero"]
     label = "Template for lossy compression experiments"
     tags = {"project", "data compression"}
-    tested_on = {"linux"}
+    tested_on = {"linux", "windows"}
 
     @classmethod
     def install(cls, installation_dir, overwrite_destination=False, fields=None):

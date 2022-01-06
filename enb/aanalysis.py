@@ -2,6 +2,8 @@
 """Automatic analysis and report of pandas :class:`pandas.DataFrames`
 (e.g., produced by :class:`enb.experiment.Experiment` instances)
 using pyplot.
+
+See https://miguelinux314.github.io/experiment-notebook/analyzing_data.html for detailed help.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/01/01"
@@ -85,6 +87,8 @@ class Analyzer(enb.atable.ATable):
     combine_groups = False
     # If True, display group legends when applicable
     show_legend = True
+    # If not None, it must be a list of matplotlibrc styles (names or file paths)
+    style_list = None
 
     def __init__(self, csv_support_path=None, column_to_properties=None, progress_report_period=None):
         super().__init__(csv_support_path=csv_support_path,
@@ -305,6 +309,9 @@ class Analyzer(enb.atable.ATable):
             column_kwargs["combine_groups"] = self.combine_groups
         if "show_legend" not in column_kwargs:
             column_kwargs["show_legend"] = self.show_legend
+            
+        if self.style_list is not None:
+            column_kwargs["style_list"] = self.style_list
 
         return column_kwargs
 

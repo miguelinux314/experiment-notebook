@@ -28,7 +28,7 @@ you can run:
 For example, you can try the distributed (although not really accurate)
 [pi approximation project](https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/plugins/template_montecarlo_pi/montecarlo_pi_experiment.py):
 
-    `enb plugin install montecarlo-pi ./mp`
+    enb plugin install montecarlo-pi ./mp
     ./mp/montecarlo_pi_experiment.py
 
 Or check out the most basic working examples with
