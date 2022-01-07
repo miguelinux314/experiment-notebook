@@ -1,4 +1,5 @@
-axes.labelsize      : 12
+# Medium font size settings optimized for 100% width and two-column documents 
+axes.labelsize      : 13
 font.size           : 12
 xtick.labelsize     : 12
 ytick.labelsize     : 12

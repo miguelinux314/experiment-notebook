@@ -228,12 +228,11 @@ class Analyzer(enb.atable.ATable):
 
                 if reference_group is not None:
                     if not self.show_reference_group:
-                        # Remove the plottable data for the reference group if one is used
-                        # Keep the group itself to maintain the produced colors.
                         if reference_group not in column_kwargs["pds_by_group_name"]:
                             raise ValueError(f"Requested reference_group {repr(reference_group)} not found.")
-                        filtered_plds = {k: v if k != reference_group else []
-                                         for k, v in column_kwargs["pds_by_group_name"].items()}
+                        filtered_plds = {k: v
+                                         for k, v in column_kwargs["pds_by_group_name"].items()
+                                         if k != reference_group}
                         column_kwargs["pds_by_group_name"] = filtered_plds
 
                 # All arguments to the parallel rendering function are ready; their associated tasks as created

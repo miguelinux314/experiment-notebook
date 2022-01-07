@@ -407,15 +407,6 @@ class RenderingOptions:
         """
         _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
 
-    @OptionsBase.property(type=float, default=None)
-    def global_y_label_pos(self, value):
-        """Relative position of the global Y label.
-
-        Can be negative or positive. Intended as a quick hack when left y-axis ticks are longer or shorter
-        than the default assumptions. If None is selected, the position is attempted to set automatically.
-        """
-        return float(value)
-
     @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
     def legend_column_count(self, value):
         """Number of columns used in plot legends.

@@ -4,8 +4,9 @@ include enb/config/aini.py
 include enb/config/aoptions.py
 include enb/config/enb.ini
 include enb/config/__init__.py
-include enb/config/mpl_styles/presentation
+include enb/config/mpl_styles/README.md
 include enb/config/mpl_styles/single_column
+include enb/config/mpl_styles/slides
 include enb/config/mpl_styles/two_columns
 include enb/config/singleton_cli.py
 include enb/context.py
