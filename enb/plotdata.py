@@ -9,8 +9,10 @@ import math
 import itertools
 import glob
 import matplotlib
+import matplotlib.patheffects
 
 import enb.atable
+
 matplotlib.use("Agg")
 
 import matplotlib.ticker
@@ -390,14 +392,45 @@ class VerticalLine(PlottableData):
 
 
 def get_available_styles():
-    """Get a list of all styles available for plotting. 
-    It is guaranteed to include at least all of matplotlib's styles.
+    """Get a list of all styles available for plotting.
+    It includes installed matplotlib styles plus custom styles 
     """
-    return sorted(itertools.chain(
-        (str(s) for s in matplotlib.style.available if s[0] != "_"),
-        (os.path.basename(p) for p in glob.glob(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", "*"))
-         if os.path.isfile(p)),
-        ("xkcd",)))
+    return sorted(itertools.chain(get_matlab_styles(), get_local_styles()))
+
+
+def get_matlab_styles():
+    """Return the list of installed matlab styles.
+    """
+    return sorted([str(s) for s in matplotlib.style.available if s[0] != "_"] + ["xkcd"])
+
+
+def get_local_styles():
+    """Get the list of basenames of all styles in the enb/config/mpl_styles folder.
+    """
+    return sorted(os.path.basename(p)
+                  for p in glob.glob(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", "*"))
+                  if os.path.isfile(p) and os.path.basename(p) != "README.md")
+
+
+def apply_xkcd_style():
+    """Apply a xkcd-like style, based on that found in matplotlib, but 
+    with small modifications to improve visualzation.
+    """
+    plt.rcParams['font.family'] = ['Humor Sans', 'Comic Sans MS']
+    plt.rcParams['font.size'] = 14.0
+    plt.rcParams['path.sketch'] = (1, 100, 2)
+    plt.rcParams['axes.linewidth'] = 1.5
+    plt.rcParams['lines.linewidth'] = 2.0
+    plt.rcParams['figure.facecolor'] = 'white'
+    plt.rcParams['grid.linewidth'] = 0.0
+    plt.rcParams['axes.unicode_minus'] = False
+    plt.rcParams['xtick.major.size'] = 6
+    plt.rcParams['xtick.minor.size'] = 3
+    plt.rcParams['xtick.major.width'] = 2
+    plt.rcParams['ytick.major.size'] = 6
+    plt.rcParams['xtick.minor.size'] = 3
+    plt.rcParams['ytick.major.width'] = 2
+
 
 @enb.parallel.parallel()
 def parallel_render_plds_by_group(
@@ -627,17 +660,21 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         with plt.style.context([]):
             # Apply selected styles in the given order, based on a default context
             for style in (style_list if style_list is not None else []):
+                if not style:
+                    enb.logger.info(f"Ignoring empty style ({repr(style)}")
+                    continue
                 if style in matplotlib.style.available or os.path.isfile(style):
                     # Matplotlib style name or full path
                     plt.style.use(style)
-                elif os.path.isfile(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style))):
+                elif os.path.isfile(
+                        os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style))):
                     # Path relative to enb's custom mpl_styles
-                    plt.style.use(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style)))
+                    plt.style.use(
+                        os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style)))
                 elif style == "xkcd":
-                    plt.xkcd(length=0)
+                    apply_xkcd_style()
                 else:
                     raise ValueError(f"Unrecognized style {repr(style)}.")
-                
             fig_width = options.fig_width if fig_width is None else fig_width
             fig_height = options.fig_height if fig_height is None else fig_height
 
@@ -748,35 +785,21 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                                           else enb.atable.clean_column_name(group_name),
                                           rotation=0, ha="left", va="center")
 
-            plt.xlabel(global_x_label)
             if column_properties and column_properties.hist_label_dict is not None:
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
                 x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
                 plt.xticks(x_tick_values, x_tick_labels)
 
-            if global_y_label:
-                # global_y_label_pos = options.global_y_label_pos if global_y_label_pos is None else global_y_label_pos
-                # try:
-                #     global_y_label_pos = 0.025 - 0.06 * max(0, float(plt.rcParams['axes.labelsize']) / 7.5)
-                # except ValueError:
-                #     # Default is medium, no adjust needed
-                #     global_y_label_pos = 0
-                # print(f"[watch] global_y_label_pos={global_y_label_pos}")
-                if global_y_label_pos is None:
-                    global_y_label_pos = 0.03
-                    try:
-                        global_y_label_pos -= 0.06 * max(0, ((float(plt.rcParams['axes.labelsize']) / 10)))
-                    except ValueError:
-                        # Default is medium, no adjust needed
-                        pass
-
-                if style_list and "xkcd" in style_list:
-                    global_y_label_pos -= 0.075
-                
-                # # fig.text(global_y_label_pos, 0.5, global_y_label, va='center', ha='center', rotation='vertical')
-                fig.text(global_y_label_pos, 0.5, global_y_label, va="center", ha="left", rotation="vertical",
-                         transform=fig.transFigure,
-                         fontsize=plt.rcParams['axes.labelsize'])
+            if global_y_label or global_y_label:
+                # Add an otherwise transparent subplot for global labels
+                plt.gcf().add_subplot(111, frame_on=False)
+                plt.tick_params(labelcolor="none", bottom=False, left=False)
+                plt.grid(False)
+                plt.minorticks_off()
+                if global_x_label is not None:
+                    plt.xlabel(global_x_label)
+                if global_y_label is not None:
+                    plt.ylabel(global_y_label)
 
             if options.global_title is not None:
                 plt.suptitle(options.global_title)
@@ -856,5 +879,3 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300)
 
             plt.close()
-
-    

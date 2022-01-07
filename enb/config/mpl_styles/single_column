@@ -1,3 +1,4 @@
+# Small font size settings optimized for 100% width and one-column documents
 axes.labelsize      : 9
 font.size           : 8
 xtick.labelsize     : 8
