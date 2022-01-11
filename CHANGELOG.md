@@ -16,15 +16,22 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.3.5
 
-- Introduced the `enb show` command to show some useful information. Run `enb show -h` for more details.
+* New features
 
-- Added the `'enb.ini'` plugin that allows installation of an editable configuration file for enb.
 
-- Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
+	- Introduced the `enb show` command to show some useful information. Run `enb show -h` for more details.
 
-- Added documentation on how to customize the appearance of plots.
+	- Added the `'enb.ini'` plugin that allows installation of an editable configuration file for enb.
 
-- Improved the `combine_groups` option for |Analyzer| subclasses, and its documentation.
+	- Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
+
+	- Added documentation on how to customize the appearance of plots.
+
+* General improvements
+
+	- Enhanced the `combine_groups` option for |Analyzer| subclasses, and its documentation.
+	- Fixed label positioning in some plots with longer labels.
+	- Accelerated the initialization of ray for the case without remote nodes
 
 # Latest stable version
 
