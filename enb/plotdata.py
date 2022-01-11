@@ -541,8 +541,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         displayed. If None, alphabetical, case-insensitive order is applied.
     :param fig_width: figure width. The larger the figure size, the smaller the text will look.
     :param fig_height: figure height. The larger the figure size, the smaller the text will look.
-    :param global_y_label_pos: position of the global y label. Needed if the y axis has ticks with
-        long labels.
     :param legend_column_count: when the legend is shown, use this many columns.
     :param force_monochrome_group: if True, all plottable data with non-None color in each group
       is set to the same color, defined by color_cycle.
@@ -788,21 +786,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             if column_properties and column_properties.hist_label_dict is not None:
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
                 x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
-                plt.xticks(x_tick_values, x_tick_labels)
-
-            if global_y_label or global_y_label:
-                # Add an otherwise transparent subplot for global labels
-                plt.gcf().add_subplot(111, frame_on=False)
-                plt.tick_params(labelcolor="none", bottom=False, left=False)
-                plt.grid(False)
-                plt.minorticks_off()
-                if global_x_label is not None:
-                    plt.xlabel(global_x_label)
-                if global_y_label is not None:
-                    plt.ylabel(global_y_label)
-
-            if options.global_title is not None:
-                plt.suptitle(options.global_title)
 
             group_row_margin = group_row_margin if group_row_margin is not None else float(
                 enb.config.options.group_row_margin)
@@ -826,6 +809,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             # Apply changes to the figure
             if xlim[0] != xlim[1] and not math.isnan(xlim[0]) and not math.isnan(xlim[1]):
                 plt.xlim(*xlim)
+                ca = plt.gca()
+                for group_axes in group_axis_list:
+                    plt.sca(group_axes)
+                    plt.xlim(*xlim)
+                plt.sca(ca)
             if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]) \
                     and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
                 plt.ylim(*ylim)
@@ -834,42 +822,40 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     plt.sca(group_axes)
                     plt.ylim(*ylim)
                 plt.sca(ca)
-
+                
             if xlim[1] < 1e-2:
                 x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
-
-            if x_tick_list is not None:
-                if not x_tick_label_list:
-                    plt.xticks(x_tick_list)
-                else:
-                    plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
-                plt.minorticks_off()
-            if x_tick_label_list is not None:
-                assert x_tick_list is not None
-            if x_tick_list is None and x_tick_label_angle is not None:
-                plt.xticks(rotation=x_tick_label_angle)
-
+            show_grid = options.show_grid if show_grid is None else show_grid
+            ca = plt.gca()
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
-                if y_tick_list is not None:
-                    if not y_tick_label_list:
-                        plt.yticks(y_tick_list)
-                    else:
-                        plt.yticks(y_tick_list, y_tick_label_list)
-                    group_axes.minorticks_off()
-                if y_tick_label_list is not None:
-                    assert y_tick_list is not None
-                plt.yticks()
-
-            show_grid = options.show_grid if show_grid is None else show_grid
-
-            if show_grid:
-                ca = plt.gca()
-                plt.grid("major", alpha=0.5)
-                for group_axes in group_axis_list:
-                    plt.sca(group_axes)
+                plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
+                plt.xticks(y_tick_list, y_tick_label_list)
+                if x_tick_label_list or y_tick_label_list:
+                    plt.minorticks_off()
+                if show_grid:
                     plt.grid("major", alpha=0.5)
+            plt.sca(ca)
+            
+            if global_y_label or global_y_label:
+                # The x axis needs to be placed on the last horizontal group
+                # so that it can be correctly aligned
+                ca = plt.gca()
+                for group_axes in group_axis_list[-1:]:
+                    plt.sca(group_axes)
+                    plt.xlabel(global_x_label)
                 plt.sca(ca)
+                
+                # Add an otherwise transparent subplot for global labels
+                if global_y_label is not None:
+                    plt.gcf().add_subplot(111, frame_on=False)
+                    plt.tick_params(labelcolor="none", bottom=False, left=False)
+                    plt.grid(False)
+                    plt.minorticks_off()
+                    plt.ylabel(global_y_label, labelpad=15)
+
+            if options.global_title is not None:
+                plt.suptitle(options.global_title)
 
             with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
                 if os.path.dirname(output_plot_path):
