@@ -66,9 +66,9 @@ class PlottableData:
 
     def render_legend(self, axes=None):
         axes = plt if axes is None else axes
-        legend = plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-
-                            ncol=self.legend_column_count, edgecolor=((0, 0, 0, 0.2)))
+        print(f"rendering {self}")
+        legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                             ncol=self.legend_column_count, edgecolor=((0, 0, 0, 0.2)))
         legend.get_frame().set_alpha(None)
         legend.get_frame().set_facecolor((1, 1, 1, 0))
 
