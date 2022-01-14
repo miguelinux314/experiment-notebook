@@ -1534,22 +1534,22 @@ class DictNumericSummary(AnalyzerSummary):
 
         row[_column_name] = []
 
-        x_values = []
-        avg_values = []
-        std_values = []
-        for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
-            values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
-            if len(values) > 0:
-                if _self.analyzer.key_to_x:
-                    x_values.append(_self.analyzer.key_to_x[k])
-                else:
-                    x_values.append(x)
-                avg_values.append(values.mean())
-                std_values.append(values.std())
-                if _self.analyzer.show_individual_samples and self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0:
-                    row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values[-1:] * len(values),
-                                                                      y_values=values.values,
-                                                                      alpha=self.analyzer.secondary_alpha))
+        if _self.analyzer.show_individual_samples and self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0:
+            x_values = []
+            avg_values = []
+            std_values = []
+            for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
+                values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
+                if len(values) > 0:
+                    if _self.analyzer.key_to_x:
+                        x_values.append(_self.analyzer.key_to_x[k])
+                    else:
+                        x_values.append(x)
+                    avg_values.append(values.mean())
+                    std_values.append(values.std())
+            row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values,
+                                                              y_values=avg_values,
+                                                              alpha=self.analyzer.secondary_alpha))
         if render_mode == "line":
             row[_column_name].append(enb.plotdata.LineData(
                 x_values=x_values, y_values=avg_values, alpha=self.analyzer.main_alpha))
