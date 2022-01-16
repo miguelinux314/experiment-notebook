@@ -1,73 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>enb.config package &mdash; Experiment Notebook MIT License documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="enb.plugins package" href="enb.plugins.html" />
     <link rel="prev" title="enb package" href="enb.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> Experiment Notebook
-          
-
-          
-            
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
-          
-
-          
+              <div class="version">
+                v0.3.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,26 +41,16 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="enb.html">enb package</a><ul class="current">
@@ -108,10 +64,11 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel">enb.parallel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel_ray">enb.parallel_ray module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ray_cluster">enb.ray_cluster module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.sets">enb.sets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tarlite">enb.tarlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tcall">enb.tcall module</a></li>
@@ -125,84 +82,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../thanks.html">Thanks</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Experiment Notebook</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../api.html">API</a> &raquo;</li>
-        
           <li><a href="modules.html">enb</a> &raquo;</li>
-        
           <li><a href="enb.html">enb package</a> &raquo;</li>
-        
       <li>enb.config package</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="../_sources/api/enb.config.rst.txt" rel="nofollow"> View page source</a>
-          
-        
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="enb-config-package">
-<h1>enb.config package<a class="headerlink" href="#enb-config-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-enb.config.aini">
-<span id="enb-config-aini-module"></span><h2>enb.config.aini module<a class="headerlink" href="#module-enb.config.aini" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="enb-config-package">
+<h1>enb.config package<a class="headerlink" href="#enb-config-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-enb.config.aini">
+<span id="enb-config-aini-module"></span><h2>enb.config.aini module<a class="headerlink" href="#module-enb.config.aini" title="Permalink to this headline"></a></h2>
 <p>Automatic file-based configuration login based on the INI format.</p>
 <p>The enb framework supports configuration files with <cite>.ini</cite> extension and format
 compatible with python’s configparser (<a class="reference external" href="https://docs.python.org/3/library/configparser.html#module-configparser">https://docs.python.org/3/library/configparser.html#module-configparser</a>),
@@ -219,66 +133,82 @@ and will depend on the OS. In many linux boxes, this dir is <cite>~/.config/enb<
 case ignorant, order. No recursive folder search is performed.</p></li>
 </ol>
 <dl class="py class">
-<dt id="enb.config.aini.AdditionalIniParser">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></code><code class="sig-name descname"><span class="pre">AdditionalIniParser</span></code><a class="headerlink" href="#enb.config.aini.AdditionalIniParser" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.AdditionalIniParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></span><span class="sig-name descname"><span class="pre">AdditionalIniParser</span></span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></p>
 <dl class="py method">
-<dt id="enb.config.aini.AdditionalIniParser.get_extra_ini_paths">
-<code class="sig-name descname"><span class="pre">get_extra_ini_paths</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser.get_extra_ini_paths" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.AdditionalIniParser.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aini.AdditionalIniParser.get_extra_ini_paths">
+<span class="sig-name descname"><span class="pre">get_extra_ini_paths</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.AdditionalIniParser.get_extra_ini_paths" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aini.Ini">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></code><code class="sig-name descname"><span class="pre">Ini</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></span><span class="sig-name descname"><span class="pre">Ini</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class of the enb.config.ini object, that exposes file-defined configurations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aini.Ini.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.config.aini.Ini.all_ini_paths">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_ini_paths</span></span><a class="headerlink" href="#enb.config.aini.Ini.all_ini_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of all used ini paths.</p>
+</dd></dl>
+
 <dl class="py attribute">
-<dt id="enb.config.aini.Ini.extra_ini_paths">
-<code class="sig-name descname"><span class="pre">extra_ini_paths</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#enb.config.aini.Ini.extra_ini_paths" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini.extra_ini_paths">
+<span class="sig-name descname"><span class="pre">extra_ini_paths</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.config.aini.Ini.extra_ini_paths" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aini.Ini.get_key">
-<code class="sig-name descname"><span class="pre">get_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.get_key" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini.get_key">
+<span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.get_key" title="Permalink to this definition"></a></dt>
 <dd><p>Return a read key value in the given section (if existing),
 after applying ast.literal_eval on the value to recognize any
 valid python literals (essentially numbers, lists, dicts, tuples, booleans and None).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aini.Ini.global_ini_path">
-<code class="sig-name descname"><span class="pre">global_ini_path</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'/data/Dropbox/desarrollo/experiment-notebook.git/enb/config/enb.ini'</span></em><a class="headerlink" href="#enb.config.aini.Ini.global_ini_path" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini.global_ini_path">
+<span class="sig-name descname"><span class="pre">global_ini_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/data/Dropbox/desarrollo/experiment-notebook.git/enb/config/enb.ini'</span></em><a class="headerlink" href="#enb.config.aini.Ini.global_ini_path" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aini.Ini.local_ini_paths">
-<code class="sig-name descname"><span class="pre">local_ini_paths</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#enb.config.aini.Ini.local_ini_paths" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini.local_ini_paths">
+<span class="sig-name descname"><span class="pre">local_ini_paths</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#enb.config.aini.Ini.local_ini_paths" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="enb.config.aini.Ini.sections_by_name">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sections_by_name</span></code><a class="headerlink" href="#enb.config.aini.Ini.sections_by_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.config.aini.Ini.sections_by_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sections_by_name</span></span><a class="headerlink" href="#enb.config.aini.Ini.sections_by_name" title="Permalink to this definition"></a></dt>
 <dd><p>Get a list of all configparser.Section instances, including the default section.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aini.Ini.update_from_path">
-<code class="sig-name descname"><span class="pre">update_from_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ini_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.update_from_path" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini.update_from_path">
+<span class="sig-name descname"><span class="pre">update_from_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ini_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.Ini.update_from_path" title="Permalink to this definition"></a></dt>
 <dd><p>Update the current configuration by reading the contents of ini_path.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aini.Ini.user_ini_path">
-<code class="sig-name descname"><span class="pre">user_ini_path</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'/home/miguelinux/.config/enb/enb.ini'</span></em><a class="headerlink" href="#enb.config.aini.Ini.user_ini_path" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.Ini.user_ini_path">
+<span class="sig-name descname"><span class="pre">user_ini_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/miguelinux/.config/enb/enb.ini'</span></em><a class="headerlink" href="#enb.config.aini.Ini.user_ini_path" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.config.aini.managed_attributes">
-<code class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></code><code class="sig-name descname"><span class="pre">managed_attributes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.managed_attributes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aini.managed_attributes">
+<span class="sig-prename descclassname"><span class="pre">enb.config.aini.</span></span><span class="sig-name descname"><span class="pre">managed_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aini.managed_attributes" title="Permalink to this definition"></a></dt>
 <dd><p>Decorator for classes so that their (class) attributes are set
 based on the <cite>.ini</cite> files found. Attributes starting with <cite>_</cite> are not considered.</p>
 <p>Values are read from the section titled as the classes fully qualified name
@@ -287,9 +217,9 @@ based on the <cite>.ini</cite> files found. Attributes starting with <cite>_</ci
 in the definition of cls are ignored, i.e., new attributes are not added to cls.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-enb.config.aoptions">
-<span id="enb-config-aoptions-module"></span><h2>enb.config.aoptions module<a class="headerlink" href="#module-enb.config.aoptions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-enb.config.aoptions">
+<span id="enb-config-aoptions-module"></span><h2>enb.config.aoptions module<a class="headerlink" href="#module-enb.config.aoptions" title="Permalink to this headline"></a></h2>
 <p>Implementation of the classes for the enb.config.options and CLI interface</p>
 <p>Option configuration in enb is centralized through enb.config.options. Several key aspects should be highlighted:</p>
 <blockquote>
@@ -313,31 +243,31 @@ their default values.</p></li>
 When ray spawns new (local or remote) processes to serve as workers, the Options singleton
 is initialized for each of those process, with the catch that ray does <strong>not</strong> pass the user’s CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
-To mitigate this problem, the &#64;`enb.ray_cluster.remote` decorator is provided in substitution of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.remote()</span></code>
+To mitigate this problem, the &#64;`enb.parallel_ray.remote` decorator is provided in substitution of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray.remote()</span></code>
 so that options at the time of calling the remote method are available to that method at
 its regular location (enb.config.options).</p>
 <dl class="py class">
-<dt id="enb.config.aoptions.DirOptions">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">DirOptions</span></code><a class="headerlink" href="#enb.config.aoptions.DirOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">DirOptions</span></span><a class="headerlink" href="#enb.config.aoptions.DirOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Options regarding default data directories.</p>
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.analysis_dir">
-<code class="sig-name descname"><span class="pre">analysis_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.analysis_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.analysis_dir">
+<span class="sig-name descname"><span class="pre">analysis_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.analysis_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Directory to store analysis results.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.base_dataset_dir">
-<code class="sig-name descname"><span class="pre">base_dataset_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.base_dataset_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.base_dataset_dir">
+<span class="sig-name descname"><span class="pre">base_dataset_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.base_dataset_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Directory to be used as source of input files for indices in the get_df method
 of tables and experiments.</p>
 <p>It should be an existing, readable directory.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.base_tmp_dir">
-<code class="sig-name descname"><span class="pre">base_tmp_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.base_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.base_tmp_dir">
+<span class="sig-name descname"><span class="pre">base_tmp_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.base_tmp_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Temporary dir used for intermediate data storage.</p>
 <p>This can be useful when experiments make heavy use of tmp and memory is limited,
 avoiding out-of-RAM crashes at the cost of potentially slower execution time.</p>
@@ -345,137 +275,151 @@ avoiding out-of-RAM crashes at the cost of potentially slower execution time.</p
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.base_version_dataset_dir">
-<code class="sig-name descname"><span class="pre">base_version_dataset_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.base_version_dataset_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.base_version_dataset_dir">
+<span class="sig-name descname"><span class="pre">base_version_dataset_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.base_version_dataset_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Base dir for versioned folders.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aoptions.DirOptions.default_analysis_dir">
-<code class="sig-name descname"><span class="pre">default_analysis_dir</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'/home/miguelinux/.local/bin/analysis'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_analysis_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_analysis_dir">
+<span class="sig-name descname"><span class="pre">default_analysis_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/miguelinux/venv/bin/analysis'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_analysis_dir" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aoptions.DirOptions.default_external_binary_dir">
-<code class="sig-name descname"><span class="pre">default_external_binary_dir</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_external_binary_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_external_binary_dir">
+<span class="sig-name descname"><span class="pre">default_external_binary_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_external_binary_dir" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aoptions.DirOptions.default_output_plots_dir">
-<code class="sig-name descname"><span class="pre">default_output_plots_dir</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'/home/miguelinux/.local/bin/plots'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_output_plots_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_output_plots_dir">
+<span class="sig-name descname"><span class="pre">default_output_plots_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/miguelinux/venv/bin/plots'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_output_plots_dir" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="enb.config.aoptions.DirOptions.default_tmp_dir">
-<code class="sig-name descname"><span class="pre">default_tmp_dir</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'/dev/shm'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_tmp_dir">
+<span class="sig-name descname"><span class="pre">default_tmp_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/dev/shm'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_tmp_dir" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.external_bin_base_dir">
-<code class="sig-name descname"><span class="pre">external_bin_base_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.external_bin_base_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.external_bin_base_dir">
+<span class="sig-name descname"><span class="pre">external_bin_base_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.external_bin_base_dir" title="Permalink to this definition"></a></dt>
 <dd><p>External binary base dir.</p>
 <p>In case a centralized repository is defined at the project or system level.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.persistence_dir">
-<code class="sig-name descname"><span class="pre">persistence_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.persistence_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.persistence_dir">
+<span class="sig-name descname"><span class="pre">persistence_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.persistence_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Directory where persistence files are to be stored.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.plot_dir">
-<code class="sig-name descname"><span class="pre">plot_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.plot_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.plot_dir">
+<span class="sig-name descname"><span class="pre">plot_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.plot_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Directory to store produced plots.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.DirOptions.reconstructed_dir">
-<code class="sig-name descname"><span class="pre">reconstructed_dir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.reconstructed_dir" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.project_root">
+<span class="sig-name descname"><span class="pre">project_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.project_root" title="Permalink to this definition"></a></dt>
+<dd><p>If set, data paths relative to the invoked script’s paths are stored instead of their
+absolute path counterparts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.reconstructed_dir">
+<span class="sig-name descname"><span class="pre">reconstructed_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.reconstructed_dir" title="Permalink to this definition"></a></dt>
 <dd><p>Base directory where reconstructed versions are to be stored.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.ExecutionOptions">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">ExecutionOptions</span></code><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">ExecutionOptions</span></span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>General execution options.</p>
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.chunk_size">
-<code class="sig-name descname"><span class="pre">chunk_size</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.chunk_size" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.chunk_size">
+<span class="sig-name descname"><span class="pre">chunk_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.chunk_size" title="Permalink to this definition"></a></dt>
 <dd><p>Chunk size used when running ATable’s get_df().
 Each processed chunk is made persistent before processing the next one.
 This parameter can be used to control the trade-off between error tolerance and overall speed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.columns">
-<code class="sig-name descname"><span class="pre">columns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of selected column names for computation.</p>
-<p>If one or more column names are provided,
-all others are ignored. Multiple columns can be expressed,
-separated by spaces.
-Don’t use this argument unless you know what you are doing, or expect potential exceptions.</p>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.cpu_limit">
+<span class="sig-name descname"><span class="pre">cpu_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.cpu_limit" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum number of CPUs to use for computation in this machine
+See <a class="reference external" href="https://miguelinux314.github.io/experiment-notebook/cluster_setup.html">https://miguelinux314.github.io/experiment-notebook/cluster_setup.html</a> for
+details on how to set the resources employed in remote computation nodes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.force">
-<code class="sig-name descname"><span class="pre">force</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.force" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.force">
+<span class="sig-name descname"><span class="pre">force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.force" title="Permalink to this definition"></a></dt>
 <dd><p>Force calculation of pre-existing results, if available?</p>
 <p>Note that should an error occur while re-computing a given index,
 that index is dropped from the persistent support.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.force_sanity_checks">
-<code class="sig-name descname"><span class="pre">force_sanity_checks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.force_sanity_checks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.force_sanity_checks">
+<span class="sig-name descname"><span class="pre">force_sanity_checks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.force_sanity_checks" title="Permalink to this definition"></a></dt>
 <dd><p>If this flag is used, extra sanity checks are performed by enb during the execution of this script.
 The trade-off for rare error condition detection is a slower execution time.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.no_new_results">
-<code class="sig-name descname"><span class="pre">no_new_results</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.no_new_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>If True, ATable’s get_df method relies entirely on the loaded persistence data, no new rows are computed.</p>
-<p>This can be useful to speed up the rendering process, for instance to try different
-aesthetic plotting options.</p>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.no_new_results">
+<span class="sig-name descname"><span class="pre">no_new_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.no_new_results" title="Permalink to this definition"></a></dt>
+<dd><p>If True, ATable’s get_df method relies entirely on the loaded persistence data, no new rows are computed.
+This can be useful to speed up the rendering process, for instance to try different
+aesthetic plotting options. Use this option only if you know you need it.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.progress_report_period">
-<code class="sig-name descname"><span class="pre">progress_report_period</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.progress_report_period" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.progress_report_period">
+<span class="sig-name descname"><span class="pre">progress_report_period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.progress_report_period" title="Permalink to this definition"></a></dt>
 <dd><p>Default minimum time in seconds between progress report updates,
-when get_df() is invoked and computation is being processed in parallel_decorator.</p>
+when get_df() is invoked and computation is being processed in parallel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.quick">
-<code class="sig-name descname"><span class="pre">quick</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.quick" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.quick">
+<span class="sig-name descname"><span class="pre">quick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.quick" title="Permalink to this definition"></a></dt>
 <dd><p>Perform a quick test with a subset of the input samples?</p>
 <p>If specified q&gt;0 times, a subset of the first q target indices is employed
 in most get_df methods from ATable instances</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.ExecutionOptions.repetitions">
-<code class="sig-name descname"><span class="pre">repetitions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.repetitions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.repetitions">
+<span class="sig-name descname"><span class="pre">repetitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.repetitions" title="Permalink to this definition"></a></dt>
 <dd><p>Number of repetitions when calculating execution times.</p>
 <p>This value allows computation of more reliable execution times in some experiments, but
 is normally most representative in combination with -s to use a single execution process at a time.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.selected_columns">
+<span class="sig-name descname"><span class="pre">selected_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.selected_columns" title="Permalink to this definition"></a></dt>
+<dd><p>List of selected column names for computation.</p>
+<p>If one or more column names are provided,
+all others are ignored. Multiple columns can be expressed,
+separated by spaces.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.GeneralOptions">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">GeneralOptions</span></code><a class="headerlink" href="#enb.config.aoptions.GeneralOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.GeneralOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">GeneralOptions</span></span><a class="headerlink" href="#enb.config.aoptions.GeneralOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Group of uncategorized options.</p>
 <dl class="py method">
-<dt id="enb.config.aoptions.GeneralOptions.extra_ini_paths">
-<code class="sig-name descname"><span class="pre">extra_ini_paths</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.GeneralOptions.extra_ini_paths" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.GeneralOptions.extra_ini_paths">
+<span class="sig-name descname"><span class="pre">extra_ini_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.GeneralOptions.extra_ini_paths" title="Permalink to this definition"></a></dt>
 <dd><p>Additional .ini files to be used to attain file-based configurations,
 in addition to the default ones (system, user and project).
 If defined more than once, the last definition sets the list instead of appending
@@ -483,53 +427,53 @@ to a common list of extra ini paths.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.GeneralOptions.verbose">
-<code class="sig-name descname"><span class="pre">verbose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.GeneralOptions.verbose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.GeneralOptions.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.GeneralOptions.verbose" title="Permalink to this definition"></a></dt>
 <dd><p>Be verbose? Repeat for more. Change at any time to increase the logger’s verbosity.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.LoggingOptions">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">LoggingOptions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">LoggingOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.OptionsBase" title="enb.config.aoptions.OptionsBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.OptionsBase</span></code></a></p>
 <p>Options controlling what and how is printed and/or logged to files.</p>
 <dl class="py method">
-<dt id="enb.config.aoptions.LoggingOptions.default_print_level">
-<code class="sig-name descname"><span class="pre">default_print_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.default_print_level" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.default_print_level">
+<span class="sig-name descname"><span class="pre">default_print_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.default_print_level" title="Permalink to this definition"></a></dt>
 <dd><p>Selects the default log level equivalent to a regular print-like message. It is most effective
 when combined with log_print set to True.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.LoggingOptions.log_level_prefix">
-<code class="sig-name descname"><span class="pre">log_level_prefix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_level_prefix" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.log_level_prefix">
+<span class="sig-name descname"><span class="pre">log_level_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_level_prefix" title="Permalink to this definition"></a></dt>
 <dd><p>If True, logged messages include a prefix, e.g., based on their priority.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.LoggingOptions.log_print">
-<code class="sig-name descname"><span class="pre">log_print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_print" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.log_print">
+<span class="sig-name descname"><span class="pre">log_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.log_print" title="Permalink to this definition"></a></dt>
 <dd><p>If True, the default print command is substituted by enb’s logging system when enb is imported.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.LoggingOptions.selected_log_level">
-<code class="sig-name descname"><span class="pre">selected_log_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.selected_log_level" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.selected_log_level">
+<span class="sig-name descname"><span class="pre">selected_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.selected_log_level" title="Permalink to this definition"></a></dt>
 <dd><p>Maximum log level / minimum priority required when printing messages.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.LoggingOptions.show_prefix_level">
-<code class="sig-name descname"><span class="pre">show_prefix_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.show_prefix_level" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.LoggingOptions.show_prefix_level">
+<span class="sig-name descname"><span class="pre">show_prefix_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.LoggingOptions.show_prefix_level" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.Options">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">Options</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.Options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.Options">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">Options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.Options" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RayOptions" title="enb.config.aoptions.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RenderingOptions" title="enb.config.aoptions.RenderingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RenderingOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.LoggingOptions" title="enb.config.aoptions.LoggingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.LoggingOptions</span></code></a></p>
 <p>Class of the <cite>enb.config.options</cite> object, which exposes
 options for all modules, allowing CLI-based parameter setting.</p>
@@ -544,120 +488,137 @@ results in <cite>sys.argv</cite> differing in the orchestrating and host process
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.OptionsBase">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">OptionsBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.OptionsBase" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.OptionsBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">OptionsBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.OptionsBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.SingletonCLI" title="enb.config.singleton_cli.SingletonCLI"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.SingletonCLI</span></code></a></p>
 <p>Global options for all modules, without any positional or required argument.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.config.aoptions.OptionsBase.non_default_properties">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_default_properties</span></span><a class="headerlink" href="#enb.config.aoptions.OptionsBase.non_default_properties" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
-<dt id="enb.config.aoptions.OptionsBase.non_default_properties">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">non_default_properties</span></code><a class="headerlink" href="#enb.config.aoptions.OptionsBase.non_default_properties" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.OptionsBase.normalize_dir_value">
+<span class="sig-name descname"><span class="pre">normalize_dir_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.OptionsBase.normalize_dir_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.RayOptions">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">RayOptions</span></code><a class="headerlink" href="#enb.config.aoptions.RayOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RayOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RayOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Options related to the ray library, used for parallel_decorator/distributed computing.</p>
+<p>Options related to the ray library, used for parallel/distributed computing.</p>
 <dl class="py method">
-<dt id="enb.config.aoptions.RayOptions.disable_swap">
-<code class="sig-name descname"><span class="pre">disable_swap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.disable_swap" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.disable_swap">
+<span class="sig-name descname"><span class="pre">disable_swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.disable_swap" title="Permalink to this definition"></a></dt>
 <dd><p>If this flag is used, then swap memory will not be allowed by ray. By default, swap memory is enabled.
 Note that your system may become unstable if swap memory is used (specially a big portion thereof).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RayOptions.preshutdown_wait_seconds">
-<code class="sig-name descname"><span class="pre">preshutdown_wait_seconds</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.preshutdown_wait_seconds" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.no_ray">
+<span class="sig-name descname"><span class="pre">no_ray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.no_ray" title="Permalink to this definition"></a></dt>
+<dd><p>If set, no ray is employed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.preshutdown_wait_seconds">
+<span class="sig-name descname"><span class="pre">preshutdown_wait_seconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.preshutdown_wait_seconds" title="Permalink to this definition"></a></dt>
 <dd><p>A wait period can be held before shutting down ray. This allows displaying messages produced by
 child processes (e.g., stack traces) in case of abrupt termination of enb client code.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RayOptions.ray_cpu_limit">
-<code class="sig-name descname"><span class="pre">ray_cpu_limit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_cpu_limit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum number of virtual CPUs to use in the ray cluster.
-If set to None or any number n &lt;= 0, then no limits are set in terms of virtual CPU usage.</p>
-<p>IMPORTANT: this value is only considered when initializing a ray cluster. Therefore, changing
-it afterwards will not change ray cpu limits.</p>
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.ray_port">
+<span class="sig-name descname"><span class="pre">ray_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_port" title="Permalink to this definition"></a></dt>
+<dd><p>Ray port and first port that need to be open in case a cluster
+is to be set up. Refer to <a class="reference external" href="https://miguelinux314.github.io/experiment-notebook/installation.html">https://miguelinux314.github.io/experiment-notebook/installation.html</a>
+for further information on this.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RayOptions.worker_script_name">
-<code class="sig-name descname"><span class="pre">worker_script_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.worker_script_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base name of ray’s worker scripts, invoked to run tasks in parallel_decorator processes.
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.ray_port_count">
+<span class="sig-name descname"><span class="pre">ray_port_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ray_port_count" title="Permalink to this definition"></a></dt>
+<dd><p>Total number of consecutive ports that can be assumed to be open after <cite>ray_port</cite>.
+For instance, if <cite>ray_port</cite> is 11000 and <cite>ray_port_count</cite> is 1000, then
+ports 11000-11999 will be used for parallelization and (if so-configured) enb clusters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.ssh_cluster_csv_path">
+<span class="sig-name descname"><span class="pre">ssh_cluster_csv_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.ssh_cluster_csv_path" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the CSV file containing a enb ssh cluster configuration.
+See <a class="reference external" href="https://miguelinux314.github.io/experiment-notebook/installation.html">https://miguelinux314.github.io/experiment-notebook/installation.html</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.worker_script_name">
+<span class="sig-name descname"><span class="pre">worker_script_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.worker_script_name" title="Permalink to this definition"></a></dt>
+<dd><p>Base name of ray’s worker scripts, invoked to run tasks in parallel processes.
 You don’t need to change this unless you want to use custom ray workers.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.aoptions.RenderingOptions">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">RenderingOptions</span></code><a class="headerlink" href="#enb.config.aoptions.RenderingOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RenderingOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Options affecting the rendering of figures.</p>
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.displayed_title">
-<code class="sig-name descname"><span class="pre">displayed_title</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.displayed_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>When this property is not None, displayed plots will typically include its value as the main title.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.fig_height">
-<code class="sig-name descname"><span class="pre">fig_height</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_height" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_height">
+<span class="sig-name descname"><span class="pre">fig_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_height" title="Permalink to this definition"></a></dt>
 <dd><p>Figure height.</p>
 <p>Larger values may make text look smaller when the image is scaled to a constant size.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.fig_width">
-<code class="sig-name descname"><span class="pre">fig_width</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_width" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_width">
+<span class="sig-name descname"><span class="pre">fig_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_width" title="Permalink to this definition"></a></dt>
 <dd><p>Figure width.</p>
 <p>Larger values may make text look smaller when the image is scaled to a constant size.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.global_y_label_pos">
-<code class="sig-name descname"><span class="pre">global_y_label_pos</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.global_y_label_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Relative position of the global Y label.</p>
-<p>Can be negative or positive. Intended as a quick hack when left y-axis ticks are longer or shorter
-than the default assumptions.</p>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.global_title">
+<span class="sig-name descname"><span class="pre">global_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.global_title" title="Permalink to this definition"></a></dt>
+<dd><p>When this property is not None, displayed plots will typically include its value as the main title.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.group_row_margin">
-<code class="sig-name descname"><span class="pre">group_row_margin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.group_row_margin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.group_row_margin">
+<span class="sig-name descname"><span class="pre">group_row_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.group_row_margin" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.horizontal_margin">
-<code class="sig-name descname"><span class="pre">horizontal_margin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.horizontal_margin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.horizontal_margin">
+<span class="sig-name descname"><span class="pre">horizontal_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.horizontal_margin" title="Permalink to this definition"></a></dt>
 <dd><p>Horizontal margin, which effectively expands the (x_min, x_max) limits
 by this amount on each direction.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.legend_column_count">
-<code class="sig-name descname"><span class="pre">legend_column_count</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.legend_column_count" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.legend_column_count">
+<span class="sig-name descname"><span class="pre">legend_column_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.legend_column_count" title="Permalink to this definition"></a></dt>
 <dd><p>Number of columns used in plot legends.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.no_render">
-<code class="sig-name descname"><span class="pre">no_render</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.no_render" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.no_render">
+<span class="sig-name descname"><span class="pre">no_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.no_render" title="Permalink to this definition"></a></dt>
 <dd><p>If set, some rendering options will be skipped.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.show_grid">
-<code class="sig-name descname"><span class="pre">show_grid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_grid" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.show_grid">
+<span class="sig-name descname"><span class="pre">show_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Show axis grid lines?</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.aoptions.RenderingOptions.vertical_margin">
-<code class="sig-name descname"><span class="pre">vertical_margin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.vertical_margin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.vertical_margin">
+<span class="sig-name descname"><span class="pre">vertical_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.vertical_margin" title="Permalink to this definition"></a></dt>
 <dd><p>Vertical margin, which effectively expands the (y_min, y_max) limits
 by this amount on each direction.</p>
 </dd></dl>
@@ -665,8 +626,8 @@ by this amount on each direction.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.config.aoptions.get_options">
-<code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">get_options</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_main</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.get_options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.get_options">
+<span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_main</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.get_options" title="Permalink to this definition"></a></dt>
 <dd><p>Deprecated - use <cite>from enb.config import options</cite>.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.2.7: </span>This will be removed in 0.3.1.</p>
@@ -674,22 +635,24 @@ by this amount on each direction.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.config.aoptions.propagates_options">
-<code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">propagates_options</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.propagates_options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.propagates_options">
+<span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">propagates_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.propagates_options" title="Permalink to this definition"></a></dt>
 <dd><p>Decorator for local (as opposed to ray.remote) functions so that they
 propagate options properly to child workers.
-The decorated function must accept an “options” argument.</p>
+The decorated function must accept an “options” argument.
+Furthermore, the current working dir is set to the project root so that
+any relative paths stored are correctly handled.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.config.aoptions.set_options">
-<code class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></code><code class="sig-name descname"><span class="pre">set_options</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_option_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.set_options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.aoptions.set_options">
+<span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">set_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_option_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.set_options" title="Permalink to this definition"></a></dt>
 <dd><p>Update global options with a dictionary of values</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-enb.config.singleton_cli">
-<span id="enb-config-singleton-cli-module"></span><h2>enb.config.singleton_cli module<a class="headerlink" href="#module-enb.config.singleton_cli" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-enb.config.singleton_cli">
+<span id="enb-config-singleton-cli-module"></span><h2>enb.config.singleton_cli module<a class="headerlink" href="#module-enb.config.singleton_cli" title="Permalink to this headline"></a></h2>
 <p>Module to define global option classes that can be instantiated only once,
 and that can semi-automatically create command-line interfaces based on the
 user’s definition of configurable variables.</p>
@@ -700,105 +663,118 @@ user’s definition of configurable variables.</p>
 <p>Properties are added by decorating functions. Multiple inheritance is possible with classes that decorate
 CLI properties, just make sure to subclass from GlobalOptions.</p>
 <dl class="py class">
-<dt id="enb.config.singleton_cli.ExistingDirAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">ExistingDirAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ExistingDirAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ExistingDirAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ExistingDirAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ExistingDirAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.PathAction" title="enb.config.singleton_cli.PathAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.PathAction</span></code></a></p>
 <p>ArgumentParser action that verifies that argument is an existing dir</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ExistingDirAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ExistingDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ExistingDirAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ExistingDirAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd><p>Assert that target_dir is a readable dir</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.ListAddOptionsAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">ListAddOptionsAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ListAddOptionsAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ListAddOptionsAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ListAddOptionsAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ListAddOptionsAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ValidationAction" title="enb.config.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ValidationAction</span></code></a></p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ListAddOptionsAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ListAddOptionsAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ListAddOptionsAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ListAddOptionsAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.NonnegativeFloatAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">NonnegativeFloatAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.NonnegativeFloatAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.NonnegativeFloatAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">NonnegativeFloatAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.NonnegativeFloatAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ValidationAction" title="enb.config.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ValidationAction</span></code></a></p>
 <p>Check that a numerical value is greater or equal than zero.</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.NonnegativeFloatAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.NonnegativeFloatAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.NonnegativeFloatAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.NonnegativeFloatAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.PathAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">PathAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PathAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.PathAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">PathAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PathAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ValidationAction" title="enb.config.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ValidationAction</span></code></a></p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.PathAction.modify_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">modify_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PathAction.modify_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.PathAction.modify_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modify_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PathAction.modify_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.PositiveFloatAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">PositiveFloatAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveFloatAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.PositiveFloatAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">PositiveFloatAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveFloatAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ValidationAction" title="enb.config.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ValidationAction</span></code></a></p>
 <p>Check that a numerical value is greater than zero.</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.PositiveFloatAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveFloatAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.PositiveFloatAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveFloatAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.PositiveIntegerAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">PositiveIntegerAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveIntegerAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.PositiveIntegerAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">PositiveIntegerAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveIntegerAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.PositiveFloatAction" title="enb.config.singleton_cli.PositiveFloatAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.PositiveFloatAction</span></code></a></p>
 <p>Check that value is an integer and greater than zero.</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.PositiveIntegerAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveIntegerAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.PositiveIntegerAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.PositiveIntegerAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.ReadableDirAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">ReadableDirAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableDirAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ReadableDirAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ReadableDirAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableDirAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ExistingDirAction" title="enb.config.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ExistingDirAction</span></code></a></p>
 <p>ArgumentParser action that verifies that argument is an existing,
 readable dir</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ReadableDirAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ReadableDirAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableDirAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd><p>Assert that target_dir is a readable dir</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.ReadableFileAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">ReadableFileAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableFileAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ReadableFileAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ReadableFileAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableFileAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.PathAction" title="enb.config.singleton_cli.PathAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.PathAction</span></code></a></p>
 <p>Validate that an argument is an existing file.</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ReadableFileAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableFileAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ReadableFileAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableFileAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.SingletonCLI">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">SingletonCLI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ReadableOrCreableDirAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ReadableOrCreableDirAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableOrCreableDirAction" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ExistingDirAction" title="enb.config.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ExistingDirAction</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ReadableOrCreableDirAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ReadableOrCreableDirAction.assert_valid_value" title="Permalink to this definition"></a></dt>
+<dd><p>Assert that target_dir is a readable dir, or its parent exists
+and is writable.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">SingletonCLI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Singleton class that holds a set of CLI options.</p>
 <p>When instantiated first, it reads CLI options, retaining class defaults when not specified.
@@ -815,24 +791,30 @@ play a role as setters of new variable values.</p></li>
 </ul>
 </div></blockquote>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.SingletonCLI.assert_setter_signature">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_setter_signature</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.assert_setter_signature" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializer guaranteed to be called once thanks to the Singleton metaclass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.assert_setter_signature">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_setter_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.assert_setter_signature" title="Permalink to this definition"></a></dt>
 <dd><p>Assert that f has a valid setter signature, or raise a SyntaxError.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.singleton_cli.SingletonCLI.items">
-<code class="sig-name descname"><span class="pre">items</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.items" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.items" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.singleton_cli.SingletonCLI.print_help">
-<code class="sig-name descname"><span class="pre">print_help</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.print_help" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.print_help">
+<span class="sig-name descname"><span class="pre">print_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.print_help" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.singleton_cli.SingletonCLI.property">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">property</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.property" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.property">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.property" title="Permalink to this definition"></a></dt>
 <dd><p>Decorator for (optional) properties that can be automatically parsed
 using argparse, and also programmatically (the setter is
 created by default when the getter is defined).</p>
@@ -876,8 +858,8 @@ for detailed help on available parameters and usage.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.singleton_cli.SingletonCLI.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.SingletonCLI.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.SingletonCLI.update" title="Permalink to this definition"></a></dt>
 <dd><p>Update self with other, using None value items from other’s <cite>items()</cite> method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -893,62 +875,62 @@ If alse, self’s attributes are updated directly without using those methods.</
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.ValidationAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">ValidationAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ValidationAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ValidationAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Action</span></code></p>
 <p>Base class for defining custom parser validation actions.</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ValidationAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ValidationAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ValidationAction.check_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction.check_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ValidationAction.check_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction.check_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ValidationAction.modify_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">modify_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction.modify_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ValidationAction.modify_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modify_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationAction.modify_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.ValidationTemplateNameAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">ValidationTemplateNameAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationTemplateNameAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ValidationTemplateNameAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">ValidationTemplateNameAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationTemplateNameAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ValidationAction" title="enb.config.singleton_cli.ValidationAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ValidationAction</span></code></a></p>
 <p>Validate that a name for a template is propper</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.ValidationTemplateNameAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationTemplateNameAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.ValidationTemplateNameAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.ValidationTemplateNameAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.WritableDirAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">WritableDirAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableDirAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.WritableDirAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">WritableDirAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableDirAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ExistingDirAction" title="enb.config.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ExistingDirAction</span></code></a></p>
 <p>ArgumentParser action that verifies that argument is an existing,
 writable dir</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.WritableDirAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.WritableDirAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableDirAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd><p>Assert that target_dir is a readable dir</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="enb.config.singleton_cli.WritableOrCreableDirAction">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">WritableOrCreableDirAction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableOrCreableDirAction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.WritableOrCreableDirAction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">WritableOrCreableDirAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metavar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableOrCreableDirAction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.config.singleton_cli.ExistingDirAction" title="enb.config.singleton_cli.ExistingDirAction"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.singleton_cli.ExistingDirAction</span></code></a></p>
-<p>ArgumentParser action that verifies that argument is either an existing dir
-or a path where a new folder can be created</p>
+<p>ArgumentParser action that verifies that argument is either an existing writable dir
+or a writable parent exists.</p>
 <dl class="py method">
-<dt id="enb.config.singleton_cli.WritableOrCreableDirAction.assert_valid_value">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assert_valid_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableOrCreableDirAction.assert_valid_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.WritableOrCreableDirAction.assert_valid_value">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assert_valid_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.WritableOrCreableDirAction.assert_valid_value" title="Permalink to this definition"></a></dt>
 <dd><p>Assert that target_dir is a writable dir, or its parent exists
 and is writable.</p>
 </dd></dl>
@@ -956,8 +938,8 @@ and is writable.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.config.singleton_cli.property_class">
-<code class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></code><code class="sig-name descname"><span class="pre">property_class</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_option_cls</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#enb.config.singleton_cli.SingletonCLI" title="enb.config.singleton_cli.SingletonCLI"><span class="pre">enb.config.singleton_cli.SingletonCLI</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.property_class" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.singleton_cli.property_class">
+<span class="sig-prename descclassname"><span class="pre">enb.config.singleton_cli.</span></span><span class="sig-name descname"><span class="pre">property_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_option_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#enb.config.singleton_cli.SingletonCLI" title="enb.config.singleton_cli.SingletonCLI"><span class="pre">enb.config.singleton_cli.SingletonCLI</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.singleton_cli.property_class" title="Permalink to this definition"></a></dt>
 <dd><p>Decorator for classes solely intended to define new properties to base_option_cls.</p>
 <p>Decorated classes can still make use of &#64;base_option_cls.property normally. Properties defined like that
 are regrouped into the appropriate argument groups.</p>
@@ -970,9 +952,9 @@ definition of this class</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-enb.config">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.config" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-enb.config">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.config" title="Permalink to this headline"></a></h2>
 <p># The config module</p>
 <p>## Introduction</p>
 <p>The config module deals with two main aspects:</p>
@@ -1014,7 +996,7 @@ When ray spawns new (local or remote) processes to serve as workers, the Options
 is initialized for each of those process, with the catch that ray does <strong>not</strong> pass the user’s CLI parameters.
 Therefore, different enb.config.option values would be present in the parent script and the ray workers.
 To mitigate this problem, an <cite>options</cite> parameter is defined and passed to many these functions,
-e.g., with <cite>f.remote(options=ray.put(enb.config.options))</cite> if f is your <cite>&#64;ray.remote</cite>-decorated function.
+e.g., with <cite>f.remote(options=ray.put(enb.config.options))</cite> if f is your <cite>&#64;enb.parallel.parallel</cite>-decorated function.
 The <cite>&#64;enb.config.propagates_options</cite> decorator provides a slightly cleaner way of automating
 this mitigation.</p>
 <p>## enb.config.ini file-based configuration</p>
@@ -1037,66 +1019,49 @@ The last set value is used.</p></li>
 its value is set based on the properties in <cite>enb.config.options</cite>.</p></li>
 </ol>
 <dl class="py function">
-<dt id="enb.config.get_banner">
-<code class="sig-prename descclassname"><span class="pre">enb.config.</span></code><code class="sig-name descname"><span class="pre">get_banner</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.get_banner" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.get_banner">
+<span class="sig-prename descclassname"><span class="pre">enb.config.</span></span><span class="sig-name descname"><span class="pre">get_banner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.get_banner" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the enb banner showing the current version.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="enb.config.report_configuration">
-<code class="sig-prename descclassname"><span class="pre">enb.config.</span></code><code class="sig-name descname"><span class="pre">report_configuration</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.report_configuration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="enb.config.report_configuration">
+<span class="sig-prename descclassname"><span class="pre">enb.config.</span></span><span class="sig-name descname"><span class="pre">report_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.report_configuration" title="Permalink to this definition"></a></dt>
 <dd><p>Return a string describing the current configuration status.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="enb.plugins.html" class="btn btn-neutral float-right" title="enb.plugins package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="enb.html" class="btn btn-neutral float-left" title="enb package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="enb.plugins.html" class="btn btn-neutral float-right" title="enb.plugins package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Miguel Hernández-Cabronero.
-
-    </p>
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

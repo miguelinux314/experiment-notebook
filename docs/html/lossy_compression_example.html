@@ -1,73 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Lossy Compression Experiment &mdash; Experiment Notebook MIT License documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Using existing image compression codecs" href="image_compression_plugins.html" />
     <link rel="prev" title="Lossless Compression Experiment" href="lossless_compression_example.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> Experiment Notebook
-          
-
-          
-            
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
-          
-
-          
+              <div class="version">
+                v0.3.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,19 +41,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
@@ -104,121 +59,80 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using existing image compression codecs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html#codec-availabily">Codec availabily</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Experiment Notebook</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="image_compression.html">Image compression experiments</a> &raquo;</li>
-        
       <li>Lossy Compression Experiment</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="_sources/lossy_compression_example.rst.txt" rel="nofollow"> View page source</a>
-          
-        
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="lossy-compression-experiment">
-<h1>Lossy Compression Experiment<a class="headerlink" href="#lossy-compression-experiment" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="lossy-compression-experiment">
+<h1>Lossy Compression Experiment<a class="headerlink" href="#lossy-compression-experiment" title="Permalink to this headline"></a></h1>
 <p>This page explains the general dynamics of using the <a class="reference internal" href="api/enb.html#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a> class.
 This class is a subclass of <a class="reference internal" href="api/enb.html#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a>, which performs compression, decompression
 and computes several distortion metrics on the reconstructed images (compared to the originals).</p>
-<div class="section" id="lossy-compression-template-installation">
-<h2>Lossy compression template installation<a class="headerlink" href="#lossy-compression-template-installation" title="Permalink to this headline">¶</a></h2>
+<section id="lossy-compression-template-installation">
+<h2>Lossy compression template installation<a class="headerlink" href="#lossy-compression-template-installation" title="Permalink to this headline"></a></h2>
 <p>Example code that serves as template for your lossy compression experiments can be installed
 via the following command line command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">install</span> <span class="n">lossy</span><span class="o">-</span><span class="n">compression</span> <span class="n">lc</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb install lossy-compression lc
 </pre></div>
 </div>
 <p>In addition, we are going to install some lossy codecs from the ones listed
 with <cite>enb plugin list codec</cite>. Namely, JPEG-LS and the Versatile Video Coder (VVC).
 These can be easily installed as enb plugins. Please be patient with the installation,
 which compiles both tools from source:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">jpeg</span> <span class="n">lc</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">jpeg</span>
-<span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">vvc</span> <span class="n">lc</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">vvc</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install jpeg lc/plugins/jpeg<span class="p">;</span>
+enb plugin install vvc lc/plugins/vvc
 </pre></div>
 </div>
-</div>
-<div class="section" id="dataset-curation">
-<h2>Dataset curation<a class="headerlink" href="#dataset-curation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dataset-curation">
+<h2>Dataset curation<a class="headerlink" href="#dataset-curation" title="Permalink to this headline"></a></h2>
 <p>The same process of dataset curation as in <a class="reference internal" href="lossless_compression_example.html"><span class="doc">Lossless Compression Experiment</span></a> must be followed.
 In the template, a small sample is provide under <cite>./datasets/</cite> for ease of reference.</p>
-</div>
-<div class="section" id="codec-and-taskfamily-instantiation">
-<h2>Codec and TaskFamily instantiation<a class="headerlink" href="#codec-and-taskfamily-instantiation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="codec-and-taskfamily-instantiation">
+<h2>Codec and TaskFamily instantiation<a class="headerlink" href="#codec-and-taskfamily-instantiation" title="Permalink to this headline"></a></h2>
 <p>As for <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> , we want to define a list of codecs.
 In this case, we will normally normally use subclasses of <a class="reference internal" href="api/enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a> and <a class="reference internal" href="api/enb.html#enb.icompression.NearLosslessCodec" title="enb.icompression.NearLosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code></a>.</p>
 <p>In addition, to facilitate analysis and plotting, we will be defining families of codecs.
 To do so, we instantiate the class:<cite>enb.experiment.TaskFamily</cite> class and add the names of our codecs for each family
 as follows.</p>
-</div>
-<div class="section" id="lossy-experiment-execution">
-<h2>Lossy experiment execution<a class="headerlink" href="#lossy-experiment-execution" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="lossy-experiment-execution">
+<h2>Lossy experiment execution<a class="headerlink" href="#lossy-experiment-execution" title="Permalink to this headline"></a></h2>
 <p>The <cite>lossless_compression_experiment.py</cite> template is now ready to be run. To do so, simply
 invoke it with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">./</span><span class="n">lc</span><span class="o">/</span><span class="n">lossy_compression_experiment_example</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./lc/lossy_compression_experiment_example.py
 </pre></div>
 </div>
 <p>This should produce the <cite>plots</cite>, <cite>analysis</cite> folders.
@@ -231,10 +145,10 @@ actual experiment execution</p>
 <span class="n">df</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="lossy-result-analysis-and-plotting">
-<h2>Lossy result analysis and plotting<a class="headerlink" href="#lossy-result-analysis-and-plotting" title="Permalink to this headline">¶</a></h2>
-<p>The remainder of the template is devoted to plotting results returned in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> <cite>df</cite>.
+</section>
+<section id="lossy-result-analysis-and-plotting">
+<h2>Lossy result analysis and plotting<a class="headerlink" href="#lossy-result-analysis-and-plotting" title="Permalink to this headline"></a></h2>
+<p>The remainder of the template is devoted to plotting results returned in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+10.g47081ff131)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> <cite>df</cite>.
 You can check
 the <a class="reference internal" href="analyzing_data.html"><span class="doc">Data analysis and plotting with enb</span></a> page for more information on how to analyze and plot
 results with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
@@ -302,58 +216,41 @@ results with <a class="reference internal" href="api/enb.html#module-enb" title=
 </div>
 <p>An example plot produced by this experiment, e.g., the compressed data rate in bits per sample,
 is shown in the next figure:</p>
-<div class="figure align-default">
-<img alt="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line1.png" src="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line1.png" />
-</div>
-</div>
-</div>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer_bpppc__pae_groupby-family_label_line.png" src="_images/TwoNumericAnalyzer_bpppc__pae_groupby-family_label_line.png" />
+</figure>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="image_compression_plugins.html" class="btn btn-neutral float-right" title="Using existing image compression codecs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="lossless_compression_example.html" class="btn btn-neutral float-left" title="Lossless Compression Experiment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image_compression_plugins.html" class="btn btn-neutral float-right" title="Using existing image compression codecs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Miguel Hernández-Cabronero.
-
-    </p>
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

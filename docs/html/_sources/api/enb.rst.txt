@@ -85,6 +85,22 @@ enb.ml module
    :undoc-members:
    :show-inheritance:
 
+enb.parallel module
+-------------------
+
+.. automodule:: enb.parallel
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.parallel\_ray module
+------------------------
+
+.. automodule:: enb.parallel_ray
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.pgm module
 --------------
 
@@ -97,14 +113,6 @@ enb.plotdata module
 -------------------
 
 .. automodule:: enb.plotdata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-enb.ray\_cluster module
------------------------
-
-.. automodule:: enb.ray_cluster
    :members:
    :undoc-members:
    :show-inheritance:
