@@ -21,7 +21,9 @@ with a single line that is an IP address in plain text. We want to check whether
 certain ports are open in any of these IP addresses.
 
 Let's see the steps to create this experiment.
-You can look at the sources in that link, or install a self-contained version into a new `ee` folder with::
+You can look at the sources in that link, or install a self-contained version into a new `ee` folder with:
+
+.. code-block:: bash
 
    enb plugin install port-experiment-example ee
 
@@ -47,7 +49,7 @@ The number of rows of the dataframe returned by an |Experiment|'s `get_df` metho
 depends on the |ExperimentTask| s used in it. The following figure illustrates how experiments
 are structured.
 
-.. figure:: /_static/experiment_diagram.png
+.. figure:: img/experiment_diagram.png
     :width: 100%
     :alt: Experiment diagram
     :align: center
@@ -133,7 +135,9 @@ files used as input determine the rows to be computed.
 
 For instance, if we have tasks with name properties `CheckPort__port=80` and
 `CheckPort__port=443`, and input files `ip1.txt` and `ip2.txt`,
-then enb will create 4 (2*2) rows, indexed as follows::
+then enb will create 4 (2*2) rows, indexed as follows:
+
+.. code-block:: text
 
     ('ip1.txt', 'CheckPort__port=80'),
     ('ip1.txt', 'CheckPort__port=443'),
@@ -201,7 +205,9 @@ messages for those ports found to be open::
             print(f"Found open ports in {open(url_file_path, 'r').read().strip()}:\n - ", end="")
             print("\n - ".join(str(d['port']) for d in url_df["param_dict"]))
 
-An example output could be as follows::
+An example output could be as follows:
+
+.. code-block:: text
 
     Found open ports in 192.168.1.1:
      - 443

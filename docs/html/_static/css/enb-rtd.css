@@ -1,0 +1,87 @@
+div.wy-grid-for-nav, div.wy-nav-content, body.wy-body-for-nav {
+    background-color: #dddddd;
+}
+
+a {
+    color: #c58b03;
+}
+
+a:hover {
+    color: #f3ac05;
+}
+
+.btn-neutral {
+    background-color: #3f3f3f !important;
+    color: #c58b03 !important;
+    border-radius: 10px;
+}
+
+.btn-neutral:hover {
+    background-color: #3f3f3f !important;
+    color: #f3ac05 !important;
+    border-radius: 5px;
+}
+
+.wy-side-nav-search .wy-dropdown > a:hover, .wy-side-nav-search > a:hover, .wy-menu-vertical li.current a:hover {
+    color: #463101;
+    background-color: #f3ac05;
+}
+
+.wy-side-nav-search {
+    background-color: #f3ac05;
+}
+
+.wy-nav-side {
+    background-color: #3f3f3f;
+}
+
+.wy-nav-top {
+    background-color: #f3ac05;
+}
+
+.wy-menu-vertical li.current {
+    background: #ffd08e;
+}
+
+.wy-menu-vertical li.toctree-l2.current > a, .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
+    background: #ffa513;
+}
+
+.wy-menu-vertical li.toctree-l1.current > a {
+    background-color: #dddddd;
+}
+
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #f3ac05;
+}
+
+.wy-side-nav-search > div.version {
+    color: #713884;
+}
+
+.wy-nav-content-wrap {
+    background: none;
+}
+
+.wy-nav-content {
+    max-width: 900px;
+}
+
+.rst-content .note > .admonition-title {
+    background: #835b96;
+}
+
+div.rst-content .note {
+    background: #c8cde7;
+}
+
+.wy-side-nav-search input[type="text"] {
+    border: solid 2px #3f3f3f;
+    background-color: #dddddd;
+}
+
+.rst-content div[class^="highlight"] {
+    box-shadow: 3px 3px 5px black;
+    border: solid 1px #f3ac05;
+    border-radius: 5px;
+}

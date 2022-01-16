@@ -1,73 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Data analysis and plotting with enb &mdash; Experiment Notebook MIT License documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Image compression experiments" href="image_compression.html" />
     <link rel="prev" title="Experiments = data + tasks" href="experiments.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> Experiment Notebook
-          
-
-          
-            
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
-          
-
-          
+              <div class="version">
+                v0.3.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,19 +41,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Documentation contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
@@ -96,87 +51,66 @@
 <li class="toctree-l2"><a class="reference internal" href="#one-numeric-column">One numeric column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#two-numeric-columns">Two numeric columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#columns-with-dictionaries">Columns with dictionaries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grouping-with-scalarnumericanalysis">Grouping with ScalarNumericAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grouping-with-other-analyzer-subclasses">Grouping with other Analyzer subclasses</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-task-families">Grouping by task families</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#combining-groups">Combining groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-baseline-comparisons">Making baseline comparisons</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-with-scalarnumericanalyzer">Example with <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-with-twonumericanalyzer">Example with <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-plot-appearance">Customizing plot appearance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-plot-type">Choosing a plot type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-your-analyzers">Modifying your Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-column-plotting-hints">Setting column plotting hints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-render-kwargs-when-calling-analyzer-get-df">Setting <cite>**render_kwargs</cite> when calling <cite>Analyzer.get_df</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-styles">Using styles</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Experiment Notebook</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="_sources/analyzing_data.rst.txt" rel="nofollow"> View page source</a>
-          
-        
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="data-analysis-and-plotting-with-enb">
-<h1>Data analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#data-analysis-and-plotting-with-enb" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="data-analysis-and-plotting-with-enb">
+<h1>Data analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#data-analysis-and-plotting-with-enb" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.0.dev0+1266.g6861fc5bf7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+67.g96f2f2aff1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
@@ -187,11 +121,11 @@ a general use case.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">install</span> <span class="n">analysis</span><span class="o">-</span><span class="n">gallery</span> <span class="n">ag</span>
 </pre></div>
 </div>
-<div class="section" id="one-numeric-column">
-<h2>One numeric column<a class="headerlink" href="#one-numeric-column" title="Permalink to this headline">¶</a></h2>
+<section id="one-numeric-column">
+<h2>One numeric column<a class="headerlink" href="#one-numeric-column" title="Permalink to this headline"></a></h2>
 <p>In this scenario, we want to analyze a column of scalar values, typically integers and floats.
 Here we will be using the Iris dataset, which we can load with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">iris_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/iris_dataset.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -209,15 +143,21 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 <p>The target columns are selected with the <strong>target_columns</strong> parameter, which must be a list of
 column names present in the dataframe being analyzed.</p>
 </div>
-<p>This renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
+<p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+- hbar
+</pre></div>
+</div>
+<p>The <cite>histogram</cite> mode  renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
 as shown in the next figure. The returned <cite>analysis_df</cite> dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_sepal_width_histogram.png"><img alt="_images/ScalarNumericAnalyzer_sepal_width_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_histogram.png" style="width: 100%;" /></a>
-</div>
-</div>
-<div class="section" id="two-numeric-columns">
-<h2>Two numeric columns<a class="headerlink" href="#two-numeric-columns" title="Permalink to this headline">¶</a></h2>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png"><img alt="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" style="width: 100%;" /></a>
+</figure>
+<p>The <cite>hbar</cite> mode is most useful when grouping – examples are provided below.</p>
+</section>
+<section id="two-numeric-columns">
+<h2>Two numeric columns<a class="headerlink" href="#two-numeric-columns" title="Permalink to this headline"></a></h2>
 <p>In this scenario, we want to compare two numeric columns, e.g., <cite>sepal_width</cite> and <cite>petal_width</cite>.
 To do so, we need to use the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class instead of the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>
 we employed in the previous examples.</p>
@@ -237,12 +177,18 @@ containing two column names, e.g.: <cite>(“columnA”, “columnB”)</cite>.<
 </div>
 <p>In addition to the <cite>analysis_df</cite> dataframe with numeric results, this will produce a scatter plot like the following,
 which also shows +/- 1 horizontal and vertical standard deviations.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="_images/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png"><img alt="_images/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width,petal_length_scatter.png" style="width: 100%;" /></a>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png"><img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" style="width: 100%;" /></a>
+</figure>
+<p>The previous figure shows an example of the <cite>scatter</cite> plot mode.
+The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- scatter
+- line
+</pre></div>
 </div>
-</div>
-<div class="section" id="columns-with-dictionaries">
-<h2>Columns with dictionaries<a class="headerlink" href="#columns-with-dictionaries" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="columns-with-dictionaries">
+<h2>Columns with dictionaries<a class="headerlink" href="#columns-with-dictionaries" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library allows storing dictionaries with scalar entries. For columns with numeric values (integer or float),
 the <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a> class can be used.</p>
 <p>In the following example, the dataset
@@ -304,30 +250,40 @@ count per mode for each of the selected groups (given in the <cite>block_size</c
 Rendering options are discussed in a later section.</p>
 </div>
 <p>The resulting figure is shown below</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png"><img alt="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" src="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" style="width: 100%;" /></a>
-</div>
-</div>
-<div class="section" id="grouping-by-a-column-s-value">
-<h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline">¶</a></h2>
+</figure>
+</section>
+<section id="grouping-by-a-column-s-value">
+<span id="grouping-by-value"></span><h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
+<section id="grouping-with-scalarnumericanalysis">
+<h3>Grouping with ScalarNumericAnalysis<a class="headerlink" href="#grouping-with-scalarnumericanalysis" title="Permalink to this headline"></a></h3>
 <p>Often, we want to group the dataframe’s rows based on the value of a given column, and then analyze others.</p>
 <p>We achieve this by passing that the grouping column’s name as the <strong>group_by</strong> keyword
 when calling ScalarNumericAnalyzer’s <cite>get_df</cite> method.</p>
 <p>Continuing with the Iris experiment above, we can show results grouped by <cite>class</cite> (present in the original <cite>.csv</cite>)
 as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
-    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
-                                     <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
     <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would automatically produce an image like the following:</p>
-<div class="figure align-default">
+<p>The <cite>histogram</cite> render mode produces plots like the following:</p>
+<figure class="align-default">
 <a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png"><img alt="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" src="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" style="width: 100%;" /></a>
-</div>
+</figure>
+<p>The <cite>hbar</cite> render mode produces plots like the following:</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png"><img alt="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" style="width: 100%;" /></a>
+</figure>
+</section>
+<section id="grouping-with-other-analyzer-subclasses">
+<h3>Grouping with other Analyzer subclasses<a class="headerlink" href="#grouping-with-other-analyzer-subclasses" title="Permalink to this headline"></a></h3>
 <p>Grouping is not restricted to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>. It can be used with other <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes such as
-<a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>, as in the following code</p>
+<a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>, as in the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
     <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
@@ -336,12 +292,13 @@ as follows:</p>
 </pre></div>
 </div>
 <p>The resulting scatter plot from this call is shown next:</p>
-<div class="figure align-default">
-<img alt="_images/TwoNumericAnalyzer_sepal_width,petal_length_groupby-class_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width,petal_length_groupby-class_scatter.png" />
-</div>
-</div>
-<div class="section" id="grouping-by-task-families">
-<h2>Grouping by task families<a class="headerlink" href="#grouping-by-task-families" title="Permalink to this headline">¶</a></h2>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" />
+</figure>
+</section>
+</section>
+<section id="grouping-by-task-families">
+<h2>Grouping by task families<a class="headerlink" href="#grouping-by-task-families" title="Permalink to this headline"></a></h2>
 <p>When <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> is used to obtain dataframes of results, it is typical to have families
 of tasks that were applied separately but are related. This can be used by defining a list
 of class:<cite>enb.experiment.TaskFamily</cite> instances and passing that argument to the <cite>group_by</cite> parameter of <cite>get_df</cite>.</p>
@@ -352,58 +309,415 @@ with 2 and 4 tasks in them.</p>
 <p>In the following figure, an example with 6 algorithms, each with different configurations
 that affect their “Compressed data rate”. Please see the <a class="reference internal" href="image_compression.html"><span class="doc">Image compression experiments</span></a> page for a full
 experiment that uses task families and produces plots like the one in the figure.</p>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png" src="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png" />
+</figure>
+</section>
+<section id="combining-groups">
+<h2>Combining groups<a class="headerlink" href="#combining-groups" title="Permalink to this headline"></a></h2>
+<p>The <cite>combine_groups</cite> argument can be passed to get_df or set in the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> instance.
+If selected, all groups are shown in the same subplot. In this case, the average and standard deviation
+values are automatically removed for clarity. An example of this output can be found next:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_combined_groups&quot;</span><span class="p">),</span>
+    <span class="n">legend_column_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">combine_groups</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
 </div>
+<figure class="align-default">
+<img alt="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__combine_groups.png" src="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__combine_groups.png" />
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
 </div>
+<p>Groups are automatically combined for <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>, but are optional for <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a>.
+An example is provided next:</p>
+<figure class="align-default">
+<img alt="_images/DictNumericAnalyzer-mode_count-line-groupby__block_size__combine_groups.png" src="_images/DictNumericAnalyzer-mode_count-line-groupby__block_size__combine_groups.png" />
+</figure>
+</section>
+<section id="making-baseline-comparisons">
+<h2>Making baseline comparisons<a class="headerlink" href="#making-baseline-comparisons" title="Permalink to this headline"></a></h2>
+<p>When grouping is used, it is possible to select one of the groups as baseline and then perform
+analysis and plotting on the differences against that baseline.</p>
+<p>For the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses and render modes that support it, it suffices to pass
+<cite>reference_group=”group name”</cite> when calling <cite>get_df</cite>. Here, <cite>“group name”</cite> is one
+of the group labels derived from the <cite>group_by</cite> selection.</p>
+<section id="example-with-scalarnumericanalyzer">
+<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-scalarnumericanalyzer" title="Permalink to this headline"></a></h3>
+<p>The following snippet shows how to use the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> to show differences against a group.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iris_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/iris_dataset.csv&quot;</span><span class="p">)</span>
+<span class="n">scalar_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span>
+    <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_numeric_reference&quot;</span><span class="p">))</span>
+</pre></div>
 </div>
+<p>The resulting plot is shown in the next figure.</p>
+<figure class="align-default">
+<img alt="_images/ScalarNumericAnalyzer-sepal_width-histogram-groupby__class-referencegroup__Iris-versicolor.png" src="_images/ScalarNumericAnalyzer-sepal_width-histogram-groupby__class-referencegroup__Iris-versicolor.png" />
+</figure>
+<p>You can choose whether the group used as baseline is employed or not, by setting your
+analyzer instance’s <cite>show_reference_group</cite> attribute, i.e.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_reference_group</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>before calling <cite>get_df</cite>.</p>
+<p>Note that you can combine <cite>reference_group</cite> and <cite>combine_groups</cite> if you want. An example
+where both options are used is shown next:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_reference_group</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_combined_reference&quot;</span><span class="p">),</span>
+    <span class="n">combine_groups</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">legend_column_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class-referencegroup__Iris-versicolor__combine_groups.png" src="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class-referencegroup__Iris-versicolor__combine_groups.png" />
+</figure>
+</section>
+<section id="example-with-twonumericanalyzer">
+<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Permalink to this headline"></a></h3>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a similar sintax as <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
+Both the <cite>line</cite> and <cite>scatter</cite> render modes are available. If none is selected,
+both are employed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;two_numeric_reference&quot;</span><span class="p">),</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The plots resulting from the above snippet are shown next.</p>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" />
+</figure>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" />
+</figure>
+</section>
+</section>
+<section id="customizing-plot-appearance">
+<h2>Customizing plot appearance<a class="headerlink" href="#customizing-plot-appearance" title="Permalink to this headline"></a></h2>
+<p>If the default plot appearance does not suit you (axis limits, font size, color scheme, logarithmic scale, etc.),
+<cite>enb</cite> offers several ways of customizing them, described in the following subsections.</p>
+<section id="choosing-a-plot-type">
+<h3>Choosing a plot type<a class="headerlink" href="#choosing-a-plot-type" title="Permalink to this headline"></a></h3>
+<p>You can change the type of plot by selecting one of the available <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes.
+See above for examples on all available classes.</p>
+<p>Some analyzers provide several render modes. You can select one or more of them by
+passing the <cite>selected_render_modes</cite> argument to your <cite>get_df</cite> calls.
+By default, all render modes in an <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> are used.</p>
+</section>
+<section id="modifying-your-analyzers">
+<h3>Modifying your Analyzers<a class="headerlink" href="#modifying-your-analyzers" title="Permalink to this headline"></a></h3>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes themselves have several attributes that affect the way they
+produce plots. Some examples common to all <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> instances are as follows.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Main title to be displayed
+plot_title = None
+# Show the number of elements in each group?
+show_count = True
+# Show a group containing all elements?
+show_global = False
+# If a reference group is used as baseline, should it be shown in the analysis itself?
+show_reference_group = True
+# If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
+show_x_std = False
+# If applicable, show a vertical +/- 1 standard deviation bar centered on the average
+show_y_std = False
+# Main marker size
+main_marker_size = 4
+# Secondary (e.g., individual data) marker size
+secondary_marker_size = 2
+# Main plot element alpha
+main_alpha = 0.5
+# Secondary plot element alpha (often overlaps with data using main_alpha)
+secondary_alpha = 0.5
+# If a semilog y axis is used, y_min will be at least this large to avoid math domain errors
+semilog_y_min_bound = 1e-5
+# Thickness of the main plot lines
+main_line_width = 2
+# Thickness of secondary plot lines
+secondary_line_width = 1
+# Margin between group rows (if there is more than one)
+group_row_margin = 0.2
+# If more than one group is displayed, when applicable, adjust plots to use the same scale in every subplot?
+common_group_scale = True
+# If more than one group is present, they are shown in the same subplot
+# instead of in different rows
+combine_groups = False
+# If True, display group legends when applicable
+show_legend = True
+</pre></div>
+</div>
+<p>Default values for these attributes can be set by placing a file with <cite>.ini</cite> extension
+in your project root (where your scripts are placed). This file should contain a subset
+of the attributes defined in the
+<a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/config/enb.ini">full enb.ini configuration file</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Attributes must be stored in sections with name given by the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> class, e.g.,
+<cite>‘[enb.aanalysis.Analyzer]’</cite> or <cite>‘[enb.aanalysis.ScalarNumericAnalyzer]’</cite>.</p>
+</div>
+<p>You can install a copy of the full configuration file and then modify it as needed with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install enb.ini ./your_project_folder/
+</pre></div>
+</div>
+</div></blockquote>
+<p>Once an <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> has been instantiated, its attributes can be modified like any other object.
+Attribute values are independently read for each call to <cite>get_df</cite>.</p>
+</section>
+<section id="setting-column-plotting-hints">
+<span id="column-hints"></span><h3>Setting column plotting hints<a class="headerlink" href="#setting-column-plotting-hints" title="Permalink to this headline"></a></h3>
+<p>All columns defined in <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses (including <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclasses)
+have a corresponding <a class="reference internal" href="api/enb.html#enb.atable.ColumnProperties" title="enb.atable.ColumnProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code></a> instance.</p>
+<p>These instances contain rendering hints when plotting that column such as:</p>
+<ul class="simple">
+<li><p>axis labels (e.g., <cite>label=’Average duration (s)’</cite>)</p></li>
+<li><p>plot limits (e.g., <cite>plot_min=0</cite>, <cite>plot_max=60</cite>, which can also be set to None for automatic limits)</p></li>
+<li><p>axis type (e.g., <cite>semilog_x=True</cite>)</p></li>
+</ul>
+<p>As detailed in <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a>, these hints can be set when defining custom columns, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
+    <span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;average_duration_seconds&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Average duration (s)&quot;</span><span class="p">,</span>
+        <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">plot_max</span><span class="o">=</span><span class="mi">60</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">set_average_duration_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">[</span><span class="n">_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="c1"># ... your code here</span>
+</pre></div>
+</div>
+<p>One can then pass the <cite>column_to_properties</cite> argument to an Analyzer’s <cite>get_df</cite> method, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mt</span> <span class="o">=</span> <span class="n">MyTable</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="c1"># ... e.g., mt.get_df(), see examples above</span>
+<span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+    <span class="n">column_to_properties</span><span class="o">=</span><span class="n">mt</span><span class="o">.</span><span class="n">column_to_properties</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="api/enb.html#enb.atable.ColumnProperties.__init__" title="enb.atable.ColumnProperties.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties.__init__()</span></code></a> for full details on all available attributes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><p>You can modify <a class="reference internal" href="api/enb.html#enb.atable.ColumnProperties" title="enb.atable.ColumnProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code></a> instances after they have been associated to a column, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mt</span><span class="o">.</span><span class="n">column_properties</span><span class="p">[</span><span class="s2">&quot;average_duration_seconds&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot_max</span> <span class="o">=</span> <span class="mi">30</span>
+</pre></div>
+</div>
+</li>
+<li><p>You can create your own dictionary indexed by column name, containing <a class="reference internal" href="api/enb.html#enb.atable.ColumnProperties" title="enb.atable.ColumnProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code></a> instances,
+and then pass it to <cite>get_df</cite>, e.g.,:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+   <span class="n">full_df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+   <span class="n">column_to_properties</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">average_duration_seconds</span><span class="o">=</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span>
+       <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_max</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\Gamma$ routine execution time (seconds)&quot;</span><span class="p">)))</span>
+</pre></div>
+</div>
+</li>
+<li><dl class="simple">
+<dt><a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclasses also offer the <cite>joined_column_to_properties</cite> property, which</dt><dd><p>contains the columns defined in that experiment, and in the <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclass employed
+for the dataset (see <a class="reference internal" href="experiments.html"><span class="doc">Experiments = data + tasks</span></a> for more information about experiments), e.g.:</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize and run experiment</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">MyExperimentClass</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+
+<span class="c1"># Analyze results</span>
+<span class="n">scalar_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;column_A&quot;</span><span class="p">,</span> <span class="s2">&quot;column_B&quot;</span><span class="p">]</span>
+<span class="n">scalar_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
+<span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>  <span class="n">target_columns</span><span class="o">=</span><span class="n">scalar_columns</span><span class="p">,</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;task_label&quot;</span><span class="p">,</span>  <span class="n">selected_render_modes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;histogram&quot;</span><span class="p">},</span>
+
+    <span class="c1"># Experiments offer the `joined_column_to_properties` property</span>
+    <span class="n">column_to_properties</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">joined_column_to_properties</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<section id="setting-render-kwargs-when-calling-analyzer-get-df">
+<span id="kwargs"></span><h3>Setting <cite>**render_kwargs</cite> when calling <cite>Analyzer.get_df</cite><a class="headerlink" href="#setting-render-kwargs-when-calling-analyzer-get-df" title="Permalink to this headline"></a></h3>
+<p>The <cite>get_df</cite> method of all <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses accept a <cite>**render_kwargs</cite> parameter.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Values passed in this parameter overwrite those defined in <cite>column_properties</cite>.</p>
+</div>
+<p>You can add one or more <cite>key=value</cite> arguments to the <cite>get_df</cite> call, as shown in the following example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numeric_dict_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">DictNumericAnalyzer</span><span class="p">()</span>
+<span class="n">hevc_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/hevc_frame_prediction.csv&quot;</span><span class="p">)</span>
+<span class="n">numeric_dict_analyzer</span><span class="o">.</span><span class="n">secondary_alpha</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">numeric_dict_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">hevc_df</span><span class="p">,</span>
+    <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mode_count&quot;</span><span class="p">],</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;block_size&quot;</span><span class="p">,</span>
+    <span class="n">column_to_properties</span><span class="o">=</span><span class="n">column_to_properties</span><span class="p">,</span>
+    <span class="n">group_name_order</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">hevc_df</span><span class="p">[</span><span class="s2">&quot;block_size&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span>
+
+    <span class="c1"># Rendering options</span>
+    <span class="n">x_tick_label_angle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+    <span class="n">fig_width</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+    <span class="n">fig_height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">global_y_label_pos</span><span class="o">=-</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, the labels of the x ticks are rotated 90 degrees, the figure dimensions are changed, and the global y
+axis label is moved to account for very long y-axis labels.</p>
+<p>Please refer to <a class="reference internal" href="api/enb.html#enb.plotdata.render_plds_by_group" title="enb.plotdata.render_plds_by_group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plotdata.render_plds_by_group()</span></code></a> for a list of all available parameters.
+Note that the <cite>pds_by_group_name</cite> parameter and others are automatically set by your choice of <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass.</p>
+</section>
+<section id="using-styles">
+<span id="styles"></span><h3>Using styles<a class="headerlink" href="#using-styles" title="Permalink to this headline"></a></h3>
+<p>The <cite>enb</cite> library employs <cite>matplotlib</cite> for plotting.
+Matplotlib’s <a class="reference external" href="https://matplotlib.org/stable/tutorials/introductory/customizing.html">styling features</a>
+are available in two ways:</p>
+<ol class="arabic simple">
+<li><p>You can set the <cite>style_list</cite> attribute of your <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass (default value or instance attribute).</p></li>
+<li><p>You can pass the <cite>style_list</cite> argument to the call to <cite>get_df</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass.</p></li>
+</ol>
+<p>For instance, to set Matlplotlib’s dark style, the following code can be used:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Option 1: modify analyzer instance</span>
+<span class="n">scalar_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
+<span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">style_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dark_background&quot;</span><span class="p">]</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_numeric_dark&quot;</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">),</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">)</span>
+
+<span class="c1">## Option 2: use get_df&#39;s **kwargs</span>
+<span class="n">scalar_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;scalar_numeric_dark&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">),</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span>
+    <span class="n">style_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dark_background&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Each element in <cite>style_list</cite> must be one of the following:</p>
+<ul>
+<li><p>One of Matplotlib’s style names (e.g., <a class="reference external" href="https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html">“dark_background”, “bmh”, etc) configured in your machine.
+You can check out the `gallery of matplotlib’s default styles</a>.</p></li>
+<li><p>One of enb’s predefined style names.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can get a list of all available style names from the CLI with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb show styles
+</pre></div>
+</div>
+<p>or within python with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plotdata</span><span class="o">.</span><span class="n">get_available_styles</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>An example output is as follows:</p>
+<blockquote>
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The following styles are available for plotting:
+
+	- &#39;Solarize_Light2&#39;
+	- &#39;bmh&#39;
+	- &#39;classic&#39;
+	- &#39;dark_background&#39;
+	- &#39;fast&#39;
+	- &#39;fivethirtyeight&#39;
+	- &#39;ggplot&#39;
+	- &#39;grayscale&#39;
+	- &#39;seaborn&#39;
+	- &#39;seaborn-bright&#39;
+	- &#39;seaborn-colorblind&#39;
+	- &#39;seaborn-dark&#39;
+	- &#39;seaborn-dark-palette&#39;
+	- &#39;seaborn-darkgrid&#39;
+	- &#39;seaborn-deep&#39;
+	- &#39;seaborn-muted&#39;
+	- &#39;seaborn-notebook&#39;
+	- &#39;seaborn-paper&#39;
+	- &#39;seaborn-pastel&#39;
+	- &#39;seaborn-poster&#39;
+	- &#39;seaborn-talk&#39;
+	- &#39;seaborn-ticks&#39;
+	- &#39;seaborn-white&#39;
+	- &#39;seaborn-whitegrid&#39;
+	- &#39;tableau-colorblind10&#39;
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</li>
+<li><p>The path of a matplotlib rc style.</p>
+<p>See <a class="reference external" href="https://matplotlib.org/stable/tutorials/introductory/customizing.html#the-matplotlibrc-file">matplotlib’s rc file documentation</a>
+for more information on how to create and modify this type of files.</p>
+<p>You can install an editable copy of Matplotlib’s default rc file with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install matplotlibrc .
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can select any number of styles for your plots.
+When a list of styles is used for a plot, its elements are processed from left to right.
+Therefore, you can compose themes just like one would in
+Matplotlib <a class="reference external" href="https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles">https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles</a>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Not all styles are intended for professional usage (-:</p>
+<figure class="align-default">
+<img alt="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png" src="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png" />
+</figure>
+</div>
+</section>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="image_compression.html" class="btn btn-neutral float-right" title="Image compression experiments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="experiments.html" class="btn btn-neutral float-left" title="Experiments = data + tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image_compression.html" class="btn btn-neutral float-right" title="Image compression experiments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Miguel Hernández-Cabronero.
-
-    </p>
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

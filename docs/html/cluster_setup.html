@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuring enb in a cluster of computers &mdash; Experiment Notebook MIT License documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="The enb command-line tools" href="command_line_interface.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                v0.3.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuring <cite>enb</cite> in a cluster of computers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#first-installation">First installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-distributed-experiments">Running distributed experiments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cluster-configuration-file">Cluster configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#distributed-script-execution">Distributed script execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-project-montecarlo-pi">Example project: Montecarlo pi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#accessing-files">Accessing files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ray-port-testing">Ray port testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Experiment Notebook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Configuring <cite>enb</cite> in a cluster of computers</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuring-enb-in-a-cluster-of-computers">
+<h1>Configuring <cite>enb</cite> in a cluster of computers<a class="headerlink" href="#configuring-enb-in-a-cluster-of-computers" title="Permalink to this headline"></a></h1>
+<p>Thanks to the <cite>ray</cite> library, your code using <cite>enb</cite> can easily scale from one to multiple
+computers.</p>
+<p>This cluster employs <cite>ray</cite>, <cite>ssh</cite> and <cite>sshfs</cite>, and does not require docker, k8s, AWS or anything similar.
+You will most easily set up all these tools on linux.</p>
+<p>Multi-computer processing is only supported in <cite>enb</cite> in platforms where <cite>ray</cite> is available and working,
+to the best of our knowledge only Linux and MacOS. This feature is known not to work on Windows and
+disabled by default on that platform.</p>
+<section id="first-installation">
+<h2>First installation<a class="headerlink" href="#first-installation" title="Permalink to this headline"></a></h2>
+<p>In each computer of the cluster, you will need to do the following (once).</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p><strong>Python version</strong></p>
+<p>Install the same version of Python, 3.6 or newer. The revision number after 3.x is not important,
+e.g., 3.9.8 should be compatible with 3.9.9.</p>
+</li>
+<li><p><strong>Install enb</strong>
+See <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for instructions on how to install <cite>enb</cite> in a single computer.
+In a nutshell:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
+</pre></div>
+</div>
+</div></blockquote>
+<p>Instructions for installing cluster-specific packages is shown below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If your code or the plugins you install require additional runtime dependencies,
+these will need to be installed manually in all nodes in the cluster.</p>
+</div>
+</li>
+<li><p><strong>Install and configure ray</strong></p>
+<blockquote>
+<div><ul>
+<li><dl>
+<dt><strong>Check ray version</strong></dt><dd><p>The <cite>ray</cite> library is installed by default on non-Windows platforms.
+However, you need to make sure that all nodes have the same version
+of <cite>ray</cite> installed. To install a specific node with pip, you can use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]==</span><span class="m">1</span>.9.1
+</pre></div>
+</div>
+<p>You will also need to make sure that the <cite>ray</cite> command is present in your PATH.</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>Open ray ports</strong></p>
+<blockquote>
+<div><p>Several ports need to be open in every node involved in the computation, including
+the head and the remote nodes. These are used by ray for communication between the nodes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>It is critical to open</strong> ports on all machines for <cite>enb</cite> clusters to work.</p>
+</div>
+<p>The exact ports needed on each cluster is given by the <cite>enb.config.options.ray_port</cite>
+and <cite>enb.config.options.ray_port_count</cite> variables when the first call to <cite>get_df</cite> is made.
+More specifically, ports from <cite>enb.config.options.ray_port</cite> to
+<cite>enb.config.options.ray_port + enb.config.options.ray_port_count - 1</cite> (both included)
+are required.</p>
+<p>The default values for <cite>ray_port</cite> and <cite>ray_port_count</cite> are 11000 and 500, respectively.
+For these, ports 11000 to 11499 should be open.
+If you use <cite>ufw</cite> for firewalling, you can use or adapt the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo ufw allow proto tcp from any to any port <span class="m">11000</span>:11499 comment <span class="s1">&#39;enb-ray&#39;</span>
+</pre></div>
+</div>
+<p>Please refer to your firewall documentation should you need a more restrictive rule configuration.</p>
+<blockquote>
+<div><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You are encouraged to read the <a class="reference external" href="https://docs.ray.io/en/latest/configure.html">ray configuration manual</a>
+for all information on what a ray cluster entails.</p>
+<p><strong>DON’T OPEN CLUSTER PORTS TO AN UNPROTECTED NETWORK</strong>.</p>
+</div>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<ol class="arabic" start="5">
+<li><p><strong>Install and setup ssh</strong></p>
+<p>In the <em>head</em> node starting the execution (the one that runs all non-parallel_decorator tasks), you need to set up
+an <cite>ssh</cite> client.</p>
+<p>You can install them on debian/ubuntu derivates with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install openssh-client openssh-server
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You may want to create a specific ssh key for this purpose, e.g., with <cite>ssh-keygen</cite>.</p>
+</div>
+</div></blockquote>
+<p>In all nodes, a <cite>ssh</cite> server need to be set up, and its port (22 by default) needs to be
+accessible from the <em>head</em> node. This port should not overlap with the ray ports open in the previous point.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can add the head node’s public key to the list of authorized, e.g.,
+copying the contents of <cite>~/.ssh/id_rsa.pub</cite> into <cite>~/.ssh/authorized_keys</cite>.</p>
+</div>
+</li>
+<li><p><strong>Install sshfs</strong></p></li>
+</ol>
+<blockquote>
+<div><p>The <cite>sshfs</cite> tool is used to mount the project folder from the head node into all remote nodes.
+You can install it on debian/ubuntu derivates with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install sshfs
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p><strong>Install vde2</strong></p></li>
+</ol>
+<blockquote>
+<div><p>The <cite>vde2</cite> package provides the <cite>dpipe</cite> tool, which is also employed for remotely mounting the
+project folder on each remote node.
+You can install it on debian/ubuntu derivates with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install vde2
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="running-distributed-experiments">
+<h2>Running distributed experiments<a class="headerlink" href="#running-distributed-experiments" title="Permalink to this headline"></a></h2>
+<section id="cluster-configuration-file">
+<h3>Cluster configuration file<a class="headerlink" href="#cluster-configuration-file" title="Permalink to this headline"></a></h3>
+<p>Once everything is set up in every node you want to use, you need an enb ssh cluster
+configuration file, e.g., <cite>enb_cluster.csv</cite>. You can install a template for this with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install cluster-config .
+</pre></div>
+</div>
+<p>The configuration file is simply a CSV with one row per remote node to be connected, with
+the following columns:</p>
+<ul class="simple">
+<li><p><cite>address</cite>: the address of the remote node.</p></li>
+<li><p><cite>ssh_user</cite>: the ssh login user on the remote node. If left blank, the current user is employed.</p></li>
+<li><p><cite>ssh_port</cite>: the remote node’s port where ssh is listening. If left blank, the default port (22) is used.</p></li>
+<li><p><cite>local_ssh_file</cite>: path to the ssh identity file for connecting to the remote node. If left blank,
+ssh’s default key is employed.</p></li>
+<li><p><cite>cpu_limit</cite>: maximum number of CPUs to be used on the remote node machine.
+If &lt;= 0, then no limit is set for the node.
+Note that the number of CPUs to be used on the head node is given by <cite>enb.config.options.ray_cpu_limit</cite>.</p></li>
+</ul>
+<p>For instance, we you have a single remote node on 192.168.1.3 with ssh listening on port 22,
+and for which the key is on <cite>~/.ssh/id_rsa</cite>, the cluster configuration file would look like:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>address,ssh_user,ssh_port,local_ssh_file
+192.168.1.3,,22,~/.ssh/id_rsa
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can edit this file with most spreadsheet software, as long as you keep it in CSV format.</p>
+</div>
+</section>
+<section id="distributed-script-execution">
+<h3>Distributed script execution<a class="headerlink" href="#distributed-script-execution" title="Permalink to this headline"></a></h3>
+<p>Once the cluster configuration file is created, you simply need to run your script
+with <cite>–ssh_cluster_csv_path enb_cluster.csv</cite>, or set
+<cite>enb.config.options.ssh_cluster_csv_path</cite> in your code.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Parallelism is provided for the computation of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>’s subclasses,
+i.e., when invoking their <cite>get_df()</cite> method. No other part of the code
+will be optimized in any special way via this mechanism.
+This comment also applies when scripts are run in a single computer.</p>
+</div>
+</section>
+<section id="example-project-montecarlo-pi">
+<h3>Example project: Montecarlo pi<a class="headerlink" href="#example-project-montecarlo-pi" title="Permalink to this headline"></a></h3>
+<p>An installable template is provided for you to test local and distributed experiment execution.
+You can install it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install montecarlo-pi mp
+</pre></div>
+</div>
+<p>This will create an example experiment <cite>montecarlo_pi_experiment.py</cite> which approximates the value
+of pi by pseudorandom simulation.</p>
+<p>To run it locally, simply execute</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python mp/montecarlo_pi_experiment.py
+</pre></div>
+</div>
+<p>which should provide something similar to the following:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............ [ Powered by enb (Experiment NoteBook) v0.3.3 ] ............
+
+enb.config.options.ssh_cluster_csv_path is not set. You can do so with
+--ssh_cluster_csv_path=enb_cluster.csv.
+Computed pi ~ 3.141595796875 using 1280000000 total samples on 1 nodes.
+</pre></div>
+</div>
+<p>Once you have edited <cite>enb_cluster.csv</cite> with your cluster’s configuration,
+you can run it with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python mp/montecarlo_pi_experiment.py --ssh_cluster_csv_path<span class="o">=</span>enb_cluster.csv
+</pre></div>
+</div>
+<p>An output similar to the following is expected:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............ [ Powered by enb (Experiment NoteBook) v0.3.3 ] ............
+
+Using cluster configuration file at enb_cluster.csv
+Computed pi ~ 3.141578978125 using 1280000000 total samples on 2 nodes.
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The interested reader can re-run the experiment with <cite>-v</cite> to get information
+about the remote node connection process. The <em>very</em> interested reader may
+run it with <cite>-vv</cite> for full details.</p>
+</div>
+</section>
+</section>
+<section id="accessing-files">
+<h2>Accessing files<a class="headerlink" href="#accessing-files" title="Permalink to this headline"></a></h2>
+<p>When a remote node is connected, the project node of the head node is automatically mounted
+on <cite>~/.enb-remote</cite> in that remote node.</p>
+<p>When a column function is executed remotely, the current working dir is set to either the
+project root (in the head node) or to the remote mount of that folder in <cite>~/.enb-remote</cite>
+for remote nodes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Recall that <em>column functions</em> are those defined for <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses, and run
+for each row of the table.</p>
+</div>
+<p>Thanks to this, <strong>relative paths should work in both the head and the remote nodes</strong> (unless you fiddle
+with <cite>os.chdir</cite>). It should be noted that:</p>
+<ul class="simple">
+<li><p>You can write to the file within project directory from your <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> column functions.
+Beware that all data will potentially be transmitted from a remote node to the head node.</p></li>
+<li><p>You can also read from files inside your project folder. Again, beware that all read data
+may need to be transmitted from the head node to the remote node.</p></li>
+</ul>
+<p>As a result, unless bandwidth is unlimited, it is <strong>preferable not to store big files inside the project root</strong>
+if they need to be read or written from column functions.</p>
+<p>For read-only access to big files, using symbolic links is recommended. To do so,</p>
+<ol class="arabic">
+<li><p>Copy your datasets to the head node and each remote node somewhere outside your project folder,
+e.g., <cite>/data/corpus1</cite>.</p></li>
+<li><p>In your project root (in the head node), make a symbolic link to the external dataset,
+e.g.,</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ln -s /data/corpus1 datasets/corpus1
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>When your code accesses <cite>dataset/corpus1</cite>, the following things happen:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The <cite>dataset/corpus1</cite> path is retrieved from the project root, or its mounted counterpart on remote nodes.</p></li>
+<li><p>Python translates this path into <cite>/data/corpus1</cite>.</p></li>
+<li><p>Data are read from or written to <cite>/data/corpus1</cite>, which is a regular (not remotely mounted) folder.
+The head and remote nodes do not need to communicate to obtain these data.</p></li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="ray-port-testing">
+<h2>Ray port testing<a class="headerlink" href="#ray-port-testing" title="Permalink to this headline"></a></h2>
+<p>If the previous example worked fine for you, you can safely skip this part.
+If you encountered any problems, you may want to test ray in an isolated
+way.</p>
+<p>The following aspects are assumed:</p>
+<ul class="simple">
+<li><p>The default port configuration (<cite>ray_port=11000</cite>, <cite>ray_port_count=500</cite>) is employed.</p></li>
+<li><p>The head node where the script is initially run is on 192.168.1.2.</p></li>
+<li><p>There is one remote node in 192.168.1.3.</p></li>
+<li><p>The steps described above for the first installation are followed for both the head and the remote node.
+In particular, ports 11000 to 11499 (both included) are open on both nodes.</p></li>
+</ul>
+<p>First, on 192.168.1.3, start ray</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ray</span> <span class="n">start</span> <span class="o">--</span><span class="n">head</span> <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">11000</span> <span class="o">--</span><span class="n">ray</span><span class="o">-</span><span class="n">client</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11001</span> \
+    <span class="o">--</span><span class="n">node</span><span class="o">-</span><span class="n">manager</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11002</span> <span class="o">--</span><span class="nb">object</span><span class="o">-</span><span class="n">manager</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11003</span> \
+    <span class="o">--</span><span class="n">gcs</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11004</span> \
+    <span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">worker</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11005</span> <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">worker</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11499</span>
+</pre></div>
+</div>
+<p>Second, on 192.168.1.2, start ray</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ray</span> <span class="n">start</span> <span class="o">--</span><span class="n">address</span><span class="o">=</span><span class="mf">192.168.1.3</span><span class="p">:</span><span class="mi">11000</span> <span class="o">--</span><span class="n">ray</span><span class="o">-</span><span class="n">client</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11001</span> \
+    <span class="o">--</span><span class="n">node</span><span class="o">-</span><span class="n">manager</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11002</span> <span class="o">--</span><span class="nb">object</span><span class="o">-</span><span class="n">manager</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11003</span> \
+    <span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">worker</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11005</span> <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">worker</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">11499</span>
+</pre></div>
+</div>
+<p>Finally, on either node, run <cite>ray status</cite> and verify that two nodes are available.
+You probably want to run <cite>ray stop</cite> on all nodes after this test.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>======== Autoscaler status: 2021-12-27 14:06:40.064813 ========
+Node status
+---------------------------------------------------------------
+Healthy:
+ 1 node_4d5e84c3a751e96c939cf08d4e51365ea4fec8c0ab07612e69133a51
+ 1 node_2006b6b12eca9f744688952c097379053ef8bd59a8dacc2bcd7b4599
+Pending:
+ (no pending nodes)
+Recent failures:
+ (no failures)
+
+Resources
+---------------------------------------------------------------
+Usage:
+ 0.0/16.0 CPU
+ 0.0/1.0 GPU
+ 0.00/24.661 GiB memory
+ 0.00/11.109 GiB object_store_memory
+
+Demands:
+ (no resource demands)
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="command_line_interface.html" class="btn btn-neutral float-left" title="The enb command-line tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
