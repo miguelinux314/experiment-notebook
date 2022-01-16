@@ -217,7 +217,6 @@ class Analyzer(enb.atable.ATable):
                 # to guarantee consistency and minimize code duplicity.
                 # Also note that column_selection may have different
                 # types (e.g., strings for column names, or tuples of column names, etc).
-
                 column_kwargs = self.update_render_kwargs_one_case(
                     column_selection=column_selection, render_mode=render_mode,
                     reference_group=reference_group,
@@ -229,15 +228,30 @@ class Analyzer(enb.atable.ATable):
                 if reference_group is not None:
                     if not self.show_reference_group:
                         if reference_group not in column_kwargs["pds_by_group_name"]:
-                            raise ValueError(f"Requested reference_group {repr(reference_group)} not found.")
+                            enb.logger.debug(f"Requested reference_group {repr(reference_group)} not found.")
                         filtered_plds = {k: v
                                          for k, v in column_kwargs["pds_by_group_name"].items()
                                          if k != reference_group}
                         column_kwargs["pds_by_group_name"] = filtered_plds
+                        if "group_name_order" in column_kwargs and column_kwargs["group_name_order"]:
+                            column_kwargs["group_name_order"] = [n for n in column_kwargs["group_name_order"] if
+                                                                 n != reference_group]
+
+                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"]:
+                        for i, name in enumerate(column_kwargs["pds_by_group_name"].keys()):
+                            if i > 0:
+                                column_kwargs["pds_by_group_name"][name] = [
+                                    pld for pld in column_kwargs["pds_by_group_name"][name]
+                                    if not isinstance(pld, enb.plotdata.VerticalLine) or pld.x_position != 0]
+                    try:
+                        column_kwargs["group_name_order"] = [n for n in column_kwargs["group_name_order"]
+                                                             if n != reference_group]
+                    except KeyError:
+                        pass
 
                 # All arguments to the parallel rendering function are ready; their associated tasks as created
                 render_ids.append(enb.plotdata.parallel_render_plds_by_group.start(
-                    **column_kwargs))
+                    **dict(column_kwargs)))
 
         # Wait until all rendering tasks are done while updating about progress
         with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
@@ -306,9 +320,10 @@ class Analyzer(enb.atable.ATable):
         # Control group division and labeling
         if "combine_groups" not in column_kwargs:
             column_kwargs["combine_groups"] = self.combine_groups
+
         if "show_legend" not in column_kwargs:
             column_kwargs["show_legend"] = self.show_legend
-            
+
         if self.style_list is not None:
             column_kwargs["style_list"] = self.style_list
 
@@ -581,7 +596,7 @@ class ScalarNumericAnalyzer(Analyzer):
     # and can be modified before any call to get_df. These values may be updated based on .ini files,
     # see the documentation of the enb.config.aini.managed_attributes decorator for more information.
     # Common analyzer attributes:
-    valid_render_modes = {"histogram"}
+    valid_render_modes = {"hbar", "histogram"}
     selected_render_modes = set(valid_render_modes)
     plot_title = None
     show_count = True
@@ -632,6 +647,69 @@ class ScalarNumericAnalyzer(Analyzer):
             show_global=show_global, show_count=show_count,
             **column_kwargs)
 
+        # Obtain the group averages for sorting and displaying purposes
+        plds_by_group = summary_df[
+            self.get_render_column_name(column_selection=column_selection, selected_render_mode=render_mode)]
+
+        if render_mode == "histogram":
+            group_avg_tuples = [(group,
+                                 [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0])
+                                for group, plds in plds_by_group.items()]
+        elif render_mode == "hbar":
+            group_avg_tuples = [(group, plds[0].y_values[0])
+                                for group, plds in plds_by_group.items()]
+        else:
+            raise ValueError(f"Unsupported render mode {render_mode}")
+
+        if self.sort_by_average:
+            column_kwargs["group_name_order"] = []
+            for t in sorted(group_avg_tuples, key=lambda t: t[1]):
+                group_name = t[0]
+                try:
+                    group_name = ast.literal_eval(group_name)
+                except ValueError:
+                    pass
+                try:
+                    if not isinstance(group_name, str) and len(group_name) == 1:
+                        group_name = group_name[0]
+                except TypeError:
+                    pass
+
+                column_kwargs["group_name_order"].append(group_name)
+
+        if render_mode == "histogram":
+            return self.update_render_kwargs_one_case_histogram(
+                column_selection=column_selection,
+                reference_group=reference_group,
+                render_mode=render_mode,
+                summary_df=summary_df,
+                output_plot_dir=output_plot_dir,
+                group_by=group_by, column_to_properties=column_to_properties,
+                show_global=show_global, show_count=show_count, **column_kwargs)
+        elif render_mode == "hbar":
+            return self.update_render_kwargs_one_case_hbar(
+                column_selection=column_selection,
+                reference_group=reference_group,
+                render_mode=render_mode,
+                summary_df=summary_df,
+                output_plot_dir=output_plot_dir,
+                group_by=group_by, column_to_properties=column_to_properties,
+                show_global=show_global, show_count=show_count, **column_kwargs)
+        else:
+            raise ValueError(f"Invalid render mode {render_mode}")
+
+    def update_render_kwargs_one_case_histogram(self, column_selection, reference_group, render_mode,
+                                                # Dynamic arguments with every call
+                                                summary_df, output_plot_dir,
+                                                group_by, column_to_properties,
+                                                # Arguments normalized by the @enb.aanalysis.Analyzer.normalize_parameters,
+                                                # in turn manageable through .ini configuration files via the
+                                                # @enb.config.aini.managed_attributes decorator.
+                                                show_global, show_count,
+                                                # Rendering options, directly passed to plotdata.render_plds_by_group
+                                                **column_kwargs):
+        """Update rendering kwargs (e.g., labels) specifically for the histogram mode.
+        """
         # Update specific rendering kwargs for this analyzer:
         if "global_x_label" not in column_kwargs:
             if self.main_alpha <= 0 or self.bar_width_fraction <= 0:
@@ -640,7 +718,7 @@ class ScalarNumericAnalyzer(Analyzer):
                 column_kwargs["global_x_label"] = column_to_properties[column_selection].label
 
             if reference_group is not None:
-                column_kwargs["global_x_label"] += f" difference vs. {reference_group} average"
+                column_kwargs["global_x_label"] += f" difference vs. {reference_group}"
 
         if "global_y_label" not in column_kwargs:
             if self.main_alpha > 0 and self.bar_width_fraction > 0:
@@ -681,28 +759,6 @@ class ScalarNumericAnalyzer(Analyzer):
                                             render_mode=render_mode,
                                             summary_df=summary_df)
 
-        # Obtain the group averages for sorting and displaying purposes
-        plds_by_group = summary_df[
-            self.get_render_column_name(column_selection=column_selection, selected_render_mode=render_mode)]
-        group_avg_tuples = [(group, [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0])
-                            for group, plds in plds_by_group.items()]
-
-        if self.sort_by_average:
-            column_kwargs["group_name_order"] = []
-            for t in sorted(group_avg_tuples, key=lambda t: t[1]):
-                group_name = t[0]
-                try:
-                    group_name = ast.literal_eval(group_name)
-                except ValueError:
-                    pass
-                try:
-                    if not isinstance(group_name, str) and len(group_name) == 1:
-                        group_name = group_name[0]
-                except TypeError:
-                    pass
-
-                column_kwargs["group_name_order"].append(group_name)
-
         # Fix the patterns used in the bars in the combined case
         if ("combine_groups" in column_kwargs and column_kwargs["combine_groups"]) \
                 or ("combine_groups" not in column_kwargs and self.combine_groups):
@@ -715,6 +771,7 @@ class ScalarNumericAnalyzer(Analyzer):
                 for k, v in column_kwargs["pds_by_group_name"].items()
             }
 
+            # Fix pattern
             for i, ((group_name, group_pds), pattern) in enumerate(zip(
                     sorted(column_kwargs["pds_by_group_name"].items()),
                     plotdata.pattern_cycle)):
@@ -724,6 +781,73 @@ class ScalarNumericAnalyzer(Analyzer):
 
             column_kwargs["global_y_label"] = "Relative frequency"
 
+        # Add the reference vertical line at x=0 if needed
+        if reference_group:
+            for name, pds in column_kwargs["pds_by_group_name"].items():
+                pds.append(plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
+
+        return column_kwargs
+
+    def update_render_kwargs_one_case_hbar(self, column_selection, reference_group, render_mode,
+                                           # Dynamic arguments with every call
+                                           summary_df, output_plot_dir,
+                                           group_by, column_to_properties,
+                                           # Arguments normalized by the @enb.aanalysis.AAnalyzer.normalize_parameters,
+                                           # in turn manageable through .ini configuration files via the
+                                           # @enb.config.aini.managed_attributes decorator.
+                                           show_global, show_count,
+                                           # Rendering options, directly passed to plotdata.render_plds_by_group
+                                           **column_kwargs):
+        """Update rendering kwargs (e.g., labels) specifically for the hbar and hbar mode.
+        """
+        if "global_x_label" not in column_kwargs:
+
+            column_kwargs["global_x_label"] = column_to_properties[column_selection].label
+            if reference_group is not None:
+                column_kwargs["global_x_label"] += f" difference vs. {reference_group}"
+
+        if "global_y_label" not in column_kwargs:
+            column_kwargs["global_y_label"] = ""
+
+        # Calculate axis limits
+        if "x_min" not in column_kwargs:
+            column_kwargs["x_min"] = float(summary_df[f"{column_selection}_min"].min()) \
+                if column_to_properties[column_selection].plot_min is None else \
+                column_to_properties[column_selection].plot_min
+        if "x_max" not in column_kwargs:
+            column_kwargs["x_max"] = float(summary_df[f"{column_selection}_max"].max()) \
+                if column_to_properties[column_selection].plot_max is None else \
+                column_to_properties[column_selection].plot_max
+
+        column_kwargs["combine_groups"] = True
+
+        group_names = sorted(column_kwargs["pds_by_group_name"].keys())
+        try:
+            if column_kwargs["group_name_order"]:
+                group_names = column_kwargs["group_name_order"]
+        except KeyError:
+            pass
+        group_names = [n for n in reversed(group_names)
+                       if not reference_group or n != reference_group]
+
+        pds_by_group_name = column_kwargs["pds_by_group_name"]
+        column_kwargs["pds_by_group_name"] = {}
+        for i, name in enumerate(group_names):
+            column_kwargs["pds_by_group_name"][name] = pds_by_group_name[name]
+            for pld in pds_by_group_name[name]:
+                pld.x_values = (i,)
+            if reference_group:
+                column_kwargs["pds_by_group_name"][name].append(
+                    enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
+
+        column_kwargs["y_tick_list"] = list(range(len(column_kwargs["pds_by_group_name"])))
+        column_kwargs["y_tick_label_list"] = list(column_kwargs["pds_by_group_name"].keys())
+
+        column_kwargs["y_min"] = -0.5
+        column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
+        column_kwargs["show_legend"] = False
+
+        column_kwargs["fig_height"] = 0.5 + 0.5 * len(column_kwargs["pds_by_group_name"])
 
         return column_kwargs
 
@@ -856,6 +980,8 @@ class ScalarNumericSummary(AnalyzerSummary):
         """
         if kwargs["render_mode"] == "histogram":
             return self.compute_histogram_plottable_one_case(*args, **kwargs)
+        elif kwargs["render_mode"] == "hbar":
+            return self.compute_hbar_plottable_one_case(*args, **kwargs)
         else:
             raise ValueError(f"Invalid reder mode {kwargs['render_mode']}")
 
@@ -972,8 +1098,21 @@ class ScalarNumericSummary(AnalyzerSummary):
                 line_width=_self.analyzer.secondary_line_width,
                 vertical=False))
 
-        if self.reference_group:
-            row[_column_name].append(plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
+    def compute_hbar_plottable_one_case(self, *args, **kwargs):
+        _self, group_label, row = args
+        group_df = _self.label_to_df[group_label]
+        column_name = kwargs["column_selection"]
+        render_mode = kwargs["render_mode"]
+        column_series = group_df[column_name].copy()
+
+        if render_mode not in _self.analyzer.valid_render_modes:
+            raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
+
+        # Only histogram mode is supported in this version of enb
+        assert render_mode == "hbar"
+
+        row[_column_name] = [enb.plotdata.BarData(x_values=(0,), y_values=(column_series.mean(),),
+                                                  vertical=False)]
 
 
 @enb.config.aini.managed_attributes
@@ -1045,12 +1184,13 @@ class TwoNumericAnalyzer(Analyzer):
             y_column_properties = column_to_properties[y_column_name]
         except (KeyError, TypeError):
             y_column_properties = enb.atable.ColumnProperties(y_column_name)
+
         if "global_x_label" not in column_kwargs:
             column_kwargs["global_x_label"] = x_column_properties.label + \
-                                              (f" difference vs. {reference_group} average" if reference_group else "")
+                                              (f" difference vs. {reference_group}" if reference_group else "")
         if "global_y_label" not in column_kwargs:
             column_kwargs["global_y_label"] = y_column_properties.label + \
-                                              (f" difference vs. {reference_group} average" if reference_group else "")
+                                              (f" difference vs. {reference_group}" if reference_group else "")
 
         # Calculate axis limits
         if "x_min" not in column_kwargs:
@@ -1533,7 +1673,7 @@ class DictNumericSummary(AnalyzerSummary):
         assert render_mode == "line"
 
         row[_column_name] = []
-        
+
         x_values = []
         avg_values = []
         std_values = []
@@ -1546,7 +1686,8 @@ class DictNumericSummary(AnalyzerSummary):
                     x_values.append(x)
                 avg_values.append(values.mean())
                 std_values.append(values.std())
-        if _self.analyzer.show_individual_samples and (self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
+        if _self.analyzer.show_individual_samples and (
+                self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
             row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values,
                                                               y_values=avg_values,
                                                               alpha=self.analyzer.secondary_alpha))
