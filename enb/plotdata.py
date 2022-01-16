@@ -66,7 +66,6 @@ class PlottableData:
 
     def render_legend(self, axes=None):
         axes = plt if axes is None else axes
-        print(f"rendering {self}")
         legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                              ncol=self.legend_column_count, edgecolor=((0, 0, 0, 0.2)))
         legend.get_frame().set_alpha(None)
@@ -190,14 +189,17 @@ class ScatterData(PlottableData2D):
 
 class BarData(PlottableData2D):
     pattern = None
+    vertical = True
 
-    def __init__(self, marker_size=1, pattern=None, **kwargs):
-        super().__init__(marker_size=marker_size, **kwargs)
+    def __init__(self, pattern=None, vertical=True, **kwargs):
+        super().__init__(**kwargs)
         self.pattern = pattern
+        self.vertical = vertical
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
-        axes.bar(self.x_values, self.y_values, label=self.label,
+        plot_fun = axes.bar if self.vertical is True else axes.barh
+        plot_fun(self.x_values, self.y_values, label=self.label,
                  alpha=self.alpha if not self.pattern else self.alpha * 0.75,
                  hatch=self.pattern,
                  edgecolor=matplotlib.colors.colorConverter.to_rgba(self.color, 0.9) if self.color else None,
@@ -207,12 +209,13 @@ class BarData(PlottableData2D):
             self.render_legend(axes=axes)
 
     def shift_y(self, constant):
+        coordinate = "bottom" if self.vertical else "left"
         try:
-            self.extra_kwargs["bottom"] += constant
+            self.extra_kwargs[coordinate] += constant
         except KeyError:
-            self.extra_kwargs["bottom"] = constant
+            self.extra_kwargs[coordinate] = constant
         except AttributeError:
-            self.extra_kwargs = dict(bottom=constant)
+            self.extra_kwargs = {coordinate: constant}
 
 
 class StepData(PlottableData2D):
@@ -742,7 +745,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     try:
                         pld.render(axes=group_axes)
                     except Exception as ex:
-                        raise Exception(f"Error rendering {pld} -- {group_name} -- {output_plot_path}") from ex
+                        raise Exception(
+                            f"Error rendering {pld} -- {group_name} -- {output_plot_path}:\n{repr(ex)}") from ex
                     semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
                     semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
 
@@ -822,7 +826,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     plt.sca(group_axes)
                     plt.ylim(*ylim)
                 plt.sca(ca)
-                
+
             if xlim[1] < 1e-2:
                 x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
             show_grid = options.show_grid if show_grid is None else show_grid
@@ -830,14 +834,14 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
                 plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
-                plt.xticks(y_tick_list, y_tick_label_list)
+                plt.yticks(y_tick_list, y_tick_label_list)
                 if x_tick_label_list or y_tick_label_list:
                     plt.minorticks_off()
                 if show_grid:
                     plt.grid("major", alpha=0.5)
             plt.sca(ca)
-            
-            if global_y_label or global_y_label:
+
+            if global_x_label or global_y_label:
                 # The x axis needs to be placed on the last horizontal group
                 # so that it can be correctly aligned
                 ca = plt.gca()
@@ -845,7 +849,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     plt.sca(group_axes)
                     plt.xlabel(global_x_label)
                 plt.sca(ca)
-                
+
                 # Add an otherwise transparent subplot for global labels
                 if global_y_label is not None:
                     plt.gcf().add_subplot(111, frame_on=False)
@@ -856,7 +860,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             if options.global_title is not None:
                 plt.suptitle(options.global_title)
-
+            
             with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
                 if os.path.dirname(output_plot_path):
                     os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)

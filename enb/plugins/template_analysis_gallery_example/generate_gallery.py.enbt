@@ -18,8 +18,7 @@ if __name__ == '__main__':
     # Scalar numeric analysis
     scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
 
-    # for style in enb.plotdata.get_available_styles() + [""]:
-    for style in ["xkcd"]:
+    for style in enb.plotdata.get_available_styles() + [""]:
         print(f"Rendering style {repr(style) if style else 'default'}")
 
         ## One numeric analysis
@@ -29,6 +28,7 @@ if __name__ == '__main__':
             style_list=[style])
 
         ## With grouping
+        scalar_analyzer.sort_by_average = True
         analysis_df = scalar_analyzer.get_df(
             full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_numeric"),
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             style_list=[style])
 
         # Use a reference group
-        ## One scalar value
+        # One scalar value
         analysis_df = scalar_analyzer.get_df(
             full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             group_by="class",
