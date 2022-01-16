@@ -48,13 +48,20 @@ We can analyze the general petal and sepal dimensions using the **`get_df`** met
     The target columns are selected with the **target_columns** parameter, which must be a list of
     column names present in the dataframe being analyzed.
 
+The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):
 
-This renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | tail -n+4
+    :shell:
+
+The `histogram` mode  renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
 as shown in the next figure. The returned `analysis_df` dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png
     :width: 100%
+
+The `hbar` mode is most useful when grouping -- examples are provided below.
+
 
 Two numeric columns
 -------------------
@@ -85,6 +92,12 @@ which also shows +/- 1 horizontal and vertical standard deviations.
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png
     :width: 100%
+
+The previous figure shows an example of the `scatter` plot mode. 
+The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):
+
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
+    :shell:
 
 Columns with dictionaries
 -------------------------
@@ -163,6 +176,7 @@ The resulting figure is shown below
 .. figure:: _static/analysis_gallery/DictNumericAnalyzer_mode_count_groupby-block_size_line.png
     :width: 100%
 
+.. _grouping_by_value:
 
 Grouping by a column's value
 ----------------------------
@@ -187,9 +201,14 @@ as follows:
                          "petal_length", "petal_width"],
         group_by="class")
 
-This would automatically produce an image like the following:
+The `histogram` render mode produces plots like the following:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
+    :width: 100%
+
+The `hbar` render mode produces plots like the following:
+
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png
     :width: 100%
 
 Grouping with other Analyzer subclasses
