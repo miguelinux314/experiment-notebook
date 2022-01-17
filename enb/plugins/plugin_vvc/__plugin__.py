@@ -8,7 +8,7 @@ class VVCPlugin(enb.plugins.PluginMake):
     contrib_authors = ["ISO", "ITU", "IEC"]
     contrib_reference_urls = ["https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master"]
     contrib_download_url_name = [
-        ("https://github.com/miguelinux314/experiment-notebook/blob/dev/contrib/VVCSoftware_VTM-master.zip?raw=true",
+        ("https://github.com/miguelinux314/experiment-notebook/blob/dev/contrib/VVCSoftware_VTM-VTM-15.0.zip?raw=true",
          "VVCSoftware_VTM-master.zip")]
     extra_requirements_message = """
     The cmake tool is needed to build this plugin, if not present already. 
