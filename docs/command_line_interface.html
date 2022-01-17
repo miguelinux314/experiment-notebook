@@ -229,7 +229,6 @@ options. An example option of this is shown next:</p>
                          [--fig_height FIG_HEIGHT]
                          [--horizontal_margin HORIZONTAL_MARGIN]
                          [--vertical_margin VERTICAL_MARGIN]
-                         [--global_y_label_pos GLOBAL_Y_LABEL_POS]
                          [--legend_column_count LEGEND_COLUMN_COUNT]
                          [--show_grid] [--global_title GLOBAL_TITLE]
                          [--group_row_margin GROUP_ROW_MARGIN]
@@ -417,12 +416,6 @@ Rendering Options:
                         Vertical margin, which effectively expands the (y_min,
                         y_max) limits by this amount on each direction.
                         (default: 0)
-  --global_y_label_pos GLOBAL_Y_LABEL_POS
-                        Relative position of the global Y label. Can be
-                        negative or positive. Intended as a quick hack when
-                        left y-axis ticks are longer or shorter than the
-                        default assumptions. If None is selected, the position
-                        is attempted to set automatically. (default: None)
   --legend_column_count LEGEND_COLUMN_COUNT
                         Number of columns used in plot legends. (default: 2)
   --show_grid           Show axis grid lines? (default: False)
