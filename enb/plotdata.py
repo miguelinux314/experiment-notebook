@@ -10,6 +10,7 @@ import itertools
 import glob
 import matplotlib
 import matplotlib.patheffects
+import matplotlib.patches
 
 import enb.atable
 
@@ -288,6 +289,78 @@ class ErrorLines(PlottableData2D):
         assert len(self.x_values) == len(self.y_values)
 
 
+class Rectangle(PlottableData2D):
+    """Render a rectangle in a given position.
+    """
+    alpha=0.5
+    def __init__(self, x_values, y_values, width, height, angle_degrees=0, fill=False, 
+                 linewidth=1, **kwargs):
+        """
+        :param x_values: a list with a single element with the x position of the rectangle's center
+        :param y_values: a list with a single element with the y position of the rectangle's center
+        :param width: width of the rectangle
+        :param height: height of the rectangle
+        """
+        super().__init__(x_values=x_values, y_values=y_values, **kwargs)
+        assert width >= 0, width
+        assert height >= 0, height
+        assert linewidth >= 0, linewidth
+        self.width = width
+        self.height = height
+        self.angle_degrees = angle_degrees
+        self.fill = fill
+        self.linewidth = linewidth
+
+    def render(self, axes=None):
+        assert len(self.x_values) == 1, self.x_values
+        assert len(self.y_values) == 1, self.y_values
+        axes = plt if axes is None else axes
+        axes.add_patch(matplotlib.patches.Rectangle((
+            self.x_values[0] - self.width/2, 
+            self.y_values[0] - self.height/2),
+            width=self.width, height=self.height, 
+            angle=self.angle_degrees, fill=self.fill,
+            color=self.color, alpha=self.alpha,
+            linewidth=self.linewidth))
+        
+class LineSegment(PlottableData2D):
+    """Render a line segment centered at a given position.
+    """
+    alpha=0.5
+    def __init__(self, x_values, y_values, length, vertical=True, linewidth=1, **kwargs):
+        """
+        :param x_values: a list with a single element with the x position of the rectangle's center
+        :param y_values: a list with a single element with the y position of the rectangle's center
+        :param length: length of the line
+        """
+        super().__init__(x_values=x_values, y_values=y_values, **kwargs)
+        assert length >= 0, length
+        assert linewidth >= 0, linewidth
+        self.length = length
+        self.linewidth = linewidth
+        self.vertical = vertical
+        
+    @property
+    def center(self):
+        return self.x_values[0], self.y_values[0]
+
+    def render(self, axes=None):
+        assert len(self.x_values) == 1, self.x_values
+        assert len(self.y_values) == 1, self.y_values
+        axes = plt if axes is None else axes
+        center = self.center
+        if self.vertical:
+            x = [center[0], center[0]]
+            y = [center[1] - self.length / 2, center[1] + self.length / 2]
+        else:
+            x = [center[0] - self.length / 2, center[0] + self.length / 2]
+            y = [center[1], center[1]]
+            
+        
+        axes.plot(x, y, color=self.color, alpha=self.alpha, linewidth=self.linewidth)
+
+
+
 class HorizontalBand(PlottableData2D):
     """Plottable element that """
     alpha = 0.5
@@ -398,7 +471,7 @@ def get_available_styles():
     """Get a list of all styles available for plotting.
     It includes installed matplotlib styles plus custom styles 
     """
-    return sorted(itertools.chain(get_matlab_styles(), get_local_styles()))
+    return sorted(itertools.chain(get_matlab_styles(), get_local_styles(), ["default"]))
 
 
 def get_matlab_styles():
@@ -664,6 +737,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 if not style:
                     enb.logger.info(f"Ignoring empty style ({repr(style)}")
                     continue
+                elif style.lower() == "default":
+                    continue
                 if style in matplotlib.style.available or os.path.isfile(style):
                     # Matplotlib style name or full path
                     plt.style.use(style)
@@ -860,7 +935,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             if options.global_title is not None:
                 plt.suptitle(options.global_title)
-            
+
             with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
                 if os.path.dirname(output_plot_path):
                     os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)

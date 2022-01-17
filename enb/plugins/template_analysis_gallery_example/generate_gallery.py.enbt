@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # Scalar numeric analysis
     scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
 
-    for style in enb.plotdata.get_available_styles() + [""]:
+    for style in enb.plotdata.get_available_styles():
         print(f"Rendering style {repr(style) if style else 'default'}")
 
         ## One numeric analysis
