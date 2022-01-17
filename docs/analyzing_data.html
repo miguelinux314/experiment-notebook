@@ -110,7 +110,7 @@
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+10.g47081ff131)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
@@ -143,12 +143,20 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 <p>The target columns are selected with the <strong>target_columns</strong> parameter, which must be a list of
 column names present in the dataframe being analyzed.</p>
 </div>
-<p>This renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
+<p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
+- histogram
+- boxplot
+</pre></div>
+</div>
+<p>The <cite>histogram</cite> mode  renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
 as shown in the next figure. The returned <cite>analysis_df</cite> dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png"><img alt="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" style="width: 100%;" /></a>
 </figure>
+<p>The <cite>hbar</cite> and <cite>boxplot</cite> modes are most useful when
+grouping – examples are provided below in the first section about grouping below.</p>
 </section>
 <section id="two-numeric-columns">
 <h2>Two numeric columns<a class="headerlink" href="#two-numeric-columns" title="Permalink to this headline"></a></h2>
@@ -174,6 +182,13 @@ which also shows +/- 1 horizontal and vertical standard deviations.</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png"><img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" style="width: 100%;" /></a>
 </figure>
+<p>The previous figure shows an example of the <cite>scatter</cite> plot mode.
+The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- line
+- scatter
+</pre></div>
+</div>
+<p>Examples are provided below in the first section about grouping data, where some of these modes are most useful.</p>
 </section>
 <section id="columns-with-dictionaries">
 <h2>Columns with dictionaries<a class="headerlink" href="#columns-with-dictionaries" title="Permalink to this headline"></a></h2>
@@ -243,7 +258,7 @@ Rendering options are discussed in a later section.</p>
 </figure>
 </section>
 <section id="grouping-by-a-column-s-value">
-<h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
+<span id="grouping-by-value"></span><h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
 <section id="grouping-with-scalarnumericanalysis">
 <h3>Grouping with ScalarNumericAnalysis<a class="headerlink" href="#grouping-with-scalarnumericanalysis" title="Permalink to this headline"></a></h3>
 <p>Often, we want to group the dataframe’s rows based on the value of a given column, and then analyze others.</p>
@@ -259,9 +274,26 @@ as follows:</p>
     <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would automatically produce an image like the following:</p>
+<p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
+- histogram
+- boxplot
+</pre></div>
+</div>
+<p>The <cite>histogram</cite> render mode produces plots like the following:</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png"><img alt="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" src="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" style="width: 100%;" /></a>
+</figure>
+<p>The <cite>hbar</cite> render mode produces horizontal bar plots with length equal to the average, as shown in the
+following image:</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png"><img alt="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" style="width: 100%;" /></a>
+</figure>
+<p>The <cite>boxplot</cite> render mode produces standard box plots where lines span the entire input data range,
+the vertical lines in the box plot indicates quartiles Q1, Q2 and Q3, and the mean value is also displayed,
+as shown next:</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png"><img alt="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png" style="width: 100%;" /></a>
 </figure>
 </section>
 <section id="grouping-with-other-analyzer-subclasses">
@@ -275,9 +307,18 @@ as follows:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>The resulting scatter plot from this call is shown next:</p>
+<p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- line
+- scatter
+</pre></div>
+</div>
+<p>The resulting plot for the <cite>scatter</cite> mode is shown next:</p>
 <figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png" />
+</figure>
+<p>The resulting plot for the <cite>line</cite> mode is shown next:</p>
+<figure class="align-default">
+<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class.png" />
 </figure>
 </section>
 </section>
@@ -618,6 +659,7 @@ You can check out the `gallery of matplotlib’s default styles</a>.</p></li>
 	- &#39;bmh&#39;
 	- &#39;classic&#39;
 	- &#39;dark_background&#39;
+	- &#39;default&#39;
 	- &#39;fast&#39;
 	- &#39;fivethirtyeight&#39;
 	- &#39;ggplot&#39;
@@ -638,7 +680,11 @@ You can check out the `gallery of matplotlib’s default styles</a>.</p></li>
 	- &#39;seaborn-ticks&#39;
 	- &#39;seaborn-white&#39;
 	- &#39;seaborn-whitegrid&#39;
+	- &#39;single_column&#39;
+	- &#39;slides&#39;
 	- &#39;tableau-colorblind10&#39;
+	- &#39;two_columns&#39;
+	- &#39;xkcd&#39;
 </pre></div>
 </div>
 </div></blockquote>
@@ -664,7 +710,7 @@ Matplotlib <a class="reference external" href="https://matplotlib.org/stable/tut
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Not all styles are intended for professional usage (-:</p>
+<p>Not all styles are necessarily intended for professional usage (-:</p>
 <figure class="align-default">
 <img alt="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png" src="_images/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png" />
 </figure>
