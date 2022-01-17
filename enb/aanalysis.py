@@ -1204,10 +1204,16 @@ class ScalarNumericSummary(AnalyzerSummary):
         if len(column_series) != len(column_series):
             enb.logger.debug("Finite and/or NaNs found in the input. "
                              f"Using {100 * (len(finite_only_series) / len(column_series))}% of the total.")
-
-        description = scipy.stats.describe(finite_only_series)
-        quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
-        half_range = 0.5 * (description.minmax[1] - description.minmax[0])
+        
+        try:
+            description = scipy.stats.describe(finite_only_series)
+            quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
+        except FloatingPointError:
+            class Description:
+                minmax = [finite_only_series[0]] * 2
+                mean = finite_only_series[0]
+            description = Description()
+            quartiles = [finite_only_series[0]] * 3
 
         row[_column_name] = [
             enb.plotdata.ErrorLines(
