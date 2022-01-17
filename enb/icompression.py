@@ -268,6 +268,7 @@ class WrapperCodec(AbstractCodec):
         invocation = f"{self.compressor_path} {compression_params}"
         enb.logger.info(f"[{self.name}] Invocation: '{invocation}'")
         try:
+            enb.logger.debug(f"[{self.name}] executing: {repr(invocation)}")
             status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
             enb.logger.debug(
                 f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
