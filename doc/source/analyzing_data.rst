@@ -60,7 +60,8 @@ etc., for each target column.
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png
     :width: 100%
 
-The `hbar` mode is most useful when grouping -- examples are provided below.
+The `hbar` and `boxplot` modes are most useful when 
+grouping -- examples are provided below in the first section about grouping below.
 
 
 Two numeric columns
@@ -98,6 +99,8 @@ The following render modes are available for the TwoNumericAnalyzer (they are al
 
 .. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
     :shell:
+
+Examples are provided below in the first section about grouping data, where some of these modes are most useful. 
 
 Columns with dictionaries
 -------------------------
@@ -201,14 +204,28 @@ as follows:
                          "petal_length", "petal_width"],
         group_by="class")
 
+By default, all of the following render modes are used with |ScalarNumericAnalyzer|:
+
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | tail -n+4
+    :shell:
+
 The `histogram` render mode produces plots like the following:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
     :width: 100%
 
-The `hbar` render mode produces plots like the following:
+
+The `hbar` render mode produces horizontal bar plots with length equal to the average, as shown in the 
+following image:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png
+    :width: 100%
+
+The `boxplot` render mode produces standard box plots where lines span the entire input data range,
+the vertical lines in the box plot indicates quartiles Q1, Q2 and Q3, and the mean value is also displayed,
+as shown next:
+
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png
     :width: 100%
 
 Grouping with other Analyzer subclasses
@@ -225,9 +242,18 @@ Grouping is not restricted to |ScalarNumericAnalyzer|. It can be used with other
         group_by="class",
     )
 
-The resulting scatter plot from this call is shown next:
+By default, all of the following render modes are used with |TwoNumericAnalyzer|:
+
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
+    :shell:
+
+The resulting plot for the `scatter` mode is shown next:
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png
+
+The resulting plot for the `line` mode is shown next:
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class.png
 
 
 Grouping by task families
@@ -627,6 +653,6 @@ Each element in `style_list` must be one of the following:
     Therefore, you can compose themes just like one would in 
     Matplotlib `<https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles>`_.
 
-.. warning:: Not all styles are intended for professional usage (-:
+.. warning:: Not all styles are necessarily intended for professional usage (-:
 
     .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png
