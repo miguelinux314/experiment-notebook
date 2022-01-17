@@ -39,6 +39,11 @@ class VVC(icompression.WrapperCodec):
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info['component_count'] == 1, f"Only 1 frame supported"
+        
+        if original_file_info['bytes_per_sample'] > 1:
+            raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} "
+                            f"not supported yet.")
+        
         return f"-i {original_path} " \
                f"-c {self.param_dict['config_path']} " \
                f"-b {compressed_path} " \
