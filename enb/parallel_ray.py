@@ -116,7 +116,7 @@ class HeadNode:
             # allow the needed imports before parallel_decorator methods are invoked.
             excludes = [os.path.relpath(p, options.project_root)
                         for p in glob.glob(os.path.join(options.project_root, "**", "*"), recursive=True)
-                        if os.path.isfile(p) and not p.endswith(".py")]
+                        if options.ssh_cluster_csv_path or (os.path.isfile(p) and not p.endswith(".py"))]
 
             modules_needed_remotely = [m.__name__ for m in sys.modules.values()
                                        if hasattr(m, "__name__") and m.__name__ not in options._initial_module_names
@@ -124,7 +124,7 @@ class HeadNode:
             ray.init(address=f":{self.ray_port}",
                      _redis_password=self.session_password,
                      runtime_env=dict(working_dir=options.project_root if options.ssh_cluster_csv_path else None,
-                                      excludes=excludes,
+                                      excludes=excludes  if options.ssh_cluster_csv_path else None,
                                       env_vars=dict(_needed_modules=str(modules_needed_remotely))),
                      logging_level=logging.CRITICAL if options.verbose <= 2 else logging.INFO)
 
