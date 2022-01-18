@@ -889,14 +889,17 @@ class ScalarNumericAnalyzer(Analyzer):
 
         column_kwargs["combine_groups"] = True
 
-        group_names = sorted(column_kwargs["pds_by_group_name"].keys())
         try:
-            if column_kwargs["group_name_order"]:
-                group_names = column_kwargs["group_name_order"]
+            group_names = column_kwargs["sorted_group_names"]
         except KeyError:
-            pass
-        group_names = [n for n in reversed(group_names)
-                       if not reference_group or n != reference_group]
+            group_names = sorted(column_kwargs["pds_by_group_name"].keys())
+            try:
+                if column_kwargs["group_name_order"]:
+                    group_names = column_kwargs["group_name_order"]
+            except KeyError:
+                pass
+            group_names = [n for n in reversed(group_names)
+                           if not reference_group or n != reference_group]
 
         pds_by_group_name = column_kwargs["pds_by_group_name"]
         column_kwargs["pds_by_group_name"] = {}
@@ -1164,7 +1167,7 @@ class ScalarNumericSummary(AnalyzerSummary):
                 alpha=_self.analyzer.main_alpha,
                 err_neg_values=[row[f"{column_name}_std"]],
                 err_pos_values=[row[f"{column_name}_std"]],
-                line_width=_self.analyzer.secondary_line_width,
+                line_width=_self.analyzer.main_line_width,
                 vertical=False))
 
     def compute_hbar_plottable_one_case(self, *args, **kwargs):
