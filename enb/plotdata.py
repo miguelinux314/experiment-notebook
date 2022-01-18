@@ -293,8 +293,8 @@ class Rectangle(PlottableData2D):
     """Render a rectangle in a given position.
     """
     alpha=0.5
-    def __init__(self, x_values, y_values, width, height, angle_degrees=0, fill=False, 
-                 linewidth=1, **kwargs):
+    def __init__(self, x_values, y_values, width, height, angle_degrees=0, fill=False,
+                 line_width=1, **kwargs):
         """
         :param x_values: a list with a single element with the x position of the rectangle's center
         :param y_values: a list with a single element with the y position of the rectangle's center
@@ -304,12 +304,12 @@ class Rectangle(PlottableData2D):
         super().__init__(x_values=x_values, y_values=y_values, **kwargs)
         assert width >= 0, width
         assert height >= 0, height
-        assert linewidth >= 0, linewidth
+        assert line_width >= 0, line_width
         self.width = width
         self.height = height
         self.angle_degrees = angle_degrees
         self.fill = fill
-        self.linewidth = linewidth
+        self.line_width = line_width
 
     def render(self, axes=None):
         assert len(self.x_values) == 1, self.x_values
@@ -321,13 +321,13 @@ class Rectangle(PlottableData2D):
             width=self.width, height=self.height, 
             angle=self.angle_degrees, fill=self.fill,
             color=self.color, alpha=self.alpha,
-            linewidth=self.linewidth))
+            linewidth=self.line_width))
         
 class LineSegment(PlottableData2D):
     """Render a line segment centered at a given position.
     """
     alpha=0.5
-    def __init__(self, x_values, y_values, length, vertical=True, linewidth=1, **kwargs):
+    def __init__(self, x_values, y_values, length, vertical=True, line_width=1, **kwargs):
         """
         :param x_values: a list with a single element with the x position of the rectangle's center
         :param y_values: a list with a single element with the y position of the rectangle's center
@@ -335,9 +335,9 @@ class LineSegment(PlottableData2D):
         """
         super().__init__(x_values=x_values, y_values=y_values, **kwargs)
         assert length >= 0, length
-        assert linewidth >= 0, linewidth
+        assert line_width >= 0, line_width
         self.length = length
-        self.linewidth = linewidth
+        self.line_width = line_width
         self.vertical = vertical
         
     @property
@@ -357,7 +357,7 @@ class LineSegment(PlottableData2D):
             y = [center[1], center[1]]
             
         
-        axes.plot(x, y, color=self.color, alpha=self.alpha, linewidth=self.linewidth)
+        axes.plot(x, y, color=self.color, alpha=self.alpha, linewidth=self.line_width)
 
 
 
@@ -686,7 +686,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if group_name_order is None:
             def normalize_group_label(group_name):
                 if isinstance(group_name, str):
-                    return group_name.strip().lower()
+                    parts = group_name.strip().lower().split()
+                    for i in range(len(parts)):
+                        try:
+                            parts[i] = int(parts[i])
+                        except ValueError:
+                            pass
+                    return parts
                 else:
                     return group_name
 

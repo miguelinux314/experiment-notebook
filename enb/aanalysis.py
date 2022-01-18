@@ -626,6 +626,8 @@ class ScalarNumericAnalyzer(Analyzer):
     bar_width_fraction = 1
     # If True, groups are sorted based on the average value of the column of interest.
     sort_by_average = False
+    # If True, modes that allow it show the individual samples
+    show_individual_samples = False
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -901,7 +903,8 @@ class ScalarNumericAnalyzer(Analyzer):
         for i, name in enumerate(group_names):
             column_kwargs["pds_by_group_name"][name] = pds_by_group_name[name]
             for pld in pds_by_group_name[name]:
-                pld.y_values = (i,)
+                # All elements of a group are aligned along the same horizontal position
+                pld.y_values = [i]*len(pld.y_values)
             if reference_group:
                 column_kwargs["pds_by_group_name"][name].append(
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
@@ -913,7 +916,7 @@ class ScalarNumericAnalyzer(Analyzer):
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
         column_kwargs["show_legend"] = False
 
-        column_kwargs["fig_height"] = 0.5 + 0.3 * len(column_kwargs["pds_by_group_name"])
+        # column_kwargs["fig_height"] = 0.5 + 0.3 * len(column_kwargs["pds_by_group_name"])
 
         return column_kwargs
 
@@ -1152,13 +1155,13 @@ class ScalarNumericSummary(AnalyzerSummary):
             x_values=[row[f"{column_name}_avg"]],
             y_values=[marker_y_position],
             marker_size=4 * _self.analyzer.main_marker_size,
-            alpha=_self.analyzer.secondary_alpha))
+            alpha=_self.analyzer.main_alpha))
         if _self.analyzer.show_x_std:
             row[_column_name].append(plotdata.ErrorLines(
                 x_values=[row[f"{column_name}_avg"]],
                 y_values=[marker_y_position],
                 marker_size=0,
-                alpha=_self.analyzer.secondary_alpha,
+                alpha=_self.analyzer.main_alpha,
                 err_neg_values=[row[f"{column_name}_std"]],
                 err_pos_values=[row[f"{column_name}_std"]],
                 line_width=_self.analyzer.secondary_line_width,
@@ -1185,7 +1188,8 @@ class ScalarNumericSummary(AnalyzerSummary):
         row[_column_name] = [enb.plotdata.BarData(
             x_values=(0,),
             y_values=(finite_only_series.mean(),),
-            vertical=False)]
+            vertical=False,
+            alpha=_self.analyzer.main_alpha),]
 
     def compute_boxplot_plottable_one_case(self, *args, **kwargs):
         _self, group_label, row = args
@@ -1221,15 +1225,32 @@ class ScalarNumericSummary(AnalyzerSummary):
                 y_values=(0,),
                 err_neg_values=(description.mean - description.minmax[0],), 
                 err_pos_values=(description.minmax[1]-description.mean,),
-                vertical=False),
+                vertical=False,
+                line_width=_self.analyzer.main_line_width,
+                marker_size=_self.analyzer.main_marker_size,
+                alpha=_self.analyzer.main_alpha),
             enb.plotdata.Rectangle(
                 x_values=(0.5 * (quartiles[0] + quartiles[2]),), y_values=(0,),
                 width=quartiles[2] - quartiles[0],
+                line_width=_self.analyzer.main_line_width,
+                alpha=_self.analyzer.main_alpha,
                 height=0.8),
             enb.plotdata.LineSegment(
                 x_values=(quartiles[1],), y_values=(0,),
-                length=0.8, vertical=True),
+                line_width=_self.analyzer.main_line_width,
+                alpha=_self.analyzer.main_alpha,
+                length=0.8, 
+                vertical=True),
         ]
+
+        if _self.analyzer.show_individual_samples:
+            row[_column_name].append(enb.plotdata.ScatterData(
+                y_values=[0]*len(finite_only_series.values),
+                x_values=list(finite_only_series),
+                alpha=_self.analyzer.secondary_alpha,
+                marker_size=_self.analyzer.secondary_marker_size,
+                marker="o",
+            ))
 
 
 @enb.config.aini.managed_attributes
@@ -1499,34 +1520,34 @@ class TwoNumericSummary(ScalarNumericSummary):
             plds_this_case.append(plotdata.ScatterData(
                 x_values=[row[f"{x_column_name}_avg"]],
                 y_values=[row[f"{y_column_name}_avg"]],
-                alpha=self.analyzer.main_alpha,
+                alpha=_self.analyzer.main_alpha,
                 marker_size=5 * self.analyzer.main_marker_size))
             if self.analyzer.show_individual_samples:
                 plds_this_case.append(plotdata.ScatterData(
                     x_values=x_column_series.values,
                     y_values=y_column_series.values,
-                    alpha=self.analyzer.secondary_alpha,
-                    marker_size=5 * self.analyzer.secondary_marker_size,
+                    alpha=_self.analyzer.main_alpha,
+                    marker_size=5 * _self.analyzer.secondary_marker_size,
                     extra_kwargs=dict(linewidths=0)))
             if self.analyzer.show_x_std:
                 plds_this_case.append(plotdata.ErrorLines(
                     x_values=[row[f"{x_column_name}_avg"]],
                     y_values=[row[f"{y_column_name}_avg"]],
                     marker_size=0,
-                    alpha=self.analyzer.secondary_alpha,
+                    alpha=_self.analyzer.main_alpha,
                     err_neg_values=[row[f"{x_column_name}_std"]],
                     err_pos_values=[row[f"{x_column_name}_std"]],
-                    line_width=self.analyzer.secondary_line_width,
+                    line_width=_self.analyzer.main_line_width,
                     vertical=False))
             if self.analyzer.show_y_std:
                 plds_this_case.append(plotdata.ErrorLines(
                     x_values=[row[f"{x_column_name}_avg"]],
                     y_values=[row[f"{y_column_name}_avg"]],
                     marker_size=0,
-                    alpha=self.analyzer.secondary_alpha,
+                    alpha=_self.analyzer.main_alpha,
                     err_neg_values=[row[f"{y_column_name}_std"]],
                     err_pos_values=[row[f"{y_column_name}_std"]],
-                    line_width=self.analyzer.secondary_line_width,
+                    line_width=_self.analyzer.main_line_width,
                     vertical=True))
         elif render_mode == "line":
             if is_family_grouping(group_by=self.group_by):
@@ -1546,8 +1567,8 @@ class TwoNumericSummary(ScalarNumericSummary):
             plds_this_case.append(plotdata.LineData(
                 x_values=x_values,
                 y_values=y_values,
-                alpha=self.analyzer.secondary_alpha,
-                marker_size=self.analyzer.main_marker_size - 1))
+                alpha=_self.analyzer.main_alpha,
+                marker_size=_self.analyzer.main_marker_size - 1))
         else:
             raise SyntaxError(f"Invalid render mode {repr(render_mode)} not within the "
                               f"supported ones for {self.analyzer.__class__.__name__} "
