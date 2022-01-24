@@ -292,7 +292,8 @@ class ErrorLines(PlottableData2D):
 class Rectangle(PlottableData2D):
     """Render a rectangle in a given position.
     """
-    alpha=0.5
+    alpha = 0.5
+
     def __init__(self, x_values, y_values, width, height, angle_degrees=0, fill=False,
                  line_width=1, **kwargs):
         """
@@ -316,17 +317,19 @@ class Rectangle(PlottableData2D):
         assert len(self.y_values) == 1, self.y_values
         axes = plt if axes is None else axes
         axes.add_patch(matplotlib.patches.Rectangle((
-            self.x_values[0] - self.width/2, 
-            self.y_values[0] - self.height/2),
-            width=self.width, height=self.height, 
+            self.x_values[0] - self.width / 2,
+            self.y_values[0] - self.height / 2),
+            width=self.width, height=self.height,
             angle=self.angle_degrees, fill=self.fill,
             color=self.color, alpha=self.alpha,
             linewidth=self.line_width))
-        
+
+
 class LineSegment(PlottableData2D):
     """Render a line segment centered at a given position.
     """
-    alpha=0.5
+    alpha = 0.5
+
     def __init__(self, x_values, y_values, length, vertical=True, line_width=1, **kwargs):
         """
         :param x_values: a list with a single element with the x position of the rectangle's center
@@ -339,7 +342,7 @@ class LineSegment(PlottableData2D):
         self.length = length
         self.line_width = line_width
         self.vertical = vertical
-        
+
     @property
     def center(self):
         return self.x_values[0], self.y_values[0]
@@ -355,10 +358,8 @@ class LineSegment(PlottableData2D):
         else:
             x = [center[0] - self.length / 2, center[0] + self.length / 2]
             y = [center[1], center[1]]
-            
-        
-        axes.plot(x, y, color=self.color, alpha=self.alpha, linewidth=self.line_width)
 
+        axes.plot(x, y, color=self.color, alpha=self.alpha, linewidth=self.line_width)
 
 
 class HorizontalBand(PlottableData2D):
@@ -518,7 +519,7 @@ def parallel_render_plds_by_group(
         global_y_label_pos=None, legend_column_count=None,
         force_monochrome_group=True,
         # Axis configuration
-        show_grid=None,
+        show_grid=None, show_subgrid=None,
         semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
         group_row_margin=None,
         # Axis limits
@@ -553,6 +554,7 @@ def parallel_render_plds_by_group(
                                     fig_width=fig_width, fig_height=fig_height,
                                     global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
                                     show_grid=show_grid,
+                                    show_subgrid=show_subgrid,
                                     x_tick_list=x_tick_list,
                                     x_tick_label_list=x_tick_label_list,
                                     x_tick_label_angle=x_tick_label_angle,
@@ -575,7 +577,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          global_y_label_pos=None, legend_column_count=None,
                          force_monochrome_group=True,
                          # Axis configuration
-                         show_grid=None,
+                         show_grid=None, show_subgrid=None,
                          semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
                          group_row_margin=None,
                          # Axis limits
@@ -624,7 +626,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     Axis configuration:
     
     :param show_grid: if True, or if None and options.show_grid, grid is displayed
-         aligned with the major axis.
+         aligned with the major axes.
+    :param show_grid: if True, or if None and options.show_subgrid, grid is displayed
+        aligned with the minor axes.
     :param semilog_y: if True, a logarithmic scale is used in the Y axis.
     :param semilog_y_base: if semilog_y is True, the logarithm base employed.
     :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum of y_min and this value.
@@ -911,15 +915,23 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             if xlim[1] < 1e-2:
                 x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
             show_grid = options.show_grid if show_grid is None else show_grid
+            show_subgrid = options.show_subgrid if show_subgrid is None else show_subgrid
             ca = plt.gca()
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
                 plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
                 plt.yticks(y_tick_list, y_tick_label_list)
                 if x_tick_label_list or y_tick_label_list:
-                    plt.minorticks_off()
+                    plt.minorticks_on()
+                if x_tick_label_list:
+                    plt.tick_params(which="minor", bottom=False)
+                if y_tick_label_list:
+                    plt.tick_params(which="minor", left=False)
                 if show_grid:
-                    plt.grid("major", alpha=0.5)
+                    plt.grid(which="major", axis="both", alpha=0.5)
+                if show_subgrid:
+                    plt.grid(which="minor", axis="both", alpha=0.25)
+
             plt.sca(ca)
 
             if global_x_label or global_y_label:

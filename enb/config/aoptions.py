@@ -415,7 +415,13 @@ class RenderingOptions:
 
     @OptionsBase.property(action="store_true")
     def show_grid(self, value):
-        """Show axis grid lines?
+        """Show major axis grid lines?
+        """
+        return bool(value)
+
+    @OptionsBase.property(action="store_true")
+    def show_subgrid(self, value):
+        """Show minor axis grid lines?
         """
         return bool(value)
 
