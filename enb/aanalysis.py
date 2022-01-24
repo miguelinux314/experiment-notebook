@@ -660,8 +660,12 @@ class ScalarNumericAnalyzer(Analyzer):
             group_avg_tuples = [(group,
                                  [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0])
                                 for group, plds in plds_by_group.items()]
-        elif render_mode in ["hbar", "boxplot"]:
+        elif render_mode == "hbar":
             group_avg_tuples = [(group, plds[0].y_values[0])
+                                for group, plds in plds_by_group.items()]
+        elif render_mode == "boxplot":
+            group_avg_tuples = [(group,
+                                 [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ErrorLines)][0])
                                 for group, plds in plds_by_group.items()]
         else:
             raise ValueError(f"Unsupported render mode {render_mode}")
@@ -679,9 +683,8 @@ class ScalarNumericAnalyzer(Analyzer):
                         group_name = group_name[0]
                 except TypeError:
                     pass
-
                 column_kwargs["group_name_order"].append(group_name)
-
+            
         if render_mode == "histogram":
             fun = self.update_render_kwargs_one_case_histogram
         elif render_mode == "hbar":
@@ -883,14 +886,13 @@ class ScalarNumericAnalyzer(Analyzer):
                 if column_to_properties[column_selection].plot_max is None else \
                 column_to_properties[column_selection].plot_max
 
-        margin = 0.05 * (column_kwargs["x_max"] - column_kwargs["x_min"]) 
+        margin = 0.05 * (column_kwargs["x_max"] - column_kwargs["x_min"])
         column_kwargs["x_min"] -= margin
         column_kwargs["x_max"] += margin
 
         column_kwargs["combine_groups"] = True
-
         try:
-            group_names = column_kwargs["sorted_group_names"]
+            group_names = column_kwargs["group_name_order"]
         except KeyError:
             group_names = sorted(column_kwargs["pds_by_group_name"].keys())
             try:
@@ -907,7 +909,7 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["pds_by_group_name"][name] = pds_by_group_name[name]
             for pld in pds_by_group_name[name]:
                 # All elements of a group are aligned along the same horizontal position
-                pld.y_values = [i]*len(pld.y_values)
+                pld.y_values = [i] * len(pld.y_values)
             if reference_group:
                 column_kwargs["pds_by_group_name"][name].append(
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
@@ -1192,7 +1194,7 @@ class ScalarNumericSummary(AnalyzerSummary):
             x_values=(0,),
             y_values=(finite_only_series.mean(),),
             vertical=False,
-            alpha=_self.analyzer.main_alpha),]
+            alpha=_self.analyzer.main_alpha), ]
 
     def compute_boxplot_plottable_one_case(self, *args, **kwargs):
         _self, group_label, row = args
@@ -1211,7 +1213,7 @@ class ScalarNumericSummary(AnalyzerSummary):
         if len(column_series) != len(column_series):
             enb.logger.debug("Finite and/or NaNs found in the input. "
                              f"Using {100 * (len(finite_only_series) / len(column_series))}% of the total.")
-        
+
         try:
             description = scipy.stats.describe(finite_only_series)
             quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
@@ -1219,6 +1221,7 @@ class ScalarNumericSummary(AnalyzerSummary):
             class Description:
                 minmax = [finite_only_series[0]] * 2
                 mean = finite_only_series[0]
+
             description = Description()
             quartiles = [finite_only_series[0]] * 3
 
@@ -1226,8 +1229,8 @@ class ScalarNumericSummary(AnalyzerSummary):
             enb.plotdata.ErrorLines(
                 x_values=(description.mean,),
                 y_values=(0,),
-                err_neg_values=(description.mean - description.minmax[0],), 
-                err_pos_values=(description.minmax[1]-description.mean,),
+                err_neg_values=(description.mean - description.minmax[0],),
+                err_pos_values=(description.minmax[1] - description.mean,),
                 vertical=False,
                 line_width=_self.analyzer.main_line_width,
                 marker_size=_self.analyzer.main_marker_size,
@@ -1242,13 +1245,13 @@ class ScalarNumericSummary(AnalyzerSummary):
                 x_values=(quartiles[1],), y_values=(0,),
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
-                length=0.8, 
+                length=0.8,
                 vertical=True),
         ]
 
         if _self.analyzer.show_individual_samples:
             row[_column_name].append(enb.plotdata.ScatterData(
-                y_values=[0]*len(finite_only_series.values),
+                y_values=[0] * len(finite_only_series.values),
                 x_values=list(finite_only_series),
                 alpha=_self.analyzer.secondary_alpha,
                 marker_size=_self.analyzer.secondary_marker_size,

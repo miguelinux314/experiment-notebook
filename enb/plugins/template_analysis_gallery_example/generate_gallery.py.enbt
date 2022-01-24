@@ -37,13 +37,11 @@ if __name__ == '__main__':
 
         ## Grouping and individual samples for the boxplot
         scalar_analyzer.show_individual_samples = True
-        scalar_analyzer.show_grid = True
         analysis_df = scalar_analyzer.get_df(
             full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_numeric_show_individual"),
-            group_by="class",
+            group_by="class", show_grid=True,
             style_list=[style], selected_render_modes={"boxplot"})
-        scalar_analyzer.show_grid = False
         scalar_analyzer.show_individual_samples = False
 
         # Two numeric analysis
