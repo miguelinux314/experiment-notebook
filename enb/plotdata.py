@@ -921,16 +921,22 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.sca(group_axes)
                 plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
                 plt.yticks(y_tick_list, y_tick_label_list)
-                if x_tick_label_list or y_tick_label_list:
+                if not x_tick_label_list and not y_tick_label_list:
                     plt.minorticks_on()
-                if x_tick_label_list:
+                    subgrid_axis = "both"
+                elif not x_tick_label_list:
+                    plt.minorticks_on()
                     plt.tick_params(which="minor", bottom=False)
-                if y_tick_label_list:
+                    subgrid_axis = "x"
+                elif not y_tick_label_list:
+                    plt.minorticks_on()
                     plt.tick_params(which="minor", left=False)
+                    subgrid_axis = "y"
+
                 if show_grid:
                     plt.grid(which="major", axis="both", alpha=0.5)
                 if show_subgrid:
-                    plt.grid(which="minor", axis="both", alpha=0.25)
+                    plt.grid(which="minor", axis=subgrid_axis, alpha=0.4)
 
             plt.sca(ca)
 
