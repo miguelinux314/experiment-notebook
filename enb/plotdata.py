@@ -926,11 +926,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     subgrid_axis = "both"
                 elif not x_tick_label_list:
                     plt.minorticks_on()
-                    plt.tick_params(which="minor", bottom=False)
+                    plt.tick_params(which="minor", left=False)
                     subgrid_axis = "x"
                 elif not y_tick_label_list:
                     plt.minorticks_on()
-                    plt.tick_params(which="minor", left=False)
+                    plt.tick_params(which="minor", bottom=False)
                     subgrid_axis = "y"
 
                 if show_grid:

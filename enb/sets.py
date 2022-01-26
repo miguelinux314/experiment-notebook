@@ -12,6 +12,7 @@ to know what files the experiment should be run on.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/18"
 
+import collections
 import os
 import hashlib
 import time
@@ -158,6 +159,14 @@ class FileVersionTable(FilePropertiesTable):
 
         assert self.version_base_dir is not None
         os.makedirs(self.version_base_dir, exist_ok=True)
+
+        # The versioning column is moved to the back so that all other columns are available when versioning 
+        column_to_properties = collections.OrderedDict()
+        for k, v in self.column_to_properties.items():
+            if k != "version_time":
+                column_to_properties[k] = v
+        column_to_properties["version_time"] = self.column_to_properties["version_time"]
+        self.column_to_properties = column_to_properties
 
     def version(self, input_path, output_path, row):
         """Create a version of input_path and write it into output_path.
