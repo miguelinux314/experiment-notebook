@@ -18,20 +18,25 @@ format. Given a code initially developed for one `enb` version and then executed
 
 * New features
 
-
-	- Introduced the `enb show` command to show some useful information. Run `enb show -h` for more details.
-
-	- Added the `'enb.ini'` plugin that allows installation of an editable configuration file for enb.
-
-	- Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
-
-	- Added documentation on how to customize the appearance of plots.
+    - Introduced the `enb show` command to show some useful information. Run `enb show -h` for more details.
+    - Added the `boxplot` and `hbar` render modes to ScalarNumericAnalyzer.
+    - Added the `'enb.ini'` plugin that allows installation of an editable configuration file for enb.
+    - Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
+    - Added documentation on how to customize the appearance of plots.
 
 * General improvements
 
-	- Enhanced the `combine_groups` option for |Analyzer| subclasses, and its documentation.
-	- Fixed label positioning in some plots with longer labels.
-	- Accelerated the initialization of ray for the case without remote nodes
+    - Enhanced the `combine_groups` option for |Analyzer| subclasses, and its documentation.
+    - Accelerated the initialization of ray for the case without remote nodes.
+    - Plot styling can now be read from `'enb.ini'`.
+    - Added subgrid configuration from `get_df` and `enb.ini` approaches.
+    - Updated VVC sources to 15.0.
+
+* Bug fixes
+
+    - Fixed label positioning in some plots with longer labels.
+    - Fixed minor ticks when labels are provided.
+    - Fixed dictionary plots.
 
 # Latest stable version
 
