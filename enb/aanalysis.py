@@ -489,6 +489,8 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         self.target_columns = target_columns
 
         # Add columns that compute the list of plotting elements of each group, if needed
+        self.column_to_properties = {k: v for k, v in self.column_to_properties.items()
+                                     if not "_render-" in k}
         for selected_render_mode in self.analyzer.selected_render_modes:
             for column_selection in target_columns:
                 self.add_column_function(
@@ -684,7 +686,7 @@ class ScalarNumericAnalyzer(Analyzer):
                 except TypeError:
                     pass
                 column_kwargs["group_name_order"].append(group_name)
-            
+
         if render_mode == "histogram":
             fun = self.update_render_kwargs_one_case_histogram
         elif render_mode == "hbar":
@@ -1710,7 +1712,7 @@ class DictNumericAnalyzer(Analyzer):
                                   **render_kwargs)
         finally:
             if self.key_to_x is not None:
-                del self.key_to_x
+                self.key_to_x = None
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -1818,15 +1820,21 @@ class DictNumericSummary(AnalyzerSummary):
         assert render_mode == "line"
 
         row[_column_name] = []
-
         x_values = []
         avg_values = []
         std_values = []
+
         for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
             values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
             if len(values) > 0:
                 if _self.analyzer.key_to_x:
-                    x_values.append(_self.analyzer.key_to_x[k])
+                    try:
+                        x_values.append(_self.analyzer.key_to_x[k])
+                    except KeyError:
+                        enb.logger.debug(f"{self.__class__.__name__}: "
+                                         f"Key {k} not present in {self.analyzer.__class__.__name__}'s key_to_x. "
+                                         f"Ignoring.")
+                        continue
                 else:
                     x_values.append(x)
                 avg_values.append(values.mean())
