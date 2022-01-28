@@ -659,16 +659,32 @@ class ScalarNumericAnalyzer(Analyzer):
             self.get_render_column_name(column_selection=column_selection, selected_render_mode=render_mode)]
 
         if render_mode == "histogram":
-            group_avg_tuples = [(group,
-                                 [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0])
-                                for group, plds in plds_by_group.items()]
+            group_avg_tuples = []
+            for group, plds in plds_by_group.items():
+                try:
+                    group_avg_tuples.append((group,
+                                 [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0]))
+                except IndexError:
+                    # Empty group
+                    group_avg_tuples.append((group, 0))
+                    
         elif render_mode == "hbar":
-            group_avg_tuples = [(group, plds[0].y_values[0])
-                                for group, plds in plds_by_group.items()]
+            group_avg_tuples = []
+            for group, plds in plds_by_group.items():
+                try:
+                    group_avg_tuples.append((group, plds[0].y_values[0]))
+                except IndexError:
+                    # Empty group
+                    group_avg_tuples.append((group, 0))
         elif render_mode == "boxplot":
-            group_avg_tuples = [(group,
-                                 [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ErrorLines)][0])
-                                for group, plds in plds_by_group.items()]
+            group_avg_tuples = []
+            for group, plds in plds_by_group.items():
+                try:
+                    group_avg_tuples.append((group,
+                                     [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ErrorLines)][0]))
+                except IndexError:
+                    # Empty group
+                    group_avg_tuples.append((group, 0))
         else:
             raise ValueError(f"Unsupported render mode {render_mode}")
 
@@ -1187,7 +1203,10 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         finite_only_series = self.remove_nans(column_series)
         if len(finite_only_series) == 0:
-            raise ValueError(f"No finite data found for column {column_name}, mode {render_mode}")
+            enb.logger.warn(f"{_self.__class__.__name__}: No finite data found for column {repr(column_name)}. "
+                            f"No plottable data is produced for this case.")
+            row[_column_name] = []
+            return
         if len(column_series) != len(column_series):
             enb.logger.debug("Finite and/or NaNs found in the input. "
                              f"Using {100 * (len(finite_only_series) / len(column_series))}% of the total.")
@@ -1211,7 +1230,10 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         finite_only_series = self.remove_nans(column_series)
         if len(finite_only_series) == 0:
-            raise ValueError(f"No finite data found for column {column_name}, mode {render_mode}")
+            enb.logger.warn(f"{_self.__class__.__name__}: No finite data found for column {repr(column_name)}. "
+                            f"No plottable data is produced for this case.")
+            row[_column_name] = []
+            return
         if len(column_series) != len(column_series):
             enb.logger.debug("Finite and/or NaNs found in the input. "
                              f"Using {100 * (len(finite_only_series) / len(column_series))}% of the total.")

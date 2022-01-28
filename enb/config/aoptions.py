@@ -258,7 +258,7 @@ class DirOptions:
 
         The dir is created when defined if necessary.
         """
-        _singleton_cli.WritableDirAction.assert_valid_value(value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
 
     # Base dir for external binaries (e.g., codecs or other tools)
     default_external_binary_dir = os.path.join(calling_script_dir, "bin")
