@@ -190,3 +190,19 @@ def get_node_ip():
     address = s.getsockname()[0]
     s.close()
     return address
+
+def capture_usr1():
+    """Capture the reception of a USR1 signal into pdb.
+    
+    From http://blog.devork.be/2009/07/how-to-bring-running-python-program.html.
+    """
+
+    def handle_pdb(sig, frame):
+        import pdb
+        print("\n"*2)
+        print("Captured USR1 signal! Activating pdb...")
+        print("\n" * 2)
+        pdb.Pdb().set_trace(frame)
+    
+    import signal
+    signal.signal(signal.SIGUSR1, handle_pdb)

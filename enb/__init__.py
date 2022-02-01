@@ -108,6 +108,8 @@ if not parallel_ray.is_parallel_process():
         config.options._initial_module_names = list(
             m.__name__ for m in _sys.modules.values() if hasattr(m, "__name__"))
 
+    misc.capture_usr1()
+
 # Run the setter functions on the default values too, allowing validation and normalization
 config.options.update(config.options, trigger_events=True)
 
