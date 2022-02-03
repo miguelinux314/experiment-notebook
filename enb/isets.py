@@ -126,7 +126,7 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["big_endian"] = False
         existing_dict["signed"] = True
         existing_dict["float"] = True
-        
+
     existing_dict["samples"] = os.path.getsize(file_path) / existing_dict["bytes_per_sample"]
 
     return existing_dict
@@ -578,7 +578,7 @@ def load_array_bsq(file_or_path, image_properties_row=None,
 
 
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
-    """Dump an array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
+    """Dump a raw array array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
     i.e., the concatenation of each component (z axis), each component in raster
     order. Parent folders are created if not already existing.
 
@@ -662,7 +662,39 @@ def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_pe
            f"-{iproperties_row_to_geometry_tag(row)}"
 
 
-def raw_path_to_png(raw_path, image_properties_row, png_path):
+def raw_path_to_png(raw_path, png_path, image_properties_row=None):
+    """Render an uint8 or uint16 raw image with 1, 3 or 4 components.
+    :param raw_path: path to the image in raw format to render in png.
+    :param png_path: path where the png file is to be stored.
+    :param image_properties_row: if row_path does not contain geometry information,
+      this parameter should be a dict-like object that indicates width, height, number of components,
+      bytes per sample, signedness and endianness if applicable.
+    """
     img = load_array_bsq(file_or_path=raw_path, image_properties_row=image_properties_row)
+    render_array_png(img=img, png_path=png_path)
+
+
+def render_array_png(img, png_path):
+    """Render an uint8 or uint16 image with 1, 3 or 4 components.
+    :param img: image array indexed by [x,y,z].
+    :param png_path: path where the png file is to be stored.
+    """
+    max_value = np.max(img)
+    if img.dtype not in {np.uint8, np.uint16}:
+        if img.dtype in {np.uint16, np.uint64}:
+            if max_value <= 255:
+                img = img.astype(np.uint8)
+            elif max_value <= 65535:
+                img = img.astype(np.uint16)
+            else:
+                raise ValueError(f"Invalid maximum value {max_value} for type {img.dtype}. Not valid for PNG")
+        else:
+            raise ValueError(f"Image type {img.dtype} not valid for PNG")
+    else:
+        if max_value <= 255:
+            img = img.astype(np.uint8)
+
+    if img.shape[2] not in {1, 3, 4}:
+        raise ValueError(f"Number of components not valid. Image shape (x,y,z) = {img.shape}")
     os.makedirs(os.path.dirname(png_path), exist_ok=True)
     imageio.imwrite(png_path, img.swapaxes(0, 1), format="png")
