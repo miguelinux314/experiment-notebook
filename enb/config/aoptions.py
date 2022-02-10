@@ -363,7 +363,14 @@ class RayOptions:
             print(f"Selected ssh_cluster_csv_path={repr(value)}, but it is not a valid file. "
                   f"Setting to None instead.")
             value = None
-        return str(value)
+        return value
+
+    @OptionsBase.property(action="store_true")
+    def no_remote_mount_needed(self, value):
+        """If this flag is used, the calling script's project root path is assumed to 
+        be valid AND synchronized (e.g., via NFS). By default, remote mounting via sshfs and vde2 is employed.
+        """
+        return bool(value)
 
 
 @_singleton_cli.property_class(OptionsBase)

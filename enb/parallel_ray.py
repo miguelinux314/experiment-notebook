@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tools to execute functions in parallel_decorator using the ray library
+"""Tools to execute functions in remote using the ray library
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
@@ -113,7 +113,7 @@ class HeadNode:
             # The exported environment consists of all *.py files.
             # Furthermore, the list of current modules minus the ones found after
             # initializing enb is passed as an environment variable to
-            # allow the needed imports before parallel_decorator methods are invoked.
+            # allow the needed imports before remote methods are invoked.
             excludes = [os.path.relpath(p, options.project_root)
                         for p in glob.glob(os.path.join(options.project_root, "**", "*"), recursive=True)
                         if options.ssh_cluster_csv_path or (os.path.isfile(p) and not p.endswith(".py"))]
@@ -124,7 +124,7 @@ class HeadNode:
             ray.init(address=f":{self.ray_port}",
                      _redis_password=self.session_password,
                      runtime_env=dict(working_dir=options.project_root if options.ssh_cluster_csv_path else None,
-                                      excludes=excludes  if options.ssh_cluster_csv_path else None,
+                                      excludes=excludes if options.ssh_cluster_csv_path else None,
                                       env_vars=dict(_needed_modules=str(modules_needed_remotely))),
                      logging_level=logging.CRITICAL if options.verbose <= 2 else logging.INFO)
 
@@ -133,9 +133,9 @@ class HeadNode:
             if not _ssh_present:
                 failing_tool = "ssh"
             elif not _sshfs_present:
-                failing_tool = "sshfs"
+                failing_tool = "sshfs" if not options.no_remote_mount_needed else None
             elif not _dpipe_present:
-                failing_tool = "dpipe"
+                failing_tool = "dpipe" if not options.no_remote_mount_needed else None
             if failing_tool:
                 enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
                                 f"but {failing_tool} was not found in the path. "
@@ -236,7 +236,8 @@ class RemoteNode:
     """
     remote_project_mount_path = "~/.enb_remote"
 
-    def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None):
+    def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None,
+                 remote_mount_needed=None):
         assert is_ray_enabled()
 
         self.address = address
@@ -248,6 +249,7 @@ class RemoteNode:
         self.cpu_limit = cpu_limit
         if self.cpu_limit is not None and self.cpu_limit <= 0:
             self.cpu_limit = None
+        self.remote_mount_needed = not options.no_remote_mount_needed if remote_mount_needed is None else remote_mount_needed
 
     def connect(self):
         assert not is_parallel_process()
@@ -263,19 +265,22 @@ class RemoteNode:
                 raise RuntimeError(f"Error stopping remote ray process on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
-        # Create remote_node_folder_path on the parallel_decorator host if not existing
-        with logger.info_context(f"Creating parallel_decorator mount point on {self.address}"):
-            invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
-                         f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
-                         f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                         f"mkdir -p {self.remote_project_mount_path}"
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise RuntimeError(f"Error creating parallel_decorator mount point on {self}.\n"
-                                   f"Command: {repr(invocation)}. Ouput:\n{output}")
-
-        # Mount the project root on remote_node_folder_path - use a separate process
-        self.mount_project_remotely()
+        if self.remote_mount_needed:
+            # Create remote_node_folder_path on the remote host if not existing
+            with logger.info_context(f"Creating remote mount point on {self.address}"):
+                invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                             f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                             f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                             f"mkdir -p {self.remote_project_mount_path}"
+                status, output = subprocess.getstatusoutput(invocation)
+                if status != 0:
+                    raise RuntimeError(f"Error creating remote mount point on {self}.\n"
+                                       f"Command: {repr(invocation)}. Ouput:\n{output}")
+            # Mount the project root on remote_node_folder_path - use a separate process
+            self.mount_project_remotely()
+        else:
+            enb.logger.debug(f"{self}: Not mounting via sshfs because "
+                             f"self.mount_remotely={self.remote_mount_needed}")
 
         with logger.info_context(f"Starting ray process on {self.address}"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
@@ -291,7 +296,7 @@ class RemoteNode:
                          + (f" --num-cpus {self.cpu_limit}" if self.cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise RuntimeError(f"Error starting parallel_decorator ray on {self}.\n"
+                raise RuntimeError(f"Error starting remote ray on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
     def mount_project_remotely(self):
@@ -306,12 +311,17 @@ class RemoteNode:
             invocation, stdout=subprocess.PIPE,
             preexec_fn=os.setsid, shell=True)
 
-        threading.Thread(target=self.mount_popen.communicate, daemon=True).start()
+        remote_mount_thread = threading.Thread(target=self.mount_popen.communicate, daemon=True)
+        remote_mount_thread.start()
+
+        remote_mount_thread.join(timeout=1)
+        if not remote_mount_thread.is_alive():
+            raise RuntimeError("Error mounting project folder remotely (is sshfs installed in the remote node?)")
 
     def disconnect(self):
         assert not is_parallel_process()
 
-        # Create remote_node_folder_path on the parallel_decorator host if not existing
+        # Create remote_node_folder_path on the remote host if not existing
         with logger.info_context(f"Disconnecting {self.address} (stopping ray)"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
@@ -322,15 +332,16 @@ class RemoteNode:
                 logger.debug(f"Error disconnecting {self}. "
                              f"Command: {repr(invocation)}. Output:\n{output}")
 
-        target_str = f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                     f"sshfs :{options.project_root}"
-        for proc in psutil.process_iter():
-            cmd_str = " ".join(proc.cmdline())
-            if target_str in cmd_str:
-                try:
-                    os.kill(proc.pid, signal.SIGTERM)
-                except ProcessLookupError:
-                    logger.info(f"Cannot kill previously found process {proc.pid}")
+        if self.remote_mount_needed:
+            target_str = f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                         f"sshfs :{options.project_root}"
+            for proc in psutil.process_iter():
+                cmd_str = " ".join(proc.cmdline())
+                if target_str in cmd_str:
+                    try:
+                        os.kill(proc.pid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        logger.info(f"Cannot kill previously found process {proc.pid}")
 
     def __repr__(self):
         return f"{self.__class__.__name__}(address={self.address}, " \
@@ -369,14 +380,14 @@ def stop_ray():
 
 
 def is_parallel_process():
-    """Return True if and only if the call is made from a parallel_decorator ray process,
-    which can be running in the head node or any of the parallel_decorator nodes (if any is present).
+    """Return True if and only if the call is made from a remote ray process,
+    which can be running in the head node or any of the remote nodes (if any is present).
     """
     return is_ray_enabled() and os.path.basename(sys.argv[0]) == options.worker_script_name
 
 
 def is_remote_node():
-    """Return True if and only if the call is performed from a parallel_decorator ray process
+    """Return True if and only if the call is performed from a remote ray process
     running on a node different from the head.
     """
     if not is_ray_enabled():
@@ -397,7 +408,7 @@ def is_ray_initialized():
 
 def parallel_decorator(*args, **kwargs):
     """Wrapper of the @`ray.remote` decorator that automatically updates enb.config.options
-    for parallel_decorator processes, so that they always access the intended configuration.
+    for remote processes, so that they always access the intended configuration.
     """
     kwargs["num_cpus"] = kwargs["num_cpus"] if "num_cpus" in kwargs else 1
     kwargs["num_gpus"] = kwargs["num_gpus"] if "num_gpus" in kwargs else 0
