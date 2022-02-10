@@ -26,6 +26,7 @@ def init():
     else:
         fallback_init()
 
+
 def fallback_init():
     """Initialization of the fallback engine. This needs to be called before
     each parallelization, or globals used in the pool might be updated.
@@ -34,13 +35,15 @@ def fallback_init():
         FallbackFuture.pathos_pool.clear()
         FallbackFuture.pathos_pool = None
 
+
 def chdir_project_root():
     """When invoked, it changes the current working dir to the project's root.
     """
-    if parallel_ray.is_parallel_process() and parallel_ray.is_remote_node():
+    if parallel_ray.is_parallel_process() and parallel_ray.is_remote_node() and not options.no_remote_mount_needed:
         os.chdir(os.path.expanduser(parallel_ray.RemoteNode.remote_project_mount_path))
     else:
         os.chdir(options.project_root)
+
 
 def parallel(*args, **kwargs):
     """Decorator for methods intended to run in parallel.
@@ -128,6 +131,7 @@ def fallback_get(ids, **kwargs):
     """
     return [fallback_future.get(**kwargs) for fallback_future in ids]
 
+
 def fallback_get_completed_pending_ids(ids, timeout=0):
     """Get two lists, one for completed and one for pending fallback ids.
     """
@@ -149,7 +153,6 @@ def fallback_get_completed_pending_ids(ids, timeout=0):
                 complete.append(fallback_future)
             else:
                 pending.append(fallback_future)
-
 
     return complete, pending
 
