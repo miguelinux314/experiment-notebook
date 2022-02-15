@@ -680,19 +680,18 @@ def render_array_png(img, png_path):
     :param png_path: path where the png file is to be stored.
     """
     max_value = np.max(img)
-    if img.dtype not in {np.uint8, np.uint16}:
-        if img.dtype in {np.uint16, np.uint64}:
-            if max_value <= 255:
-                img = img.astype(np.uint8)
-            elif max_value <= 65535:
-                img = img.astype(np.uint16)
-            else:
-                raise ValueError(f"Invalid maximum value {max_value} for type {img.dtype}. Not valid for PNG")
-        else:
-            raise ValueError(f"Image type {img.dtype} not valid for PNG")
-    else:
+    if img.dtype == np.uint8:
+        pass
+    elif any(img.dtype == t for t in (np.uint16, np.uint32, np.uint64)):
         if max_value <= 255:
             img = img.astype(np.uint8)
+        elif max_value <= 65535:
+            img = img.astype(np.uint16)
+        else:
+            raise ValueError(f"Invalid maximum value {max_value} for type {img.dtype}. Not valid for PNG")
+    else:        
+        raise ValueError(f"Image type {img.dtype} not supported for rendering into PNG. "
+                         f"Try np.uint8 or np.uint16.")
 
     if img.shape[2] not in {1, 3, 4}:
         raise ValueError(f"Number of components not valid. Image shape (x,y,z) = {img.shape}")
