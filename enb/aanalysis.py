@@ -259,6 +259,7 @@ class Analyzer(enb.atable.ATable):
                     id_list=render_ids,
                     iteration_period=self.progress_report_period):
                 enb.logger.verbose(progress_report.report())
+            results = enb.parallel.get(render_ids)
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -487,24 +488,31 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         self.group_by = group_by
         self.include_all_group = include_all_group
         self.target_columns = target_columns
+        self.column_to_properties = dict(self.column_to_properties)
+        self.render_column_names = self.add_render_columns()
 
-        # Add columns that compute the list of plotting elements of each group, if needed
-        self.column_to_properties = {k: v for k, v in self.column_to_properties.items()
-                                     if not "_render-" in k}
+        self.apply_reference_bias()
+
+    def add_render_columns(self):
+        """Add to column_to_properties the list of columns used to compute instances from the plotdata module.
+        :return the list of column names added in this call:
+        """
+        render_column_names = []
         for selected_render_mode in self.analyzer.selected_render_modes:
-            for column_selection in target_columns:
+            for column_selection in self.target_columns:
+                render_column_name = self.analyzer.get_render_column_name(column_selection, selected_render_mode)
                 self.add_column_function(
                     self,
                     fun=functools.partial(
                         self.compute_plottable_data_one_case,
                         column_selection=column_selection,
                         render_mode=selected_render_mode,
-                        reference_group=reference_group),
+                        reference_group=self.reference_group),
                     column_properties=enb.atable.ColumnProperties(
-                        name=self.analyzer.get_render_column_name(column_selection, selected_render_mode),
+                        name=render_column_name,
                         has_object_values=True))
-
-        self.apply_reference_bias()
+                render_column_names.append(render_column_name)
+        return render_column_names
 
     def split_groups(self, reference_df=None, include_all_group=None):
         try:
@@ -546,10 +554,10 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         any column the subclass may have defined.
         """
         column_to_properties = collections.OrderedDict()
-        for k, v in ((k, v) for k, v in self.column_to_properties.items() if f"_render-" not in k):
+        for k, v in ((k, v) for k, v in self.column_to_properties.items() if k not in self.render_column_names):
             column_to_properties[k] = v
-        for k, v in ((k, v) for k, v in self.column_to_properties.items() if f"_render-" in k):
-            column_to_properties[k] = v
+        for k in self.render_column_names:
+            column_to_properties[k] = self.column_to_properties[k]
         self.column_to_properties = column_to_properties
 
     def apply_reference_bias(self):
@@ -663,11 +671,12 @@ class ScalarNumericAnalyzer(Analyzer):
             for group, plds in plds_by_group.items():
                 try:
                     group_avg_tuples.append((group,
-                                 [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][0]))
+                                             [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ScatterData)][
+                                                 0]))
                 except IndexError:
                     # Empty group
                     group_avg_tuples.append((group, 0))
-                    
+
         elif render_mode == "hbar":
             group_avg_tuples = []
             for group, plds in plds_by_group.items():
@@ -681,7 +690,8 @@ class ScalarNumericAnalyzer(Analyzer):
             for group, plds in plds_by_group.items():
                 try:
                     group_avg_tuples.append((group,
-                                     [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ErrorLines)][0]))
+                                             [p.x_values[0] for p in plds if isinstance(p, enb.plotdata.ErrorLines)][
+                                                 0]))
                 except IndexError:
                     # Empty group
                     group_avg_tuples.append((group, 0))
@@ -1762,9 +1772,9 @@ class DictNumericAnalyzer(Analyzer):
         column_properties = column_to_properties[column_name]
 
         if "global_x_label" not in column_kwargs:
-            column_kwargs["global_x_label"] = f"{column_properties.label} (keys)"
+            column_kwargs["global_x_label"] = f"{column_properties.label}"
         if "global_y_label" not in column_kwargs:
-            column_kwargs["global_y_label"] = f"{column_properties.label} (values)"
+            column_kwargs["global_y_label"] = f""
 
         # Adjust a common scale for all subplots
         if self.common_group_scale and ("y_min" not in column_kwargs and "y_max" not in column_kwargs):
@@ -1811,7 +1821,76 @@ class DictNumericSummary(AnalyzerSummary):
             except KeyError:
                 pass
 
+        self.add_group_description_columns()
         self.move_render_columns_back()
+
+    def add_group_description_columns(self):
+        for column_name in self.target_columns:
+            for descriptor in ["min", "max", "avg", "std", "median"]:
+                self.add_column_function(
+                    self,
+                    fun=functools.partial(self.set_group_description, column_selection=column_name),
+                    column_properties=enb.atable.ColumnProperties(
+                        name=f"{column_name}_{descriptor}", label=f"{column_name}: {descriptor}",
+                        has_dict_values=True))
+
+    def set_group_description(self, *args, **kwargs):
+        _self, group_label, row = args
+        column_name = kwargs["column_selection"]
+        group_df = _self.label_to_df[group_label]
+        full_series = group_df[column_name]
+        finite_series = self.remove_nans(full_series)
+
+        if len(full_series) != len(finite_series):
+            if len(finite_series) > 0:
+                enb.logger.warn(f"{_self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
+                                f"column {repr(column_name)} "
+                                f"is ignoring infinite values ({100 * (1 - len(finite_series) / len(full_series)):.2f}%"
+                                f" of the total).")
+            else:
+                enb.logger.warn(f"{_self.__class__.__name__}: set_scalar_description for group {repr(group_label)}, "
+                                f"column {repr(column_name)} "
+                                f"found only infinite values. Several statistics will be nan for this case.")
+
+        x_values = []
+        min_values = []
+        max_values = []
+        avg_values = []
+        std_values = []
+        median_values = []
+        for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
+            values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
+            if len(values) > 0:
+                if _self.analyzer.key_to_x:
+                    try:
+                        x_values.append(_self.analyzer.key_to_x[k])
+                    except KeyError:
+                        enb.logger.debug(f"{self.__class__.__name__}: "
+                                         f"Key {k} not present in {self.analyzer.__class__.__name__}'s key_to_x. "
+                                         f"Ignoring.")
+                        continue
+                else:
+                    x_values.append(x)
+                try:
+                    description = scipy.stats.describe(values)
+                    min_values.append(description.minmax[0])
+                    max_values.append(description.minmax[1])
+                    avg_values.append(description.mean)
+                    std_values.append(math.sqrt(description.variance))
+                    median_values.append(values.median())
+                except:
+                    min_values.append(values.min())
+                    max_values.append(values.min())
+                    avg_values.append(values.mean())
+                    std_values.append(values.std())
+                    median_values.append(values.median())
+
+        for label, data_list in [("min", min_values),
+                                 ("max", max_values),
+                                 ("avg", avg_values),
+                                 ("std", std_values),
+                                 ("median", median_values)]:
+            row[f"{column_name}_{label}"] = {x: v for x, v in zip(x_values, data_list)}
 
     def combine_keys(self, *args, **kwargs):
         """Combine the keys of a column containing
@@ -1834,7 +1913,7 @@ class DictNumericSummary(AnalyzerSummary):
         group_df = _self.label_to_df[group_label]
         column_name = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
-        reference_group = kwargs["reference_group"]
+        reference_group = kwargs["reference_group"]  # Bias has already been applied by now, if needed
         if render_mode not in _self.analyzer.valid_render_modes:
             raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
 
@@ -1842,25 +1921,8 @@ class DictNumericSummary(AnalyzerSummary):
         assert render_mode == "line"
 
         row[_column_name] = []
-        x_values = []
-        avg_values = []
-        std_values = []
 
-        for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
-            values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
-            if len(values) > 0:
-                if _self.analyzer.key_to_x:
-                    try:
-                        x_values.append(_self.analyzer.key_to_x[k])
-                    except KeyError:
-                        enb.logger.debug(f"{self.__class__.__name__}: "
-                                         f"Key {k} not present in {self.analyzer.__class__.__name__}'s key_to_x. "
-                                         f"Ignoring.")
-                        continue
-                else:
-                    x_values.append(x)
-                avg_values.append(values.mean())
-                std_values.append(values.std())
+        x_values, avg_values = zip(*sorted(row[f"{column_name}_avg"].items()))
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
             row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values,
@@ -1870,6 +1932,8 @@ class DictNumericSummary(AnalyzerSummary):
             row[_column_name].append(enb.plotdata.LineData(
                 x_values=x_values, y_values=avg_values, alpha=self.analyzer.main_alpha))
             if _self.analyzer.show_y_std:
+                _, std_values = zip(*sorted(row[f"{column_name}_std"].items()))
+                assert _ == x_values
                 row[_column_name].append(enb.plotdata.ErrorLines(
                     x_values=x_values, y_values=avg_values,
                     err_neg_values=std_values, err_pos_values=std_values,
