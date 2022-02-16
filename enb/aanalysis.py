@@ -175,6 +175,21 @@ class Analyzer(enb.atable.ATable):
                 selected_render_modes=selected_render_modes,
                 **render_kwargs)
 
+            if options.analysis_dir:
+                try:
+                    render_mode_str = "__".join(selected_render_modes)
+                except TypeError:
+                    render_mode_str = str(render_mode_str).replace(os.sep, "__")
+                analysis_output_path = self.get_output_pdf_path(column_selection=target_columns,
+                                                                group_by=group_by,
+                                                                reference_group=reference_group,
+                                                                output_plot_dir=options.analysis_dir,
+                                                                render_mode=render_mode_str)[:-4] + ".csv"
+                enb.logger.info(f"Saving analysis results to {analysis_output_path}")
+                os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+                summary_df[list(c for c in summary_df.columns
+                                if c not in summary_table.render_column_names)].to_csv(analysis_output_path)
+
             # Return the summary result dataframe
             return summary_df
 
@@ -226,19 +241,21 @@ class Analyzer(enb.atable.ATable):
                     **(dict(render_kwargs) if render_kwargs is not None else dict()))
 
                 if reference_group is not None:
+                    filtered_plds = column_kwargs["pds_by_group_name"]
                     if not self.show_reference_group:
-                        if reference_group not in column_kwargs["pds_by_group_name"]:
-                            enb.logger.debug(f"Requested reference_group {repr(reference_group)} not found.")
                         filtered_plds = {k: v
                                          for k, v in column_kwargs["pds_by_group_name"].items()
                                          if k != reference_group}
+
+                        if reference_group not in column_kwargs["pds_by_group_name"]:
+                            enb.logger.debug(f"Requested reference_group {repr(reference_group)} not found.")
                         column_kwargs["pds_by_group_name"] = filtered_plds
                         if "group_name_order" in column_kwargs and column_kwargs["group_name_order"]:
                             column_kwargs["group_name_order"] = [n for n in column_kwargs["group_name_order"] if
                                                                  n != reference_group]
 
-                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"]:
-                        for i, name in enumerate(column_kwargs["pds_by_group_name"].keys()):
+                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"] is True:
+                        for i, name in enumerate(filtered_plds.keys()):
                             if i > 0:
                                 column_kwargs["pds_by_group_name"][name] = [
                                     pld for pld in column_kwargs["pds_by_group_name"][name]
@@ -301,7 +318,8 @@ class Analyzer(enb.atable.ATable):
         column_kwargs["pds_by_group_name"] = {
             group_label: group_plds for group_label, group_plds
             in sorted(summary_df[["group_label", f"{column_selection}_render-{render_mode}"]].values,
-                      key=lambda t: t[0])}
+                      key=lambda t: t[0])
+            if self.show_reference_group or group_label != reference_group}
 
         # General column properties
         if "column_properties" not in column_kwargs:
@@ -332,9 +350,14 @@ class Analyzer(enb.atable.ATable):
 
     def get_output_pdf_path(self, column_selection, group_by, reference_group, output_plot_dir, render_mode):
         if isinstance(column_selection, str):
-            column_selection_str = column_selection
+            column_selection_str = f"{column_selection}"
+        elif isinstance(column_selection, collections.abc.Iterable):
+            if all(isinstance(s, str) for s in column_selection):
+                column_selection_str = f"columns_{'__'.join(column_selection)}"
+            else:
+                column_selection_str = f"columns_{'__'.join('__vs__'.join(cs) for cs in column_selection)}"
         else:
-            column_selection_str = "__vs__".join(column_selection)
+            raise ValueError(f"Column selection {column_selection} not supported")
 
         return os.path.join(
             output_plot_dir,
@@ -816,7 +839,8 @@ class ScalarNumericAnalyzer(Analyzer):
         # Add the reference vertical line at x=0 if needed
         if reference_group:
             for name, pds in column_kwargs["pds_by_group_name"].items():
-                pds.append(plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
+                if self.show_reference_group or name != reference_group:
+                    pds.append(plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
         return column_kwargs
 
@@ -868,7 +892,8 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["pds_by_group_name"][name] = pds_by_group_name[name]
             for pld in pds_by_group_name[name]:
                 pld.x_values = (i,)
-            if reference_group:
+            if reference_group and \
+                    (self.show_reference_group or name != reference_group):
                 column_kwargs["pds_by_group_name"][name].append(
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
@@ -928,8 +953,8 @@ class ScalarNumericAnalyzer(Analyzer):
                     group_names = column_kwargs["group_name_order"]
             except KeyError:
                 pass
-            group_names = [n for n in reversed(group_names)
-                           if not reference_group or n != reference_group]
+        group_names = [n for n in reversed(group_names)
+                       if self.show_reference_group or n != reference_group]
 
         pds_by_group_name = column_kwargs["pds_by_group_name"]
         column_kwargs["pds_by_group_name"] = {}
