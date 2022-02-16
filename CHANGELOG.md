@@ -12,9 +12,9 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development (potentially unstable) version
+# Latest stable version
 
-## v0.3.5
+## 2022/02/16 v0.3.5
 
 * New features
 
@@ -23,7 +23,7 @@ format. Given a code initially developed for one `enb` version and then executed
     - Added the `'enb.ini'` plugin that allows installation of an editable configuration file for enb.
     - Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
     - Added documentation on how to customize the appearance of plots.
-    - The ssh+ray-based cluster can now operate on network-synchronized project folders (e.g., NFS), instead of relying 
+    - The ssh+ray-based cluster can now operate on network-synchronized project folders (e.g., NFS), instead of relying
       on the sshfs library.
 
 * General improvements
@@ -33,6 +33,7 @@ format. Given a code initially developed for one `enb` version and then executed
     - Plot styling can now be read from `'enb.ini'`.
     - Added subgrid configuration from `get_df` and `enb.ini` approaches.
     - Updated VVC sources to 15.0.
+    - Added debug verbosity useful when loading large csv files with large dictionaries or objects.
 
 * Bug fixes
 
@@ -40,7 +41,7 @@ format. Given a code initially developed for one `enb` version and then executed
     - Fixed minor ticks when labels are provided.
     - Fixed dictionary plots.
 
-# Latest stable version
+# Version history
 
 ## 2022/01/05 v0.3.4
 
@@ -50,8 +51,6 @@ Mostly bugfixes and cleanup in this version.
 - General documentation enhancement, including README.
 - Fixed small bugs in the `montecarlo-pi` plugin.
 - Renamed the `enb.config.options.ray_cpu` attribute into `enb.config.options.cpu_limit`.
-
-# Version history
 
 ## 2022/01/04 v0.3.3
 

@@ -1011,28 +1011,30 @@ class ATable(metaclass=MetaTable):
                     loaded_df[column] = None
 
             if run_sanity_checks:
-                for index_name in self.indices:
-                    if loaded_df[index_name].isnull().any():
-                        raise CorruptedTableError(atable=self,
-                                                  msg=f"Loaded table from {csv_support_path} with empty "
-                                                      f"values for index {index_name} (at least)")
+                with enb.logger.debug_context("Verifying that no null data is stored in the CSV..."):
+                    for index_name in self.indices:
+                        if loaded_df[index_name].isnull().any():
+                            raise CorruptedTableError(atable=self,
+                                                      msg=f"Loaded table from {csv_support_path} with empty "
+                                                          f"values for index {index_name} (at least)")
 
             # Some columns may have been deleted since the first rows
             # were added to persistence. Only defined columns are selected here,
             # so that (a) no bogus data is passed to the user (b) the columns
             # whose definition is removed can be removed from persistence
             # when the df is dumped into persistence.
-            loaded_df = loaded_df[self.indices_and_columns + [self.private_index_column]]
-            for column, properties in self.column_to_properties.items():
-                if column in loaded_df.columns:
-                    # Column existed - parse literals if needed
-                    if properties.has_ast_values:
-                        loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
-                    elif properties.has_object_values:
-                        loaded_df[column] = loaded_df[column].apply(lambda v: pickle.loads(ast.literal_eval(v)))
-                else:
-                    # Column did not exist: create with None values
-                    loaded_df[column] = None
+            with enb.logger.debug_context("Loading serialized objects"):
+                loaded_df = loaded_df[self.indices_and_columns + [self.private_index_column]]
+                for column, properties in self.column_to_properties.items():
+                    if column in loaded_df.columns:
+                        # Column existed - parse literals if needed
+                        if properties.has_ast_values:
+                            loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
+                        elif properties.has_object_values:
+                            loaded_df[column] = loaded_df[column].apply(lambda v: pickle.loads(ast.literal_eval(v)))
+                    else:
+                        # Column did not exist: create with None values
+                        loaded_df[column] = None
 
         except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
             with enb.logger.verbose_context(f"No CSV persistence found for {self.__class__.__name__} "
@@ -1044,10 +1046,11 @@ class ATable(metaclass=MetaTable):
         loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
 
         if run_sanity_checks:
-            try:
-                check_unique_indices(loaded_df)
-            except CorruptedTableError as ex:
-                raise CorruptedTableError(f"Error loading table from {csv_support_path}") from ex
+            with enb.logger.debug_context("Verifying index unity"):
+                try:
+                    check_unique_indices(loaded_df)
+                except CorruptedTableError as ex:
+                    raise CorruptedTableError(f"Error loading table from {csv_support_path}") from ex
 
         return loaded_df
 
