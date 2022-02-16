@@ -24,7 +24,7 @@ format. Given a code initially developed for one `enb` version and then executed
     - Added the `'matplotlibrc'` plugin that allows installation of an editable matplotlib style template.
     - Added documentation on how to customize the appearance of plots.
     - The ssh+ray-based cluster can now operate on network-synchronized project folders (e.g., NFS), instead of relying 
-      on the 
+      on the sshfs library.
 
 * General improvements
 

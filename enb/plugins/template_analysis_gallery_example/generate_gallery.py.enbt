@@ -92,7 +92,7 @@ if __name__ == '__main__':
             fig_height=5,
             global_y_label_pos=-0.01,
             style_list=[style])
-
+        
         # Use a reference group
         # One scalar value
         analysis_df = scalar_analyzer.get_df(
