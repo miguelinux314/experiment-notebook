@@ -468,6 +468,58 @@ class VerticalLine(PlottableData):
                      lw=self.line_width, alpha=self.alpha)
 
 
+class Histogram2D(PlottableData2D):
+    """Represent the result of a 2D histogram.
+    """
+    # See https://matplotlib.org/stable/gallery/color/colormap_reference.html
+    color_map = "Reds"
+    interpolation = "none"
+    origin = "lower"
+    alpha = 1
+    aspect = "equal"
+    vmin = None
+    vmax = None
+    show_cmap_bar = True
+
+    def __init__(self, x_edges, y_edges, matrix_values, color_map=None, colormap_label=None, vmin=None, vmax=None, **kwargs):
+        """
+        :param x_edges: the edges of the histogram along the x axis.
+        :param y_edges: the edges of the histogram along the y axis.
+        :param matrix_values: values of the histogram (2d array of dimensions
+          given by the length of x_edges and y_edges).
+        :param kwargs: additional parameters passed to the parent class initializer
+        """
+        super().__init__(x_values=tuple(x - 0.5 for x in range(len(x_edges))),
+                         y_values=tuple(y - 0.5 for y in range(len(y_edges))),
+                         **kwargs)
+        self.x_edges = x_edges
+        self.y_edges = y_edges
+        self.matrix_values = matrix_values
+        self.colormap_label = colormap_label
+        self.vmin = vmin
+        self.vmax = vmax
+        self.color_map = color_map if color_map is not None else self.color_map
+
+    def render(self, axes=None):
+        axes = plt if axes is None else axes
+
+        cmap = matplotlib.cm.get_cmap(self.color_map).copy()
+        cmap.set_under(color="white")
+        cmap.set_bad(color="magenta")
+        
+        x = axes.imshow(self.matrix_values, cmap=cmap,
+                        origin=self.origin, interpolation=self.interpolation,
+                        alpha=self.alpha, aspect=self.aspect,
+                        vmin=self.vmin, vmax=self.vmax)
+        if self.show_cmap_bar:
+            plt.colorbar(x, label=self.colormap_label,
+                         ticks=list(np.linspace(self.vmin, self.vmax, 5))
+                         if self.vmin is not None and self.vmax is not None else None,
+                         fraction=0.1, ax=axes)
+        if self.y_label:
+            axes.set_ylabel(self.y_label)
+
+
 def get_available_styles():
     """Get a list of all styles available for plotting.
     It includes installed matplotlib styles plus custom styles 
@@ -529,6 +581,7 @@ def parallel_render_plds_by_group(
         y_labels_by_group_name=None,
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
         y_tick_list=None, y_tick_label_list=None,
+        left_y_label=False,
         # Additional plottable data instances
         extra_plds=tuple(),
         # Plot title
@@ -564,6 +617,7 @@ def parallel_render_plds_by_group(
                                     y_tick_list=y_tick_list,
                                     y_tick_label_list=y_tick_label_list,
                                     semilog_y=semilog_y, semilog_y_base=semilog_y_base,
+                                    left_y_label=left_y_label,
                                     extra_plds=extra_plds,
                                     plot_title=plot_title,
                                     show_legend=show_legend,
@@ -592,6 +646,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          y_labels_by_group_name=None,
                          x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
                          y_tick_list=None, y_tick_label_list=None,
+                         left_y_label=False,
                          # Additional plottable data
                          extra_plds=tuple(),
                          # Plot title
@@ -663,6 +718,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param y_tick_list: if not None, these ticks will be displayed in the y axis.
     :param y_tick_label_list: if not None, these labels will be displayed in the y axis.
       Only used when y_tick_list is not None.
+    :param left_y_label: if True, the group label is shown to the left instead of to the right
       
     Additional plottable data:
     :param extra_plds: an iterable of additional PlottableData instances to be rendered in all subplots. 
@@ -822,7 +878,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             if column_properties:
                 global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
                 global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
-                
+
             for i, (group_name, group_axes) in enumerate(group_name_axes):
                 group_color = color_by_group_name[group_name]
                 for pld in pds_by_group_name[group_name]:
@@ -843,7 +899,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                             f"Error rendering {pld} -- {group_name} -- {output_plot_path}:\n{repr(ex)}") from ex
                     semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
                     semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
-                    
+
                 if not combine_groups or i == 0:
                     for pld in extra_plds:
                         pld.render(axes=group_axes)
@@ -879,11 +935,14 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     group_axes.get_yaxis().set_major_locator(matplotlib.ticker.MaxNLocator(nbins="auto", integer=False))
                     group_axes.get_yaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
                 if not combine_groups:
-                    group_axes.get_yaxis().set_label_position("right")
+                    if not left_y_label:
+                        group_axes.get_yaxis().set_label_position("right")
                     group_axes.set_ylabel(y_labels_by_group_name[group_name]
                                           if group_name in y_labels_by_group_name
                                           else enb.atable.clean_column_name(group_name),
-                                          rotation=0, ha="left", va="center")
+                                          rotation=0 if not left_y_label else 90,
+                                          ha="left" if not left_y_label else "center",
+                                          va="center" if not left_y_label else "bottom")
 
             if column_properties and column_properties.hist_label_dict is not None:
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
@@ -934,14 +993,14 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.sca(group_axes)
                 plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
                 plt.yticks(y_tick_list, y_tick_label_list)
-                if not x_tick_label_list and not y_tick_label_list:
+                if x_tick_label_list is None and y_tick_label_list is None:
                     plt.minorticks_on()
                     subgrid_axis = "both"
-                elif not x_tick_label_list:
+                elif x_tick_label_list is None:
                     plt.minorticks_on()
                     plt.tick_params(which="minor", left=False)
                     subgrid_axis = "x"
-                elif not y_tick_label_list:
+                elif y_tick_label_list is None:
                     plt.minorticks_on()
                     plt.tick_params(which="minor", bottom=False)
                     subgrid_axis = "y"

@@ -341,9 +341,9 @@ class ColumnProperties:
         :param secondary_label: secondary label for the column, i.e., the Y axis
           of an histogram column.
         :param hist_min: if not None, the minimum value to be plotted in histograms.
-          If None, the AAnalyzer instance decides the range (typically (0,1)).
+          If None, the Analyzer instance decides the range (typically (0,1)).
         :param hist_max: if not None, the maximum value to be plotted in histograms.
-          If None, the AAnalyzer instance decides the range (typically (0,1)).
+          If None, the Analyzer instance decides the range (typically (0,1)).
         :param hist_label: if not None, the label to be shown globally in the Y axis.
 
         User-defined attributes:

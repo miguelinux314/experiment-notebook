@@ -92,7 +92,7 @@ if __name__ == '__main__':
             fig_height=5,
             global_y_label_pos=-0.01,
             style_list=[style])
-        
+
         # Use a reference group
         # One scalar value
         analysis_df = scalar_analyzer.get_df(
@@ -154,6 +154,26 @@ if __name__ == '__main__':
             global_y_label_pos=-0.01,
             combine_groups=True,
             style_list=[style])
+
+        # Excercise the 2d scalar analyzer 
+        df_2d = pd.read_csv(os.path.join("input_csv", "2d_data_example.csv"))
+        sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
+        sn2da.bin_count = 10
+        sn2da.get_df(full_df=df_2d,
+                     target_columns=[("x", "y", "f(x)")],
+                     column_to_properties={"f(x)": enb.atable.ColumnProperties("f(x)", label="Result of $f(x)$"),
+                                           "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
+                                           "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")},
+                     output_plot_dir=os.path.join(options.plot_dir, "styles", style, "histogram2d"))
+        sn2da.get_df(full_df=df_2d,
+                     target_columns=[("x", "y", "f(x)")],
+                     column_to_properties={"f(x)": enb.atable.ColumnProperties("f(x)", label="Result of $f(x)$"),
+                                           "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
+                                           "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")},
+                     group_by="class",
+                     output_plot_dir=os.path.join(options.plot_dir, "styles", style, "histogram2d"),
+                     fig_height=6,
+                     fig_width=5,)
 
     # Example of style composition
     two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()

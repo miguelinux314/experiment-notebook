@@ -131,6 +131,7 @@ include enb/plugins/plugin_zstandard/__plugin__.py
 include enb/plugins/plugin_zstandard/README.txt
 include enb/plugins/plugin_zstandard/zstd_codec.py
 include enb/plugins/template_analysis_gallery_example/generate_gallery.py.enbt
+include enb/plugins/template_analysis_gallery_example/input_csv/2d_data_example.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/hevc_frame_prediction.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/iris_dataset.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/lossy_persistence_example/CCSDS123LossyCompressionExperiment_persistence.csv
