@@ -188,7 +188,9 @@ class Analyzer(enb.atable.ATable):
                 enb.logger.info(f"Saving analysis results to {analysis_output_path}")
                 os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
                 summary_df[list(c for c in summary_df.columns
-                                if c not in summary_table.render_column_names)].to_csv(analysis_output_path)
+                                if c not in summary_table.render_column_names
+                                and not c in ["row_created", "row_updated", 
+                                              enb.atable.ATable.private_index_column])].to_csv(analysis_output_path)
 
             # Return the summary result dataframe
             return summary_df
@@ -435,6 +437,9 @@ class Analyzer(enb.atable.ATable):
                 try:
                     global_x_min = min(global_x_min, min(pld.x_values) if len(pld.x_values) > 0 else global_x_min)
                     global_x_max = max(global_x_max, max(pld.x_values) if len(pld.x_values) > 0 else global_x_max)
+                except TypeError:
+                    global_x_min = 0
+                    global_x_max = max(global_x_max, len(pld.x_values))
                 except AttributeError:
                     assert not isinstance(pld, plotdata.PlottableData2D)
                 try:
@@ -973,8 +978,6 @@ class ScalarNumericAnalyzer(Analyzer):
         column_kwargs["y_min"] = -0.5
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
         column_kwargs["show_legend"] = False
-
-        # column_kwargs["fig_height"] = 0.5 + 0.3 * len(column_kwargs["pds_by_group_name"])
 
         return column_kwargs
 
@@ -1883,6 +1886,7 @@ class DictNumericSummary(AnalyzerSummary):
         avg_values = []
         std_values = []
         median_values = []
+        key_values = []
         for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
             values = group_df[f"__{column_name}_combined"].apply(lambda d: d[k] if k in d else None).dropna()
             if len(values) > 0:
@@ -1896,6 +1900,7 @@ class DictNumericSummary(AnalyzerSummary):
                         continue
                 else:
                     x_values.append(x)
+                    key_values.append(k)
                 try:
                     description = scipy.stats.describe(values)
                     min_values.append(description.minmax[0])
@@ -1915,7 +1920,7 @@ class DictNumericSummary(AnalyzerSummary):
                                  ("avg", avg_values),
                                  ("std", std_values),
                                  ("median", median_values)]:
-            row[f"{column_name}_{label}"] = {x: v for x, v in zip(x_values, data_list)}
+            row[f"{column_name}_{label}"] = {k: v for k, v in zip(key_values, data_list)}
 
     def combine_keys(self, *args, **kwargs):
         """Combine the keys of a column containing
@@ -1947,7 +1952,8 @@ class DictNumericSummary(AnalyzerSummary):
 
         row[_column_name] = []
 
-        x_values, avg_values = zip(*sorted(row[f"{column_name}_avg"].items()))
+        key_values, avg_values = zip(*sorted(row[f"{column_name}_avg"].items()))
+        x_values = range(len(key_values))
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
             row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values,
@@ -1958,7 +1964,7 @@ class DictNumericSummary(AnalyzerSummary):
                 x_values=x_values, y_values=avg_values, alpha=self.analyzer.main_alpha))
             if _self.analyzer.show_y_std:
                 _, std_values = zip(*sorted(row[f"{column_name}_std"].items()))
-                assert _ == x_values
+                assert len(_) == len(x_values)
                 row[_column_name].append(enb.plotdata.ErrorLines(
                     x_values=x_values, y_values=avg_values,
                     err_neg_values=std_values, err_pos_values=std_values,
