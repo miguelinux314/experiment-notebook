@@ -529,6 +529,9 @@ def parallel_render_plds_by_group(
         y_labels_by_group_name=None,
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
         y_tick_list=None, y_tick_label_list=None,
+        # Additional plottable data instances
+        extra_plds=tuple(),
+        # Plot title
         plot_title=None, show_legend=True,
         # Matplotlib styles
         style_list=tuple()):
@@ -561,6 +564,7 @@ def parallel_render_plds_by_group(
                                     y_tick_list=y_tick_list,
                                     y_tick_label_list=y_tick_label_list,
                                     semilog_y=semilog_y, semilog_y_base=semilog_y_base,
+                                    extra_plds=extra_plds,
                                     plot_title=plot_title,
                                     show_legend=show_legend,
                                     style_list=style_list)
@@ -588,6 +592,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          y_labels_by_group_name=None,
                          x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
                          y_tick_list=None, y_tick_label_list=None,
+                         # Additional plottable data
+                         extra_plds=tuple(),
+                         # Plot title
                          plot_title=None,
                          show_legend=True,
                          # Matplotlib styles
@@ -656,6 +663,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param y_tick_list: if not None, these ticks will be displayed in the y axis.
     :param y_tick_label_list: if not None, these labels will be displayed in the y axis.
       Only used when y_tick_list is not None.
+      
+    Additional plottable data:
+    :param extra_plds: an iterable of additional PlottableData instances to be rendered in all subplots. 
     
     Global title:
     
@@ -812,7 +822,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             if column_properties:
                 global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
                 global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
-
+                
             for i, (group_name, group_axes) in enumerate(group_name_axes):
                 group_color = color_by_group_name[group_name]
                 for pld in pds_by_group_name[group_name]:
@@ -826,7 +836,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                         pld.extra_kwargs.update(d)
                     except AttributeError:
                         pld.extra_kwargs = d
-
                     try:
                         pld.render(axes=group_axes)
                     except Exception as ex:
@@ -834,6 +843,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                             f"Error rendering {pld} -- {group_name} -- {output_plot_path}:\n{repr(ex)}") from ex
                     semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
                     semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
+                    
+                if not combine_groups or i == 0:
+                    for pld in extra_plds:
+                        pld.render(axes=group_axes)
 
             for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
                 if y_min != y_max:
