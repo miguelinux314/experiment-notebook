@@ -664,6 +664,7 @@ def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_pe
 
 def raw_path_to_png(raw_path, png_path, image_properties_row=None):
     """Render an uint8 or uint16 raw image with 1, 3 or 4 components.
+    
     :param raw_path: path to the image in raw format to render in png.
     :param png_path: path where the png file is to be stored.
     :param image_properties_row: if row_path does not contain geometry information,

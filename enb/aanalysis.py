@@ -106,7 +106,7 @@ class Analyzer(enb.atable.ATable):
     def get_df(self, full_df, target_columns,
                selected_render_modes=None,
                output_plot_dir=None, group_by=None, reference_group=None, column_to_properties=None,
-               show_global=None, show_count=True, **render_kwargs):
+               show_global=None, show_count=None, **render_kwargs):
         """
         Analyze a :class:`pandas.DataFrame` instance, optionally producing plots, and returning the computed
         dataframe with the analysis results.
@@ -131,10 +131,16 @@ class Analyzer(enb.atable.ATable):
           in the :attr:`column_to_properties` attribute, :class:`Experiment` instances can also use the
           :attr:`joined_column_to_properties` attribute to obtain both the dataset and experiment's
           columns.
-        :param show_global: if True, a group containing all elements is also included in the analysis
+        :param show_global: if True, a group containing all elements is also included in the analysis.
+          If None, self.show_count is used.
+        :param show_count: if True or False, it determines whether the number of elements in each group
+          is shown next to its name. If None, self.show_count is used.
 
         :return: a |DataFrame| instance with analysis results
         """
+        show_count = show_count if show_count is not None else self.show_count
+        show_global = show_global if show_global is not None else self.show_global
+        
         if self.csv_support_path is not None and os.path.exists(self.csv_support_path):
             # Analyzer classes store their persistence, but they erase when get_df is called,
             # so that analysis is always performed (which is as expected, since the experiment
@@ -191,7 +197,7 @@ class Analyzer(enb.atable.ATable):
                 os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
                 summary_df[list(c for c in summary_df.columns
                                 if c not in summary_table.render_column_names
-                                and not c in ["row_created", "row_updated",
+                                and c not in ["row_created", "row_updated",
                                               enb.atable.ATable.private_index_column])].to_csv(analysis_output_path)
 
             # Return the summary result dataframe
@@ -206,7 +212,7 @@ class Analyzer(enb.atable.ATable):
             output_plot_dir=output_plot_dir,
             selected_render_modes=selected_render_modes)
 
-        return normalized_wrapper(self=self, full_df=full_df, **render_kwargs)
+        return normalized_wrapper(self=self, full_df=full_df, show_count=show_count, **render_kwargs)
 
     def render_all_modes(self,
                          # Dynamic arguments with every call
@@ -1983,7 +1989,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
     selected_render_modes = {"colormap"}
     x_tick_format_str = "{:.2f}"
     y_tick_format_str = "{:.2f}"
-    color_map = "hot"
+    color_map = "inferno"
 
     """Analyzer able to process scalar numeric values located on an (x,y) plane.
     
@@ -2095,6 +2101,8 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 for group_name, pds in column_kwargs["pds_by_group_name"].items():
                     for pd in (p for p in pds if isinstance(p, enb.plotdata.Histogram2D)):
                         pd.colormap_label = f"{pd.colormap_label}" \
+                                            + (f" vs {column_kwargs['y_labels_by_group_name'][reference_group]}" 
+                                               if reference_group and pd.colormap_label else "") \
                                             + (f"\n" if pd.colormap_label else "") + \
                                             f"{column_kwargs['y_labels_by_group_name'][group_name]}"
 
@@ -2156,7 +2164,21 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
         no action is performed.
         """
         if self.reference_group is not None:
-            raise NotImplementedError
+            if self.group_by is None:
+                raise ValueError(f"Cannot use a not-None reference_group if group_by is None "
+                                 f"(here is {repr(self.reference_group)})")
+
+            for group_label, group_df in self.split_groups():
+                if group_label == self.reference_group:
+                    self.reference_avg_by_column = {
+                        c: group_df[group_df[c].notna()][c].mean()
+                        for c in (t[2] for t in self.target_columns)
+                    }
+
+                    self.reference_df = self.reference_df.copy()
+                    for c, avg in self.reference_avg_by_column.items():
+                        self.reference_df[c] -= avg
+                    break
         else:
             self.reference_avg_by_column = None
 
