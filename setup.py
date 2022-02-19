@@ -11,7 +11,6 @@ __since__ = "2019/09/19"
 
 import os
 import importlib
-import platform
 
 setup_package_list = ["setuptools", "wheel"]
 
@@ -51,7 +50,8 @@ setup(
     author=enb_options["author"],
     author_email=enb_options["author_email"],
     description=enb_options["description"],
-    long_description=enb_options["long_description"],
+    long_description=open("README.md", "r").read(),
+    long_description_content_type="text/markdown",
     platforms=enb_options["platforms"],
     python_requires=enb_options["python_requires"],
     classifiers=[
