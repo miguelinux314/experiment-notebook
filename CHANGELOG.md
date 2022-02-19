@@ -16,6 +16,8 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.3.6
 
+- Added support for plotting histograms of 2d data using colormaps
+
 # Latest stable version
 
 ## 2022/02/16 v0.3.5
