@@ -63,6 +63,12 @@ etc., for each target column.
 The `hbar` and `boxplot` modes are most useful when 
 grouping -- examples are provided below in the first section about grouping below.
 
+.. note:: The |ScalarNumericAnalyzer| and most |Analyzer| subclasses can store
+  a CSV with data statistics (e.g., min, max, median, mean, standard deviation) of the 
+  columns of interest. By default, they can saved in the `enb.config.options.analysis_dir`
+  folder when `get_df` is called.
+  
+
 
 Two numeric columns
 -------------------
@@ -152,7 +158,9 @@ Now, we instantiate |DictNumericAnalyzer| and run its `get_df` method. The follo
 count per mode for each of the selected groups (given in the `block_size` column)
 
 .. code-block:: python
-
+    
+    import enb
+    
     # Create the analyzer and plot results
     numeric_dict_analyzer = enb.aanalysis.DictNumericAnalyzer()
     analysis_df = numeric_dict_analyzer.get_df(
@@ -180,6 +188,58 @@ The resulting figure is shown below
     :width: 100%
 
 .. _grouping_by_value:
+
+Analysis numeric spatial (2D) data
+----------------------------------
+
+The |ScalarNumeric2DAnalyzer| class allows to plot data arranged arbitrarily in the x-y plane.
+
+You will need:
+    - a column with scalar data (integers or float entries), e.g., `column_data`
+    - two more columns specifying the `x` and `y` coordinates of each datapoint, e.g., `column_x` and `column_y`.
+
+You can then invoke the `get_df` method like any other |Analyzer| subclass, with the `target_columns` argument
+being a list of 3-element tuples.
+
+In the following example of the 'colormap' rendermode, 
+the `value` column contains the data of interest, while `x` and `y` contain the spatial 
+information.
+
+.. code-block:: python
+
+    import enb
+    
+    # Read data from CSV - could be obtained from an ATable instance
+    df_2d = pd.read_csv(os.path.join("input_csv", "2d_data_example.csv"))
+    
+    # Perform analysis 
+    sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
+    sn2da.bin_count = 10
+    sn2da.get_df(full_df=df_2d,
+                 target_columns=[("x", "y", "value")],
+                 column_to_properties={
+                                "value": enb.atable.ColumnProperties("value", label="Result of $f(x,y)$"),
+                                "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
+                                "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")})
+
+
+The resulting figure is shown in the following figure:
+
+.. figure:: _static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png
+    :width: 100%
+
+.. note:: You can configure the employed colormap by modifying your |ScalarNumeric2DAnalyzer| instance attributes,
+    e.g., you can set `color_map` to any color map name accepted by matplotlib, e.g.,
+
+    .. code-block:: python
+
+        sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
+        sn2da.color_map = "Oranges"
+
+
+    See https://matplotlib.org/stable/gallery/color/colormap_reference.html for more information about available
+    colormaps.
+
 
 Grouping by a column's value
 ----------------------------
