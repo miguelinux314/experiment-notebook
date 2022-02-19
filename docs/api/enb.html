@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v0.3.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -148,7 +148,7 @@ using pyplot.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">Analyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p>
 <p>Base class for all enb analyzers.</p>
-<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling get_df.
 In addition, if render_plots is used in that function, one or more figures will be
 produced. What plots are generated (if any) is based on the values of
 the self.selected_render_modes list, which must contain only elements in self.valid_render_modes.</p>
@@ -233,8 +233,8 @@ manually after definition and before calling <a class="reference internal" href=
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.get_df">
-<span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition"></a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
+<span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition"></a></dt>
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing plots, and returning the computed
 dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained self.selected_render_modes, which
 must be in self.valid_render_modes.</p>
@@ -257,11 +257,14 @@ If None, the default output plots path given by <cite>enb.config.options</cite> 
 in the <a class="reference internal" href="#enb.aanalysis.Analyzer.column_to_properties" title="enb.aanalysis.Analyzer.column_to_properties"><code class="xref py py-attr docutils literal notranslate"><span class="pre">column_to_properties</span></code></a> attribute, <code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code> instances can also use the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">joined_column_to_properties</span></code> attribute to obtain both the dataset and experiment’s
 columns.</p></li>
-<li><p><strong>show_global</strong> – if True, a group containing all elements is also included in the analysis</p></li>
+<li><p><strong>show_global</strong> – if True, a group containing all elements is also included in the analysis.
+If None, self.show_count is used.</p></li>
+<li><p><strong>show_count</strong> – if True or False, it determines whether the number of elements in each group
+is shown next to its name. If None, self.show_count is used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -324,7 +327,7 @@ These overwriting methods are encouraged to call enb.aanalysis.Analyzer.update_r
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.secondary_alpha">
-<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.Analyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.3</span></em><a class="headerlink" href="#enb.aanalysis.Analyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -430,6 +433,13 @@ Different subclasses may implement this in different ways.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.add_render_columns">
+<span class="sig-name descname"><span class="pre">add_render_columns</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.add_render_columns" title="Permalink to this definition"></a></dt>
+<dd><p>Add to column_to_properties the list of columns used to compute instances from the plotdata module.
+:return the list of column names added in this call:</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.apply_reference_bias">
 <span class="sig-name descname"><span class="pre">apply_reference_bias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.apply_reference_bias" title="Permalink to this definition"></a></dt>
 <dd><p>By default, no action is performed relative to the presence of a reference group,
@@ -479,13 +489,13 @@ any column the subclass may have defined.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -618,7 +628,7 @@ and the x value in which they should be plotted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -650,7 +660,7 @@ and the x value in which they should be plotted.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.DictNumericAnalyzer.secondary_alpha">
-<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.DictNumericAnalyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.3</span></em><a class="headerlink" href="#enb.aanalysis.DictNumericAnalyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -749,6 +759,11 @@ Different subclasses may implement this in different ways.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.DictNumericSummary.add_group_description_columns">
+<span class="sig-name descname"><span class="pre">add_group_description_columns</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.DictNumericSummary.add_group_description_columns" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.DictNumericSummary.column_to_properties">
 <span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.DictNumericSummary.column_to_properties" title="Permalink to this definition"></a></dt>
@@ -774,17 +789,98 @@ a list of <cite>enb.plotdata.PlottableData elements</cite> for this case (group,
 for additional information.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.DictNumericSummary.set_group_description">
+<span class="sig-name descname"><span class="pre">set_group_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.DictNumericSummary.set_group_description" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.aanalysis.HistogramKeyBinner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">HistogramKeyBinner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.HistogramKeyBinner" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">ScalarNumeric2DAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.bad_data_color">
+<span class="sig-name descname"><span class="pre">bad_data_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'magenta'</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.bad_data_color" title="Permalink to this definition"></a></dt>
+<dd><p>Analyzer able to process scalar numeric values located on an (x,y) plane.</p>
+<p>The target_columns parameter must be an iterable of tuples with 3 elements, containing the columns with 
+the x, y and data coordinates, e.g., (“column_x”, “column_y”, “column_data”).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.bin_count">
+<span class="sig-name descname"><span class="pre">bin_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.bin_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.build_summary_atable">
+<span class="sig-name descname"><span class="pre">build_summary_atable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.build_summary_atable" title="Permalink to this definition"></a></dt>
+<dd><p>Dynamically build a SummaryTable instance for scalar value analysis.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.color_map">
+<span class="sig-name descname"><span class="pre">color_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'inferno'</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.color_map" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.column_to_properties">
+<span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.column_to_properties" title="Permalink to this definition"></a></dt>
+<dd><p>The <cite>column_properties</cite> attribute keeps track of what columns 
+have been defined, and the methods that need to be called to computed them.
+The keys of this attribute can be used to determine the columns defined in a given 
+class or instance. The values are <a class="reference internal" href="#enb.atable.ColumnProperties" title="enb.atable.ColumnProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code></a> instances, which can be set
+manually after definition and before calling <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses’ <cite>get_df</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.no_data_color">
+<span class="sig-name descname"><span class="pre">no_data_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0)</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.no_data_color" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.selected_render_modes">
+<span class="sig-name descname"><span class="pre">selected_render_modes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'colormap'}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.selected_render_modes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.update_render_kwargs_one_case">
+<span class="sig-name descname"><span class="pre">update_render_kwargs_one_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">column_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.update_render_kwargs_one_case" title="Permalink to this definition"></a></dt>
+<dd><p>Update column_kwargs with the desired rendering arguments for this column
+and render mode. Return the updated dict.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.valid_render_modes">
+<span class="sig-name descname"><span class="pre">valid_render_modes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'colormap'}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.valid_render_modes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.x_tick_format_str">
+<span class="sig-name descname"><span class="pre">x_tick_format_str</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{:.2f}'</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.x_tick_format_str" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DAnalyzer.y_tick_format_str">
+<span class="sig-name descname"><span class="pre">y_tick_format_str</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{:.2f}'</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DAnalyzer.y_tick_format_str" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">ScalarNumeric2DSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyzer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.aanalysis.ScalarNumericSummary" title="enb.aanalysis.ScalarNumericSummary"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericSummary</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.HistogramKeyBinner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HistogramKeyBinner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.HistogramKeyBinner" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Helper class to transform numeric-to-numeric dicts into other dicts
 binning keys like an histogram.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.aanalysis.HistogramKeyBinner.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.HistogramKeyBinner.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.HistogramKeyBinner.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.HistogramKeyBinner.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -800,14 +896,14 @@ binning keys like an histogram.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="enb.aanalysis.PDFToPNG">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">PDFToPNG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdf_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_png_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.PDFToPNG" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PDFToPNG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdf_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_png_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a></p>
 <p>Take all .pdf files in input dir and save them as .png files into output_dir,
 maintining the relative folder structure.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.aanalysis.PDFToPNG.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdf_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_png_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.PDFToPNG.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_pdf_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_png_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -831,8 +927,8 @@ a file to output_path. Set to false to create arbitrarily named output files.</p
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.aanalysis.PDFToPNG.column_to_properties">
-<span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'corpus':</span> <span class="pre">ColumnProperties('name'='corpus',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.set_corpus&gt;,</span> <span class="pre">'label'='Corpus</span> <span class="pre">name',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'original_file_path':</span> <span class="pre">ColumnProperties('name'='original_file_path',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.set_original_file_path&gt;,</span> <span class="pre">'label'='Original</span> <span class="pre">file</span> <span class="pre">path',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'sha256':</span> <span class="pre">ColumnProperties('name'='sha256',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FilePropertiesTable.set_hash_digest&gt;,</span> <span class="pre">'label'='sha256</span> <span class="pre">hex</span> <span class="pre">digest',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'size_bytes':</span> <span class="pre">ColumnProperties('name'='size_bytes',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FilePropertiesTable.set_file_size&gt;,</span> <span class="pre">'label'='File</span> <span class="pre">size</span> <span class="pre">(bytes)',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'version_name':</span> <span class="pre">ColumnProperties('name'='version_name',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.column_version_name&gt;,</span> <span class="pre">'label'='Version</span> <span class="pre">name',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'version_time':</span> <span class="pre">ColumnProperties('name'='version_time',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.set_version_time&gt;,</span> <span class="pre">'label'='Versioning</span> <span class="pre">time</span> <span class="pre">(s)',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.PDFToPNG.column_to_properties" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.column_to_properties">
+<span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'corpus':</span> <span class="pre">ColumnProperties('name'='corpus',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.set_corpus&gt;,</span> <span class="pre">'label'='Corpus</span> <span class="pre">name',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'original_file_path':</span> <span class="pre">ColumnProperties('name'='original_file_path',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.set_original_file_path&gt;,</span> <span class="pre">'label'='Original</span> <span class="pre">file</span> <span class="pre">path',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'sha256':</span> <span class="pre">ColumnProperties('name'='sha256',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FilePropertiesTable.set_hash_digest&gt;,</span> <span class="pre">'label'='sha256</span> <span class="pre">hex</span> <span class="pre">digest',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'size_bytes':</span> <span class="pre">ColumnProperties('name'='size_bytes',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FilePropertiesTable.set_file_size&gt;,</span> <span class="pre">'label'='File</span> <span class="pre">size</span> <span class="pre">(bytes)',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'version_name':</span> <span class="pre">ColumnProperties('name'='version_name',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.column_version_name&gt;,</span> <span class="pre">'label'='Version</span> <span class="pre">name',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'version_time':</span> <span class="pre">ColumnProperties('name'='version_time',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">FileVersionTable.set_version_time&gt;,</span> <span class="pre">'label'='Versioning</span> <span class="pre">time</span> <span class="pre">(s)',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.column_to_properties" title="Permalink to this definition"></a></dt>
 <dd><p>The <cite>column_properties</cite> attribute keeps track of what columns 
 have been defined, and the methods that need to be called to computed them.
 The keys of this attribute can be used to determine the columns defined in a given 
@@ -841,15 +937,15 @@ manually after definition and before calling <a class="reference internal" href=
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.aanalysis.PDFToPNG.dataset_files_extension">
-<span class="sig-name descname"><span class="pre">dataset_files_extension</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pdf'</span></em><a class="headerlink" href="#enb.aanalysis.PDFToPNG.dataset_files_extension" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.dataset_files_extension">
+<span class="sig-name descname"><span class="pre">dataset_files_extension</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pdf'</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.dataset_files_extension" title="Permalink to this definition"></a></dt>
 <dd><p>Default input sample extension.
 If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.aanalysis.PDFToPNG.version">
-<span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.PDFToPNG.version" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.version">
+<span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.PDFToPNG.version" title="Permalink to this definition"></a></dt>
 <dd><p>Create a version of input_path and write it into output_path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -862,6 +958,92 @@ for input_path</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>if not None, the time in seconds it took to perform the (forward) versioning.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyzer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Dynamically generate the needed analysis columns and any other needed attributes
+for the analysis.</p>
+<p>Columns that generate plottable data are automatically defined defined using self.render_target,
+based on the analyzer’s selected render modes.</p>
+<p>Plot rendering columns are added automatically via this call, with
+associated function self.render_target with partialed parameters
+column_selection and render_mode.</p>
+<p>Subclasses are encouraged to call <cite>self.move_render_columns_back()</cite> to make sure rendering columns
+are processed after any other intermediate column defined by the subclass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>analyzer</strong> – <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass instance corresponding to this summary table.</p></li>
+<li><p><strong>full_df</strong> – full dataframe specified for analysis.</p></li>
+<li><p><strong>target_columns</strong> – columns for which an analysis is being requested.</p></li>
+<li><p><strong>reference_group</strong> – if not None, it must be the name of one group, which is used as baseline.
+Different subclasses may implement this in different ways.</p></li>
+<li><p><strong>group_by</strong> – grouping configuration for this summary. See the specific subclass help for more inforamtion.</p></li>
+<li><p><strong>include_all_group</strong> – if True, an “All” group with all input samples is included in the analysis.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.apply_reference_bias">
+<span class="sig-name descname"><span class="pre">apply_reference_bias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.apply_reference_bias" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the average value of the reference group for each target column and
+subtract it from the dataframe being analyzed. If not reference group is present, 
+no action is performed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.column_to_properties">
+<span class="sig-name descname"><span class="pre">column_to_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'group_label':</span> <span class="pre">ColumnProperties('name'='group_label',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_label&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">label',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False),</span> <span class="pre">'group_size':</span> <span class="pre">ColumnProperties('name'='group_size',</span> <span class="pre">'fun'=&lt;function</span> <span class="pre">SummaryTable.column_group_size&gt;,</span> <span class="pre">'label'='Group</span> <span class="pre">size',</span> <span class="pre">'semilog_x'=False,</span> <span class="pre">'semilog_y'=False,</span> <span class="pre">'semilog_x_base'=10,</span> <span class="pre">'semilog_y_base'=10,</span> <span class="pre">'has_dict_values'=False,</span> <span class="pre">'has_iterable_values'=False,</span> <span class="pre">'has_object_values'=False)}</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.column_to_properties" title="Permalink to this definition"></a></dt>
+<dd><p>The <cite>column_properties</cite> attribute keeps track of what columns 
+have been defined, and the methods that need to be called to computed them.
+The keys of this attribute can be used to determine the columns defined in a given 
+class or instance. The values are <a class="reference internal" href="#enb.atable.ColumnProperties" title="enb.atable.ColumnProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code></a> instances, which can be set
+manually after definition and before calling <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses’ <cite>get_df</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.columnname_to_labels">
+<span class="sig-name descname"><span class="pre">columnname_to_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.columnname_to_labels" title="Permalink to this definition"></a></dt>
+<dd><p>Guess x_label and y_label from a name column.
+If _to_ is found once in the string, x_label will be obtained from the text to the left,
+and y_label from the text to the right.
+Otherwise, x_label is set using the complete column_name string, and y_label is None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.compute_colormap_plottable_one_case">
+<span class="sig-name descname"><span class="pre">compute_colormap_plottable_one_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.compute_colormap_plottable_one_case" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.compute_plottable_data_one_case">
+<span class="sig-name descname"><span class="pre">compute_plottable_data_one_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.compute_plottable_data_one_case" title="Permalink to this definition"></a></dt>
+<dd><p>Column-setting function that computes
+a list of <cite>enb.plotdata.PlottableData elements</cite> for this case (group, column, render_mode).</p>
+<p>See <cite>enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case</cite>
+for additional information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumeric2DSummary.pdf_to_png">
+<span class="sig-name descname"><span class="pre">pdf_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumeric2DSummary.pdf_to_png" title="Permalink to this definition"></a></dt>
+<dd><p>Take all .pdf files in input dir and save them as .png files into output_dir,
+maintining the relative folder structure.</p>
+<p>It is perfectly valid for input_dir and output_dir
+to point to the same location, but input_dir must exist beforehand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – other parameters directly passed to pdf2image.convert_from_path. Refer to their
+documentation for more information: <a class="reference external" href="https://github.com/Belval/pdf2image">https://github.com/Belval/pdf2image</a>,
+<a class="reference external" href="https://pdf2image.readthedocs.io/en/latest/reference.html#functions">https://pdf2image.readthedocs.io/en/latest/reference.html#functions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -936,7 +1118,7 @@ manually after definition and before calling <a class="reference internal" href=
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericAnalyzer.secondary_alpha">
-<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericAnalyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.3</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericAnalyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -966,7 +1148,12 @@ manually after definition and before calling <a class="reference internal" href=
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericAnalyzer.show_global">
-<span class="sig-name descname"><span class="pre">show_global</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericAnalyzer.show_global" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">show_global</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericAnalyzer.show_global" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericAnalyzer.show_individual_samples">
+<span class="sig-name descname"><span class="pre">show_individual_samples</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#enb.aanalysis.ScalarNumericAnalyzer.show_individual_samples" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1062,7 +1249,7 @@ Different subclasses may implement this in different ways.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <span class="sig-name descname"><span class="pre">add_scalar_description_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition"></a></dt>
-<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<dd><p>Add the scalar description columns for a given column_name in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 being analyzed.</p>
 </dd></dl>
 
@@ -1194,7 +1381,7 @@ manually after definition and before calling <a class="reference internal" href=
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.TwoNumericAnalyzer.secondary_alpha">
-<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="headerlink" href="#enb.aanalysis.TwoNumericAnalyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">secondary_alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.3</span></em><a class="headerlink" href="#enb.aanalysis.TwoNumericAnalyzer.secondary_alpha" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1333,15 +1520,6 @@ for additional information.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="enb.aanalysis.columnname_to_labels">
-<span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">columnname_to_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.columnname_to_labels" title="Permalink to this definition"></a></dt>
-<dd><p>Guess x_label and y_label from a name column.
-If _to_ is found once in the string, x_label will be obtained from the text to the left,
-and y_label from the text to the right.
-Otherwise, x_label is set using the complete column_name string, and y_label is None</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="enb.aanalysis.get_groupby_str">
 <span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">get_groupby_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_by</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.get_groupby_str" title="Permalink to this definition"></a></dt>
 <dd><p>Return a string identifying the group_by method.
@@ -1357,32 +1535,16 @@ If grouping by family was requested, ‘family_label’ is returned.</p>
 <dd><p>Return True if and only if group_by is an iterable of one or more enb.experiment.TaskFamily instances.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.aanalysis.pdf_to_png">
-<span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">pdf_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.pdf_to_png" title="Permalink to this definition"></a></dt>
-<dd><p>Take all .pdf files in input dir and save them as .png files into output_dir,
-maintining the relative folder structure.</p>
-<p>It is perfectly valid for input_dir and output_dir
-to point to the same location, but input_dir must exist beforehand.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – other parameters directly passed to pdf2image.convert_from_path. Refer to their
-documentation for more information: <a class="reference external" href="https://github.com/Belval/pdf2image">https://github.com/Belval/pdf2image</a>,
-<a class="reference external" href="https://pdf2image.readthedocs.io/en/latest/reference.html#functions">https://pdf2image.readthedocs.io/en/latest/reference.html#functions</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-enb.atable">
 <span id="enb-atable-module"></span><h2>enb.atable module<a class="headerlink" href="#module-enb.atable" title="Permalink to this headline"></a></h2>
 <section id="enb-atable-automatic-tables-with-implicit-column-definition">
 <h3><a class="reference internal" href="#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: Automatic tables with implicit column definition<a class="headerlink" href="#enb-atable-automatic-tables-with-implicit-column-definition" title="Permalink to this headline"></a></h3>
 <section id="atable-produces-dataframe-instances">
-<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
+<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
 <p>This module defines the <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class,
 which is the base for all automatic tables in <a class="reference internal" href="#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
-<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
+<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance
 when their <cite>get_df</cite> method is successfully called. These are powerful dynamic tables
 that can be used directly, and/or passed to some of the tools in the <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 to easily produce figures and tables.</p>
@@ -1427,7 +1589,7 @@ You can reuse existing ATable subclasses directly and/or create new subclasses.<
 </div>
 <p>Our <cite>TableA</cite> class accepts list-like values (e.g., strings) as indices,
 and defines the <cite>index_length</cite> column as the number of elements (e.g., characters) in the index.</p>
-<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
+<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table_a</span> <span class="o">=</span> <span class="n">TableA</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;my_index_name&quot;</span><span class="p">)</span>
 <span class="n">example_indices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ab c&quot;</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>  <span class="c1"># It could be any list of iterables</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">table_a</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">example_indices</span><span class="p">)</span>
@@ -1539,7 +1701,7 @@ but allows easy aggregation and combination of variables.</p></li>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">ATable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Automatic table with implicit column definition.</p>
-<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
+<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with
 the requested data. You can use (multiple) inheritance using one or more ATable subclasses
 to combine the columns of those subclasses into the newly defined one. You can then define
 methods with names that begin with <cite>column_</cite>, or using the
@@ -1673,7 +1835,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -1696,7 +1858,7 @@ as given by self.private_index_column set to the <cite>loc</cite> argument passe
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.compute_target_rows">
 <span class="sig-name descname"><span class="pre">compute_target_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
+<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by <cite>target_indices</cite>, with the columns
 given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are known missing values in the requested df, e.g., there are:</p>
 <ul class="simple">
@@ -1726,7 +1888,7 @@ data was present. In that case, the newly computed results replace the old ones.
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
 (i.e., following this class’ column defintion). Each row corresponds to
 one element in target_indices, maintaining the same order.</p>
 </dd>
@@ -1750,7 +1912,7 @@ If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir
@@ -2038,9 +2200,9 @@ this refers to the range of key (X-axis) values.</p></li>
 <li><p><strong>secondary_label</strong> – secondary label for the column, i.e., the Y axis
 of an histogram column.</p></li>
 <li><p><strong>hist_min</strong> – if not None, the minimum value to be plotted in histograms.
-If None, the AAnalyzer instance decides the range (typically (0,1)).</p></li>
+If None, the Analyzer instance decides the range (typically (0,1)).</p></li>
 <li><p><strong>hist_max</strong> – if not None, the maximum value to be plotted in histograms.
-If None, the AAnalyzer instance decides the range (typically (0,1)).</p></li>
+If None, the Analyzer instance decides the range (typically (0,1)).</p></li>
 <li><p><strong>hist_label</strong> – if not None, the label to be shown globally in the Y axis.</p></li>
 </ul>
 </dd>
@@ -2116,7 +2278,7 @@ so that its returned value is assigned to the row’s column.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_column_mro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.MetaTable.set_column_mro" title="Permalink to this definition"></a></dt>
 <dd><p>Redefine column properties that have been defined in the child class, making sure
 the expected method resolution order (MRO) is maintained.</p>
-<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
+<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
 following intuitive OOP definition.</p>
 </dd></dl>
 
@@ -2204,13 +2366,13 @@ the one provided at initialization is used.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.SummaryTable.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -2346,7 +2508,7 @@ indexing is consistent across code using <a class="reference internal" href="#en
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.get_nonscalar_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">get_nonscalar_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.get_nonscalar_value" title="Permalink to this definition"></a></dt>
-<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
+<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
 Return an instance of one of those types.</p>
 <p>If cell_value is a string, ast is employed to parse it.
 If cell_Value is a dict, list or tuple, it is returned without modification.
@@ -2361,8 +2523,8 @@ read directly, and not through <a class="reference internal" href="#enb.atable.A
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">indices_to_internal_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.indices_to_internal_loc" title="Permalink to this definition"></a></dt>
 <dd><p>Given an index string or list of strings, return a single index string
 that uniquely identifies those strings and can be used as an internal index.</p>
-<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
-value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
+<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
+value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
 intentionally not used to maintain a simple, flat structure of tables without nesting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2402,7 +2564,7 @@ its float value or its string value. In the latter case, one level of surroundin
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.unpack_index_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">unpack_index_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.unpack_index_value" title="Permalink to this definition"></a></dt>
-<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
+<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
 This can be useful to iterate homogeneously regardless of whether single or multiple indices are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2965,7 +3127,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -4001,7 +4163,7 @@ manually after definition and before calling <a class="reference internal" href=
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.dump_array_bsq">
 <span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">dump_array_bsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.dump_array_bsq" title="Permalink to this definition"></a></dt>
-<dd><p>Dump an array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
+<dd><p>Dump a raw array array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
 i.e., the concatenation of each component (z axis), each component in raster
 order. Parent folders are created if not already existing.</p>
 <dl class="field-list simple">
@@ -4100,8 +4262,28 @@ this case, the bytes_per_sample, signed, big_endian and float keys are not acces
 
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.raw_path_to_png">
-<span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">raw_path_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_properties_row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.raw_path_to_png" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">raw_path_to_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_properties_row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.raw_path_to_png" title="Permalink to this definition"></a></dt>
+<dd><p>Render an uint8 or uint16 raw image with 1, 3 or 4 components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raw_path</strong> – path to the image in raw format to render in png.</p></li>
+<li><p><strong>png_path</strong> – path where the png file is to be stored.</p></li>
+<li><p><strong>image_properties_row</strong> – if row_path does not contain geometry information,
+this parameter should be a dict-like object that indicates width, height, number of components,
+bytes per sample, signedness and endianness if applicable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.isets.render_array_png">
+<span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">render_array_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.render_array_png" title="Permalink to this definition"></a></dt>
+<dd><p>Render an uint8 or uint16 image with 1, 3 or 4 components.
+:param img: image array indexed by [x,y,z].
+:param png_path: path where the png file is to be stored.</p>
+</dd></dl>
 
 </section>
 <section id="module-enb.log">
@@ -4612,6 +4794,13 @@ that return what requesting that property would.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="enb.misc.capture_usr1">
+<span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">capture_usr1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.capture_usr1" title="Permalink to this definition"></a></dt>
+<dd><p>Capture the reception of a USR1 signal into pdb.</p>
+<p>From <a class="reference external" href="http://blog.devork.be/2009/07/how-to-bring-running-python-program.html">http://blog.devork.be/2009/07/how-to-bring-running-python-program.html</a>.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="enb.misc.class_to_fqn">
 <span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">class_to_fqn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.class_to_fqn" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -4747,7 +4936,7 @@ is not raised here, but intended to be detected by the compute_target_rows(), i.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage, with index compatible with loc.
 The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
 in case overwrite is not True and columns had been set.</p></li>
 <li><p><strong>index</strong> – index value or values corresponding to the row to
@@ -4967,7 +5156,7 @@ The main exception is enb.config.options, which can be read from parallel calls.
 </section>
 <section id="module-enb.parallel_ray">
 <span id="enb-parallel-ray-module"></span><h2>enb.parallel_ray module<a class="headerlink" href="#module-enb.parallel_ray" title="Permalink to this headline"></a></h2>
-<p>Tools to execute functions in parallel_decorator using the ray library</p>
+<p>Tools to execute functions in remote using the ray library</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.parallel_ray.HeadNode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">HeadNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_port_count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.HeadNode" title="Permalink to this definition"></a></dt>
@@ -5013,12 +5202,12 @@ data rows in the CSV.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">RemoteNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ssh_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">RemoteNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ssh_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_mount_needed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represent a remote node of the cluster, with tools to connect via ssh.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.parallel_ray.RemoteNode.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ssh_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ssh_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_mount_needed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.RemoteNode.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5074,8 +5263,8 @@ due to missing definitions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.parallel_ray.is_parallel_process">
 <span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">is_parallel_process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.is_parallel_process" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the call is made from a parallel_decorator ray process,
-which can be running in the head node or any of the parallel_decorator nodes (if any is present).</p>
+<dd><p>Return True if and only if the call is made from a remote ray process,
+which can be running in the head node or any of the remote nodes (if any is present).</p>
 </dd></dl>
 
 <dl class="py function">
@@ -5093,7 +5282,7 @@ of the supported for ray clustering (currently only linux).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.parallel_ray.is_remote_node">
 <span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">is_remote_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.is_remote_node" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the call is performed from a parallel_decorator ray process
+<dd><p>Return True if and only if the call is performed from a remote ray process
 running on a node different from the head.</p>
 </dd></dl>
 
@@ -5101,7 +5290,7 @@ running on a node different from the head.</p>
 <dt class="sig sig-object py" id="enb.parallel_ray.parallel_decorator">
 <span class="sig-prename descclassname"><span class="pre">enb.parallel_ray.</span></span><span class="sig-name descname"><span class="pre">parallel_decorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel_ray.parallel_decorator" title="Permalink to this definition"></a></dt>
 <dd><p>Wrapper of the &#64;`ray.remote` decorator that automatically updates enb.config.options
-for parallel_decorator processes, so that they always access the intended configuration.</p>
+for remote processes, so that they always access the intended configuration.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -5216,6 +5405,94 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">Histogram2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_data_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_data_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'magenta'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Histogram2D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData2D" title="enb.plotdata.PlottableData2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData2D</span></code></a></p>
+<p>Represent the result of a 2D histogram.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_data_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_data_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'magenta'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Histogram2D.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_edges</strong> – the edges of the histogram along the x axis.</p></li>
+<li><p><strong>y_edges</strong> – the edges of the histogram along the y axis.</p></li>
+<li><p><strong>matrix_values</strong> – values of the histogram (2d array of dimensions
+given by the length of x_edges and y_edges).</p></li>
+<li><p><strong>no_data_color</strong> – color shown when no counts are found in a bin</p></li>
+<li><p><strong>bad_data_color</strong> – color shown when nan is found in a bin</p></li>
+<li><p><strong>vmin</strong> – minimum value considered in the histogram</p></li>
+<li><p><strong>vmax</strong> – minimum value considered in the histogram</p></li>
+<li><p><strong>kwargs</strong> – additional parameters passed to the parent class initializer</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.aspect">
+<span class="sig-name descname"><span class="pre">aspect</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'equal'</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.aspect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.bad_data_color">
+<span class="sig-name descname"><span class="pre">bad_data_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'magenta'</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.bad_data_color" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.color_map">
+<span class="sig-name descname"><span class="pre">color_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Reds'</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.color_map" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.interpolation">
+<span class="sig-name descname"><span class="pre">interpolation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.interpolation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.no_data_color">
+<span class="sig-name descname"><span class="pre">no_data_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0)</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.no_data_color" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lower'</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.origin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Histogram2D.render" title="Permalink to this definition"></a></dt>
+<dd><p>Render data in current figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> – if not None, those axes are used for plotting instead of plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.show_cmap_bar">
+<span class="sig-name descname"><span class="pre">show_cmap_bar</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.show_cmap_bar" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.vmax">
+<span class="sig-name descname"><span class="pre">vmax</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.vmax" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plotdata.Histogram2D.vmin">
+<span class="sig-name descname"><span class="pre">vmin</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plotdata.Histogram2D.vmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="enb.plotdata.HorizontalBand">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">HorizontalBand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_height_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_height_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_bounding_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degradation_band_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_band_add_xmargin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.HorizontalBand" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData2D" title="enb.plotdata.PlottableData2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData2D</span></code></a></p>
@@ -5320,12 +5597,12 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plotdata.LineSegment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">LineSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.LineSegment" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">LineSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.LineSegment" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData2D" title="enb.plotdata.PlottableData2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData2D</span></code></a></p>
 <p>Render a line segment centered at a given position.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plotdata.LineSegment.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.LineSegment.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.LineSegment.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -5469,12 +5746,12 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plotdata.Rectangle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">Rectangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Rectangle" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">Rectangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Rectangle" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plotdata.PlottableData2D" title="enb.plotdata.PlottableData2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata.PlottableData2D</span></code></a></p>
 <p>Render a rectangle in a given position.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plotdata.Rectangle.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Rectangle.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.Rectangle.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -5610,7 +5887,7 @@ It includes installed matplotlib styles plus custom styles</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.plotdata.render_plds_by_group">
-<span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">render_plds_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pds_by_group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_x_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_monochrome_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_min_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_row_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_labels_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('default',)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.render_plds_by_group" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">enb.plotdata.</span></span><span class="sig-name descname"><span class="pre">render_plds_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pds_by_group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_x_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_y_label_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_column_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_monochrome_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_subgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semilog_y_min_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_row_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_labels_by_group_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_tick_label_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_tick_label_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_y_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_plds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('default',)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plotdata.render_plds_by_group" title="Permalink to this definition"></a></dt>
 <dd><p>Render lists of plotdata.PlottableData instances indexed by group name.
 Each group is rendered in a row (subplot), with a shared X axis.
 Groups can also be combined into a single row (subplot), i.e., rending all plottable data into that single subplot.</p>
@@ -5652,7 +5929,9 @@ is set to the same color, defined by color_cycle.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>show_grid</strong> – if True, or if None and options.show_grid, grid is displayed
-aligned with the major axis.</p></li>
+aligned with the major axes.</p></li>
+<li><p><strong>show_grid</strong> – if True, or if None and options.show_subgrid, grid is displayed
+aligned with the minor axes.</p></li>
 <li><p><strong>semilog_y</strong> – if True, a logarithmic scale is used in the Y axis.</p></li>
 <li><p><strong>semilog_y_base</strong> – if semilog_y is True, the logarithm base employed.</p></li>
 <li><p><strong>semilog_y_min_bound</strong> – if semilog_y is True, make y_min the maximum of y_min and this value.</p></li>
@@ -5688,9 +5967,12 @@ Only used when x_tick_list is not None.</p></li>
 <li><p><strong>y_tick_list</strong> – if not None, these ticks will be displayed in the y axis.</p></li>
 <li><p><strong>y_tick_label_list</strong> – if not None, these labels will be displayed in the y axis.
 Only used when y_tick_list is not None.</p></li>
+<li><p><strong>left_y_label</strong> – if True, the group label is shown to the left instead of to the right</p></li>
 </ul>
 </dd>
 </dl>
+<p>Additional plottable data:
+:param extra_plds: an iterable of additional PlottableData instances to be rendered in all subplots.</p>
 <p>Global title:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5774,7 +6056,7 @@ If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing
 one row per element in <cite>target_indices</cite>,
 and as many columns as there are defined in self.column_to_properties.
 If <cite>target_indices</cite> is None, all files in enb.config.options.base_dataset_dir

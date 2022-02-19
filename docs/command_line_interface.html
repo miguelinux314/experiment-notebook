@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v0.3.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -101,7 +101,7 @@ with enb:</p>
 <h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.6 ] ................
 
 usage: enb [-h] {plugin,show,help} ...
 
@@ -129,7 +129,7 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.6 ] ................
 
 Showing 34 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
@@ -225,12 +225,13 @@ options. An example option of this is shown next:</p>
                          [--preshutdown_wait_seconds PRESHUTDOWN_WAIT_SECONDS]
                          [--ray_port RAY_PORT]
                          [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
-                         [--no_render] [--fig_width FIG_WIDTH]
-                         [--fig_height FIG_HEIGHT]
+                         [--no_remote_mount_needed] [--no_render]
+                         [--fig_width FIG_WIDTH] [--fig_height FIG_HEIGHT]
                          [--horizontal_margin HORIZONTAL_MARGIN]
                          [--vertical_margin VERTICAL_MARGIN]
                          [--legend_column_count LEGEND_COLUMN_COUNT]
-                         [--show_grid] [--global_title GLOBAL_TITLE]
+                         [--show_grid] [--show_subgrid]
+                         [--global_title GLOBAL_TITLE]
                          [--group_row_margin GROUP_ROW_MARGIN]
                          [--selected_log_level {core,error,warning,message,verbose,informative,debug}]
                          [--default_print_level {core,error,warning,message,verbose,informative,debug}]
@@ -394,6 +395,11 @@ Ray Options:
                         configuration. See
                         https://miguelinux314.github.io/experiment-
                         notebook/installation.html. (default: None)
+  --no_remote_mount_needed
+                        If this flag is used, the calling script&#39;s project
+                        root path is assumed to be valid AND synchronized
+                        (e.g., via NFS). By default, remote mounting via sshfs
+                        and vde2 is employed. (default: False)
 
 Rendering Options:
   Options affecting the rendering of figures.
@@ -418,7 +424,8 @@ Rendering Options:
                         (default: 0)
   --legend_column_count LEGEND_COLUMN_COUNT
                         Number of columns used in plot legends. (default: 2)
-  --show_grid           Show axis grid lines? (default: False)
+  --show_grid           Show major axis grid lines? (default: False)
+  --show_subgrid        Show minor axis grid lines? (default: False)
   --global_title GLOBAL_TITLE
                         When this property is not None, displayed plots will
                         typically include its value as the main title.

@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v0.3.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#one-numeric-column">One numeric column</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#two-numeric-columns">Two numeric columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#columns-with-dictionaries">Columns with dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analysis-numeric-spatial-2d-data">Analysis numeric spatial (2D) data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#grouping-with-scalarnumericanalysis">Grouping with ScalarNumericAnalysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#grouping-with-other-analyzer-subclasses">Grouping with other Analyzer subclasses</a></li>
@@ -110,7 +111,7 @@
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+108.g45460157b2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
@@ -144,8 +145,8 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
-- histogram
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+- hbar
 - boxplot
 </pre></div>
 </div>
@@ -157,6 +158,13 @@ etc., for each target column.</p>
 </figure>
 <p>The <cite>hbar</cite> and <cite>boxplot</cite> modes are most useful when
 grouping – examples are provided below in the first section about grouping below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> and most <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses can store
+a CSV with data statistics (e.g., min, max, median, mean, standard deviation) of the
+columns of interest. By default, they can saved in the <cite>enb.config.options.analysis_dir</cite>
+folder when <cite>get_df</cite> is called.</p>
+</div>
 </section>
 <section id="two-numeric-columns">
 <h2>Two numeric columns<a class="headerlink" href="#two-numeric-columns" title="Permalink to this headline"></a></h2>
@@ -230,7 +238,9 @@ the corresponding column definition.</p>
 </div>
 <p>Now, we instantiate <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a> and run its <cite>get_df</cite> method. The following code computes the average
 count per mode for each of the selected groups (given in the <cite>block_size</cite> column)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the analyzer and plot results</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+
+<span class="c1"># Create the analyzer and plot results</span>
 <span class="n">numeric_dict_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">DictNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">numeric_dict_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
     <span class="n">full_df</span><span class="o">=</span><span class="n">hevc_df</span><span class="p">,</span>
@@ -257,8 +267,55 @@ Rendering options are discussed in a later section.</p>
 <a class="reference internal image-reference" href="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png"><img alt="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" src="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" style="width: 100%;" /></a>
 </figure>
 </section>
+<section id="analysis-numeric-spatial-2d-data">
+<span id="grouping-by-value"></span><h2>Analysis numeric spatial (2D) data<a class="headerlink" href="#analysis-numeric-spatial-2d-data" title="Permalink to this headline"></a></h2>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class allows to plot data arranged arbitrarily in the x-y plane.</p>
+<dl class="simple">
+<dt>You will need:</dt><dd><ul class="simple">
+<li><p>a column with scalar data (integers or float entries), e.g., <cite>column_data</cite></p></li>
+<li><p>two more columns specifying the <cite>x</cite> and <cite>y</cite> coordinates of each datapoint, e.g., <cite>column_x</cite> and <cite>column_y</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>You can then invoke the <cite>get_df</cite> method like any other <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass, with the <cite>target_columns</cite> argument
+being a list of 3-element tuples.</p>
+<p>In the following example of the ‘colormap’ rendermode,
+the <cite>value</cite> column contains the data of interest, while <cite>x</cite> and <cite>y</cite> contain the spatial
+information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+
+<span class="c1"># Read data from CSV - could be obtained from an ATable instance</span>
+<span class="n">df_2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;2d_data_example.csv&quot;</span><span class="p">))</span>
+
+<span class="c1"># Perform analysis</span>
+<span class="n">sn2da</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumeric2DAnalyzer</span><span class="p">()</span>
+<span class="n">sn2da</span><span class="o">.</span><span class="n">bin_count</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">sn2da</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">full_df</span><span class="o">=</span><span class="n">df_2d</span><span class="p">,</span>
+             <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)],</span>
+             <span class="n">column_to_properties</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Result of $f(x,y)$&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Offset in the $x$ axis&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Offset in the $y$ axis&quot;</span><span class="p">)})</span>
+</pre></div>
+</div>
+<p>The resulting figure is shown in the following figure:</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png"><img alt="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" src="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" style="width: 100%;" /></a>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can configure the employed colormap by modifying your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> instance attributes,
+e.g., you can set <cite>color_map</cite> to any color map name accepted by matplotlib, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sn2da</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumeric2DAnalyzer</span><span class="p">()</span>
+<span class="n">sn2da</span><span class="o">.</span><span class="n">color_map</span> <span class="o">=</span> <span class="s2">&quot;Oranges&quot;</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://matplotlib.org/stable/gallery/color/colormap_reference.html">https://matplotlib.org/stable/gallery/color/colormap_reference.html</a> for more information about available
+colormaps.</p>
+</div>
+</section>
 <section id="grouping-by-a-column-s-value">
-<span id="grouping-by-value"></span><h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
+<h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
 <section id="grouping-with-scalarnumericanalysis">
 <h3>Grouping with ScalarNumericAnalysis<a class="headerlink" href="#grouping-with-scalarnumericanalysis" title="Permalink to this headline"></a></h3>
 <p>Often, we want to group the dataframe’s rows based on the value of a given column, and then analyze others.</p>
@@ -275,8 +332,8 @@ as follows:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
-- histogram
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+- hbar
 - boxplot
 </pre></div>
 </div>

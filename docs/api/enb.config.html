@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v0.3.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -523,6 +523,13 @@ Note that your system may become unstable if swap memory is used (specially a bi
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.no_remote_mount_needed">
+<span class="sig-name descname"><span class="pre">no_remote_mount_needed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.no_remote_mount_needed" title="Permalink to this definition"></a></dt>
+<dd><p>If this flag is used, the calling script’s project root path is assumed to 
+be valid AND synchronized (e.g., via NFS). By default, remote mounting via sshfs and vde2 is employed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.preshutdown_wait_seconds">
 <span class="sig-name descname"><span class="pre">preshutdown_wait_seconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.preshutdown_wait_seconds" title="Permalink to this definition"></a></dt>
 <dd><p>A wait period can be held before shutting down ray. This allows displaying messages produced by
@@ -613,7 +620,13 @@ by this amount on each direction.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.show_grid">
 <span class="sig-name descname"><span class="pre">show_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_grid" title="Permalink to this definition"></a></dt>
-<dd><p>Show axis grid lines?</p>
+<dd><p>Show major axis grid lines?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.show_subgrid">
+<span class="sig-name descname"><span class="pre">show_subgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_subgrid" title="Permalink to this definition"></a></dt>
+<dd><p>Show minor axis grid lines?</p>
 </dd></dl>
 
 <dl class="py method">
