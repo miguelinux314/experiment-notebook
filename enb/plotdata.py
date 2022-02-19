@@ -480,13 +480,21 @@ class Histogram2D(PlottableData2D):
     vmin = None
     vmax = None
     show_cmap_bar = True
+    no_data_color = (1, 1, 1, 0)
+    bad_data_color = "magenta"
 
-    def __init__(self, x_edges, y_edges, matrix_values, color_map=None, colormap_label=None, vmin=None, vmax=None, **kwargs):
+    def __init__(self, x_edges, y_edges, matrix_values, color_map=None, colormap_label=None, vmin=None, vmax=None,
+                 no_data_color=(1, 1, 1, 0), bad_data_color="magenta",
+                 **kwargs):
         """
         :param x_edges: the edges of the histogram along the x axis.
         :param y_edges: the edges of the histogram along the y axis.
         :param matrix_values: values of the histogram (2d array of dimensions
           given by the length of x_edges and y_edges).
+        :param no_data_color: color shown when no counts are found in a bin
+        :param bad_data_color: color shown when nan is found in a bin
+        :param vmin: minimum value considered in the histogram
+        :param vmax: minimum value considered in the histogram
         :param kwargs: additional parameters passed to the parent class initializer
         """
         super().__init__(x_values=tuple(x - 0.5 for x in range(len(x_edges))),
@@ -499,14 +507,16 @@ class Histogram2D(PlottableData2D):
         self.vmin = vmin
         self.vmax = vmax
         self.color_map = color_map if color_map is not None else self.color_map
+        self.bad_data_color = bad_data_color
+        self.no_data_color = no_data_color
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
 
         cmap = matplotlib.cm.get_cmap(self.color_map).copy()
-        cmap.set_under(color="white")
-        cmap.set_bad(color="magenta")
-        
+        cmap.set_under(color=self.no_data_color)
+        cmap.set_bad(color=self.bad_data_color)
+
         x = axes.imshow(self.matrix_values, cmap=cmap,
                         origin=self.origin, interpolation=self.interpolation,
                         alpha=self.alpha, aspect=self.aspect,
