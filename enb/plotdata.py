@@ -515,6 +515,7 @@ class Histogram2D(PlottableData2D):
 
         cmap = matplotlib.cm.get_cmap(self.color_map).copy()
         cmap.set_under(color=self.no_data_color)
+        cmap.set_over(color=self.bad_data_color)
         cmap.set_bad(color=self.bad_data_color)
 
         x = axes.imshow(self.matrix_values, cmap=cmap,
