@@ -140,7 +140,7 @@ class Analyzer(enb.atable.ATable):
         """
         show_count = show_count if show_count is not None else self.show_count
         show_global = show_global if show_global is not None else self.show_global
-        
+
         if self.csv_support_path is not None and os.path.exists(self.csv_support_path):
             # Analyzer classes store their persistence, but they erase when get_df is called,
             # so that analysis is always performed (which is as expected, since the experiment
@@ -1990,6 +1990,8 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
     x_tick_format_str = "{:.2f}"
     y_tick_format_str = "{:.2f}"
     color_map = "inferno"
+    no_data_color = (1, 1, 1, 0)
+    bad_data_color = "magenta"
 
     """Analyzer able to process scalar numeric values located on an (x,y) plane.
     
@@ -2101,7 +2103,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 for group_name, pds in column_kwargs["pds_by_group_name"].items():
                     for pd in (p for p in pds if isinstance(p, enb.plotdata.Histogram2D)):
                         pd.colormap_label = f"{pd.colormap_label}" \
-                                            + (f" vs {column_kwargs['y_labels_by_group_name'][reference_group]}" 
+                                            + (f" vs {column_kwargs['y_labels_by_group_name'][reference_group]}"
                                                if reference_group and pd.colormap_label else "") \
                                             + (f"\n" if pd.colormap_label else "") + \
                                             f"{column_kwargs['y_labels_by_group_name'][group_name]}"
@@ -2225,11 +2227,24 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
             bins=self.analyzer.bin_count)
         histogram /= np.clip(counts, 1, None)
 
+        vmin = self.column_to_min_max[data_column_name][0]
+        vmax = self.column_to_min_max[data_column_name][1]
+        try:
+            if kwargs["reference_group"]:
+                reference_mean = self.reference_avg_by_column[data_column_name]
+                vmin -= reference_mean
+                vmax -= reference_mean
+        except KeyError:
+            pass
+        
+        histogram[counts == 0] = vmin - 1
+
         row[_column_name] = [enb.plotdata.Histogram2D(
             x_edges=x_edges, y_edges=y_edges, matrix_values=histogram,
             colormap_label=data_column_label,
-            vmin=self.column_to_min_max[data_column_name][0],
-            vmax=self.column_to_min_max[data_column_name][1],
+            vmin=vmin,
+            vmax=vmax,
+            no_data_color=self.analyzer.no_data_color,
             color_map=self.analyzer.color_map)]
 
 
