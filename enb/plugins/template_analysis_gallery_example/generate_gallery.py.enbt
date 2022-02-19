@@ -162,7 +162,7 @@ if __name__ == '__main__':
         h2d_column_to_properties = {"value": enb.atable.ColumnProperties("value", label="Result of $f(x,y)$"),
                                     "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
                                     "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")}
-        
+
         # No grouping
         sn2da.get_df(full_df=df_2d,
                      target_columns=[("x", "y", "value")],
