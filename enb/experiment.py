@@ -311,6 +311,12 @@ class TaskFamily:
 
         :param task_name: A new new not previously included in the Family
         """
+        # Any ExperimentTask-like object can also be passed, and its name is automatically extracted
+        try:
+            task_name = task_name.name
+        except (TypeError, AttributeError):
+            pass
+            
         assert task_name not in self.task_names
         self.task_names.append(task_name)
         if task_label:
