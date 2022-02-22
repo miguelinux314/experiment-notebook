@@ -264,7 +264,8 @@ class Analyzer(enb.atable.ATable):
                             column_kwargs["group_name_order"] = [n for n in column_kwargs["group_name_order"] if
                                                                  n != reference_group]
 
-                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"] is True:
+                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"] is True\
+                            and "reference_group" in column_kwargs and column_kwargs["reference_group"] is not None:
                         for i, name in enumerate(filtered_plds.keys()):
                             if i > 0:
                                 column_kwargs["pds_by_group_name"][name] = [
@@ -976,7 +977,8 @@ class ScalarNumericAnalyzer(Analyzer):
             for pld in pds_by_group_name[name]:
                 # All elements of a group are aligned along the same horizontal position
                 pld.y_values = [i] * len(pld.y_values)
-            if reference_group:
+            if reference_group and \
+                    (self.show_reference_group or name != reference_group):
                 column_kwargs["pds_by_group_name"][name].append(
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
@@ -1507,7 +1509,7 @@ class TwoNumericSummary(ScalarNumericSummary):
         """
         if self.reference_group is not None:
             if self.group_by is None:
-                raise ValueError(f"Cannot use a not-None reference_group if group_by is None "
+                raise ValueError(f"Cannot use a not None reference_group if group_by is None "
                                  f"(here is {repr(self.reference_group)})")
 
             for group_label, group_df in self.split_groups():
@@ -1626,12 +1628,20 @@ class TwoNumericSummary(ScalarNumericSummary):
                     line_width=_self.analyzer.main_line_width,
                     vertical=True))
         elif render_mode == "line":
-            if is_family_grouping(group_by=self.group_by):
+            if self.group_by == "family_label":
+                try:
+                    group_by = kwargs["task_families"]
+                except KeyError:
+                    raise ValueError(f"Passed {repr(group_by)} for grouping but no task_families parameter found.")
+            else:
+                group_by = self.group_by
+            
+            if is_family_grouping(group_by=group_by):
                 # Family line plots look into the task names and produce
                 # one marker per task, linking same-family tasks with a line.
                 x_values = []
                 y_values = []
-                current_family = [f for f in self.group_by if f.label == group_label][0]
+                current_family = [f for f in group_by if f.label == group_label][0]
                 for task_name in current_family.task_names:
                     task_df = group_df[group_df["task_name"] == task_name]
                     x_values.append(task_df[x_column_name].mean())
