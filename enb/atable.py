@@ -1000,7 +1000,7 @@ class ATable(metaclass=MetaTable):
                     f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
 
             # Read CSV from disk
-            with enb.logger.info_context("Loading dataframe from persistence"):
+            with enb.logger.verbose_context(f"Loading dataframe from persistence at {csv_support_path}"):
                 loaded_df = pd.read_csv(csv_support_path)
                 enb.logger.info(f"Loaded df with {len(loaded_df)} rows")
 
