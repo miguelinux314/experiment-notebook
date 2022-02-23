@@ -3,7 +3,7 @@ import enb.plugins
 
 class FSEPlugin(enb.plugins.PluginMake):
     name = "fse"
-    label = "Wrappers for FSE codecs"
+    label = "Wrappers for FSE codecs. Includes a Huffman-only entropy codec."
     tags = {"data compression", "codec"}
     contrib_authors = ["Yann Collet"]
     contrib_reference_urls = ["https://github.com/Cyan4973/FiniteStateEntropy"]
