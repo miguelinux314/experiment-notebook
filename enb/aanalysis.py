@@ -90,6 +90,8 @@ class Analyzer(enb.atable.ATable):
     show_legend = True
     # If not None, it must be a list of matplotlibrc styles (names or file paths)
     style_list = []
+    # Number of decimals used when saving to latex
+    latex_decimal_count = 3
 
     def __init__(self, csv_support_path=None, column_to_properties=None, progress_report_period=None):
         super().__init__(csv_support_path=csv_support_path,
@@ -198,7 +200,16 @@ class Analyzer(enb.atable.ATable):
                 summary_df[list(c for c in summary_df.columns
                                 if c not in summary_table.render_column_names
                                 and c not in ["row_created", "row_updated",
-                                              enb.atable.ATable.private_index_column])].to_csv(analysis_output_path)
+                                              enb.atable.ATable.private_index_column])].to_csv(
+                    analysis_output_path, index=False)
+                summary_df[list(c for c in summary_df.columns
+                                if c not in summary_table.render_column_names
+                                and c not in ["row_created", "row_updated",
+                                              enb.atable.ATable.private_index_column]
+                                and (c in ("group_label", "group_size")
+                                     or c.endswith("_avg")))].to_latex(
+                    analysis_output_path[:-4] + ".tex",
+                    index=False, float_format=f"%.{self.latex_decimal_count}f")
 
             # Return the summary result dataframe
             return summary_df
