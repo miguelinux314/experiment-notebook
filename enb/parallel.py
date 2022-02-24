@@ -173,7 +173,7 @@ class ProgressiveGetter:
     blocking call to :meth:`ray.wait`.
     """
 
-    def __init__(self, id_list, weight_list=None, iteration_period=1):
+    def __init__(self, id_list, weight_list=None, iteration_period=1, alive_bar=None):
         """
         Start the background computation of ids returned by start calls of methods decorated with enb.paralell.parallel.
         After this call, the object is ready to receive next() requests.
@@ -185,7 +185,10 @@ class ProgressiveGetter:
         :param iteration_period: a non-negative value that determines the wait period allowed for ray to
           obtain new results when next() is used. When using this instance in a for loop, it determines approximately
           the periodicity with which the loop body will be executed.
+        :param if not None, it should be bar instance from the alive_progress library, while inside its with-context.
+           If it is provided, it is called with the fraction of available tasks on each call to update_finished_tasks 
         """
+        self.alive_bar = alive_bar
         iteration_period = float(iteration_period)
         if iteration_period < 0:
             raise ValueError(f"Invalid iteration period {iteration_period}: it cannot be negative (but it can be zero)")
@@ -198,7 +201,7 @@ class ProgressiveGetter:
         self.update_finished_tasks(timeout=0)
         self.start_time = time.time_ns()
         self.end_time = None
-
+        
     def update_finished_tasks(self, timeout=None):
         """Wait for up to timeout seconds or until ray completes computation
         of all pending tasks. Update the list of completed and pending tasks.
@@ -214,6 +217,10 @@ class ProgressiveGetter:
             self.end_time = time.time_ns()
 
         assert len(self.completed_ids) + len(self.pending_ids) == len(self.full_id_list)
+        
+        if self.alive_bar is not None:
+            self.alive_bar(len(self.completed_ids)/len(self.full_id_list))
+            
 
     def report(self):
         """Return a string that represents the current state of this progressive run.

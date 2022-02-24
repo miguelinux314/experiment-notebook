@@ -16,7 +16,7 @@ import collections
 import collections.abc
 import tempfile
 import numbers
-import itertools
+import alive_progress
 import pdf2image
 import numpy as np
 import scipy.stats
@@ -282,12 +282,19 @@ class Analyzer(enb.atable.ATable):
                     **dict(column_kwargs)))
 
         # Wait until all rendering tasks are done while updating about progress
-        with enb.logger.verbose_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
-            for progress_report in enb.parallel.ProgressiveGetter(
-                    id_list=render_ids,
-                    iteration_period=self.progress_report_period):
-                enb.logger.verbose(progress_report.report())
-            results = enb.parallel.get(render_ids)
+        with enb.logger.info_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
+            with alive_progress.alive_bar(
+                    len(render_ids), manual=True, ctrl_c=False,
+                    title=f"{self.__class__.__name__}.get_df()", 
+                    spinner="dots_waves2",
+                    disable=options.verbose <= 0,
+                    enrich_print=False) as bar:
+                for progress_report in enb.parallel.ProgressiveGetter(
+                        id_list=render_ids,
+                        iteration_period=self.progress_report_period,
+                        alive_bar=bar):
+                    enb.logger.debug(progress_report.report())
+                results = enb.parallel.get(render_ids)
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
