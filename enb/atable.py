@@ -1120,23 +1120,22 @@ class ATable(metaclass=MetaTable):
 
         # Iterating a progressive getter continues until all rows are obtained
         with enb.logger.info_context(f"Parallel computation of {len(pending_ids)} "
-                                        f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
-                                        sep="...\n"):
+                                     f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
+                                     sep="...\n"):
             with alive_progress.alive_bar(
                     len(pending_ids), manual=True, ctrl_c=False,
-                    title=f"{self.__class__.__name__}.get_df()", 
+                    title=f"{self.__class__.__name__}.get_df()",
                     spinner="dots_waves2",
                     disable=options.verbose <= 0,
                     enrich_print=False) as bar:
-                pg = enb.parallel.ProgressiveGetter(
-                    id_list=pending_ids,
-                    iteration_period=self.progress_report_period,
-                    alive_bar=bar)
                 bar(0)
-                for _ in pg:
+                for pg in enb.parallel.ProgressiveGetter(
+                        id_list=pending_ids,
+                        iteration_period=self.progress_report_period,
+                        alive_bar=bar):
                     enb.logger.info(pg.report())
-                enb.logger.info(pg.report())
-            computed_series = enb.parallel.get(pending_ids)
+                computed_series = enb.parallel.get(pending_ids)
+                bar(1)
 
         # Verify that everything went well
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
