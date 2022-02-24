@@ -264,7 +264,7 @@ class Analyzer(enb.atable.ATable):
                             column_kwargs["group_name_order"] = [n for n in column_kwargs["group_name_order"] if
                                                                  n != reference_group]
 
-                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"] is True\
+                    if "combine_groups" in column_kwargs and column_kwargs["combine_groups"] is True \
                             and "reference_group" in column_kwargs and column_kwargs["reference_group"] is not None:
                         for i, name in enumerate(filtered_plds.keys()):
                             if i > 0:
@@ -285,17 +285,18 @@ class Analyzer(enb.atable.ATable):
         with enb.logger.info_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
             with alive_progress.alive_bar(
                     len(render_ids), manual=True, ctrl_c=False,
-                    title=f"{self.__class__.__name__}.get_df()", 
+                    title=f"{self.__class__.__name__}.get_df()",
                     spinner="dots_waves2",
                     disable=options.verbose <= 0,
                     enrich_print=False) as bar:
+                bar(0)
                 for progress_report in enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=bar):
                     enb.logger.debug(progress_report.report())
-                bar(0)
-                results = enb.parallel.get(render_ids)
+                enb.parallel.get(render_ids)
+                bar(1)
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -1649,7 +1650,7 @@ class TwoNumericSummary(ScalarNumericSummary):
                     raise ValueError(f"Passed {repr(group_by)} for grouping but no task_families parameter found.")
             else:
                 group_by = self.group_by
-            
+
             if is_family_grouping(group_by=group_by):
                 # Family line plots look into the task names and produce
                 # one marker per task, linking same-family tasks with a line.
@@ -2260,7 +2261,7 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
                 vmax -= reference_mean
         except KeyError:
             pass
-        
+
         histogram[counts == 0] = vmin - 1
 
         row[_column_name] = [enb.plotdata.Histogram2D(
