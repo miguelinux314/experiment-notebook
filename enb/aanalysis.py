@@ -365,8 +365,14 @@ class Analyzer(enb.atable.ATable):
         elif isinstance(column_selection, collections.abc.Iterable):
             if all(isinstance(s, str) for s in column_selection):
                 column_selection_str = f"columns_{'__'.join(column_selection)}"
+                if len(column_selection_str) > 150:
+                    # Excessively long. Show an abbreviated form
+                    column_selection_str = f"{len(column_selection)}column{'s' if len(column_selection) > 1 else ''}"
             else:
                 column_selection_str = f"columns_{'__'.join('__vs__'.join(cs) for cs in column_selection)}"
+                if len(column_selection_str) > 150:
+                    # Excessively long. Show an abbreviated form
+                    column_selection_str = f"{len(column_selection)}columns"
         else:
             raise ValueError(f"Column selection {column_selection} not supported")
 
