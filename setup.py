@@ -78,7 +78,7 @@ setup(
     install_requires=[
         "pathos", "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
         "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
-        "astropy",
+        "astropy", "alive_progress",
         "ray[default] ; platform_system != 'Windows'"],
 
     # This part determines the contents of the installed folder in your python's site-packages location.

@@ -205,6 +205,7 @@ import pandas as pd
 import pickle
 import traceback
 import shutil
+import alive_progress
 
 import enb.config
 from enb import parallel_ray
@@ -1118,15 +1119,22 @@ class ATable(metaclass=MetaTable):
             for index, loc in zip(target_indices, target_locs)]
 
         # Iterating a progressive getter continues until all rows are obtained
-        with enb.logger.verbose_context(f"Parallel computation of {len(pending_ids)} "
+        with enb.logger.info_context(f"Parallel computation of {len(pending_ids)} "
                                         f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
                                         sep="...\n"):
-            pg = enb.parallel.ProgressiveGetter(
-                id_list=pending_ids,
-                iteration_period=self.progress_report_period)
-            for _ in pg:
-                enb.logger.verbose(pg.report())
-            enb.logger.verbose(pg.report())
+            with alive_progress.alive_bar(
+                    len(pending_ids), manual=True, ctrl_c=False,
+                    title=f"{self.__class__.__name__}.get_df()", 
+                    spinner="dots_waves2",
+                    disable=options.verbose <= 0,
+                    enrich_print=False) as bar:
+                pg = enb.parallel.ProgressiveGetter(
+                    id_list=pending_ids,
+                    iteration_period=self.progress_report_period,
+                    alive_bar=bar)
+                for _ in pg:
+                    enb.logger.info(pg.report())
+                enb.logger.info(pg.report())
             computed_series = enb.parallel.get(pending_ids)
 
         # Verify that everything went well
