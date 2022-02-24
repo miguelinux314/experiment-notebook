@@ -7,6 +7,7 @@ __since__ = "2020/04/01"
 import os
 import math
 import numpy as np
+import scipy.stats
 import re
 import imageio
 import enb
@@ -18,10 +19,69 @@ from enb import sets
 def entropy(data):
     """Compute the zero-order entropy of the provided data
     """
-    values, count = np.unique(data, return_counts=True)
+    values, count = np.unique(data.flatten(), return_counts=True)
     total_sum = sum(count)
     probabilities = (count / total_sum for value, count in zip(values, count))
     return -sum(p * math.log2(p) for p in probabilities)
+
+
+def mutual_information(data1, data2):
+    """Compute the mutual information between two vectors of identical length
+    after flattening. Implemented following https://en.wikipedia.org/wiki/Mutual_information#Definition
+    """
+    # x: data1
+    values1, counts1 = np.unique(data1.flatten(), return_counts=True)
+    total_sum1 = counts1.sum()
+    probabilities1 = (c / total_sum1 for v, c in zip(values1, counts1))
+    entropy_x = -sum(p * math.log2(p) for p in probabilities1)
+
+    # y: data1
+    values2, counts2 = np.unique(data2.flatten(), return_counts=True)
+    total_sum2 = counts2.sum()
+    assert total_sum1 == total_sum2
+    probabilities2 = (c / total_sum2 for v, c in zip(values2, counts2))
+    entropy_y = -sum(p * math.log2(p) for p in probabilities2)
+
+    # joint (x,y)
+    bin_count = max(max(v) for v in (values1, values2)) - min(min(v) for v in (values1, values2)) + 1
+    count_xy = np.histogram2d(data1.flatten(), data2.flatten(), bin_count)[0].flatten()
+    total_sum_xy = count_xy.sum()
+    assert total_sum_xy == total_sum1
+    probabilities_xy = count_xy / total_sum_xy
+    entropy_xy = -sum(p * math.log2(p) for p in probabilities_xy if p != 0)
+
+    return entropy_x + entropy_y - entropy_xy
+
+
+def kl_divergence(data1, data2):
+    """Return KL(P||Q), KL(Q||P) KL is the KL divergence in bits per sample,
+    P is the sample probability distribution of data1, Q is the sample probability distribution of data2.
+    
+    If both P and Q contain the same values (even if with different counts), both returned values 
+    are identical and as defined in https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence#Definition.
+    
+    Otherwise, the formula is modified so that whenever p or q is 0, the factor is skipped from the count.
+    In this case, the two values most likely differ and they should be carefully interpreted.
+    """
+    # x: data1
+    values1, counts1 = np.unique(data1.flatten(), return_counts=True)
+    total_sum1 = counts1.sum()
+    probabilities1 = {v: c / total_sum1 for v, c in zip(values1, counts1)}
+
+    # y: data1
+    values2, counts2 = np.unique(data2.flatten(), return_counts=True)
+    total_sum2 = counts2.sum()
+    assert total_sum1 == total_sum2
+    probabilities2 = {v: c / total_sum2 for v, c in zip(values2, counts2)}
+    
+    kl_pq = sum(probabilities1[k] * math.log(probabilities1[k]/probabilities2[k])
+                if k in probabilities2 and probabilities1[k] != 0 and probabilities2[k] != 0 else 0
+                for k in probabilities1.keys())
+    kl_qp = sum(probabilities2[k] * math.log(probabilities2[k] / probabilities1[k])
+                if k in probabilities1 and probabilities1[k] != 0 and probabilities2[k] != 0 else 0
+                for k in probabilities2.keys())
+
+    return kl_pq, kl_qp
 
 
 def file_path_to_geometry_dict(file_path, existing_dict=None):
@@ -690,7 +750,7 @@ def render_array_png(img, png_path):
             img = img.astype(np.uint16)
         else:
             raise ValueError(f"Invalid maximum value {max_value} for type {img.dtype}. Not valid for PNG")
-    else:        
+    else:
         raise ValueError(f"Image type {img.dtype} not supported for rendering into PNG. "
                          f"Try np.uint8 or np.uint16.")
 
