@@ -294,6 +294,7 @@ class Analyzer(enb.atable.ATable):
                         iteration_period=self.progress_report_period,
                         alive_bar=bar):
                     enb.logger.debug(progress_report.report())
+                bar(0)
                 results = enb.parallel.get(render_ids)
 
     def update_render_kwargs_one_case(
