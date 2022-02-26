@@ -72,6 +72,15 @@ include enb/plugins/plugin_hevc/Makefile.darwin
 include enb/plugins/plugin_hevc/Makefile.linux
 include enb/plugins/plugin_hevc/__plugin__.py
 include enb/plugins/plugin_hevc/README.md
+include enb/plugins/plugin_huffman_likhachev/huffman.c
+include enb/plugins/plugin_huffman_likhachev/huffman_codec.py
+include enb/plugins/plugin_huffman_likhachev/huffman.h
+include enb/plugins/plugin_huffman_likhachev/main.c
+include enb/plugins/plugin_huffman_likhachev/Makefile.linux
+include enb/plugins/plugin_huffman_likhachev/__plugin__.py
+include enb/plugins/plugin_huffman_likhachev/README.md
+include enb/plugins/plugin_huffman_likhachev/utils.c
+include enb/plugins/plugin_huffman_likhachev/utils.h
 include enb/plugins/plugin_jpeg/jpeg_codecs.py
 include enb/plugins/plugin_jpeg/Makefile.linux
 include enb/plugins/plugin_jpeg/__plugin__.py
