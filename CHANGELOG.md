@@ -20,7 +20,7 @@ format. Given a code initially developed for one `enb` version and then executed
 
   - Added support for plotting histograms of 2d data using colormaps
   - Improved progress reporting with animation
-  - Added arithmetic codec to the list of available plugins
+  - Added an arithmetic codec and a non-block-adaptive huffman codec to the list of available plugins
 
 * General improvements
  
