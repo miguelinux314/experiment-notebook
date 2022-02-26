@@ -37,4 +37,4 @@ class FSEHuffman(icompression.WrapperCodec, icompression.LosslessCodec):
 
     @property
     def label(self):
-        return "FSE-HUF"
+        return "Huffman (block adaptive)"
