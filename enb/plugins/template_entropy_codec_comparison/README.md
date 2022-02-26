@@ -1,0 +1,1 @@
+Lossless compression experiment to evaluate a few entropy codecs (not all of them scalar)
