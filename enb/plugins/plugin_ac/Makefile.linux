@@ -1,0 +1,10 @@
+all: nayuki_arithmetic_coder_reference
+	cd nayuki_arithmetic_coder_reference/cpp && make && cp ArithmeticCompress ArithmeticDecompress ../../
+	rm -rf nayuki_arithmetic_coder_reference
+
+nayuki_arithmetic_coder_reference:
+	unzip nayuki_arithmetic_coder_reference.zip
+
+clean:
+	rm -rf ArithmeticCompress ArithmeticDecompress nayuki_arithmetic_coder_reference
+
