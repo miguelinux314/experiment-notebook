@@ -142,11 +142,18 @@ class Installable(metaclass=InstallableMeta):
                                 f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
 
         # Download any needed external packages before the build
+        cache_dir = os.path.join(enb.user_config_dir, "cache")
+        os.makedirs(cache_dir, exist_ok=True)
         for url, name in cls.contrib_download_url_name:
             output_path = os.path.join(installation_dir, name)
-            print(f"Downloading {url} into {output_path}...")
-            with open(output_path, "wb") as output_file:
-                output_file.write(requests.get(url, allow_redirects=True).content)
+            cached_path = os.path.join(cache_dir, name)
+            if not os.path.isfile(cached_path) or enb.config.options.force:
+                with enb.logger.verbose_context(f"Downloading {url} into cache"):
+                    with open(cached_path, "wb") as output_file:
+                        output_file.write(requests.get(url, allow_redirects=True).content)
+            enb.logger.verbose(f"Copying {cached_path} into {output_path}"
+                               f"{' (run with -f to force download)' if enb.config.options.force else ''}")
+            shutil.copyfile(cached_path, output_path)
 
         # Custom building of the Installable
         print(f"Building {cls.name} into {installation_dir}...")
