@@ -5,7 +5,7 @@ __author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
 __since__ = "2021/06/01"
 
 import os
-import enb
+import enb.icompression
 
 
 class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):

@@ -84,8 +84,9 @@ class Installable(metaclass=InstallableMeta):
     contrib_download_url_name = []
 
     # List of pip-installable python module names required by this Installable.
-    # Subclasses must overwrite this member as necessary.
+    # Subclasses must overwrite this member as necessary. 
     # Can be empty if needed.
+    # Modules required by enb need not be added.
     required_pip_modules = []
 
     # Message shown to users when installing the Installable. It can inform about any additional

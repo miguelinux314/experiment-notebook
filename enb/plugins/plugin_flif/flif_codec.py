@@ -9,12 +9,18 @@ import enb
 
 
 class FLIF(enb.icompression.LosslessCodec, enb.icompression.PNGWrapperCodec):
-    def __init__(self, flif_binary=os.path.join(os.path.dirname(__file__), "flif")):
-        super().__init__(compressor_path=flif_binary, decompressor_path=flif_binary)
+    def __init__(self, flif_binary=os.path.join(os.path.dirname(__file__), "flif"),
+                 effort_percentage=60):
+        super().__init__(compressor_path=flif_binary, decompressor_path=flif_binary,
+                         param_dict=dict(effort_percentage=effort_percentage))
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["bytes_per_sample"] == 1, f"This implementation of FLIF supports only 8-bit images"
-        return f"-e --overwrite {original_path} {compressed_path}"
+        assert original_file_info["component_count"] in [1, 3], f"Flif only admits 1 or 3 compoents, " \
+                                                                f"found {original_file_info['component_count']}"
+        return f"-e --effort={self.param_dict['effort_percentage']} " \
+               f"--overwrite {original_path} {compressed_path} " \
+               f"--no-interlace "
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-d --overwrite {compressed_path} {reconstructed_path}"
