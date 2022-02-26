@@ -554,12 +554,25 @@ class CompressionExperiment(experiment.Experiment):
         be defined independently without needing to compress and decompress for each one.
         """
 
-        def __init__(self, file_path, codec, image_info_row):
+        def __init__(self, file_path, codec, image_info_row, reconstructed_copy_dir=None,
+                     compressed_copy_dir=None):
+            """
+            :param file_path: path to the original image being compressed
+            :param codec: AbstractCodec instance to be used for compression/decompression
+            :param image_info_row: dict-like object with geometry and
+              data type information about file_path
+            :param reconstructed_copy_dir: if not None, a copy of the reconstructed images
+              is stored, based on the class of codec.
+            :param compressed_copy_dir: if not None, a copy of the compressed images
+              is stored, based on the class of codec.
+            """
             self.file_path = file_path
             self.codec = codec
             self.image_info_row = image_info_row
             self._compression_results = None
             self._decompression_results = None
+            self.compressed_copy_dir = compressed_copy_dir
+            self.reconstructed_copy_dir = reconstructed_copy_dir
 
         @property
         def compression_results(self):
@@ -599,6 +612,16 @@ class CompressionExperiment(experiment.Experiment):
                             self._compression_results.compression_time_seconds = wall_compression_time
 
                         measured_times.append(self._compression_results.compression_time_seconds)
+
+                        if self.compressed_copy_dir and repetition_index == 0:
+                            output_path = os.path.join(self.compressed_copy_dir,
+                                                       self.codec.name,
+                                                       f"{os.path.basename(self.file_path)}.compressed")
+                            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                            enb.logger.info(f"Storing compressed bitstream for {self.file_path} and {self.codec} "
+                                            f"at {repr(output_path)}")
+                            shutil.copyfile(tmp_compressed_path, output_path)
+                        
                         if repetition_index < options.repetitions - 1:
                             os.remove(tmp_compressed_path)
 
@@ -652,6 +675,16 @@ class CompressionExperiment(experiment.Experiment):
                                            f" {self.compression_results.original_path}")
 
                             measured_times.append(self._decompression_results.decompression_time_seconds)
+
+                            if self.reconstructed_copy_dir and repetition_index == 0:
+                                output_path = os.path.join(self.reconstructed_copy_dir,
+                                                           self.codec.name,
+                                                           os.path.basename(self.file_path))
+                                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                                enb.logger.info(f"Storing reconstructed copy of {self.file_path} with {self.codec} "
+                                                f"at {repr(output_path)}")
+                                shutil.copyfile(tmp_reconstructed_path, output_path)
+                            
                             if repetition_index < options.repetitions - 1:
                                 os.remove(tmp_reconstructed_path)
                     self._decompression_results.decompression_time_seconds = sum(measured_times) / len(measured_times)
@@ -775,7 +808,7 @@ class CompressionExperiment(experiment.Experiment):
         file_path, codec_name = index
         codec = self.codecs_by_name[codec_name]
         image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
-        
+
         # A temporary attribute is created with a self.CompressionDecompressionWrapper instance,
         # which allows lazy, at-most-one execution of the compression/decompression process.
         # Column-setting methods can access the wrapper with self.
@@ -786,7 +819,9 @@ class CompressionExperiment(experiment.Experiment):
         try:
             self.codec_results = self.CompressionDecompressionWrapper(
                 file_path=file_path, codec=codec,
-                image_info_row=image_info_row)
+                image_info_row=image_info_row,
+                compressed_copy_dir=self.compressed_copy_dir_path,
+                reconstructed_copy_dir=self.reconstructed_dir_path)
             assert self.codec_results is not None
 
             processed_row = super().compute_one_row(
@@ -796,57 +831,6 @@ class CompressionExperiment(experiment.Experiment):
             if isinstance(processed_row, Exception):
                 # Should not do anything beyond here if errors occurred
                 return processed_row
-
-            if self.compressed_copy_dir_path:
-                output_compressed_path = os.path.join(
-                    self.compressed_copy_dir_path,
-                    codec.name,
-                    os.path.basename(os.path.dirname(file_path)), os.path.basename(file_path))
-                os.makedirs(os.path.dirname(output_compressed_path), exist_ok=True)
-                if options.verbose > 1:
-                    print(f"[C]opying {file_path} into {output_compressed_path}")
-                shutil.copy(self.codec_results.compression_results.compressed_path, output_compressed_path)
-
-            if self.reconstructed_dir_path is not None:
-                output_reconstructed_path = os.path.join(
-                    self.reconstructed_dir_path,
-                    codec.name,
-                    os.path.basename(os.path.dirname(file_path)), os.path.basename(file_path))
-                os.makedirs(os.path.dirname(output_reconstructed_path), exist_ok=True)
-                if options.verbose > 1:
-                    print(
-                        f"[C]opying {self.codec_results.compression_results.compressed_path} into {output_reconstructed_path}")
-                shutil.copy(self.codec_results.decompression_results.reconstructed_path,
-                            output_reconstructed_path)
-
-                if image_info_row["component_count"] == 3:
-                    rendered_path = f"{output_reconstructed_path}.png"
-                    if not os.path.exists(rendered_path) or options.force:
-                        array = isets.load_array_bsq(
-                            file_or_path=self.codec_results.decompression_results.reconstructed_path,
-                            image_properties_row=image_info_row).astype(np.int)
-                        cmin = array.min()
-                        cmax = array.max()
-                        array = np.round((255 * (array.astype(np.int) - cmin) / (cmax - cmin))).astype("uint8")
-                        if options.verbose > 1:
-                            print(f"[R]endering {rendered_path}")
-
-                        numpngw.imwrite(rendered_path, array.swapaxes(0, 1))
-
-                else:
-                    full_array = isets.load_array_bsq(
-                        file_or_path=self.codec_results.decompression_results.reconstructed_path,
-                        image_properties_row=image_info_row).astype(np.int)
-                    for i, rendered_path in enumerate(f"{output_reconstructed_path}_component{i}.png"
-                                                      for i in range(image_info_row['component_count'])):
-                        if not os.path.exists(rendered_path) or options.force:
-                            array = full_array[:, :, i].squeeze().swapaxes(0, 1)
-                            cmin = array.min()
-                            cmax = array.max()
-                            array = np.round((255 * (array - cmin) / (cmax - cmin))).astype("uint8")
-                            if options.verbose > 1:
-                                print(f"[R]endering {rendered_path}")
-                            numpngw.imwrite(rendered_path, array)
         finally:
             del self.codec_results
             self.codec_results = None
@@ -855,7 +839,6 @@ class CompressionExperiment(experiment.Experiment):
                 del self.codec_results
             except AttributeError:
                 pass
-
 
         return processed_row
 
@@ -934,12 +917,13 @@ class CompressionExperiment(experiment.Experiment):
 class LosslessCompressionExperiment(CompressionExperiment):
     @atable.redefines_column
     def set_comparison_results(self, index, row):
+        path, task = self.index_to_path_task(index)
         super().set_comparison_results(index=index, row=row)
         if not row["lossless_reconstruction"]:
             raise CompressionException(
                 original_path=index[0], file_info=row,
                 output="Failed to produce lossless compression for "
-                       f"{index[0]} and {index[1]}")
+                       f"{path} and {task}")
 
 
 class LossyCompressionExperiment(CompressionExperiment):
