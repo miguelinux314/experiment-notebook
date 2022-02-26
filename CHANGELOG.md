@@ -16,7 +16,16 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.3.6
 
-- Added support for plotting histograms of 2d data using colormaps
+* New features
+
+  - Added support for plotting histograms of 2d data using colormaps
+  - Improved progress reporting with animation
+  - Added arithmetic codec to the list of available plugins
+
+* General improvements
+ 
+  - Compressed and/or reconstructed images are now stored even if lossless compression is not achieved in LosslessCompressionExperiment 
+ 
 
 # Latest stable version
 
