@@ -234,7 +234,7 @@ _head_node = None
 class RemoteNode:
     """Represent a remote node of the cluster, with tools to connect via ssh.
     """
-    remote_project_mount_path = "~/.enb_remote"
+    remote_project_mount_path = os.path.join(enb.user_config_dir, "remote_mount")
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None,
                  remote_mount_needed=None):
