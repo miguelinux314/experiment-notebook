@@ -1133,7 +1133,7 @@ class ATable(metaclass=MetaTable):
                         id_list=pending_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=bar):
-                    enb.logger.info(pg.report())
+                    enb.logger.debug(pg.report())
                 computed_series = enb.parallel.get(pending_ids)
                 bar(1)
 

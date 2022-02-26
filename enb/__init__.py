@@ -93,9 +93,9 @@ if not parallel_ray.is_parallel_process():
                 f"You can disable this warning by passing --no_ray in the command line.\n\n",
                 prefix=" " * (_shutil.get_terminal_size().columns // 10)))
         elif parallel_ray.is_ray_enabled():
-            print("Using ray for parallelization.")
+            logger.info("Using ray for parallelization.")
         else:
-            print("Using fallback pathos for parallelization.")
+            logger.info("Using fallback pathos for parallelization.")
 
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
