@@ -2,7 +2,7 @@ import enb.plugins
 
 
 class ACPlugin(enb.plugins.PluginMake):
-    name = "arithmetic-coder"
+    name = "arithmetic-codec"
     label = "Arithmetic coder (8 bit)"
     tags = {"data compression", "codec"}
     contrib_authors = ["Nayuki"]
