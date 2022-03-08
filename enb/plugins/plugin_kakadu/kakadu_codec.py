@@ -89,7 +89,7 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                f"Clayers={original_file_info['component_count']} " \
                f"Creversible={'yes' if self.param_dict['lossless'] else 'no'} " \
                f"Cycc=no " \
-               f"Sdims=\\{{{original_file_info['width']},{original_file_info['height']}\\}} " \
+               f"Sdims=\\{{{original_file_info['height']},{original_file_info['width']}\\}} " \
                f"Nprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Sprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
