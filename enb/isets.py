@@ -7,7 +7,6 @@ __since__ = "2020/04/01"
 import os
 import math
 import numpy as np
-import scipy.stats
 import re
 import imageio
 import enb
@@ -73,8 +72,8 @@ def kl_divergence(data1, data2):
     total_sum2 = counts2.sum()
     assert total_sum1 == total_sum2
     probabilities2 = {v: c / total_sum2 for v, c in zip(values2, counts2)}
-    
-    kl_pq = sum(probabilities1[k] * math.log(probabilities1[k]/probabilities2[k])
+
+    kl_pq = sum(probabilities1[k] * math.log(probabilities1[k] / probabilities2[k])
                 if k in probabilities2 and probabilities1[k] != 0 and probabilities2[k] != 0 else 0
                 for k in probabilities1.keys())
     kl_qp = sum(probabilities2[k] * math.log(probabilities2[k] / probabilities1[k])
@@ -458,7 +457,9 @@ class QuantizedImageVersion(ImageVersionTable):
 
 class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
     """Read FITS files and convert them to raw files,
-    sorting them by type (integer or float)	and by bits per pixel
+    sorting them by type (integer or float)	and by bits per pixel.
+
+    By Òscar Maireles.
     """
     fits_extension = "fit"
     allowed_extensions = ["fit", "fits"]
@@ -600,6 +601,35 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                     header.totextfile(fits_header_path)
 
             saved_images += 1
+
+
+class PNGCurationTable(enb.sets.FileVersionTable):
+    """Given a directory tree containing PNG images, copy those images into
+    a new directory tree in raw BSQ format adding geometry information tags to
+    the output names recognized by enb.isets.
+    """
+    dataset_files_extension = "png"
+
+    def __init__(self, original_base_dir, version_base_dir):
+        super().__init__(version_base_dir=version_base_dir,
+                         version_name=self.__class__.__name__,
+                         original_base_dir=original_base_dir,
+                         check_generated_files=False)
+
+    def version(self, input_path, output_path, row):
+        im = imageio.imread(input_path)
+        if len(im.shape) == 2:
+            im = im[:, :, np.newaxis]
+        assert len(im.shape) == 3, f"Invalid shape in read image {input_path}: {im.shape}"
+        im = im.swapaxes(0, 1)
+        if im.dtype == np.uint8:
+            type_str = "u8be"
+        elif im.dtype == np.uint16:
+            type_str = "u16be"
+        else:
+            raise f"Invalid data type found in read image {input_path}: {im.dtype}"
+        output_path = f"{output_path[:-4]}-{type_str}-{im.shape[2]}x{im.shape[1]}x{im.shape[0]}.raw"
+        dump_array_bsq(array=im, file_or_path=output_path)
 
 
 def load_array_bsq(file_or_path, image_properties_row=None,
