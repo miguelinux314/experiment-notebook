@@ -202,14 +202,14 @@ class Analyzer(enb.atable.ATable):
                                 and c not in ["row_created", "row_updated",
                                               enb.atable.ATable.private_index_column])].to_csv(
                     analysis_output_path, index=False)
+
                 summary_df[list(c for c in summary_df.columns
                                 if c not in summary_table.render_column_names
                                 and c not in ["row_created", "row_updated",
                                               enb.atable.ATable.private_index_column]
                                 and (c in ("group_label", "group_size")
-                                     or c.endswith("_avg")))].to_latex(
-                    analysis_output_path[:-4] + ".tex",
-                    index=False, float_format=f"%.{self.latex_decimal_count}f")
+                                     or c.endswith("_avg")))].style.format(escape="latex", precision=self.latex_decimal_count).format_index(
+                    r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(analysis_output_path[:-4] + ".tex")
 
             # Return the summary result dataframe
             return summary_df

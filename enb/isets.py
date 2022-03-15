@@ -610,11 +610,12 @@ class PNGCurationTable(enb.sets.FileVersionTable):
     """
     dataset_files_extension = "png"
 
-    def __init__(self, original_base_dir, version_base_dir):
+    def __init__(self, original_base_dir, version_base_dir, csv_support_path=None):
         super().__init__(version_base_dir=version_base_dir,
                          version_name=self.__class__.__name__,
                          original_base_dir=original_base_dir,
-                         check_generated_files=False)
+                         check_generated_files=False,
+                         csv_support_path=csv_support_path)
 
     def version(self, input_path, output_path, row):
         with enb.logger.info_context(f"Versioning {input_path}"):
