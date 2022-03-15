@@ -5,4 +5,5 @@
 
 # Dependencies
 
-pip install sphinxcontrib-programoutput sphinx_rtd_theme
+
+pip install sphinxcontrib-programoutput sphinx_rtd_theme pygments-zenburn

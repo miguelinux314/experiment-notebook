@@ -144,7 +144,7 @@ the following columns:
   ssh's default key is employed.
 - `cpu_limit`: maximum number of CPUs to be used on the remote node machine.
   If <= 0, then no limit is set for the node.
-  Note that the number of CPUs to be used on the head node is given by `enb.config.options.ray_cpu_limit`.
+  Note that the number of CPUs to be used on the head node is given by `enb.config.options.cpu_limit`.
 
 For instance, we you have a single remote node on 192.168.1.3 with ssh listening on port 22,
 and for which the key is on `~/.ssh/id_rsa`, the cluster configuration file would look like:
