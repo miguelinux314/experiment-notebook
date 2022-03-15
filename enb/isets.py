@@ -617,19 +617,20 @@ class PNGCurationTable(enb.sets.FileVersionTable):
                          check_generated_files=False)
 
     def version(self, input_path, output_path, row):
-        im = imageio.imread(input_path)
-        if len(im.shape) == 2:
-            im = im[:, :, np.newaxis]
-        assert len(im.shape) == 3, f"Invalid shape in read image {input_path}: {im.shape}"
-        im = im.swapaxes(0, 1)
-        if im.dtype == np.uint8:
-            type_str = "u8be"
-        elif im.dtype == np.uint16:
-            type_str = "u16be"
-        else:
-            raise f"Invalid data type found in read image {input_path}: {im.dtype}"
-        output_path = f"{output_path[:-4]}-{type_str}-{im.shape[2]}x{im.shape[1]}x{im.shape[0]}.raw"
-        dump_array_bsq(array=im, file_or_path=output_path)
+        with enb.logger.info_context(f"Versioning {input_path}"):
+            im = imageio.imread(input_path)
+            if len(im.shape) == 2:
+                im = im[:, :, np.newaxis]
+            assert len(im.shape) == 3, f"Invalid shape in read image {input_path}: {im.shape}"
+            im = im.swapaxes(0, 1)
+            if im.dtype == np.uint8:
+                type_str = "u8be"
+            elif im.dtype == np.uint16:
+                type_str = "u16be"
+            else:
+                raise f"Invalid data type found in read image {input_path}: {im.dtype}"
+            output_path = f"{output_path[:-4]}-{type_str}-{im.shape[2]}x{im.shape[1]}x{im.shape[0]}.raw"
+            dump_array_bsq(array=im, file_or_path=output_path)
 
 
 def load_array_bsq(file_or_path, image_properties_row=None,
