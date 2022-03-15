@@ -45,8 +45,10 @@ class JPEG_LS(icompression.LosslessCodec, icompression.NearLosslessCodec, icompr
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         assert original_file_info["bytes_per_sample"] in [1, 2], \
             f"Only 1 or 2 bytes per sample, unsigned values {original_file_info['bytes_per_sample']}"
-        assert original_file_info["width"] <= self.max_dimension_size
-        assert original_file_info["height"] <= self.max_dimension_size
+        assert original_file_info["width"] <= self.max_dimension_size, \
+            f"The input path has width {original_file_info['width']} exceeding the maximum {self.max_dimension_size}"
+        assert original_file_info["height"] <= self.max_dimension_size, \
+            f"The input path has height {original_file_info['height']} exceeding the maximum {self.max_dimension_size}"
         complete_array = isets.load_array_bsq(file_or_path=original_path, image_properties_row=original_file_info)
         if original_file_info["signed"]:
             complete_array = complete_array.astype(np.int64)
