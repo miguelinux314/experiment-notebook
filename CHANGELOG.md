@@ -24,7 +24,8 @@ format. Given a code initially developed for one `enb` version and then executed
 
 * General improvements
  
-  - Compressed and/or reconstructed images are now stored even if lossless compression is not achieved in LosslessCompressionExperiment 
+  - Compressed and/or reconstructed images are now stored even if lossless compression is not achieved in LosslessCompressionExperiment
+  - Fixed Kakadu plugin Sdims axis swap bug 
  
 
 # Latest stable version
