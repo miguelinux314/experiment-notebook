@@ -1666,7 +1666,8 @@ class TwoNumericSummary(ScalarNumericSummary):
                 # Family line plots look into the task names and produce
                 # one marker per task, linking same-family tasks with a line.
                 x_values = []
-                y_values = []
+                y_values = []                
+                
                 current_family = [f for f in group_by if f.label == group_label][0]
                 for task_name in current_family.task_names:
                     task_df = group_df[group_df["task_name"] == task_name]
