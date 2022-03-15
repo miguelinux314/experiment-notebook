@@ -121,7 +121,7 @@ class HeadNode:
             modules_needed_remotely = [m.__name__ for m in sys.modules.values()
                                        if hasattr(m, "__name__") and m.__name__ not in options._initial_module_names
                                        and not m.__name__.startswith("_")]
-            ray.init(address=f":{self.ray_port}",
+            ray.init(address=f"localhost:{self.ray_port}",
                      _redis_password=self.session_password,
                      runtime_env=dict(working_dir=options.project_root if options.ssh_cluster_csv_path else None,
                                       excludes=excludes if options.ssh_cluster_csv_path else None,
