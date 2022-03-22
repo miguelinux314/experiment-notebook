@@ -684,13 +684,14 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     :param force_big_endian: if True, a copy of the array is made and its bytes are swapped before outputting
       data to file. This parameter is ignored if dtype is provided.
     """
-    os.makedirs(os.path.dirname(file_or_path), exist_ok=True)
+    if isinstance(file_or_path, str):
+        os.makedirs(os.path.dirname(file_or_path), exist_ok=True)
     try:
         assert not file_or_path.closed, f"Cannot dump to a closed file"
-        open_here = False
+        was_open_here = False
     except AttributeError:
         file_or_path = open(file_or_path, mode)
-        open_here = True
+        was_open_here = True
 
     if dtype is not None and array.dtype != dtype:
         array = array.astype(dtype)
@@ -702,7 +703,7 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     array = array.swapaxes(0, 2)
     array.tofile(file_or_path)
 
-    if open_here:
+    if was_open_here:
         file_or_path.close()
 
 
