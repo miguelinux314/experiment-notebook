@@ -76,7 +76,7 @@ setup(
     setup_requires=setup_package_list,
 
     install_requires=[
-        "pathos", "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas", "imageio",
+        "pathos", "appdirs", "deprecation", "jinja2", "matplotlib", "numpngw", "numpy", "pandas >= 1.4.1", "imageio",
         "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
         "astropy", "alive_progress",
         "ray[default] ; platform_system != 'Windows'"],
