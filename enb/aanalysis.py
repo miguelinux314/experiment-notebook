@@ -208,8 +208,10 @@ class Analyzer(enb.atable.ATable):
                                 and c not in ["row_created", "row_updated",
                                               enb.atable.ATable.private_index_column]
                                 and (c in ("group_label", "group_size")
-                                     or c.endswith("_avg")))].style.format(escape="latex", precision=self.latex_decimal_count).format_index(
-                    r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(analysis_output_path[:-4] + ".tex")
+                                     or c.endswith("_avg")))].style.format(escape="latex",
+                                                                           precision=self.latex_decimal_count).format_index(
+                    r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(
+                    analysis_output_path[:-4] + ".tex")
 
             # Return the summary result dataframe
             return summary_df
@@ -1616,7 +1618,7 @@ class TwoNumericSummary(ScalarNumericSummary):
         reference_group = kwargs["reference_group"]
         x_column_series = group_df[x_column_name]
         y_column_series = group_df[y_column_name]
-        if render_mode not in self.analyzer.valid_render_modes:
+        if render_mode not in _self.analyzer.valid_render_modes:
             raise ValueError(f"Invalid requested render mode {repr(render_mode)}")
 
         plds_this_case = []
@@ -1625,7 +1627,7 @@ class TwoNumericSummary(ScalarNumericSummary):
                 x_values=[row[f"{x_column_name}_avg"]],
                 y_values=[row[f"{y_column_name}_avg"]],
                 alpha=_self.analyzer.main_alpha,
-                marker_size=5 * self.analyzer.main_marker_size))
+                marker_size=5 * _self.analyzer.main_marker_size))
             if self.analyzer.show_individual_samples:
                 plds_this_case.append(plotdata.ScatterData(
                     x_values=x_column_series.values,
@@ -1666,8 +1668,8 @@ class TwoNumericSummary(ScalarNumericSummary):
                 # Family line plots look into the task names and produce
                 # one marker per task, linking same-family tasks with a line.
                 x_values = []
-                y_values = []                
-                
+                y_values = []
+
                 current_family = [f for f in group_by if f.label == group_label][0]
                 for task_name in current_family.task_names:
                     task_df = group_df[group_df["task_name"] == task_name]
@@ -1684,8 +1686,8 @@ class TwoNumericSummary(ScalarNumericSummary):
                 marker_size=_self.analyzer.main_marker_size - 1))
         else:
             raise SyntaxError(f"Invalid render mode {repr(render_mode)} not within the "
-                              f"supported ones for {self.analyzer.__class__.__name__} "
-                              f"({repr(self.analyzer.valid_render_modes)}")
+                              f"supported ones for {_self.analyzer.__class__.__name__} "
+                              f"({repr(_self.analyzer.valid_render_modes)}")
 
         # Plot the reference lines only once per plot to maintain the desired alpha
         if reference_group is not None and \
@@ -1860,7 +1862,7 @@ class DictNumericAnalyzer(Analyzer):
         if "x_tick_list" not in column_kwargs:
             column_kwargs["x_tick_list"] = list(range(len(self.column_name_to_keys[column_name])))
         if "x_tick_label_list" not in column_kwargs:
-            column_kwargs["x_tick_label_list"] = self.column_name_to_keys[column_name]
+            column_kwargs["x_tick_label_list"] = [str(x) for x in column_kwargs["x_tick_list"]]
 
         return column_kwargs
 
@@ -1998,22 +2000,27 @@ class DictNumericSummary(AnalyzerSummary):
         row[_column_name] = []
 
         key_values, avg_values = zip(*sorted(row[f"{column_name}_avg"].items()))
+
         x_values = range(len(key_values))
+
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
-            row[_column_name].append(enb.plotdata.ScatterData(x_values=x_values,
-                                                              y_values=avg_values,
-                                                              alpha=self.analyzer.secondary_alpha))
+            row[_column_name].append(enb.plotdata.ScatterData(
+                x_values=x_values,
+                y_values=avg_values,
+                alpha=self.analyzer.secondary_alpha))
         if render_mode == "line":
             row[_column_name].append(enb.plotdata.LineData(
-                x_values=x_values, y_values=avg_values, alpha=self.analyzer.main_alpha))
+                x_values=x_values, y_values=avg_values, alpha=self.analyzer.main_alpha,
+                line_width=_self.analyzer.main_line_width,
+                marker_size=_self.analyzer.main_marker_size, ))
             if _self.analyzer.show_y_std:
                 _, std_values = zip(*sorted(row[f"{column_name}_std"].items()))
                 assert len(_) == len(x_values)
                 row[_column_name].append(enb.plotdata.ErrorLines(
                     x_values=x_values, y_values=avg_values,
                     err_neg_values=std_values, err_pos_values=std_values,
-                    alpha=self.analyzer.secondary_alpha,
+                    alpha=_self.analyzer.secondary_alpha,
                     vertical=True))
         else:
             raise ValueError(f"Unexpected render mode {render_mode} for {self.__class__.__name__}")

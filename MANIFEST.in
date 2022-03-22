@@ -46,6 +46,7 @@ include enb/plugins/plugin_flif/Makefile.linux
 include enb/plugins/plugin_flif/__plugin__.py
 include enb/plugins/plugin_flif/README.md
 include enb/plugins/plugin_fpack/fpack_codec.py
+include enb/plugins/plugin_fpack/__init__.py
 include enb/plugins/plugin_fpack/Makefile.linux
 include enb/plugins/plugin_fpack/__plugin__.py
 include enb/plugins/plugin_fpc/fpc.c
