@@ -143,8 +143,9 @@ class PlottableData2D(PlottableData):
 
 
 class LineData(PlottableData2D):
-    def __init__(self, marker="o", marker_size=5, **kwargs):
+    def __init__(self, marker="o", marker_size=5, line_width=1.5, **kwargs):
         super().__init__(marker=marker, marker_size=marker_size, **kwargs)
+        self.line_width = line_width
 
     def render(self, axes=None):
         """Plot 2D data using plt.plot()
@@ -162,7 +163,7 @@ class LineData(PlottableData2D):
                 ms = self.marker_size
 
             axes.plot(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
-                      marker=self.marker, ms=ms,
+                      marker=self.marker, ms=ms, linewidth=self.line_width,
                       **extra_kwargs)
             axes = plt if axes is None else axes
             self.render_axis_labels(axes=axes)
@@ -744,7 +745,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param style_list: list of valid style arguments recognized by `matplotlib.use`. Each element can be any
       of matplotlib's default styles or a path to a valid matplotlibrc. Styles are applied from left to right, 
       overwriting definitions without warning. By default, matplotlib's "default" mode is applied. 
-    """
+    """    
     with enb.logger.info_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
                                  sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
         if len(pds_by_group_name) < 1:
