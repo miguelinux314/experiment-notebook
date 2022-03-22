@@ -848,7 +848,7 @@ class ATable(metaclass=MetaTable):
 
         # Use the provided target indices or discover automatically from the dataset folder
         target_indices = list(target_indices) if target_indices is not None \
-            else get_all_input_files(ext=self.dataset_files_extension)
+            else self.get_all_input_indices(ext=self.dataset_files_extension)
 
         if not target_indices:
             raise ValueError(f"No target indices could be found at {repr(options.base_dataset_dir)}. "
@@ -905,6 +905,12 @@ class ATable(metaclass=MetaTable):
             enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved unfilled dataframe with {len(df)} rows.")
 
         return df
+    
+    def get_all_input_indices(self, ext=None, base_dataset_dir=None):
+        """Get a list of all input indices (recursively) contained in base_dataset_dir.
+        By default, the global function enb.atable.get_all_input_files is called.
+        """
+        return get_all_input_files(ext=ext, base_dataset_dir=base_dataset_dir)
 
     def get_df_one_chunk(self, target_indices, target_columns, fill_needed,
                          overwrite, run_sanity_checks):
@@ -1004,6 +1010,7 @@ class ATable(metaclass=MetaTable):
             with enb.logger.verbose_context(f"Loading dataframe from persistence at {csv_support_path}"):
                 loaded_df = pd.read_csv(csv_support_path)
                 enb.logger.info(f"Loaded df with {len(loaded_df)} rows")
+            loaded_columns = list(loaded_df.columns)
 
             # Columns defined since the last invocation are initially set to None for all previously
             # existing data.
@@ -1027,7 +1034,7 @@ class ATable(metaclass=MetaTable):
             with enb.logger.debug_context("Loading serialized objects"):
                 loaded_df = loaded_df[self.indices_and_columns + [self.private_index_column]]
                 for column, properties in self.column_to_properties.items():
-                    if column in loaded_df.columns:
+                    if column in loaded_columns:
                         # Column existed - parse literals if needed
                         if properties.has_ast_values:
                             loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
