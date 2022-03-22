@@ -136,9 +136,14 @@ class WritableOrCreableDirAction(ExistingDirAction):
         try:
             WritableDirAction.assert_valid_value(target_dir)
         except AssertionError:
-            if os.path.dirname(os.path.dirname(target_dir)) \
-                    and not os.access(os.path.dirname(target_dir), os.W_OK):
-                raise ValueError(f"{target_dir} is not a directory and cannot be created")
+            parent_dir = target_dir
+            while parent_dir:
+                if os.path.isdir(parent_dir) and os.access(os.path.dirname(parent_dir), os.W_OK):
+                    break
+                parent_dir = os.path.dirname(parent_dir)
+            else:
+                if not os.access(os.getcwd(), os.W_OK):
+                    raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
 
 class ReadableOrCreableDirAction(ExistingDirAction):
