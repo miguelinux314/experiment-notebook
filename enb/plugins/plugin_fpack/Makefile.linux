@@ -2,6 +2,7 @@ all:
 	tar -xvzf cfitsio-3.49.tar.gz && \
 	cd cfitsio-3.49 && \
 	./configure && \
+	make && \
 	make fpack && \
 	make funpack && \
 	cp fpack funpack ../
