@@ -130,8 +130,10 @@ include enb/plugins/plugin_vvc/Makefile.linux
 include enb/plugins/plugin_vvc/__plugin__.py
 include enb/plugins/plugin_vvc/README.md
 include enb/plugins/plugin_vvc/vvc_codec.py
-include enb/plugins/plugin_vvc/vvc_lossless_400.cfg
-include enb/plugins/plugin_vvc/vvc_lossy_400.cfg
+include enb/plugins/plugin_vvc/vvc_lossless_400_inter.cfg
+include enb/plugins/plugin_vvc/vvc_lossless_400_intra.cfg
+include enb/plugins/plugin_vvc/vvc_lossless_400_onecomponent.cfg
+include enb/plugins/plugin_vvc/vvc_lossy_400_onecomponent.cfg
 include enb/plugins/plugin_zfp/Makefile.linux
 include enb/plugins/plugin_zfp/__plugin__.py
 include enb/plugins/plugin_zfp/README.md
