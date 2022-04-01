@@ -789,5 +789,6 @@ def render_array_png(img, png_path):
 
     if img.shape[2] not in {1, 3, 4}:
         raise ValueError(f"Number of components not valid. Image shape (x,y,z) = {img.shape}")
-    os.makedirs(os.path.dirname(png_path), exist_ok=True)
+    if os.path.dirname(png_path):
+        os.makedirs(os.path.dirname(png_path), exist_ok=True)
     imageio.imwrite(png_path, img.swapaxes(0, 1), format="png")
