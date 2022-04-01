@@ -1019,10 +1019,9 @@ class ScalarNumericAnalyzer(Analyzer):
 
         column_kwargs["y_tick_list"] = list(range(len(column_kwargs["pds_by_group_name"])))
         column_kwargs["y_tick_label_list"] = list(
-            column_kwargs["y_labels_by_group_name"][name] 
+            column_kwargs["y_labels_by_group_name"][name]
             if "y_labels_by_group_name" in column_kwargs and name in column_kwargs["y_labels_by_group_name"]
             else name for name in column_kwargs["pds_by_group_name"].keys())
-        
 
         column_kwargs["y_min"] = -0.5
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
@@ -1403,7 +1402,11 @@ class TwoNumericAnalyzer(Analyzer):
     show_legend = True
 
     # Specific analyzer attributes:
+    # If True, individual data points are shown
     show_individual_samples = True
+    # If True, markers of the same group in the exact same x position are 
+    # grouped into a single one with the average y value. Applies only in the 'line' render mode.
+    average_identical_x = False
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -1416,7 +1419,7 @@ class TwoNumericAnalyzer(Analyzer):
             show_global, show_count,
             # Rendering options, directly passed to plotdata.render_plds_by_group
             **column_kwargs):
-        # Update common rendering kwargs
+        # Update common rendering kwargs, including the 'pds_by_group_name' entry with the data to be plotted
         column_kwargs = super().update_render_kwargs_one_case(
             column_selection=column_selection, reference_group=reference_group,
             render_mode=render_mode,
@@ -1424,6 +1427,18 @@ class TwoNumericAnalyzer(Analyzer):
             group_by=group_by, column_to_properties=column_to_properties,
             show_global=show_global, show_count=show_count,
             **column_kwargs)
+
+        # Combine samples in the same x position
+        if self.average_identical_x and render_mode == "line":
+            for group_name, group_pds in column_kwargs["pds_by_group_name"].items():
+                for pd in group_pds:
+                    x_to_ylist = collections.defaultdict(list)
+                    for x_value, y_value in zip(pd.x_values, pd.y_values):
+                        x_to_ylist[x_value].append(y_value)
+                    
+                    pd.x_values = sorted(x_to_ylist.keys())
+                    pd.y_values = [sum(x_to_ylist[x])/len(x_to_ylist[x])
+                                   for x in pd.x_values]
 
         # Update global x and y labels
         try:

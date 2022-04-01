@@ -18,17 +18,20 @@ format. Given a code initially developed for one `enb` version and then executed
 
 * New features
 
-  - Added support for plotting histograms of 2d data using colormaps
-  - Improved progress reporting with animation
-  - Added an arithmetic codec and a non-block-adaptive huffman codec to the list of available plugins
-  - Automatic generation of latex-formatted output tables in enb.aanalysis.Analyzer subclasses
+    - Added support for plotting histograms of 2d data using colormaps.
+    - Improved progress reporting with animation.
+    - Added an arithmetic codec and a non-block-adaptive huffman codec to the list of available plugins.
+    - Automatic generation of latex-formatted output tables in enb.aanalysis.Analyzer subclasses.
+    - Added the `average_identical_x` attribute to `enb.aanalysis.TwoNumericAnalyzer`, which allows a cleaner analysis
+      by averaging samples which share the same x value (applies to the 'line' render mode only).
 
 * General improvements
- 
-  - Compressed and/or reconstructed images are now stored even if lossless compression is not achieved in LosslessCompressionExperiment
-  - Fixed Kakadu plugin Sdims axis swap bug
-  - Fixed `file_or_path` argument in `dump_bsq_array` so that it accepts open files as described in the API
- 
+
+    - Compressed and/or reconstructed images are now stored even if lossless compression is not achieved in
+      LosslessCompressionExperiment.
+    - Fixed Kakadu plugin Sdims axis swap bug.
+    - Fixed `file_or_path` argument in `dump_bsq_array` so that it accepts open files as described in the API.
+    - Fixed some cosmetic problems in the `enb.aanalysis` module.
 
 # Latest stable version
 
