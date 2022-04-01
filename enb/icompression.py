@@ -579,6 +579,7 @@ class CompressionExperiment(experiment.Experiment):
             """Perform the actual compression experiment for the selected row.
             """
             if self._compression_results is None:
+                os.makedirs(options.base_tmp_dir, exist_ok=True)
                 _, tmp_compressed_path = tempfile.mkstemp(
                     dir=options.base_tmp_dir,
                     prefix=f"compressed_{os.path.basename(self.file_path)}_")
