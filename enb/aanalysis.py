@@ -940,7 +940,10 @@ class ScalarNumericAnalyzer(Analyzer):
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
         column_kwargs["y_tick_list"] = list(range(len(column_kwargs["pds_by_group_name"])))
-        column_kwargs["y_tick_label_list"] = list(column_kwargs["pds_by_group_name"].keys())
+        column_kwargs["y_tick_label_list"] = list(
+            column_kwargs["y_labels_by_group_name"][name]
+            if "y_labels_by_group_name" in column_kwargs and name in column_kwargs["y_labels_by_group_name"]
+            else name for name in column_kwargs["pds_by_group_name"].keys())
 
         column_kwargs["y_min"] = -0.5
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
@@ -1002,7 +1005,7 @@ class ScalarNumericAnalyzer(Analyzer):
         column_kwargs["pds_by_group_name"] = {}
         for i, name in enumerate(group_names):
             column_kwargs["pds_by_group_name"][name] = pds_by_group_name[name]
-            for pld in pds_by_group_name[name]:
+            for pld in column_kwargs["pds_by_group_name"][name]:
                 # All elements of a group are aligned along the same horizontal position
                 pld.y_values = [i] * len(pld.y_values)
             if reference_group and \
@@ -1011,7 +1014,11 @@ class ScalarNumericAnalyzer(Analyzer):
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
         column_kwargs["y_tick_list"] = list(range(len(column_kwargs["pds_by_group_name"])))
-        column_kwargs["y_tick_label_list"] = list(column_kwargs["pds_by_group_name"].keys())
+        column_kwargs["y_tick_label_list"] = list(
+            column_kwargs["y_labels_by_group_name"][name] 
+            if "y_labels_by_group_name" in column_kwargs and name in column_kwargs["y_labels_by_group_name"]
+            else name for name in column_kwargs["pds_by_group_name"].keys())
+        
 
         column_kwargs["y_min"] = -0.5
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
