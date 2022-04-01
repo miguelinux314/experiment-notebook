@@ -745,7 +745,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param style_list: list of valid style arguments recognized by `matplotlib.use`. Each element can be any
       of matplotlib's default styles or a path to a valid matplotlibrc. Styles are applied from left to right, 
       overwriting definitions without warning. By default, matplotlib's "default" mode is applied. 
-    """    
+    """
     with enb.logger.info_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
                                  sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
         if len(pds_by_group_name) < 1:
@@ -958,7 +958,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             if column_properties and column_properties.hist_label_dict is not None:
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
-                x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
+                x_tick_label_list = [column_properties.hist_label_dict[x] for x in x_tick_values]
 
             group_row_margin = group_row_margin if group_row_margin is not None else float(
                 enb.config.options.group_row_margin)
@@ -1001,6 +1001,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             show_grid = options.show_grid if show_grid is None else show_grid
             show_subgrid = options.show_subgrid if show_subgrid is None else show_subgrid
             ca = plt.gca()
+
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
                 plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
