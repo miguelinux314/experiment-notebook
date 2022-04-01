@@ -22,6 +22,7 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
 
     def __init__(self, ht=False, spatial_dwt_levels=5,
                  lossless=None, bit_rate=None, quality_factor=None, psnr=None,
+                 apply_ycc=False,
                  num_threads=0):
         """Kakadu wrapper that does not apply decorrelation across bands, even if more than one is present.
 
@@ -66,18 +67,21 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
         assert num_threads == int(num_threads), f"Invalid number of threads {num_threads}"
         assert num_threads >= 0, f"Invalid number of threads {num_threads}"
 
-        icompression.WrapperCodec.__init__(
-            self,
-            compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
-            decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
-            param_dict=dict(
+        param_dict = dict(
                 ht=ht,
                 spatial_dwt_levels=spatial_dwt_levels,
                 lossless=lossless,
                 bit_rate=bit_rate,
                 quality_factor=quality_factor,
                 psnr=psnr,
-                num_threads=num_threads))
+                num_threads=num_threads)
+        if apply_ycc:
+            param_dict["apply_ycc"] = True
+        icompression.WrapperCodec.__init__(
+            self,
+            compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
+            decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
+            param_dict=param_dict)
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"-i {original_path}*{original_file_info['component_count']}" \
@@ -88,7 +92,7 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                f"Clevels={self.param_dict['spatial_dwt_levels']} " \
                f"Clayers={original_file_info['component_count']} " \
                f"Creversible={'yes' if self.param_dict['lossless'] else 'no'} " \
-               f"Cycc=no " \
+               f"Cycc={'yes' if 'apply_ycc' in self.param_dict and self.param_dict['apply_ycc'] else 'no'} " \
                f"Sdims=\\{{{original_file_info['height']},{original_file_info['width']}\\}} " \
                f"Nprecision={original_file_info['bytes_per_sample'] * 8} " \
                f"Sprecision={original_file_info['bytes_per_sample'] * 8} " \
@@ -165,8 +169,9 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
     def label(self):
         rate_str = "" if not self.param_dict["bit_rate"] else f" R = {self.param_dict['bit_rate']}"
         psnr_str = "" if not self.param_dict["psnr"] else f" PSNR {self.param_dict['psnr']}"
+        ycc_str = "" if "apply_ycc" not in self.param_dict or not self.param_dict["apply_ycc"] else " YCC"
         return f"Kakadu {'HT' if self.param_dict['ht'] else ''}" \
-               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}{rate_str}{psnr_str}"
+               f"{'lossless' if self.param_dict['lossless'] else 'lossy'}{rate_str}{psnr_str}{ycc_str}"
 
 
 class KakaduMCT(Kakadu2D):
