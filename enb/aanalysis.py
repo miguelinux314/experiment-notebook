@@ -975,6 +975,8 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["global_y_label"] = ""
 
         # Calculate axis limits
+        forced_xmin = "x_min" in column_kwargs and column_kwargs["x_min"] is not None
+        forced_xmax = "x_max" in column_kwargs and column_kwargs["x_max"] is not None
         if "x_min" not in column_kwargs:
             column_kwargs["x_min"] = float(summary_df[f"{column_selection}_min"].min()) \
                 if column_to_properties[column_selection].plot_min is None else \
@@ -985,8 +987,10 @@ class ScalarNumericAnalyzer(Analyzer):
                 column_to_properties[column_selection].plot_max
 
         margin = 0.05 * (column_kwargs["x_max"] - column_kwargs["x_min"])
-        column_kwargs["x_min"] -= margin
-        column_kwargs["x_max"] += margin
+        if not forced_xmin:
+            column_kwargs["x_min"] -= margin
+        if not forced_xmax:
+            column_kwargs["x_max"] += margin
 
         column_kwargs["combine_groups"] = True
         try:
