@@ -9,7 +9,7 @@ import os
 from enb import icompression
 
 
-class ArithmeticCoder(icompression.WrapperCodec, icompression.LosslessCodec):
+class ArithmeticCodec(icompression.WrapperCodec, icompression.LosslessCodec):
     """Wrapper for Nayuki's arithmetic coder, originally downloaded from 
     https://github.com/nayuki/Reference-arithmetic-coding/
     """
