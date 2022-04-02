@@ -23,13 +23,8 @@ from enb.atable import get_canonical_path
 
 options = enb.config.options
 
-# -------------------------- Begin configurable part
-
 # Hash algorithm used to verify file integrity
 hash_algorithm = "sha256"
-
-
-# -------------------------- End configurable part
 
 
 class UnkownPropertiesException(Exception):
@@ -59,7 +54,7 @@ class FilePropertiesTable(atable.ATable):
     def get_df(self, target_indices=None, target_columns=None, fill=True, overwrite=None, chunk_size=None):
         if target_indices is None:
             target_indices = enb.atable.get_all_input_files(ext=self.dataset_files_extension,
-                                                base_dataset_dir=self.base_dir)
+                                                            base_dataset_dir=self.base_dir)
         else:
             target_indices = [enb.atable.get_canonical_path(p) for p in target_indices]
 
@@ -227,7 +222,7 @@ class FileVersionTable(FilePropertiesTable):
         assert all(index == enb.atable.get_canonical_path(index) for index in target_indices)
 
         _ = self.original_properties_table.get_df(target_indices=target_indices,
-                                                            target_columns=target_columns)
+                                                  target_columns=target_columns)
 
         return FilePropertiesTable.get_df(
             self,
@@ -246,7 +241,6 @@ class FileVersionTable(FilePropertiesTable):
             output_path=self.original_to_versioned_path(original_path=file_path),
             row=row)
         row[_column_name] = (time.time_ns() - time_before) / 1e9
-
 
     def column_version_name(self, file_path, row):
         """Automatically add the version name as a column
@@ -321,8 +315,7 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
                 else time.time() - time_before
             if versioning_time < 0:
                 if options.verbose:
-                    print(f"[W]arning: versioning_time = {versioning_time} < 0 for "
-                          f"{self.__class__.__name__} on {input_path}")
+                    print(f"[W]arning: versioning_time = {versioning_time} < 0 for {input_path}")
                 versioning_time = 0
             time_measurements.append(versioning_time)
             if repetition_index < options.repetitions - 1:
