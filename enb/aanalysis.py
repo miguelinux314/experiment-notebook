@@ -20,6 +20,7 @@ import alive_progress
 import pdf2image
 import numpy as np
 import scipy.stats
+import warnings
 
 import enb.atable
 from enb.atable import clean_column_name
@@ -1070,15 +1071,7 @@ class ScalarNumericSummary(AnalyzerSummary):
 
             # Compute the global dynamic range of all input samples (before grouping)
             finite_series = full_df[column_name].replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
-            if len(finite_series) > 1:
-                try:
-                    self.column_to_xmin_xmax[column_name] = scipy.stats.describe(finite_series.values).minmax
-                except FloatingPointError as ex:
-                    raise FloatingPointError(f"Invalid finite_series.values={finite_series.values}") from ex
-            elif len(finite_series) == 1:
-                self.column_to_xmin_xmax[column_name] = [finite_series.values[0], finite_series.values[0]]
-            else:
-                self.column_to_xmin_xmax[column_name] = [None, None]
+            self.column_to_xmin_xmax[column_name] = min(finite_series.values), max(finite_series.values)
 
         self.move_render_columns_back()
 
@@ -1142,12 +1135,19 @@ class ScalarNumericSummary(AnalyzerSummary):
                                 f"column {repr(column_name)} "
                                 f"found only infinite values. Several statistics will be nan for this case.")
 
-        description_df = finite_series.describe()
-        row[f"{column_name}_min"] = description_df["min"]
-        row[f"{column_name}_max"] = description_df["max"]
-        row[f"{column_name}_avg"] = description_df["mean"]
-        row[f"{column_name}_std"] = description_df["std"]
-        row[f"{column_name}_median"] = description_df["50%"]
+        if len(np.unique(finite_series.values)) > 1:
+            description_df = finite_series.describe()
+            row[f"{column_name}_min"] = description_df["min"]
+            row[f"{column_name}_max"] = description_df["max"]
+            row[f"{column_name}_avg"] = description_df["mean"]
+            row[f"{column_name}_std"] = description_df["std"]
+            row[f"{column_name}_median"] = description_df["50%"]
+        else:
+            row[f"{column_name}_min"] = finite_series.values[0]
+            row[f"{column_name}_max"] = finite_series.values[0]
+            row[f"{column_name}_avg"] = finite_series.values[0]
+            row[f"{column_name}_std"] = 0
+            row[f"{column_name}_median"] = finite_series.values[0]
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function that computes
@@ -1324,16 +1324,20 @@ class ScalarNumericSummary(AnalyzerSummary):
             enb.logger.debug("Finite and/or NaNs found in the input. "
                              f"Using {100 * (len(finite_only_series) / len(column_series))}% of the total.")
 
-        try:
-            description = scipy.stats.describe(finite_only_series)
-            quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
-        except FloatingPointError:
-            class Description:
-                minmax = [finite_only_series[0]] * 2
-                mean = finite_only_series[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error")
+            np.seterr(all="raise")
+            try:
+                description = scipy.stats.describe(finite_only_series)
+                quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
+            except (RuntimeWarning, FloatingPointError) as ex:
+                class Description:
+                    minmax = [finite_only_series[0]] * 2
+                    mean = finite_only_series[0]
 
-            description = Description()
-            quartiles = [finite_only_series[0]] * 3
+                description = Description()
+                quartiles = [finite_only_series[0]] * 3
+            np.seterr(all="warn")
 
         row[_column_name] = [
             enb.plotdata.ErrorLines(
@@ -1435,9 +1439,9 @@ class TwoNumericAnalyzer(Analyzer):
                     x_to_ylist = collections.defaultdict(list)
                     for x_value, y_value in zip(pd.x_values, pd.y_values):
                         x_to_ylist[x_value].append(y_value)
-                    
+
                     pd.x_values = sorted(x_to_ylist.keys())
-                    pd.y_values = [sum(x_to_ylist[x])/len(x_to_ylist[x])
+                    pd.y_values = [sum(x_to_ylist[x]) / len(x_to_ylist[x])
                                    for x in pd.x_values]
 
         # Update global x and y labels
@@ -1545,7 +1549,7 @@ class TwoNumericSummary(ScalarNumericSummary):
                 try:
                     self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
                 except FloatingPointError as ex:
-                    if len(full_df) == 1:
+                    if len(full_df) == 1 or len(full_df[column_name].unique()) == 1:
                         self.column_to_xmin_xmax[column_name] = (full_df[column_name][0], full_df[column_name][0])
                     else:
                         enb.logger.error(f"column_name={column_name}")
@@ -1974,6 +1978,7 @@ class DictNumericSummary(AnalyzerSummary):
                 else:
                     x_values.append(x)
                     key_values.append(k)
+                np.seterr(all="raise")
                 try:
                     description = scipy.stats.describe(values)
                     min_values.append(description.minmax[0])
@@ -1981,12 +1986,13 @@ class DictNumericSummary(AnalyzerSummary):
                     avg_values.append(description.mean)
                     std_values.append(math.sqrt(description.variance))
                     median_values.append(values.median())
-                except:
+                except FloatingPointError:
                     min_values.append(values.min())
                     max_values.append(values.min())
                     avg_values.append(values.mean())
                     std_values.append(values.std())
                     median_values.append(values.median())
+                np.seterr(all="warn")
 
         for label, data_list in [("min", min_values),
                                  ("max", max_values),
