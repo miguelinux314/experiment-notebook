@@ -1669,7 +1669,4 @@ def get_canonical_path(file_path):
     :return: the canonical version of a path to be stored in the database, to make sure
       indexing is consistent across code using |ATable| and its subclasses.
     """
-    if file_path[0] == os.sep:
-        return os.path.relpath(file_path, options.project_root)
-    else:
-        return file_path
+    return os.path.relpath(file_path, options.project_root)
