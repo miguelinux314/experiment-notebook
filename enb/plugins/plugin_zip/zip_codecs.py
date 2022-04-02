@@ -37,7 +37,7 @@ class LZ77Huffman(AbstractZipCodec):
 
     @property
     def label(self):
-        return f"LZ77Huff lvl {self.param_dict['compression_level']}"
+        return f"LZ77 Huffman level {self.param_dict['compression_level']}"
 
 
 class LZMA(AbstractZipCodec):
@@ -54,7 +54,7 @@ class LZMA(AbstractZipCodec):
 
     @property
     def label(self):
-        return f"LZMA lvl {self.param_dict['compression_level']}"
+        return f"LZMA level {self.param_dict['compression_level']}"
 
 
 class BZIP2(AbstractZipCodec):
@@ -71,4 +71,4 @@ class BZIP2(AbstractZipCodec):
 
     @property
     def label(self):
-        return f"BZIP2 {self.param_dict['compression_level']}"
+        return f"BZIP2 level {self.param_dict['compression_level']}"
