@@ -859,7 +859,7 @@ class CompressionExperiment(experiment.Experiment):
     def set_comparison_results(self, index, row):
         """Perform a compression-decompression cycle and store the comparison results
         """
-        file_path, codec_name = index
+        file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         assert self.codec_results.compression_results.compressed_path == self.codec_results.decompression_results.compressed_path
         try:
@@ -885,6 +885,8 @@ class CompressionExperiment(experiment.Experiment):
 
     @atable.column_function("bpppc", label="Compressed data rate (bpppc)", plot_min=0)
     def set_bpppc(self, index, row):
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         try:
             row[_column_name] = 8 * row["compressed_size_bytes"] / row.image_info_row["samples"]
         except KeyError as ex:
@@ -896,6 +898,8 @@ class CompressionExperiment(experiment.Experiment):
         """Set the compression ratio calculated based on the dynamic range of the
         input samples, as opposed to 8*bytes_per_sample.
         """
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         row[_column_name] = (row.image_info_row["dynamic_range_bits"] * row.image_info_row["samples"]) \
                             / (8 * row["compressed_size_bytes"])
 
@@ -905,6 +909,8 @@ class CompressionExperiment(experiment.Experiment):
          atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
                                  label="Compression efficiency (2B entropy)", plot_min=0)])
     def set_efficiency(self, index, row):
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         compression_efficiency_1byte_entropy = \
             row.image_info_row["entropy_1B_bps"] * row.image_info_row["size_bytes"] \
             / (row["compressed_size_bytes"] * 8)
@@ -955,8 +961,8 @@ class LossyCompressionExperiment(CompressionExperiment):
     def set_PSNR_nominal(self, index, row):
         """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
         """
-        path, task = self.index_to_path_task(index)
-
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         if row.image_info_row["float"]:
             # TODO: use the float type dynamic range?
             row[_column_name] = float("inf")
@@ -969,6 +975,8 @@ class LossyCompressionExperiment(CompressionExperiment):
     def set_PSNR_dynamic_range(self, index, row):
         """Set the PSNR assuming dynamic range given by dynamic_range_bits.
         """
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
         row[_column_name] = 20 * math.log10(max_error / math.sqrt(row["mse"])) \
             if row["mse"] > 0 else float("inf")
@@ -987,8 +995,8 @@ class StructuralSimilarity(CompressionExperiment):
         atable.ColumnProperties(name="ssim", label="SSIM", plot_max=1),
         atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_max=1)])
     def set_StructuralSimilarity(self, index, row):
-
-        # TODO: Would it be possible to call to isets.load_array_bsq and change axes as necessary?
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         original_array = np.fromfile(self.codec_results.compression_results.original_path,
                                      dtype=self.codec_results.numpy_dtype)
         original_array = np.reshape(original_array,
