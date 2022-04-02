@@ -32,6 +32,7 @@ format. Given a code initially developed for one `enb` version and then executed
     - Fixed Kakadu plugin Sdims axis swap bug.
     - Fixed `file_or_path` argument in `dump_bsq_array` so that it accepts open files as described in the API.
     - Fixed some cosmetic problems in the `enb.aanalysis` module.
+    - Increased stability and reduced noise when obtaining statistics for constant or size 1 arrays in enb.aanalysis
 
 # Latest stable version
 
