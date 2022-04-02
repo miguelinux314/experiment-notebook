@@ -953,7 +953,8 @@ class ATable(metaclass=MetaTable):
             right_index=True,
             copy=False)
 
-        assert len(target_df) <= len(target_locs)
+        assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
+                                                   f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
 
         # This is the case where input samples were previously processed,
         # but new columns were defined/requested.
