@@ -592,7 +592,7 @@ class CompressionExperiment(experiment.Experiment):
                         enb.logger.info(
                             f"Executing compression {self.codec.name} on {self.file_path} "
                             f"[rep{repetition_index + 1}/{options.repetitions}]")
-                        time_before = time.time()
+                        time_before_ns = time.time_ns()
                         self._compression_results = self.codec.compress(original_path=self.file_path,
                                                                         compressed_path=tmp_compressed_path,
                                                                         original_file_info=self.image_info_row)
@@ -604,7 +604,7 @@ class CompressionExperiment(experiment.Experiment):
                                 file_info=self.image_info_row,
                                 output=f"Compression didn't produce a file (or it was empty) {self.file_path}")
 
-                        wall_compression_time = time.time() - time_before
+                        wall_compression_time = (time.time_ns() - time_before_ns) / 1e9
                         if self._compression_results is None:
                             enb.logger.info(f"[W]arning: codec {self.codec.name} did not report execution times. "
                                             f"Using wall clock instead (might be inaccurate)")
@@ -650,13 +650,13 @@ class CompressionExperiment(experiment.Experiment):
                             enb.logger.info(f"Executing decompression {self.codec.name} on {self.file_path} "
                                             f"[rep{repetition_index + 1}/{options.repetitions}]")
 
-                            time_before = time.time()
+                            time_before = time.time_ns()
                             self._decompression_results = self.codec.decompress(
                                 compressed_path=self.compression_results.compressed_path,
                                 reconstructed_path=tmp_reconstructed_path,
                                 original_file_info=self.image_info_row)
 
-                            wall_decompression_time = time.time() - time_before
+                            wall_decompression_time = (time.time_ns() - time_before) / 1e9
                             if self._decompression_results is None:
                                 enb.logger.info(
                                     f"Codec {self.codec.name} did not report execution times. "

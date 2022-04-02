@@ -240,12 +240,12 @@ class FileVersionTable(FilePropertiesTable):
 
     @atable.column_function("version_time", label="Versioning time (s)")
     def set_version_time(self, file_path, row):
-        time_before = time.time()
+        time_before = time.time_ns()
         self.version(
             input_path=file_path,
             output_path=self.original_to_versioned_path(original_path=file_path),
             row=row)
-        row[_column_name] = time.time() - time_before
+        row[_column_name] = (time.time_ns() - time_before) / 1e9
 
 
     def column_version_name(self, file_path, row):
