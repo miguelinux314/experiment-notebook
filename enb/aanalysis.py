@@ -1990,7 +1990,7 @@ class DictNumericSummary(AnalyzerSummary):
                     min_values.append(values.min())
                     max_values.append(values.min())
                     avg_values.append(values.mean())
-                    std_values.append(values.std())
+                    std_values.append(values.std() if len(np.unique(values)) > 1 else 0)
                     median_values.append(values.median())
                 np.seterr(all="warn")
 
