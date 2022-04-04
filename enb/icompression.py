@@ -374,6 +374,68 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
+class LittleEndianWrapper(WrapperCodec):
+    """Wrapper with identical semantics as WrapperCodec, but performs a big endian to little endian 
+    conversion for (big-endian) 2-byte and 4-byte samples. If the input is flagged as little endian,
+    e.g., if -u16le- is in the original file name, then no transformation is performed.
+    
+    Codecs inheriting from this class automatically receive little-endian samples,
+    and are expected to reconstruct little-endian files (which are then translated back
+    to big endian if and only if the original image was flagged as big endian.
+    """
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        if original_file_info["big_endian"] and original_file_info["bytes_per_sample"] > 1:
+            with tempfile.NamedTemporaryFile(
+                    dir=options.base_tmp_dir,
+                    suffix=f"-u{8 * original_file_info['bytes_per_sample']}le-{original_file_info['component_count']}"
+                           f"x{original_file_info['height']}"
+                           f"x{original_file_info['width']}.raw") as reversed_endian_file:
+                be_img = enb.isets.load_array_bsq(file_or_path=original_path,
+                                                  image_properties_row=original_file_info)
+                reversed_file_info = dict(original_file_info)
+                reversed_file_info["big_endian"] = False
+                sign_str = "i" if original_file_info["signed"] else "u"
+                enb.isets.dump_array_bsq(array=be_img.astype(f"<{sign_str}{original_file_info['bytes_per_sample']}"),
+                                         file_or_path=reversed_endian_file.name)
+                compression_results = super().compress(
+                    original_path=reversed_endian_file.name,
+                    compressed_path=compressed_path,
+                    original_file_info=reversed_file_info)
+                compression_results.original_path = original_path
+                return compression_results
+
+        else:
+            return super().compress(
+                original_path=original_path,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info)
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        if original_file_info["big_endian"] and original_file_info["bytes_per_sample"] > 1:
+            with tempfile.NamedTemporaryFile(
+                    dir=options.base_tmp_dir,
+                    suffix=f"-u{8 * original_file_info['bytes_per_sample']}le-{original_file_info['component_count']}"
+                           f"x{original_file_info['height']}"
+                           f"x{original_file_info['width']}.raw") as reversed_endian_file:
+                reversed_file_info = dict(original_file_info)
+                reversed_file_info["big_endian"] = False
+                decompression_results = super().decompress(compressed_path=compressed_path,
+                                                           reconstructed_path=reversed_endian_file.name,
+                                                           original_file_info=reversed_file_info)
+                le_img = enb.isets.load_array_bsq(file_or_path=reversed_endian_file.name,
+                                                  image_properties_row=reversed_file_info)
+                sign_str = "i" if original_file_info["signed"] else "u"
+                enb.isets.dump_array_bsq(array=le_img.astype(f">{sign_str}{original_file_info['bytes_per_sample']}"),
+                                         file_or_path=reconstructed_path)
+                decompression_results.reconstructed_path = reconstructed_path
+                return decompression_results
+        else:
+            return super().decompress(compressed_path=compressed_path,
+                                      reconstructed_path=reconstructed_path,
+                                      original_file_info=original_file_info)
+
+
 class FITSWrapperCodec(WrapperCodec):
     """Raw images are coded into FITS before compression with the wrapper,
     and FITS is decoded to raw after decompression.
@@ -622,7 +684,7 @@ class CompressionExperiment(experiment.Experiment):
                             enb.logger.info(f"Storing compressed bitstream for {self.file_path} and {self.codec} "
                                             f"at {repr(output_path)}")
                             shutil.copyfile(tmp_compressed_path, output_path)
-                        
+
                         if repetition_index < options.repetitions - 1:
                             os.remove(tmp_compressed_path)
 
@@ -685,7 +747,7 @@ class CompressionExperiment(experiment.Experiment):
                                 enb.logger.info(f"Storing reconstructed copy of {self.file_path} with {self.codec} "
                                                 f"at {repr(output_path)}")
                                 shutil.copyfile(tmp_reconstructed_path, output_path)
-                            
+
                             if repetition_index < options.repetitions - 1:
                                 os.remove(tmp_reconstructed_path)
                     self._decompression_results.decompression_time_seconds = sum(measured_times) / len(measured_times)
