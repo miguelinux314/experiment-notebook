@@ -68,7 +68,6 @@ include enb/plugins/plugin_hdf5/__plugin__.py
 include enb/plugins/plugin_hevc/hevc_codec.py
 include enb/plugins/plugin_hevc/hevc_lossless_400.cfg
 include enb/plugins/plugin_hevc/hevc_lossy_400.cfg
-include enb/plugins/plugin_hevc/hevc_lossy_400_ver2.cfg
 include enb/plugins/plugin_hevc/Makefile.darwin
 include enb/plugins/plugin_hevc/Makefile.linux
 include enb/plugins/plugin_hevc/__plugin__.py

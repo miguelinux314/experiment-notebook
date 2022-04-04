@@ -11,7 +11,7 @@ import math
 from enb import icompression
 
 
-class HEVC(icompression.WrapperCodec):
+class HEVC(icompression.LittleEndianWrapper):
     default_qp = 0
 
     """
