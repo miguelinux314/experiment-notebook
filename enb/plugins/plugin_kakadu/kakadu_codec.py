@@ -2,7 +2,7 @@
 """
 Wrappers for the Kakadu codec.
 For instructions on downloading and installing visit:
-https://github.com/miguelinux314/experiment-notebook/blob/master/enb/pluginsplugin_kakadu/README.md
+https://github.com/miguelinux314/experiment-notebook/blob/master/enb/plugins/plugin_kakadu/README.md
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
@@ -16,6 +16,9 @@ from enb import isets
 
 
 class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
+    """Kakadu JPEG 2000 wrapper that applies the 5/3 IWT or the 9/7 DWT (spatially) when lossless is True or False, 
+    respectively. No spectral decorrelation is applied, unless the apply_ycc flag is selected.
+    """
     # When searching for exact PSNR values, this error is tolerated
     psnr_tolerance = 1e-3
     max_search_iterations = 32
@@ -68,13 +71,13 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
         assert num_threads >= 0, f"Invalid number of threads {num_threads}"
 
         param_dict = dict(
-                ht=ht,
-                spatial_dwt_levels=spatial_dwt_levels,
-                lossless=lossless,
-                bit_rate=bit_rate,
-                quality_factor=quality_factor,
-                psnr=psnr,
-                num_threads=num_threads)
+            ht=ht,
+            spatial_dwt_levels=spatial_dwt_levels,
+            lossless=lossless,
+            bit_rate=bit_rate,
+            quality_factor=quality_factor,
+            psnr=psnr,
+            num_threads=num_threads)
         if apply_ycc:
             param_dict["apply_ycc"] = True
         icompression.WrapperCodec.__init__(
@@ -174,7 +177,28 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                f"{'lossless' if self.param_dict['lossless'] else 'lossy'}{rate_str}{psnr_str}{ycc_str}"
 
 
+class Kakadu2DHaar(Kakadu2D, icompression.LosslessCodec):
+    """Kakadu JPEG 2000 wrapper that applies the reversible or irreversible Haar transform when lossless is True or False, 
+    respectively. No spectral decorrelation is applied, unless the apply_ycc flag is selected.
+    """
+    def get_compression_params(self, original_path, compressed_path, original_file_info):
+        original_params = Kakadu2D.get_compression_params(
+            self=self,
+            original_path=original_path,
+            compressed_path=compressed_path, 
+            original_file_info=original_file_info)
+        return f"{original_params} " \
+               f"Catk=3 Kkernels:I3={'R' if self.param_dict['lossless'] else 'I'}2X2"
+    @property
+    def label(self):
+        return f"Haar {super().label}"
+
+
 class KakaduMCT(Kakadu2D):
+    """Kakadu JPEG 2000 wrapper that applies the 5/3 IWT or the 9/7 DWT (both spatially and spectrally)
+    when lossless is True or False, respectively.
+    """
+
     def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None,
                  bit_rate=None, quality_factor=None, psnr=None):
         """
