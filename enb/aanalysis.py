@@ -1626,7 +1626,7 @@ class TwoNumericSummary(ScalarNumericSummary):
             row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
             row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
         else:
-            enb.logger.warn("Cannot set correlation metrics for dataframes of length 1")
+            enb.logger.info(f"{self.__class__.__name__}: Cannot set correlation metrics for dataframes of length 1")
             row[f"{x_column_name}_{y_column_name}_pearson_correlation"] = float("inf")
             row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = float("inf")
             row[f"{x_column_name}_{y_column_name}_spearman_correlation"] = float("inf")
