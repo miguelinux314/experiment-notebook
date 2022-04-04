@@ -16,7 +16,7 @@ import numpy as np
 from enb import icompression
 
 
-class VVC(icompression.WrapperCodec):
+class VVC(icompression.LittleEndianWrapper):
     """
     Base class for VVC coder.
     """
