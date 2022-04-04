@@ -95,15 +95,21 @@ def get_all_subclasses(*base_classes):
 
     :param base_classes: the list of classes for which subclasses are to be found
     """
-    base_class_set = set(base_classes)
-    subclasses = set(base_classes)
-    previous_length = None
-    while previous_length != len(subclasses):
-        previous_length = len(subclasses)
-        new_codec_classes = set(c for cls in subclasses for c in cls.__subclasses__())
-        subclasses.update(new_codec_classes)
 
-    return set(cls for cls in subclasses if cls not in base_class_set)
+    def get_subclasses_recursive(cls):
+        direct_subclasses = set(cls.__subclasses__())
+        recursive_subclasses = set()
+        for subclass in direct_subclasses:
+            recursive_subclasses = recursive_subclasses.union(get_subclasses_recursive(subclass))
+        return direct_subclasses.union(recursive_subclasses)
+
+    base_classes = set(base_classes)
+    all_subclasses = set()
+
+    for c in base_classes:
+        all_subclasses = all_subclasses.union(get_subclasses_recursive(c))
+
+    return set(cls for cls in all_subclasses if cls not in base_classes)
 
 
 class Singleton(type):
@@ -191,6 +197,7 @@ def get_node_ip():
     s.close()
     return address
 
+
 def capture_usr1():
     """Capture the reception of a USR1 signal into pdb.
     
@@ -199,10 +206,10 @@ def capture_usr1():
 
     def handle_pdb(sig, frame):
         import pdb
-        print("\n"*2)
+        print("\n" * 2)
         print("Captured USR1 signal! Activating pdb...")
         print("\n" * 2)
         pdb.Pdb().set_trace(frame)
-    
+
     import signal
     signal.signal(signal.SIGUSR1, handle_pdb)
