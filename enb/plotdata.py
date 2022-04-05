@@ -11,6 +11,7 @@ import glob
 import matplotlib
 import matplotlib.patheffects
 import matplotlib.patches
+import natsort
 
 import enb.atable
 
@@ -766,19 +767,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         y_max = column_properties.hist_max if y_max is None else y_max
 
         if group_name_order is None:
-            def normalize_group_label(group_name):
-                if isinstance(group_name, str):
-                    parts = group_name.strip().lower().split()
-                    for i in range(len(parts)):
-                        try:
-                            parts[i] = int(parts[i])
-                        except ValueError:
-                            pass
-                    return parts
-                else:
-                    return group_name
-
-            sorted_group_names = sorted(pds_by_group_name.keys(), key=normalize_group_label)
+            sorted_group_names = natsort.natsorted(pds_by_group_name.keys(), alg=natsort.IGNORECASE)
             if str(sorted_group_names[0]).lower() == "all":
                 sorted_group_names = sorted_group_names[1:] + [str(n) for n in sorted_group_names[:1]]
         else:
