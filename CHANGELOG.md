@@ -16,6 +16,10 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.3.6
 
+Important: a new dependency was added in this version; you will need to install `enb` again if you had installed
+with `pip install -e path_to_repo` and have only updated `path_to_repo` to the latest version. 
+This is done automatically if installed from pip.
+
 * New features
 
     - Added support for plotting histograms of 2d data using colormaps.
@@ -32,7 +36,8 @@ format. Given a code initially developed for one `enb` version and then executed
     - Fixed Kakadu plugin Sdims axis swap bug.
     - Fixed `file_or_path` argument in `dump_bsq_array` so that it accepts open files as described in the API.
     - Fixed some cosmetic problems in the `enb.aanalysis` module.
-    - Increased stability and reduced noise when obtaining statistics for constant or size 1 arrays in enb.aanalysis
+    - Increased stability and reduced noise when obtaining statistics for constant or size 1 arrays in enb.aanalysis-
+    - Improved the default group name sorting to better understand numeric values.
 
 # Latest stable version
 
