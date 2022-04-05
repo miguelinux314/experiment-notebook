@@ -292,7 +292,7 @@ class ErrorLines(PlottableData2D):
 
 
 class Rectangle(PlottableData2D):
-    """Render a rectangle in a given position.
+    """Render a rectangle (line only) in a given position.
     """
     alpha = 0.5
 
