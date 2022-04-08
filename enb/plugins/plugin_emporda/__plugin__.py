@@ -3,7 +3,7 @@ import enb.plugins
 
 class EmpordaPlugin(enb.plugins.plugin.PluginJava):
     name = "emporda"
-    label = "Wraper for the emporda codec"
+    label = "Wrapper for the emporda codec"
     tags = {"data compression", "codec"}
     contrib_authors = ["Group on Interactive Coding of Images (GICI)"]
     contrib_reference_urls = ["http://gici.uab.cat/GiciWebPage/downloads.php#emporda"]
