@@ -9,9 +9,9 @@ import enb.icompression
 import shutil
 
 
-class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
-    """Wrapper for the LZ4 codec
-    All data types integer and float 16, 32, 64 can be compressed 
+class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,
+              enb.icompression.JavaWrapperCodec, enb.icompression.GiciLibHelper):
+    """Wrapper for the emporda codec.
     """
 
     def __init__(self,
@@ -40,44 +40,23 @@ class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec
         :param up: Indicates the number of symbols coded before updating the context probability in the Entropy Coder.
             Must be of the form 2^X.
         """
-        assert shutil.which("java") is not None, f"The 'java' program was not found in the path, but is required by {self.__class__.__name__}. " \
-                                                 f"Please (re)install a JRE in the path and try again."
-        super().__init__(compressor_path=shutil.which("java"),
-                         decompressor_path=shutil.which("java"),
+        assert shutil.which("java") is not None, \
+            f"The 'java' program was not found in the path, but is required by {self.__class__.__name__}. " \
+            f"Please (re)install a JRE in the path and try again."
+        super().__init__(compressor_jar=compressor_jar,
+                         decompressor_jar=decompressor_jar,
                          param_dict=dict(qs=qs, ec=ec, cm=cm, pm=pm, wp=wp, up=up))
-        self.compressor_jar = compressor_jar
-        self.decompressor_jar = decompressor_jar
-
 
     @property
     def label(self):
         return "Emporda"
 
-    def file_info_to_data_str(self, original_file_info):
-        if original_file_info["bytes_per_sample"] == 1:
-            # data_type_str = "1"
-            raise ValueError("Only 16-bit samples are currently supported.")
-        elif original_file_info["bytes_per_sample"] == 2:
-            if original_file_info["signed"]:
-                data_type_str = "3"
-            else:
-                data_type_str = "2"
-        elif original_file_info["bytes_per_sample"] == 4:
-            raise ValueError("Only 16-bit samples are currently supported.")
-        else:
-            raise ValueError(f"Invalid data type, not supported by {self.__class__.__name__}: {original_file_info}")
-        return data_type_str
-
-    def file_info_to_endianness_str(self, original_file_info):
-        return "0" if original_file_info["big_endian"] else "1"
-
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        data_type_str = self.file_info_to_data_str(original_file_info=original_file_info)
-        endianness_str = self.file_info_to_endianness_str(original_file_info=original_file_info)
+        assert original_file_info["bytes_per_sample"] == 2, \
+            f"Only 16-bit samples are currently supported by {self.__class__.__name__}"
 
         return f"-Xmx256g -jar {self.compressor_jar} -c -i {original_path} -o {compressed_path} " \
-               f"-ig {original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
-               f"{data_type_str} {endianness_str} 0 " \
+               f"-ig {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
                f"-qs {self.param_dict['qs']} " \
                f"-ec {self.param_dict['ec']} " \
                f"-cm {self.param_dict['cm']} " \
@@ -86,12 +65,8 @@ class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec
                f"-up {self.param_dict['up']}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        data_type_str = self.file_info_to_data_str(original_file_info=original_file_info)
-        endianness_str = self.file_info_to_endianness_str(original_file_info=original_file_info)
-
         return f"-Xmx256g -jar {self.decompressor_jar} -d -i {compressed_path} -o {reconstructed_path} " \
-               f"-ig {original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
-               f"{data_type_str} {endianness_str} 0 " \
+               f"-ig {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
                f"-qs {self.param_dict['qs']} " \
                f"-ec {self.param_dict['ec']} " \
                f"-cm {self.param_dict['cm']} " \
