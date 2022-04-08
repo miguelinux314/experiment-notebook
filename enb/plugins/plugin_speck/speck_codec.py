@@ -45,11 +45,15 @@ class SPECK(enb.icompression.LosslessCodec,
         return "SPECK"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        assert original_file_info["component_count"] == 1, f"Only images with 1 component are currently supported."
+        
         return f"-Xmx256g -jar {self.compressor_jar} -i {original_path} -f {compressed_path} " \
                f"-g {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
                f"-w {self.param_dict['wavelet_type']} -wl {self.param_dict['wavelet_levels']}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        assert original_file_info["component_count"] == 1, f"Only images with 1 component are currently supported."
+        
         return f"-Xmx256g -jar {self.decompressor_jar} " \
                f"-f {compressed_path} -o {reconstructed_path} " \
                f"-g {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
