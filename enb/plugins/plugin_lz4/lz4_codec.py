@@ -14,12 +14,12 @@ class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
     """
 
     def __init__(self, lz4_binary=os.path.join(os.path.dirname(__file__), "lz4"), compression_level=9):
+        """
+        :param compression_level: 1-9, being 9 the maximum data reduction
+        """
         super().__init__(compressor_path=lz4_binary,
                          decompressor_path=lz4_binary,
                          param_dict=dict(compression_level=compression_level))
-        """
-        :param compression_level: 1-9, being 9 the maximum data reduction       
-        """
 
     @property
     def label(self):
