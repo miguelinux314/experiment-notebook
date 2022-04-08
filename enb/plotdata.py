@@ -27,8 +27,8 @@ import enb
 from enb.config import options
 from enb.misc import CircularList
 
-marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "2", "H", "X", "1", "d", "<", ">", "+"])
-color_cycle = CircularList([f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(5, 6))])
+marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "d", "H", "d", "<", ">", "+"])
+color_cycle = CircularList([f"C{i}" for i in [0, 1, 2, 3, 6, 7, 9, 8, 5, 10]])
 pattern_cycle = CircularList(["//", "\\\\", "OO", "**"])
 
 
