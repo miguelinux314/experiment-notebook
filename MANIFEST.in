@@ -35,6 +35,9 @@ include enb/plugins/plugin_ccsds124/ccsds124_codecs.py
 include enb/plugins/plugin_ccsds124/.gitignore
 include enb/plugins/plugin_ccsds124/__plugin__.py
 include enb/plugins/plugin_ccsds124/README.md
+include enb/plugins/plugin_emporda/emporda_codec.py
+include enb/plugins/plugin_emporda/emporda.jar
+include enb/plugins/plugin_emporda/__plugin__.py
 include enb/plugins/plugin_fapec/fapec_codec.py
 include enb/plugins/plugin_fapec/.gitignore
 include enb/plugins/plugin_fapec/__plugin__.py
@@ -122,6 +125,10 @@ include enb/plugins/plugin_spdp/__plugin__.py
 include enb/plugins/plugin_spdp/README.txt
 include enb/plugins/plugin_spdp/SPDP_11.c
 include enb/plugins/plugin_spdp/spdp_codec.py
+include enb/plugins/plugin_speck/__plugin__.py
+include enb/plugins/plugin_speck/SpeckCode.jar
+include enb/plugins/plugin_speck/SpeckDecode.jar
+include enb/plugins/plugin_speck/speck_spiht_codec.py
 include enb/plugins/plugin_v2f/__plugin__.py
 include enb/plugins/plugin_v2f/v2f_codecs.py
 include enb/plugins/plugin_vvc/Makefile.darwin
@@ -148,8 +155,6 @@ include enb/plugins/template_analysis_gallery_example/generate_gallery.py.enbt
 include enb/plugins/template_analysis_gallery_example/input_csv/2d_data_example.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/hevc_frame_prediction.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/iris_dataset.csv
-include enb/plugins/template_analysis_gallery_example/input_csv/lossy_persistence_example/CCSDS123LossyCompressionExperiment_persistence.csv
-include enb/plugins/template_analysis_gallery_example/input_csv/lossy_persistence_example/ImagePropertiesTable_persistence.csv
 include enb/plugins/template_analysis_gallery_example/__plugin__.py
 include enb/plugins/template_basic_workflow_example/basic_workflow.py
 include enb/plugins/template_basic_workflow_example/data/wiki/a_turing.txt
