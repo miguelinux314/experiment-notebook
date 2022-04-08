@@ -374,6 +374,59 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
+class JavaWrapperCodec(WrapperCodec):
+    """Wrapper for *.jar codecs. The compression and decompression parameters are those that need to be
+    passed to the 'java' command.
+
+    The `compressor_jar` and `decompressor_jar` attributes are added upon initialization
+    based on the params to __init__.
+    """
+
+    def __init__(self, compressor_jar, decompressor_jar, param_dict=None):
+        assert shutil.which("java") is not None, \
+            f"The 'java' program was not found in the path, but is required by {self.__class__.__name__}. " \
+            f"Please (re)install a JRE in the path and try again."
+        super().__init__(compressor_path=shutil.which("java"),
+                         decompressor_path=shutil.which("java"),
+                         param_dict=param_dict)
+        self.compressor_jar = compressor_jar
+        self.decompressor_jar = decompressor_jar
+
+
+class GiciLibHelper:
+    """Definition of helper methods that can be used with software based on the GiciLibs
+    (see gici.uab.cat/GiciWebPage/downloads.php).
+    """
+
+    def file_info_to_data_str(self, original_file_info):
+        if original_file_info["bytes_per_sample"] == 1:
+            data_type_str = "1"
+        elif original_file_info["bytes_per_sample"] == 2:
+            if original_file_info["signed"]:
+                data_type_str = "3"
+            else:
+                data_type_str = "2"
+        elif original_file_info["bytes_per_sample"] == 4:
+            if original_file_info["signed"]:
+                return "4"
+            else:
+                raise ValueError("32-bit samples are supported, by they must be signed.")
+        else:
+            raise ValueError(f"Invalid data type, not supported by {self.__class__.__name__}: {original_file_info}")
+        return data_type_str
+
+    def file_info_to_endianness_str(self, original_file_info):
+        return "0" if original_file_info["big_endian"] else "1"
+
+    def get_gici_geometry_str(self, original_file_info):
+        """Get a string to be passed to the -ig or -og parameters.
+        The '-ig' or '-og' part is not included in the returned string.
+        """
+        return f"{original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
+               f"{self.file_info_to_data_str(original_file_info=original_file_info)} " \
+               f"{self.file_info_to_endianness_str(original_file_info=original_file_info)} 0 "
+
+
 class LittleEndianWrapper(WrapperCodec):
     """Wrapper with identical semantics as WrapperCodec, but performs a big endian to little endian 
     conversion for (big-endian) 2-byte and 4-byte samples. If the input is flagged as little endian,
@@ -664,7 +717,7 @@ class CompressionExperiment(experiment.Experiment):
                             raise CompressionException(
                                 original_path=self.file_path, compressed_path=tmp_compressed_path,
                                 file_info=self.image_info_row,
-                                output=f"Compression didn't produce a file (or it was empty) {self.file_path}")
+                                output=f"Compression of {self.file_path} didn't produce a file (or it was empty)")
 
                         wall_compression_time = (time.time_ns() - time_before_ns) / 1e9
                         if self._compression_results is None:
@@ -702,7 +755,8 @@ class CompressionExperiment(experiment.Experiment):
             if self._decompression_results is None:
                 _, tmp_reconstructed_path = tempfile.mkstemp(
                     prefix=f"reconstructed_{os.path.basename(self.file_path)}",
-                    dir=options.base_tmp_dir)
+                    dir=options.base_tmp_dir,
+                    suffix=".raw")
                 try:
                     measured_times = []
                     with enb.logger.info_context(
