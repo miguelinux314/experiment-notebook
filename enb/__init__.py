@@ -32,7 +32,8 @@ if not _os.path.isdir(user_config_dir):
 
 # Absolute, real path to the calling script's dir. Configuration files present here will overwrite
 # those in `user_config_dir`.
-calling_script_dir = _os.path.realpath(_os.path.dirname(_os.path.abspath(_sys.argv[0])))
+calling_script_dir = _os.path.realpath(_os.path.dirname(_os.path.abspath(_sys.argv[0]))) \
+    if _sys.argv[0] else _os.getcwd()
 
 # Data dir
 default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
