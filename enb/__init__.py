@@ -90,7 +90,8 @@ if not parallel_ray.is_parallel_process():
         if not parallel_ray.is_ray_enabled() and _platform.system().lower() == "linux" and not config.options.no_ray:
             print(_textwrap.indent(
                 f"Ray not found. Executing with fallback parallelization engine.\n"
-                f"Note that you can install ray for faster execution and cluster support, e.g., with:\n\n\tpip install ray[default]\n\n"
+                f"Note that you can install ray for faster execution and cluster support,"
+                f" e.g., with:\n\n\tpip install ray[default]\n\n"
                 f"You can disable this warning by passing --no_ray in the command line.\n\n",
                 prefix=" " * (_shutil.get_terminal_size().columns // 10)))
         elif parallel_ray.is_ray_enabled():
