@@ -791,7 +791,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 if show_legend:
                     if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
                         try:
-                            pds_by_group_name[g][0].label = g
+                            pds_by_group_name[g][0].label = \
+                                y_labels_by_group_name[g] if y_labels_by_group_name and g in y_labels_by_group_name else g
                         except IndexError:
                             # Ignore empty groups
                             continue
@@ -800,6 +801,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         y_labels_by_group_name = {g: g for g in sorted_group_names} \
             if y_labels_by_group_name is None else y_labels_by_group_name
+        
         if color_by_group_name is None:
             color_by_group_name = {}
             for i, group_name in enumerate(sorted_group_names):
