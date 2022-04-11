@@ -363,7 +363,7 @@ class Analyzer(enb.atable.ATable):
                 column_kwargs["column_properties"] = enb.atable.ColumnProperties(name=column_selection)
 
         # Generate some labels
-        if "y_labels_by_group_name" not in column_kwargs:
+        if "y_labels_by_group_name" not in column_kwargs or column_kwargs["y_labels_by_group_name"] is None:
             column_kwargs["y_labels_by_group_name"] = {
                 group: f"{group} ({count})" if show_count else f"{group}"
                 for group, count in summary_df[["group_label", "group_size"]].values}
@@ -2175,7 +2175,6 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 y_column_label = enb.atable.clean_column_name(y_column_name)
 
             if not column_kwargs["combine_groups"] and len(column_kwargs["pds_by_group_name"]) > 1:
-                y_labels_by_group_name = dict()
                 for group_name, pds in column_kwargs["pds_by_group_name"].items():
                     for pd in (p for p in pds if isinstance(p, enb.plotdata.Histogram2D)):
                         pd.colormap_label = f"{pd.colormap_label}" \
@@ -2184,9 +2183,11 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                                             + (f"\n" if pd.colormap_label else "") + \
                                             f"{column_kwargs['y_labels_by_group_name'][group_name]}"
 
-            column_kwargs["y_labels_by_group_name"] = {
-                group_name: y_column_label
-                for group_name in column_kwargs["pds_by_group_name"].keys()}
+            if "y_labels_by_group_name" not in column_kwargs \
+                    or column_kwargs["y_labels_by_group_name"] is None:
+                column_kwargs["y_labels_by_group_name"] = {
+                    group_name: y_column_label
+                    for group_name in column_kwargs["pds_by_group_name"].keys()}
 
         return column_kwargs
 
