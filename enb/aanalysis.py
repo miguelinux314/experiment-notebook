@@ -21,6 +21,7 @@ import pdf2image
 import numpy as np
 import scipy.stats
 import warnings
+import re
 
 import enb.atable
 from enb.atable import clean_column_name
@@ -186,33 +187,13 @@ class Analyzer(enb.atable.ATable):
                 selected_render_modes=selected_render_modes,
                 **render_kwargs)
 
-            if options.analysis_dir:
-                try:
-                    render_mode_str = "__".join(selected_render_modes)
-                except TypeError:
-                    render_mode_str = str(render_mode_str).replace(os.sep, "__")
-                analysis_output_path = self.get_output_pdf_path(column_selection=target_columns,
-                                                                group_by=group_by,
-                                                                reference_group=reference_group,
-                                                                output_plot_dir=options.analysis_dir,
-                                                                render_mode=render_mode_str)[:-4] + ".csv"
-                enb.logger.info(f"Saving analysis results to {analysis_output_path}")
-                os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
-                summary_df[list(c for c in summary_df.columns
-                                if c not in summary_table.render_column_names
-                                and c not in ["row_created", "row_updated",
-                                              enb.atable.ATable.private_index_column])].to_csv(
-                    analysis_output_path, index=False)
-
-                summary_df[list(c for c in summary_df.columns
-                                if c not in summary_table.render_column_names
-                                and c not in ["row_created", "row_updated",
-                                              enb.atable.ATable.private_index_column]
-                                and (c in ("group_label", "group_size")
-                                     or c.endswith("_avg")))].style.format(escape="latex",
-                                                                           precision=self.latex_decimal_count).format_index(
-                    r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(
-                    analysis_output_path[:-4] + ".tex")
+            self.save_analysis_tables(
+                group_by=group_by,
+                reference_group=reference_group,
+                selected_render_modes=selected_render_modes,
+                summary_df=summary_df,
+                summary_table=summary_table,
+                target_columns=target_columns)
 
             # Return the summary result dataframe
             return summary_df
@@ -407,6 +388,46 @@ class Analyzer(enb.atable.ATable):
             (f"-referencegroup__{reference_group}" if reference_group else "") +
             ".pdf")
 
+    def save_analysis_tables(self, group_by, reference_group, selected_render_modes, summary_df, summary_table,
+                             target_columns):
+        """Save csv and tex files into enb.config.options.analysis_dir
+        that summarize the results of one target_columns element.
+        If enb.config.options.analysis_dir is None or empty, no analysis
+        is performed.
+
+        By default, the CSV contains the min, max, avg, std, and median
+        of each group. Subclasses may overwrite this behavior.
+        """
+        if options.analysis_dir:
+            # Generate full csv summary
+            try:
+                render_mode_str = "__".join(selected_render_modes)
+            except TypeError:
+                render_mode_str = str(render_mode_str).replace(os.sep, "__")
+            analysis_output_path = self.get_output_pdf_path(column_selection=target_columns,
+                                                            group_by=group_by,
+                                                            reference_group=reference_group,
+                                                            output_plot_dir=options.analysis_dir,
+                                                            render_mode=render_mode_str)[:-4] + ".csv"
+            enb.logger.info(f"Saving analysis results to {analysis_output_path}")
+            os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+            summary_df[list(c for c in summary_df.columns
+                            if c not in summary_table.render_column_names
+                            and c not in ["row_created", "row_updated",
+                                          enb.atable.ATable.private_index_column])].to_csv(
+                analysis_output_path, index=False)
+
+            # Generate tex summary
+            summary_df[list(c for c in summary_df.columns
+                            if c not in summary_table.render_column_names
+                            and c not in ["row_created", "row_updated",
+                                          enb.atable.ATable.private_index_column]
+                            and (c in ("group_label", "group_size")
+                                 or c.endswith("_avg")))].style.format(escape="latex",
+                                                                       precision=self.latex_decimal_count).format_index(
+                r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(
+                analysis_output_path[:-4] + ".tex")
+
     @classmethod
     def normalize_parameters(cls, f, group_by, column_to_properties, target_columns,
                              reference_group,
@@ -428,7 +449,8 @@ class Analyzer(enb.atable.ATable):
                     # Arguments normalized by the @enb.aanalysis.Analyzer.normalize_parameters,
                     # in turn manageable through .ini configuration files via the
                     # @enb.config.aini.managed_attributes decorator.
-                    selected_render_modes=None, show_global=None, show_count=True, plot_title=None,
+                    selected_render_modes=selected_render_modes,
+                    show_global=None, show_count=True, plot_title=None,
                     # Rendering options, directly passed to plotdata.render_plds_by_group
                     **render_kwargs):
             selected_render_modes = selected_render_modes if selected_render_modes is not None \
@@ -1514,6 +1536,44 @@ class TwoNumericAnalyzer(Analyzer):
         return TwoNumericSummary(analyzer=self, full_df=full_df, reference_group=reference_group,
                                  target_columns=target_columns, group_by=group_by,
                                  include_all_group=include_all_group)
+
+    def save_analysis_tables(
+            self, group_by, reference_group, selected_render_modes, summary_df,
+            summary_table, target_columns):
+        """Save csv and tex files into enb.config.options.analysis_dir
+        that summarize the results of one target_columns element.
+        If enb.config.options.analysis_dir is None or empty, no analysis
+        is performed.
+
+        By default, the CSV contains the min, max, avg, std, and median
+        of each group. Subclasses may overwrite this behavior.
+        """
+        for render_mode in selected_render_modes:
+            if render_mode == "scatter":
+                super().save_analysis_tables(
+                    group_by=group_by,
+                    reference_group=reference_group,
+                    selected_render_modes={render_mode},
+                    summary_df=summary_df,
+                    summary_table=summary_table,
+                    target_columns=target_columns)
+            elif options.analysis_dir:
+                for column_pair in target_columns:
+                    analysis_output_path = self.get_output_pdf_path(
+                        column_selection=[column_pair],
+                        group_by=group_by,
+                        reference_group=reference_group,
+                        output_plot_dir=options.analysis_dir,
+                        render_mode=render_mode)[:-4] + ".csv"
+                    os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+                    with open(analysis_output_path, "w") as analysis_file:
+                        pds_column = summary_df[f"{repr(column_pair)}_render-{render_mode}"]
+                        for index, row in summary_df.iterrows():
+                            group_name = re.match(r"\('(.+)',\)", index).group(1)
+                            x_values = row[f"{repr(column_pair)}_render-{render_mode}"][0].x_values
+                            y_values = row[f"{repr(column_pair)}_render-{render_mode}"][0].y_values
+                            analysis_file.write(",".join([group_name, column_pair[0]] + [str(x) for x in x_values]) + "\n")
+                            analysis_file.write(",".join(["", column_pair[1]] + [str(y) for y in y_values]) + "\n")
 
 
 class TwoNumericSummary(ScalarNumericSummary):
