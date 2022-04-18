@@ -28,6 +28,7 @@ This is done automatically if installed from pip.
     - Automatic generation of latex-formatted output tables in enb.aanalysis.Analyzer subclasses.
     - Added the `average_identical_x` attribute to `enb.aanalysis.TwoNumericAnalyzer`, which allows a cleaner analysis
       by averaging samples which share the same x value (applies to the 'line' render mode only).
+    - Added the `enb.plugins.install` method that ensures a plugin is installed and is able to automatically import it. 
 
 * General improvements
 
@@ -38,6 +39,7 @@ This is done automatically if installed from pip.
     - Fixed some cosmetic problems in the `enb.aanalysis` module.
     - Increased stability and reduced noise when obtaining statistics for constant or size 1 arrays in enb.aanalysis-
     - Improved the default group name sorting to better understand numeric values.
+    - Fixed DictNumericAnalyzer so that key_to_x is correctly processed if available.
 
 # Latest stable version
 
