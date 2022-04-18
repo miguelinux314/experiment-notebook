@@ -186,7 +186,8 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["signed"] = True
         existing_dict["float"] = True
 
-    existing_dict["samples"] = os.path.getsize(file_path) / existing_dict["bytes_per_sample"]
+    assert os.path.getsize(file_path) % existing_dict["bytes_per_sample"] == 0
+    existing_dict["samples"] = os.path.getsize(file_path) // existing_dict["bytes_per_sample"]
 
     return existing_dict
 
@@ -214,10 +215,10 @@ class ImageGeometryTable(sets.FilePropertiesTable):
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
-        if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
+        if any(s in os.path.basename(file_path) for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
                                         "u32be", "u32le", "s32be", "s32le")):
             row[_column_name] = False
-        elif any(s in file_path for s in ("f16", "f32", "f64")):
+        elif any(s in os.path.basename(file_path) for s in ("f16", "f32", "f64")):
             row[_column_name] = True
         else:
             enb.logger.debug(f"Unknown {_column_name} from {file_path}. Setting to False.")
