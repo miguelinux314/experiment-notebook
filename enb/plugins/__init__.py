@@ -13,6 +13,6 @@ Please refer to each submodule for further information.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
 
-from .installable import Installable, import_all_installables, list_all_installables, get_installable_by_name
+from .installable import install, Installable, import_all_installables, list_all_installables, get_installable_by_name
 from .plugin import Plugin, PluginMake
 from .template import Template
