@@ -15,6 +15,8 @@ import requests
 import subprocess
 import textwrap
 import collections
+import pandas as pd
+import hashlib
 import enb.misc
 
 
@@ -146,7 +148,19 @@ class Installable(metaclass=InstallableMeta):
         for url, name in cls.contrib_download_url_name:
             output_path = os.path.join(installation_dir, name)
             cached_path = os.path.join(cache_dir, name)
-            if not os.path.isfile(cached_path) or enb.config.options.force:
+            try:
+                if os.path.isfile(cached_path):
+                    contrib_sha256_df = pd.read_csv(
+                        os.path.join(enb.enb_installation_dir, "config", "contrib_sha256.csv"))
+                    expected_sha256 = contrib_sha256_df[contrib_sha256_df["file"] == name]["sha256"].values[0]
+                    hasher = hashlib.sha256()
+                    with open(cached_path, "rb") as cached_file:
+                        hasher.update(cached_file.read())
+                    outdated_contrib = expected_sha256 != hasher.hexdigest()
+            except (KeyError, IndexError):
+                outdated_contrib = False
+
+            if not os.path.isfile(cached_path) or enb.config.options.force or outdated_contrib:
                 with enb.logger.verbose_context(f"Downloading {url} into cache"):
                     with open(cached_path, "wb") as output_file:
                         output_file.write(requests.get(url, allow_redirects=True).content)
