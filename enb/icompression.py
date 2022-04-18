@@ -375,11 +375,11 @@ class WrapperCodec(AbstractCodec):
 
 
 class JavaWrapperCodec(WrapperCodec):
-    """Wrapper for *.jar codecs. The compression and decompression parameters are those that need to be
+    """Wrapper for `*.jar` codecs. The compression and decompression parameters are those that need to be
     passed to the 'java' command.
 
     The `compressor_jar` and `decompressor_jar` attributes are added upon initialization
-    based on the params to __init__.
+    based on the params to `__init__`.
     """
 
     def __init__(self, compressor_jar, decompressor_jar, param_dict=None):
