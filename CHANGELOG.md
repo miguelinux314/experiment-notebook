@@ -28,7 +28,9 @@ This is done automatically if installed from pip.
     - Automatic generation of latex-formatted output tables in enb.aanalysis.Analyzer subclasses.
     - Added the `average_identical_x` attribute to `enb.aanalysis.TwoNumericAnalyzer`, which allows a cleaner analysis
       by averaging samples which share the same x value (applies to the 'line' render mode only).
-    - Added the `enb.plugins.install` method that ensures a plugin is installed and is able to automatically import it. 
+    - Added the `enb.plugins.install` method that ensures a plugin is installed and is able to automatically import it.
+    - Added a SHA256 table of contrib packages, so that the newest version is downloaded if an outdated
+      version is in the cache.
 
 * General improvements
 

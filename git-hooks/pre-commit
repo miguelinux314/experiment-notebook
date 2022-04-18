@@ -27,3 +27,11 @@ done
 git add MANIFEST.in
 echo "... manifest updated with $(wc -l MANIFEST.in) elements!"
 
+# Update the CSV of SHA256 hashes of the contrib dir
+echo -n "Updating contrib SHA256..."
+rm -f enb/config/contrib_sha256.csv
+echo "file,sha256" > enb/config/contrib_sha256.csv
+cd contrib && (sha256sum *zip *.gz | awk '{print $2","$1}' | sort >> ../enb/config/contrib_sha256.csv; git add ../enb/config/contrib_sha256.csv)
+echo " updated!"
+
+
