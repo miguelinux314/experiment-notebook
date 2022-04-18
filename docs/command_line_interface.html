@@ -131,38 +131,43 @@ In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 and/or <cite>-v</cite> for extra details.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.6 ] ................
 
-Showing 34 plugins.
+Showing 39 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
 Add -v for extra information on the listed plugins.
 
          analysis-gallery :: Self-contained gallery of data analysis and plotting examples.
+         arithmetic_codec :: Arithmetic codec (8 bit).
            basic-workflow :: Basic, self-contained example of enb&#39;s workflow.
                ccsds122x1 :: Wrappers for CCSDS 122.1 (privative).
                ccsds124x0 :: Wrappers for CCSDS 124.0-B-1 (privative).
            cluster-config :: Template of a CSV configuration file for enb clusters.
+                  emporda :: Wrapper for the emporda codec.
                   enb.ini :: Copy a full enb.ini configuration in the destination project folder.
+ entropy-codec-comparison :: Template for the comparison of entropy codecs.
                     fapec :: Wrappers for FAPEC (privative).
                      flif :: Wrapper for the FLIF compressor.
                     fpack :: Wrapper for the FPACK compressor.
-                      fpc :: FPC codec wrapers.
+                      fpc :: FPC codec wrappers.
                     fpzip :: Wrappers for FPZIP codecs.
-                      fse :: Wrappers for FSE codecs.
+                      fse :: Wrappers for FSE codecs. Includes a Huffman-only entropy codec.
                      hdf5 :: Codec wrappers for the h5py library.
                      hevc :: Wrapper for the HEVC / H.265 codec.
+                  huffman :: Huffman codec (8 bit).
                      jpeg :: Reference JPEG and JPEG-LS implementation.
                    jpegxl :: Wrapper for a reference JPEG-XL implementation.
                    kakadu :: Wrappers for Kakadu JPEG 2000 (privative).
                      lcnl :: Wrappers for LCNL CCSDS 123.0-B-2 (privative).
      lossless-compression :: Template for lossless compression experiments.
         lossy-compression :: Template for lossy compression experiments.
-                      lz4 :: Wraper for a LZ4 codec.
+                      lz4 :: Wrapper for a LZ4 codec.
                    marlin :: Marlin-based image compressor.
              matplotlibrc :: Copy matplotlib&#39;s default rc file into the destination directory.
-                   mcalic :: Wraper for E. Magli et al.&#39;s M-CALIC codec.
+                   mcalic :: Wrapper for E. Magli et al.&#39;s M-CALIC codec.
             montecarlo-pi :: Demo project that approximates pi in a distributed way.
                     ndzip :: Wrapper for ndzip.
   port-experiment-example :: Self-contained port scanning experiment example.
                      spdp :: Wrapper for the spdp codec.
+                    speck :: Wrapper for the SPECK codec.
               test-codecs :: Install all codec plugins verify their availability.
                       v2f :: Wrapper of a codec based on V2F forests (privative).
                       vvc :: Wrapper for the VVC / H.266 codec.
@@ -173,10 +178,10 @@ Add -v for extra information on the listed plugins.
 The following plugin tags have been defined and can be used for filtering:
 
   - documentation    (  4 plugins) Documentation examples referenced in the user manual.
-  - codec            ( 24 plugins) Data compression/decompression class definitions.
-  - data compression ( 28 plugins) Data compression tools.
-  - template         ( 10 plugins) Templates formatteable into the installation dir.
-  - project          (  6 plugins) Project templates, including configuration files.
+  - codec            ( 28 plugins) Data compression/decompression class definitions.
+  - data compression ( 33 plugins) Data compression tools.
+  - template         ( 11 plugins) Templates formatteable into the installation dir.
+  - project          (  7 plugins) Project templates, including configuration files.
   - test             (  1  plugin) Plugins for testing purposes.
   - privative        (  6 plugins) Plugins requiring additional privative software.
 
@@ -191,12 +196,29 @@ Run with -v for authorship and additional information, with -h for full help.
 </pre></div>
 </div>
 <p>For example, <cite>enb plugin install zip ./codecs/zip_codecs</cite> should produce something similar to:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
-
-Installing zip into [...]/codecs/zip_codecs...
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Installing zip into [...]/codecs/zip_codecs...
 Building zip into [...]/codecs/zip_codecs...
 Plugin &#39;zip&#39; successfully installed into &#39;./codecs/zip_codecs&#39;.
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can add calls to the <a class="reference internal" href="image_compression_plugins.html#enb.plugins.install" title="enb.plugins.install"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a> method within your scripts
+to automatically install (unless already installed) and import a plugin, e.g.,</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">&quot;zip&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.plugins.install">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.install" title="Permalink to this definition"></a></dt>
+<dd><p>Install an Installable by name into target_dir.
+:param target_dir: If target_dir is None, it is set to “plugins/&lt;plugin_name&gt;” by default.
+:param overwrite: If overwrite is False and target_dir already exists, no action is taken.
+:param automatic_import: If True, the installable is imported as a module.</p>
+</dd></dl>
+
+</div></blockquote>
 </div>
 </section>
 </section>
@@ -310,7 +332,7 @@ Execution Options:
                         Default minimum time in seconds between progress
                         report updates, when get_df() is invoked and
                         computation is being processed in parallel. (default:
-                        5)
+                        1)
 
 Dir Options:
   Options regarding default data directories.

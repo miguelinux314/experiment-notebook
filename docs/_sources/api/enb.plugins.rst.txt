@@ -1,6 +1,14 @@
 enb.plugins package
 ===================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   enb.plugins.plugin_fpack
+
 Submodules
 ----------
 
