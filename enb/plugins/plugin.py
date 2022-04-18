@@ -52,6 +52,8 @@ class Plugin(Installable):
         super().install(installation_dir=installation_dir,
                         overwrite_destination=True)
         print(f"Plugin {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
+        if enb.config.options.verbose:
+            cls.print_info()
 
     @classmethod
     def build(cls, installation_dir):
