@@ -162,52 +162,7 @@ class PluginList(argparse.Action):
                 print("\n".join(textwrap.wrap(label, 100)), end="")
                 print(".")
                 if enb.config.options.verbose:
-                    indentation_string = " " * (7 + len(" :: "))
-                    if installable.authors:
-                        print(textwrap.indent
-                              (f"* Plugin author{'s' if len(installable.authors) != 1 else ''}:",
-                               indentation_string))
-                        for author in installable.authors:
-                            print(textwrap.indent(f"  - {author}", indentation_string))
-                    if installable.contrib_authors:
-                        print(textwrap.indent(
-                            f"* External software author{'s' if len(installable.contrib_authors) != 1 else ''}:",
-                            indentation_string))
-                        for author in installable.contrib_authors:
-                            print(textwrap.indent(f"  - {author}", indentation_string))
-                    if installable.contrib_reference_urls:
-                        print(textwrap.indent(
-                            f"* Reference URL{'s' if len(installable.contrib_reference_urls) != 1 else ''}:",
-                            indentation_string))
-                        for url in installable.contrib_reference_urls:
-                            print(textwrap.indent(f"  - {url}", indentation_string))
-                    if installable.contrib_download_url_name:
-                        print(textwrap.indent(
-                            f"* External software URL{'s' if len(installable.contrib_download_url_name) != 1 else ''}:",
-                            indentation_string))
-                        for url, name in installable.contrib_download_url_name:
-                            print(textwrap.indent(f"  - {url}", indentation_string))
-                            print(textwrap.indent(f"     -> <installation_dir>/{name}", indentation_string))
-                    if installable.required_pip_modules:
-                        print(textwrap.indent(f"* Automatically installed pip "
-                                              f"{'libraries' if len(installable.required_pip_modules) > 1 else 'library'}:",
-                                              indentation_string))
-                        for name in installable.required_pip_modules:
-                            print(textwrap.indent(f"  - {name}", indentation_string))
-                    if installable.extra_requirements_message:
-                        print(textwrap.indent(f"* WARNING: some requirements might need to be manually satisfied:",
-                                              indentation_string))
-                        print(textwrap.indent(installable.extra_requirements_message.strip(),
-                                              indentation_string + "    "))
-                    if installable.tags:
-                        print(textwrap.indent(f"* Tag{'s' if len(installable.tags) != 1 else ''}: "
-                                              f"{', '.join(repr(t) for t in installable.tags)}",
-                                              indentation_string))
-                    if installable.tested_on:
-                        print(textwrap.indent(f"* Tested on: {', '.join(sorted(installable.tested_on))}",
-                                              indentation_string))
-
-                    print()
+                    installable.print_info()
         print()
 
         print("The following plugin tags have been defined and can be used for filtering:\n")
@@ -229,6 +184,7 @@ class PluginList(argparse.Action):
         print("Run"
               f"{' with -v for authorship and additional information,' if not enb.config.options.verbose else ''}"
               " with -h for full help.")
+
 
 class ShowStyles(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
