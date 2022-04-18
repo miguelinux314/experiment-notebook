@@ -52,6 +52,8 @@
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Using existing image compression codecs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation-via-enb-plugin-install">Installation via enb plugin install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-via-enb-plugins-install">Installation via <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#codec-availabily">Codec availabily</a></li>
 </ul>
 </li>
@@ -92,8 +94,16 @@
              
   <section id="using-existing-image-compression-codecs">
 <h1>Using existing image compression codecs<a class="headerlink" href="#using-existing-image-compression-codecs" title="Permalink to this headline"></a></h1>
-<p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library offers a set of codecs that can be installed via the <cite>enb plugin install</cite> interface.
-You can list the available codecs by performing a search among all available plugins:</p>
+<dl class="simple">
+<dt>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library offers a set of codecs that can be installed</dt><dd><ul class="simple">
+<li><p>via the <cite>enb plugin install</cite> command-line interface (CLI).</p></li>
+<li><p>via the <a class="reference internal" href="#enb.plugins.install" title="enb.plugins.install"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a> method within your scripts via</p></li>
+</ul>
+</dd>
+</dl>
+<section id="installation-via-enb-plugin-install">
+<h2>Installation via enb plugin install<a class="headerlink" href="#installation-via-enb-plugin-install" title="Permalink to this headline"></a></h2>
+<p>In the CLI, you can list the available codecs by performing a search among all available plugins:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin list codec
 </pre></div>
 </div>
@@ -101,6 +111,24 @@ You can list the available codecs by performing a search among all available plu
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install zip installation_folder
 </pre></div>
 </div>
+</section>
+<section id="installation-via-enb-plugins-install">
+<h2>Installation via <a class="reference internal" href="#enb.plugins.install" title="enb.plugins.install"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a><a class="headerlink" href="#installation-via-enb-plugins-install" title="Permalink to this headline"></a></h2>
+<p>You can add a line like the following to your script so that it automatically
+installs and imports a plugin</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">&quot;huffman&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.plugins.install">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.install" title="Permalink to this definition"></a></dt>
+<dd><p>Install an Installable by name into target_dir.
+:param target_dir: If target_dir is None, it is set to “plugins/&lt;plugin_name&gt;” by default.
+:param overwrite: If overwrite is False and target_dir already exists, no action is taken.
+:param automatic_import: If True, the installable is imported as a module.</p>
+</dd></dl>
+
+</section>
 <section id="codec-availabily">
 <h2>Codec availabily<a class="headerlink" href="#codec-availabily" title="Permalink to this headline"></a></h2>
 <p>Different codecs are available for different data types and bit depths. If you want to test

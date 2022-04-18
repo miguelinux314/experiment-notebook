@@ -111,7 +111,7 @@
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze
 and plot your results:</p>
 <ul class="simple">
-<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+382.g2a4c9df6c8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
+<li><p>Classes in this module accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+685.g4ffdab384e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, e.g., such as the ones
 produced by the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> and <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</p></li>
 <li><p>You can easily import <cite>*.csv</cite> files into dataframes with the <cite>pandas.read_csv</cite> method,
 and use <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> with externally produced data.</p></li>
@@ -145,9 +145,9 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
 - hbar
-- boxplot
+- histogram
 </pre></div>
 </div>
 <p>The <cite>histogram</cite> mode  renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
@@ -192,8 +192,8 @@ which also shows +/- 1 horizontal and vertical standard deviations.</p>
 </figure>
 <p>The previous figure shows an example of the <cite>scatter</cite> plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- line
-- scatter
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- scatter
+- line
 </pre></div>
 </div>
 <p>Examples are provided below in the first section about grouping data, where some of these modes are most useful.</p>
@@ -332,9 +332,9 @@ as follows:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
 - hbar
-- boxplot
+- histogram
 </pre></div>
 </div>
 <p>The <cite>histogram</cite> render mode produces plots like the following:</p>
@@ -365,8 +365,8 @@ as shown next:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- line
-- scatter
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- scatter
+- line
 </pre></div>
 </div>
 <p>The resulting plot for the <cite>scatter</cite> mode is shown next:</p>
