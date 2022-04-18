@@ -1352,7 +1352,7 @@ class ScalarNumericSummary(AnalyzerSummary):
             try:
                 description = scipy.stats.describe(finite_only_series)
                 quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
-            except (RuntimeWarning, FloatingPointError) as ex:
+            except (RuntimeWarning, FloatingPointError):
                 class Description:
                     minmax = [finite_only_series[0]] * 2
                     mean = finite_only_series[0]
@@ -1572,7 +1572,8 @@ class TwoNumericAnalyzer(Analyzer):
                             group_name = re.match(r"\('(.+)',\)", index).group(1)
                             x_values = row[f"{repr(column_pair)}_render-{render_mode}"][0].x_values
                             y_values = row[f"{repr(column_pair)}_render-{render_mode}"][0].y_values
-                            analysis_file.write(",".join([group_name, column_pair[0]] + [str(x) for x in x_values]) + "\n")
+                            analysis_file.write(
+                                ",".join([group_name, column_pair[0]] + [str(x) for x in x_values]) + "\n")
                             analysis_file.write(",".join(["", column_pair[1]] + [str(y) for y in y_values]) + "\n")
 
 
@@ -2037,22 +2038,23 @@ class DictNumericSummary(AnalyzerSummary):
                         continue
                 else:
                     x_values.append(x)
-                    key_values.append(k)
-                np.seterr(all="raise")
-                try:
-                    description = scipy.stats.describe(values)
-                    min_values.append(description.minmax[0])
-                    max_values.append(description.minmax[1])
-                    avg_values.append(description.mean)
-                    std_values.append(math.sqrt(description.variance))
-                    median_values.append(values.median())
-                except FloatingPointError:
-                    min_values.append(values.min())
-                    max_values.append(values.min())
-                    avg_values.append(values.mean())
-                    std_values.append(values.std() if len(np.unique(values)) > 1 else 0)
-                    median_values.append(values.median())
-                np.seterr(all="warn")
+                key_values.append(k)
+
+                with warnings.catch_warnings():
+                    try:
+                        warnings.filterwarnings("error")
+                        description = scipy.stats.describe(values)
+                        min_values.append(description.minmax[0])
+                        max_values.append(description.minmax[1])
+                        avg_values.append(description.mean)
+                        std_values.append(math.sqrt(description.variance))
+                        median_values.append(values.median())
+                    except (FloatingPointError, RuntimeWarning):
+                        min_values.append(values.min())
+                        max_values.append(values.min())
+                        avg_values.append(values.mean())
+                        std_values.append(values.std() if len(np.unique(values)) > 1 else 0)
+                        median_values.append(values.median())
 
         for label, data_list in [("min", min_values),
                                  ("max", max_values),
@@ -2093,7 +2095,10 @@ class DictNumericSummary(AnalyzerSummary):
 
         key_values, avg_values = zip(*sorted(row[f"{column_name}_avg"].items()))
 
-        x_values = range(len(key_values))
+        if _self.analyzer.key_to_x:
+            x_values = [_self.analyzer.key_to_x[k] for k in key_values]
+        else:
+            x_values = range(len(key_values))
 
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
