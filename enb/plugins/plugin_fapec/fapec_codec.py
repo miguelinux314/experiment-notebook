@@ -269,6 +269,10 @@ class FAPEC_FITS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCod
     def __init__(self,
                  bin_dir=None):
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        param_dict = dict() if param_dict is None else param_dict
+        param_dict["od"] = od
+        param_dict["dwt"] = dwt
         super().__init__(compressor_path=os.path.join(bin_dir, "fapec"),
                          decompressor_path=os.path.join(bin_dir, "unfapec"),
                          param_dict=dict())
@@ -277,7 +281,7 @@ class FAPEC_FITS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCod
     def name(self):
         """Don't include the binary signature
         """
-        name = f"{self.__class__.__name__}"
+        name = f"{self.__class__.__name__} od {self.param_dict['od'] } dwt {self.param_dict['dwt']}"
         return name
 
     @property
@@ -285,7 +289,16 @@ class FAPEC_FITS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCod
         return "FAPEC-FITS"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-o {compressed_path} -ow {original_path}  "
+        if self.param_dict["od"] ==0:
+            if self.param_dict["dwt"] ==0:
+                return f"-chunk 8M -bl 512 -dtype 16 -be -o {compressed_path} -ow {original_path} "
+            elif self.param_dict["dwt"] ==1:
+                return f"-chunk 8M -bl 512 -dtype 16 -be -od 2 -dwt {original_file_info['width']} {original_file_info['height']}  {original_file_info['component_count']} 0 {original_file_info['dynamic_range_bits']} 0 -o {compressed_path} -ow {original_path} "                
+        else:
+            if self.param_dict["dwt"] ==0:
+                return f"-chunk 8M -bl 512 -dtype 16 -be -od 2 -o {compressed_path} -ow {original_path} "
+            elif self.param_dict["dwt"] ==1:
+                return f"-chunk 8M -bl 512 -dtype 16 -be -dwt {original_file_info['width']} {original_file_info['height']}  {original_file_info['component_count']} 0 {original_file_info['dynamic_range_bits']} 0 -o {compressed_path} -ow {original_path} "  
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -o {reconstructed_path} -ow {compressed_path} "
