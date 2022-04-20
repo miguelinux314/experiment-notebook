@@ -240,11 +240,18 @@ class SingletonCLI(metaclass=Singleton):
         try:
             original_option_string_actions = list(self._argparser._option_string_actions)
 
-            for k, v in self._argparser.parse_known_args()[0].__dict__.items():
+            known_args, unknown_args = self._argparser.parse_known_args()
+
+            for k, v in known_args.__dict__.items():
                 self._name_to_property[self._alias_to_name[k]] = v
 
             # The setter values are activated only for python-source modifications
             self._custom_attribute_handler_active = True
+            
+            # Report unrecognized arguments only for the main process
+            for arg in unknown_args:
+                if os.path.basename(sys.argv[0]) != self.worker_script_name:
+                    print(f"Warning: unrecognized parameter {repr(arg)}")
         finally:
             self._argparser._option_string_actions = original_option_string_actions
 
