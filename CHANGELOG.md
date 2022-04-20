@@ -12,38 +12,51 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version
+# Latest stable version
 
-## v0.3.6
+## 2022/04/20 v0.3.6
 
 Important: a new dependency was added in this version; you will need to install `enb` again if you had installed
-with `pip install -e path_to_repo` and have only updated `path_to_repo` to the latest version. 
+with `pip install -e path_to_repo` and have only updated `path_to_repo` to the latest version.
 This is done automatically if installed from pip.
 
 * New features
 
-    - Added support for plotting histograms of 2d data using colormaps.
-    - Improved progress reporting with animation.
-    - Added an arithmetic codec and a non-block-adaptive huffman codec to the list of available plugins.
-    - Automatic generation of latex-formatted output tables in enb.aanalysis.Analyzer subclasses.
-    - Added the `average_identical_x` attribute to `enb.aanalysis.TwoNumericAnalyzer`, which allows a cleaner analysis
-      by averaging samples which share the same x value (applies to the 'line' render mode only).
+    - Added support for plotting histograms of 2d data using colormaps, e.g.,
+      see this 
+      [example](https://miguelinux314.github.io/experiment-notebook/analyzing_data.html#analysis-numeric-spatial-2d-data)
+    - Automatic generation of latex-formatted output tables in `enb.aanalysis.Analyzer` subclasses
+      (stored by default under the `analysis/` subfolder of your projects).
+    - Added a few new data compression plugins:
+        - arithmetic codec (`arithmetic_codec`)
+        - a non-block-adaptive huffman codec (`huffman`)
+        - SPECK (`speck`)
     - Added the `enb.plugins.install` method that ensures a plugin is installed and is able to automatically import it.
-    - Added a SHA256 table of contrib packages, so that the newest version is downloaded if an outdated
-      version is in the cache.
+      Check out `enb plugin list` for all plugins available in this fashion.
 
 * General improvements
+    - Added a SHA256 table of contrib packages, so that the newest version is downloaded if an outdated
+      version is in the cache.
+    - Improved progress reporting with animation.
+    - Added the `average_identical_x` attribute to `enb.aanalysis.TwoNumericAnalyzer`, which allows a cleaner analysis
+      by averaging samples which share the same x value (applies to the 'line' render mode only).
+    - Improved the default group name sorting to better understand numeric values.
 
-    - Compressed and/or reconstructed images are now stored even if lossless compression is not achieved in
-      LosslessCompressionExperiment.
+* Bug fixes
+
     - Fixed Kakadu plugin Sdims axis swap bug.
     - Fixed `file_or_path` argument in `dump_bsq_array` so that it accepts open files as described in the API.
     - Fixed some cosmetic problems in the `enb.aanalysis` module.
-    - Increased stability and reduced noise when obtaining statistics for constant or size 1 arrays in enb.aanalysis-
-    - Improved the default group name sorting to better understand numeric values.
     - Fixed DictNumericAnalyzer so that key_to_x is correctly processed if available.
+    - Fixed warning messages from numpy/scipy when trying to compute correlations or statistical descriptions
+      with a single data point, or constant data.
+    - Fixed the makefiles of the `fpack` and `ndzip` data compression plugins.  
+    - When requested, a copy of the compressed and/or reconstructed files is stored in the configured
+      folder for LosslessCompressionExperiment subclasses even if reconstruction is not lossless for those files
+      (see the `reconstructed_copy_dir` and `compressed_copy_dir`
+      arguments of `enb.icompression.CompressionExperiment`)
 
-# Latest stable version
+# Version history
 
 ## 2022/02/16 v0.3.5
 
@@ -71,8 +84,6 @@ This is done automatically if installed from pip.
     - Fixed label positioning in some plots with longer labels.
     - Fixed minor ticks when labels are provided.
     - Fixed dictionary plots.
-
-# Version history
 
 ## 2022/01/05 v0.3.4
 
