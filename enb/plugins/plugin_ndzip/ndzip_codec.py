@@ -24,17 +24,19 @@ class Ndzip(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, 
         return "ndzip"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        assert original_file_info["float"] == True, 'data type must be float or double'
-        if original_file_info.bytes_per_sample * 8 == 64:
-            return f"-t double -n {original_file_info.samples} -i {original_path} -o {compressed_path}"
-
-        elif original_file_info.bytes_per_sample * 8 == 32:
-            return f"-t float -n {original_file_info.samples} -i {original_path} -o {compressed_path}"
+        assert original_file_info["float"] == True, f"Only floating point data is supported by {self.label}"
+        if original_file_info["bytes_per_sample"] == 8:
+            return f"-t double -n {original_file_info['samples']} -i {original_path} -o {compressed_path}"
+        elif original_file_info["bytes_per_sample"] == 4:
+            return f"-t float -n {original_file_info['samples']} -i {original_path} -o {compressed_path}"
+        else:
+            raise ValueError(f"Only 32-bit and 64-bit float samples are supported by {self.label}")
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-
-        if original_file_info.bytes_per_sample * 8 == 64:
-            return f"-d -t double -n {original_file_info.samples} -i {compressed_path} -o {reconstructed_path}"
-
-        elif original_file_info.bytes_per_sample * 8 == 32:
-            return f"-d -t float -n {original_file_info.samples} -i {compressed_path} -o {reconstructed_path}"
+        assert original_file_info["float"] == True, f"Only floating point data is supported by {self.label}"
+        if original_file_info["bytes_per_sample"] == 8:
+            return f"-d -t double -n {original_file_info['samples']} -i {compressed_path} -o {reconstructed_path}"
+        elif original_file_info["bytes_per_sample"] == 4:
+            return f"-d -t float -n {original_file_info['samples']} -i {compressed_path} -o {reconstructed_path}"
+        else:
+            raise ValueError(f"Only 32-bit and 64-bit float samples are supported by {self.label}")

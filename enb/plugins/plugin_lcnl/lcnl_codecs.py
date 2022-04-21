@@ -76,6 +76,7 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
                                        - (original_file_info["samples"] % self.param_dict["large_j"]))
                     flf.write(bytes(0 for _ in range(
                         missing_samples * original_file_info["bytes_per_sample"])))
+                    flf.flush()
 
             # Create an image-specific compression header
             header_invocation = \
@@ -93,16 +94,19 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
             original_file_info["_header_path"] = image_dependent_header_file.name
 
             # Perform actual compression
-            super().compress(original_path=corrected_length_file.name,
+            cr = super().compress(original_path=corrected_length_file.name,
                              compressed_path=compressed_path,
                              original_file_info=original_file_info)
-
+            cr.original_path = original_path
+            
             if self.output_header_dir is not None:
                 header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(
                     os.sep, "_")
                 os.makedirs(self.output_header_dir, exist_ok=True)
                 shutil.copyfile(image_dependent_header_file.name,
                                 os.path.join(self.output_header_dir, header_output_name))
+                
+            return cr
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"{original_file_info['_header_path']} " \
@@ -262,7 +266,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             original_file_info = original_file_info.copy()
             original_file_info["_header_path"] = image_dependent_header_file.name
 
-            super().compress(original_path=original_path,
+            cr = super().compress(original_path=original_path,
                              compressed_path=compressed_path,
                              original_file_info=original_file_info)
             
@@ -273,6 +277,8 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
                 os.makedirs(self.output_header_dir, exist_ok=True)
                 shutil.copyfile(image_dependent_header_file.name,
                                 os.path.join(self.output_header_dir, header_output_name))
+                
+            return cr
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"{original_file_info['_header_path']} " \

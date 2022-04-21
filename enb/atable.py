@@ -953,7 +953,8 @@ class ATable(metaclass=MetaTable):
             right_index=True,
             copy=False)
 
-        assert len(target_df) <= len(target_locs)
+        assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
+                                                   f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
 
         # This is the case where input samples were previously processed,
         # but new columns were defined/requested.
@@ -1007,7 +1008,7 @@ class ATable(metaclass=MetaTable):
                     f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
 
             # Read CSV from disk
-            with enb.logger.verbose_context(f"Loading dataframe from persistence at {csv_support_path}"):
+            with enb.logger.verbose_context(f"Loading dataframe from persistence at {csv_support_path}", sep="... "):
                 loaded_df = pd.read_csv(csv_support_path)
                 enb.logger.info(f"Loaded df with {len(loaded_df)} rows")
             loaded_columns = list(loaded_df.columns)
@@ -1669,7 +1670,4 @@ def get_canonical_path(file_path):
     :return: the canonical version of a path to be stored in the database, to make sure
       indexing is consistent across code using |ATable| and its subclasses.
     """
-    if file_path[0] == os.sep:
-        return os.path.relpath(file_path, options.project_root)
-    else:
-        return file_path
+    return os.path.relpath(file_path, options.project_root)

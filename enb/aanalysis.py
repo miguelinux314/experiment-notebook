@@ -20,6 +20,8 @@ import alive_progress
 import pdf2image
 import numpy as np
 import scipy.stats
+import warnings
+import re
 
 import enb.atable
 from enb.atable import clean_column_name
@@ -185,33 +187,13 @@ class Analyzer(enb.atable.ATable):
                 selected_render_modes=selected_render_modes,
                 **render_kwargs)
 
-            if options.analysis_dir:
-                try:
-                    render_mode_str = "__".join(selected_render_modes)
-                except TypeError:
-                    render_mode_str = str(render_mode_str).replace(os.sep, "__")
-                analysis_output_path = self.get_output_pdf_path(column_selection=target_columns,
-                                                                group_by=group_by,
-                                                                reference_group=reference_group,
-                                                                output_plot_dir=options.analysis_dir,
-                                                                render_mode=render_mode_str)[:-4] + ".csv"
-                enb.logger.info(f"Saving analysis results to {analysis_output_path}")
-                os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
-                summary_df[list(c for c in summary_df.columns
-                                if c not in summary_table.render_column_names
-                                and c not in ["row_created", "row_updated",
-                                              enb.atable.ATable.private_index_column])].to_csv(
-                    analysis_output_path, index=False)
-
-                summary_df[list(c for c in summary_df.columns
-                                if c not in summary_table.render_column_names
-                                and c not in ["row_created", "row_updated",
-                                              enb.atable.ATable.private_index_column]
-                                and (c in ("group_label", "group_size")
-                                     or c.endswith("_avg")))].style.format(escape="latex",
-                                                                           precision=self.latex_decimal_count).format_index(
-                    r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(
-                    analysis_output_path[:-4] + ".tex")
+            self.save_analysis_tables(
+                group_by=group_by,
+                reference_group=reference_group,
+                selected_render_modes=selected_render_modes,
+                summary_df=summary_df,
+                summary_table=summary_table,
+                target_columns=target_columns)
 
             # Return the summary result dataframe
             return summary_df
@@ -362,7 +344,7 @@ class Analyzer(enb.atable.ATable):
                 column_kwargs["column_properties"] = enb.atable.ColumnProperties(name=column_selection)
 
         # Generate some labels
-        if "y_labels_by_group_name" not in column_kwargs:
+        if "y_labels_by_group_name" not in column_kwargs or column_kwargs["y_labels_by_group_name"] is None:
             column_kwargs["y_labels_by_group_name"] = {
                 group: f"{group} ({count})" if show_count else f"{group}"
                 for group, count in summary_df[["group_label", "group_size"]].values}
@@ -406,6 +388,46 @@ class Analyzer(enb.atable.ATable):
             (f"-referencegroup__{reference_group}" if reference_group else "") +
             ".pdf")
 
+    def save_analysis_tables(self, group_by, reference_group, selected_render_modes, summary_df, summary_table,
+                             target_columns):
+        """Save csv and tex files into enb.config.options.analysis_dir
+        that summarize the results of one target_columns element.
+        If enb.config.options.analysis_dir is None or empty, no analysis
+        is performed.
+
+        By default, the CSV contains the min, max, avg, std, and median
+        of each group. Subclasses may overwrite this behavior.
+        """
+        if options.analysis_dir:
+            # Generate full csv summary
+            try:
+                render_mode_str = "__".join(selected_render_modes)
+            except TypeError:
+                render_mode_str = str(render_mode_str).replace(os.sep, "__")
+            analysis_output_path = self.get_output_pdf_path(column_selection=target_columns,
+                                                            group_by=group_by,
+                                                            reference_group=reference_group,
+                                                            output_plot_dir=options.analysis_dir,
+                                                            render_mode=render_mode_str)[:-4] + ".csv"
+            enb.logger.info(f"Saving analysis results to {analysis_output_path}")
+            os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+            summary_df[list(c for c in summary_df.columns
+                            if c not in summary_table.render_column_names
+                            and c not in ["row_created", "row_updated",
+                                          enb.atable.ATable.private_index_column])].to_csv(
+                analysis_output_path, index=False)
+
+            # Generate tex summary
+            summary_df[list(c for c in summary_df.columns
+                            if c not in summary_table.render_column_names
+                            and c not in ["row_created", "row_updated",
+                                          enb.atable.ATable.private_index_column]
+                            and (c in ("group_label", "group_size")
+                                 or c.endswith("_avg")))].style.format(escape="latex",
+                                                                       precision=self.latex_decimal_count).format_index(
+                r"\textbf{{ {} }}", escape="latex", axis=1).hide(axis="index").to_latex(
+                analysis_output_path[:-4] + ".tex")
+
     @classmethod
     def normalize_parameters(cls, f, group_by, column_to_properties, target_columns,
                              reference_group,
@@ -427,7 +449,8 @@ class Analyzer(enb.atable.ATable):
                     # Arguments normalized by the @enb.aanalysis.Analyzer.normalize_parameters,
                     # in turn manageable through .ini configuration files via the
                     # @enb.config.aini.managed_attributes decorator.
-                    selected_render_modes=None, show_global=None, show_count=True, plot_title=None,
+                    selected_render_modes=selected_render_modes,
+                    show_global=None, show_count=True, plot_title=None,
                     # Rendering options, directly passed to plotdata.render_plds_by_group
                     **render_kwargs):
             selected_render_modes = selected_render_modes if selected_render_modes is not None \
@@ -940,7 +963,10 @@ class ScalarNumericAnalyzer(Analyzer):
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
         column_kwargs["y_tick_list"] = list(range(len(column_kwargs["pds_by_group_name"])))
-        column_kwargs["y_tick_label_list"] = list(column_kwargs["pds_by_group_name"].keys())
+        column_kwargs["y_tick_label_list"] = list(
+            column_kwargs["y_labels_by_group_name"][name]
+            if "y_labels_by_group_name" in column_kwargs and name in column_kwargs["y_labels_by_group_name"]
+            else name for name in column_kwargs["pds_by_group_name"].keys())
 
         column_kwargs["y_min"] = -0.5
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
@@ -972,6 +998,8 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["global_y_label"] = ""
 
         # Calculate axis limits
+        forced_xmin = "x_min" in column_kwargs and column_kwargs["x_min"] is not None
+        forced_xmax = "x_max" in column_kwargs and column_kwargs["x_max"] is not None
         if "x_min" not in column_kwargs:
             column_kwargs["x_min"] = float(summary_df[f"{column_selection}_min"].min()) \
                 if column_to_properties[column_selection].plot_min is None else \
@@ -982,8 +1010,10 @@ class ScalarNumericAnalyzer(Analyzer):
                 column_to_properties[column_selection].plot_max
 
         margin = 0.05 * (column_kwargs["x_max"] - column_kwargs["x_min"])
-        column_kwargs["x_min"] -= margin
-        column_kwargs["x_max"] += margin
+        if not forced_xmin:
+            column_kwargs["x_min"] -= margin
+        if not forced_xmax:
+            column_kwargs["x_max"] += margin
 
         column_kwargs["combine_groups"] = True
         try:
@@ -1002,7 +1032,7 @@ class ScalarNumericAnalyzer(Analyzer):
         column_kwargs["pds_by_group_name"] = {}
         for i, name in enumerate(group_names):
             column_kwargs["pds_by_group_name"][name] = pds_by_group_name[name]
-            for pld in pds_by_group_name[name]:
+            for pld in column_kwargs["pds_by_group_name"][name]:
                 # All elements of a group are aligned along the same horizontal position
                 pld.y_values = [i] * len(pld.y_values)
             if reference_group and \
@@ -1011,7 +1041,10 @@ class ScalarNumericAnalyzer(Analyzer):
                     enb.plotdata.VerticalLine(x_position=0, alpha=0.3, color="black"))
 
         column_kwargs["y_tick_list"] = list(range(len(column_kwargs["pds_by_group_name"])))
-        column_kwargs["y_tick_label_list"] = list(column_kwargs["pds_by_group_name"].keys())
+        column_kwargs["y_tick_label_list"] = list(
+            column_kwargs["y_labels_by_group_name"][name]
+            if "y_labels_by_group_name" in column_kwargs and name in column_kwargs["y_labels_by_group_name"]
+            else name for name in column_kwargs["pds_by_group_name"].keys())
 
         column_kwargs["y_min"] = -0.5
         column_kwargs["y_max"] = len(column_kwargs["pds_by_group_name"]) - 1 + 0.5
@@ -1060,15 +1093,7 @@ class ScalarNumericSummary(AnalyzerSummary):
 
             # Compute the global dynamic range of all input samples (before grouping)
             finite_series = full_df[column_name].replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
-            if len(finite_series) > 1:
-                try:
-                    self.column_to_xmin_xmax[column_name] = scipy.stats.describe(finite_series.values).minmax
-                except FloatingPointError as ex:
-                    raise FloatingPointError(f"Invalid finite_series.values={finite_series.values}") from ex
-            elif len(finite_series) == 1:
-                self.column_to_xmin_xmax[column_name] = [finite_series.values[0], finite_series.values[0]]
-            else:
-                self.column_to_xmin_xmax[column_name] = [None, None]
+            self.column_to_xmin_xmax[column_name] = min(finite_series.values), max(finite_series.values)
 
         self.move_render_columns_back()
 
@@ -1132,12 +1157,19 @@ class ScalarNumericSummary(AnalyzerSummary):
                                 f"column {repr(column_name)} "
                                 f"found only infinite values. Several statistics will be nan for this case.")
 
-        description_df = finite_series.describe()
-        row[f"{column_name}_min"] = description_df["min"]
-        row[f"{column_name}_max"] = description_df["max"]
-        row[f"{column_name}_avg"] = description_df["mean"]
-        row[f"{column_name}_std"] = description_df["std"]
-        row[f"{column_name}_median"] = description_df["50%"]
+        if len(np.unique(finite_series.values)) > 1:
+            description_df = finite_series.describe()
+            row[f"{column_name}_min"] = description_df["min"]
+            row[f"{column_name}_max"] = description_df["max"]
+            row[f"{column_name}_avg"] = description_df["mean"]
+            row[f"{column_name}_std"] = description_df["std"]
+            row[f"{column_name}_median"] = description_df["50%"]
+        else:
+            row[f"{column_name}_min"] = finite_series.values[0]
+            row[f"{column_name}_max"] = finite_series.values[0]
+            row[f"{column_name}_avg"] = finite_series.values[0]
+            row[f"{column_name}_std"] = 0
+            row[f"{column_name}_median"] = finite_series.values[0]
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function that computes
@@ -1314,16 +1346,20 @@ class ScalarNumericSummary(AnalyzerSummary):
             enb.logger.debug("Finite and/or NaNs found in the input. "
                              f"Using {100 * (len(finite_only_series) / len(column_series))}% of the total.")
 
-        try:
-            description = scipy.stats.describe(finite_only_series)
-            quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
-        except FloatingPointError:
-            class Description:
-                minmax = [finite_only_series[0]] * 2
-                mean = finite_only_series[0]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error")
+            np.seterr(all="raise")
+            try:
+                description = scipy.stats.describe(finite_only_series)
+                quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
+            except (RuntimeWarning, FloatingPointError):
+                class Description:
+                    minmax = [finite_only_series[0]] * 2
+                    mean = finite_only_series[0]
 
-            description = Description()
-            quartiles = [finite_only_series[0]] * 3
+                description = Description()
+                quartiles = [finite_only_series[0]] * 3
+            np.seterr(all="warn")
 
         row[_column_name] = [
             enb.plotdata.ErrorLines(
@@ -1392,7 +1428,11 @@ class TwoNumericAnalyzer(Analyzer):
     show_legend = True
 
     # Specific analyzer attributes:
+    # If True, individual data points are shown
     show_individual_samples = True
+    # If True, markers of the same group in the exact same x position are 
+    # grouped into a single one with the average y value. Applies only in the 'line' render mode.
+    average_identical_x = False
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -1405,7 +1445,7 @@ class TwoNumericAnalyzer(Analyzer):
             show_global, show_count,
             # Rendering options, directly passed to plotdata.render_plds_by_group
             **column_kwargs):
-        # Update common rendering kwargs
+        # Update common rendering kwargs, including the 'pds_by_group_name' entry with the data to be plotted
         column_kwargs = super().update_render_kwargs_one_case(
             column_selection=column_selection, reference_group=reference_group,
             render_mode=render_mode,
@@ -1413,6 +1453,18 @@ class TwoNumericAnalyzer(Analyzer):
             group_by=group_by, column_to_properties=column_to_properties,
             show_global=show_global, show_count=show_count,
             **column_kwargs)
+
+        # Combine samples in the same x position
+        if self.average_identical_x and render_mode == "line":
+            for group_name, group_pds in column_kwargs["pds_by_group_name"].items():
+                for pd in group_pds:
+                    x_to_ylist = collections.defaultdict(list)
+                    for x_value, y_value in zip(pd.x_values, pd.y_values):
+                        x_to_ylist[x_value].append(y_value)
+
+                    pd.x_values = sorted(x_to_ylist.keys())
+                    pd.y_values = [sum(x_to_ylist[x]) / len(x_to_ylist[x])
+                                   for x in pd.x_values]
 
         # Update global x and y labels
         try:
@@ -1485,6 +1537,45 @@ class TwoNumericAnalyzer(Analyzer):
                                  target_columns=target_columns, group_by=group_by,
                                  include_all_group=include_all_group)
 
+    def save_analysis_tables(
+            self, group_by, reference_group, selected_render_modes, summary_df,
+            summary_table, target_columns):
+        """Save csv and tex files into enb.config.options.analysis_dir
+        that summarize the results of one target_columns element.
+        If enb.config.options.analysis_dir is None or empty, no analysis
+        is performed.
+
+        By default, the CSV contains the min, max, avg, std, and median
+        of each group. Subclasses may overwrite this behavior.
+        """
+        for render_mode in selected_render_modes:
+            if render_mode == "scatter":
+                super().save_analysis_tables(
+                    group_by=group_by,
+                    reference_group=reference_group,
+                    selected_render_modes={render_mode},
+                    summary_df=summary_df,
+                    summary_table=summary_table,
+                    target_columns=target_columns)
+            elif options.analysis_dir:
+                for column_pair in target_columns:
+                    analysis_output_path = self.get_output_pdf_path(
+                        column_selection=[column_pair],
+                        group_by=group_by,
+                        reference_group=reference_group,
+                        output_plot_dir=options.analysis_dir,
+                        render_mode=render_mode)[:-4] + ".csv"
+                    os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+                    with open(analysis_output_path, "w") as analysis_file:
+                        pds_column = summary_df[f"{repr(column_pair)}_render-{render_mode}"]
+                        for index, row in summary_df.iterrows():
+                            group_name = re.match(r"\('(.+)',\)", index).group(1)
+                            x_values = row[f"{repr(column_pair)}_render-{render_mode}"][0].x_values
+                            y_values = row[f"{repr(column_pair)}_render-{render_mode}"][0].y_values
+                            analysis_file.write(
+                                ",".join([group_name, column_pair[0]] + [str(x) for x in x_values]) + "\n")
+                            analysis_file.write(",".join(["", column_pair[1]] + [str(y) for y in y_values]) + "\n")
+
 
 class TwoNumericSummary(ScalarNumericSummary):
     """Summary table used in TwoNumericAnalyzer.
@@ -1519,7 +1610,7 @@ class TwoNumericSummary(ScalarNumericSummary):
                 try:
                     self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
                 except FloatingPointError as ex:
-                    if len(full_df) == 1:
+                    if len(full_df) == 1 or len(full_df[column_name].unique()) == 1:
                         self.column_to_xmin_xmax[column_name] = (full_df[column_name][0], full_df[column_name][0])
                     else:
                         enb.logger.error(f"column_name={column_name}")
@@ -1585,24 +1676,26 @@ class TwoNumericSummary(ScalarNumericSummary):
         _, group_label, row = args
         x_column_name, y_column_name = kwargs["column_selection"]
 
-        if len(self.reference_df) > 1:
-            row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
-            row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
-                scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
-            row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
-            row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
-                scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
-            lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
-            row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
-            row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
-        else:
-            enb.logger.warn("Cannot set correlation metrics for dataframes of length 1")
-            row[f"{x_column_name}_{y_column_name}_pearson_correlation"] = float("inf")
-            row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = float("inf")
-            row[f"{x_column_name}_{y_column_name}_spearman_correlation"] = float("inf")
-            row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = float("inf")
-            row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = float("inf")
-            row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = float("inf")
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error")
+            try:
+                row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
+                row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
+                    scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
+                row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
+                    scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
+                row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
+            except (RuntimeWarning, FloatingPointError):
+                enb.logger.info(f"{self.__class__.__name__}: Cannot set correlation metrics for dataframes of length 1")
+                row[f"{x_column_name}_{y_column_name}_pearson_correlation"] = float("inf")
+                row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = float("inf")
+                row[f"{x_column_name}_{y_column_name}_spearman_correlation"] = float("inf")
+                row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = float("inf")
+                row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = float("inf")
+                row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = float("inf")
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function that computes
@@ -1947,20 +2040,23 @@ class DictNumericSummary(AnalyzerSummary):
                         continue
                 else:
                     x_values.append(x)
-                    key_values.append(k)
-                try:
-                    description = scipy.stats.describe(values)
-                    min_values.append(description.minmax[0])
-                    max_values.append(description.minmax[1])
-                    avg_values.append(description.mean)
-                    std_values.append(math.sqrt(description.variance))
-                    median_values.append(values.median())
-                except:
-                    min_values.append(values.min())
-                    max_values.append(values.min())
-                    avg_values.append(values.mean())
-                    std_values.append(values.std())
-                    median_values.append(values.median())
+                key_values.append(k)
+
+                with warnings.catch_warnings():
+                    try:
+                        warnings.filterwarnings("error")
+                        description = scipy.stats.describe(values)
+                        min_values.append(description.minmax[0])
+                        max_values.append(description.minmax[1])
+                        avg_values.append(description.mean)
+                        std_values.append(math.sqrt(description.variance))
+                        median_values.append(values.median())
+                    except (FloatingPointError, RuntimeWarning):
+                        min_values.append(values.min())
+                        max_values.append(values.min())
+                        avg_values.append(values.mean())
+                        std_values.append(values.std() if len(np.unique(values)) > 1 else 0)
+                        median_values.append(values.median())
 
         for label, data_list in [("min", min_values),
                                  ("max", max_values),
@@ -2001,7 +2097,10 @@ class DictNumericSummary(AnalyzerSummary):
 
         key_values, avg_values = zip(*sorted(row[f"{column_name}_avg"].items()))
 
-        x_values = range(len(key_values))
+        if _self.analyzer.key_to_x:
+            x_values = [_self.analyzer.key_to_x[k] for k in key_values]
+        else:
+            x_values = range(len(key_values))
 
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
@@ -2143,7 +2242,6 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 y_column_label = enb.atable.clean_column_name(y_column_name)
 
             if not column_kwargs["combine_groups"] and len(column_kwargs["pds_by_group_name"]) > 1:
-                y_labels_by_group_name = dict()
                 for group_name, pds in column_kwargs["pds_by_group_name"].items():
                     for pd in (p for p in pds if isinstance(p, enb.plotdata.Histogram2D)):
                         pd.colormap_label = f"{pd.colormap_label}" \
@@ -2152,9 +2250,11 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                                             + (f"\n" if pd.colormap_label else "") + \
                                             f"{column_kwargs['y_labels_by_group_name'][group_name]}"
 
-            column_kwargs["y_labels_by_group_name"] = {
-                group_name: y_column_label
-                for group_name in column_kwargs["pds_by_group_name"].keys()}
+            if "y_labels_by_group_name" not in column_kwargs \
+                    or column_kwargs["y_labels_by_group_name"] is None:
+                column_kwargs["y_labels_by_group_name"] = {
+                    group_name: y_column_label
+                    for group_name in column_kwargs["pds_by_group_name"].keys()}
 
         return column_kwargs
 

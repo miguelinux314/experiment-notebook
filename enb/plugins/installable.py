@@ -8,7 +8,6 @@ import builtins
 import os
 import sys
 import glob
-import collections
 import importlib
 import inspect
 import shutil
@@ -16,6 +15,8 @@ import requests
 import subprocess
 import textwrap
 import collections
+import pandas as pd
+import hashlib
 import enb.misc
 
 
@@ -147,7 +148,19 @@ class Installable(metaclass=InstallableMeta):
         for url, name in cls.contrib_download_url_name:
             output_path = os.path.join(installation_dir, name)
             cached_path = os.path.join(cache_dir, name)
-            if not os.path.isfile(cached_path) or enb.config.options.force:
+            try:
+                if os.path.isfile(cached_path):
+                    contrib_sha256_df = pd.read_csv(
+                        os.path.join(enb.enb_installation_dir, "config", "contrib_sha256.csv"))
+                    expected_sha256 = contrib_sha256_df[contrib_sha256_df["file"] == name]["sha256"].values[0]
+                    hasher = hashlib.sha256()
+                    with open(cached_path, "rb") as cached_file:
+                        hasher.update(cached_file.read())
+                    outdated_contrib = expected_sha256 != hasher.hexdigest()
+            except (KeyError, IndexError):
+                outdated_contrib = False
+
+            if not os.path.isfile(cached_path) or enb.config.options.force or outdated_contrib:
                 with enb.logger.verbose_context(f"Downloading {url} into cache"):
                     with open(cached_path, "wb") as output_file:
                         output_file.write(requests.get(url, allow_redirects=True).content)
@@ -186,12 +199,78 @@ class Installable(metaclass=InstallableMeta):
         """
         return textwrap.dedent(cls.__doc__)
 
+    @classmethod
+    def print_info(cls):
+        """Print information about this installable.
+        """
+        indentation_string = " " * (7 + len(" :: "))
+        if cls.authors:
+            print(textwrap.indent
+                  (f"* Plugin author{'s' if len(cls.authors) != 1 else ''}:",
+                   indentation_string))
+            for author in cls.authors:
+                print(textwrap.indent(f"  - {author}", indentation_string))
+        if cls.contrib_authors:
+            print(textwrap.indent(
+                f"* External software author{'s' if len(cls.contrib_authors) != 1 else ''}:",
+                indentation_string))
+            for author in cls.contrib_authors:
+                print(textwrap.indent(f"  - {author}", indentation_string))
+        if cls.contrib_reference_urls:
+            print(textwrap.indent(
+                f"* Reference URL{'s' if len(cls.contrib_reference_urls) != 1 else ''}:",
+                indentation_string))
+            for url in cls.contrib_reference_urls:
+                print(textwrap.indent(f"  - {url}", indentation_string))
+        if cls.contrib_download_url_name:
+            print(textwrap.indent(
+                f"* External software URL{'s' if len(cls.contrib_download_url_name) != 1 else ''}:",
+                indentation_string))
+            for url, name in cls.contrib_download_url_name:
+                print(textwrap.indent(f"  - {url}", indentation_string))
+                print(textwrap.indent(f"     -> <installation_dir>/{name}", indentation_string))
+        if cls.required_pip_modules:
+            print(textwrap.indent(f"* Automatically installed pip "
+                                  f"{'libraries' if len(cls.required_pip_modules) > 1 else 'library'}:",
+                                  indentation_string))
+            for name in cls.required_pip_modules:
+                print(textwrap.indent(f"  - {name}", indentation_string))
+        if cls.extra_requirements_message:
+            print(textwrap.indent(f"* WARNING: some requirements might need to be manually satisfied:",
+                                  indentation_string))
+            print(textwrap.indent(cls.extra_requirements_message.strip(),
+                                  indentation_string + "    "))
+        if cls.tags:
+            print(textwrap.indent(f"* Tag{'s' if len(cls.tags) != 1 else ''}: "
+                                  f"{', '.join(repr(t) for t in cls.tags)}",
+                                  indentation_string))
+        if cls.tested_on:
+            print(textwrap.indent(f"* Tested on: {', '.join(sorted(cls.tested_on))}",
+                                  indentation_string))
+        print()
+
+
+def install(name, target_dir=None, overwrite=False, automatic_import=True):
+    """Install an Installable by name into target_dir.
+    :param target_dir: If target_dir is None, it is set to "plugins/<plugin_name>" by default.
+    :param overwrite: If overwrite is False and target_dir already exists, no action is taken.
+    :param automatic_import: If True, the installable is imported as a module.
+    """
+    target_dir = os.path.join("plugins", name) if target_dir is None else target_dir
+    if overwrite:
+        shutil.rmtree(target_dir, ignore_errors=True)
+    if not os.path.exists(target_dir):
+        installable = get_installable_by_name(name=name)
+        installable.install(installation_dir=target_dir, overwrite_destination=False)
+    if automatic_import:
+        importlib.import_module(".".join(target_dir.split(os.sep)))
+
 
 def import_all_installables():
     """Import all public enb Installables.
 
     These are recognized by containing a __plugin__.py file in
-    them and a installable definition.
+    them and an installable definition.
     """
 
     for plugin_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "**",

@@ -2,6 +2,7 @@ include enb/aanalysis.py
 include enb/atable.py
 include enb/config/aini.py
 include enb/config/aoptions.py
+include enb/config/contrib_sha256.csv
 include enb/config/enb.ini
 include enb/config/__init__.py
 include enb/config/mpl_styles/README.md
@@ -35,6 +36,9 @@ include enb/plugins/plugin_ccsds124/ccsds124_codecs.py
 include enb/plugins/plugin_ccsds124/.gitignore
 include enb/plugins/plugin_ccsds124/__plugin__.py
 include enb/plugins/plugin_ccsds124/README.md
+include enb/plugins/plugin_emporda/emporda_codec.py
+include enb/plugins/plugin_emporda/emporda.jar
+include enb/plugins/plugin_emporda/__plugin__.py
 include enb/plugins/plugin_fapec/fapec_codec.py
 include enb/plugins/plugin_fapec/.gitignore
 include enb/plugins/plugin_fapec/__plugin__.py
@@ -68,7 +72,6 @@ include enb/plugins/plugin_hdf5/__plugin__.py
 include enb/plugins/plugin_hevc/hevc_codec.py
 include enb/plugins/plugin_hevc/hevc_lossless_400.cfg
 include enb/plugins/plugin_hevc/hevc_lossy_400.cfg
-include enb/plugins/plugin_hevc/hevc_lossy_400_ver2.cfg
 include enb/plugins/plugin_hevc/Makefile.darwin
 include enb/plugins/plugin_hevc/Makefile.linux
 include enb/plugins/plugin_hevc/__plugin__.py
@@ -123,6 +126,10 @@ include enb/plugins/plugin_spdp/__plugin__.py
 include enb/plugins/plugin_spdp/README.txt
 include enb/plugins/plugin_spdp/SPDP_11.c
 include enb/plugins/plugin_spdp/spdp_codec.py
+include enb/plugins/plugin_speck/__plugin__.py
+include enb/plugins/plugin_speck/speck_codec.py
+include enb/plugins/plugin_speck/SpeckCode.jar
+include enb/plugins/plugin_speck/SpeckDecode.jar
 include enb/plugins/plugin_v2f/__plugin__.py
 include enb/plugins/plugin_v2f/v2f_codecs.py
 include enb/plugins/plugin_vvc/Makefile.darwin
@@ -130,8 +137,10 @@ include enb/plugins/plugin_vvc/Makefile.linux
 include enb/plugins/plugin_vvc/__plugin__.py
 include enb/plugins/plugin_vvc/README.md
 include enb/plugins/plugin_vvc/vvc_codec.py
-include enb/plugins/plugin_vvc/vvc_lossless_400.cfg
-include enb/plugins/plugin_vvc/vvc_lossy_400.cfg
+include enb/plugins/plugin_vvc/vvc_lossless_400_inter.cfg
+include enb/plugins/plugin_vvc/vvc_lossless_400_intra.cfg
+include enb/plugins/plugin_vvc/vvc_lossless_400_onecomponent.cfg
+include enb/plugins/plugin_vvc/vvc_lossy_400_onecomponent.cfg
 include enb/plugins/plugin_zfp/Makefile.linux
 include enb/plugins/plugin_zfp/__plugin__.py
 include enb/plugins/plugin_zfp/README.md
@@ -147,8 +156,6 @@ include enb/plugins/template_analysis_gallery_example/generate_gallery.py.enbt
 include enb/plugins/template_analysis_gallery_example/input_csv/2d_data_example.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/hevc_frame_prediction.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/iris_dataset.csv
-include enb/plugins/template_analysis_gallery_example/input_csv/lossy_persistence_example/CCSDS123LossyCompressionExperiment_persistence.csv
-include enb/plugins/template_analysis_gallery_example/input_csv/lossy_persistence_example/ImagePropertiesTable_persistence.csv
 include enb/plugins/template_analysis_gallery_example/__plugin__.py
 include enb/plugins/template_basic_workflow_example/basic_workflow.py
 include enb/plugins/template_basic_workflow_example/data/wiki/a_turing.txt

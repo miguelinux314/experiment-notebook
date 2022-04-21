@@ -41,7 +41,7 @@ class AvailabilityExperiment(enb.experiment.Experiment):
         file_path, codec = self.index_to_path_task(index)
         try:
             with tempfile.NamedTemporaryFile() as tmp_compressed_file, \
-                    tempfile.NamedTemporaryFile() as tmp_reconstructed_file:
+                    tempfile.NamedTemporaryFile(suffix=".raw") as tmp_reconstructed_file:
                 os.remove(tmp_compressed_file.name)
                 os.remove(tmp_reconstructed_file.name)
                 codec.compress(
@@ -184,7 +184,6 @@ if __name__ == '__main__':
 
     all_keys = sorted(list(summary_df.iloc[0]["type_to_availability"].keys()))
 
-
     selected_keys = all_keys
     key_to_x = {k: i for i, k in enumerate(selected_keys)}
     for i in range(4, len(selected_keys), 4):
@@ -200,16 +199,17 @@ if __name__ == '__main__':
         x_tick_label_list=selected_keys,
         x_tick_label_angle=90,
         fig_width=10,
-        fig_height=15,
+        fig_height=25,
         y_tick_list=CodecSummaryTable.availability_modes,
         y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
                            CodecSummaryTable.availability_modes],
-        group_row_margin=-0.25,
+        group_row_margin=-0.35,
         y_min=-0.3,
         y_max=2.3,
         global_x_label="Data type",
         show_count=False,
-        global_y_label="Availability"
+        global_y_label="",
+        show_grid=True,
     )
 
     log_event("Test all codecs successfully completed")

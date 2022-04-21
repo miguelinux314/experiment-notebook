@@ -3,7 +3,7 @@ import enb.plugins
 
 class LZ4Plugin(enb.plugins.PluginMake):
     name = "lz4"
-    label = "Wraper for a LZ4 codec"
+    label = "Wrapper for a LZ4 codec"
     tags = {"data compression", "codec"}
     contrib_authors = ["Yann Collet"]
     contrib_reference_urls = ["https://lz4.github.io/lz4/"]

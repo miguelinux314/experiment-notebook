@@ -374,6 +374,121 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
+class JavaWrapperCodec(WrapperCodec):
+    """Wrapper for `*.jar` codecs. The compression and decompression parameters are those that need to be
+    passed to the 'java' command.
+
+    The `compressor_jar` and `decompressor_jar` attributes are added upon initialization
+    based on the params to `__init__`.
+    """
+
+    def __init__(self, compressor_jar, decompressor_jar, param_dict=None):
+        assert shutil.which("java") is not None, \
+            f"The 'java' program was not found in the path, but is required by {self.__class__.__name__}. " \
+            f"Please (re)install a JRE in the path and try again."
+        super().__init__(compressor_path=shutil.which("java"),
+                         decompressor_path=shutil.which("java"),
+                         param_dict=param_dict)
+        self.compressor_jar = compressor_jar
+        self.decompressor_jar = decompressor_jar
+
+
+class GiciLibHelper:
+    """Definition of helper methods that can be used with software based on the GiciLibs
+    (see gici.uab.cat/GiciWebPage/downloads.php).
+    """
+
+    def file_info_to_data_str(self, original_file_info):
+        if original_file_info["bytes_per_sample"] == 1:
+            data_type_str = "1"
+        elif original_file_info["bytes_per_sample"] == 2:
+            if original_file_info["signed"]:
+                data_type_str = "3"
+            else:
+                data_type_str = "2"
+        elif original_file_info["bytes_per_sample"] == 4:
+            if original_file_info["signed"]:
+                return "4"
+            else:
+                raise ValueError("32-bit samples are supported, by they must be signed.")
+        else:
+            raise ValueError(f"Invalid data type, not supported by {self.__class__.__name__}: {original_file_info}")
+        return data_type_str
+
+    def file_info_to_endianness_str(self, original_file_info):
+        return "0" if original_file_info["big_endian"] else "1"
+
+    def get_gici_geometry_str(self, original_file_info):
+        """Get a string to be passed to the -ig or -og parameters.
+        The '-ig' or '-og' part is not included in the returned string.
+        """
+        return f"{original_file_info['component_count']} {original_file_info['height']} {original_file_info['width']} " \
+               f"{self.file_info_to_data_str(original_file_info=original_file_info)} " \
+               f"{self.file_info_to_endianness_str(original_file_info=original_file_info)} 0 "
+
+
+class LittleEndianWrapper(WrapperCodec):
+    """Wrapper with identical semantics as WrapperCodec, but performs a big endian to little endian 
+    conversion for (big-endian) 2-byte and 4-byte samples. If the input is flagged as little endian,
+    e.g., if -u16le- is in the original file name, then no transformation is performed.
+    
+    Codecs inheriting from this class automatically receive little-endian samples,
+    and are expected to reconstruct little-endian files (which are then translated back
+    to big endian if and only if the original image was flagged as big endian.
+    """
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        if original_file_info["big_endian"] and original_file_info["bytes_per_sample"] > 1:
+            with tempfile.NamedTemporaryFile(
+                    dir=options.base_tmp_dir,
+                    suffix=f"-u{8 * original_file_info['bytes_per_sample']}le-{original_file_info['component_count']}"
+                           f"x{original_file_info['height']}"
+                           f"x{original_file_info['width']}.raw") as reversed_endian_file:
+                be_img = enb.isets.load_array_bsq(file_or_path=original_path,
+                                                  image_properties_row=original_file_info)
+                reversed_file_info = dict(original_file_info)
+                reversed_file_info["big_endian"] = False
+                sign_str = "i" if original_file_info["signed"] else "u"
+                enb.isets.dump_array_bsq(array=be_img.astype(f"<{sign_str}{original_file_info['bytes_per_sample']}"),
+                                         file_or_path=reversed_endian_file.name)
+                compression_results = super().compress(
+                    original_path=reversed_endian_file.name,
+                    compressed_path=compressed_path,
+                    original_file_info=reversed_file_info)
+                compression_results.original_path = original_path
+                return compression_results
+
+        else:
+            return super().compress(
+                original_path=original_path,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info)
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        if original_file_info["big_endian"] and original_file_info["bytes_per_sample"] > 1:
+            with tempfile.NamedTemporaryFile(
+                    dir=options.base_tmp_dir,
+                    suffix=f"-u{8 * original_file_info['bytes_per_sample']}le-{original_file_info['component_count']}"
+                           f"x{original_file_info['height']}"
+                           f"x{original_file_info['width']}.raw") as reversed_endian_file:
+                reversed_file_info = dict(original_file_info)
+                reversed_file_info["big_endian"] = False
+                decompression_results = super().decompress(compressed_path=compressed_path,
+                                                           reconstructed_path=reversed_endian_file.name,
+                                                           original_file_info=reversed_file_info)
+                le_img = enb.isets.load_array_bsq(file_or_path=reversed_endian_file.name,
+                                                  image_properties_row=reversed_file_info)
+                sign_str = "i" if original_file_info["signed"] else "u"
+                enb.isets.dump_array_bsq(array=le_img.astype(f">{sign_str}{original_file_info['bytes_per_sample']}"),
+                                         file_or_path=reconstructed_path)
+                decompression_results.reconstructed_path = reconstructed_path
+                return decompression_results
+        else:
+            return super().decompress(compressed_path=compressed_path,
+                                      reconstructed_path=reconstructed_path,
+                                      original_file_info=original_file_info)
+
+
 class FITSWrapperCodec(WrapperCodec):
     """Raw images are coded into FITS before compression with the wrapper,
     and FITS is decoded to raw after decompression.
@@ -579,6 +694,7 @@ class CompressionExperiment(experiment.Experiment):
             """Perform the actual compression experiment for the selected row.
             """
             if self._compression_results is None:
+                os.makedirs(options.base_tmp_dir, exist_ok=True)
                 _, tmp_compressed_path = tempfile.mkstemp(
                     dir=options.base_tmp_dir,
                     prefix=f"compressed_{os.path.basename(self.file_path)}_")
@@ -591,7 +707,7 @@ class CompressionExperiment(experiment.Experiment):
                         enb.logger.info(
                             f"Executing compression {self.codec.name} on {self.file_path} "
                             f"[rep{repetition_index + 1}/{options.repetitions}]")
-                        time_before = time.time()
+                        time_before_ns = time.time_ns()
                         self._compression_results = self.codec.compress(original_path=self.file_path,
                                                                         compressed_path=tmp_compressed_path,
                                                                         original_file_info=self.image_info_row)
@@ -601,9 +717,9 @@ class CompressionExperiment(experiment.Experiment):
                             raise CompressionException(
                                 original_path=self.file_path, compressed_path=tmp_compressed_path,
                                 file_info=self.image_info_row,
-                                output=f"Compression didn't produce a file (or it was empty) {self.file_path}")
+                                output=f"Compression of {self.file_path} didn't produce a file (or it was empty)")
 
-                        wall_compression_time = time.time() - time_before
+                        wall_compression_time = (time.time_ns() - time_before_ns) / 1e9
                         if self._compression_results is None:
                             enb.logger.info(f"[W]arning: codec {self.codec.name} did not report execution times. "
                                             f"Using wall clock instead (might be inaccurate)")
@@ -621,7 +737,7 @@ class CompressionExperiment(experiment.Experiment):
                             enb.logger.info(f"Storing compressed bitstream for {self.file_path} and {self.codec} "
                                             f"at {repr(output_path)}")
                             shutil.copyfile(tmp_compressed_path, output_path)
-                        
+
                         if repetition_index < options.repetitions - 1:
                             os.remove(tmp_compressed_path)
 
@@ -639,7 +755,8 @@ class CompressionExperiment(experiment.Experiment):
             if self._decompression_results is None:
                 _, tmp_reconstructed_path = tempfile.mkstemp(
                     prefix=f"reconstructed_{os.path.basename(self.file_path)}",
-                    dir=options.base_tmp_dir)
+                    dir=options.base_tmp_dir,
+                    suffix=".raw")
                 try:
                     measured_times = []
                     with enb.logger.info_context(
@@ -649,13 +766,13 @@ class CompressionExperiment(experiment.Experiment):
                             enb.logger.info(f"Executing decompression {self.codec.name} on {self.file_path} "
                                             f"[rep{repetition_index + 1}/{options.repetitions}]")
 
-                            time_before = time.time()
+                            time_before = time.time_ns()
                             self._decompression_results = self.codec.decompress(
                                 compressed_path=self.compression_results.compressed_path,
                                 reconstructed_path=tmp_reconstructed_path,
                                 original_file_info=self.image_info_row)
 
-                            wall_decompression_time = time.time() - time_before
+                            wall_decompression_time = (time.time_ns() - time_before) / 1e9
                             if self._decompression_results is None:
                                 enb.logger.info(
                                     f"Codec {self.codec.name} did not report execution times. "
@@ -684,7 +801,7 @@ class CompressionExperiment(experiment.Experiment):
                                 enb.logger.info(f"Storing reconstructed copy of {self.file_path} with {self.codec} "
                                                 f"at {repr(output_path)}")
                                 shutil.copyfile(tmp_reconstructed_path, output_path)
-                            
+
                             if repetition_index < options.repetitions - 1:
                                 os.remove(tmp_reconstructed_path)
                     self._decompression_results.decompression_time_seconds = sum(measured_times) / len(measured_times)
@@ -858,7 +975,7 @@ class CompressionExperiment(experiment.Experiment):
     def set_comparison_results(self, index, row):
         """Perform a compression-decompression cycle and store the comparison results
         """
-        file_path, codec_name = index
+        file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         assert self.codec_results.compression_results.compressed_path == self.codec_results.decompression_results.compressed_path
         try:
@@ -884,6 +1001,8 @@ class CompressionExperiment(experiment.Experiment):
 
     @atable.column_function("bpppc", label="Compressed data rate (bpppc)", plot_min=0)
     def set_bpppc(self, index, row):
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         try:
             row[_column_name] = 8 * row["compressed_size_bytes"] / row.image_info_row["samples"]
         except KeyError as ex:
@@ -895,6 +1014,8 @@ class CompressionExperiment(experiment.Experiment):
         """Set the compression ratio calculated based on the dynamic range of the
         input samples, as opposed to 8*bytes_per_sample.
         """
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         row[_column_name] = (row.image_info_row["dynamic_range_bits"] * row.image_info_row["samples"]) \
                             / (8 * row["compressed_size_bytes"])
 
@@ -904,6 +1025,8 @@ class CompressionExperiment(experiment.Experiment):
          atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
                                  label="Compression efficiency (2B entropy)", plot_min=0)])
     def set_efficiency(self, index, row):
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         compression_efficiency_1byte_entropy = \
             row.image_info_row["entropy_1B_bps"] * row.image_info_row["size_bytes"] \
             / (row["compressed_size_bytes"] * 8)
@@ -954,8 +1077,8 @@ class LossyCompressionExperiment(CompressionExperiment):
     def set_PSNR_nominal(self, index, row):
         """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
         """
-        path, task = self.index_to_path_task(index)
-
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         if row.image_info_row["float"]:
             # TODO: use the float type dynamic range?
             row[_column_name] = float("inf")
@@ -968,6 +1091,8 @@ class LossyCompressionExperiment(CompressionExperiment):
     def set_PSNR_dynamic_range(self, index, row):
         """Set the PSNR assuming dynamic range given by dynamic_range_bits.
         """
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
         row[_column_name] = 20 * math.log10(max_error / math.sqrt(row["mse"])) \
             if row["mse"] > 0 else float("inf")
@@ -986,8 +1111,8 @@ class StructuralSimilarity(CompressionExperiment):
         atable.ColumnProperties(name="ssim", label="SSIM", plot_max=1),
         atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_max=1)])
     def set_StructuralSimilarity(self, index, row):
-
-        # TODO: Would it be possible to call to isets.load_array_bsq and change axes as necessary?
+        file_path, codec_name = self.index_to_path_task(index)
+        row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         original_array = np.fromfile(self.codec_results.compression_results.original_path,
                                      dtype=self.codec_results.numpy_dtype)
         original_array = np.reshape(original_array,

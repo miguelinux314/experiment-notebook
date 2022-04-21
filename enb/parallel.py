@@ -160,15 +160,15 @@ def fallback_get_completed_pending_ids(ids, timeout=0):
 class ProgressiveGetter:
     """When an instance is created, the computation of the requested list of calls is started
     in parallel the background (unless they are already running).
-
+    
     The returned instance is an iterable object. Each to next() with this instance will either
     return the instance if any tasks are still running, or raise StopIteration if all are complete.
     Therefore, instances of this class can be used as the right operand of `in` in for loops.
-
+    
     A main application of this for-loop approach is to periodically run a code snippet (e.g., for logging)
     while the computation is performed in the background. The loop will continue until all tasks are completed.
     One can then call `ray.get(ray_id_list)` and retrieve the obtained results without any expected delay.
-
+    
     Note that the for-loop body will always be executed at least once, namely after every potentially
     blocking call to :meth:`ray.wait`.
     """
@@ -178,15 +178,17 @@ class ProgressiveGetter:
         Start the background computation of ids returned by start calls of methods decorated with enb.paralell.parallel.
         After this call, the object is ready to receive next() requests.
 
-        :param id_list: list ids whose values are to be returned
+        :param id_list: list ids whose values are to be returned.
         :param weight_list: if not None, a list of the same length as ray_id list, which contains
           nonnegative values that describe the weight of each task. If provided, they should be highly correlated
           with the computation time of each associated task to provide accurate completion time estimations.
         :param iteration_period: a non-negative value that determines the wait period allowed for ray to
           obtain new results when next() is used. When using this instance in a for loop, it determines approximately
           the periodicity with which the loop body will be executed.
-        :param if not None, it should be bar instance from the alive_progress library, while inside its with-context.
-           If it is provided, it is called with the fraction of available tasks on each call to update_finished_tasks 
+        :param alive_bar: if not None, it should be bar instance from the alive_progress library, 
+           while inside its with-context.
+           If it is provided, it is called with the fraction of available tasks on each call 
+           to `update_finished_tasks`. 
         """
         self.alive_bar = alive_bar
         iteration_period = float(iteration_period)

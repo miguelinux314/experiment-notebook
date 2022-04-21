@@ -10,6 +10,7 @@ import inspect
 import shutil
 import platform
 import subprocess
+import enb
 
 from .installable import Installable
 
@@ -51,6 +52,8 @@ class Plugin(Installable):
         super().install(installation_dir=installation_dir,
                         overwrite_destination=True)
         print(f"Plugin {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
+        if enb.config.options.verbose:
+            cls.print_info()
 
     @classmethod
     def build(cls, installation_dir):
@@ -109,3 +112,11 @@ class PluginMake(Plugin):
         else:
             raise ValueError(f"Cannot build {repr(cls)}: no valid makefile "
                              f"in {installation_dir}.")
+
+class PluginJava(Plugin):
+    @classmethod
+    def build(cls, installation_dir):
+        if shutil.which("java") is None:
+            enb.logger.warn(f"Warning! The 'java' program was not found in the path, but is required by the {repr(cls.name)} plugin. "
+                            f"Installing anyway...")
+        super().build(installation_dir=installation_dir)

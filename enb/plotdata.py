@@ -11,6 +11,7 @@ import glob
 import matplotlib
 import matplotlib.patheffects
 import matplotlib.patches
+import natsort
 
 import enb.atable
 
@@ -26,8 +27,8 @@ import enb
 from enb.config import options
 from enb.misc import CircularList
 
-marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "2", "H", "X", "1", "d", "<", ">", "+"])
-color_cycle = CircularList([f"C{i}" for i in list(range(4)) + list(range(6, 10)) + list(range(5, 6))])
+marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "d", "H", "d", "<", ">", "+"])
+color_cycle = CircularList([f"C{i}" for i in [0, 1, 2, 3, 6, 7, 9, 8, 5, 10]])
 pattern_cycle = CircularList(["//", "\\\\", "OO", "**"])
 
 
@@ -291,7 +292,7 @@ class ErrorLines(PlottableData2D):
 
 
 class Rectangle(PlottableData2D):
-    """Render a rectangle in a given position.
+    """Render a rectangle (line only) in a given position.
     """
     alpha = 0.5
 
@@ -745,7 +746,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param style_list: list of valid style arguments recognized by `matplotlib.use`. Each element can be any
       of matplotlib's default styles or a path to a valid matplotlibrc. Styles are applied from left to right, 
       overwriting definitions without warning. By default, matplotlib's "default" mode is applied. 
-    """    
+    """
     with enb.logger.info_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
                                  sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
         if len(pds_by_group_name) < 1:
@@ -766,19 +767,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         y_max = column_properties.hist_max if y_max is None else y_max
 
         if group_name_order is None:
-            def normalize_group_label(group_name):
-                if isinstance(group_name, str):
-                    parts = group_name.strip().lower().split()
-                    for i in range(len(parts)):
-                        try:
-                            parts[i] = int(parts[i])
-                        except ValueError:
-                            pass
-                    return parts
-                else:
-                    return group_name
-
-            sorted_group_names = sorted(pds_by_group_name.keys(), key=normalize_group_label)
+            sorted_group_names = natsort.natsorted(pds_by_group_name.keys(), alg=natsort.IGNORECASE)
             if str(sorted_group_names[0]).lower() == "all":
                 sorted_group_names = sorted_group_names[1:] + [str(n) for n in sorted_group_names[:1]]
         else:
@@ -802,7 +791,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 if show_legend:
                     if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
                         try:
-                            pds_by_group_name[g][0].label = g
+                            pds_by_group_name[g][0].label = \
+                                y_labels_by_group_name[g] if y_labels_by_group_name and g in y_labels_by_group_name else g
                         except IndexError:
                             # Ignore empty groups
                             continue
@@ -811,6 +801,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         y_labels_by_group_name = {g: g for g in sorted_group_names} \
             if y_labels_by_group_name is None else y_labels_by_group_name
+        
         if color_by_group_name is None:
             color_by_group_name = {}
             for i, group_name in enumerate(sorted_group_names):
@@ -958,7 +949,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             if column_properties and column_properties.hist_label_dict is not None:
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
-                x_tick_labels = [column_properties.hist_label_dict[x] for x in x_tick_values]
+                x_tick_label_list = [column_properties.hist_label_dict[x] for x in x_tick_values]
 
             group_row_margin = group_row_margin if group_row_margin is not None else float(
                 enb.config.options.group_row_margin)
@@ -1001,6 +992,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             show_grid = options.show_grid if show_grid is None else show_grid
             show_subgrid = options.show_subgrid if show_subgrid is None else show_subgrid
             ca = plt.gca()
+
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
                 plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
