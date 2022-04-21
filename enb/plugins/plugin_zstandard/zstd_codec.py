@@ -26,7 +26,8 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
         return "Zstandard"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-{self.param_dict['compression_level']} -f {original_path}  -o {compressed_path}"
-
+        os.system(f" zstd --train {original_path} --optimize-cover -o {os.path.join(os.path.dirname(__file__), 'dict')}") 
+        return f"--ultra -{self.param_dict['compression_level']}  -D {os.path.join(os.path.dirname(__file__), 'dict')}  -f {original_path}  -o {compressed_path}"
+        
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-d -f {compressed_path} -o {reconstructed_path}"
+        return f"-d -D {os.path.join(os.path.dirname(__file__), 'dict')}  -f {compressed_path} -o {reconstructed_path}"
