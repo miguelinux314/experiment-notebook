@@ -267,38 +267,50 @@ class FAPEC_HPA(FAPEC_Abstract):
 
 class FAPEC_FITS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
     def __init__(self,
-                 bin_dir=None):
-        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+                 bin_dir=None, 
+                 chunk_size_str="8M", 
+                 adaptiveness_block_length=512, 
+                 dwt=None, 
+                 od=None, 
+                 param_dict=None):
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
         param_dict = dict() if param_dict is None else param_dict
+        param_dict["chunk_size_str"] = "8M"
+        param_dict["adaptiveness_block_length"] = 512
         param_dict["od"] = od
         param_dict["dwt"] = dwt
         super().__init__(compressor_path=os.path.join(bin_dir, "fapec"),
                          decompressor_path=os.path.join(bin_dir, "unfapec"),
                          param_dict=dict())
-
-    @property
-    def name(self):
-        """Don't include the binary signature
         """
-        name = f"{self.__class__.__name__} od {self.param_dict['od'] } dwt {self.param_dict['dwt']}"
-        return name
-
+        :param od: simple linear filter (2-4)
+        :param dwt: Discrete (Integer) Wavelet Transform, with the rest of options indicating
+               Width (1-8396800 px), Height (0-8396799), Bands (1-32771),
+               Losses (0=lossless, 1-16=near-lossless), Meaningful bits,
+               and bands Format (0=BIP, 1=BIL, 2=BSQ, 3=Bayer)
+        """
     @property
     def label(self):
         return "FAPEC-FITS"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        if self.param_dict["od"] ==0:
-            if self.param_dict["dwt"] ==0:
-                return f"-chunk 8M -bl 512 -dtype 16 -be -o {compressed_path} -ow {original_path} "
-            elif self.param_dict["dwt"] ==1:
-                return f"-chunk 8M -bl 512 -dtype 16 -be -od 2 -dwt {original_file_info['width']} {original_file_info['height']}  {original_file_info['component_count']} 0 {original_file_info['dynamic_range_bits']} 0 -o {compressed_path} -ow {original_path} "                
-        else:
-            if self.param_dict["dwt"] ==0:
-                return f"-chunk 8M -bl 512 -dtype 16 -be -od 2 -o {compressed_path} -ow {original_path} "
-            elif self.param_dict["dwt"] ==1:
-                return f"-chunk 8M -bl 512 -dtype 16 -be -dwt {original_file_info['width']} {original_file_info['height']}  {original_file_info['component_count']} 0 {original_file_info['dynamic_range_bits']} 0 -o {compressed_path} -ow {original_path} "  
-
+        invocation=f"-chunk {self.param_dict['chunk_size_str']} -bl {self.param_dict['adaptiveness_block_length']} -dtype {original_file_info['dynamic_range_bits']} "
+           
+        if original_file_info["signed"]:
+            invocation += " -signed "
+        if original_file_info["big_endian"]:
+            invocation += " -be "
+        
+        if self.param_dict["od"] > 0:
+            invocation += f" -od {self.param_dict['od']}  "
+            
+        if self.param_dict["dwt"] > 0:
+            invocation += f" -dwt {original_file_info['width']} {original_file_info['height']}  {original_file_info['component_count']} 0 {original_file_info['dynamic_range_bits']} 0 "
+            
+        invocation += f"-o {compressed_path} -ow {original_path} "
+        
+        return invocation
+        
+        return invocation
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -o {reconstructed_path} -ow {compressed_path} "
