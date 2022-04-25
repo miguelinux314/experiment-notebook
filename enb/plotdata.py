@@ -76,12 +76,14 @@ class PlottableData:
         if self.legend_position == "title":
             legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                                  ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+            facecolor = (1,1,1,0)
         else:
             legend = axes.legend(loc=self.legend_position if self.legend_position is not None else "best",
                                  ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+            facecolor = (1, 1, 1, 1)
 
         legend.get_frame().set_alpha(None)
-        legend.get_frame().set_facecolor((1, 1, 1, 0))
+        legend.get_frame().set_facecolor(facecolor)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(color={repr(self.color)})"
@@ -804,7 +806,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
                         try:
                             pds_by_group_name[g][0].label = \
-                                y_labels_by_group_name[g] if y_labels_by_group_name and g in y_labels_by_group_name else g
+                                y_labels_by_group_name[
+                                    g] if y_labels_by_group_name and g in y_labels_by_group_name else g
                             pds_by_group_name[g][0].legend_position = legend_position
                         except IndexError:
                             # Ignore empty groups
@@ -814,7 +817,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         y_labels_by_group_name = {g: g for g in sorted_group_names} \
             if y_labels_by_group_name is None else y_labels_by_group_name
-        
+
         if color_by_group_name is None:
             color_by_group_name = {}
             for i, group_name in enumerate(sorted_group_names):
