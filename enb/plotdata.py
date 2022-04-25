@@ -37,9 +37,13 @@ class PlottableData:
     legend_column_count = 1
     color = None
     marker = None
+    # If "title", it is shown outside the plot, above it and centered.
+    # Otherwise, it must be a matplotlib-recognized string
+    legend_position = "title"
 
     def __init__(self, data=None, axis_labels=None, label=None,
                  extra_kwargs=None, alpha=None, legend_column_count=None,
+                 legend_position=None,
                  marker=None, color=None,
                  marker_size=None):
         self.data = data
@@ -48,6 +52,7 @@ class PlottableData:
         self.extra_kwargs = extra_kwargs if extra_kwargs is not None else {}
         self.alpha = alpha if alpha is not None else self.alpha
         self.legend_column_count = legend_column_count if legend_column_count is not None else self.legend_column_count
+        self.legend_position = legend_position if legend_position is not None else self.legend_position
         self.marker = marker
         self.marker_size = marker_size
         self.color = color if color is not None else self.color
@@ -68,8 +73,13 @@ class PlottableData:
 
     def render_legend(self, axes=None):
         axes = plt if axes is None else axes
-        legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                             ncol=self.legend_column_count, edgecolor=((0, 0, 0, 0.2)))
+        if self.legend_position == "title":
+            legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                                 ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+        else:
+            legend = axes.legend(loc=self.legend_position if self.legend_position is not None else "best",
+                                 ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+
         legend.get_frame().set_alpha(None)
         legend.get_frame().set_facecolor((1, 1, 1, 0))
 
@@ -598,7 +608,7 @@ def parallel_render_plds_by_group(
         # Additional plottable data instances
         extra_plds=tuple(),
         # Plot title
-        plot_title=None, show_legend=True,
+        plot_title=None, show_legend=True, legend_position=None,
         # Matplotlib styles
         style_list=tuple()):
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
@@ -634,6 +644,7 @@ def parallel_render_plds_by_group(
                                     extra_plds=extra_plds,
                                     plot_title=plot_title,
                                     show_legend=show_legend,
+                                    legend_position=legend_position,
                                     style_list=style_list)
     except Exception as ex:
         enb.logger.error(f"Error rendering to {output_plot_path}:\n{repr(ex)}")
@@ -663,8 +674,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          # Additional plottable data
                          extra_plds=tuple(),
                          # Plot title
-                         plot_title=None,
-                         show_legend=True,
+                         plot_title=None, show_legend=True, legend_position=None,
                          # Matplotlib styles
                          style_list=("default",),
                          ):
@@ -740,6 +750,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     
     :param plot_title: title to be displayed.
     :param show_legend: if True, legends are added to the plot.
+    :param legend_position: position of the legend (if shown). It can be "title" to display
+      it above the plot, or any matplotlib-recognized argument to the loc argument of legend().
     
     Matplotlib styles:
     
@@ -793,6 +805,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                         try:
                             pds_by_group_name[g][0].label = \
                                 y_labels_by_group_name[g] if y_labels_by_group_name and g in y_labels_by_group_name else g
+                            pds_by_group_name[g][0].legend_position = legend_position
                         except IndexError:
                             # Ignore empty groups
                             continue
