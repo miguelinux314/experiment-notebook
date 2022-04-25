@@ -2105,8 +2105,10 @@ class DictNumericSummary(AnalyzerSummary):
 
         if _self.analyzer.key_to_x:
             x_values = [_self.analyzer.key_to_x[k] for k in key_values]
-        else:
+        elif any(isinstance(k, str) for k in key_values):
             x_values = range(len(key_values))
+        else:
+            x_values = key_values
 
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
