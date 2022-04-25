@@ -378,12 +378,6 @@ class RenderingOptions:
     """Options affecting the rendering of figures.
     """
 
-    @OptionsBase.property(action="store_true")
-    def no_render(self, value):
-        """If set, some rendering options will be skipped.
-        """
-        return bool(value)
-
     @OptionsBase.property(action=_singleton_cli.PositiveFloatAction)
     def fig_width(self, value):
         """Figure width.
