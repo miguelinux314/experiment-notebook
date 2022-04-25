@@ -90,6 +90,9 @@ class Analyzer(enb.atable.ATable):
     combine_groups = False
     # If True, display group legends when applicable
     show_legend = True
+    # Legend position (if configured to be shown). It can be "title" to show it above the plot,
+    # or any matplotlib-recognized argument for the loc parameter of legend()
+    legend_position = "title"
     # If not None, it must be a list of matplotlibrc styles (names or file paths)
     style_list = []
     # Number of decimals used when saving to latex
@@ -357,6 +360,9 @@ class Analyzer(enb.atable.ATable):
 
         if "show_legend" not in column_kwargs:
             column_kwargs["show_legend"] = self.show_legend
+
+        if "legend_position" not in column_kwargs:
+            column_kwargs["legend_position"] = self.legend_position
 
         if self.style_list is not None:
             column_kwargs["style_list"] = self.style_list
