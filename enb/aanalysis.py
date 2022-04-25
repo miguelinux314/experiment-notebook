@@ -2250,11 +2250,11 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                                             + (f"\n" if pd.colormap_label else "") + \
                                             f"{column_kwargs['y_labels_by_group_name'][group_name]}"
 
-            if "y_labels_by_group_name" not in column_kwargs \
-                    or column_kwargs["y_labels_by_group_name"] is None:
-                column_kwargs["y_labels_by_group_name"] = {
-                    group_name: y_column_label
-                    for group_name in column_kwargs["pds_by_group_name"].keys()}
+            # The y_labels_by_group_name key is set to the y label name; the group name is shown
+            # to the right of the colorbar.
+            column_kwargs["y_labels_by_group_name"] = {
+                group_name: y_column_label
+                for group_name in column_kwargs["pds_by_group_name"].keys()}
 
         return column_kwargs
 
