@@ -19,6 +19,7 @@ import argparse
 import itertools
 import inspect
 
+import enb
 from ..misc import split_camel_case, Singleton, get_defining_class_name, remove_argparse_action
 from .aini import ini
 
@@ -249,8 +250,9 @@ class SingletonCLI(metaclass=Singleton):
             self._custom_attribute_handler_active = True
             
             # Report unrecognized arguments only for the main process
-            for arg in unknown_args:
-                if os.path.basename(sys.argv[0]) != self.worker_script_name:
+            if os.path.basename(sys.argv[0]) != self.worker_script_name \
+                    and not enb.is_enb_cli:
+                for arg in unknown_args:
                     print(f"Warning: unrecognized parameter {repr(arg)}")
         finally:
             self._argparser._option_string_actions = original_option_string_actions
