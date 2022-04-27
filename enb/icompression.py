@@ -688,6 +688,7 @@ class CompressionExperiment(experiment.Experiment):
             self._decompression_results = None
             self.compressed_copy_dir = compressed_copy_dir
             self.reconstructed_copy_dir = reconstructed_copy_dir
+            self.open_fds = []
 
         @property
         def compression_results(self):
@@ -695,9 +696,10 @@ class CompressionExperiment(experiment.Experiment):
             """
             if self._compression_results is None:
                 os.makedirs(options.base_tmp_dir, exist_ok=True)
-                _, tmp_compressed_path = tempfile.mkstemp(
+                fd, tmp_compressed_path = tempfile.mkstemp(
                     dir=options.base_tmp_dir,
                     prefix=f"compressed_{os.path.basename(self.file_path)}_")
+                self.open_fds.append(fd)
                 try:
                     measured_times = []
 
@@ -753,10 +755,11 @@ class CompressionExperiment(experiment.Experiment):
             """Perform the actual decompression experiment for the selected row.
             """
             if self._decompression_results is None:
-                _, tmp_reconstructed_path = tempfile.mkstemp(
+                fd, tmp_reconstructed_path = tempfile.mkstemp(
                     prefix=f"reconstructed_{os.path.basename(self.file_path)}",
                     dir=options.base_tmp_dir,
                     suffix=".raw")
+                self.open_fds.append(fd)
                 try:
                     measured_times = []
                     with enb.logger.info_context(
@@ -829,6 +832,8 @@ class CompressionExperiment(experiment.Experiment):
                     os.remove(self._decompression_results.reconstructed_path)
                 except OSError:
                     pass
+            for fd in self.open_fds:
+                os.close(fd)
 
     def __init__(self, codecs,
                  dataset_paths=None,
