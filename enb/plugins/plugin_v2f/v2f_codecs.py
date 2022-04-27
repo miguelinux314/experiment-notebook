@@ -16,7 +16,8 @@ V2F_C_DECORRELATOR_MODE_NONE = 0
 V2F_C_DECORRELATOR_MODE_LEFT = 1
 V2F_C_DECORRELATOR_MODE_2_LEFT = 2
 V2F_C_DECORRELATOR_MODE_JPEGLS = 3
-V2F_C_DECORRELATOR_MODE_COUNT = 4
+V2F_C_DECORRELATOR_MODE_FGIJ = 4
+V2F_C_DECORRELATOR_MODE_COUNT = 5
 V2F_C_QUANTIZER_MODE_MAX_STEP_SIZE = 255
 
 
@@ -57,7 +58,7 @@ class V2FCodec(enb.icompression.LosslessCodec,
         if not self.v2fc_header_path or not os.path.isfile(self.v2fc_header_path):
             raise ValueError(f"Cannot find a V2F codec definition at {repr(self.v2fc_header_path)}. "
                              f"Please make sure you are passing the right argument to "
-                             f"{self.__class__}'s initialzier, and that the file is actually present.")
+                             f"{self.__class__}'s initializier, and that the file is actually present.")
 
         # Verify the chosen codec if configured to do so.
         self.verifier_path = os.path.join(self.codec_root_dir, "v2f_verify_codec")
@@ -100,10 +101,13 @@ class V2FCodec(enb.icompression.LosslessCodec,
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"{original_path} {self.get_optional_argument_string(original_path=original_path)} " \
+               f"-w {original_file_info['width']} " \
                f"{self.v2fc_header_path} {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"{compressed_path} {self.get_optional_argument_string(original_path=None)} " \
+        return f"{compressed_path} " \
+               f"{self.get_optional_argument_string(original_path=None)} " \
+               f"-w {original_file_info['width']} " \
                f"{self.v2fc_header_path} {reconstructed_path}"
 
     def get_optional_argument_string(self, original_path):
@@ -122,13 +126,17 @@ class V2FCodec(enb.icompression.LosslessCodec,
 
     @property
     def label(self):
-        if self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_LEFT:
+        if self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_NONE:
+            dec_str = "none"
+        elif self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_LEFT:
             dec_str = "left"
         elif self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_2_LEFT:
             dec_str = "two left"
         elif self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_JPEGLS:
             dec_str = "JPEG-LS"
+        elif self.param_dict["decorrelator_mode"] == V2F_C_DECORRELATOR_MODE_FGIJ:
+            dec_str = "FGIJ"
         else:
             raise ValueError(self.param_dict["decorrelator_mode"])
 
-        return f"V2F Qstep {self.param_dict['qstep']}, {dec_str}"
+        return f"V2F Qstep={self.param_dict['qstep']} pred={dec_str}"
