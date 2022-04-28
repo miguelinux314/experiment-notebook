@@ -6,6 +6,8 @@ __since__ = "2021/09/01"
 
 import os
 import subprocess
+import itertools
+import numpy as np
 import enb
 
 # Constants taken from the C code for consistency and maintainability.
@@ -29,7 +31,8 @@ class V2FCodec(enb.icompression.LosslessCodec,
     """
 
     def __init__(self, v2fc_header_path, qstep=None, quantizer_mode=None, decorrelator_mode=None,
-                 verify_on_initialization=True, time_results_dir=None):
+                 verify_on_initialization=True, time_results_dir=None,
+                 shadow_position_pairs=[]):
         """
         Initialize a V2F codec that employs the forest definition in `v2fc_header_path`, and optionally
         overwrite the quantization and decorrelation defined in them.
@@ -43,15 +46,25 @@ class V2FCodec(enb.icompression.LosslessCodec,
         :param verify_on_initialization: if True, the codec in v2fc_heder_path is verified upon initialization.
         :param time_results_dir: if not None, it must be the path of a directory that will be used to store time
           measurements reported by the V2F prototype.
+        :param shadow_position_pairs: a list of zero or more tuples describing the y-positions of the 
+          horizontal shadow regions. Shadow regions are not compressed and are reconstructed as constant zero.
+          Each tuple must be of the form (start, end), where start and end are the first and last row index 
+          (starting with zero) of the shadow. If the list is empty, no shadow regions are specified.
+          Shadow regions cannot overlap. 
         """
         self.codec_root_dir = os.path.abspath(os.path.dirname(__file__))
+
+        shadow_position_pairs = sorted(shadow_position_pairs)
+        verify_shadow_position_pairs(shadow_position_pairs)
+
         super().__init__(compressor_path=os.path.join(self.codec_root_dir, "v2f_compress"),
                          decompressor_path=os.path.join(self.codec_root_dir, "v2f_decompress"),
                          param_dict=dict(
                              v2fc_header_path=v2fc_header_path,
                              qstep=qstep,
                              quantizer_mode=quantizer_mode,
-                             decorrelator_mode=decorrelator_mode))
+                             decorrelator_mode=decorrelator_mode,
+                             shadow_position_pairs=shadow_position_pairs))
 
         # Header path with the V2F codec (including forest) definition
         self.v2fc_header_path = v2fc_header_path
@@ -102,6 +115,8 @@ class V2FCodec(enb.icompression.LosslessCodec,
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"{original_path} {self.get_optional_argument_string(original_path=original_path)} " \
                f"-w {original_file_info['width']} " \
+               + (f"-y {','.join(str(y) for y in itertools.chain(*self.param_dict['shadow_position_pairs']))} "
+                  if self.param_dict['shadow_position_pairs'] else '') + \
                f"{self.v2fc_header_path} {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
@@ -140,3 +155,68 @@ class V2FCodec(enb.icompression.LosslessCodec,
             raise ValueError(self.param_dict["decorrelator_mode"])
 
         return f"V2F Qstep={self.param_dict['qstep']} pred={dec_str}"
+
+
+class ShadowLossyExperiment(enb.icompression.LossyCompressionExperiment):
+    """This compression experiment verifies that loss is restricted to 
+    the defined y shadow regions, while the remainder of the image is
+    reconstructed without loss. An exception is raised if this verification fails.
+    """
+
+    def __init__(self, codecs, shadow_position_pairs=[],
+                 dataset_paths=None,
+                 csv_experiment_path=None,
+                 csv_dataset_path=None,
+                 dataset_info_table=None,
+                 overwrite_file_properties=False,
+                 reconstructed_dir_path=None,
+                 compressed_copy_dir_path=None,
+                 task_families=None):
+        super().__init__(codecs=codecs,
+                         dataset_paths=dataset_paths,
+                         csv_experiment_path=csv_experiment_path,
+                         csv_dataset_path=csv_dataset_path,
+                         dataset_info_table=dataset_info_table,
+                         overwrite_file_properties=overwrite_file_properties,
+                         reconstructed_dir_path=reconstructed_dir_path,
+                         compressed_copy_dir_path=compressed_copy_dir_path,
+                         task_families=task_families)
+        verify_shadow_position_pairs(shadow_position_pairs)
+        self.shadow_position_pairs = sorted(shadow_position_pairs)
+
+    def column_lossless_except_shadows(self, index, row):
+        """Verify that lossless results are obtained in every part of the image except for
+        the shadows, which must contain all zero values.
+        """
+        original_path, _ = self.index_to_path_task(index)
+        reconstructed_path = self.codec_results.decompression_results.reconstructed_path
+
+        original_img = enb.isets.load_array_bsq(original_path)
+        reconstructed_img = enb.isets.load_array_bsq(reconstructed_path)
+
+        for shadow_start, shadow_end in self.shadow_position_pairs:
+            if np.any(reconstructed_img[:, shadow_start:shadow_end + 1, :] != 0):
+                raise enb.icompression.CompressionException(
+                    f"Non-zero values found at ({shadow_start}, {shadow_end}) of the reconstructed image")
+            reconstructed_img[:, shadow_start:shadow_end + 1, :] = \
+                original_img[:, shadow_start:shadow_end + 1, :]
+
+        if np.any(original_img != reconstructed_img):
+            raise enb.icompression.CompressionException(
+                f"Not lossless reconstruction outside the shadow regions")
+
+        return True
+
+
+def verify_shadow_position_pairs(shadow_position_pairs):
+    """Check that the list of shadow positions is valid, and raise a ValueError otherwise.
+    """
+    shadow_position_pairs = sorted(shadow_position_pairs)
+    if any(len(pair) != 2 for pair in shadow_position_pairs):
+        raise ValueError("All shadow pairs must have length exactly 2")
+    if any(pair[0] > pair[1] for pair in shadow_position_pairs):
+        raise ValueError("Shadow pairs must have start <= end")
+    for i in range(len(shadow_position_pairs) - 1):
+        if shadow_position_pairs[i][1] >= shadow_position_pairs[i + 1][0]:
+            raise ValueError(f"Shadow region {shadow_position_pairs[i]} and {shadow_position_pairs[i + 1]} "
+                             "overlap, which is not allowed.")
