@@ -982,7 +982,8 @@ class CompressionExperiment(experiment.Experiment):
         """
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
-        assert self.codec_results.compression_results.compressed_path == self.codec_results.decompression_results.compressed_path
+        assert self.codec_results.compression_results.compressed_path \
+               == self.codec_results.decompression_results.compressed_path
         try:
             assert row.image_info_row["bytes_per_sample"] * row.image_info_row["samples"] \
                    == os.path.getsize(self.codec_results.compression_results.original_path)
