@@ -252,6 +252,8 @@ class Installable(metaclass=InstallableMeta):
 
 def install(name, target_dir=None, overwrite=False, automatic_import=True):
     """Install an Installable by name into target_dir.
+    :param name: name of the installable (e.g., plugin) to be installed. Run `enb plugin list` in the CLI
+      to get a list of all available installables. 
     :param target_dir: If target_dir is None, it is set to "plugins/<plugin_name>" by default.
     :param overwrite: If overwrite is False and target_dir already exists, no action is taken.
     :param automatic_import: If True, the installable is imported as a module.
