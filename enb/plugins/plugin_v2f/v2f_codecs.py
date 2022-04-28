@@ -7,6 +7,8 @@ __since__ = "2021/09/01"
 import os
 import subprocess
 import itertools
+import re
+import pandas as pd
 import numpy as np
 import enb
 
@@ -161,6 +163,9 @@ class ShadowLossyExperiment(enb.icompression.LossyCompressionExperiment):
     """This compression experiment verifies that loss is restricted to 
     the defined y shadow regions, while the remainder of the image is
     reconstructed without loss. An exception is raised if this verification fails.
+    
+    Some additional columns are generated to track tree size, decorrelation mode, and
+    other parameters specific to V2F codecs.
     """
 
     def __init__(self, codecs, shadow_position_pairs=[],
@@ -186,37 +191,126 @@ class ShadowLossyExperiment(enb.icompression.LossyCompressionExperiment):
 
     def column_lossless_except_shadows(self, index, row):
         """Verify that lossless results are obtained in every part of the image except for
-        the shadows, which must contain all zero values.
+        the shadows, which must contain all zero values if the shadow_position_pairs entry
+        is present in the codec's param_dict.
         """
-        original_path, _ = self.index_to_path_task(index)
+        original_path, codec = self.index_to_path_task(index)
         reconstructed_path = self.codec_results.decompression_results.reconstructed_path
 
         original_img = enb.isets.load_array_bsq(original_path)
         reconstructed_img = enb.isets.load_array_bsq(reconstructed_path)
 
         for shadow_start, shadow_end in self.shadow_position_pairs:
-            if np.any(reconstructed_img[:, shadow_start:shadow_end + 1, :] != 0):
-                raise enb.icompression.CompressionException(
-                    f"Non-zero values found at ({shadow_start}, {shadow_end}) of the reconstructed image")
+            try:
+                if codec.param_dict["shadow_position_pairs"]:
+                    if np.any(reconstructed_img[:, shadow_start:shadow_end + 1, :] != 0):
+                        raise enb.icompression.CompressionException(
+                            output=f"Non-zero values found at ({shadow_start}, {shadow_end}) of the reconstructed image")
+            except KeyError:
+                pass
             reconstructed_img[:, shadow_start:shadow_end + 1, :] = \
                 original_img[:, shadow_start:shadow_end + 1, :]
 
         if np.any(original_img != reconstructed_img):
             raise enb.icompression.CompressionException(
-                f"Not lossless reconstruction outside the shadow regions")
+                output=f"Not lossless reconstruction outside the shadow regions")
 
         return True
+    
+    def column_decorrelator_mode(self, index, row):
+        """Name of the decorrelation method used by this current codec.
+        """
+        path, codec = self.index_to_path_task(index)
+
+        try:
+            decorrelator_mode = codec.param_dict["decorrelator_mode"]
+            if decorrelator_mode == V2F_C_DECORRELATOR_MODE_NONE:
+                return "No decorrelation"
+            elif decorrelator_mode == V2F_C_DECORRELATOR_MODE_LEFT:
+                return "Left neighbor prediction"
+            elif decorrelator_mode == V2F_C_DECORRELATOR_MODE_2_LEFT:
+                return "Two left neighbor prediction"
+            elif decorrelator_mode == V2F_C_DECORRELATOR_MODE_JPEGLS:
+                return "JPEG-LS prediction"
+            elif decorrelator_mode == V2F_C_DECORRELATOR_MODE_FGIJ:
+                return "Four neighbor prediction"
+            else:
+                raise KeyError(decorrelator_mode)
+        except KeyError:
+            assert not isinstance(codec, V2FCodec)
+            return f"{codec.label}'s decorrelation"
+
+    def column_tree_size(self, index, row):
+        """Number of included nodes in the trees of the V2F forest.
+        """
+        path, codec = self.index_to_path_task(index)
+        try:
+            return int(re.search(r"_treesize-(\d+)_", os.path.basename(codec.v2fc_header_path)).group(1))
+        except AttributeError:
+            return -1
+
+    def column_tree_count(self, index, row):
+        """Number of trees in the V2F forest.
+        """
+        path, codec = self.index_to_path_task(index)
+        try:
+            return int(re.search(r"_treecount-(\d+)_", os.path.basename(codec.v2fc_header_path)).group(1))
+        except AttributeError:
+            return -1
+
+    def column_symbol_count(self, index, row):
+        """Number of symbols in the source.
+        """
+        path, codec = self.index_to_path_task(index)
+        try:
+            return int(re.search(r"_symbolcount-(\d+)_", os.path.basename(codec.v2fc_header_path)).group(1))
+        except AttributeError:
+            return -1
+
+    def column_optimization_column(self, index, row):
+        """Name of the analysis column used to obtain the ideal source's
+        symbol distribution.
+        """
+        path, codec = self.index_to_path_task(index)
+        try:
+            return str(re.search(r"_optimizedfor-(.*)_withentropy-", os.path.basename(codec.v2fc_header_path)).group(1))
+        except AttributeError:
+            return f"{codec.label}: N/A"
+
+    def column_ideal_source_entropy(self, index, row):
+        """Entropy of the ideal source for which the forest is optimized.
+        """
+        path, codec = self.index_to_path_task(index)
+        try:
+            return float(
+                re.search(r"_withentropy-(\d+\.\d+)_avg_all.v2fc", os.path.basename(codec.v2fc_header_path)).group(1))
+        except AttributeError:
+            return -1
+
+    @enb.atable.column_function("block_coding_time_seconds", label="Block coding time (s)", plot_min=0)
+    def set_block_coding_time_seconds(self, index, row):
+        """Calculate the total coding time without considering initialization,
+        """
+        path, codec = self.index_to_path_task(index)
+        if not isinstance(codec, V2FCodec):
+            row[_column_name] = row["compression_time_seconds"]
+        else:
+            time_df = pd.read_csv(codec.get_time_path(path))
+            row[_column_name] = float(time_df[time_df["name"] == "v2f_compressor_compress_block"]["total_cpu_seconds"])
 
 
 def verify_shadow_position_pairs(shadow_position_pairs):
     """Check that the list of shadow positions is valid, and raise a ValueError otherwise.
     """
-    shadow_position_pairs = sorted(shadow_position_pairs)
-    if any(len(pair) != 2 for pair in shadow_position_pairs):
-        raise ValueError("All shadow pairs must have length exactly 2")
-    if any(pair[0] > pair[1] for pair in shadow_position_pairs):
-        raise ValueError("Shadow pairs must have start <= end")
-    for i in range(len(shadow_position_pairs) - 1):
-        if shadow_position_pairs[i][1] >= shadow_position_pairs[i + 1][0]:
-            raise ValueError(f"Shadow region {shadow_position_pairs[i]} and {shadow_position_pairs[i + 1]} "
-                             "overlap, which is not allowed.")
+    if shadow_position_pairs:
+        shadow_position_pairs = sorted(shadow_position_pairs)
+        if any(len(pair) != 2 for pair in shadow_position_pairs):
+            print(f"[watch] shadow_position_pairs={shadow_position_pairs}")
+            
+            raise ValueError("All shadow pairs must have length exactly 2")
+        if any(pair[0] > pair[1] for pair in shadow_position_pairs):
+            raise ValueError("Shadow pairs must have start <= end")
+        for i in range(len(shadow_position_pairs) - 1):
+            if shadow_position_pairs[i][1] >= shadow_position_pairs[i + 1][0]:
+                raise ValueError(f"Shadow region {shadow_position_pairs[i]} and {shadow_position_pairs[i + 1]} "
+                                 "overlap, which is not allowed.")
