@@ -47,7 +47,7 @@ class TestiSets(unittest.TestCase):
                                         array[x, y, z] = i * value_factor
                                         i += 1
 
-                            _, temp_file_path = tempfile.mkstemp(
+                            fd, temp_file_path = tempfile.mkstemp(
                                 suffix=f"_{isets.iproperties_row_to_sample_type_tag(row)}.raw")
                             try:
                                 dtype_string = isets.iproperties_row_to_numpy_dtype(row)
@@ -61,6 +61,7 @@ class TestiSets(unittest.TestCase):
                             finally:
                                 try:
                                     os.remove(temp_file_path)
+                                    os.close(fd)
                                 except OSError:
                                     pass
 
