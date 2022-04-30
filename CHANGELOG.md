@@ -14,7 +14,21 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Development version v0.3.7
 
-- No updates yet
+General improvements:
+
+    - The position of the legend can now be configured. 
+      The `legend_position` parameter can now be passed in `plot_pds_by_group()`'s kwargs, 
+      and configured via .ini files (under the `[enb.aanalysis.Analyzer]` section).
+
+Bug fixes:
+
+    - Fixed a "disk leak" problem in `enb.icompression`, which caused deleted files to take space until the script
+      finished, due to unclosed file descriptors.
+    - The 2D analyzer now correctly sets the y label to the name of the y column instead of the group name.
+    - Fixed wrongly displayed warnigns when invoking the CLI with parameters.
+    - Caught another potential failing point in aanalysis when fewer than 2 different samples are retrieved, 
+      when calculating linear regression parameters.
+
 
 # Latest stable version
 
