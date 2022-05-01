@@ -12,7 +12,19 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version v0.3.7
+# Development version v0.4.0
+
+- **Not backward-compatible** changes:
+    
+    - Several command line options have been removed, and/or moved to `*.ini` files (e.g., in your project folders)
+      and direct object manipulation. These are:
+
+        - `--no_ray`: By default, ray is not the default parallelization engine anymore. To use ray, one needs
+          to use `--ssh_cluster_csv_path` or, equivalently `--ssh_csv`. Run your script with `-h` for additional
+          information on this parameter and/or check the 
+          [documentation on cluster configuration](https://miguelinux314.github.io/experiment-notebook/cluster_setup.html).
+
+            
 
 General improvements:
 

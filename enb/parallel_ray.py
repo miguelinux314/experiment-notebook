@@ -43,20 +43,56 @@ _sshfs_present = shutil.which("sshfs") is not None
 _dpipe_present = shutil.which("dpipe") is not None
 _ray_cli_present = shutil.which("ray") is not None
 
+_ray_disabled_warning_issued = False
+
 
 def is_ray_enabled():
     """Return True if and only if ray is available and the current platform is one
     of the supported for ray clustering (currently only linux).
     """
+    global _ray_disabled_warning_issued
+
+    # ray is only enabled if an ssh cluster configuration file is provided
+    if not options.ssh_cluster_csv_path:
+        return False
+
+    # ray is disabled if the ray command cannot be found
     if not _ray_present:
+        if not _ray_disabled_warning_issued:
+            enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
+                            f"but 'ray' could not be found in the path. "
+                            f"Please install with `pip install ray[default]` and/or fix the path")
+            _ray_disabled_warning_issued = True
         return False
+
+    # ray is disabled on windows (it does not seem to work)
     elif platform.system().lower() == "windows":
+        if not _ray_disabled_warning_issued:
+            enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
+                            f"but ray is not currently supported on Windows.")
+            _ray_disabled_warning_issued = True
         return False
-    elif not _ray_present:
-        logger.debug("The ray library is available but the ray command is not available. Please fix your path.")
+
+    # ray is disabled in any of the needed tools are missing
+    failing_tool = None
+    needed_package = None
+    if not _ssh_present:
+        failing_tool = "ssh"
+    elif not _sshfs_present:
+        failing_tool = "sshfs" if not options.no_remote_mount_needed else None
+    elif not _dpipe_present:
+        failing_tool = "dpipe" if not options.no_remote_mount_needed else None
+        needed_package = "vde2"
+    if failing_tool:
+        if not _ray_disabled_warning_issued:
+            enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
+                            f"but {failing_tool} was not found in the path. "
+                            f"No remote nodes will be used in this session.\n"
+                            f"Please install {needed_package if needed_package is not None else failing_tool} "
+                            f"in your system and/or fix the path it and retry.")
+            _ray_disabled_warning_issued = True
         return False
-    elif options.no_ray:
-        return False
+
     return True
 
 
@@ -70,7 +106,8 @@ class HeadNode:
     def __init__(self, ray_port, ray_port_count):
         if not is_ray_enabled():
             raise RuntimeError("The ray module is not present or is not available. "
-                               "You can install it with 'pip install ray'.")
+                               "Please see https://miguelinux314.github.io/experiment-notebook/cluster_setup.html for "
+                               "information about how to configure it.")
 
         assert ray_port == int(ray_port), ray_port
         assert ray_port_count == int(ray_port_count), ray_port_count
@@ -130,17 +167,20 @@ class HeadNode:
 
         if options.ssh_cluster_csv_path:
             failing_tool = None
+            needed_package = None
             if not _ssh_present:
                 failing_tool = "ssh"
             elif not _sshfs_present:
                 failing_tool = "sshfs" if not options.no_remote_mount_needed else None
             elif not _dpipe_present:
                 failing_tool = "dpipe" if not options.no_remote_mount_needed else None
+                needed_package = "vde2"
             if failing_tool:
                 enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
                                 f"but {failing_tool} was not found in the path. "
                                 f"No remote nodes will be used in this session.\n"
-                                f"Please install {failing_tool} in your system and/or fix the path it and retry.")
+                                f"Please install {needed_package if needed_package is not None else failing_tool} "
+                                f"in your system and/or fix the path it and retry.")
             else:
                 if not os.path.exists(options.ssh_cluster_csv_path):
                     raise ValueError(f"The cluster configuration file was set to {repr(options.ssh_cluster_csv_path)}"
@@ -383,7 +423,7 @@ def is_parallel_process():
     """Return True if and only if the call is made from a remote ray process,
     which can be running in the head node or any of the remote nodes (if any is present).
     """
-    return is_ray_enabled() and os.path.basename(sys.argv[0]) == options.worker_script_name
+    return os.path.basename(sys.argv[0]) == os.path.basename(options.worker_script_name)
 
 
 def is_remote_node():
@@ -393,7 +433,6 @@ def is_remote_node():
     if not is_ray_enabled():
         return False
     if not is_parallel_process():
-        print("Base process")
         return False
     else:
         try:
