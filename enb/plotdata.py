@@ -696,7 +696,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param global_x_label: x-axis label shared by all subplots (there can be just one subplot)
     :param global_y_label: y-axis label shared by all subplots (there can be just one subplot)
     
-    General figure configuration:
+    General figure configuration. If None, most of these values are retrieved from
+    the [enb.aanalysis.Analyzer] section of '*.ini' files. 
     
     :param combine_groups: if False, each group is plotted in a different row. If True,
         all groups share the same subplot (and no group name is displayed).
@@ -769,7 +770,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                             f"No analysis is performed.")
             return
 
-        legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
+        legend_column_count = legend_column_count if legend_column_count is not None \
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer", "legend_column_count")
         if legend_column_count:
             for name, pds in pds_by_group_name.items():
                 for pld in pds:
@@ -846,8 +848,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     apply_xkcd_style()
                 else:
                     raise ValueError(f"Unrecognized style {repr(style)}.")
-            fig_width = options.fig_width if fig_width is None else fig_width
-            fig_height = options.fig_height if fig_height is None else fig_height
+
+            fig_width = enb.config.ini.get_key(section="enb.aanalysis.Analyzer", name="fig_width") \
+                if fig_width is None else fig_width
+            fig_height = enb.config.ini.get_key(section="enb.aanalysis.Analyzer", name="fig_height") \
+                if fig_height is None else fig_height
 
             fig, group_axis_list = plt.subplots(
                 nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
@@ -859,6 +864,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             elif len(sorted_group_names) == 1:
                 group_axis_list = [group_axis_list]
 
+            plot_title = plot_title if plot_title is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "plot_title")
             if plot_title:
                 plt.suptitle(plot_title)
 
@@ -967,10 +974,25 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
                 x_tick_label_list = [column_properties.hist_label_dict[x] for x in x_tick_values]
 
-            group_row_margin = group_row_margin if group_row_margin is not None else float(
-                enb.config.options.group_row_margin)
-            group_row_margin += (len(pds_by_group_name) - 6) / 24
-            plt.subplots_adjust(hspace=group_row_margin)
+            group_row_margin = group_row_margin if group_row_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "group_row_margin")
+            group_row_margin = float(group_row_margin) if group_row_margin is not None else group_row_margin
+            if group_row_margin is None and len(pds_by_group_name) > 5:
+                if len(pds_by_group_name) <= 7:
+                    group_row_margin = 0.5
+                elif len(pds_by_group_name) <= 12:
+                    group_row_margin = 0.6
+                else:
+                    group_row_margin = 0.7
+                enb.logger.info("The `group_row_margin` option "
+                                f"was likely too small to display all {len(pds_by_group_name)} groups: "
+                                f"automatically adjusting to {group_row_margin}. You can set "
+                                f"your desired value at the [enb.aanalysis.Analyzer] section in your *.ini files,"
+                                f"or passing e.g., `group_row_margin=0.9` to your Analyzer get_df() "
+                                f"or adjusting the figure height with `fig_height`.")
+                
+            if group_row_margin is not None:
+                plt.subplots_adjust(hspace=group_row_margin)
 
             # Set the axis limits
             xlim = [global_x_min, global_x_max]
@@ -980,8 +1002,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             ylim[0] = ylim[0] if y_min is None else y_min
             ylim[1] = ylim[1] if y_max is None else y_max
             # Translate relative margin to absolute margin
-            horizontal_margin = horizontal_margin if horizontal_margin is not None else options.horizontal_margin
-            vertical_margin = vertical_margin if vertical_margin is not None else options.vertical_margin
+            horizontal_margin = horizontal_margin if horizontal_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "horizontal_margin")
+            vertical_margin = vertical_margin if vertical_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "vertical_margin")
+
             h_margin = horizontal_margin * (xlim[1] - xlim[0])
             v_margin = vertical_margin * (ylim[1] - ylim[0])
             xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
@@ -1005,8 +1030,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             if xlim[1] < 1e-2:
                 x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
-            show_grid = options.show_grid if show_grid is None else show_grid
-            show_subgrid = options.show_subgrid if show_subgrid is None else show_subgrid
+            show_grid = show_grid if show_grid is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_grid")
+            show_subgrid = show_subgrid if show_subgrid is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_subgrid")
             ca = plt.gca()
 
             for group_axes in group_axis_list:
@@ -1048,9 +1075,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     plt.grid(False)
                     plt.minorticks_off()
                     plt.ylabel(global_y_label, labelpad=15)
-
-            if options.global_title is not None:
-                plt.suptitle(options.global_title)
 
             with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
                 if os.path.dirname(output_plot_path):

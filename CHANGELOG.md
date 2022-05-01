@@ -16,13 +16,29 @@ format. Given a code initially developed for one `enb` version and then executed
 
 - **Not backward-compatible** changes:
     
-    - Several command line options have been removed, and/or moved to `*.ini` files (e.g., in your project folders)
+    - Several command line options have been removed, and/or moved to `*.ini` files 
+      (e.g., in your project folders - use `enb plugin install enb.ini .` to copy a full `*.ini` template)
       and direct object manipulation. These are:
 
         - `--no_ray`: By default, ray is not the default parallelization engine anymore. To use ray, one needs
-          to use `--ssh_cluster_csv_path` or, equivalently `--ssh_csv`. Run your script with `-h` for additional
+          to specifiy `--ssh_cluster_csv_path` or, alternatively, set the `ssh_cluster_csv_path` field in 
+          the `[enb.config.options]` section of your `'*.ini'` files.
+          Run your script with `-h` for additional
           information on this parameter and/or check the 
           [documentation on cluster configuration](https://miguelinux314.github.io/experiment-notebook/cluster_setup.html).
+      
+        - A number of plot rendering configuration options have been removed from the CLI and are now
+          accessible via the `[enb.aanalysis.Analyzer]` section of `'*.ini'` files, direct class
+          or instance manipulation of `enb.aanalyis.Analyzer` classes and/or instances, and as 
+          the `**kwargs` argument to Analyzer.get_df(), in turn passed to the `plotdata` module.
+          The affected options are those previously defined in `RenderingOptions` (now also deleted):
+          
+            - `fig_height`, `fig_width`
+            - `horizontal_margin`, `vertical_margin`
+            - `group_row_margin`
+            - `legend_column_count`
+            - `show_grid`, `show_subgrid`
+            - `global_title` (removed, use `plot_title` instead)
 
             
 

@@ -51,6 +51,18 @@ class Analyzer(enb.atable.ATable):
     to any Analyzer subclass, and parameters can be managed within the full-qualified name of the class,
     e.g., using a "[enb.aanalysis.Analyzer]" section header in any of the .ini files detected by enb.
     """
+    # Default figure width
+    fig_width = 5.0
+    # Default figure height
+    fig_height = 4.0
+    # Relative horizontal margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+    horizontal_margin = 0
+    # Relative vertical margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+    vertical_margin = 0
+    # Show grid lines at the major ticks?
+    show_grid = False
+    # Show grid lines at the minor ticks?
+    show_subgrid = False
     # List of allowed rendering modes for the analyzer
     valid_render_modes = set()
     # Selected render modes (by default, all of them)
@@ -78,7 +90,7 @@ class Analyzer(enb.atable.ATable):
     # Thickness of secondary plot lines
     secondary_line_width = 1
     # Margin between group rows (if there is more than one)
-    group_row_margin = 0.2
+    group_row_margin = None
     # If more than group is displayed, when applicable, adjust plots to use the same scale in every subplot?
     common_group_scale = True
     # If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
@@ -90,6 +102,8 @@ class Analyzer(enb.atable.ATable):
     combine_groups = False
     # If True, display group legends when applicable
     show_legend = True
+    # Default number of columns inside the legend
+    legend_column_count = 2
     # Legend position (if configured to be shown). It can be "title" to show it above the plot,
     # or any matplotlib-recognized argument for the loc parameter of legend()
     legend_position = "title"
@@ -717,7 +731,6 @@ class ScalarNumericAnalyzer(Analyzer):
     semilog_y_min_bound = 1e-5
     main_line_width = 2
     secondary_line_width = 2
-    group_row_margin = 0.2
     common_group_scale = True
     combine_groups = False
     show_legend = False
@@ -1428,7 +1441,6 @@ class TwoNumericAnalyzer(Analyzer):
     semilog_y_min_bound = 1e-5
     main_line_width = 2
     secondary_line_width = 1
-    group_row_margin = 0.2
     common_group_scale = True
     combine_groups = True
     show_legend = True
@@ -1830,7 +1842,6 @@ class DictNumericAnalyzer(Analyzer):
     semilog_y_min_bound = 1e-5
     main_line_width = 2
     secondary_line_width = 2
-    group_row_margin = 0.2
     common_group_scale = True
     combine_groups = False
     show_legend = False
