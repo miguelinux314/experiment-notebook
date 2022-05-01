@@ -38,7 +38,11 @@ if __name__ == '__main__':
     if enb.config.options.ssh_cluster_csv_path is None:
         if enb.parallel_ray.is_ray_enabled():
             print("enb.config.options.ssh_cluster_csv_path is not set. "
-                  "You can do so with --ssh_cluster_csv_path=enb_cluster.csv .")
+                  "You can do so with --ssh_cluster_csv_path=enb_cluster.csv"
+                  "or creating an '*.ini' file with\n"
+                  "[enb.config.options]\nssh_cluster_csv_path = enb_cluster.csv\n"
+                  "Please see https://miguelinux314.github.io/experiment-notebook/cluster_setup.html "
+                  "for more details.")
     else:
         print(f"Using cluster configuration file at {enb.config.options.ssh_cluster_csv_path}")
 

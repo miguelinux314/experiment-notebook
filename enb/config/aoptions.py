@@ -303,13 +303,19 @@ class DirOptions:
 
 @_singleton_cli.property_class(OptionsBase)
 class RayOptions:
-    """Options related to the ray library, used for parallel/distributed computing.
+    """Options related to the ray library, used for parallel/distributed computing
+    only when --ssh_cluster_csv_path (or, equivalently --ssh_csv) are employed.
     """
 
-    @OptionsBase.property(action="store_true")
-    def no_ray(self, value):
-        """If set, no ray is employed.
+    @OptionsBase.property("ssh_csv", type=str, default=None)
+    def ssh_cluster_csv_path(self, value):
+        """Path to the CSV file containing a enb ssh cluster configuration.
+        See https://miguelinux314.github.io/experiment-notebook/installation.html.
         """
+        if not os.path.exists(value):
+            print(f"Selected ssh_cluster_csv_path={repr(value)}, but it is not a valid file. "
+                  f"Setting to None instead.")
+            value = None
         return value
 
     @OptionsBase.property(action="store_true")
@@ -353,17 +359,6 @@ class RayOptions:
         """
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
         return int(value)
-
-    @OptionsBase.property("ssh_csv", type=str)
-    def ssh_cluster_csv_path(self, value):
-        """Path to the CSV file containing a enb ssh cluster configuration.
-        See https://miguelinux314.github.io/experiment-notebook/installation.html.
-        """
-        if not os.path.exists(value):
-            print(f"Selected ssh_cluster_csv_path={repr(value)}, but it is not a valid file. "
-                  f"Setting to None instead.")
-            value = None
-        return value
 
     @OptionsBase.property(action="store_true")
     def no_remote_mount_needed(self, value):
