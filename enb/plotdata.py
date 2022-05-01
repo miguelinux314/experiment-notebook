@@ -76,7 +76,7 @@ class PlottableData:
         if self.legend_position == "title":
             legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
                                  ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
-            facecolor = (1,1,1,0)
+            facecolor = (1, 1, 1, 0)
         else:
             legend = axes.legend(loc=self.legend_position if self.legend_position is not None else "best",
                                  ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))

@@ -509,7 +509,7 @@ class MetaTable(type):
 
                 if ctp_fun != sc_fun:
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
-                        enb.logger.debug(f"Redefining column {ctp_fun}."
+                        enb.logger.debug(f"Redefining column {ctp_fun}. "
                                          f"It now becomes {sc_fun}")
                         properties = copy.copy(properties)
                         properties.fun = ATable.build_column_function_wrapper(
