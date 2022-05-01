@@ -1373,11 +1373,18 @@ class ScalarNumericSummary(AnalyzerSummary):
                 quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
             except (RuntimeWarning, FloatingPointError):
                 class Description:
-                    minmax = [finite_only_series[0]] * 2
-                    mean = finite_only_series[0]
+                    try:
+                        minmax = [finite_only_series.values[0]] * 2
+                        mean = finite_only_series.values[0]
+                    except IndexError:
+                        minmax = 0, 0
+                        mean = 0
 
                 description = Description()
-                quartiles = [finite_only_series[0]] * 3
+                try:
+                    quartiles = [finite_only_series.values[0]] * 3
+                except IndexError:
+                    quartiles = 0, 0, 0
             np.seterr(all="warn")
 
         row[_column_name] = [
