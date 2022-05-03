@@ -39,7 +39,6 @@ format. Given a code initially developed for one `enb` version and then executed
             - `legend_column_count`
             - `show_grid`, `show_subgrid`
             - `global_title` (removed, use `plot_title` instead)
-
             
 
 General improvements:
@@ -47,6 +46,9 @@ General improvements:
     - The position of the legend can now be configured. 
       The `legend_position` parameter can now be passed in `plot_pds_by_group()`'s kwargs, 
       and configured via .ini files (under the `[enb.aanalysis.Analyzer]` section).
+
+    - Compression experiments now compute the execution time as the minimum of all repetitions,
+      instead of the average.
 
 Bug fixes:
 

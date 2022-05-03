@@ -743,7 +743,8 @@ class CompressionExperiment(experiment.Experiment):
                         if repetition_index < options.repetitions - 1:
                             os.remove(tmp_compressed_path)
 
-                    self._compression_results.compression_time_seconds = sum(measured_times) / len(measured_times)
+                    # The minimum time is kept, all other values are considered to have noise added by the OS
+                    self._compression_results.compression_time_seconds = min(measured_times)
                 except Exception as ex:
                     os.remove(tmp_compressed_path)
                     raise ex
@@ -807,7 +808,8 @@ class CompressionExperiment(experiment.Experiment):
 
                             if repetition_index < options.repetitions - 1:
                                 os.remove(tmp_reconstructed_path)
-                    self._decompression_results.decompression_time_seconds = sum(measured_times) / len(measured_times)
+                    # The minimum time is kept, the remaining values are assumed to contain noised added by the OS
+                    self._decompression_results.decompression_time_seconds = min(measured_times)
                 except Exception as ex:
                     os.remove(tmp_reconstructed_path)
                     raise ex
