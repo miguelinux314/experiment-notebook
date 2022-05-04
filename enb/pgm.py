@@ -24,10 +24,11 @@ def read_pgm(input_path, byteorder='>'):
             b"(^P5\s(?:\s*#.*[\r\n])*"
             b"(\d+)\s(?:\s*#.*[\r\n])*"
             b"(\d+)\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n]\s)*)", buffer).groups()
+            b"(\d+)\s)", buffer).groups()
     except AttributeError as ex:
         raise ex
         raise ValueError(f"Not a raw PGM file: '{input_path}'")
+    
     return np.frombuffer(
         buffer,
         dtype='u1' if int(maxval) < 256 else byteorder + 'u2',
