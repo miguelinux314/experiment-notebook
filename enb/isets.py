@@ -92,11 +92,10 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
     row = existing_dict if existing_dict is not None else {}
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
     if matches:
-        match = matches[-1]
         if len(matches) > 1:
-            enb.logger.warn(f"File path {file_path} contains more than one image geometry tag "
-                            f"(matches: {', '.join(repr(m.group(0)) for m in matches)}. "
-                            f"Only the last one is considered")
+            raise ValueError(f"File path {file_path} contains more than one image geometry tag. "
+                            f"Matches: {repr(matches)}.")
+        match = matches[0]
         component_count, height, width = (int(match[i]) for i in range(3))
         if any(dim < 1 for dim in (width, height, component_count)):
             raise ValueError(f"Invalid dimension tag in {file_path}")
