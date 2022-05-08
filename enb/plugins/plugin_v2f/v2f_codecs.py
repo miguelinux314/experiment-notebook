@@ -5,12 +5,14 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/09/01"
 
 import os
+import shutil
 import subprocess
 import itertools
 import re
 import pandas as pd
 import numpy as np
 import enb
+import time
 
 # Constants taken from the C code for consistency and maintainability.
 V2F_C_QUANTIZER_MODE_NONE = 0
@@ -110,8 +112,10 @@ class V2FCodec(enb.icompression.LosslessCodec,
                             f"q{self.param_dict['quantizer_mode']}_"
                             f"s{self.param_dict['qstep']}_"
                             f"d{self.param_dict['decorrelator_mode']}_" + \
+                            ("noshadow_" if self.param_dict["shadow_position_pairs"] else "") + \
                             os.path.basename(self.v2fc_header_path).replace(os.sep, "__"),
-                            os.path.abspath(original_path).replace(os.sep, "__")
+                            os.path.relpath(os.path.abspath(original_path), 
+                                            enb.config.options.project_root).replace(os.sep, "__")
                             + "_times.csv")
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
@@ -198,7 +202,9 @@ class ShadowLossyExperiment(enb.icompression.LossyCompressionExperiment):
         reconstructed_path = self.codec_results.decompression_results.reconstructed_path
 
         original_img = enb.isets.load_array_bsq(original_path)
-        reconstructed_img = enb.isets.load_array_bsq(reconstructed_path)
+        reconstructed_img = enb.isets.load_array_bsq(
+            file_or_path=reconstructed_path,
+            image_properties_row=self.get_dataset_info_row(file_path=original_path))
 
         for shadow_start, shadow_end in self.shadow_position_pairs:
             try:
@@ -216,7 +222,7 @@ class ShadowLossyExperiment(enb.icompression.LossyCompressionExperiment):
                 output=f"Not lossless reconstruction outside the shadow regions")
 
         return True
-    
+
     def column_decorrelator_mode(self, index, row):
         """Name of the decorrelation method used by this current codec.
         """
@@ -306,7 +312,7 @@ def verify_shadow_position_pairs(shadow_position_pairs):
         shadow_position_pairs = sorted(shadow_position_pairs)
         if any(len(pair) != 2 for pair in shadow_position_pairs):
             print(f"[watch] shadow_position_pairs={shadow_position_pairs}")
-            
+
             raise ValueError("All shadow pairs must have length exactly 2")
         if any(pair[0] > pair[1] for pair in shadow_position_pairs):
             raise ValueError("Shadow pairs must have start <= end")
