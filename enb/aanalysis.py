@@ -1458,6 +1458,8 @@ class TwoNumericAnalyzer(Analyzer):
     # If True, markers of the same group in the exact same x position are 
     # grouped into a single one with the average y value. Applies only in the 'line' render mode.
     average_identical_x = False
+    # If True, a line displaying linear regression is shown in the 'scatter' render mode
+    show_linear_regression = False
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -1763,21 +1765,30 @@ class TwoNumericSummary(ScalarNumericSummary):
                     x_values=[row[f"{x_column_name}_avg"]],
                     y_values=[row[f"{y_column_name}_avg"]],
                     marker_size=0,
-                    alpha=_self.analyzer.main_alpha,
+                    alpha=_self.analyzer.secondary_alpha,
                     err_neg_values=[row[f"{x_column_name}_std"]],
                     err_pos_values=[row[f"{x_column_name}_std"]],
-                    line_width=_self.analyzer.main_line_width,
+                    line_width=_self.analyzer.secondary_line_width,
                     vertical=False))
             if self.analyzer.show_y_std:
                 plds_this_case.append(plotdata.ErrorLines(
                     x_values=[row[f"{x_column_name}_avg"]],
                     y_values=[row[f"{y_column_name}_avg"]],
                     marker_size=0,
-                    alpha=_self.analyzer.main_alpha,
+                    alpha=_self.analyzer.secondary_alpha,
                     err_neg_values=[row[f"{y_column_name}_std"]],
                     err_pos_values=[row[f"{y_column_name}_std"]],
-                    line_width=_self.analyzer.main_line_width,
+                    line_width=_self.analyzer.secondary_line_width,
                     vertical=True))
+            if self.analyzer.show_linear_regression:
+                x_min, x_max = row[f"{x_column_name}_min"], row[f"{x_column_name}_max"]
+                slope = row[f"{x_column_name}_{y_column_name}_linear_lse_slope"]
+                intercept = row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"]
+                plds_this_case.append(plotdata.LineData(
+                    x_values=[x_min, x_max],
+                    y_values=[intercept + slope * x for x in (x_min, x_max)],
+                    marker_size=0, alpha=_self.analyzer.secondary_alpha,
+                    line_width=_self.analyzer.secondary_line_width))
         elif render_mode == "line":
             if self.group_by == "family_label":
                 try:

@@ -58,7 +58,7 @@ For example, `enb plugin install zip ./codecs/zip_codecs` should produce somethi
         enb.plugins.install("zip")
         
     .. autofunction:: enb.plugins.install
-
+        :noindex:
 
 CLI with scripts using `enb`
 ----------------------------

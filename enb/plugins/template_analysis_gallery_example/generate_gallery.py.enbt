@@ -63,6 +63,18 @@ if __name__ == '__main__':
             style_list=[style]
         )
 
+        # Scatter analysis with grouping, displaying linear regression
+        two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+        two_numeric_analyzer.show_x_std = False
+        two_numeric_analyzer.show_y_std = False
+        two_numeric_analyzer.show_linear_regression = True
+        analysis_df = two_numeric_analyzer.get_df(
+            full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric", "withregression"),
+            group_by="class",
+            style_list=[style]
+        )
+
         # Dictionary value plotting
         ## Use HEVC mode selection results
         hevc_df = pd.read_csv(os.path.join("./input_csv/hevc_frame_prediction.csv"))

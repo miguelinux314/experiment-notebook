@@ -697,7 +697,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param global_y_label: y-axis label shared by all subplots (there can be just one subplot)
     
     General figure configuration. If None, most of these values are retrieved from
-    the [enb.aanalysis.Analyzer] section of '*.ini' files. 
+    the [enb.aanalysis.Analyzer] section of `*.ini` files.
     
     :param combine_groups: if False, each group is plotted in a different row. If True,
         all groups share the same subplot (and no group name is displayed).
