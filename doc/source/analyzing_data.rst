@@ -100,13 +100,33 @@ which also shows +/- 1 horizontal and vertical standard deviations.
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png
     :width: 100%
 
-The previous figure shows an example of the `scatter` plot mode. 
+The previous figure shows an example of the `scatter` plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):
 
 .. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
     :shell:
 
-Examples are provided below in the first section about grouping data, where some of these modes are most useful. 
+Note that, for the `scatter` plot mode, it is possible to display linear regression of the data.
+For instance, the following code
+
+.. code-block:: python
+
+    two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+    two_numeric_analyzer.show_x_std = False
+    two_numeric_analyzer.show_y_std = False
+    two_numeric_analyzer.show_linear_regression = True
+    analysis_df = two_numeric_analyzer.get_df(
+        full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
+        output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric", "withregression"),
+        group_by="class",
+        style_list=[style])
+
+will produce a figure like the following:
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png
+    :width: 100%
+
+Additional examples are provided below in the first section about grouping data, where some of these modes are most useful.
 
 Columns with dictionaries
 -------------------------

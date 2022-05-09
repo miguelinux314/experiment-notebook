@@ -35,12 +35,13 @@ class Plugin(Installable):
 
     @classmethod
     def install(cls, installation_dir, overwrite_destination=False):
-        """Make a copy of this plugin into installation_dir, ready to be imported.
+        """Make a copy of this plugin into `installation_dir`, ready to be imported.
         By default, a verbatim copy of the source plugin's dir is made.
         Any previous contents in installation_dir are overwritten.
         Then any explicit requirements are met (external software may be downloaded
         and pip packages installed).
-
+        
+        :param installation_dir: destination dir where the plugin is to be copied to and, when necessary, built.
         :param overwrite_destination: if True, the destination path is deleted before
           installation. If False and installation_dir already exists, an error
           is raised (plugins are intended to be self-contained, isolated python modules).
