@@ -1698,19 +1698,24 @@ class TwoNumericSummary(ScalarNumericSummary):
     def set_twoscalar_description(self, *args, **kwargs):
         """Set basic descriptive statistics for the target column
         """
-        _, group_label, row = args
+        _self, group_label, row = args
         x_column_name, y_column_name = kwargs["column_selection"]
+
+        full_series_x = _self.label_to_df[group_label][x_column_name]
+        finite_series_x = self.remove_nans(full_series_x)
+        full_series_y = _self.label_to_df[group_label][y_column_name]
+        finite_series_y = self.remove_nans(full_series_y)
 
         with warnings.catch_warnings():
             warnings.filterwarnings("error")
             try:
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
-                    scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                    scipy.stats.pearsonr(finite_series_x, finite_series_y)
                 row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
                 row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
-                    scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
-                lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                    scipy.stats.spearmanr(finite_series_x, finite_series_y)
+                lr_results = scipy.stats.linregress(finite_series_x, finite_series_y)
                 row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
                 row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
             except (RuntimeWarning, FloatingPointError, ValueError):
