@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.6
+                v0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -101,7 +101,7 @@ with enb:</p>
 <h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.6 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.0 ] ................
 
 usage: enb [-h] {plugin,show,help} ...
 
@@ -129,7 +129,7 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.6 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.0 ] ................
 
 Showing 39 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
@@ -203,19 +203,27 @@ Plugin &#39;zip&#39; successfully installed into &#39;./codecs/zip_codecs&#39;.
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You can add calls to the <a class="reference internal" href="image_compression_plugins.html#enb.plugins.install" title="enb.plugins.install"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a> method within your scripts
+<p>You can add calls to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code> method within your scripts
 to automatically install (unless already installed) and import a plugin, e.g.,</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">&quot;zip&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py function">
-<dt class="sig sig-object py" id="enb.plugins.install">
-<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.install" title="Permalink to this definition"></a></dt>
-<dd><p>Install an Installable by name into target_dir.
-:param target_dir: If target_dir is None, it is set to “plugins/&lt;plugin_name&gt;” by default.
-:param overwrite: If overwrite is False and target_dir already exists, no action is taken.
-:param automatic_import: If True, the installable is imported as a module.</p>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Install an Installable by name into target_dir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the installable (e.g., plugin) to be installed. Run <cite>enb plugin list</cite> in the CLI
+to get a list of all available installables.</p></li>
+<li><p><strong>target_dir</strong> – If <cite>target_dir</cite> is None, it is set to <cite>plugins/&lt;plugin_name&gt;</cite> by default.</p></li>
+<li><p><strong>overwrite</strong> – If overwrite is False and target_dir already exists, no action is taken.</p></li>
+<li><p><strong>automatic_import</strong> – If True, the installable is imported as a module.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div></blockquote>
@@ -242,19 +250,12 @@ options. An example option of this is shown next:</p>
                          [--base_tmp_dir BASE_TMP_DIR]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
                          [--plot_dir PLOT_DIR] [--analysis_dir ANALYSIS_DIR]
-                         [--no_ray] [--disable_swap]
+                         [--ssh_csv SSH_CSV] [--disable_swap]
                          [--worker_script_name WORKER_SCRIPT_NAME]
                          [--preshutdown_wait_seconds PRESHUTDOWN_WAIT_SECONDS]
                          [--ray_port RAY_PORT]
-                         [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
-                         [--no_remote_mount_needed] [--no_render]
-                         [--fig_width FIG_WIDTH] [--fig_height FIG_HEIGHT]
-                         [--horizontal_margin HORIZONTAL_MARGIN]
-                         [--vertical_margin VERTICAL_MARGIN]
-                         [--legend_column_count LEGEND_COLUMN_COUNT]
-                         [--show_grid] [--show_subgrid]
-                         [--global_title GLOBAL_TITLE]
-                         [--group_row_margin GROUP_ROW_MARGIN]
+                         [--ray_port_count RAY_PORT_COUNT]
+                         [--no_remote_mount_needed]
                          [--selected_log_level {core,error,warning,message,verbose,informative,debug}]
                          [--default_print_level {core,error,warning,message,verbose,informative,debug}]
                          [--log_print {True,False}]
@@ -383,9 +384,14 @@ Dir Options:
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed
-  computing.
+  computing only when --ssh_cluster_csv_path (or, equivalently --ssh_csv)
+  are employed.
 
-  --no_ray              If set, no ray is employed. (default: False)
+  --ssh_csv SSH_CSV, --ssh_cluster_csv_path SSH_CSV
+                        Path to the CSV file containing a enb ssh cluster
+                        configuration. See
+                        https://miguelinux314.github.io/experiment-
+                        notebook/installation.html. (default: None)
   --disable_swap        If this flag is used, then swap memory will not be
                         allowed by ray. By default, swap memory is enabled.
                         Note that your system may become unstable if swap
@@ -412,47 +418,11 @@ Ray Options:
                         `ray_port` is 11000 and `ray_port_count` is 1000, then
                         ports 11000-11999 will be used for parallelization and
                         (if so-configured) enb clusters. (default: 500)
-  --ssh_csv SSH_CSV, --ssh_cluster_csv_path SSH_CSV
-                        Path to the CSV file containing a enb ssh cluster
-                        configuration. See
-                        https://miguelinux314.github.io/experiment-
-                        notebook/installation.html. (default: None)
   --no_remote_mount_needed
                         If this flag is used, the calling script&#39;s project
                         root path is assumed to be valid AND synchronized
                         (e.g., via NFS). By default, remote mounting via sshfs
                         and vde2 is employed. (default: False)
-
-Rendering Options:
-  Options affecting the rendering of figures.
-
-  --no_render           If set, some rendering options will be skipped.
-                        (default: False)
-  --fig_width FIG_WIDTH
-                        Figure width. Larger values may make text look smaller
-                        when the image is scaled to a constant size. (default:
-                        5.0)
-  --fig_height FIG_HEIGHT
-                        Figure height. Larger values may make text look
-                        smaller when the image is scaled to a constant size.
-                        (default: 4.0)
-  --horizontal_margin HORIZONTAL_MARGIN
-                        Horizontal margin, which effectively expands the
-                        (x_min, x_max) limits by this amount on each
-                        direction. (default: 0)
-  --vertical_margin VERTICAL_MARGIN
-                        Vertical margin, which effectively expands the (y_min,
-                        y_max) limits by this amount on each direction.
-                        (default: 0)
-  --legend_column_count LEGEND_COLUMN_COUNT
-                        Number of columns used in plot legends. (default: 2)
-  --show_grid           Show major axis grid lines? (default: False)
-  --show_subgrid        Show minor axis grid lines? (default: False)
-  --global_title GLOBAL_TITLE
-                        When this property is not None, displayed plots will
-                        typically include its value as the main title.
-                        (default: None)
-  --group_row_margin GROUP_ROW_MARGIN
 
 Logging Options:
   Options controlling what and how is printed and/or logged to files.

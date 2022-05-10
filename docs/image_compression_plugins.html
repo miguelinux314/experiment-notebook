@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.6
+                v0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -97,7 +97,7 @@
 <dl class="simple">
 <dt>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library offers a set of codecs that can be installed</dt><dd><ul class="simple">
 <li><p>via the <cite>enb plugin install</cite> command-line interface (CLI).</p></li>
-<li><p>via the <a class="reference internal" href="#enb.plugins.install" title="enb.plugins.install"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a> method within your scripts via</p></li>
+<li><p>via the <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code> method within your scripts via</p></li>
 </ul>
 </dd>
 </dl>
@@ -113,19 +113,27 @@
 </div>
 </section>
 <section id="installation-via-enb-plugins-install">
-<h2>Installation via <a class="reference internal" href="#enb.plugins.install" title="enb.plugins.install"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code></a><a class="headerlink" href="#installation-via-enb-plugins-install" title="Permalink to this headline"></a></h2>
+<h2>Installation via <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code><a class="headerlink" href="#installation-via-enb-plugins-install" title="Permalink to this headline"></a></h2>
 <p>You can add a line like the following to your script so that it automatically
 installs and imports a plugin</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">&quot;huffman&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py function">
-<dt class="sig sig-object py" id="enb.plugins.install">
-<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.install" title="Permalink to this definition"></a></dt>
-<dd><p>Install an Installable by name into target_dir.
-:param target_dir: If target_dir is None, it is set to “plugins/&lt;plugin_name&gt;” by default.
-:param overwrite: If overwrite is False and target_dir already exists, no action is taken.
-:param automatic_import: If True, the installable is imported as a module.</p>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Install an Installable by name into target_dir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the installable (e.g., plugin) to be installed. Run <cite>enb plugin list</cite> in the CLI
+to get a list of all available installables.</p></li>
+<li><p><strong>target_dir</strong> – If <cite>target_dir</cite> is None, it is set to <cite>plugins/&lt;plugin_name&gt;</cite> by default.</p></li>
+<li><p><strong>overwrite</strong> – If overwrite is False and target_dir already exists, no action is taken.</p></li>
+<li><p><strong>automatic_import</strong> – If True, the installable is imported as a module.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
