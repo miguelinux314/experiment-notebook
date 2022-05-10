@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.6
+                v0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -179,12 +179,15 @@ By default, the docstring of the selected class is returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.install">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.install" title="Permalink to this definition"></a></dt>
-<dd><p>Install this Installable into installation_dir. By default, copy all contents
-of the Installable’s source dir and install the declared pip requirements.</p>
+<dd><p>Install this Installable into <cite>installation_dir</cite>. By default, copy all contents
+of the Installable source dir and install the declared pip requirements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>overwrite_destination</strong> – if True, if the destination exists prior to this call,
-it is removed before installation</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>installation_dir</strong> – path where the installable is to be copied and, when necessary, built.</p></li>
+<li><p><strong>overwrite_destination</strong> – if True, if the destination exists prior to this call,
+it is removed before installation.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -281,10 +284,18 @@ them and an installable definition.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.plugins.installable.install">
 <span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.install" title="Permalink to this definition"></a></dt>
-<dd><p>Install an Installable by name into target_dir.
-:param target_dir: If target_dir is None, it is set to “plugins/&lt;plugin_name&gt;” by default.
-:param overwrite: If overwrite is False and target_dir already exists, no action is taken.
-:param automatic_import: If True, the installable is imported as a module.</p>
+<dd><p>Install an Installable by name into target_dir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the installable (e.g., plugin) to be installed. Run <cite>enb plugin list</cite> in the CLI
+to get a list of all available installables.</p></li>
+<li><p><strong>target_dir</strong> – If <cite>target_dir</cite> is None, it is set to <cite>plugins/&lt;plugin_name&gt;</cite> by default.</p></li>
+<li><p><strong>overwrite</strong> – If overwrite is False and target_dir already exists, no action is taken.</p></li>
+<li><p><strong>automatic_import</strong> – If True, the installable is imported as a module.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -345,16 +356,19 @@ to be importable and usable. By default:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.install">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.install" title="Permalink to this definition"></a></dt>
-<dd><p>Make a copy of this plugin into installation_dir, ready to be imported.
+<dd><p>Make a copy of this plugin into <cite>installation_dir</cite>, ready to be imported.
 By default, a verbatim copy of the source plugin’s dir is made.
 Any previous contents in installation_dir are overwritten.
 Then any explicit requirements are met (external software may be downloaded
 and pip packages installed).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>overwrite_destination</strong> – if True, the destination path is deleted before
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>installation_dir</strong> – destination dir where the plugin is to be copied to and, when necessary, built.</p></li>
+<li><p><strong>overwrite_destination</strong> – if True, the destination path is deleted before
 installation. If False and installation_dir already exists, an error
-is raised (plugins are intended to be self-contained, isolated python modules).</p>
+is raised (plugins are intended to be self-contained, isolated python modules).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

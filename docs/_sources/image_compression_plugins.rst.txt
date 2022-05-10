@@ -34,6 +34,7 @@ installs and imports a plugin
     enb.plugins.install("huffman")
     
 .. autofunction:: enb.plugins.install
+    :noindex:
 
 
 Codec availabily
