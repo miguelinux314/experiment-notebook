@@ -68,10 +68,14 @@ class TarliteReader:
 
 
 def tarlite_files(input_paths, output_tarlite_path):
+    """Take a list of input paths and combine them into a single tarlite file.
+    """
     tw = TarliteWriter(initial_input_paths=input_paths)
     tw.write(output_path=output_tarlite_path)
 
 
 def untarlite_files(input_tarlite_path, output_dir_path):
+    """Take a tarlite file and output the contents into the given directory.
+    """
     tr = TarliteReader(tarlite_path=input_tarlite_path)
     tr.extract_all(output_dir_path=output_dir_path)
