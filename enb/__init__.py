@@ -74,6 +74,7 @@ from . import aanalysis
 from . import icompression
 from . import isets
 from . import pgm
+from . import tarlite
 # Plugin and template support
 from . import plugins
 
