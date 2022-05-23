@@ -92,11 +92,10 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
     row = existing_dict if existing_dict is not None else {}
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
     if matches:
-        match = matches[-1]
         if len(matches) > 1:
-            enb.logger.warn(f"File path {file_path} contains more than one image geometry tag "
-                            f"(matches: {', '.join(repr(m.group(0)) for m in matches)}. "
-                            f"Only the last one is considered")
+            raise ValueError(f"File path {file_path} contains more than one image geometry tag. "
+                            f"Matches: {repr(matches)}.")
+        match = matches[0]
         component_count, height, width = (int(match[i]) for i in range(3))
         if any(dim < 1 for dim in (width, height, component_count)):
             raise ValueError(f"Invalid dimension tag in {file_path}")
@@ -215,8 +214,9 @@ class ImageGeometryTable(sets.FilePropertiesTable):
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
-        if any(s in os.path.basename(file_path) for s in ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
-                                        "u32be", "u32le", "s32be", "s32le")):
+        if any(s in os.path.basename(file_path) for s in
+               ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
+                "u32be", "u32le", "s32be", "s32le")):
             row[_column_name] = False
         elif any(s in os.path.basename(file_path) for s in ("f16", "f32", "f64")):
             row[_column_name] = True

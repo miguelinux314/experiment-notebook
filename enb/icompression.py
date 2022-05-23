@@ -688,6 +688,7 @@ class CompressionExperiment(experiment.Experiment):
             self._decompression_results = None
             self.compressed_copy_dir = compressed_copy_dir
             self.reconstructed_copy_dir = reconstructed_copy_dir
+            self.open_fds = []
 
         @property
         def compression_results(self):
@@ -695,9 +696,10 @@ class CompressionExperiment(experiment.Experiment):
             """
             if self._compression_results is None:
                 os.makedirs(options.base_tmp_dir, exist_ok=True)
-                _, tmp_compressed_path = tempfile.mkstemp(
+                fd, tmp_compressed_path = tempfile.mkstemp(
                     dir=options.base_tmp_dir,
                     prefix=f"compressed_{os.path.basename(self.file_path)}_")
+                self.open_fds.append(fd)
                 try:
                     measured_times = []
 
@@ -741,7 +743,8 @@ class CompressionExperiment(experiment.Experiment):
                         if repetition_index < options.repetitions - 1:
                             os.remove(tmp_compressed_path)
 
-                    self._compression_results.compression_time_seconds = sum(measured_times) / len(measured_times)
+                    # The minimum time is kept, all other values are considered to have noise added by the OS
+                    self._compression_results.compression_time_seconds = min(measured_times)
                 except Exception as ex:
                     os.remove(tmp_compressed_path)
                     raise ex
@@ -753,10 +756,11 @@ class CompressionExperiment(experiment.Experiment):
             """Perform the actual decompression experiment for the selected row.
             """
             if self._decompression_results is None:
-                _, tmp_reconstructed_path = tempfile.mkstemp(
+                fd, tmp_reconstructed_path = tempfile.mkstemp(
                     prefix=f"reconstructed_{os.path.basename(self.file_path)}",
                     dir=options.base_tmp_dir,
                     suffix=".raw")
+                self.open_fds.append(fd)
                 try:
                     measured_times = []
                     with enb.logger.info_context(
@@ -804,7 +808,8 @@ class CompressionExperiment(experiment.Experiment):
 
                             if repetition_index < options.repetitions - 1:
                                 os.remove(tmp_reconstructed_path)
-                    self._decompression_results.decompression_time_seconds = sum(measured_times) / len(measured_times)
+                    # The minimum time is kept, the remaining values are assumed to contain noised added by the OS
+                    self._decompression_results.decompression_time_seconds = min(measured_times)
                 except Exception as ex:
                     os.remove(tmp_reconstructed_path)
                     raise ex
@@ -829,6 +834,8 @@ class CompressionExperiment(experiment.Experiment):
                     os.remove(self._decompression_results.reconstructed_path)
                 except OSError:
                     pass
+            for fd in self.open_fds:
+                os.close(fd)
 
     def __init__(self, codecs,
                  dataset_paths=None,
@@ -977,7 +984,8 @@ class CompressionExperiment(experiment.Experiment):
         """
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
-        assert self.codec_results.compression_results.compressed_path == self.codec_results.decompression_results.compressed_path
+        assert self.codec_results.compression_results.compressed_path \
+               == self.codec_results.decompression_results.compressed_path
         try:
             assert row.image_info_row["bytes_per_sample"] * row.image_info_row["samples"] \
                    == os.path.getsize(self.codec_results.compression_results.original_path)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Project module for ML
+"""Experimental project module for ML. Incomplete at this point.
 """
 __author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
 __since__ = "2021/09/01"

@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.6
+                v0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -474,7 +474,7 @@ when combined with log_print set to True.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.config.aoptions.Options">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">Options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.Options" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RayOptions" title="enb.config.aoptions.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RenderingOptions" title="enb.config.aoptions.RenderingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RenderingOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.LoggingOptions" title="enb.config.aoptions.LoggingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.LoggingOptions</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RayOptions" title="enb.config.aoptions.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.LoggingOptions" title="enb.config.aoptions.LoggingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.LoggingOptions</span></code></a></p>
 <p>Class of the <cite>enb.config.options</cite> object, which exposes
 options for all modules, allowing CLI-based parameter setting.</p>
 <p>Classes wishing to expand the set of global options can be defined above,
@@ -508,18 +508,13 @@ results in <cite>sys.argv</cite> differing in the orchestrating and host process
 <dt class="sig sig-object py" id="enb.config.aoptions.RayOptions">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RayOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RayOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Options related to the ray library, used for parallel/distributed computing.</p>
+<p>Options related to the ray library, used for parallel/distributed computing
+only when –ssh_cluster_csv_path (or, equivalently –ssh_csv) are employed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.disable_swap">
 <span class="sig-name descname"><span class="pre">disable_swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.disable_swap" title="Permalink to this definition"></a></dt>
 <dd><p>If this flag is used, then swap memory will not be allowed by ray. By default, swap memory is enabled.
 Note that your system may become unstable if swap memory is used (specially a big portion thereof).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.no_ray">
-<span class="sig-name descname"><span class="pre">no_ray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.no_ray" title="Permalink to this definition"></a></dt>
-<dd><p>If set, no ray is employed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -564,76 +559,6 @@ See <a class="reference external" href="https://miguelinux314.github.io/experime
 <span class="sig-name descname"><span class="pre">worker_script_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.worker_script_name" title="Permalink to this definition"></a></dt>
 <dd><p>Base name of ray’s worker scripts, invoked to run tasks in parallel processes.
 You don’t need to change this unless you want to use custom ray workers.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RenderingOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Options affecting the rendering of figures.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_height">
-<span class="sig-name descname"><span class="pre">fig_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_height" title="Permalink to this definition"></a></dt>
-<dd><p>Figure height.</p>
-<p>Larger values may make text look smaller when the image is scaled to a constant size.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_width">
-<span class="sig-name descname"><span class="pre">fig_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_width" title="Permalink to this definition"></a></dt>
-<dd><p>Figure width.</p>
-<p>Larger values may make text look smaller when the image is scaled to a constant size.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.global_title">
-<span class="sig-name descname"><span class="pre">global_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.global_title" title="Permalink to this definition"></a></dt>
-<dd><p>When this property is not None, displayed plots will typically include its value as the main title.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.group_row_margin">
-<span class="sig-name descname"><span class="pre">group_row_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.group_row_margin" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.horizontal_margin">
-<span class="sig-name descname"><span class="pre">horizontal_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.horizontal_margin" title="Permalink to this definition"></a></dt>
-<dd><p>Horizontal margin, which effectively expands the (x_min, x_max) limits
-by this amount on each direction.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.legend_column_count">
-<span class="sig-name descname"><span class="pre">legend_column_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.legend_column_count" title="Permalink to this definition"></a></dt>
-<dd><p>Number of columns used in plot legends.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.no_render">
-<span class="sig-name descname"><span class="pre">no_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.no_render" title="Permalink to this definition"></a></dt>
-<dd><p>If set, some rendering options will be skipped.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.show_grid">
-<span class="sig-name descname"><span class="pre">show_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_grid" title="Permalink to this definition"></a></dt>
-<dd><p>Show major axis grid lines?</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.show_subgrid">
-<span class="sig-name descname"><span class="pre">show_subgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_subgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Show minor axis grid lines?</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.vertical_margin">
-<span class="sig-name descname"><span class="pre">vertical_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.vertical_margin" title="Permalink to this definition"></a></dt>
-<dd><p>Vertical margin, which effectively expands the (y_min, y_max) limits
-by this amount on each direction.</p>
 </dd></dl>
 
 </dd></dl>

@@ -509,7 +509,7 @@ class MetaTable(type):
 
                 if ctp_fun != sc_fun:
                     if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
-                        enb.logger.debug(f"Redefining column {ctp_fun}."
+                        enb.logger.debug(f"Redefining column {ctp_fun}. "
                                          f"It now becomes {sc_fun}")
                         properties = copy.copy(properties)
                         properties.fun = ATable.build_column_function_wrapper(
@@ -1107,6 +1107,13 @@ class ATable(metaclass=MetaTable):
         # Get a list of all (column, fun) tuples, where fun is the function that sets column for a given row
         try:
             column_fun_tuples = [(c, self.column_to_properties[c].fun) for c in target_columns]
+            missing_fun_tuples = [fun_tuple for fun_tuple in column_fun_tuples if fun_tuple[1] is None ]
+            if missing_fun_tuples:
+                enb.logger.debug(f"Wrong target_columns for {self}. "
+                                "It has None associated functions for the following columns:")
+                enb.logger.debug("\n\t-".join(cft[0] for cft in column_fun_tuples if cft[1] is None))
+                enb.logger.debug("These will be ignored")
+                column_fun_tuples = [cft for cft in column_fun_tuples if cft[1] is not None]
         except KeyError as ex:
             raise ValueError("Invoked with target columns not present in self.column_to_properties. "
                              f"target_columns={repr(target_columns)}, "
@@ -1357,7 +1364,7 @@ class SummaryTable(ATable):
         """
         super().__init__(csv_support_path=csv_support_path, index="group_label")
         self.reference_df = full_df if copy_df is not True else pd.DataFrame.copy(full_df)
-        self.reference_column_to_properties = column_to_properties
+        self.reference_column_to_properties = dict(column_to_properties) if column_to_properties is not None else None
         self.group_by = group_by
         self.include_all_group = include_all_group
 

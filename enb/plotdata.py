@@ -37,9 +37,13 @@ class PlottableData:
     legend_column_count = 1
     color = None
     marker = None
+    # If "title", it is shown outside the plot, above it and centered.
+    # Otherwise, it must be a matplotlib-recognized string
+    legend_position = "title"
 
     def __init__(self, data=None, axis_labels=None, label=None,
                  extra_kwargs=None, alpha=None, legend_column_count=None,
+                 legend_position=None,
                  marker=None, color=None,
                  marker_size=None):
         self.data = data
@@ -48,6 +52,7 @@ class PlottableData:
         self.extra_kwargs = extra_kwargs if extra_kwargs is not None else {}
         self.alpha = alpha if alpha is not None else self.alpha
         self.legend_column_count = legend_column_count if legend_column_count is not None else self.legend_column_count
+        self.legend_position = legend_position if legend_position is not None else self.legend_position
         self.marker = marker
         self.marker_size = marker_size
         self.color = color if color is not None else self.color
@@ -68,10 +73,17 @@ class PlottableData:
 
     def render_legend(self, axes=None):
         axes = plt if axes is None else axes
-        legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                             ncol=self.legend_column_count, edgecolor=((0, 0, 0, 0.2)))
+        if self.legend_position == "title":
+            legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
+                                 ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+            facecolor = (1, 1, 1, 0)
+        else:
+            legend = axes.legend(loc=self.legend_position if self.legend_position is not None else "best",
+                                 ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+            facecolor = (1, 1, 1, 1)
+
         legend.get_frame().set_alpha(None)
-        legend.get_frame().set_facecolor((1, 1, 1, 0))
+        legend.get_frame().set_facecolor(facecolor)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(color={repr(self.color)})"
@@ -598,7 +610,7 @@ def parallel_render_plds_by_group(
         # Additional plottable data instances
         extra_plds=tuple(),
         # Plot title
-        plot_title=None, show_legend=True,
+        plot_title=None, show_legend=True, legend_position=None,
         # Matplotlib styles
         style_list=tuple()):
     """Ray wrapper for render_plds_by_group. See that method for parameter information.
@@ -634,6 +646,7 @@ def parallel_render_plds_by_group(
                                     extra_plds=extra_plds,
                                     plot_title=plot_title,
                                     show_legend=show_legend,
+                                    legend_position=legend_position,
                                     style_list=style_list)
     except Exception as ex:
         enb.logger.error(f"Error rendering to {output_plot_path}:\n{repr(ex)}")
@@ -663,8 +676,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          # Additional plottable data
                          extra_plds=tuple(),
                          # Plot title
-                         plot_title=None,
-                         show_legend=True,
+                         plot_title=None, show_legend=True, legend_position=None,
                          # Matplotlib styles
                          style_list=("default",),
                          ):
@@ -684,7 +696,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     :param global_x_label: x-axis label shared by all subplots (there can be just one subplot)
     :param global_y_label: y-axis label shared by all subplots (there can be just one subplot)
     
-    General figure configuration:
+    General figure configuration. If None, most of these values are retrieved from
+    the [enb.aanalysis.Analyzer] section of `*.ini` files.
     
     :param combine_groups: if False, each group is plotted in a different row. If True,
         all groups share the same subplot (and no group name is displayed).
@@ -740,6 +753,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     
     :param plot_title: title to be displayed.
     :param show_legend: if True, legends are added to the plot.
+    :param legend_position: position of the legend (if shown). It can be "title" to display
+      it above the plot, or any matplotlib-recognized argument to the loc argument of legend().
     
     Matplotlib styles:
     
@@ -755,7 +770,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                             f"No analysis is performed.")
             return
 
-        legend_column_count = options.legend_column_count if legend_column_count is None else legend_column_count
+        legend_column_count = legend_column_count if legend_column_count is not None \
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer", "legend_column_count")
         if legend_column_count:
             for name, pds in pds_by_group_name.items():
                 for pld in pds:
@@ -792,7 +808,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
                         try:
                             pds_by_group_name[g][0].label = \
-                                y_labels_by_group_name[g] if y_labels_by_group_name and g in y_labels_by_group_name else g
+                                y_labels_by_group_name[
+                                    g] if y_labels_by_group_name and g in y_labels_by_group_name else g
+                            pds_by_group_name[g][0].legend_position = legend_position
                         except IndexError:
                             # Ignore empty groups
                             continue
@@ -801,7 +819,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         y_labels_by_group_name = {g: g for g in sorted_group_names} \
             if y_labels_by_group_name is None else y_labels_by_group_name
-        
+
         if color_by_group_name is None:
             color_by_group_name = {}
             for i, group_name in enumerate(sorted_group_names):
@@ -830,8 +848,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     apply_xkcd_style()
                 else:
                     raise ValueError(f"Unrecognized style {repr(style)}.")
-            fig_width = options.fig_width if fig_width is None else fig_width
-            fig_height = options.fig_height if fig_height is None else fig_height
+
+            fig_width = enb.config.ini.get_key(section="enb.aanalysis.Analyzer", name="fig_width") \
+                if fig_width is None else fig_width
+            fig_height = enb.config.ini.get_key(section="enb.aanalysis.Analyzer", name="fig_height") \
+                if fig_height is None else fig_height
 
             fig, group_axis_list = plt.subplots(
                 nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
@@ -843,6 +864,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             elif len(sorted_group_names) == 1:
                 group_axis_list = [group_axis_list]
 
+            plot_title = plot_title if plot_title is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "plot_title")
             if plot_title:
                 plt.suptitle(plot_title)
 
@@ -951,10 +974,25 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
                 x_tick_label_list = [column_properties.hist_label_dict[x] for x in x_tick_values]
 
-            group_row_margin = group_row_margin if group_row_margin is not None else float(
-                enb.config.options.group_row_margin)
-            group_row_margin += (len(pds_by_group_name) - 6) / 24
-            plt.subplots_adjust(hspace=group_row_margin)
+            group_row_margin = group_row_margin if group_row_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "group_row_margin")
+            group_row_margin = float(group_row_margin) if group_row_margin is not None else group_row_margin
+            if group_row_margin is None and len(pds_by_group_name) > 5:
+                if len(pds_by_group_name) <= 7:
+                    group_row_margin = 0.5
+                elif len(pds_by_group_name) <= 12:
+                    group_row_margin = 0.6
+                else:
+                    group_row_margin = 0.7
+                enb.logger.info("The `group_row_margin` option "
+                                f"was likely too small to display all {len(pds_by_group_name)} groups: "
+                                f"automatically adjusting to {group_row_margin}. You can set "
+                                f"your desired value at the [enb.aanalysis.Analyzer] section in your *.ini files,"
+                                f"or passing e.g., `group_row_margin=0.9` to your Analyzer get_df() "
+                                f"or adjusting the figure height with `fig_height`.")
+                
+            if group_row_margin is not None:
+                plt.subplots_adjust(hspace=group_row_margin)
 
             # Set the axis limits
             xlim = [global_x_min, global_x_max]
@@ -964,8 +1002,11 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             ylim[0] = ylim[0] if y_min is None else y_min
             ylim[1] = ylim[1] if y_max is None else y_max
             # Translate relative margin to absolute margin
-            horizontal_margin = horizontal_margin if horizontal_margin is not None else options.horizontal_margin
-            vertical_margin = vertical_margin if vertical_margin is not None else options.vertical_margin
+            horizontal_margin = horizontal_margin if horizontal_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "horizontal_margin")
+            vertical_margin = vertical_margin if vertical_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "vertical_margin")
+
             h_margin = horizontal_margin * (xlim[1] - xlim[0])
             v_margin = vertical_margin * (ylim[1] - ylim[0])
             xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
@@ -989,8 +1030,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             if xlim[1] < 1e-2:
                 x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
-            show_grid = options.show_grid if show_grid is None else show_grid
-            show_subgrid = options.show_subgrid if show_subgrid is None else show_subgrid
+            show_grid = show_grid if show_grid is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_grid")
+            show_subgrid = show_subgrid if show_subgrid is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_subgrid")
             ca = plt.gca()
 
             for group_axes in group_axis_list:
@@ -1032,9 +1075,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     plt.grid(False)
                     plt.minorticks_off()
                     plt.ylabel(global_y_label, labelpad=15)
-
-            if options.global_title is not None:
-                plt.suptitle(options.global_title)
 
             with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
                 if os.path.dirname(output_plot_path):

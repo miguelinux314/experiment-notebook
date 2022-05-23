@@ -14,6 +14,7 @@ import tempfile
 import enb.isets
 import numpy as np
 from enb import icompression
+from enb.config import options
 
 
 class VVC(icompression.LittleEndianWrapper):
@@ -31,7 +32,7 @@ class VVC(icompression.LittleEndianWrapper):
         assert chroma_format in ["400"], f"Chroma format {chroma_format} not supported."
         assert qp == int(qp), f"Invalid non-integer QP={qp}"
         assert 0 <= qp <= 63, f"Invalid QP value {qp} out of range [0, 63]"
-        self.config_path = config_path
+        self.config_path = os.path.relpath(config_path, options.project_root)
         assert os.path.isfile(config_path), f"VVC configuration file path {repr(config_path)} not found."
 
         param_dict = dict(chroma_format=chroma_format, QP=qp, config_path=config_path)
@@ -47,7 +48,7 @@ class VVC(icompression.LittleEndianWrapper):
                             f"not supported yet.")
 
         return f"-i {original_path} " \
-               f"-c {self.param_dict['config_path']} " \
+               f"-c {os.path.join(options.project_root, self.param_dict['config_path'])} " \
                f"-b {compressed_path} " \
                f"-wdt {original_file_info['width']} " \
                f"-hgt {original_file_info['height']} " \
@@ -80,7 +81,7 @@ class VVCLosslessIntra(VVC, icompression.LosslessCodec):
         """
         assert chroma_format == "400", f"Only '400' chroma format is supported by this plugin."
         config_path = config_path if config_path is not None \
-            else os.path.join(os.path.dirname(os.path.abspath(__file__)),
+            else os.path.join(os.path.dirname(os.path.relpath(__file__, options.project_root)),
                               f"vvc_lossless_{chroma_format}_intra.cfg")
         VVC.__init__(self, config_path, chroma_format, qp=0)
 
@@ -105,7 +106,7 @@ class VVCLosslessInter(VVC, icompression.LosslessCodec):
         """
         assert chroma_format == "400", f"Only '400' chroma format is supported by this plugin."
         config_path = config_path if config_path is not None \
-            else os.path.join(os.path.dirname(os.path.abspath(__file__)),
+            else os.path.join(os.path.dirname(os.path.relpath(__file__, options.project_root)),
                               f"vvc_lossless_{chroma_format}_inter.cfg")
         VVC.__init__(self, config_path, chroma_format, qp=0)
 
@@ -131,7 +132,7 @@ class VVC_lossy(VVC, icompression.LossyCodec):
         bit_rate = round(float(bit_rate), self.rate_decimals) if bit_rate is not None else bit_rate
 
         config_path = config_path if config_path is not None \
-            else os.path.join(os.path.dirname(os.path.abspath(__file__)),
+            else os.path.join(os.path.dirname(os.path.relpath(__file__, options.project_root)),
                               f"vvc_lossy_{chroma_format}_onecomponent.cfg")
         VVC.__init__(
             self, config_path=config_path, chroma_format=chroma_format, qp=qp)

@@ -51,6 +51,18 @@ class Analyzer(enb.atable.ATable):
     to any Analyzer subclass, and parameters can be managed within the full-qualified name of the class,
     e.g., using a "[enb.aanalysis.Analyzer]" section header in any of the .ini files detected by enb.
     """
+    # Default figure width
+    fig_width = 5.0
+    # Default figure height
+    fig_height = 4.0
+    # Relative horizontal margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+    horizontal_margin = 0
+    # Relative vertical margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+    vertical_margin = 0
+    # Show grid lines at the major ticks?
+    show_grid = False
+    # Show grid lines at the minor ticks?
+    show_subgrid = False
     # List of allowed rendering modes for the analyzer
     valid_render_modes = set()
     # Selected render modes (by default, all of them)
@@ -78,7 +90,7 @@ class Analyzer(enb.atable.ATable):
     # Thickness of secondary plot lines
     secondary_line_width = 1
     # Margin between group rows (if there is more than one)
-    group_row_margin = 0.2
+    group_row_margin = None
     # If more than group is displayed, when applicable, adjust plots to use the same scale in every subplot?
     common_group_scale = True
     # If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
@@ -90,6 +102,11 @@ class Analyzer(enb.atable.ATable):
     combine_groups = False
     # If True, display group legends when applicable
     show_legend = True
+    # Default number of columns inside the legend
+    legend_column_count = 2
+    # Legend position (if configured to be shown). It can be "title" to show it above the plot,
+    # or any matplotlib-recognized argument for the loc parameter of legend()
+    legend_position = "title"
     # If not None, it must be a list of matplotlibrc styles (names or file paths)
     style_list = []
     # Number of decimals used when saving to latex
@@ -357,6 +374,9 @@ class Analyzer(enb.atable.ATable):
 
         if "show_legend" not in column_kwargs:
             column_kwargs["show_legend"] = self.show_legend
+
+        if "legend_position" not in column_kwargs:
+            column_kwargs["legend_position"] = self.legend_position
 
         if self.style_list is not None:
             column_kwargs["style_list"] = self.style_list
@@ -711,7 +731,6 @@ class ScalarNumericAnalyzer(Analyzer):
     semilog_y_min_bound = 1e-5
     main_line_width = 2
     secondary_line_width = 2
-    group_row_margin = 0.2
     common_group_scale = True
     combine_groups = False
     show_legend = False
@@ -1354,11 +1373,18 @@ class ScalarNumericSummary(AnalyzerSummary):
                 quartiles = scipy.stats.mstats.mquantiles(finite_only_series)
             except (RuntimeWarning, FloatingPointError):
                 class Description:
-                    minmax = [finite_only_series[0]] * 2
-                    mean = finite_only_series[0]
+                    try:
+                        minmax = [finite_only_series.values[0]] * 2
+                        mean = finite_only_series.values[0]
+                    except IndexError:
+                        minmax = 0, 0
+                        mean = 0
 
                 description = Description()
-                quartiles = [finite_only_series[0]] * 3
+                try:
+                    quartiles = [finite_only_series.values[0]] * 3
+                except IndexError:
+                    quartiles = 0, 0, 0
             np.seterr(all="warn")
 
         row[_column_name] = [
@@ -1422,7 +1448,6 @@ class TwoNumericAnalyzer(Analyzer):
     semilog_y_min_bound = 1e-5
     main_line_width = 2
     secondary_line_width = 1
-    group_row_margin = 0.2
     common_group_scale = True
     combine_groups = True
     show_legend = True
@@ -1433,6 +1458,8 @@ class TwoNumericAnalyzer(Analyzer):
     # If True, markers of the same group in the exact same x position are 
     # grouped into a single one with the average y value. Applies only in the 'line' render mode.
     average_identical_x = False
+    # If True, a line displaying linear regression is shown in the 'scatter' render mode
+    show_linear_regression = False
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -1673,22 +1700,27 @@ class TwoNumericSummary(ScalarNumericSummary):
     def set_twoscalar_description(self, *args, **kwargs):
         """Set basic descriptive statistics for the target column
         """
-        _, group_label, row = args
+        _self, group_label, row = args
         x_column_name, y_column_name = kwargs["column_selection"]
+
+        full_series_x = _self.label_to_df[group_label][x_column_name]
+        finite_series_x = self.remove_nans(full_series_x)
+        full_series_y = _self.label_to_df[group_label][y_column_name]
+        finite_series_y = self.remove_nans(full_series_y)
 
         with warnings.catch_warnings():
             warnings.filterwarnings("error")
             try:
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation"], \
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = \
-                    scipy.stats.pearsonr(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                    scipy.stats.pearsonr(finite_series_x, finite_series_y)
                 row[f"{x_column_name}_{y_column_name}_spearman_correlation"], \
                 row[f"{x_column_name}_{y_column_name}_spearman_correlation_pvalue"] = \
-                    scipy.stats.spearmanr(self.reference_df[x_column_name], self.reference_df[y_column_name])
-                lr_results = scipy.stats.linregress(self.reference_df[x_column_name], self.reference_df[y_column_name])
+                    scipy.stats.spearmanr(finite_series_x, finite_series_y)
+                lr_results = scipy.stats.linregress(finite_series_x, finite_series_y)
                 row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
                 row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
-            except (RuntimeWarning, FloatingPointError):
+            except (RuntimeWarning, FloatingPointError, ValueError):
                 enb.logger.info(f"{self.__class__.__name__}: Cannot set correlation metrics for dataframes of length 1")
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation"] = float("inf")
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation_pvalue"] = float("inf")
@@ -1733,21 +1765,30 @@ class TwoNumericSummary(ScalarNumericSummary):
                     x_values=[row[f"{x_column_name}_avg"]],
                     y_values=[row[f"{y_column_name}_avg"]],
                     marker_size=0,
-                    alpha=_self.analyzer.main_alpha,
+                    alpha=_self.analyzer.secondary_alpha,
                     err_neg_values=[row[f"{x_column_name}_std"]],
                     err_pos_values=[row[f"{x_column_name}_std"]],
-                    line_width=_self.analyzer.main_line_width,
+                    line_width=_self.analyzer.secondary_line_width,
                     vertical=False))
             if self.analyzer.show_y_std:
                 plds_this_case.append(plotdata.ErrorLines(
                     x_values=[row[f"{x_column_name}_avg"]],
                     y_values=[row[f"{y_column_name}_avg"]],
                     marker_size=0,
-                    alpha=_self.analyzer.main_alpha,
+                    alpha=_self.analyzer.secondary_alpha,
                     err_neg_values=[row[f"{y_column_name}_std"]],
                     err_pos_values=[row[f"{y_column_name}_std"]],
-                    line_width=_self.analyzer.main_line_width,
+                    line_width=_self.analyzer.secondary_line_width,
                     vertical=True))
+            if self.analyzer.show_linear_regression:
+                x_min, x_max = row[f"{x_column_name}_min"], row[f"{x_column_name}_max"]
+                slope = row[f"{x_column_name}_{y_column_name}_linear_lse_slope"]
+                intercept = row[f"{x_column_name}_{y_column_name}_linear_lse_intercept"]
+                plds_this_case.append(plotdata.LineData(
+                    x_values=[x_min, x_max],
+                    y_values=[intercept + slope * x for x in (x_min, x_max)],
+                    marker_size=0, alpha=_self.analyzer.secondary_alpha,
+                    line_width=_self.analyzer.secondary_line_width))
         elif render_mode == "line":
             if self.group_by == "family_label":
                 try:
@@ -1824,7 +1865,6 @@ class DictNumericAnalyzer(Analyzer):
     semilog_y_min_bound = 1e-5
     main_line_width = 2
     secondary_line_width = 2
-    group_row_margin = 0.2
     common_group_scale = True
     combine_groups = False
     show_legend = False
@@ -2099,8 +2139,10 @@ class DictNumericSummary(AnalyzerSummary):
 
         if _self.analyzer.key_to_x:
             x_values = [_self.analyzer.key_to_x[k] for k in key_values]
-        else:
+        elif any(isinstance(k, str) for k in key_values):
             x_values = range(len(key_values))
+        else:
+            x_values = key_values
 
         if _self.analyzer.show_individual_samples and (
                 self.analyzer.secondary_alpha is None or self.analyzer.secondary_alpha > 0):
@@ -2250,11 +2292,11 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                                             + (f"\n" if pd.colormap_label else "") + \
                                             f"{column_kwargs['y_labels_by_group_name'][group_name]}"
 
-            if "y_labels_by_group_name" not in column_kwargs \
-                    or column_kwargs["y_labels_by_group_name"] is None:
-                column_kwargs["y_labels_by_group_name"] = {
-                    group_name: y_column_label
-                    for group_name in column_kwargs["pds_by_group_name"].keys()}
+            # The y_labels_by_group_name key is set to the y label name; the group name is shown
+            # to the right of the colorbar.
+            column_kwargs["y_labels_by_group_name"] = {
+                group_name: y_column_label
+                for group_name in column_kwargs["pds_by_group_name"].keys()}
 
         return column_kwargs
 

@@ -106,11 +106,12 @@ class Installable(metaclass=InstallableMeta):
 
     @classmethod
     def install(cls, installation_dir, overwrite_destination=False):
-        """Install this Installable into installation_dir. By default, copy all contents
-        of the Installable's source dir and install the declared pip requirements.
-
+        """Install this Installable into `installation_dir`. By default, copy all contents
+        of the Installable source dir and install the declared pip requirements.
+        
+        :param installation_dir: path where the installable is to be copied and, when necessary, built.
         :param overwrite_destination: if True, if the destination exists prior to this call,
-          it is removed before installation
+            it is removed before installation.
         """
         installation_dir = os.path.abspath(installation_dir)
 
@@ -252,7 +253,10 @@ class Installable(metaclass=InstallableMeta):
 
 def install(name, target_dir=None, overwrite=False, automatic_import=True):
     """Install an Installable by name into target_dir.
-    :param target_dir: If target_dir is None, it is set to "plugins/<plugin_name>" by default.
+    
+    :param name: name of the installable (e.g., plugin) to be installed. Run `enb plugin list` in the CLI
+      to get a list of all available installables.
+    :param target_dir: If `target_dir` is None, it is set to `plugins/<plugin_name>` by default.
     :param overwrite: If overwrite is False and target_dir already exists, no action is taken.
     :param automatic_import: If True, the installable is imported as a module.
     """

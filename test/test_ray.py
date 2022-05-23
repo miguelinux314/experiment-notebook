@@ -10,7 +10,7 @@ import ray
 import time
 
 class TestRay(unittest.TestCase):
-    if not enb.config.options.no_ray:
+    if enb.parallel_ray.is_ray_enabled():
         def test_ray_is_automatically_started(self):
             enb.parallel_ray.init_ray()
             assert ray.is_initialized()
@@ -41,7 +41,7 @@ class TestRay(unittest.TestCase):
             ray.get(target_ids, timeout=0)
     else:
         def test_skip(self):
-            enb.logger.verbose("Skipping ray test because no_ray is selected.")
+            enb.logger.verbose("Skipping ray test because a ray ssh cluster is not selected.")
 
 
 if __name__ == '__main__':

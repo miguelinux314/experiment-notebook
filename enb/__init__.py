@@ -8,13 +8,10 @@ __since__ = "2020/03/31"
 
 import os as _os
 import sys as _sys
-import shutil as _shutil
-import textwrap as _textwrap
 import appdirs as _appdirs
 import numpy as _np
 import warnings as _warnings
 import atexit as _atexit
-import platform as _platform
 
 # Make all warnings errors
 _np.seterr(all="raise")
@@ -77,38 +74,30 @@ from . import aanalysis
 from . import icompression
 from . import isets
 from . import pgm
+from . import tarlite
 # Plugin and template support
 from . import plugins
 
-# Setup to be run only when enb is imported
+# Setup to be run only when enb is imported in the main process
 if not parallel_ray.is_parallel_process():
     # Setup common to
     log.core(config.get_banner())
     log.debug(f"Additional .ini files employed: {repr(config.ini.all_ini_paths)}.")
 
-    if config.options.verbose:
-        if not parallel_ray.is_ray_enabled() and _platform.system().lower() == "linux" and not config.options.no_ray:
-            print(_textwrap.indent(
-                f"Ray not found. Executing with fallback parallelization engine.\n"
-                f"Note that you can install ray for faster execution and cluster support,"
-                f" e.g., with:\n\n\tpip install ray[default]\n\n"
-                f"You can disable this warning by passing --no_ray in the command line.\n\n",
-                prefix=" " * (_shutil.get_terminal_size().columns // 10)))
-        elif parallel_ray.is_ray_enabled():
-            logger.info("Using ray for parallelization.")
-        else:
-            logger.info("Using fallback pathos for parallelization.")
-
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
 
-    if parallel_ray.is_ray_enabled():
-        _atexit.register(lambda: parallel_ray.stop_ray())
-        # The list of modules loaded so far passed to any possible ray remote
-        # nodes so that they don't attempt to load them again.
-        config.options._initial_module_names = list(
-            m.__name__ for m in _sys.modules.values() if hasattr(m, "__name__"))
+    if config.options.verbose:
+        if parallel_ray.is_ray_enabled():
+            logger.info("Using ray for parallelization.")
+            _atexit.register(lambda: parallel_ray.stop_ray())
+            # The list of modules loaded so far passed to any possible ray remote
+            # nodes so that they don't attempt to load them again.
+            config.options._initial_module_names = list(
+                m.__name__ for m in _sys.modules.values() if hasattr(m, "__name__"))
+        else:
+            logger.info("Using pathos for parallelization.")
 
     misc.capture_usr1()
 

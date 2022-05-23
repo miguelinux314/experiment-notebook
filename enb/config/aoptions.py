@@ -303,13 +303,19 @@ class DirOptions:
 
 @_singleton_cli.property_class(OptionsBase)
 class RayOptions:
-    """Options related to the ray library, used for parallel/distributed computing.
+    """Options related to the ray library, used for parallel/distributed computing
+    only when --ssh_cluster_csv_path (or, equivalently --ssh_csv) are employed.
     """
 
-    @OptionsBase.property(action="store_true")
-    def no_ray(self, value):
-        """If set, no ray is employed.
+    @OptionsBase.property("ssh_csv", type=str, default=None)
+    def ssh_cluster_csv_path(self, value):
+        """Path to the CSV file containing a enb ssh cluster configuration.
+        See https://miguelinux314.github.io/experiment-notebook/installation.html.
         """
+        if not os.path.exists(value):
+            print(f"Selected ssh_cluster_csv_path={repr(value)}, but it is not a valid file. "
+                  f"Setting to None instead.")
+            value = None
         return value
 
     @OptionsBase.property(action="store_true")
@@ -354,94 +360,12 @@ class RayOptions:
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
         return int(value)
 
-    @OptionsBase.property("ssh_csv", type=str)
-    def ssh_cluster_csv_path(self, value):
-        """Path to the CSV file containing a enb ssh cluster configuration.
-        See https://miguelinux314.github.io/experiment-notebook/installation.html.
-        """
-        if not os.path.exists(value):
-            print(f"Selected ssh_cluster_csv_path={repr(value)}, but it is not a valid file. "
-                  f"Setting to None instead.")
-            value = None
-        return value
-
     @OptionsBase.property(action="store_true")
     def no_remote_mount_needed(self, value):
         """If this flag is used, the calling script's project root path is assumed to 
         be valid AND synchronized (e.g., via NFS). By default, remote mounting via sshfs and vde2 is employed.
         """
         return bool(value)
-
-
-@_singleton_cli.property_class(OptionsBase)
-class RenderingOptions:
-    """Options affecting the rendering of figures.
-    """
-
-    @OptionsBase.property(action="store_true")
-    def no_render(self, value):
-        """If set, some rendering options will be skipped.
-        """
-        return bool(value)
-
-    @OptionsBase.property(action=_singleton_cli.PositiveFloatAction)
-    def fig_width(self, value):
-        """Figure width.
-
-        Larger values may make text look smaller when the image is scaled to a constant size.
-        """
-        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
-
-    @OptionsBase.property(action=_singleton_cli.PositiveFloatAction)
-    def fig_height(self, value):
-        """Figure height.
-
-        Larger values may make text look smaller when the image is scaled to a constant size.
-        """
-        _singleton_cli.PositiveFloatAction.assert_valid_value(value)
-
-    @OptionsBase.property(action=_singleton_cli.NonnegativeFloatAction)
-    def horizontal_margin(self, value):
-        """Horizontal margin, which effectively expands the (x_min, x_max) limits
-        by this amount on each direction.
-        """
-        _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
-
-    @OptionsBase.property(action=_singleton_cli.NonnegativeFloatAction)
-    def vertical_margin(self, value):
-        """Vertical margin, which effectively expands the (y_min, y_max) limits
-        by this amount on each direction.
-        """
-        _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
-
-    @OptionsBase.property(action=_singleton_cli.PositiveIntegerAction)
-    def legend_column_count(self, value):
-        """Number of columns used in plot legends.
-        """
-        _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
-
-    @OptionsBase.property(action="store_true")
-    def show_grid(self, value):
-        """Show major axis grid lines?
-        """
-        return bool(value)
-
-    @OptionsBase.property(action="store_true")
-    def show_subgrid(self, value):
-        """Show minor axis grid lines?
-        """
-        return bool(value)
-
-    @OptionsBase.property(type=str)
-    def global_title(self, value):
-        """When this property is not None, displayed plots will typically include its value as the main title.
-        """
-        return str(value)
-
-    @OptionsBase.property(action=_singleton_cli.NonnegativeFloatAction)
-    def group_row_margin(self, value):
-        _singleton_cli.NonnegativeFloatAction.assert_valid_value(value)
-        return float(value)
 
 
 @_singleton_cli.property_class(OptionsBase)
@@ -481,7 +405,7 @@ class LoggingOptions(OptionsBase):
         log.logger.show_prefix_level = log.logger.get_level(value)
 
 
-class Options(GeneralOptions, ExecutionOptions, DirOptions, RayOptions, RenderingOptions, LoggingOptions):
+class Options(GeneralOptions, ExecutionOptions, DirOptions, RayOptions, LoggingOptions):
     """Class of the `enb.config.options` object, which exposes
     options for all modules, allowing CLI-based parameter setting.
 

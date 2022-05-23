@@ -12,9 +12,53 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version v0.3.7
+# Development version v0.4.0
 
-- No updates yet
+- **Not backward-compatible** changes:
+    
+    - Several command line options have been removed, and/or moved to `*.ini` files 
+      (e.g., in your project folders - use `enb plugin install enb.ini .` to copy a full `*.ini` template)
+      and direct object manipulation. These are:
+
+        - `--no_ray`: By default, ray is not the default parallelization engine anymore. To use ray, one needs
+          to specifiy `--ssh_cluster_csv_path` or, alternatively, set the `ssh_cluster_csv_path` field in 
+          the `[enb.config.options]` section of your `'*.ini'` files.
+          Run your script with `-h` for additional
+          information on this parameter and/or check the 
+          [documentation on cluster configuration](https://miguelinux314.github.io/experiment-notebook/cluster_setup.html).
+      
+        - A number of plot rendering configuration options have been removed from the CLI and are now
+          accessible via the `[enb.aanalysis.Analyzer]` section of `'*.ini'` files, direct class
+          or instance manipulation of `enb.aanalyis.Analyzer` classes and/or instances, and as 
+          the `**kwargs` argument to Analyzer.get_df(), in turn passed to the `plotdata` module.
+          The affected options are those previously defined in `RenderingOptions` (now also deleted):
+          
+            - `fig_height`, `fig_width`
+            - `horizontal_margin`, `vertical_margin`
+            - `group_row_margin`
+            - `legend_column_count`
+            - `show_grid`, `show_subgrid`
+            - `global_title` (removed, use `plot_title` instead)
+            
+
+General improvements:
+
+    - The position of the legend can now be configured. 
+      The `legend_position` parameter can now be passed in `plot_pds_by_group()`'s kwargs, 
+      and configured via .ini files (under the `[enb.aanalysis.Analyzer]` section).
+
+    - Compression experiments now compute the execution time as the minimum of all repetitions,
+      instead of the average.
+
+Bug fixes:
+
+    - Fixed a "disk leak" problem in `enb.icompression`, which caused deleted files to take space until the script
+      finished, due to unclosed file descriptors.
+    - The 2D analyzer now correctly sets the y label to the name of the y column instead of the group name.
+    - Fixed wrongly displayed warnigns when invoking the CLI with parameters.
+    - Caught another potential failing point in aanalysis when fewer than 2 different samples are retrieved, 
+      when calculating linear regression parameters.
+
 
 # Latest stable version
 
