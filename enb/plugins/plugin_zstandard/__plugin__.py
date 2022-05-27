@@ -7,6 +7,6 @@ class ZstandardPlugin(enb.plugins.PluginMake):
     contrib_authors = ["Yann Collet"]
     contrib_reference_urls = ["https://github.com/facebook/zstd"]
     contrib_download_url_name = [
-        ("https://github.com/miguelinux314/experiment-notebook/blob/dev/contrib/zstd-dev.zip?raw=true",
-         "zstd-dev.zip")]
+        ("https://github.com/miguelinux314/experiment-notebook/blob/dev/contrib/zstd-1.1.3.zip?raw=true",
+         "zstd-1.1.3.zip")]
     tested_on = {"linux"}
