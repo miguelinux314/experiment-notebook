@@ -199,11 +199,10 @@ if __name__ == '__main__':
         x_tick_label_list=selected_keys,
         x_tick_label_angle=90,
         fig_width=10,
-        fig_height=25,
+        fig_height=27,
         y_tick_list=CodecSummaryTable.availability_modes,
         y_tick_label_list=[CodecSummaryTable.availability_to_label[m] for m in
                            CodecSummaryTable.availability_modes],
-        group_row_margin=-0.35,
         y_min=-0.3,
         y_max=2.3,
         global_x_label="Data type",

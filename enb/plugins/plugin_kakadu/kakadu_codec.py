@@ -200,7 +200,7 @@ class Kakadu2DHaar(Kakadu2D, icompression.LosslessCodec):
 
     @property
     def label(self):
-        return f"Haar {super().label}"
+        return f"{super().label} Haar"
 
 
 class Kakadu2D97M(Kakadu2D, icompression.LosslessCodec):
@@ -220,7 +220,7 @@ class Kakadu2D97M(Kakadu2D, icompression.LosslessCodec):
 
     @property
     def label(self):
-        return f"9/7-M {super().label}"
+        return f"{super().label} 9/7-M"
 
 
 class KakaduMCT(Kakadu2D):
