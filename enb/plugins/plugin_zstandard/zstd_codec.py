@@ -6,27 +6,94 @@ __since__ = "2021/07/12"
 
 import os
 import enb
+from enb import tarlite
+import tempfile
+import subprocess
 
 
 class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
     """Wrapper for the Zstandard codec
-    All data types integer and float 16, 32, 64 can be compressed 
+    All data types integer and float 16, 32, 64 can be compressed
     """
 
-    def __init__(self, compression_level='19', zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
+    def __init__(self, compression_level=19, zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
         """
-        :param compression_level: 1-19, being 19 the maximum data reduction
+        :param compression_level: 1-22, being 22 the maximum data reduction
         """
+        assert 1 <= int(compression_level) <= 22, f"Invalid compression level {compression_level}"
         super().__init__(compressor_path=zstd_binary,
                          decompressor_path=zstd_binary,
                          param_dict=dict(compression_level=compression_level))
 
     @property
     def label(self):
-        return "Zstandard"
+        return f"Zstandard {self.param_dict['compression_level']}"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-{self.param_dict['compression_level']} -f {original_path}  -o {compressed_path}"
+        return f"-{self.param_dict['compression_level']} " \
+               f"{'--ultra ' if self.param_dict['compression_level'] > 19 else ''}" \
+               f"-f {original_path}  -o {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-d -f {compressed_path} -o {reconstructed_path}"
+        return f"-d  -f {compressed_path} -o {reconstructed_path}"
+
+
+class Zstandard_train(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,
+                      enb.icompression.FITSWrapperCodec):
+    """Wrapper for the Zstandard codec, which produces a dictionary file for the input data and then employs
+    it for compression. The generated dictionary is included in the compressed data size measurements.
+    
+    All data types integer and float 16, 32, 64 can be compressed
+    """
+
+    def __init__(self, compression_level='19', zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
+        """
+        :param compression_level: 1-22, being 22 the maximum data reduction
+        """
+        super().__init__(compressor_path=zstd_binary,
+                         decompressor_path=zstd_binary,
+                         param_dict=dict(compression_level=compression_level))
+
+    def compress(self, original_path, compressed_path, original_file_info):
+        with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
+            dict_path = os.path.join(tmp_dir, "dict.zstd")
+            dict_compressed_path = os.path.join(tmp_dir, "compressed.zstd")
+
+            # Generate dictionary
+            invocation = f"{self.compressor_path} --train {original_path} --optimize-cover -o {dict_path}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+            # Compress using that dictionary
+            invocation = f" {self.compressor_path} " \
+                         f"{'--ultra ' if int(self.param_dict['compression_level']) > 19 else ''}" \
+                         f"-{self.param_dict['compression_level']} -D {dict_path} -f {original_path} " \
+                         f"-o {dict_compressed_path}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+            # Unite the compressed data and the side information
+            tarlite.tarlite_files(input_paths=(dict_path, dict_compressed_path), output_tarlite_path=compressed_path)
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info):
+        with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
+            dict_path = os.path.join(tmp_dir, "dict.zstd")
+            dict_compressed_path = os.path.join(tmp_dir, "compressed.zstd")
+
+            # Separate the compressed data from the side information
+            tarlite.untarlite_files(input_tarlite_path=compressed_path, output_dir_path=tmp_dir)
+
+            # Decompress
+            invocation = f"{self.compressor_path} -d -D {dict_path} -f {dict_compressed_path} -o {reconstructed_path}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
+                    status, invocation, output))
+
+    @property
+    def label(self):
+        return f"Zstandard pretrain {self.param_dict['compression_level']}"

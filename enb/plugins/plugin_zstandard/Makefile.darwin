@@ -1,7 +1,7 @@
 all:
-	unzip zstd-dev.zip
-	cd zstd-dev && make && cp programs/zstd ../
-	rm -rf zstd-dev
+	unzip zstd-1.1.3.zip
+	cd zstd-1.1.3 && make && cp programs/zstd ../
+	rm -rf zstd-1.1.3
 
 clean:
-	rm -rf zstd-dev zstd
+	rm -rf zstd-1.1.3 zstd
