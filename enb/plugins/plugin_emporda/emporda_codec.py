@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Codec wrapper for the emporda software.
+"""Codec wrapper for the emporda software (https://gici.uab.cat/GiciWebPage/downloads.php#emporda)
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2022/04/08"
@@ -11,7 +11,7 @@ import shutil
 
 class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,
               enb.icompression.JavaWrapperCodec, enb.icompression.GiciLibHelper):
-    """Wrapper for the emporda codec.
+    """Wrapper for the emporda codec (https://gici.uab.cat/GiciWebPage/downloads.php#emporda)
     """
 
     def __init__(self,
@@ -54,6 +54,10 @@ class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["bytes_per_sample"] == 2, \
             f"Only 16-bit samples are currently supported by {self.__class__.__name__}"
+        assert not original_file_info["float"], \
+            f"Only integer samples are currently supported by {self.__class__.__name__}"
+        assert original_file_info["big_endian"], \
+            f"Only big-endian samples are currently supported by {self.__class__.__name__}"
 
         return f"-Xmx256g -jar {self.compressor_jar} -c -i {original_path} -o {compressed_path} " \
                f"-ig {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
@@ -65,6 +69,13 @@ class Emporda(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec
                f"-up {self.param_dict['up']}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        assert original_file_info["bytes_per_sample"] == 2, \
+            f"Only 16-bit samples are currently supported by {self.__class__.__name__}"
+        assert not original_file_info["float"], \
+            f"Only integer samples are currently supported by {self.__class__.__name__}"
+        assert original_file_info["big_endian"], \
+            f"Only big-endian samples are currently supported by {self.__class__.__name__}"
+        
         return f"-Xmx256g -jar {self.decompressor_jar} -d -i {compressed_path} -o {reconstructed_path} " \
                f"-ig {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
                f"-qs {self.param_dict['qs']} " \

@@ -28,6 +28,12 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
     @property
     def label(self):
         return f"Zstandard {self.param_dict['compression_level']}"
+    
+    def assert_valid_data_type(self, original_file_info):
+        """Verify that the input data type is supported, else raise an exception
+        """
+        assert not original_file_info["float"], f"Only integer samples are supported by {self.__class__.__name__}"
+        assert original_file_info["big_endian"], f"Only big-endian samples are supported by {self.__class__.__name__}"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"-{self.param_dict['compression_level']} " \
@@ -38,8 +44,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
         return f"-d  -f {compressed_path} -o {reconstructed_path}"
 
 
-class Zstandard_train(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,
-                      enb.icompression.FITSWrapperCodec):
+class Zstandard_train(Zstandard):
     """Wrapper for the Zstandard codec, which produces a dictionary file for the input data and then employs
     it for compression. The generated dictionary is included in the compressed data size measurements.
     
@@ -53,6 +58,13 @@ class Zstandard_train(enb.icompression.LosslessCodec, enb.icompression.NearLossl
         super().__init__(compressor_path=zstd_binary,
                          decompressor_path=zstd_binary,
                          param_dict=dict(compression_level=compression_level))
+        
+    def assert_valid_data_type(self, original_file_info):
+        """Verify that the input data type is supported, else raise an exception
+        """
+        super().assert_valid_data_type(original_file_info=original_file_info)
+        assert original_file_info["bytes_per_sample"] == 4, \
+            f"Only 32-bit samples are supported by {self.__class__.__name__}"
 
     def compress(self, original_path, compressed_path, original_file_info):
         with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
