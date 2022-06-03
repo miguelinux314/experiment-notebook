@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Codec wrapper for the Fpack lossless and lossy image coder 
 """
+__author__ = "Òscar Maireles"
 
 import os
-import time
-import tempfile
-import subprocess
-import imageio
-import shutil
-import numpy as np
 import enb
 
 
-class FPACK_GZIP(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
+class FPACK_Abstract(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
+    def assert_valid_data_type(self, original_file_info):
+        assert not original_file_info["float"], \
+            f"Only integer samples are currently supported by {self.__class__.__name__}"
+        assert original_file_info["big_endian"], \
+            f"Only big-endian samples are currently supported by {self.__class__.__name__}"
 
+
+class FPACK_GZIP(FPACK_Abstract):
+    """fpack wrapper with gzip compression.
+    """
     def __init__(self,
                  bin_dir=None):
-
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
         super().__init__(compressor_path=os.path.join(bin_dir, "fpack"),
                          decompressor_path=os.path.join(bin_dir, "funpack"),
@@ -35,16 +37,18 @@ class FPACK_GZIP(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCod
         return "FPACK - GZIP"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f" -q 0 -s 0 -g   -O {compressed_path} {original_path}" 
-        
+        self.assert_valid_data_type(original_file_info=original_file_info)
+        return f" -q 0 -s 0 -g   -O {compressed_path} {original_path}"
+
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -O {reconstructed_path} {compressed_path} "
- 
- 
-class FPACK_RICE(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
+
+
+class FPACK_RICE(FPACK_Abstract):
+    """fpack wrapper with Rice compression.
+    """
     def __init__(self,
                  bin_dir=None):
-
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
         super().__init__(compressor_path=os.path.join(bin_dir, "fpack"),
                          decompressor_path=os.path.join(bin_dir, "funpack"),
@@ -62,16 +66,18 @@ class FPACK_RICE(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCod
         return "FPACK - RICE"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f" -r  -O {compressed_path} {original_path}" 
-        
+        self.assert_valid_data_type(original_file_info=original_file_info)
+        return f" -r  -O {compressed_path} {original_path}"
+
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -O {reconstructed_path} {compressed_path} "
-            
-            
-class FPACK_HCOMPRESS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
+
+
+class FPACK_HCOMPRESS(FPACK_Abstract):
+    """fpack wrapper with hcompress compression.
+    """
     def __init__(self,
                  bin_dir=None):
-
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
         super().__init__(compressor_path=os.path.join(bin_dir, "fpack"),
                          decompressor_path=os.path.join(bin_dir, "funpack"),
@@ -89,8 +95,8 @@ class FPACK_HCOMPRESS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapp
         return "FPACK - HCOMPRESS"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f" -h  -O {compressed_path} {original_path}" 
-        
+        self.assert_valid_data_type(original_file_info=original_file_info)
+        return f" -h  -O {compressed_path} {original_path}"
+
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f" -O {reconstructed_path} {compressed_path} "
-

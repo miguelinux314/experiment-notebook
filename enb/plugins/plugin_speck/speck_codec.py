@@ -45,7 +45,12 @@ class SPECK(enb.icompression.LosslessCodec,
         return "SPECK"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        assert original_file_info["component_count"] == 1, f"Only images with 1 component are currently supported."
+        assert original_file_info["component_count"] == 1, \
+            f"Only images with 1 component are currently supported by {self.__class__.__name__}"
+        assert original_file_info["big_endian"], \
+            f"Only big-endian samples are currently supported by {self.__class__.__name__}"
+        assert original_file_info["bytes_per_sample"] in [1, 2], \
+            f"Only 8-bit and 16-bit samples are currently supported by {self.__class__.__name__}"
         
         return f"-Xmx256g -jar {self.compressor_jar} -i {original_path} -f {compressed_path} " \
                f"-g {self.get_gici_geometry_str(original_file_info=original_file_info)} " \
