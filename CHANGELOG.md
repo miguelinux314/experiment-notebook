@@ -12,7 +12,15 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version v0.4.0
+# Development version
+
+## v0.4.1
+  
+- No changes yet
+  
+# Latest stable version
+
+## 2022/06/09 v0.4.0
 
 - **Not backward-compatible** changes:
     
@@ -58,9 +66,9 @@ Bug fixes:
     - Fixed wrongly displayed warnigns when invoking the CLI with parameters.
     - Caught another potential failing point in aanalysis when fewer than 2 different samples are retrieved, 
       when calculating linear regression parameters.
+    - A few codecs intended to be lossless now raise an exception when dealing with data types for which they are not.
 
-
-# Latest stable version
+# Version history
 
 ## 2022/04/20 v0.3.6
 
@@ -103,8 +111,6 @@ This is done automatically if installed from pip.
       folder for LosslessCompressionExperiment subclasses even if reconstruction is not lossless for those files
       (see the `reconstructed_copy_dir` and `compressed_copy_dir`
       arguments of `enb.icompression.CompressionExperiment`)
-
-# Version history
 
 ## 2022/02/16 v0.3.5
 
