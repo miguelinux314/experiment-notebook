@@ -28,7 +28,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
     @property
     def label(self):
         return f"Zstandard {self.param_dict['compression_level']}"
-    
+
     def assert_valid_data_type(self, original_file_info):
         """Verify that the input data type is supported, else raise an exception
         """
@@ -36,6 +36,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
         assert original_file_info["big_endian"], f"Only big-endian samples are supported by {self.__class__.__name__}"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        self.assert_valid_data_type()
         return f"-{self.param_dict['compression_level']} " \
                f"{'--ultra ' if self.param_dict['compression_level'] > 19 else ''}" \
                f"-f {original_path}  -o {compressed_path}"
@@ -51,14 +52,6 @@ class Zstandard_train(Zstandard):
     All data types integer and float 16, 32, 64 can be compressed
     """
 
-    def __init__(self, compression_level='19', zstd_binary=os.path.join(os.path.dirname(__file__), "zstd")):
-        """
-        :param compression_level: 1-22, being 22 the maximum data reduction
-        """
-        super().__init__(compressor_path=zstd_binary,
-                         decompressor_path=zstd_binary,
-                         param_dict=dict(compression_level=compression_level))
-        
     def assert_valid_data_type(self, original_file_info):
         """Verify that the input data type is supported, else raise an exception
         """
@@ -67,6 +60,8 @@ class Zstandard_train(Zstandard):
             f"Only 32-bit samples are supported by {self.__class__.__name__}"
 
     def compress(self, original_path, compressed_path, original_file_info):
+        self.assert_valid_data_type()
+        
         with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
             dict_path = os.path.join(tmp_dir, "dict.zstd")
             dict_compressed_path = os.path.join(tmp_dir, "compressed.zstd")

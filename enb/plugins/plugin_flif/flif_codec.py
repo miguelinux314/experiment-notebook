@@ -16,8 +16,7 @@ class FLIF(enb.icompression.LosslessCodec, enb.icompression.PNGWrapperCodec):
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["bytes_per_sample"] == 1, f"This implementation of FLIF supports only 8-bit images"
-        assert original_file_info["component_count"] in [1, 3], f"Flif only admits 1 or 3 compoents, " \
-                                                                f"found {original_file_info['component_count']}"
+        assert original_file_info["component_count"] == 1, f"Flif can only guarantee losslessness for 1 component"
         return f"-e --effort={self.param_dict['effort_percentage']} " \
                f"--overwrite {original_path} {compressed_path} " \
                f"--no-interlace "
