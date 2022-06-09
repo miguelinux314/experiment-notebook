@@ -146,15 +146,10 @@ if __name__ == '__main__':
         enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec)
 
     # Remove any unwanted classes from the analysis
-    codec_classes = set(c for c in codec_classes if "abstract" not in c.__name__.lower())
-    codec_classes = set(c for c in codec_classes if "fapec" not in c.__name__.lower())
-    codec_classes = set(c for c in codec_classes if "magli" not in c.__name__.lower())
-    # Specialized lcnl configurations
-    codec_classes = set(c for c in codec_classes if "greenbook" not in c.__name__.lower())
-    codec_classes = set(c for c in codec_classes if ("mhdc" not in c.__name__.lower()
-                                                     or ("mhdc" in c.__name__.lower()
-                                                         and c.__name__ == "MHDC_POT")))
-
+    excluded_names = ("abstract", "fapec", "v2f", "zstandard", "magli", "greenbook", "mhdc", "mhdc_pot")
+    
+    codec_classes = set(c for c in codec_classes if not any(n in c.__name__.lower() for n in excluded_names))
+    
     filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if filter_args:
         log_event(f"Filtering for {', '.join(repr(s) for s in filter_args)}")
