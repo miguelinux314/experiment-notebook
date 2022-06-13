@@ -36,7 +36,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
         assert original_file_info["big_endian"], f"Only big-endian samples are supported by {self.__class__.__name__}"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        self.assert_valid_data_type()
+        self.assert_valid_data_type(original_file_info=original_file_info)
         return f"-{self.param_dict['compression_level']} " \
                f"{'--ultra ' if self.param_dict['compression_level'] > 19 else ''}" \
                f"-f {original_path}  -o {compressed_path}"
@@ -60,7 +60,7 @@ class Zstandard_train(Zstandard):
             f"Only 32-bit samples are supported by {self.__class__.__name__}"
 
     def compress(self, original_path, compressed_path, original_file_info):
-        self.assert_valid_data_type()
+        self.assert_valid_data_type(original_file_info=original_file_info)
         
         with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
             dict_path = os.path.join(tmp_dir, "dict.zstd")
