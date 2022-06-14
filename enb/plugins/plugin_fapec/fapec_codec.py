@@ -120,14 +120,12 @@ class FAPEC_LP(FAPEC_Abstract):
         assert linear_prediction_order == int(linear_prediction_order)
         self.linear_prediction_order = linear_prediction_order
 
-    linear_prediction_oder = 1
-
     def get_transform_dict_params(self, original_file_info):
-        assert self.linear_prediction_oder >= 1
+        assert self.linear_prediction_order >= 1
         if self.linear_prediction_order == 1:
             return dict()
         else:
-            return dict(od=self.linear_prediction_oder)
+            return dict(od=self.linear_prediction_order)
 
     @property
     def name(self):
@@ -263,47 +261,3 @@ class FAPEC_HPA(FAPEC_Abstract):
                         f"{self.hpa_losses} "
                         f"{original_file_info['dynamic_range_bits']} "
                         f"{2}")  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
-
-class FAPEC_FITS(FAPEC_Abstract):
-    def __init__(self,
-                 bin_dir=None,
-                 chunk_size_str="8M",
-                 adaptiveness_block_length=512,
-                 dwt=0,
-                 od=0,
-                 output_invocation_dir=None):
-        """
-        :param od: simple linear filter (2-4)
-        :param dwt:
-            0 - not apply dwt
-            1 - apply dwt
-        """
-        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
-        super().__init__(bin_dir=bin_dir, chunk_size_str=chunk_size_str, adaptiveness_block_length=adaptiveness_block_length,
-                         output_invocation_dir=output_invocation_dir)
-
-        self.chunk_size_str=chunk_size_str
-        self.adaptiveness_block_length=adaptiveness_block_length
-        self.od = od
-        self.dwt = dwt
-
-    @property
-    def name(self):
-        return super().name + f" od={self.od} dwt={self.dwt}"
-
-    @property
-    def label(self):
-        return f"FAPEC-FITS"
-
-    def get_compression_params(self, original_path, compressed_path, original_file_info):
-        invocation=f"-chunk {self.chunk_size_str} -bl {self.adaptiveness_block_length} -dtype {original_file_info['dynamic_range_bits']} "
-        if original_file_info["signed"]:
-            invocation += " -signed "
-        if original_file_info["big_endian"]:
-            invocation += " -be "
-        if self.od > 0:
-            invocation += f" -od {self.od}  "
-        if self.dwt > 0:
-            invocation += f" -dwt {original_file_info['width']} {original_file_info['height']}  {original_file_info['component_count']} 0 {original_file_info['dynamic_range_bits']} 0 "
-        invocation += f"-o {compressed_path} -ow {original_path} "
-        return invocation
