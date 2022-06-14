@@ -5,8 +5,6 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/05/25"
 
 import os
-
-import enb
 from enb import icompression
 
 
@@ -120,14 +118,12 @@ class FAPEC_LP(FAPEC_Abstract):
         assert linear_prediction_order == int(linear_prediction_order)
         self.linear_prediction_order = linear_prediction_order
 
-    linear_prediction_oder = 1
-
     def get_transform_dict_params(self, original_file_info):
-        assert self.linear_prediction_oder >= 1
+        assert self.linear_prediction_order >= 1
         if self.linear_prediction_order == 1:
             return dict()
         else:
-            return dict(od=self.linear_prediction_oder)
+            return dict(od=self.linear_prediction_order)
 
     @property
     def name(self):
@@ -263,29 +259,3 @@ class FAPEC_HPA(FAPEC_Abstract):
                         f"{self.hpa_losses} "
                         f"{original_file_info['dynamic_range_bits']} "
                         f"{2}")  # <bfmt>    Bands format: 0=BIP, 1=BIL, 2=BSQ, 3=Bayer
-
-
-class FAPEC_FITS(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
-    def __init__(self,
-                 bin_dir=None):
-        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
-        super().__init__(compressor_path=os.path.join(bin_dir, "fapec"),
-                         decompressor_path=os.path.join(bin_dir, "unfapec"),
-                         param_dict=dict())
-
-    @property
-    def name(self):
-        """Don't include the binary signature
-        """
-        name = f"{self.__class__.__name__}"
-        return name
-
-    @property
-    def label(self):
-        return "FAPEC-FITS"
-
-    def get_compression_params(self, original_path, compressed_path, original_file_info):
-        return f"-o {compressed_path} -ow {original_path}  "
-
-    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f" -o {reconstructed_path} -ow {compressed_path} "

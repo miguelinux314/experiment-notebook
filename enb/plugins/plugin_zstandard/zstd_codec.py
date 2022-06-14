@@ -48,7 +48,7 @@ class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCod
 class Zstandard_train(Zstandard):
     """Wrapper for the Zstandard codec, which produces a dictionary file for the input data and then employs
     it for compression. The generated dictionary is included in the compressed data size measurements.
-    
+
     All data types integer and float 16, 32, 64 can be compressed
     """
 
@@ -61,7 +61,7 @@ class Zstandard_train(Zstandard):
 
     def compress(self, original_path, compressed_path, original_file_info):
         self.assert_valid_data_type(original_file_info=original_file_info)
-        
+
         with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
             dict_path = os.path.join(tmp_dir, "dict.zstd")
             dict_compressed_path = os.path.join(tmp_dir, "compressed.zstd")
