@@ -5,7 +5,9 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/11/09"
 
 import os
+import re
 
+import enb.log
 from enb import icompression
 
 
@@ -35,7 +37,6 @@ class CCSDS124_Periodic(icompression.LosslessCodec, icompression.WrapperCodec):
         self.param_dict["f_period"] = f_period
         self.param_dict["large_r"] = large_r
 
-        
     @property
     def label(self):
         return f"CCSDS 124 " \
@@ -45,11 +46,21 @@ class CCSDS124_Periodic(icompression.LosslessCodec, icompression.WrapperCodec):
                f"$T_f={self.param_dict['f_period']}$"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        try:
+            packet_length_bits = original_file_info["packet_length_bits"]
+        except KeyError:
+            try:
+                packet_length_bits = 8 * int(re.search(r"FL(\d+)bytes", os.path.basename(original_path)).group(1))
+            except AttributeError:
+                enb.log.warn(f"Unable to determine the packet length in bits for {original_path} with {self}. "
+                             f"Falling back to 8*width*bytes_per_sample")
+                packet_length_bits = 8*original_file_info["width"]*original_file_info["bytes_per_sample"]
+
         return f"-p {self.param_dict['p_period']} " \
                f"-r {self.param_dict['r_period']} " \
                f"-f {self.param_dict['f_period']} " \
                f"-R {self.param_dict['large_r']} " \
-               f"{original_path} {8*original_file_info['packet_length_bytes']} {compressed_path}"
+               f"{original_path} {packet_length_bits} {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"{compressed_path} " \

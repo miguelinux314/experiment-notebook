@@ -125,7 +125,7 @@
   <section id="data-analysis-and-plotting-with-enb">
 <h1>Data analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#data-analysis-and-plotting-with-enb" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+767.g6edb64c9ed)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+916.gfcd94b3a1e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -164,9 +164,9 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
+- histogram
 - boxplot
-- hbar
 </pre></div>
 </div>
 <section id="plots">
@@ -437,9 +437,9 @@ as follows:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
+- histogram
 - boxplot
-- hbar
 </pre></div>
 </div>
 <p>The <cite>histogram</cite> render mode produces plots like the following:</p>

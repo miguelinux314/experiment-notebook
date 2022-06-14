@@ -248,7 +248,7 @@ class SingletonCLI(metaclass=Singleton):
 
             # The setter values are activated only for python-source modifications
             self._custom_attribute_handler_active = True
-            
+
             # Report unrecognized arguments only for the main process
             if os.path.basename(sys.argv[0]) != self.worker_script_name \
                     and not enb.is_enb_cli:
