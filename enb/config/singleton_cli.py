@@ -251,7 +251,8 @@ class SingletonCLI(metaclass=Singleton):
 
             # Report unrecognized arguments only for the main process
             if os.path.basename(sys.argv[0]) != self.worker_script_name \
-                    and not enb.is_enb_cli:
+                    and not enb.is_enb_cli\
+                    and self._name_to_property["verbose"]:
                 for arg in unknown_args:
                     print(f"Warning: unrecognized parameter {repr(arg)}")
         finally:
