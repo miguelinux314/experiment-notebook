@@ -229,7 +229,8 @@ class KakaduMCT(Kakadu2D):
     """
 
     def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None,
-                 bit_rate=None, quality_factor=None, psnr=None, mct_offset=0):
+                 bit_rate=None, quality_factor=None, psnr=None, mct_offset=0,
+                 num_threads=0):
         """
         :param spectral_dwt_levels: number of spectral discrete wavelet transform levels. Must be between 0 and 32.
         :param mct_offset: integer offset subtracted from the input samples before compression. 
@@ -239,7 +240,8 @@ class KakaduMCT(Kakadu2D):
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
         assert mct_offset == int(mct_offset)
         Kakadu2D.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless,
-                          bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr)
+                          bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr,
+                          num_threads=num_threads)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
         self.param_dict["mct_offset"] = mct_offset
 
