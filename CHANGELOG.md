@@ -12,14 +12,18 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version
+# Latest stable version
 
-## v0.4.1
+## 2022/09/19 v0.4.1
   
 - Added the `--report_wall_time` flag and `enb.config.options.report_wall_time` variables to allow
   compression experiments to report wall clock time instead of the total CPU process time.
-  
-# Latest stable version
+
+- The Kakadu codec with MCT now allows selecting the number of CPU threads.
+
+- Fixed plotting module so that figure heights smaller than 3 can be selected.
+
+# Version history
 
 ## 2022/06/09 v0.4.0
 
@@ -68,8 +72,6 @@ Bug fixes:
     - Caught another potential failing point in aanalysis when fewer than 2 different samples are retrieved, 
       when calculating linear regression parameters.
     - A few codecs intended to be lossless now raise an exception when dealing with data types for which they are not.
-
-# Version history
 
 ## 2022/04/20 v0.3.6
 
