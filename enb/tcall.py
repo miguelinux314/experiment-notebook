@@ -10,6 +10,8 @@ import re
 import time
 import platform
 
+from enb.config import options
+
 
 class InvocationError(Exception):
     """Raised when an invocation fails.
@@ -17,17 +19,19 @@ class InvocationError(Exception):
     pass
 
 
-def get_status_output_time(invocation, expected_status_value=0, wall=False):
+def get_status_output_time(invocation, expected_status_value=0, wall=None):
     """Run invocation, and return its status, output, and total
     (wall or user+system) time in seconds.
 
     :param expected_status_value: if not None, status must be equal to this value or
       an InvocationError is raised.
-    :param wall: if True, execution wall time is returned. Otherwise, user+system CPU time is returned.
-      (both in seconds).
+    :param wall: if True, execution wall time is returned. If False, user+system CPU time is returned.
+      (both in seconds). If None, the value of enb.config.options.report_wall_time is used.
       
     :return: status, output, time
     """
+    if wall is None:
+        wall = options.report_wall_time
 
     if "darwin" in platform.system():
         time_command = "/usr/local/bin/gtime"
