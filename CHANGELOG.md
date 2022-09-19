@@ -16,7 +16,8 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.4.1
   
-- No changes yet
+- Added the `--report_wall_time` flag and `enb.config.options.report_wall_time` variables to allow
+  compression experiments to report wall clock time instead of the total CPU process time.
   
 # Latest stable version
 
