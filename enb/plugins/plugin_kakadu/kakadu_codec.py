@@ -97,6 +97,11 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
         return ""
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        if self.param_dict["num_threads"] > 1 and not enb.config.options.report_wall_time:
+            enb.logger.warn("Careful! Measuring kakadu's process CPU time with multiple threads. "
+                            "Add `options.report_wall_time = True` to your script or "
+                            "invoke it with --report_wall_time to enable wall clock time measurements.")
+        
         return f"-i {original_path}*{original_file_info['component_count']}" \
                f"@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
                f"-o {compressed_path} -no_info -full -no_weights " \
