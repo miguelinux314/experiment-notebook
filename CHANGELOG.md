@@ -14,7 +14,18 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Latest stable version
 
-## v0.4.0 2022/06/09
+## 2022/09/19 v0.4.1
+  
+- Added the `--report_wall_time` flag and `enb.config.options.report_wall_time` variables to allow
+  compression experiments to report wall clock time instead of the total CPU process time.
+
+- The Kakadu codec with MCT now allows selecting the number of CPU threads.
+
+- Fixed plotting module so that figure heights smaller than 3 can be selected.
+
+# Version history
+
+## 2022/06/09 v0.4.0
 
 - **Not backward-compatible** changes:
     
@@ -60,8 +71,7 @@ Bug fixes:
     - Fixed wrongly displayed warnigns when invoking the CLI with parameters.
     - Caught another potential failing point in aanalysis when fewer than 2 different samples are retrieved, 
       when calculating linear regression parameters.
-
-# Version history
+    - A few codecs intended to be lossless now raise an exception when dealing with data types for which they are not.
 
 ## 2022/04/20 v0.3.6
 

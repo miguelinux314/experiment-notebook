@@ -163,6 +163,13 @@ class ExecutionOptions:
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
     @OptionsBase.property(action="store_true")
+    def report_wall_time(self, value):
+        """If this flag is activated, the wall time instead of the CPU time is reported by default by 
+        tcall.get_status_output_time.
+        """
+        return bool(value)
+
+    @OptionsBase.property(action="store_true")
     def force_sanity_checks(self, value):
         """If this flag is used, extra sanity checks are performed by enb during the execution of this script.
         The trade-off for rare error condition detection is a slower execution time.
