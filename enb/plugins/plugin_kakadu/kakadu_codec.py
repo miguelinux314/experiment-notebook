@@ -123,8 +123,9 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                  f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
-
+        return f"-i {compressed_path} -o {reconstructed_path} -raw_components " \
+               f"-num_threads {self.param_dict['num_threads']}"
+    
     def compress(self, original_path, compressed_path, original_file_info=None):
         if self.param_dict['psnr'] is not None:
             with tempfile.NamedTemporaryFile() as tmp_file:
