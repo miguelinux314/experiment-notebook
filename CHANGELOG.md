@@ -16,7 +16,7 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.4.2
 
-(No changes yet)
+- The Kakadu decoder now allows selecting the number of CPU threads.
 
 # Latest stable version
 
@@ -25,7 +25,7 @@ format. Given a code initially developed for one `enb` version and then executed
 - Added the `--report_wall_time` flag and `enb.config.options.report_wall_time` variables to allow
   compression experiments to report wall clock time instead of the total CPU process time.
 
-- The Kakadu codec with MCT now allows selecting the number of CPU threads.
+- The Kakadu coder with MCT now allows selecting the number of CPU threads.
 
 - Fixed plotting module so that figure heights smaller than 3 can be selected.
 
