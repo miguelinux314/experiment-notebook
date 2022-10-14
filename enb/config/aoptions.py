@@ -38,7 +38,11 @@ import tempfile
 import functools
 import deprecation
 
-from .. import default_base_dataset_dir, default_persistence_dir, calling_script_dir, is_enb_cli
+from .. import default_base_dataset_dir
+from .. import default_persistence_dir
+from .. import default_output_plots_dir
+from .. import default_analysis_dir
+from .. import calling_script_dir
 from .. import log
 from . import ini
 from . import singleton_cli as _singleton_cli
@@ -282,9 +286,6 @@ class DirOptions:
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     # Output plots dir
-    default_output_plots_dir = os.path.join(calling_script_dir, "plots") \
-        if not is_enb_cli else "./plots"
-
     @OptionsBase.property(
         action=_singleton_cli.WritableOrCreableDirAction,
         default=default_output_plots_dir)
@@ -296,9 +297,6 @@ class DirOptions:
         return value
 
     # Output analysis dir
-    default_analysis_dir = os.path.join(calling_script_dir, "analysis") \
-        if not is_enb_cli else "./analysis"
-
     @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
     def analysis_dir(self, value):
         """Directory to store analysis results.

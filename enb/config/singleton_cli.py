@@ -18,6 +18,7 @@ import sys
 import argparse
 import itertools
 import inspect
+import shutil
 
 import enb
 from ..misc import split_camel_case, Singleton, get_defining_class_name, remove_argparse_action
@@ -137,13 +138,14 @@ class WritableOrCreableDirAction(ExistingDirAction):
         try:
             WritableDirAction.assert_valid_value(target_dir)
         except AssertionError:
-            parent_dir = target_dir
-            while parent_dir:
-                if os.path.isdir(parent_dir) and os.access(os.path.dirname(parent_dir), os.W_OK):
-                    break
-                parent_dir = os.path.dirname(parent_dir)
+            if os.path.exists(target_dir):
+                if not os.path.isdir(target_dir):
+                    raise ValueError(f"{target_dir} exists but is not a dir")
             else:
-                if not os.access(os.getcwd(), os.W_OK):
+                try:
+                    os.makedirs(target_dir)
+                    shutil.rmtree(target_dir)
+                except PermissionError:
                     raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
 
@@ -156,9 +158,15 @@ class ReadableOrCreableDirAction(ExistingDirAction):
         try:
             ReadableDirAction.assert_valid_value(target_dir)
         except AssertionError:
-            if os.path.dirname(os.path.dirname(target_dir)) \
-                    and not os.access(os.path.dirname(target_dir), os.W_OK):
-                raise ValueError(f"{target_dir} is not a directory and cannot be created")
+            if os.path.exists(target_dir):
+                if not os.path.isdir(target_dir):
+                    raise ValueError(f"{target_dir} exists but is not a directory")
+            else:
+                try:
+                    os.makedirs(target_dir)
+                    shutil.rmtree(target_dir)
+                except PermissionError:
+                    raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
 
 class PositiveFloatAction(ValidationAction):
@@ -251,7 +259,7 @@ class SingletonCLI(metaclass=Singleton):
 
             # Report unrecognized arguments only for the main process
             if os.path.basename(sys.argv[0]) != self.worker_script_name \
-                    and not enb.is_enb_cli\
+                    and not enb.is_enb_cli \
                     and self._name_to_property["verbose"]:
                 for arg in unknown_args:
                     print(f"Warning: unrecognized parameter {repr(arg)}")
