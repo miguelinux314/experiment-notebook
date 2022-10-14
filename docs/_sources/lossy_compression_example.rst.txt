@@ -126,7 +126,6 @@ results with |enb|.
             options.analysis_dir,
             "analysis_lossy/",
             "lossy_compression_analysis_scalar.csv"))
-    scalar_analyzer.main_alpha = 0
     scalar_analyzer.show_x_std = True
     scalar_analyzer.sort_by_average = True
     scalar_analyzer.show_individual_samples = False
