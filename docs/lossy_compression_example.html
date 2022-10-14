@@ -129,6 +129,26 @@ In this case, we will normally normally use subclasses of <a class="reference in
 <p>In addition, to facilitate analysis and plotting, we will be defining families of codecs.
 To do so, we instantiate the class:<cite>enb.experiment.TaskFamily</cite> class and add the names of our codecs for each family
 as follows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<span class="kn">import</span> <span class="nn">plugins</span>
+
+<span class="c1"># Define the JPEG-LS family</span>
+<span class="n">jpegls_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="s2">&quot;JPEG-LS&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">max_error</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">17</span><span class="p">):</span>
+    <span class="n">codec</span> <span class="o">=</span> <span class="n">plugins</span><span class="o">.</span><span class="n">jpeg</span><span class="o">.</span><span class="n">JPEG_LS</span><span class="p">(</span><span class="n">max_error</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
+    <span class="n">jpegls_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">codec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">codec</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codec</span><span class="p">)</span>
+<span class="n">task_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jpegls_family</span><span class="p">)</span>
+
+<span class="c1"># Define the VVC family</span>
+<span class="n">vvc_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="s2">&quot;VVC&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">qp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="n">codec</span> <span class="o">=</span> <span class="n">plugins</span><span class="o">.</span><span class="n">vvc</span><span class="o">.</span><span class="n">VVC_lossy</span><span class="p">(</span><span class="n">qp</span><span class="o">=</span><span class="n">qp</span><span class="p">)</span>
+    <span class="n">vvc_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">codec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">codec</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codec</span><span class="p">)</span>
+<span class="n">task_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vvc_family</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="lossy-experiment-execution">
 <h2>Lossy experiment execution<a class="headerlink" href="#lossy-experiment-execution" title="Permalink to this heading"></a></h2>
