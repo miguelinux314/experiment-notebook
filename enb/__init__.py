@@ -32,13 +32,24 @@ if not _os.path.isdir(user_config_dir):
 calling_script_dir = _os.path.realpath(_os.path.dirname(_os.path.abspath(_sys.argv[0]))) \
     if _sys.argv[0] else _os.getcwd()
 
+# Are we currently running the main enb CLI or the CLI for a host script? True means main enb CLI.
+is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
+
 # Data dir
 default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
 # Persistence dir
 default_persistence_dir = _os.path.join(calling_script_dir, f"persistence_{_os.path.basename(_sys.argv[0])}")
+# Plots dir
+default_output_plots_dir = _os.path.join(calling_script_dir, "plots") if not is_enb_cli else "./plots"
+# Analysis dir
+default_analysis_dir = _os.path.join(calling_script_dir, "analysis") if not is_enb_cli else "./analysis"
 
-# Are we currently running the main enb CLI or the CLI for a host script? True means main enb CLI.
-is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
+# Fix getcwd for the specific case enb is imported from the sphinx documentation tool
+if _os.path.basename(_sys.argv[0]) == "sphinx-build":
+    default_persistence_dir = _os.path.join(_os.getcwd(), "build", f"persistence_{_os.path.basename(_sys.argv[0])}")
+    default_base_dataset_dir = _os.path.join(_os.getcwd(), "build", "datasets")
+    default_output_plots_dir = _os.path.join(_os.getcwd(), "build", "plots")
+    default_analysis_dir = _os.path.join(_os.getcwd(), "build", "analysis")
 
 # Basic tools among core modules
 from . import misc
