@@ -205,8 +205,7 @@ class DirOptions:
 
     @OptionsBase.property(action=_singleton_cli.ReadableDirAction, default=calling_script_dir)
     def project_root(self, value):
-        """If set, data paths relative to the invoked script's paths are stored instead of their
-        absolute path counterparts.
+        """Project root path. It should not normally be modified.
         """
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
