@@ -8,3 +8,5 @@ Default `enb` project structure:
 - `analysis/`: data analysis outputs tables and other numerical results in this folder by default.
 - `persistence_*`: each script has its dedicated persistence folder by default. They can be configured so that they are
   shared across experiments and avoid result re-computation.
+
+Please visit https://miguelinux314.github.io/experiment-notebook `enb`.
