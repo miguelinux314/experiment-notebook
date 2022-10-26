@@ -31,7 +31,10 @@
 .. |Lossycodec| replace:: :class:`enb.icompression.LossyCodec`
 .. |NearLosslessCodec| replace:: :class:`enb.icompression.NearLosslessCodec`
 .. |icompression| replace:: :class:`enb.icompression`
+
+.. |sets| replace:: :class:`enb.sets`
 .. |isets| replace:: :class:`enb.isets`
+.. |FileVersionTable| replace:: :class:`enb.sets.FileVersionTable`
 
 .. |pandas| replace:: :mod:`pandas`
 .. |DataFrame| replace:: :class:`pandas.DataFrame`

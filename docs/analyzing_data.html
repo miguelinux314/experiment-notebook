@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data analysis and plotting with enb &mdash; Experiment Notebook MIT License documentation</title>
+  <title>Result analysis and plotting with enb &mdash; Experiment Notebook MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
@@ -49,7 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#one-numeric-column">One numeric column</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#plots">Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#summary-tables">Summary tables</a></li>
@@ -93,6 +93,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -113,7 +114,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></li>
+      <li>Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></li>
       <li class="wy-breadcrumbs-aside">
               <!-- User defined GitHub URL -->
               <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
@@ -124,10 +125,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="data-analysis-and-plotting-with-enb">
-<h1>Data analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#data-analysis-and-plotting-with-enb" title="Permalink to this heading"></a></h1>
+  <section id="result-analysis-and-plotting-with-enb">
+<h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.6.0.dev0+331.ge3d0126e8a)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.0.0.dev0+463.g1e5fee83f9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -166,9 +167,9 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
-- hbar
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
 - histogram
+- boxplot
 </pre></div>
 </div>
 <section id="plots">
@@ -439,9 +440,9 @@ as follows:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
-- hbar
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- hbar
 - histogram
+- boxplot
 </pre></div>
 </div>
 <p>The <cite>histogram</cite> render mode produces plots like the following:</p>

@@ -49,8 +49,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
@@ -314,8 +315,7 @@ avoiding out-of-RAM crashes at the cost of potentially slower execution time.</p
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.project_root">
 <span class="sig-name descname"><span class="pre">project_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.project_root" title="Permalink to this definition"></a></dt>
-<dd><p>If set, data paths relative to the invoked script’s paths are stored instead of their
-absolute path counterparts.</p>
+<dd><p>Project root path. It should not normally be modified.</p>
 </dd></dl>
 
 <dl class="py method">

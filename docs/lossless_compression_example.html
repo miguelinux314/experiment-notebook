@@ -49,7 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression experiments</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Lossless Compression Experiment</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#lossless-compression-template-installation">Lossless compression template installation</a></li>
@@ -63,6 +63,7 @@
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -207,10 +208,10 @@ actual experiment execution</p>
 <span class="n">df</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>where <cite>codecs</cite> is the list of codecs we defined above. The returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.6.0.dev0+331.ge3d0126e8a)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> df
+<p>where <cite>codecs</cite> is the list of codecs we defined above. The returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.0.0.dev0+463.g1e5fee83f9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> df
 can be used to analyze and plot the obtained results. This is automatically done in
 the template for several columns of interest with the following code. You can check
-the <a class="reference internal" href="analyzing_data.html"><span class="doc">Data analysis and plotting with enb</span></a> page for more information on how to analyze and plot
+the <a class="reference internal" href="analyzing_data.html"><span class="doc">Result analysis and plotting with enb</span></a> page for more information on how to analyze and plot
 results.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scalar_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;compression_ratio_dr&quot;</span><span class="p">,</span>
                   <span class="s2">&quot;bpppc&quot;</span><span class="p">,</span> <span class="s2">&quot;compression_time_seconds&quot;</span><span class="p">,</span>
