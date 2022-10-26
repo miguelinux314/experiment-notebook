@@ -17,6 +17,10 @@ format. Given a code initially developed for one `enb` version and then executed
 ## v0.4.2
 
 - The Kakadu decoder now allows selecting the number of CPU threads.
+- Improved error text when not enough data is available in the scalar analyzer class.
+- Fixed the lossy compression template plugin so that it does show data instead of using alpha=0.
+- Added the `file_version_example` plugin that demonstrates the use of `enb.sets.FileVersionTable`.
+- Created a documentation page about `enb.sets.FileVersionTable` and its subclasses.
 
 # Latest stable version
 
