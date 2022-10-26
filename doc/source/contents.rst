@@ -10,6 +10,7 @@ Contents
    experiments
    analyzing_data
    image_compression
+   data_curation
    command_line_interface
    cluster_setup
    api
