@@ -1,3 +1,4 @@
+.. _image_compression_codecs:
 .. Available image compression codecs
 
 .. include:: ./tag_definition.rst

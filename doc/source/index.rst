@@ -60,10 +60,6 @@ The following help pages will tour you through the most important features of ``
 and show minimal examples that you can use as starting point for your projects.
 You can also take a look at the automatically generated :ref:`API<api>`.
 
-.. warning::
-
-   This project is in beta! Comments welcome.
-
 .. toctree::
    :maxdepth: 1
    :caption: Documentation contents:
@@ -73,6 +69,7 @@ You can also take a look at the automatically generated :ref:`API<api>`.
    experiments
    analyzing_data
    image_compression
+   data_curation
    command_line_interface
    cluster_setup
    api
