@@ -14,26 +14,23 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Development version
 
-## v0.4.2
+# Latest stable version
 
-- The Kakadu decoder now allows selecting the number of CPU threads.
+## 2022/10/26 v0.4.2
+
 - Improved error text when not enough data is available in the scalar analyzer class.
 - Fixed the lossy compression template plugin so that it does show data instead of using alpha=0.
 - Added the `file_version_example` plugin that demonstrates the use of `enb.sets.FileVersionTable`.
 - Created a documentation page about `enb.sets.FileVersionTable` and its subclasses.
 
-# Latest stable version
+# Version history
 
 ## 2022/09/19 v0.4.1
   
 - Added the `--report_wall_time` flag and `enb.config.options.report_wall_time` variables to allow
   compression experiments to report wall clock time instead of the total CPU process time.
-
 - The Kakadu coder with MCT now allows selecting the number of CPU threads.
-
 - Fixed plotting module so that figure heights smaller than 3 can be selected.
-
-# Version history
 
 ## 2022/06/09 v0.4.0
 
