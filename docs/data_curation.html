@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dataset curation and modification &mdash; Experiment Notebook MIT License documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The enb command-line tools" href="command_line_interface.html" />
+    <link rel="prev" title="Defining new codecs" href="defining_new_compressors.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                v0.4.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Dataset curation and modification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-fileversiontable-class">The <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code> class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#predefined-classes">Predefined classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Experiment Notebook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Dataset curation and modification</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dataset-curation-and-modification">
+<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this heading"></a></h1>
+<p>Very often, datasets and test corpora need to be curated and/or modified before
+conducting experimental analysis with them. Typical tasks include:</p>
+<ul class="simple">
+<li><p>cleaning and homogenization</p></li>
+<li><p>validation and filtering</p></li>
+<li><p>storage format change</p></li>
+<li><p>file renaming</p></li>
+<li><p>subset splitting</p></li>
+</ul>
+<p>The <cite>enb</cite> library provides several tools to help do this in the <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules.</p>
+<section id="the-fileversiontable-class">
+<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> base class allows to transform an input folder into an output folder
+in a simple way. You just need to:</p>
+<ol class="arabic simple">
+<li><p>Create a subclass of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>,</p></li>
+<li><p>Overwrite its <cite>dataset_files_extension</cite> attribute to filter out the file extensions
+that will be produced.</p></li>
+<li><p>Redefine its <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable.version" title="enb.sets.FileVersionTable.version"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable.version()</span></code></a> method, which transforms a single
+input into and output, and</p></li>
+<li><p>Instantiate your subclass (specify the input and output dirs) and run its <cite>get_df</cite> method.</p></li>
+</ol>
+<p>The following toy example shows how to normalize all text files in an input directory
+converting them to lowercase and removing leading and trailing spaces from each line:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+
+<span class="c1"># 1 - Definition of the FileVersionTable subclass</span>
+<span class="k">class</span> <span class="nc">TextNormalizationTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">FileVersionTable</span><span class="p">):</span>
+    <span class="c1"># 2 - Input file extension definition</span>
+    <span class="n">dataset_files_extension</span> <span class="o">=</span> <span class="s2">&quot;txt&quot;</span>
+
+    <span class="c1"># 3 - Redefinition of the version method</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">input_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">contents</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 4 - Instantiation and execution</span>
+    <span class="n">tnt</span> <span class="o">=</span> <span class="n">TextNormalizationTable</span><span class="p">(</span>
+        <span class="n">original_base_dir</span><span class="o">=</span><span class="s2">&quot;original_data&quot;</span><span class="p">,</span>
+        <span class="n">version_base_dir</span><span class="o">=</span><span class="s2">&quot;versioned_data&quot;</span><span class="p">,</span>
+        <span class="n">csv_support_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">tnt</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This code is made available as a plugin named <cite>file_version_example</cite> (see <span class="xref std std-ref">image_compression_codecs</span> for more information about installing
+and using plugins), i.e.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install file_version_example ./fve
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Tip</strong>: you can pass <cite>check_generated_files=False</cite> to the initializer of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>
+so that <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable.version" title="enb.sets.FileVersionTable.version"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable.version()</span></code></a> is not required to produce a file with the
+output path passed as argument. This is particularly useful when</p>
+<ul class="simple">
+<li><p>renaming files</p></li>
+<li><p>filtering out invalid samples.</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The subdirectory structure of the input set is preserved by default in the output (versioned) directory.</p>
+</div>
+</section>
+<section id="predefined-classes">
+<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> includes some predefined subclasses of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.PDFToPNG" title="enb.aanalysis.PDFToPNG"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.PDFToPNG</span></code></a>: convert PDF files into high-resolution PNG files.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.QuantizedImageVersion" title="enb.isets.QuantizedImageVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.QuantizedImageVersion</span></code></a>: apply uniform quantization to raw images.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.PNGCurationTable" title="enb.isets.PNGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.PNGCurationTable</span></code></a>: convert PNG files into raw files.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.FitsVersionTable" title="enb.isets.FitsVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.FitsVersionTable</span></code></a>: extract image data from files in FITS format and save it to raw.</p></li>
+</ul>
+<p>If you create your own subclasses, don’t hesistate to submit it to us (e.g., via a pull request in github).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="defining_new_compressors.html" class="btn btn-neutral float-left" title="Defining new codecs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="command_line_interface.html" class="btn btn-neutral float-right" title="The enb command-line tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

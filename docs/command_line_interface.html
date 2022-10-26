@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Configuring enb in a cluster of computers" href="cluster_setup.html" />
-    <link rel="prev" title="Defining new codecs" href="defining_new_compressors.html" /> 
+    <link rel="prev" title="Dataset curation and modification" href="data_curation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,8 +49,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The <cite>enb</cite> command-line tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-enb-program">The <cite>enb</cite> program</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#listing-available-plugins-and-templates">Listing available plugins and templates</a></li>
@@ -133,7 +134,7 @@ In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 and/or <cite>-v</cite> for extra details.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.2 ] ................
 
-Showing 39 plugins.
+Showing 40 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
 Add -v for extra information on the listed plugins.
 
@@ -147,6 +148,7 @@ Add -v for extra information on the listed plugins.
                   enb.ini :: Copy a full enb.ini configuration in the destination project folder.
  entropy-codec-comparison :: Template for the comparison of entropy codecs.
                     fapec :: Wrappers for FAPEC (privative).
+     file_version_example :: Template and usage example for the FileVersionTable class for dataset curation.
                      flif :: Wrapper for the FLIF compressor.
                     fpack :: Wrapper for the FPACK compressor.
                       fpc :: FPC codec wrappers.
@@ -179,11 +181,11 @@ Add -v for extra information on the listed plugins.
 
 The following plugin tags have been defined and can be used for filtering:
 
-  - documentation    (  4 plugins) Documentation examples referenced in the user manual.
+  - documentation    (  5 plugins) Documentation examples referenced in the user manual.
   - codec            ( 28 plugins) Data compression/decompression class definitions.
   - data compression ( 33 plugins) Data compression tools.
   - template         ( 11 plugins) Templates formatteable into the installation dir.
-  - project          (  7 plugins) Project templates, including configuration files.
+  - project          (  8 plugins) Project templates, including configuration files.
   - test             (  1  plugin) Plugins for testing purposes.
   - privative        (  6 plugins) Plugins requiring additional privative software.
 
@@ -344,9 +346,8 @@ Dir Options:
   Options regarding default data directories.
 
   --project_root PROJECT_ROOT
-                        If set, data paths relative to the invoked script&#39;s
-                        paths are stored instead of their absolute path
-                        counterparts. (default:
+                        Project root path. It should not normally be modified.
+                        (default:
                         /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
                         k.git/enb/plugins/template_basic_workflow_example)
   --base_dataset_dir BASE_DATASET_DIR
@@ -482,7 +483,7 @@ a help message with all available options.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="defining_new_compressors.html" class="btn btn-neutral float-left" title="Defining new codecs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_curation.html" class="btn btn-neutral float-left" title="Dataset curation and modification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="cluster_setup.html" class="btn btn-neutral float-right" title="Configuring enb in a cluster of computers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
