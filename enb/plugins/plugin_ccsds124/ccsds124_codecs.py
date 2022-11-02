@@ -52,9 +52,9 @@ class CCSDS124_Periodic(icompression.LosslessCodec, icompression.WrapperCodec):
             try:
                 packet_length_bits = 8 * int(re.search(r"FL(\d+)bytes", os.path.basename(original_path)).group(1))
             except AttributeError:
+                packet_length_bits = 8 * original_file_info["bytes_per_sample"]
                 enb.log.warn(f"Unable to determine the packet length in bits for {original_path} with {self}. "
-                             f"Falling back to 8*width*bytes_per_sample")
-                packet_length_bits = 8*original_file_info["width"]*original_file_info["bytes_per_sample"]
+                             f"Falling back to 8*bytes_per_sample = {packet_length_bits}")
 
         return f"-p {self.param_dict['p_period']} " \
                f"-r {self.param_dict['r_period']} " \

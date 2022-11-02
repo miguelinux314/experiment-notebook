@@ -1031,18 +1031,17 @@ class CompressionExperiment(experiment.Experiment):
         [atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
                                  label="Compression efficiency (1B entropy)", plot_min=0),
          atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
-                                 label="Compression efficiency (2B entropy)", plot_min=0)])
+                                 label="Compression efficiency (2B entropy)", plot_min=0),
+         atable.ColumnProperties(name="compression_efficiency_4byte_entropy",
+                                 label="Compression efficiency (4B entropy)", plot_min=0),
+         ])
     def set_efficiency(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
-        compression_efficiency_1byte_entropy = \
-            row.image_info_row["entropy_1B_bps"] * row.image_info_row["size_bytes"] \
-            / (row["compressed_size_bytes"] * 8)
-        compression_efficiency_2byte_entropy = \
-            row.image_info_row["entropy_2B_bps"] * (row.image_info_row["size_bytes"] / 2) \
-            / (row["compressed_size_bytes"] * 8)
-        row["compression_efficiency_1byte_entropy"] = compression_efficiency_1byte_entropy
-        row["compression_efficiency_2byte_entropy"] = compression_efficiency_2byte_entropy
+        for bytes in (1, 2, 4):
+            row[f"compression_efficiency_{bytes}byte_entropy"] = \
+                row.image_info_row[f"entropy_{bytes}B_bps"] * (row.image_info_row["size_bytes"] / bytes) \
+                / (row["compressed_size_bytes"] * 8)
 
 
 class LosslessCompressionExperiment(CompressionExperiment):

@@ -246,7 +246,12 @@ class Experiment(atable.ATable):
     def get_dataset_info_row(self, file_path):
         """Get the dataset info table row for the file path given as argument.
         """
-        return self.dataset_table_df.loc[atable.indices_to_internal_loc(file_path)]
+        return self.get_dataset_df().loc[atable.indices_to_internal_loc(file_path)]
+    
+    def get_dataset_df(self):
+        """Get the DataFrame of the employed dataset.
+        """
+        return self.dataset_table_df
 
     @property
     def joined_column_to_properties(self):

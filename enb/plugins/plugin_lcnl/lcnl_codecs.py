@@ -307,9 +307,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             if self.param_dict['a_vector'] is not None else ''
         s += f" $r_z={self.param_dict['r_vector']}$" \
             if self.param_dict['r_vector'] is not None else ''
-        # s += f" lossless" \
-        #     if self.param_dict['r_vector'] is None \
-        #        and self.param_dict['a_vector'] is None else ''
+        
         return s
 
 
