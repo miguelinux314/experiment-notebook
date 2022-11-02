@@ -94,7 +94,7 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
     if matches:
         if len(matches) > 1:
             raise ValueError(f"File path {file_path} contains more than one image geometry tag. "
-                            f"Matches: {repr(matches)}.")
+                             f"Matches: {repr(matches)}.")
         match = matches[0]
         component_count, height, width = (int(match[i]) for i in range(3))
         if any(dim < 1 for dim in (width, height, component_count)):
@@ -315,23 +315,21 @@ class ImagePropertiesTable(ImageGeometryTable):
         assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
         row[_column_name] = max(1, math.ceil(math.log2(range_len + 1)))
 
-    @atable.column_function(
-        "entropy_1B_bps", label="Entropy (bps, 1-byte samples)", plot_min=0, plot_max=8)
-    def set_file_1B_entropy(self, file_path, row):
-        """Return the zero-order entropy of the data in file_path (1-byte samples are assumed)
+    @atable.column_function([
+        atable.ColumnProperties(f"entropy_{bytes}B_bps",
+                                label=f"Entropy (bits, {bytes}-byte samples)",
+                                plot_min=0, plot_max=8 * bytes)
+        for bytes in (1, 2, 4)])
+    def set_file_entropy(self, file_path, row):
+        """Set the zero-order entropy of the data in file_path 
+        for 1, 2 and 4 bytes per sample in entropy_1B_bps, entropy_2B_bps and entropy_4B_bpsm, respectively. 
+        If the file is not a multiple of those bytes per sample, -1 is stored instead.
         """
-        row[_column_name] = entropy(np.fromfile(file_path, dtype="uint8").flatten())
-
-    @atable.column_function(
-        "entropy_2B_bps", label="Entropy (bps, 2-byte samples)", plot_min=0, plot_max=16)
-    def set_file_2B_entropy(self, file_path, row):
-        """Set the zero-order entropy of the data in file_path (2-byte samples are assumed)
-        if bytes_per_sample is a multiple of 2, otherwise the column is set to -1
-        """
-        if row["bytes_per_sample"] % 2 != 0:
-            row[_column_name] = -1
-        else:
-            row[_column_name] = entropy(np.fromfile(file_path, dtype=np.uint16).flatten())
+        for bytes in (1, 2, 4):
+            if row["bytes_per_sample"] % bytes != 0:
+                row[f"entropy_{bytes}B_bps"] = -1
+            else:
+                row[f"entropy_{bytes}B_bps"] = entropy(np.fromfile(file_path, dtype=f"uint{8 * bytes}").flatten())
 
     @atable.column_function(
         [f"byte_value_{s}" for s in ["min", "max", "avg", "std"]])
