@@ -43,7 +43,10 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
         raise NotImplementedError("Please select one of the subclasses")
 
     def get_dtype(self, original_file_info):
-        return 8 * original_file_info["bytes_per_sample"]
+        try:
+            return original_file_info["dynamic_range_bits"]
+        except KeyError:
+            return 8 * original_file_info["bytes_per_sample"]
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         invocation_params = dict(self.param_dict)
@@ -58,6 +61,7 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
             invocation += " -be"
         invocation += " -ow -noattr "
         invocation += f"-o {compressed_path} {original_path}"
+
         return invocation
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
