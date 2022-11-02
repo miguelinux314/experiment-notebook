@@ -44,9 +44,14 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
 
     def get_dtype(self, original_file_info):
         try:
-            return original_file_info["dynamic_range_bits"]
+            dtype = original_file_info["dynamic_range_bits"]
         except KeyError:
-            return 8 * original_file_info["bytes_per_sample"]
+            dtype = 8 * original_file_info["bytes_per_sample"]
+
+        if dtype > 28:
+            raise ValueError(f"FAPEC supports dynamic ranges only up to 28, however {dtype} was selected")
+        
+        return max(4, dtype)
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         invocation_params = dict(self.param_dict)
