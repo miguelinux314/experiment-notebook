@@ -47,7 +47,7 @@ the [basic workflow example](https://github.com/miguelinux314/experiment-noteboo
 - A [gallery of plots](https://miguelinux314.github.io/experiment-notebook/analyzing_data.html)
   produced (semi-)automatically produced from enb experiment results and from external CSV files is also available.
 
-- Please refere tp the [changelog](https://github.com/miguelinux314/experiment-notebook/blob/master/CHANGELOG.md)
+- Please refer to the [changelog](https://github.com/miguelinux314/experiment-notebook/blob/master/CHANGELOG.md)
   for the main differences between consecutive `enb` versions.
 
 
