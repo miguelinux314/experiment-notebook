@@ -16,7 +16,8 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.4.3
 
-- No changes yet
+- Updated kakadu and FAPEC codecs to specify the exact dynamic bit range instead of the nominal one,
+  which allows compression of 17-28bps images stored in u32be and s32be formats
 
 # Latest stable version
 

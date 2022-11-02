@@ -102,6 +102,12 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                             "Add `options.report_wall_time = True` to your script or "
                             "invoke it with --report_wall_time to enable wall clock time measurements.")
         
+        try:
+            precision_bits = min(original_file_info['bytes_per_sample'] * 8,
+                                 original_file_info["dynamic_range_bits"] + 1)
+        except KeyError:
+            precision_bits = original_file_info['bytes_per_sample'] * 8
+        
         return f"-i {original_path}*{original_file_info['component_count']}" \
                f"@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
                f"-o {compressed_path} -no_info -full -no_weights " \
@@ -113,8 +119,8 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                f"{self.get_atk_params(original_file_info=original_file_info)} " \
                f"Cycc={'yes' if 'apply_ycc' in self.param_dict and self.param_dict['apply_ycc'] else 'no'} " \
                f"Sdims=\\{{{original_file_info['height']},{original_file_info['width']}\\}} " \
-               f"Nprecision={original_file_info['bytes_per_sample'] * 8} " \
-               f"Sprecision={original_file_info['bytes_per_sample'] * 8} " \
+               f"Nprecision={precision_bits} " \
+               f"Sprecision={precision_bits} " \
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
                + (f"Qstep=0.000000001 " if self.param_dict['bit_rate'] is not None else "") \
