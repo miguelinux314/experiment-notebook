@@ -17,7 +17,10 @@ format. Given a code initially developed for one `enb` version and then executed
 ## v0.4.3
 
 - Updated kakadu and FAPEC codecs to specify the exact dynamic bit range instead of the nominal one,
-  which allows compression of 17-28bps images stored in u32be and s32be formats
+  which allows compression of 17-28bps images stored in u32be and s32be formats.
+- Added support for 4-byte entropy and 4-byte entropy efficiency
+- The CCSDS codec now uses 1 sample per packet to allow automatic compression of wide images
+- Cleanup of the lcnl codec wrapper
 
 # Latest stable version
 
@@ -31,7 +34,7 @@ format. Given a code initially developed for one `enb` version and then executed
 # Version history
 
 ## 2022/09/19 v0.4.1
-  
+
 - Added the `--report_wall_time` flag and `enb.config.options.report_wall_time` variables to allow
   compression experiments to report wall clock time instead of the total CPU process time.
 - The Kakadu coder with MCT now allows selecting the number of CPU threads.
@@ -40,31 +43,31 @@ format. Given a code initially developed for one `enb` version and then executed
 ## 2022/06/09 v0.4.0
 
 - **Not backward-compatible** changes:
-    
-    - Several command line options have been removed, and/or moved to `*.ini` files 
+
+    - Several command line options have been removed, and/or moved to `*.ini` files
       (e.g., in your project folders - use `enb plugin install enb.ini .` to copy a full `*.ini` template)
       and direct object manipulation. These are:
 
         - `--no_ray`: By default, ray is not the default parallelization engine anymore. To use ray, one needs
-          to specifiy `--ssh_cluster_csv_path` or, alternatively, set the `ssh_cluster_csv_path` field in 
+          to specifiy `--ssh_cluster_csv_path` or, alternatively, set the `ssh_cluster_csv_path` field in
           the `[enb.config.options]` section of your `'*.ini'` files.
           Run your script with `-h` for additional
-          information on this parameter and/or check the 
-          [documentation on cluster configuration](https://miguelinux314.github.io/experiment-notebook/cluster_setup.html).
-      
+          information on this parameter and/or check the
+          [documentation on cluster configuration](https://miguelinux314.github.io/experiment-notebook/cluster_setup.html)
+          .
+
         - A number of plot rendering configuration options have been removed from the CLI and are now
           accessible via the `[enb.aanalysis.Analyzer]` section of `'*.ini'` files, direct class
-          or instance manipulation of `enb.aanalyis.Analyzer` classes and/or instances, and as 
+          or instance manipulation of `enb.aanalyis.Analyzer` classes and/or instances, and as
           the `**kwargs` argument to Analyzer.get_df(), in turn passed to the `plotdata` module.
           The affected options are those previously defined in `RenderingOptions` (now also deleted):
-          
+
             - `fig_height`, `fig_width`
             - `horizontal_margin`, `vertical_margin`
             - `group_row_margin`
             - `legend_column_count`
             - `show_grid`, `show_subgrid`
             - `global_title` (removed, use `plot_title` instead)
-            
 
 General improvements:
 
@@ -94,7 +97,7 @@ This is done automatically if installed from pip.
 * New features
 
     - Added support for plotting histograms of 2d data using colormaps, e.g.,
-      see this 
+      see this
       [example](https://miguelinux314.github.io/experiment-notebook/analyzing_data.html#analysis-numeric-spatial-2d-data)
     - Automatic generation of latex-formatted output tables in `enb.aanalysis.Analyzer` subclasses
       (stored by default under the `analysis/` subfolder of your projects).
@@ -121,7 +124,7 @@ This is done automatically if installed from pip.
     - Fixed DictNumericAnalyzer so that key_to_x is correctly processed if available.
     - Fixed warning messages from numpy/scipy when trying to compute correlations or statistical descriptions
       with a single data point, or constant data.
-    - Fixed the makefiles of the `fpack` and `ndzip` data compression plugins.  
+    - Fixed the makefiles of the `fpack` and `ndzip` data compression plugins.
     - When requested, a copy of the compressed and/or reconstructed files is stored in the configured
       folder for LosslessCompressionExperiment subclasses even if reconstruction is not lossless for those files
       (see the `reconstructed_copy_dir` and `compressed_copy_dir`
