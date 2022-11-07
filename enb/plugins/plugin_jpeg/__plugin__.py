@@ -4,7 +4,7 @@ import enb.plugins
 class JPEGPlugin(enb.plugins.PluginMake):
     name = "jpeg"
     label = "Reference JPEG and JPEG-LS implementation"
-    tags = {"data compression", "codec"}
+    tags = {"data compression", "image", "codec"}
     contrib_authors = ["Thomas Richter"]
     contrib_reference_urls = ["https://github.com/thorfdbg/libjpeg/"]
     contrib_download_url_name = [

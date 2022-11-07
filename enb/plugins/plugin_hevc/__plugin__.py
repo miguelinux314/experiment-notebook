@@ -4,7 +4,7 @@ import enb.plugins
 class HEVCPlugin(enb.plugins.PluginMake):
     name = "hevc"
     label = "Wrapper for the HEVC / H.265 codec"
-    tags = {"data compression", "codec"}
+    tags = {"data compression", "image", "codec"}
     contrib_authors = ["ISO", "ITU", "IEC"]
     contrib_reference_urls = ["https://hevc.hhi.fraunhofer.de/"]
     contrib_download_url_name = [

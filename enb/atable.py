@@ -905,7 +905,7 @@ class ATable(metaclass=MetaTable):
             enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved unfilled dataframe with {len(df)} rows.")
 
         return df
-    
+
     def get_all_input_indices(self, ext=None, base_dataset_dir=None):
         """Get a list of all input indices (recursively) contained in base_dataset_dir.
         By default, the global function enb.atable.get_all_input_files is called.
@@ -1107,10 +1107,10 @@ class ATable(metaclass=MetaTable):
         # Get a list of all (column, fun) tuples, where fun is the function that sets column for a given row
         try:
             column_fun_tuples = [(c, self.column_to_properties[c].fun) for c in target_columns]
-            missing_fun_tuples = [fun_tuple for fun_tuple in column_fun_tuples if fun_tuple[1] is None ]
+            missing_fun_tuples = [fun_tuple for fun_tuple in column_fun_tuples if fun_tuple[1] is None]
             if missing_fun_tuples:
                 enb.logger.debug(f"Wrong target_columns for {self}. "
-                                "It has None associated functions for the following columns:")
+                                 "It has None associated functions for the following columns:")
                 enb.logger.debug("\n\t-".join(cft[0] for cft in column_fun_tuples if cft[1] is None))
                 enb.logger.debug("These will be ignored")
                 column_fun_tuples = [cft for cft in column_fun_tuples if cft[1] is not None]

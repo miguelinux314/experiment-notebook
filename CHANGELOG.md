@@ -18,9 +18,10 @@ format. Given a code initially developed for one `enb` version and then executed
 
 - Updated kakadu and FAPEC codecs to specify the exact dynamic bit range instead of the nominal one,
   which allows compression of 17-28bps images stored in u32be and s32be formats.
-- Added support for 4-byte entropy and 4-byte entropy efficiency
-- The CCSDS codec now uses 1 sample per packet to allow automatic compression of wide images
-- Cleanup of the lcnl codec wrapper
+- Added support for 4-byte entropy and 4-byte entropy efficiency.
+- The CCSDS codec now uses 1 sample per packet to allow automatic compression of wide images.
+- Cleanup of the lcnl codec wrapper.
+- Added the "image" category for image processing and compression plugins.
 
 # Latest stable version
 
