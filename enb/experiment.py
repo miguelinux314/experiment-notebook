@@ -247,7 +247,7 @@ class Experiment(atable.ATable):
         """Get the dataset info table row for the file path given as argument.
         """
         return self.get_dataset_df().loc[atable.indices_to_internal_loc(file_path)]
-    
+
     def get_dataset_df(self):
         """Get the DataFrame of the employed dataset.
         """
@@ -321,8 +321,9 @@ class TaskFamily:
             task_name = task_name.name
         except (TypeError, AttributeError):
             pass
-            
+
         assert task_name not in self.task_names
         self.task_names.append(task_name)
         if task_label:
             self.name_to_label[task_name] = task_label
+

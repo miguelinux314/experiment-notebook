@@ -541,6 +541,11 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
             input_ext = ".fits"
         else:
             raise ValueError(f"Invalid extension found in {input_path}")
+        
+        try:
+            import fits
+        except ImportError as ex:
+            raise RuntimeError("The fits module is not available.")
 
         hdul = fits.open(input_path)
         saved_images = 0

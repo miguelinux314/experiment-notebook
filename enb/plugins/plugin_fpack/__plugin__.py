@@ -4,7 +4,7 @@ import enb.plugins
 class FPackPlugin(enb.plugins.PluginMake):
     name = "fpack"
     label = "Wrapper for the FPACK compressor"
-    tags = {"data compression", "codec"}
+    tags = {"data compression", "image", "codec"}
     contrib_authors = ["William D. Pence"]
     contrib_reference_urls = ["https://heasarc.gsfc.nasa.gov/fitsio/fpack/"]
     contrib_download_url_name = [

@@ -11,7 +11,7 @@ class CompressionExperimentTemplate(enb.plugins.Template):
     name = "lossy-compression"
     author = ["Miguel Hernández-Cabronero"]
     label = "Template for lossy compression experiments"
-    tags = {"project", "data compression"}
+    tags = {"project", "image", "documentation", "data compression"}
     tested_on = {"linux", "windows"}
 
     @classmethod

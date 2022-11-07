@@ -10,7 +10,7 @@ class TestAllCodecsPlugin(enb.plugins.Template):
     authors = ["Miguel Hernández-Cabronero"]
     label = "Install all codec plugins verify their availability"
     contrib_reference_urls = ["https://github.com/miguelinux314/experiment-notebook"]
-    tags = {"data compression", "test"}
+    tags = {"data compression", "image", "test"}
     tested_on = {"linux"}
     required_fields_to_help = {"include_privative_codecs": "It indicates whether privative codecs "
                                                            "(those for which codec binaries and sources are not available) "
