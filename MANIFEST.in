@@ -85,6 +85,9 @@ include enb/plugins/plugin_huffman_likhachev/__plugin__.py
 include enb/plugins/plugin_huffman_likhachev/README.md
 include enb/plugins/plugin_huffman_likhachev/utils.c
 include enb/plugins/plugin_huffman_likhachev/utils.h
+include enb/plugins/plugin_iraf_photometry/__init__.py
+include enb/plugins/plugin_iraf_photometry/iraf_photometry.py
+include enb/plugins/plugin_iraf_photometry/__plugin__.py
 include enb/plugins/plugin_jpeg/jpeg_codecs.py
 include enb/plugins/plugin_jpeg/Makefile.linux
 include enb/plugins/plugin_jpeg/__plugin__.py
