@@ -124,7 +124,7 @@ def raw_to_photometry_df(
         return df
 
 
-class PhotometryTable(enb.icompression.LossyCompressionExperiment):
+class LossyPhotometryExperiment(enb.icompression.LossyCompressionExperiment):
     """Lossy compression experiment that extracts photometry-based distortion metrics.
     """
 
