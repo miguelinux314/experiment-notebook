@@ -116,12 +116,11 @@ def raw_to_photometry_df(
         with open(photometry_csv_path.name, "r+") as output_file:
             rows = output_file.read().replace("  ", ",")
             output_file.seek(0)
+            output_file.truncate(0)
             output_file.write("x,y,magnitude,magnitude_error\n")
             output_file.write(rows)
 
-        df = pd.read_csv(photometry_csv_path.name)
-
-        return df
+        return pd.read_csv(photometry_csv_path.name)
 
 
 class LossyPhotometryExperiment(enb.icompression.LossyCompressionExperiment):
