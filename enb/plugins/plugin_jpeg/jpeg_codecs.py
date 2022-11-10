@@ -52,7 +52,7 @@ class JPEG(Abstract_JPEG, icompression.LossyCodec):
     Images must have 1 or 3 components
     """
 
-    def __init__(self, quality, bin_dir=None, output_invocation_dir=None):
+    def __init__(self, quality=100, bin_dir=None, output_invocation_dir=None):
         """
         :param max_error: maximum pixelwise error allowed. Use 0 for lossless
           compression
