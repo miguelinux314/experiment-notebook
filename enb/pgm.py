@@ -7,6 +7,8 @@ __since__ = "2020/04/08"
 import sys
 import numpy as np
 import re
+import os
+import imageio
 
 import enb.isets
 
@@ -58,7 +60,7 @@ def read_ppm(input_path, byteorder='>'):
         buffer,
         dtype='u1' if int(maxval) < 256 else byteorder + 'u2',
         count=int(width) * int(height) * 3,
-        offset=len(header)).reshape((3, int(width), int(height)), order="F").swapaxes(0,2).swapaxes(0,1)
+        offset=len(header)).reshape((3, int(width), int(height)), order="F").swapaxes(0, 2).swapaxes(0, 1)
 
 
 def write_pgm(array, bytes_per_sample, output_path, byteorder=">"):
@@ -76,7 +78,7 @@ def write_pgm(array, bytes_per_sample, output_path, byteorder=">"):
 
 
 def write_ppm(array, bytes_per_sample, output_path, byteorder=">"):
-    assert bytes_per_sample in [1, 2], f"bytes_per_sample={bytes_per_sample} not supported"
+    assert bytes_per_sample in [1], f"bytes_per_sample={bytes_per_sample} not supported"
     assert len(array.shape) == 3, f"Only 3D arrays can be output as PPM ({array.shape=})"
     assert (array.astype(int) - array < 2 * sys.float_info.epsilon).all(), f"Only integer values can be stored in PPM"
     assert array.min() >= 0, f"Only positive values can be stored in PPM"
@@ -85,10 +87,15 @@ def write_ppm(array, bytes_per_sample, output_path, byteorder=">"):
         f"(max is {array.max()}, bytes_per_sample={bytes_per_sample})"
     width, height, component_count = array.shape
     assert component_count == 3, f"Only 3D arrays can be output as PPM ({array.shape=})"
+
     with open(output_path, "wb") as output_file:
         output_file.write(f"P6\n{width}\n{height}\n{(2 ** (8 * bytes_per_sample)) - 1}\n".encode("utf-8"))
-        for z in range(3):
-            array[:, :, z].swapaxes(0, 1).swapaxes(0,2).astype(f"{byteorder}u{bytes_per_sample}").tofile(output_file)
+        values = []
+        for y in range(array.shape[1]):
+            for x in range(array.shape[0]):
+                for z in range(array.shape[2]):
+                    values.append(array[x, y, z])
+        output_file.write(bytes(values))
 
 
 def pgm_to_raw(input_path, output_path):
