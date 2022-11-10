@@ -27,6 +27,16 @@ class ExperimentTask:
         """
         self.param_dict = dict(param_dict) if param_dict is not None else dict()
 
+    def apply(self, experiment, index, row):
+        """This method is called for all combinations of input indices and tasks 
+        before computing any additional column.
+        
+        :param experiment: experiment invoking this method
+        :param index: index being processed by the experiment. Consider experiment.index_to_path_task(index).
+        :param row: row being currently processed by the experiment
+        """
+        pass
+
     @property
     def name(self):
         """Unique name that uniquely identifies a task and its configuration.
@@ -217,7 +227,19 @@ class Experiment(atable.ATable):
         with enb.logger.verbose_context("Computing experiment results",
                                         sep="...\n",
                                         msg_after="successfully computed experiment results."):
-            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite, chunk_size=chunk_size)
+            try:
+                def apply_task(self, index, row):
+                    path, task = self.index_to_path_task(index)
+                    task.apply(self, index, row)
+                    row["__task_application"] = True
+
+                self.column_to_properties["__task_application"] = enb.atable.ColumnProperties(
+                    name="__task_application", fun=apply_task)
+                self.column_to_properties.move_to_end("__task_application", last=False)
+                df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
+                                    chunk_size=chunk_size)
+            finally:
+                del self.column_to_properties["__task_application"]
 
         # Add dataset columns
         with enb.logger.verbose_context("Merging dataset and experiment results"):
@@ -326,4 +348,3 @@ class TaskFamily:
         self.task_names.append(task_name)
         if task_label:
             self.name_to_label[task_name] = task_label
-
