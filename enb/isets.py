@@ -730,7 +730,7 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     :param force_big_endian: if True, a copy of the array is made and its bytes are swapped before outputting
       data to file. This parameter is ignored if dtype is provided.
     """
-    if isinstance(file_or_path, str):
+    if isinstance(file_or_path, str) and os.path.dirname(file_or_path):
         os.makedirs(os.path.dirname(file_or_path), exist_ok=True)
     try:
         assert not file_or_path.closed, f"Cannot dump to a closed file"
