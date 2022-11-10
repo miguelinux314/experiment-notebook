@@ -15,9 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.2
+                v0.4.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -92,7 +90,7 @@
            <div itemprop="articleBody">
              
   <section id="experiments-data-tasks">
-<h1>Experiments = data + tasks<a class="headerlink" href="#experiments-data-tasks" title="Permalink to this heading"></a></h1>
+<h1>Experiments = data + tasks<a class="headerlink" href="#experiments-data-tasks" title="Permalink to this headline"></a></h1>
 <p>In the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> page, we saw the most basic usage of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>,
 e.g., a list of inputs, and a list of columns to obtain the results dataframe.
 Here, we discuss the basics of the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class, which provides a more
@@ -111,7 +109,7 @@ You can look at the sources in that link, or install a self-contained version in
 </pre></div>
 </div>
 <section id="the-two-atable-s-of-an-experiment">
-<h2>The two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s of an Experiment<a class="headerlink" href="#the-two-atable-s-of-an-experiment" title="Permalink to this heading"></a></h2>
+<h2>The two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s of an Experiment<a class="headerlink" href="#the-two-atable-s-of-an-experiment" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class combines two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s:</p>
 <blockquote>
 <div><ul class="simple">
@@ -146,7 +144,7 @@ if you need some help with the <a class="reference internal" href="api/enb.html#
 </div>
 </section>
 <section id="experiment-tasks">
-<h2>Experiment tasks<a class="headerlink" href="#experiment-tasks" title="Permalink to this heading"></a></h2>
+<h2>Experiment tasks<a class="headerlink" href="#experiment-tasks" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> class can be extended or used directly to define the tasks
 that need to be performed for each input sample.</p>
 <ul class="simple">
@@ -173,7 +171,7 @@ others created by the community.</p>
 </div>
 </section>
 <section id="what-rows-are-created-how-are-they-indexed">
-<h2>What rows are created? How are they indexed?<a class="headerlink" href="#what-rows-are-created-how-are-they-indexed" title="Permalink to this heading"></a></h2>
+<h2>What rows are created? How are they indexed?<a class="headerlink" href="#what-rows-are-created-how-are-they-indexed" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> instances defined for an experiment, along with the dataset
 files used as input determine the rows to be computed.</p>
 <p>For instance, if we have tasks with name properties <cite>CheckPort__port=80</cite> and
@@ -187,7 +185,7 @@ then enb will create 4 (2*2) rows, indexed as follows:</p>
 </div>
 </section>
 <section id="what-columns-are-created">
-<h2>What columns are created?<a class="headerlink" href="#what-columns-are-created" title="Permalink to this heading"></a></h2>
+<h2>What columns are created?<a class="headerlink" href="#what-columns-are-created" title="Permalink to this headline"></a></h2>
 <p>You can define as many columns in your <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class as you need.
 To do so, we follow the same basic idea as in <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a>.</p>
 <p>The only difference this time is that the <cite>index</cite> parameter passed to
@@ -221,7 +219,7 @@ the first line of <cite>column_port_open</cite>  allows you to get both:</p>
 </div>
 </section>
 <section id="final-steps">
-<h2>Final steps<a class="headerlink" href="#final-steps" title="Permalink to this heading"></a></h2>
+<h2>Final steps<a class="headerlink" href="#final-steps" title="Permalink to this headline"></a></h2>
 <p>We are all set up to retrieve and analyze the results. In the following snippet,
 you can see the how to obtain the <cite>result_df</cite> dataframe and how to display
 messages for those ports found to be open:</p>
@@ -254,7 +252,7 @@ Found open ports in 192.168.1.2:
 </div>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline"></a></h2>
 <p>In the next section, <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> tools for analyzing and plotting are discussed.</p>
 <p>In <a class="reference internal" href="image_compression.html"><span class="doc">Image compression experiments</span></a>, you can
 topics specifics to experiments related to lossless and lossy image compression.</p>

@@ -15,9 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.2
+                v0.4.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -88,7 +86,7 @@
            <div itemprop="articleBody">
              
   <section id="dataset-curation-and-modification">
-<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this heading"></a></h1>
+<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this headline"></a></h1>
 <p>Very often, datasets and test corpora need to be curated and/or modified before
 conducting experimental analysis with them. Typical tasks include:</p>
 <ul class="simple">
@@ -100,7 +98,7 @@ conducting experimental analysis with them. Typical tasks include:</p>
 </ul>
 <p>The <cite>enb</cite> library provides several tools to help do this in the <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules.</p>
 <section id="the-fileversiontable-class">
-<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this heading"></a></h2>
+<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> base class allows to transform an input folder into an output folder
 in a simple way. You just need to:</p>
 <ol class="arabic simple">
@@ -157,7 +155,7 @@ output path passed as argument. This is particularly useful when</p>
 </div>
 </section>
 <section id="predefined-classes">
-<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this heading"></a></h2>
+<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this headline"></a></h2>
 <p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> includes some predefined subclasses of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.PDFToPNG" title="enb.aanalysis.PDFToPNG"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.PDFToPNG</span></code></a>: convert PDF files into high-resolution PNG files.</p></li>
