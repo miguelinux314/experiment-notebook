@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    enb.plugins.plugin_fpack
+   enb.plugins.plugin_iraf_photometry
 
 Submodules
 ----------
