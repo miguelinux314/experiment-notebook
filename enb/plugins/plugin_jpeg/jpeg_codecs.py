@@ -9,6 +9,7 @@ import tempfile
 import numpy as np
 import sortedcontainers
 
+import enb.pgm
 from enb import icompression
 from enb import isets
 from enb import pgm
@@ -16,8 +17,125 @@ from enb import tarlite
 from enb.config import options
 
 
-class JPEG_LS(icompression.LosslessCodec, icompression.NearLosslessCodec, icompression.WrapperCodec):
+class Abstract_JPEG(icompression.WrapperCodec):
     max_dimension_size = 65535
+
+    def __init__(self, bin_dir=None, output_invocation_dir=None):
+        """
+        :param bin_dir: path to the directory that contains the
+          ldc_encoder, ldc_decoder and ldc_header_tool binaries. If it is None,
+          options.external_bin_base_dir is None. If this is None as well, the
+          same directory of this script is used by default.
+        :output_invocation_dir: if not None, a path to a directory where invocations are to be stored.
+        """
+        bin_dir = bin_dir if bin_dir is not None else options.external_bin_base_dir
+        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        assert os.path.isdir(bin_dir), f"Invalid binary dir {bin_dir}."
+        jpeg_bin_path = os.path.join(bin_dir, "jpeg")
+
+        param_dict = sortedcontainers.SortedDict()
+        icompression.WrapperCodec.__init__(
+            self, compressor_path=jpeg_bin_path, decompressor_path=jpeg_bin_path,
+            param_dict=param_dict, output_invocation_dir=output_invocation_dir)
+
+    def get_compression_params(self, original_path, compressed_path, original_file_info):
+        s = " ".join(f"-{k} {v}" for k, v in self.param_dict.items())
+        s += f" {original_path} {compressed_path}"
+        return s
+
+    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
+        return f"{compressed_path} {reconstructed_path}"
+
+
+class JPEG(Abstract_JPEG, icompression.LossyCodec):
+    """Compress unsigned 8-bit or 16-bit images using classic JPEG.
+    Images must have 1 or 3 components
+    """
+
+    def __init__(self, quality, bin_dir=None, output_invocation_dir=None):
+        """
+        :param max_error: maximum pixelwise error allowed. Use 0 for lossless
+          compression
+        :param bin_dir: path to the directory that contains the
+          ldc_encoder, ldc_decoder and ldc_header_tool binaries. If it is None,
+          options.external_bin_base_dir is None. If this is None as well, the
+          same directory of this script is used by default.
+        :output_invocation_dir: if not None, a path to a directory where invocations are to be stored.
+        """
+        assert int(quality) == quality, f"quality must be an integer ({quality=})"
+        assert 1 <= quality <= 100, f"quality must be an integer between 1 and 100 ({quality=})"
+        super().__init__(bin_dir=bin_dir, output_invocation_dir=output_invocation_dir)
+        self.param_dict["q"] = quality
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        assert original_file_info["bytes_per_sample"] in [1, 2], \
+            f"Only 1 or 2 bytes per sample, unsigned values {original_file_info['bytes_per_sample']}"
+        assert original_file_info["width"] <= self.max_dimension_size, \
+            f"The input path has width {original_file_info['width']} exceeding the maximum {self.max_dimension_size}"
+        assert original_file_info["height"] <= self.max_dimension_size, \
+            f"The input path has height {original_file_info['height']} exceeding the maximum {self.max_dimension_size}"
+        complete_array = isets.load_array_bsq(file_or_path=original_path, image_properties_row=original_file_info)
+        assert not original_file_info["signed"], f"Only unsigned data can be compressed using JPEG"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            if complete_array.shape[2] == 1:
+                # Grayscale image
+                pbm_path = os.path.join(tmp_dir, "out.pgm")
+                enb.pgm.write_pgm(array=complete_array[:, :, 0],
+                                  bytes_per_sample=original_file_info["bytes_per_sample"],
+                                  output_path=pbm_path)
+            elif complete_array.shape[2] == 3:
+                # RGB array
+                pbm_path = os.path.join(tmp_dir, "out.ppm")
+                enb.pgm.write_ppm(array=complete_array,
+                                  bytes_per_sample=original_file_info["bytes_per_sample"],
+                                  output_path=pbm_path)
+            else:
+                raise ValueError("Only 1-component or 3-component images can be compressed using classic JPEG. "
+                                 f"{complete_array.shape=}")
+
+            compression_results = super().compress(original_path=pbm_path, compressed_path=compressed_path)
+            compression_results.original_path = original_path
+            return compression_results
+
+    def decompress(self, compressed_path: str, reconstructed_path: str, original_file_info=None):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            if original_file_info["component_count"] == 1:
+                pbm_path = os.path.join(tmp_dir, "out.pgm")
+            elif original_file_info["component_count"] == 3:
+                pbm_path = os.path.join(tmp_dir, "out.ppm")
+            else:
+                raise ValueError("Only 1-component or 3-component images can be decompressed using classic JPEG")
+
+            decompression_results = super().decompress(
+                compressed_path=compressed_path, reconstructed_path=pbm_path)
+            if original_file_info["component_count"] == 1:
+                array = enb.pgm.read_pgm(pbm_path)
+                array = array.reshape((array.shape[0], array.shape[1], 1))
+            elif original_file_info["component_count"] == 3:
+                array = enb.pgm.read_ppm(pbm_path)
+            else:
+                raise ValueError("Only 1-component or 3-component images can be decompressed using classic JPEG")
+            assert len(array.shape) == 3, f"Invalid array shape ({array.shape=})"
+            assert array.shape[2] in (1, 3), f"Invalid array 3rd-D length ({array.shape=})"
+
+            enb.isets.dump_array_bsq(array=array, file_or_path=reconstructed_path)
+            decompression_results.reconstructed_path = reconstructed_path
+            return decompression_results
+
+    @property
+    def label(self):
+        return f"JPEG Q={self.param_dict['q']}"
+
+
+class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLosslessCodec):
+    """Compress unsigned 8-bit or 16-bit images using JPEG-LS.
+    If images contain more than one component, they are combined into a single image 
+    by vertically appending the different components.
+    If the maximum dimension size allowed by JPEG-LS is exceeded, several images 
+    are are produced in this way by splitting the input bands into the minimum 
+    number of groups so that this limit is not exceeded.
+    """
 
     def __init__(self, max_error=0, bin_dir=None, output_invocation_dir=None):
         """
@@ -27,20 +145,14 @@ class JPEG_LS(icompression.LosslessCodec, icompression.NearLosslessCodec, icompr
           ldc_encoder, ldc_decoder and ldc_header_tool binaries. If it is None,
           options.external_bin_base_dir is None. If this is None as well, the
           same directory of this script is used by default.
+        :output_invocation_dir: if not None, a path to a directory where invocations are to be stored.
         """
-        bin_dir = bin_dir if bin_dir is not None else options.external_bin_base_dir
-        bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
-        assert os.path.isdir(bin_dir), f"Invalid binary dir {bin_dir}."
-        jpeg_bin_path = os.path.join(bin_dir, "jpeg")
-
-        param_dict = sortedcontainers.SortedDict()
-        param_dict["ls"] = 0
+        super().__init__(bin_dir=bin_dir, output_invocation_dir=output_invocation_dir)
+        self.param_dict["ls"] = 0
+        self.param_dict["c"] = ""
         max_error = int(max_error)
         assert max_error >= 0
-        param_dict["m"] = int(max_error)
-        icompression.WrapperCodec.__init__(
-            self, compressor_path=jpeg_bin_path, decompressor_path=jpeg_bin_path,
-            param_dict=param_dict, output_invocation_dir=output_invocation_dir)
+        self.param_dict["m"] = int(max_error)
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         assert original_file_info["bytes_per_sample"] in [1, 2], \
@@ -152,14 +264,6 @@ class JPEG_LS(icompression.LosslessCodec, icompression.NearLosslessCodec, icompr
             compressed_path=compressed_path, reconstructed_path=reconstructed_path)
         decompression_results.decompression_time_seconds = total_decompression_time
         return decompression_results
-
-    def get_compression_params(self, original_path, compressed_path, original_file_info):
-        s = " ".join(f"-{k} {v}" for k, v in self.param_dict.items())
-        s += f" {original_path} {compressed_path}"
-        return s
-
-    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"{compressed_path} {reconstructed_path}"
 
     @property
     def label(self):
