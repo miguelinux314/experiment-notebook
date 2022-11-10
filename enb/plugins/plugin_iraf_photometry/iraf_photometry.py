@@ -12,24 +12,26 @@ import enb
 import shutil
 import enb.icompression
 
-default_iraf_folder = "/usr/local/bin/cl"
-custom_iraf_folder = "/usr/lib/iraf"
-iraf_folder = default_iraf_folder
 
-if "iraf" not in os.environ or not os.path.isdir(os.environ["iraf"]):
-    if not os.path.isdir(default_iraf_folder):
-        if not os.path.isdir(custom_iraf_folder):
-            raise RuntimeError(f"Cannot find iraf in either the default ({default_iraf_folder}) "
-                               f"nor the custom folders ({custom_iraf_folder}). "
-                               f"Please modify custom_iraf_folder in {os.path.abspath(__file__)} "
-                               f"to match your installation")
-        iraf_folder = custom_iraf_folder
-    os.environ["iraf"] = iraf_folder
-else:
-    iraf_folder = os.environ["iraf"]
+def import_pyraf():
+    default_iraf_folder = "/usr/local/bin/cl"
+    custom_iraf_folder = "/usr/lib/iraf"
+    iraf_folder = default_iraf_folder
+
+    if "iraf" not in os.environ or not os.path.isdir(os.environ["iraf"]):
+        if not os.path.isdir(default_iraf_folder):
+            if not os.path.isdir(custom_iraf_folder):
+                raise RuntimeError(f"Cannot find iraf in either the default ({default_iraf_folder}) "
+                                   f"nor the custom folders ({custom_iraf_folder}). "
+                                   f"Please modify custom_iraf_folder in {os.path.abspath(__file__)} "
+                                   f"to match your installation")
+            iraf_folder = custom_iraf_folder
+        os.environ["iraf"] = iraf_folder
+    from pyraf import iraf
+    return iraf
+
 
 from astropy.io import fits
-from pyraf import iraf
 
 
 def raw_to_fits(raw_path, fits_path):
@@ -48,6 +50,8 @@ def raw_to_photometry_df(
     """Apply IRAF to the FITS file in `fits_path`.
     :return: a pandas DataFrame with the `x`, `y`, `magnitude` and `magnitude_error` columns of all identified objects.
     """
+    iraf = import_pyraf()
+
     with tempfile.NamedTemporaryFile(dir=enb.config.options.base_tmp_dir,
                                      suffix=".fits") as fits_file, \
             tempfile.NamedTemporaryFile(dir=enb.config.options.base_tmp_dir) as daofind_file, \
