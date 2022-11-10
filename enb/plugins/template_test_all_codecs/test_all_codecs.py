@@ -146,7 +146,8 @@ if __name__ == '__main__':
         enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec)
 
     # Remove any unwanted classes from the analysis
-    excluded_names = ("abstract", "fapec", "v2f", "zstandard", "magli", "greenbook", "mhdc", "mhdc_pot")
+    excluded_names = ("abstract", "fapec", "v2f", "zstandard", "magli", "greenbook", "mhdc", "mhdc_pot",
+                      "jpegxl")
     
     codec_classes = set(c for c in codec_classes if not any(n in c.__name__.lower() for n in excluded_names))
     
