@@ -141,5 +141,37 @@ class LossyPhotometryExperiment(enb.icompression.LossyCompressionExperiment):
 
         original_photometry_df = raw_to_photometry_df(raw_path=original_raw_path)
         reconstructed_photometry_df = raw_to_photometry_df(raw_path=reconstructed_raw_path)
+        
+        xo=original_photometry_df.loc[:,"x"]
+        xr=reconstructed_photometry_df.loc[:,"x"]
+        yo=original_photometry_df.loc[:,"y"]
+        yr=reconstructed_photometry_df.loc[:,"y"]
+        mo=original_photometry_df.loc[:,"magnitude"]
+        mr=reconstructed_photometry_df.loc[:,"magnitude"]
 
+        n=0
+        magdiff=0
+        max_magdiff=0
+
+        for i in range(len(xr)):
+            for j in range(len(xo)):
+                if len(xo)== 1:
+                    pass
+                elif abs(xo[j]-xr[i]) < 0.5 and abs(yo[j]-yr[i]) < 0.5:
+                    magdiff=magdiff+abs(mo[j]-mr[i])
+                    diff=abs(mo[j]-mr[i])
+                    if diff > max_magdiff:
+                        max_magdiff=diff
+                    n=n+1
+                else:
+                    pass
+
+        false_negative=len(xo)-n
+        false_positive=len(xr)-n
+        
         row["photometry_object_count"] = len(reconstructed_photometry_df)
+        row["reconstructed_photometry_object_count"] = len(reconstructed_photometry_df)
+        row["recovered_objects"] = n
+        row["mean_magnitude_difference"] = magdiff/n
+        row["maximum_magnitude_difference"] = max_magdiff
+        row["F1_score"] = 2*n/(2*n+false_positive+false_negative)
