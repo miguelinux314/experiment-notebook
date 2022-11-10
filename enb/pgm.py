@@ -58,7 +58,7 @@ def read_ppm(input_path, byteorder='>'):
         buffer,
         dtype='u1' if int(maxval) < 256 else byteorder + 'u2',
         count=int(width) * int(height) * 3,
-        offset=len(header)).reshape((int(width), int(height), 3), order="F")
+        offset=len(header)).reshape((3, int(width), int(height)), order="F").swapaxes(0,2).swapaxes(0,1)
 
 
 def write_pgm(array, bytes_per_sample, output_path, byteorder=">"):
@@ -72,7 +72,7 @@ def write_pgm(array, bytes_per_sample, output_path, byteorder=">"):
     width, height = array.shape
     with open(output_path, "wb") as output_file:
         output_file.write(f"P5\n{width}\n{height}\n{(2 ** (8 * bytes_per_sample)) - 1}\n".encode("utf-8"))
-        array.swapaxes(0, 1).astype(f"{byteorder}u{bytes_per_sample}").tofile(output_file)
+        array.swapaxes(0, 1).swapaxes(0,2).astype(f"{byteorder}u{bytes_per_sample}").tofile(output_file)
 
 
 def write_ppm(array, bytes_per_sample, output_path, byteorder=">"):
