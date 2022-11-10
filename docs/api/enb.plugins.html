@@ -15,7 +15,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -32,7 +34,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.0
+                v0.4.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -47,8 +49,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
@@ -64,7 +67,7 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.html#enb-ml-module">enb.ml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel">enb.parallel module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel_ray">enb.parallel_ray module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
@@ -111,14 +114,44 @@
            <div itemprop="articleBody">
              
   <section id="enb-plugins-package">
-<h1>enb.plugins package<a class="headerlink" href="#enb-plugins-package" title="Permalink to this headline"></a></h1>
+<h1>enb.plugins package<a class="headerlink" href="#enb-plugins-package" title="Permalink to this heading"></a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="enb.plugins.plugin_fpack.html">enb.plugins.plugin_fpack package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack.fpack_codec">enb.plugins.plugin_fpack.fpack_codec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack.fpack_codec">enb.plugins.plugin_fpack.fpack_codec module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract.assert_valid_data_type"><code class="docutils literal notranslate"><span class="pre">FPACK_Abstract.assert_valid_data_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP"><code class="docutils literal notranslate"><span class="pre">FPACK_GZIP</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.__init__"><code class="docutils literal notranslate"><span class="pre">FPACK_GZIP.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.get_compression_params"><code class="docutils literal notranslate"><span class="pre">FPACK_GZIP.get_compression_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.get_decompression_params"><code class="docutils literal notranslate"><span class="pre">FPACK_GZIP.get_decompression_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.label"><code class="docutils literal notranslate"><span class="pre">FPACK_GZIP.label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.name"><code class="docutils literal notranslate"><span class="pre">FPACK_GZIP.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS"><code class="docutils literal notranslate"><span class="pre">FPACK_HCOMPRESS</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.__init__"><code class="docutils literal notranslate"><span class="pre">FPACK_HCOMPRESS.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.get_compression_params"><code class="docutils literal notranslate"><span class="pre">FPACK_HCOMPRESS.get_compression_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.get_decompression_params"><code class="docutils literal notranslate"><span class="pre">FPACK_HCOMPRESS.get_decompression_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.label"><code class="docutils literal notranslate"><span class="pre">FPACK_HCOMPRESS.label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.name"><code class="docutils literal notranslate"><span class="pre">FPACK_HCOMPRESS.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE"><code class="docutils literal notranslate"><span class="pre">FPACK_RICE</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.__init__"><code class="docutils literal notranslate"><span class="pre">FPACK_RICE.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.get_compression_params"><code class="docutils literal notranslate"><span class="pre">FPACK_RICE.get_compression_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.get_decompression_params"><code class="docutils literal notranslate"><span class="pre">FPACK_RICE.get_decompression_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.label"><code class="docutils literal notranslate"><span class="pre">FPACK_RICE.label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.name"><code class="docutils literal notranslate"><span class="pre">FPACK_RICE.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack">Module contents</a></li>
 </ul>
 </li>
@@ -126,10 +159,10 @@
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-enb.plugins.installable">
-<span id="enb-plugins-installable-module"></span><h2>enb.plugins.installable module<a class="headerlink" href="#module-enb.plugins.installable" title="Permalink to this headline"></a></h2>
+<span id="enb-plugins-installable-module"></span><h2>enb.plugins.installable module<a class="headerlink" href="#module-enb.plugins.installable" title="Permalink to this heading"></a></h2>
 <p>Installable interface used for plugins and templates.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable">
@@ -315,12 +348,12 @@ installable with name set to None is also excluded</p></li>
 
 </section>
 <section id="module-enb.plugins.plugin">
-<span id="enb-plugins-plugin-module"></span><h2>enb.plugins.plugin module<a class="headerlink" href="#module-enb.plugins.plugin" title="Permalink to this headline"></a></h2>
+<span id="enb-plugins-plugin-module"></span><h2>enb.plugins.plugin module<a class="headerlink" href="#module-enb.plugins.plugin" title="Permalink to this heading"></a></h2>
 <p>Tools define plugin installables.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><a class="headerlink" href="#enb.plugins.plugin.Plugin" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.installable.Installable</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Installable</span></code></a></p>
 <p>Plugins are self-contained, python modules that may assume enb is installed.</p>
 <ul class="simple">
 <li><p>They can be installed into your projects via the enb CLI (e.g., with <cite>enb plugin install &lt;name&gt; &lt;clone_dir&gt;</cite>),
@@ -393,7 +426,7 @@ is raised (plugins are intended to be self-contained, isolated python modules).<
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginJava</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginJava" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin.Plugin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.authors">
 <span class="sig-name descname"><span class="pre">authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginJava.authors" title="Permalink to this definition"></a></dt>
@@ -433,7 +466,7 @@ to be importable and usable. By default:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginMake</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginMake" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin.Plugin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
 <p>Plugin that assumes the existence of a valid Makefile in the installation folder,
 and uses it for building the plugin.</p>
 <dl class="py attribute">
@@ -474,13 +507,13 @@ to be importable and usable. By default:</p>
 
 </section>
 <section id="module-enb.plugins.template">
-<span id="enb-plugins-template-module"></span><h2>enb.plugins.template module<a class="headerlink" href="#module-enb.plugins.template" title="Permalink to this headline"></a></h2>
+<span id="enb-plugins-template-module"></span><h2>enb.plugins.template module<a class="headerlink" href="#module-enb.plugins.template" title="Permalink to this heading"></a></h2>
 <p>Tools to define Templates.</p>
 <p>Templates are very similar to plugins, but use jinja to transform <cite>.enbt</cite> template files upon installation.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.template.MetaTemplate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">MetaTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.MetaTemplate" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.InstallableMeta" title="enb.plugins.installable.InstallableMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.installable.InstallableMeta</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.InstallableMeta" title="enb.plugins.installable.InstallableMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstallableMeta</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.template.MetaTemplate.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.MetaTemplate.__init__" title="Permalink to this definition"></a></dt>
@@ -491,7 +524,7 @@ to be importable and usable. By default:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.template.Template">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">Template</span></span><a class="headerlink" href="#enb.plugins.template.Template" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.installable.Installable</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Installable</span></code></a></p>
 <p>Base class to define templates. Subclasses must be defined in the __plugin__.py file of the template’s
 source dir.</p>
 <ul class="simple">
@@ -571,7 +604,7 @@ a SyntaxError is raised.</p></li>
 
 </section>
 <section id="module-enb.plugins">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins" title="Permalink to this headline"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins" title="Permalink to this heading"></a></h2>
 <p>The core functionality of enb is extended by means of plugins and templates. These derive from Installable,
 a class that by default copies the Installable’s source contents and runs the subclass’ build() method.
 Python libraries available via pip can be defined for Installables, which are attempted to be satisfied before invoking

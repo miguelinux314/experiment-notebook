@@ -2,8 +2,8 @@
 
 .. include:: ./tag_definition.rst
 
-Data analysis and plotting with |enb|
-=====================================
+Result analysis and plotting with |enb|
+=======================================
 
 The :mod:`enb.aanalysis` module provides several classes to help you analyze and 
 visualize your results. These classes accept |DataFrame| instances, which can

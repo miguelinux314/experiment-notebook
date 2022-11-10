@@ -1107,12 +1107,18 @@ class ScalarNumericSummary(AnalyzerSummary):
                 raise ValueError(f"Invalid column name selection {repr(column_name)}. "
                                  f"Full selection: {repr(target_columns)}")
 
+            # Get the finite-only data from each column
+            finite_series = full_df[column_name].replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
+
+            if len(finite_series.values) == 0:
+                enb.logger.warn(f"Column {column_name} did not contain any finite value. "
+                                f"Analysis tables and plots will be meaningless.")
+
+            # Compute the global dynamic range of all input samples (before grouping) 
+            self.column_to_xmin_xmax[column_name] = (min(finite_series.values), max(finite_series.values)) \
+                if len(finite_series.values) > 0 else (0, 0)
             # Add columns that compute the summary information
             self.add_scalar_description_columns(column_name=column_name)
-
-            # Compute the global dynamic range of all input samples (before grouping)
-            finite_series = full_df[column_name].replace([np.inf, -np.inf], np.nan, inplace=False).dropna()
-            self.column_to_xmin_xmax[column_name] = min(finite_series.values), max(finite_series.values)
 
         self.move_render_columns_back()
 
@@ -1183,12 +1189,18 @@ class ScalarNumericSummary(AnalyzerSummary):
             row[f"{column_name}_avg"] = description_df["mean"]
             row[f"{column_name}_std"] = description_df["std"]
             row[f"{column_name}_median"] = description_df["50%"]
-        else:
+        elif len(finite_series.values) > 0:
             row[f"{column_name}_min"] = finite_series.values[0]
             row[f"{column_name}_max"] = finite_series.values[0]
             row[f"{column_name}_avg"] = finite_series.values[0]
             row[f"{column_name}_std"] = 0
             row[f"{column_name}_median"] = finite_series.values[0]
+        else:
+            row[f"{column_name}_min"] = 0
+            row[f"{column_name}_max"] = 0
+            row[f"{column_name}_avg"] = 0
+            row[f"{column_name}_std"] = 0
+            row[f"{column_name}_median"] = 0
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function that computes
@@ -1634,12 +1646,13 @@ class TwoNumericSummary(ScalarNumericSummary):
                     continue
                 self.add_scalar_description_columns(column_name=column_name)
 
-                try:
-                    self.column_to_xmin_xmax[column_name] = scipy.stats.describe(full_df[column_name].values).minmax
-                except FloatingPointError as ex:
-                    if len(full_df) == 1 or len(full_df[column_name].unique()) == 1:
-                        self.column_to_xmin_xmax[column_name] = (full_df[column_name][0], full_df[column_name][0])
-                    else:
+                if len(full_df) == 1 or len(full_df[column_name].unique()) == 1:
+                    self.column_to_xmin_xmax[column_name] = (full_df[column_name][0], full_df[column_name][0])
+                else:
+                    try:
+                        self.column_to_xmin_xmax[column_name] = scipy.stats.describe(
+                            full_df[column_name].values).minmax
+                    except FloatingPointError as ex:
                         enb.logger.error(f"column_name={column_name}")
                         enb.logger.error(f"full_df[column_name].values={full_df[column_name].values}")
                         raise ex

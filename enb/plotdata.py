@@ -857,7 +857,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             fig, group_axis_list = plt.subplots(
                 nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
                 ncols=1, sharex=True, sharey=combine_groups,
-                figsize=(fig_width, max(3, 0.5 * len(sorted_group_names) if fig_height is None else fig_height)))
+                figsize=(fig_width, max(3, 0.5 * len(sorted_group_names)) if fig_height is None else fig_height))
 
             if combine_groups:
                 group_axis_list = [group_axis_list]
@@ -932,7 +932,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
                 if y_min != y_max:
-                    group_axes.set_ylim(y_min, y_max)
+                    group_axes.set_ylim(y_min if not math.isinf(y_min) else None, 
+                                        y_max if not math.isinf(y_max) else None)
 
                 if semilog_x:
                     x_base = column_properties.semilog_x_base if column_properties is not None else 10

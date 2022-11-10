@@ -97,6 +97,11 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
         return ""
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        if self.param_dict["num_threads"] > 1 and not enb.config.options.report_wall_time:
+            enb.logger.warn("Careful! Measuring kakadu's process CPU time with multiple threads. "
+                            "Add `options.report_wall_time = True` to your script or "
+                            "invoke it with --report_wall_time to enable wall clock time measurements.")
+        
         return f"-i {original_path}*{original_file_info['component_count']}" \
                f"@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
                f"-o {compressed_path} -no_info -full -no_weights " \
@@ -118,8 +123,9 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                  f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f"-i {compressed_path} -o {reconstructed_path} -raw_components"
-
+        return f"-i {compressed_path} -o {reconstructed_path} -raw_components " \
+               f"-num_threads {self.param_dict['num_threads']}"
+    
     def compress(self, original_path, compressed_path, original_file_info=None):
         if self.param_dict['psnr'] is not None:
             with tempfile.NamedTemporaryFile() as tmp_file:
@@ -229,7 +235,8 @@ class KakaduMCT(Kakadu2D):
     """
 
     def __init__(self, ht=False, spatial_dwt_levels=5, spectral_dwt_levels=5, lossless=None,
-                 bit_rate=None, quality_factor=None, psnr=None, mct_offset=0):
+                 bit_rate=None, quality_factor=None, psnr=None, mct_offset=0,
+                 num_threads=0):
         """
         :param spectral_dwt_levels: number of spectral discrete wavelet transform levels. Must be between 0 and 32.
         :param mct_offset: integer offset subtracted from the input samples before compression. 
@@ -239,7 +246,8 @@ class KakaduMCT(Kakadu2D):
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
         assert mct_offset == int(mct_offset)
         Kakadu2D.__init__(self, ht=ht, spatial_dwt_levels=spatial_dwt_levels, lossless=lossless,
-                          bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr)
+                          bit_rate=bit_rate, quality_factor=quality_factor, psnr=psnr,
+                          num_threads=num_threads)
         self.param_dict["spectral_dwt_levels"] = spectral_dwt_levels
         self.param_dict["mct_offset"] = mct_offset
 

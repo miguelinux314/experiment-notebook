@@ -38,7 +38,11 @@ import tempfile
 import functools
 import deprecation
 
-from .. import default_base_dataset_dir, default_persistence_dir, calling_script_dir, is_enb_cli
+from .. import default_base_dataset_dir
+from .. import default_persistence_dir
+from .. import default_output_plots_dir
+from .. import default_analysis_dir
+from .. import calling_script_dir
 from .. import log
 from . import ini
 from . import singleton_cli as _singleton_cli
@@ -163,6 +167,13 @@ class ExecutionOptions:
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
 
     @OptionsBase.property(action="store_true")
+    def report_wall_time(self, value):
+        """If this flag is activated, the wall time instead of the CPU time is reported by default by 
+        tcall.get_status_output_time.
+        """
+        return bool(value)
+
+    @OptionsBase.property(action="store_true")
     def force_sanity_checks(self, value):
         """If this flag is used, extra sanity checks are performed by enb during the execution of this script.
         The trade-off for rare error condition detection is a slower execution time.
@@ -194,8 +205,7 @@ class DirOptions:
 
     @OptionsBase.property(action=_singleton_cli.ReadableDirAction, default=calling_script_dir)
     def project_root(self, value):
-        """If set, data paths relative to the invoked script's paths are stored instead of their
-        absolute path counterparts.
+        """Project root path. It should not normally be modified.
         """
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
@@ -275,9 +285,6 @@ class DirOptions:
         _singleton_cli.ReadableDirAction.assert_valid_value(value)
 
     # Output plots dir
-    default_output_plots_dir = os.path.join(calling_script_dir, "plots") \
-        if not is_enb_cli else "./plots"
-
     @OptionsBase.property(
         action=_singleton_cli.WritableOrCreableDirAction,
         default=default_output_plots_dir)
@@ -289,9 +296,6 @@ class DirOptions:
         return value
 
     # Output analysis dir
-    default_analysis_dir = os.path.join(calling_script_dir, "analysis") \
-        if not is_enb_cli else "./analysis"
-
     @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction, default=default_analysis_dir)
     def analysis_dir(self, value):
         """Directory to store analysis results.

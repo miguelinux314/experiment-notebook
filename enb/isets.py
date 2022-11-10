@@ -436,6 +436,28 @@ class QuantizedImageVersion(ImageVersionTable):
     def __init__(self, version_base_dir, qstep,
                  original_base_dir=None, csv_support_path=None, check_generated_files=True,
                  original_properties_table=None):
+        """
+        :param version_base_dir: path to the versioned base directory
+          (versioned directories preserve names and structure within
+          the base dir)
+          
+        :param qstep: quantization step of the uniform quantizer.
+
+        :param version_name: arbitrary name of this file version
+
+        :param original_base_dir: path to the original directory
+          (it must contain all indices requested later with self.get_df()).
+          If None, options.base_datset_dir is used
+
+        :param original_properties_table: instance of the file properties subclass
+          to be used when reading the original data to be versioned.
+          If None, a FilePropertiesTable is instanced automatically.
+
+        :param csv_support_path: path to the file where results (of the versioned data) are to be
+          long-term stored. If None, one is assigned by default based on options.persistence_dir.
+
+        :param check_generated_files: if True, the table checks that each call to version() produces
+          a file to output_path. Set to false to create arbitrarily named output files."""
         assert qstep == int(qstep)
         assert 1 <= qstep <= 65535
         qstep = int(qstep)
@@ -468,6 +490,14 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
 
     # No need to set  dataset_files_extension here, because get_default_target_indices is overwriten.
     def __init__(self, original_base_dir, version_base_dir):
+        """:param version_base_dir: path to the versioned base directory
+          (versioned directories preserve names and structure within
+          the base dir)
+
+        :param original_base_dir: path to the original directory
+          (it must contain all indices requested later with self.get_df()).
+          If None, options.base_datset_dir is used
+        """
         super().__init__(
             original_base_dir=original_base_dir,
             version_base_dir=version_base_dir,
@@ -612,6 +642,18 @@ class PNGCurationTable(enb.sets.FileVersionTable):
     dataset_files_extension = "png"
 
     def __init__(self, original_base_dir, version_base_dir, csv_support_path=None):
+        """
+        :param original_base_dir: path to the original directory
+          (it must contain all indices requested later with self.get_df()).
+          If None, options.base_datset_dir is used
+        
+        :param version_base_dir: path to the versioned base directory
+          (versioned directories preserve names and structure within
+          the base dir)
+
+        :param csv_support_path: path to the file where results (of the versioned data) are to be
+          long-term stored. If None, one is assigned by default based on options.persistence_dir.
+        """
         super().__init__(version_base_dir=version_base_dir,
                          version_name=self.__class__.__name__,
                          original_base_dir=original_base_dir,

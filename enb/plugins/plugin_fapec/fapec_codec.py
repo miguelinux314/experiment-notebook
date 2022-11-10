@@ -5,8 +5,6 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/05/25"
 
 import os
-
-import enb
 from enb import icompression
 
 

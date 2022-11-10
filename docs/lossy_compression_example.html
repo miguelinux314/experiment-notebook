@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -32,7 +34,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.0
+                v0.4.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,7 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression experiments</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Lossy Compression Experiment</a><ul>
@@ -62,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -95,12 +98,12 @@
            <div itemprop="articleBody">
              
   <section id="lossy-compression-experiment">
-<h1>Lossy Compression Experiment<a class="headerlink" href="#lossy-compression-experiment" title="Permalink to this headline"></a></h1>
+<h1>Lossy Compression Experiment<a class="headerlink" href="#lossy-compression-experiment" title="Permalink to this heading"></a></h1>
 <p>This page explains the general dynamics of using the <a class="reference internal" href="api/enb.html#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a> class.
 This class is a subclass of <a class="reference internal" href="api/enb.html#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a>, which performs compression, decompression
 and computes several distortion metrics on the reconstructed images (compared to the originals).</p>
 <section id="lossy-compression-template-installation">
-<h2>Lossy compression template installation<a class="headerlink" href="#lossy-compression-template-installation" title="Permalink to this headline"></a></h2>
+<h2>Lossy compression template installation<a class="headerlink" href="#lossy-compression-template-installation" title="Permalink to this heading"></a></h2>
 <p>Example code that serves as template for your lossy compression experiments can be installed
 via the following command line command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb install lossy-compression lc
@@ -116,20 +119,40 @@ enb plugin install vvc lc/plugins/vvc
 </div>
 </section>
 <section id="dataset-curation">
-<h2>Dataset curation<a class="headerlink" href="#dataset-curation" title="Permalink to this headline"></a></h2>
+<h2>Dataset curation<a class="headerlink" href="#dataset-curation" title="Permalink to this heading"></a></h2>
 <p>The same process of dataset curation as in <a class="reference internal" href="lossless_compression_example.html"><span class="doc">Lossless Compression Experiment</span></a> must be followed.
 In the template, a small sample is provide under <cite>./datasets/</cite> for ease of reference.</p>
 </section>
 <section id="codec-and-taskfamily-instantiation">
-<h2>Codec and TaskFamily instantiation<a class="headerlink" href="#codec-and-taskfamily-instantiation" title="Permalink to this headline"></a></h2>
+<h2>Codec and TaskFamily instantiation<a class="headerlink" href="#codec-and-taskfamily-instantiation" title="Permalink to this heading"></a></h2>
 <p>As for <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> , we want to define a list of codecs.
 In this case, we will normally normally use subclasses of <a class="reference internal" href="api/enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a> and <a class="reference internal" href="api/enb.html#enb.icompression.NearLosslessCodec" title="enb.icompression.NearLosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code></a>.</p>
 <p>In addition, to facilitate analysis and plotting, we will be defining families of codecs.
 To do so, we instantiate the class:<cite>enb.experiment.TaskFamily</cite> class and add the names of our codecs for each family
 as follows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<span class="kn">import</span> <span class="nn">plugins</span>
+
+<span class="c1"># Define the JPEG-LS family</span>
+<span class="n">jpegls_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="s2">&quot;JPEG-LS&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">max_error</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">17</span><span class="p">):</span>
+    <span class="n">codec</span> <span class="o">=</span> <span class="n">plugins</span><span class="o">.</span><span class="n">jpeg</span><span class="o">.</span><span class="n">JPEG_LS</span><span class="p">(</span><span class="n">max_error</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
+    <span class="n">jpegls_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">codec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">codec</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codec</span><span class="p">)</span>
+<span class="n">task_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jpegls_family</span><span class="p">)</span>
+
+<span class="c1"># Define the VVC family</span>
+<span class="n">vvc_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="s2">&quot;VVC&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">qp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="n">codec</span> <span class="o">=</span> <span class="n">plugins</span><span class="o">.</span><span class="n">vvc</span><span class="o">.</span><span class="n">VVC_lossy</span><span class="p">(</span><span class="n">qp</span><span class="o">=</span><span class="n">qp</span><span class="p">)</span>
+    <span class="n">vvc_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">codec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">codec</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codec</span><span class="p">)</span>
+<span class="n">task_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vvc_family</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="lossy-experiment-execution">
-<h2>Lossy experiment execution<a class="headerlink" href="#lossy-experiment-execution" title="Permalink to this headline"></a></h2>
+<h2>Lossy experiment execution<a class="headerlink" href="#lossy-experiment-execution" title="Permalink to this heading"></a></h2>
 <p>The <cite>lossless_compression_experiment.py</cite> template is now ready to be run. To do so, simply
 invoke it with:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./lc/lossy_compression_experiment_example.py
@@ -147,10 +170,10 @@ actual experiment execution</p>
 </div>
 </section>
 <section id="lossy-result-analysis-and-plotting">
-<h2>Lossy result analysis and plotting<a class="headerlink" href="#lossy-result-analysis-and-plotting" title="Permalink to this headline"></a></h2>
-<p>The remainder of the template is devoted to plotting results returned in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+916.gfcd94b3a1e)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> <cite>df</cite>.
+<h2>Lossy result analysis and plotting<a class="headerlink" href="#lossy-result-analysis-and-plotting" title="Permalink to this heading"></a></h2>
+<p>The remainder of the template is devoted to plotting results returned in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.0.0.dev0+463.g1e5fee83f9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> <cite>df</cite>.
 You can check
-the <a class="reference internal" href="analyzing_data.html"><span class="doc">Data analysis and plotting with enb</span></a> page for more information on how to analyze and plot
+the <a class="reference internal" href="analyzing_data.html"><span class="doc">Result analysis and plotting with enb</span></a> page for more information on how to analyze and plot
 results with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Selection of potentially relevant columns.</span>
 <span class="c1"># You can use any of the columns available in</span>
@@ -176,7 +199,6 @@ results with <a class="reference internal" href="api/enb.html#module-enb" title=
         <span class="n">options</span><span class="o">.</span><span class="n">analysis_dir</span><span class="p">,</span>
         <span class="s2">&quot;analysis_lossy/&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lossy_compression_analysis_scalar.csv&quot;</span><span class="p">))</span>
-<span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">main_alpha</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_x_std</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">sort_by_average</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_individual_samples</span> <span class="o">=</span> <span class="kc">False</span>
