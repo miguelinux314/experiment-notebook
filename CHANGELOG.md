@@ -16,6 +16,10 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.4.3
 
+- Added the classic JPEG codec to the jpeg plugin
+- Added the `apply(self, experiment, index, row)` to the `enb.experiment.ExperimentTask` class.
+  This method is now called by the `enb.experiment.Experiment` class and its subclasses
+  before computing any other row.
 - Updated kakadu and FAPEC codecs to specify the exact dynamic bit range instead of the nominal one,
   which allows compression of 17-28bps images stored in u32be and s32be formats.
 - Added support for 4-byte entropy and 4-byte entropy efficiency.
