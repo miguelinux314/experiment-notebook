@@ -15,7 +15,7 @@ class NDZIPPlugin(enb.plugins.PluginMake):
     
         - cmake
         - libboost-dev
-        - libboost-thread
-        - libboost-program-options
+        - libboost-thread-dev
+        - libboost-program-options-dev
     """
     tested_on = {"linux"}
