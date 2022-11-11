@@ -8,6 +8,7 @@ import os
 import collections
 import itertools
 import inspect
+import time
 
 import enb.atable
 import enb.sets
@@ -93,6 +94,7 @@ class Experiment(atable.ATable):
     """
     task_name_column = "task_name"
     task_label_column = "task_label"
+    task_apply_time_column = "task_apply_time"
     default_file_properties_table_class = sets.FilePropertiesTable
 
     def __init__(self, tasks,
@@ -227,19 +229,8 @@ class Experiment(atable.ATable):
         with enb.logger.verbose_context("Computing experiment results",
                                         sep="...\n",
                                         msg_after="successfully computed experiment results."):
-            try:
-                def apply_task(self, index, row):
-                    path, task = self.index_to_path_task(index)
-                    task.apply(self, index, row)
-                    row["__task_application"] = True
-
-                self.column_to_properties["__task_application"] = enb.atable.ColumnProperties(
-                    name="__task_application", fun=apply_task)
-                self.column_to_properties.move_to_end("__task_application", last=False)
-                df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
-                                    chunk_size=chunk_size)
-            finally:
-                del self.column_to_properties["__task_application"]
+            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
+                                chunk_size=chunk_size)
 
         # Add dataset columns
         with enb.logger.verbose_context("Merging dataset and experiment results"):
@@ -287,6 +278,13 @@ class Experiment(atable.ATable):
         property_dict = dict(self.dataset_info_table.column_to_properties)
         property_dict.update(self.column_to_properties)
         return property_dict
+
+    @atable.column_function(task_apply_time_column)
+    def set_task_apply_time(self, index, row):
+        path, task = self.index_to_path_task(index)
+        time_before = time.process_time()
+        task.apply(self, index, row)
+        row[_column_name] = max(0.0, time.process_time() - time_before)
 
     @atable.column_function(task_name_column)
     def set_task_name(self, index, row):
