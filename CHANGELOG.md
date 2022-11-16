@@ -26,6 +26,8 @@ format. Given a code initially developed for one `enb` version and then executed
 - The CCSDS codec now uses 1 sample per packet to allow automatic compression of wide images.
 - Cleanup of the lcnl codec wrapper.
 - Added the "image" category for image processing and compression plugins.
+- Added the `iraf_photometry` plugin that allows automatic photometry processing using IRAF
+  (IRAF must be installed separately).
 
 # Latest stable version
 
