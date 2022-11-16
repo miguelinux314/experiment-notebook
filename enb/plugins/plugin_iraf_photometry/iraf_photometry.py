@@ -130,11 +130,28 @@ def raw_to_photometry_df(
 class LossyPhotometryExperiment(enb.icompression.LossyCompressionExperiment):
     """Lossy compression experiment that extracts photometry-based distortion metrics.
     """
+    def __init__(self, codecs, threshold,
+             dataset_paths=None,
+             csv_experiment_path=None,
+             csv_dataset_path=None,
+             dataset_info_table=None,
+             overwrite_file_properties=False,
+             task_families=None):
 
-    # TODO: add photometry-based metrics
+             super().__init__(codecs=codecs, dataset_paths=None, csv_experiment_path=None, csv_dataset_path=None,
+             dataset_info_table=None, overwrite_file_properties=False, task_families=None)
+
+             self.threshold = threshold
+                
     @enb.atable.column_function([
-        enb.atable.ColumnProperties("photometry_object_count", label="Photometry object count", plot_min=0)
+        enb.atable.ColumnProperties("original_photometry_object_count", label="Original photometry object count", plot_min=0),
+        enb.atable.ColumnProperties("reconstructed_photometry_object_count", label="Reconstructed photometry object count", plot_min=0),
+        enb.atable.ColumnProperties("recovered_objects", label="Recovered objects", plot_min=0),
+        enb.atable.ColumnProperties("mean_magnitude_difference", label="Mean magnitude difference", plot_min=0),
+        enb.atable.ColumnProperties("maximum_magnitude_difference", label="Maximum magnitude difference", plot_min=0),
+        enb.atable.ColumnProperties("F1_score", label="F1 score", plot_mitrue_positive=0),
     ])
+    
     def set_photometry_columns(self, index, row):
         original_raw_path, codec = self.index_to_path_task(index)
         reconstructed_raw_path = self.codec_results.decompression_results.reconstructed_path
@@ -142,4 +159,30 @@ class LossyPhotometryExperiment(enb.icompression.LossyCompressionExperiment):
         original_photometry_df = raw_to_photometry_df(raw_path=original_raw_path)
         reconstructed_photometry_df = raw_to_photometry_df(raw_path=reconstructed_raw_path)
 
-        row["photometry_object_count"] = len(reconstructed_photometry_df)
+        x_position_original=original_photometry_df.loc[:,"x"]
+        x_position_reconstructed=reconstructed_photometry_df.loc[:,"x"]
+        y_position_original=original_photometry_df.loc[:,"y"]
+        y_position_reconstructed=reconstructed_photometry_df.loc[:,"y"]
+        magnitude_original=original_photometry_df.loc[:,"magnitude"]
+        magnitude_reconstructed=reconstructed_photometry_df.loc[:,"magnitude"]
+
+        true_positive=0
+        magnitude_difference=[]
+
+        for i in range(len(x_position_reconstructed)):
+            for j in range(len(x_position_original)):
+                if len(x_position_original)== 1:
+                    pass
+                elif abs(x_position_original[j]-x_position_reconstructed[i]) < self.threshold and abs(y_position_original[j]-y_position_reconstructed[i]) < self.threshold:
+                    magnitude_difference.append(abs(magnitude_original[j]-magnitude_reconstructed[i]))
+                    true_positive=true_positive+1
+
+        false_negative=len(x_position_original)-true_positive
+        false_positive=len(x_position_reconstructed)-true_positive
+
+        row["original_photometry_object_count"] = len(original_photometry_df)
+        row["reconstructed_photometry_object_count"] = len(reconstructed_photometry_df)
+        row["recovered_objects"] = true_positive
+        row["mean_magnitude_difference"] = statistics.mean(magnitude_difference)
+        row["maximum_magnitude_difference"] = max(magnitude_difference)
+        row["F1_score"] = 2*true_positive/(2*true_positive+false_positive+false_negative)
