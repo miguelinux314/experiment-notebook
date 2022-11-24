@@ -95,6 +95,36 @@ class TestIcompression(unittest.TestCase):
                                     (df["mse"], abs(error))
 
 
+class TestGeneralLosslessExperiment(unittest.TestCase):
+
+    def test_lossless(self):
+        """Test the enb.icompression.GeneralLosslessExperiment class
+        """
+        width = 37
+        height = 64
+        component_count = 7
+        original_constant = 10
+        dtype = ">u1"
+
+        fill_value = original_constant
+        array = np.full((width, height, component_count),
+                        fill_value=fill_value, dtype=dtype)
+        with tempfile.TemporaryDirectory() as tmp_dir, \
+                tempfile.TemporaryDirectory() as persistence_dir, \
+                tempfile.NamedTemporaryFile(
+                    dir=tmp_dir,
+                    suffix=f".exotic") as tmp_file:
+            isets.dump_array_bsq(array=array, file_or_path=tmp_file.name)
+            coc = ConstantOutputCodec(reconstruct_value=fill_value)
+            options.persistence_dir = persistence_dir
+            ce = icompression.GeneralLosslessExperiment(
+                codecs=[coc],
+                dataset_paths=[tmp_file.name],
+            )
+            df = ce.get_df()
+            assert (df["lossless_reconstruction"] == True).all()
+
+
 class TestSpectralAngle(unittest.TestCase):
     def get_expected_angles_deg(self, img_a, img_b):
         """Manually obtain the vector angles in degrees"""

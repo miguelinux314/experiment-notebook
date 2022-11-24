@@ -83,11 +83,17 @@ def kl_divergence(data1, data2):
     return kl_pq, kl_qp
 
 
-def file_path_to_geometry_dict(file_path, existing_dict=None):
+def file_path_to_geometry_dict(file_path, existing_dict=None, verify_file_size=True):
     """Return a dict with basic geometry dict based on the file path and the file size.
+    
+    The basename of the file should be something like u8be-3x1000x2000, where
+    u8be is the data format and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000 in this example). 
 
+    :param file_path: file path whose basename is used to determine the image geometry.
     :param existing_dict: if not None, the this dict is updated and then returned. If None,
       a new dictionary is created.
+    :param verify_file_size: if True, file_path is expected to be exactly Z*X*Y*byte_per_samples bytes.
+      Otherwise an exception is thrown. 
     """
     row = existing_dict if existing_dict is not None else {}
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
@@ -104,10 +110,11 @@ def file_path_to_geometry_dict(file_path, existing_dict=None):
 
         _file_path_to_datatype_dict(file_path, row)
 
-        assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
-            (file_path, os.path.getsize(file_path), width, height, component_count, row["bytes_per_sample"],
-             width * height * component_count * row["bytes_per_sample"])
-        assert row["samples"] == width * height * component_count
+        if verify_file_size:
+            assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
+                (file_path, os.path.getsize(file_path), width, height, component_count, row["bytes_per_sample"],
+                 width * height * component_count * row["bytes_per_sample"])
+            assert row["samples"] == width * height * component_count
     else:
         enb.logger.debug("Cannot determine image geometry "
                          f"from file name {os.path.basename(file_path)}")
@@ -193,9 +200,10 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
 
 class ImageGeometryTable(sets.FilePropertiesTable):
     """Basic properties table for images, including geometry.
-    Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
+    Allows automatic handling of tags in filenames, e.g., u16be-ZxYxX.
     """
     dataset_files_extension = "raw"
+    verify_file_size = True
 
     # Data type columns
 
@@ -284,7 +292,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         """Obtain the image's geometry (width, height and number of components)
         based on the filename tags (and possibly its size)
         """
-        file_path_to_geometry_dict(file_path=file_path, existing_dict=row)
+        file_path_to_geometry_dict(file_path=file_path, existing_dict=row, verify_file_size=self.verify_file_size)
 
 
 class ImagePropertiesTable(ImageGeometryTable):

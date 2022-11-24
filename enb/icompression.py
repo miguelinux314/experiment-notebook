@@ -658,7 +658,6 @@ class CompressionExperiment(experiment.Experiment):
     """
     dataset_files_extension = "raw"
     default_file_properties_table_class = enb.isets.ImagePropertiesTable
-    check_lossless = True
     row_wrapper_column_name = "_codec_wrapper"
 
     class CompressionDecompressionWrapper:
@@ -1039,12 +1038,23 @@ class CompressionExperiment(experiment.Experiment):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[indices_to_internal_loc(file_path)]
         for bytes in (1, 2, 4):
-            row[f"compression_efficiency_{bytes}byte_entropy"] = \
-                row.image_info_row[f"entropy_{bytes}B_bps"] * (row.image_info_row["size_bytes"] / bytes) \
-                / (row["compressed_size_bytes"] * 8)
+            column_name = f"compression_efficiency_{bytes}byte_entropy"
+            try:
+                row[column_name] = \
+                    row.image_info_row[f"entropy_{bytes}B_bps"] * (row.image_info_row["size_bytes"] / bytes) \
+                    / (row["compressed_size_bytes"] * 8)
+            except KeyError as ex:
+                enb.logger.warn(f"Could not find a column required to compute {column_name}: {repr(ex)}. "
+                                f"Setting to -1. This is likely due to persistence data produced with "
+                                f"version v0.4.2 or older of enb. It is recommended to delete persistence "
+                                f"data files and re-run the experiment.")
+                row[column_name] = -1
 
 
 class LosslessCompressionExperiment(CompressionExperiment):
+    """Lossless compression of raw image files. The experiment fails if lossless compression is not attained.
+    """
+
     @atable.redefines_column
     def set_comparison_results(self, index, row):
         path, task = self.index_to_path_task(index)
@@ -1057,6 +1067,9 @@ class LosslessCompressionExperiment(CompressionExperiment):
 
 
 class LossyCompressionExperiment(CompressionExperiment):
+    """Lossy compression of raw image files.
+    """
+
     @atable.column_function("mse", label="MSE", plot_min=0)
     def set_MSE(self, index, row):
         """Set the mean squared error of the reconstructed image.
@@ -1103,6 +1116,47 @@ class LossyCompressionExperiment(CompressionExperiment):
         max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
         row[_column_name] = 20 * math.log10(max_error / math.sqrt(row["mse"])) \
             if row["mse"] > 0 else float("inf")
+
+
+class GeneralLosslessExperiment(LosslessCompressionExperiment):
+    """Lossless compression experiment for general data contents.
+    """
+
+    class GenericFilePropertiesTable(enb.isets.ImagePropertiesTable):
+        """File properties table that considers the input path as a 1D, u8be array.
+        """
+        verify_file_size = False
+
+        @atable.column_function([
+            atable.ColumnProperties(name="sample_min", label="Min sample value (byte samples)"),
+            atable.ColumnProperties(name="sample_max", label="Max sample value (byte samples)")])
+        def set_sample_extrema(self, file_path, row):
+            """Set the minimum and maximum byte value extrema.
+            """
+            with open(file_path, "rb") as input_file:
+                contents = input_file.read()
+                row["sample_min"] = min(contents)
+                row["sample_max"] = max(contents)
+
+        @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
+        def set_bytes_per_sample(self, file_path, row):
+            row[_column_name] = 1
+
+        @atable.column_function([
+            atable.ColumnProperties(name="width", label="Width", plot_min=1),
+            atable.ColumnProperties(name="height", label="Height", plot_min=1),
+            atable.ColumnProperties(name="component_count", label="Components", plot_min=1),
+        ])
+        def set_image_geometry(self, file_path, row):
+            """Obtain the image's geometry (width, height and number of components)
+            based on the filename tags (and possibly its size)
+            """
+            row["height"] = 1
+            row["width"] = os.path.getsize(file_path)
+            row["component_count"] = 1
+
+    default_file_properties_table_class = GenericFilePropertiesTable
+    dataset_files_extension = ""
 
 
 class StructuralSimilarity(CompressionExperiment):
