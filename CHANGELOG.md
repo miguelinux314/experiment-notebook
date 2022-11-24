@@ -16,18 +16,26 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.4.3
 
+New features:
+
 - Added the classic JPEG codec to the jpeg plugin
 - Added the `apply(self, experiment, index, row)` to the `enb.experiment.ExperimentTask` class.
   This method is now called by the `enb.experiment.Experiment` class and its subclasses
   before computing any other row.
+- Added the `iraf_photometry` plugin that allows automatic photometry processing using IRAF
+  (IRAF must be installed separately).
+- Added the `enb.icompression.GeneralLosslessExperiment` that allows seamless execution of lossless compression 
+  codecs file without image geometry (e.g, general files). 
+
+Improvements: 
+
 - Updated kakadu and FAPEC codecs to specify the exact dynamic bit range instead of the nominal one,
   which allows compression of 17-28bps images stored in u32be and s32be formats.
 - Added support for 4-byte entropy and 4-byte entropy efficiency.
 - The CCSDS codec now uses 1 sample per packet to allow automatic compression of wide images.
 - Cleanup of the lcnl codec wrapper.
 - Added the "image" category for image processing and compression plugins.
-- Added the `iraf_photometry` plugin that allows automatic photometry processing using IRAF
-  (IRAF must be installed separately).
+
 
 # Latest stable version
 
