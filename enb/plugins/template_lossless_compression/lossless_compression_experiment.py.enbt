@@ -62,9 +62,7 @@ if __name__ == '__main__':
                     ("compression_time_seconds", "compression_efficiency_2byte_entropy")]
 
     # Scalar column analysis
-    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer(
-        # A scalar analysis summary is stored here
-        csv_support_path=os.path.join(options.analysis_dir, "lossless_compression_analysis_scalar.csv"))
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
     scalar_analyzer.get_df(
         # Mandatory params
         full_df=df,  # the dataframe produced by exp
@@ -77,9 +75,7 @@ if __name__ == '__main__':
     )
 
     # Two column joint analysis
-    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer(
-        csv_support_path=os.path.join(
-            options.analysis_dir, "lossless_compression_analysis_twocolumn.csv"))
+    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer()
     twoscalar_analyzer.get_df(
         full_df=df,
         target_columns=column_pairs,
