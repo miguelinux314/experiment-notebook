@@ -86,9 +86,7 @@ if __name__ == '__main__':
         ("bpppc", "decompression_time_seconds"),
     ]
     # Scalar column analysis
-    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer(
-        csv_support_path=os.path.join(
-            options.analysis_dir, "analysis_lossy/", "lossy_compression_analysis_scalar.csv"))
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
     scalar_analyzer.show_x_std = True
     scalar_analyzer.sort_by_average = True
     scalar_analyzer.show_individual_samples = False
@@ -108,9 +106,7 @@ if __name__ == '__main__':
         show_grid=True,
     )
 
-    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer(
-        csv_support_path=os.path.join(
-            options.analysis_dir, "analysis_lossy/", "lossy_compression_analysis_twocolumn.csv"))
+    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer()
     twoscalar_analyzer.show_individual_samples = False
     twoscalar_analyzer.show_global = False
     twoscalar_analyzer.get_df(
