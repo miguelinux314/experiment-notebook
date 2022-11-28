@@ -168,7 +168,7 @@ class Analyzer(enb.atable.ATable):
             # results being analyzed cannot be assumed to be the same as the previous invocation
             # of this analyzer's get_df method).
             os.remove(self.csv_support_path)
-            enb.logger.info(f"Removed {self.csv_support_path} to allow analysis with {self.__class__.__name__}.")
+            enb.logger.info(f"Removed {self.csv_support_path} to allow re-analysis with {self.__class__.__name__}.")
 
         srm = selected_render_modes
 
