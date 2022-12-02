@@ -115,9 +115,9 @@ def file_path_to_geometry_dict(file_path, existing_dict=None, verify_file_size=T
                 (file_path, os.path.getsize(file_path), width, height, component_count, row["bytes_per_sample"],
                  width * height * component_count * row["bytes_per_sample"])
             assert row["samples"] == width * height * component_count
-    else:
-        enb.logger.debug("Cannot determine image geometry "
-                         f"from file name {os.path.basename(file_path)}")
+    elif any(c not in row for c in ("width", "height", "component_count", "samples")):
+        enb.logger.debug("Cannot determine image geometry (X, Y, Z dimensions; number of samples) "
+                         f"from file name {os.path.basename(file_path)}.")
         return dict()
     return row
 
