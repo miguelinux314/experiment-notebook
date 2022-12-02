@@ -12,9 +12,7 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Latest stable version
-
-## v0.4.3
+# Latest stable version: v0.4.3
 
 New features:
 
@@ -37,8 +35,7 @@ Improvements:
 - Cleanup of the lcnl codec wrapper.
 - Added the "image" category for image processing and compression plugins.
 
-
-# Latest stable version
+# Version history
 
 ## 2022/10/26 v0.4.2
 
@@ -46,8 +43,6 @@ Improvements:
 - Fixed the lossy compression template plugin so that it does show data instead of using alpha=0.
 - Added the `file_version_example` plugin that demonstrates the use of `enb.sets.FileVersionTable`.
 - Created a documentation page about `enb.sets.FileVersionTable` and its subclasses.
-
-# Version history
 
 ## 2022/09/19 v0.4.1
 
