@@ -25,7 +25,8 @@ New features:
 - Added the `iraf_photometry` plugin that allows automatic photometry processing using IRAF
   (IRAF must be installed separately).
 - Added the `enb.icompression.GeneralLosslessExperiment` that allows seamless execution of lossless compression 
-  codecs file without image geometry (e.g, general files). 
+  codecs on files without needed to add image geometry information to their name nor change their extension
+  (e.g, general files). 
 
 Improvements: 
 
