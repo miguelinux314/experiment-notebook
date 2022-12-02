@@ -1146,6 +1146,8 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
             atable.ColumnProperties(name="width", label="Width", plot_min=1),
             atable.ColumnProperties(name="height", label="Height", plot_min=1),
             atable.ColumnProperties(name="component_count", label="Components", plot_min=1),
+            atable.ColumnProperties(name="big_endian"),
+            atable.ColumnProperties(name="float"),
         ])
         def set_image_geometry(self, file_path, row):
             """Obtain the image's geometry (width, height and number of components)
@@ -1154,6 +1156,8 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
             row["height"] = 1
             row["width"] = os.path.getsize(file_path)
             row["component_count"] = 1
+            row["big_endian"] = True
+            row["float"] = False
 
     default_file_properties_table_class = GenericFilePropertiesTable
     dataset_files_extension = ""
