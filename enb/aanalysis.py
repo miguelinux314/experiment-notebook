@@ -295,20 +295,28 @@ class Analyzer(enb.atable.ATable):
 
         # Wait until all rendering tasks are done while updating about progress
         with enb.logger.info_context(f"Rendering {len(render_ids)} plots with {self.__class__.__name__}...\n"):
-            with alive_progress.alive_bar(
-                    len(render_ids), manual=True, ctrl_c=False,
-                    title=f"{self.__class__.__name__}.get_df()",
-                    spinner="dots_waves2",
-                    disable=options.verbose <= 0,
-                    enrich_print=False) as bar:
-                bar(0)
-                for progress_report in enb.parallel.ProgressiveGetter(
+            if options.disable_progress_bar:
+                for pg in enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
-                        alive_bar=bar):
-                    enb.logger.debug(progress_report.report())
+                        alive_bar=None):
+                    enb.logger.debug(pg.report())
                 enb.parallel.get(render_ids)
-                bar(1)
+            else:
+                with alive_progress.alive_bar(
+                        len(render_ids), manual=True, ctrl_c=False,
+                        title=f"{self.__class__.__name__}.get_df()",
+                        spinner="dots_waves2",
+                        disable=options.verbose <= 0,
+                        enrich_print=False) as bar:
+                    bar(0)
+                    for pg in enb.parallel.ProgressiveGetter(
+                            id_list=render_ids,
+                            iteration_period=self.progress_report_period,
+                            alive_bar=bar):
+                        enb.logger.debug(pg.report())
+                    enb.parallel.get(render_ids)
+                    bar(1)
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,

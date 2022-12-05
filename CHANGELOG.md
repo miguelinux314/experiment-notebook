@@ -17,6 +17,8 @@ format. Given a code initially developed for one `enb` version and then executed
 ## v0.4.4
 
 - Fixed bug in `enb.plotdata` when the y limits were explicitly set to None.
+- Added the --disable_progress_bar flag to supress the display of the animated progress bar
+  (useful to minimize the stdout output volume, e.g., for logging purposes).
 
 # Latest stable version: 
 

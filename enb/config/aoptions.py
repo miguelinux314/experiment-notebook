@@ -196,6 +196,13 @@ class ExecutionOptions:
          when get_df() is invoked and computation is being processed in parallel.
          """
         return float(value)
+    
+    @OptionsBase.property(action="store_true")
+    def disable_progress_bar(self, value):
+        """If this flag is enabled, no progress bar is employed 
+        (useful to minimize the stdout volume of long-running experiments).
+        """
+        return bool(value)
 
 
 @_singleton_cli.property_class(OptionsBase)
