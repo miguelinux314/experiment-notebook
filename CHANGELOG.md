@@ -16,7 +16,7 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## v0.4.4
 
-- No changes yet
+- Fixed bug in `enb.plotdata` when the y limits were explicitly set to None.
 
 # Latest stable version: 
 
