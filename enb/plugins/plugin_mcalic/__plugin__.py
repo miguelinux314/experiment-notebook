@@ -1,3 +1,6 @@
+import os
+import stat
+import glob
 import enb.plugins
 
 
@@ -14,3 +17,11 @@ class MCALICPlugin(enb.plugins.Plugin):
          "Mcalic_dec_nl"),
     ]
     tested_on = {"linux"}
+    
+    @classmethod
+    def build(cls, installation_dir):
+        super().build(installation_dir)
+        for path in glob.glob(os.path.join(installation_dir, "*")):
+            if any(os.path.basename(path) in p for p in ("Mcalic_dec_nl", "Mcalic_enc_nl")):
+                os.chmod(path, stat.S_IREAD | stat.S_IEXEC)
+            
