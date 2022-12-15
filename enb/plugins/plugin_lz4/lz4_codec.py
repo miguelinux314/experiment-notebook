@@ -28,7 +28,7 @@ class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["big_endian"] and not original_file_info["float"], \
             f"Only big-endian integer samples are currently supported by {self.__class__.__name__}"
-        return f" -{self.param_dict['compression_level']} -k {original_path}  {compressed_path}"
+        return f"-{self.param_dict['compression_level']} {original_path}  {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        return f" -d -{self.param_dict['compression_level']}  {compressed_path} {reconstructed_path} "
+        return f"-d -{self.param_dict['compression_level']} {compressed_path} {reconstructed_path} "
