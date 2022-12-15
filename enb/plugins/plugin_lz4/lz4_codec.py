@@ -8,7 +8,7 @@ import os
 import enb.icompression
 
 
-class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
+class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.WrapperCodec):
     """Wrapper for the LZ4 codec
     All data types integer and float 16, 32, 64 can be compressed 
     """
