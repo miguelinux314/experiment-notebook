@@ -23,7 +23,7 @@ class Lz4(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, en
 
     @property
     def label(self):
-        return "LZ4"
+        return f"LZ4 level {self.param_dict['compression_level']}"
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert original_file_info["big_endian"] and not original_file_info["float"], \
