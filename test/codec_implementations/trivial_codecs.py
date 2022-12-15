@@ -5,8 +5,6 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
 
 import shutil
-import numpy as np
-
 import enb.icompression as icompression
 import enb.isets as isets
 
