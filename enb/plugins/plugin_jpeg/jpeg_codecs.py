@@ -173,6 +173,7 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
         tw = tarlite.TarliteWriter()
 
         total_compression_time = 0
+        maximum_memory_kb = -1
 
         with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
             stacked_size = 0
@@ -195,6 +196,7 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
                         compressed_path=stack_compressed_path,
                         original_file_info=original_file_info)
                     total_compression_time += compression_results.compression_time_seconds
+                    maximum_memory_kb = max(maximum_memory_kb, compression_results.maximum_memory_kb)
 
                     tw.add_file(input_path=stack_compressed_path)
             assert stacked_size == complete_array.shape[0] * complete_array.shape[1] * complete_array.shape[2], \
@@ -206,6 +208,7 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
             compression_results = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
             compression_results.compression_time_seconds = total_compression_time
+            compression_results.maximum_memory_kb = maximum_memory_kb
 
             return compression_results
 
@@ -216,6 +219,7 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
                               self.max_dimension_size // original_file_info["height"])
 
         total_decompression_time = 0
+        maximum_memory_kb = -1
         recovered_components = []
         with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
             tr.extract_all(output_dir_path=tmp_dir)
@@ -228,6 +232,7 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
                     decompression_results = super().decompress(
                         compressed_path=compressed_stack_path, reconstructed_path=stack_path.name)
                     total_decompression_time += decompression_results.decompression_time_seconds
+                    maximum_memory_kb = max(maximum_memory_kb, decompression_results.maximum_memory_kb)
 
                     assert os.path.isfile(stack_path.name)
                     stack_array = pgm.read_pgm(input_path=stack_path.name)
@@ -263,6 +268,7 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
         decompression_results = self.decompression_results_from_paths(
             compressed_path=compressed_path, reconstructed_path=reconstructed_path)
         decompression_results.decompression_time_seconds = total_decompression_time
+        decompression_results.maximum_memory_kb = maximum_memory_kb
         return decompression_results
 
     @property

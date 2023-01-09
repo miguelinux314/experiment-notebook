@@ -39,7 +39,8 @@ class CompressionResults:
     """
 
     def __init__(self, codec_name=None, codec_param_dict=None, original_path=None,
-                 compressed_path=None, side_info_files=[], compression_time_seconds=None):
+                 compressed_path=None, side_info_files=[], compression_time_seconds=None,
+                 maximum_memory_kb=None):
         """
         :param codec_name: codec's reported_name
         :param codec_param_dict: dictionary of parameters to the codec
@@ -47,6 +48,7 @@ class CompressionResults:
         :param compressed_path: path to the output compressed file
         :param side_info_files: list of file paths with side information
         :param compression_time_seconds: effective average compression time in seconds
+        :param maximum_memory_kb: maximum resident memory in kilobytes
         """
         self.codec_name = codec_name
         self.codec_param_dict = codec_param_dict
@@ -54,6 +56,7 @@ class CompressionResults:
         self.compressed_path = compressed_path
         self.side_info_files = side_info_files
         self.compression_time_seconds = compression_time_seconds
+        self.maximum_memory_kb = maximum_memory_kb
 
 
 class DecompressionResults:
@@ -63,7 +66,8 @@ class DecompressionResults:
     """
 
     def __init__(self, codec_name=None, codec_param_dict=None, compressed_path=None,
-                 reconstructed_path=None, side_info_files=[], decompression_time_seconds=None):
+                 reconstructed_path=None, side_info_files=[], decompression_time_seconds=None,
+                 maximum_memory_kb=None):
         """
         :param codec_name: codec's reported_name
         :param codec_param_dict: dictionary of parameters to the codec
@@ -71,6 +75,7 @@ class DecompressionResults:
         :param reconstructed_path: path to the reconstructed file after decompression
         :param side_info_files: list of file paths with side information
         :param decompression_time_seconds: effective decompression time in seconds
+        :param maximum_memory_kb: maximum resident memory in kilobytes
         """
         self.codec_name = codec_name
         self.codec_param_dict = codec_param_dict
@@ -78,6 +83,7 @@ class DecompressionResults:
         self.reconstructed_path = reconstructed_path
         self.side_info_files = side_info_files
         self.decompression_time_seconds = decompression_time_seconds
+        self.maximum_memory_kb = maximum_memory_kb
 
 
 class CompressionException(Exception):
@@ -269,9 +275,11 @@ class WrapperCodec(AbstractCodec):
         enb.logger.info(f"[{self.name}] Invocation: '{invocation}'")
         try:
             enb.logger.debug(f"[{self.name}] executing: {repr(invocation)}")
-            status, output, measured_time = tcall.get_status_output_time(invocation=invocation)
+            status, output, measured_time, memory_kb = \
+                tcall.get_status_output_time_memory(invocation=invocation)
             enb.logger.debug(
-                f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+                f"[{self.name}] Compression OK; invocation={invocation} - status={status}; "
+                f"output={output}; memory={memory_kb} KB")
         except tcall.InvocationError as ex:
             raise CompressionException(
                 original_path=original_path,
@@ -283,6 +291,7 @@ class WrapperCodec(AbstractCodec):
         compression_results = self.compression_results_from_paths(
             original_path=original_path, compressed_path=compressed_path)
         compression_results.compression_time_seconds = measured_time
+        compression_results.maximum_memory_kb = memory_kb
 
         if self.output_invocation_dir is not None:
             invocation_name = "invocation_compression_" \
@@ -295,7 +304,8 @@ class WrapperCodec(AbstractCodec):
                                       f"Invocation: {invocation}\n"
                                       f"Status: {status}\n"
                                       f"Output: {output}\n"
-                                      f"Measured time: {measured_time}")
+                                      f"Measured time: {measured_time} s\n"
+                                      f"Maximum resident memory: {memory_kb} kb")
 
         return compression_results
 
@@ -307,9 +317,11 @@ class WrapperCodec(AbstractCodec):
         invocation = f"{self.decompressor_path} {decompression_params}"
         enb.logger.info(f"WrapperCodec:decompress invocation={invocation}")
         try:
-            status, output, measured_time = tcall.get_status_output_time(invocation)
+            status, output, measured_time, memory_kb \
+                = tcall.get_status_output_time_memory(invocation)
             enb.logger.debug(
-                f"[{self.name}] Compression OK; invocation={invocation} - status={status}; output={output}")
+                f"[{self.name}] Compression OK; invocation={invocation} - status={status}; "
+                f"output={output}; memory={memory_kb} kb")
         except tcall.InvocationError as ex:
             raise DecompressionException(
                 compressed_path=compressed_path,
@@ -320,8 +332,8 @@ class WrapperCodec(AbstractCodec):
 
         decompression_results = self.decompression_results_from_paths(
             compressed_path=compressed_path, reconstructed_path=reconstructed_path)
-
         decompression_results.decompression_time_seconds = measured_time
+        decompression_results.maximum_memory_kb = memory_kb
 
         if self.output_invocation_dir is not None:
             invocation_name = "invocation_decompression_" \
@@ -336,7 +348,8 @@ class WrapperCodec(AbstractCodec):
                                       f"Invocation: {invocation}\n"
                                       f"Status: {status}\n"
                                       f"Output: {output}\n"
-                                      f"Measured time: {measured_time}")
+                                      f"Measured time: {measured_time} s\n"
+                                      f"Maximum resident size: {memory_kb} kb")
 
         return decompression_results
 
@@ -511,6 +524,7 @@ class FITSWrapperCodec(WrapperCodec):
             cr = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
             cr.compression_time_seconds = max(0, compression_results.compression_time_seconds)
+            cr.maximum_memory_kb = compression_results.maximum_memory_kb
             return cr
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
@@ -567,6 +581,7 @@ class PNGWrapperCodec(WrapperCodec):
                 original_path=original_path, compressed_path=compressed_path)
             cr.compression_time_seconds = max(
                 0, compression_results.compression_time_seconds)
+            cr.maximum_memory_kb = compression_results.maximum_memory_kb
             return cr
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
@@ -594,6 +609,7 @@ class PNGWrapperCodec(WrapperCodec):
             dr = self.decompression_results_from_paths(
                 compressed_path=compressed_path, reconstructed_path=reconstructed_path)
             dr.decompression_time_seconds = decompression_results.decompression_time_seconds
+            dr.maximum_memory_kb = decompression_results.maximum_memory_kb
 
 
 class PGMWrapperCodec(WrapperCodec):
@@ -625,6 +641,7 @@ class PGMWrapperCodec(WrapperCodec):
                 original_path=original_path, compressed_path=compressed_path)
             cr.compression_time_seconds = max(
                 0, compression_results.compression_time_seconds)
+            cr.maximum_memory_kb = compression_results.maximum_memory_kb
             return cr
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
@@ -702,6 +719,7 @@ class CompressionExperiment(experiment.Experiment):
                 os.remove(tmp_compressed_path)
                 try:
                     measured_times = []
+                    measured_memory = []
 
                     enb.logger.info(f"Executing compression {self.codec.name} on {self.file_path} "
                                     f"[{options.repetitions} times]")
@@ -730,6 +748,7 @@ class CompressionExperiment(experiment.Experiment):
                             self._compression_results.compression_time_seconds = wall_compression_time
 
                         measured_times.append(self._compression_results.compression_time_seconds)
+                        measured_memory.append(self._compression_results.maximum_memory_kb)
 
                         if self.compressed_copy_dir and repetition_index == 0:
                             output_path = os.path.join(self.compressed_copy_dir,
@@ -745,6 +764,9 @@ class CompressionExperiment(experiment.Experiment):
 
                     # The minimum time is kept, all other values are considered to have noise added by the OS
                     self._compression_results.compression_time_seconds = min(measured_times)
+                    # The maximum resident memory in kb is kept
+                    self._compression_results.maximum_memory_kb \
+                        = max(kb if kb is not None else -1 for kb in measured_memory)
                 except Exception as ex:
                     os.remove(tmp_compressed_path)
                     raise ex
@@ -765,6 +787,7 @@ class CompressionExperiment(experiment.Experiment):
                 os.remove(tmp_reconstructed_path)
                 try:
                     measured_times = []
+                    measured_memory = []
                     with enb.logger.info_context(
                             f"Executing decompression {self.codec.name} on {self.file_path} "
                             f"[{options.repetitions} times]"):
@@ -798,6 +821,7 @@ class CompressionExperiment(experiment.Experiment):
                                            f" {self.compression_results.original_path}")
 
                             measured_times.append(self._decompression_results.decompression_time_seconds)
+                            measured_memory.append(self._decompression_results.maximum_memory_kb)
 
                             if self.reconstructed_copy_dir and repetition_index == 0:
                                 output_path = os.path.join(self.reconstructed_copy_dir,
@@ -812,6 +836,8 @@ class CompressionExperiment(experiment.Experiment):
                                 os.remove(tmp_reconstructed_path)
                     # The minimum time is kept, the remaining values are assumed to contain noised added by the OS
                     self._decompression_results.decompression_time_seconds = min(measured_times)
+                    self._decompression_results.maximum_memory_kb \
+                        = max(kb if kb is not None else -1 for kb in measured_memory)
                 except Exception as ex:
                     os.remove(tmp_reconstructed_path)
                     raise ex
@@ -977,7 +1003,9 @@ class CompressionExperiment(experiment.Experiment):
         atable.ColumnProperties(name="decompression_time_seconds", label="Decompression time (s)", plot_min=0),
         atable.ColumnProperties(name="repetitions", label="Number of compression/decompression repetitions",
                                 plot_min=0),
-        atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256")
+        atable.ColumnProperties(name="compressed_file_sha256", label="Compressed file's SHA256"),
+        atable.ColumnProperties(name="compression_memory_kb", label="Compression memory usage (KB)", plot_min=0),
+        atable.ColumnProperties(name="decompression_memory_kb", label="Decompression memory usage (KB)", plot_min=0),
     ])
     def set_comparison_results(self, index, row):
         """Perform a compression-decompression cycle and store the comparison results
@@ -1006,6 +1034,8 @@ class CompressionExperiment(experiment.Experiment):
         row["compression_ratio"] = os.path.getsize(self.codec_results.compression_results.original_path) / row[
             "compressed_size_bytes"]
         row["compressed_file_sha256"] = compressed_file_sha256
+        row["compression_memory_kb"] = self.codec_results.compression_results.maximum_memory_kb
+        row["decompression_memory_kb"] = self.codec_results.decompression_results.maximum_memory_kb
 
     @atable.column_function("bpppc", label="Compressed data rate (bpppc)", plot_min=0)
     def set_bpppc(self, index, row):
