@@ -19,7 +19,7 @@ class InvocationError(Exception):
     pass
 
 
-def get_status_output_time(invocation, expected_status_value=0, wall=None):
+def get_status_output_time_memory(invocation, expected_status_value=0, wall=None):
     """Run invocation, and return its status, output, and total
     (wall or user+system) time in seconds.
 
@@ -27,8 +27,8 @@ def get_status_output_time(invocation, expected_status_value=0, wall=None):
       an InvocationError is raised.
     :param wall: if True, execution wall time is returned. If False, user+system CPU time is returned.
       (both in seconds). If None, the value of enb.config.options.report_wall_time is used.
-      
-    :return: status, output, time
+
+    :return: status, output, time, used_memory_kb
     """
     if wall is None:
         wall = options.report_wall_time
@@ -39,7 +39,7 @@ def get_status_output_time(invocation, expected_status_value=0, wall=None):
         time_command = "/usr/bin/time"
 
     if os.path.isfile(time_command):
-        invocation = f"{time_command} -f 'u%U@s%S' {invocation}"
+        invocation = f"{time_command} -f 'u%U@s%S@m%M' {invocation}"
     else:
         invocation = f"{invocation}"
         wall = True
@@ -52,16 +52,32 @@ def get_status_output_time(invocation, expected_status_value=0, wall=None):
     output = "\n".join(output_lines[:-1] if not wall else output_lines)
     if expected_status_value is not None and status != expected_status_value:
         raise InvocationError(
-            f"status={status} != {expected_status_value}.\nInput=[{invocation}].\nOutput=[{output}]".format(
-                status, invocation, output))
+            f"status={status} != {expected_status_value}.\nInput=[{invocation}].\nOutput=[{output}]")
 
     if wall:
         measured_time = wall_time_after - wall_time_before
+        measured_memory_kb = None
     else:
-        m = re.fullmatch(r"u(\d+\.\d+)@s(\d+\.\d+)", output_lines[-1])
+        m = re.fullmatch(r"u(\d+\.\d+)@s(\d+\.\d+)@m(\d+)", output_lines[-1])
         if m is not None:
             measured_time = float(m.group(1)) + float(m.group(2))
+            measured_memory_kb = int(m.group(3))
         else:
             raise InvocationError(f"Output {output_lines} did not contain a valid time signature")
 
-    return status, output, measured_time
+    return status, output, measured_time, measured_memory_kb
+
+
+def get_status_output_time(invocation, expected_status_value=0, wall=None):
+    """Run invocation, and return its status, output, and total
+    (wall or user+system) time in seconds.
+
+    :param expected_status_value: if not None, status must be equal to this value or
+      an InvocationError is raised.
+    :param wall: if True, execution wall time is returned. If False, user+system CPU time is returned.
+      (both in seconds). If None, the value of enb.config.options.report_wall_time is used.
+
+    :return: status, output, time
+    """
+    return get_status_output_time_memory(
+        invocation=invocation, expected_status_value=expected_status_value, wall=wall)[:3]
