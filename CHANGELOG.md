@@ -12,9 +12,11 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version
+# Latest stable version:
 
-## v0.4.4
+## 2023/01/16 v0.4.4
+
+Small improvements:
 
 - Fixed bug in `enb.plotdata` when the y limits were explicitly set to None.
 - Added the --disable_progress_bar flag to supress the display of the animated progress bar
@@ -22,7 +24,7 @@ format. Given a code initially developed for one `enb` version and then executed
   headless and virtualized platforms.
 - Added compression/decompression resident memory size for WrapperCodec subclasses.
 
-# Latest stable version: 
+# Version history
 
 ## 2022/12/02 v0.4.3
 
@@ -46,8 +48,6 @@ Improvements:
 - The CCSDS codec now uses 1 sample per packet to allow automatic compression of wide images.
 - Cleanup of the lcnl codec wrapper.
 - Added the "image" category for image processing and compression plugins.
-
-# Version history
 
 ## 2022/10/26 v0.4.2
 
