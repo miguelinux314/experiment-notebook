@@ -1142,7 +1142,7 @@ class ATable(metaclass=MetaTable):
                         id_list=pending_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=None):
-                    enb.logger.debug(pg.report())
+                    pass
                 computed_series = enb.parallel.get(pending_ids)
             else:
                 with alive_progress.alive_bar(
@@ -1156,7 +1156,7 @@ class ATable(metaclass=MetaTable):
                             id_list=pending_ids,
                             iteration_period=self.progress_report_period,
                             alive_bar=bar):
-                        enb.logger.debug(pg.report())
+                        pass
                     computed_series = enb.parallel.get(pending_ids)
                     bar(1)
 

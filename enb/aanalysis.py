@@ -300,7 +300,7 @@ class Analyzer(enb.atable.ATable):
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=None):
-                    enb.logger.debug(pg.report())
+                    pass
                 enb.parallel.get(render_ids)
             else:
                 with alive_progress.alive_bar(
@@ -314,7 +314,7 @@ class Analyzer(enb.atable.ATable):
                             id_list=render_ids,
                             iteration_period=self.progress_report_period,
                             alive_bar=bar):
-                        enb.logger.debug(pg.report())
+                        pass
                     enb.parallel.get(render_ids)
                     bar(1)
 
