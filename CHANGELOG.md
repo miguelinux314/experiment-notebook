@@ -20,7 +20,7 @@ format. Given a code initially developed for one `enb` version and then executed
 - Added the --disable_progress_bar flag to supress the display of the animated progress bar
   (useful to minimize the stdout output volume, e.g., for logging purposes). This helps executing enb in
   headless and virtualized platforms.
-- Added compression/decompression resident memory size for WrapperCodec subclasses
+- Added compression/decompression resident memory size for WrapperCodec subclasses.
 
 # Latest stable version: 
 
