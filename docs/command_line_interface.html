@@ -102,7 +102,7 @@ with enb:</p>
 <h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.3 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.5 ] ................
 
 usage: enb [-h] {plugin,show,help} ...
 
@@ -130,9 +130,9 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.3 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.4.5 ] ................
 
-Showing 41 plugins.
+Showing 43 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
 Add -v for extra information on the listed plugins.
 
@@ -158,10 +158,12 @@ Add -v for extra information on the listed plugins.
           iraf_photometry :: Extra photometry information from image files.
                      jpeg :: Reference JPEG and JPEG-LS implementation.
                    jpegxl :: Wrapper for a reference JPEG-XL implementation.
+                   jpegxs :: Reference implementation of the JPEG XS codec.
                    kakadu :: Wrappers for Kakadu JPEG 2000 (privative).
                      lcnl :: Wrappers for LCNL CCSDS 123.0-B-2 (privative).
      lossless-compression :: Template for lossless compression experiments.
         lossy-compression :: Template for lossy compression experiments.
+                    lpaq8 :: Implementation of the LPAQ8 algorithm.
                       lz4 :: Wrapper for a LZ4 codec.
                    marlin :: Marlin-based image compressor.
              matplotlibrc :: Copy matplotlib&#39;s default rc file into the destination directory.
@@ -181,12 +183,12 @@ Add -v for extra information on the listed plugins.
 The following plugin tags have been defined and can be used for filtering:
 
   - documentation    (  7 plugins) Documentation examples referenced in the user manual.
-  - codec            ( 28 plugins) Data compression/decompression class definitions.
-  - data compression ( 33 plugins) Data compression tools.
+  - codec            ( 30 plugins) Data compression/decompression class definitions.
+  - data compression ( 35 plugins) Data compression tools.
   - template         ( 11 plugins) Templates formatteable into the installation dir.
   - project          (  8 plugins) Project templates, including configuration files.
   - test             (  1  plugin) Plugins for testing purposes.
-  - image            ( 17 plugins) Tools for image processing (including compression and analysis).
+  - image            ( 19 plugins) Tools for image processing (including compression and analysis).
   - privative        (  6 plugins) Plugins requiring additional privative software.
 
 Run with -v for authorship and additional information, with -h for full help.
@@ -246,6 +248,7 @@ options. An example option of this is shown next:</p>
                          [--force_sanity_checks]
                          [--selected_columns SELECTED_COLUMNS [SELECTED_COLUMNS ...]]
                          [--progress_report_period PROGRESS_REPORT_PERIOD]
+                         [--disable_progress_bar]
                          [--project_root PROJECT_ROOT]
                          [--base_dataset_dir BASE_DATASET_DIR]
                          [--persistence_dir PERSISTENCE_DIR]
@@ -341,6 +344,10 @@ Execution Options:
                         report updates, when get_df() is invoked and
                         computation is being processed in parallel. (default:
                         1)
+  --disable_progress_bar
+                        If this flag is enabled, no progress bar is employed
+                        (useful to minimize the stdout volume of long-running
+                        experiments). (default: False)
 
 Dir Options:
   Options regarding default data directories.
