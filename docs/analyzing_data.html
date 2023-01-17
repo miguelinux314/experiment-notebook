@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Image compression experiments" href="image_compression.html" />
+    <link rel="next" title="Image compression and manipulation" href="image_compression.html" />
     <link rel="prev" title="Experiments = data + tasks" href="experiments.html" /> 
 </head>
 
@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.3
+                v0.4.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -90,7 +90,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
@@ -126,7 +126,7 @@
   <section id="result-analysis-and-plotting-with-enb">
 <h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.0.0.dev0+615.ge7a5c9295f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.0.0.dev0+1208.gc426dc0d8a)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -495,7 +495,7 @@ two parameter configurations: A1 and A2, while algorithm B is to be run with con
 In this case, two families would be created, e.g., with labels “Algorithm A” and “Algorithm B”,
 with 2 and 4 tasks in them.</p>
 <p>In the following figure, an example with 6 algorithms, each with different configurations
-that affect their “Compressed data rate”. Please see the <a class="reference internal" href="image_compression.html"><span class="doc">Image compression experiments</span></a> page for a full
+that affect their “Compressed data rate”. Please see the <a class="reference internal" href="image_compression.html"><span class="doc">Image compression and manipulation</span></a> page for a full
 experiment that uses task families and produces plots like the one in the figure.</p>
 <figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png" src="_images/TwoNumericAnalyzer_bpppc__psnr_dr_groupby-family_label_line.png" />
@@ -917,7 +917,7 @@ Matplotlib <a class="reference external" href="https://matplotlib.org/stable/tut
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="experiments.html" class="btn btn-neutral float-left" title="Experiments = data + tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="image_compression.html" class="btn btn-neutral float-right" title="Image compression experiments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="image_compression.html" class="btn btn-neutral float-right" title="Image compression and manipulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

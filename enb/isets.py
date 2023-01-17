@@ -86,8 +86,9 @@ def kl_divergence(data1, data2):
 def file_path_to_geometry_dict(file_path, existing_dict=None, verify_file_size=True):
     """Return a dict with basic geometry dict based on the file path and the file size.
     
-    The basename of the file should be something like u8be-3x1000x2000, where
-    u8be is the data format and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000 in this example). 
+        The basename of the file should contain something like u8be-3x1000x2000, where
+        u8be is the data format (unsigned, 8 bits per sample, big endian) 
+        and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000 in this example). 
 
     :param file_path: file path whose basename is used to determine the image geometry.
     :param existing_dict: if not None, the this dict is updated and then returned. If None,
@@ -697,10 +698,25 @@ def load_array_bsq(file_or_path, image_properties_row=None,
       or a file open for reading (typically with "b" mode).
     :param image_properties_row: if not None, it shall be a dict-like object. The
       width, height, component_count, bytes_per_sample, signed, big_endian and float
-      keys should be present to determine the read parameters. The remaining arguments overwrite
+      keys should be present to determine the read parameters. If dtype is provided, then 
+      bytes_per_sample, big_endian and float are not used. 
+      The remaining arguments overwrite
       those defined in image_properties_row (if image_properties_row is not None and if present).
-      If None, image geometry is attempted to be obtained from the image path. If this fails,
-      none of the remaining parameters can be None.
+      
+      If image_properties_row is None and any of (width, height, component_count, dtype) is None,
+      the image geometry is required to be in the filename as a name tag.
+      These tags, *e.g.,* `u8be-3x600x800` inform `enb` of all the required geometry.
+      The format of these tags (which can appear anywhere in the filename) is:
+      
+         - `u` or `s` for unsigned and signed, respectively
+         - the number of bits per sample (typically, 8, 16, 32 or 64)
+         - `be` or `le` for big-endian and little-endian formats, respectively
+         - `ZxYxX`, where `Z` is the number of spectral compoments (3 in the example),
+           `X` the width (number of columns, 800 in the example)
+           and `Y` the height (number of rows, 600 in the example).  
+    
+      If image_properties_row is not None, then the following parameters must not be None:       
+        
     :param width: if not None, force the read to assume this image width
     :param height: if not None, force the read to assume this image height
     :param component_count: if not None, force the read to assume this number of components (bands)
