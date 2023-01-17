@@ -29,7 +29,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.3
+                v0.4.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,7 +45,7 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
@@ -228,6 +228,8 @@
         <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.__init__">(enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS method)</a>
 </li>
         <li><a href="api/enb.plugins.plugin_fpack.html#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.__init__">(enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE method)</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.__init__">(enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment method)</a>
 </li>
         <li><a href="api/enb.plugins.html#enb.plugins.template.MetaTemplate.__init__">(enb.plugins.template.MetaTemplate method)</a>
 </li>
@@ -436,8 +438,6 @@
 </li>
       <li><a href="api/enb.html#enb.parallel.chdir_project_root">chdir_project_root() (in module enb.parallel)</a>
 </li>
-      <li><a href="api/enb.html#enb.icompression.CompressionExperiment.check_lossless">check_lossless (enb.icompression.CompressionExperiment attribute)</a>
-</li>
       <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.ValidationAction.check_valid_value">check_valid_value() (enb.config.singleton_cli.ValidationAction class method)</a>
@@ -503,6 +503,10 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.CompressionExperiment.column_to_properties">(enb.icompression.CompressionExperiment attribute)</a>
 </li>
+        <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.column_to_properties">(enb.icompression.GeneralLosslessExperiment attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable.column_to_properties">(enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable attribute)</a>
+</li>
         <li><a href="api/enb.html#enb.icompression.LosslessCompressionExperiment.column_to_properties">(enb.icompression.LosslessCompressionExperiment attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.column_to_properties">(enb.icompression.LossyCompressionExperiment attribute)</a>
@@ -540,10 +544,10 @@
         <li><a href="api/enb.html#enb.sets.FileVersionTable.column_to_properties">(enb.sets.FileVersionTable attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/enb.html#enb.sets.FileVersionTable.column_version_name">column_version_name() (enb.sets.FileVersionTable method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.sets.FileVersionTable.column_version_name">column_version_name() (enb.sets.FileVersionTable method)</a>
+</li>
       <li><a href="api/enb.html#enb.atable.ColumnFailedError">ColumnFailedError</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.columnname_to_labels">columnname_to_labels() (in module enb.aanalysis)</a>
@@ -675,6 +679,8 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.CompressionExperiment.dataset_files_extension">(enb.icompression.CompressionExperiment attribute)</a>
 </li>
+        <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.dataset_files_extension">(enb.icompression.GeneralLosslessExperiment attribute)</a>
+</li>
         <li><a href="api/enb.html#enb.isets.HistogramFullnessTable1Byte.dataset_files_extension">(enb.isets.HistogramFullnessTable1Byte attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.HistogramFullnessTable2Bytes.dataset_files_extension">(enb.isets.HistogramFullnessTable2Bytes attribute)</a>
@@ -735,6 +741,8 @@
       <ul>
         <li><a href="api/enb.html#enb.icompression.CompressionExperiment.default_file_properties_table_class">(enb.icompression.CompressionExperiment attribute)</a>
 </li>
+        <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.default_file_properties_table_class">(enb.icompression.GeneralLosslessExperiment attribute)</a>
+</li>
       </ul></li>
       <li><a href="api/enb.config.html#enb.config.aoptions.LoggingOptions.default_print_level">default_print_level() (enb.config.aoptions.LoggingOptions method)</a>
 </li>
@@ -750,11 +758,13 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.DirOptions">DirOptions (class in enb.config.aoptions)</a>
 </li>
+      <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.disable_progress_bar">disable_progress_bar() (enb.config.aoptions.ExecutionOptions method)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RayOptions.disable_swap">disable_swap() (enb.config.aoptions.RayOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.parallel_ray.RemoteNode.disconnect">disconnect() (enb.parallel_ray.RemoteNode method)</a>
 </li>
-      <li><a href="api/enb.html#enb.isets.dump_array_bsq">dump_array_bsq() (in module enb.isets)</a>
+      <li><a href="api/enb.html#enb.isets.dump_array_bsq">dump_array_bsq() (in module enb.isets)</a>, <a href="image_manipulation.html#enb.isets.dump_array_bsq">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -888,8 +898,6 @@
         <li><a href="api/enb.plugins.html#module-enb.plugins">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins.installable
 
@@ -897,6 +905,8 @@
         <li><a href="api/enb.plugins.html#module-enb.plugins.installable">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins.plugin
 
@@ -930,6 +940,13 @@
 
       <ul>
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.plugins.plugin_iraf_photometry.iraf_photometry_slave
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">module</a>
 </li>
       </ul></li>
       <li>
@@ -1032,6 +1049,8 @@
 </li>
       <li><a href="api/enb.html#enb.isets.FitsVersionTable.fits_extension">fits_extension (enb.isets.FitsVersionTable attribute)</a>
 </li>
+      <li><a href="api/enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.fits_to_csv">fits_to_csv() (in module enb.plugins.plugin_iraf_photometry.iraf_photometry_slave)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.FitsVersionTable">FitsVersionTable (class in enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.FITSWrapperCodec">FITSWrapperCodec (class in enb.icompression)</a>
@@ -1056,6 +1075,10 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment">GeneralLosslessExperiment (class in enb.icompression)</a>
+</li>
+      <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable">GeneralLosslessExperiment.GenericFilePropertiesTable (class in enb.icompression)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.GeneralOptions">GeneralOptions (class in enb.config.aoptions)</a>
 </li>
       <li><a href="api/enb.html#enb.parallel.FallbackFuture.get">get() (enb.parallel.FallbackFuture method)</a>
@@ -1190,6 +1213,8 @@
 </li>
       <li><a href="api/enb.html#enb.tcall.get_status_output_time">get_status_output_time() (in module enb.tcall)</a>
 </li>
+      <li><a href="api/enb.html#enb.tcall.get_status_output_time_memory">get_status_output_time_memory() (in module enb.tcall)</a>
+</li>
       <li><a href="api/enb.html#enb.icompression.GiciLibHelper">GiciLibHelper (class in enb.icompression)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aini.Ini.global_ini_path">global_ini_path (enb.config.aini.Ini attribute)</a>
@@ -1244,8 +1269,6 @@
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.import_all_installables">import_all_installables() (in module enb.plugins.installable)</a>
 </li>
-      <li><a href="api/enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.import_pyraf">import_pyraf() (in module enb.plugins.plugin_iraf_photometry.iraf_photometry)</a>
-</li>
       <li><a href="api/enb.html#enb.sets.FilePropertiesTable.index_name">index_name (enb.sets.FilePropertiesTable attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.index_to_path_task">index_to_path_task() (enb.experiment.Experiment method)</a>
@@ -1272,8 +1295,6 @@
 </li>
       <li><a href="api/enb.html#enb.parallel_ray.init_ray">init_ray() (in module enb.parallel_ray)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.install">install() (enb.plugins.installable.Installable class method)</a>
 
       <ul>
@@ -1284,6 +1305,8 @@
         <li><a href="api/enb.plugins.html#enb.plugins.installable.install">(in module enb.plugins.installable)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable">Installable (class in enb.plugins.installable)</a>
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.InstallableMeta.installable_file_name">installable_file_name (enb.plugins.installable.InstallableMeta attribute)</a>
@@ -1394,7 +1417,7 @@
 </li>
       <li><a href="api/enb.html#enb.icompression.LittleEndianWrapper">LittleEndianWrapper (class in enb.icompression)</a>
 </li>
-      <li><a href="api/enb.html#enb.isets.load_array_bsq">load_array_bsq() (in module enb.isets)</a>
+      <li><a href="api/enb.html#enb.isets.load_array_bsq">load_array_bsq() (in module enb.isets)</a>, <a href="image_manipulation.html#enb.isets.load_array_bsq">[1]</a>
 </li>
       <li><a href="api/enb.html#enb.atable.ATable.load_saved_df">load_saved_df() (enb.atable.ATable method)</a>
 </li>
@@ -1539,6 +1562,8 @@
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">enb.plugins.plugin_iraf_photometry</a>
 </li>
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave</a>
 </li>
         <li><a href="api/enb.plugins.html#module-enb.plugins.template">enb.plugins.template</a>
 </li>
@@ -1939,8 +1964,12 @@
 </li>
       <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_byte_value_extrema">set_byte_value_extrema() (enb.isets.ImagePropertiesTable method)</a>
 </li>
-      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_bytes_per_sample">set_bytes_per_sample() (enb.isets.ImageGeometryTable method)</a>
+      <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable.set_bytes_per_sample">set_bytes_per_sample() (enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_bytes_per_sample">(enb.isets.ImageGeometryTable method)</a>
 </li>
+      </ul></li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_column_dtype">set_column_dtype() (enb.isets.ImageGeometryTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.MetaTable.set_column_mro">set_column_mro() (enb.atable.MetaTable static method)</a>
@@ -1985,8 +2014,12 @@
 </li>
       <li><a href="api/enb.html#enb.isets.HistogramFullnessTable4Bytes.set_histogram_fullness_4bytes">set_histogram_fullness_4bytes() (enb.isets.HistogramFullnessTable4Bytes method)</a>
 </li>
-      <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_image_geometry">set_image_geometry() (enb.isets.ImageGeometryTable method)</a>
+      <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable.set_image_geometry">set_image_geometry() (enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_image_geometry">(enb.isets.ImageGeometryTable method)</a>
 </li>
+      </ul></li>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_MSE">set_MSE() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.set_options">set_options() (in module enb.config.aoptions)</a>
@@ -2007,8 +2040,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.isets.SampleDistributionTable.set_sample_distribution">set_sample_distribution() (enb.isets.SampleDistributionTable method)</a>
 </li>
-      <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_sample_extrema">set_sample_extrema() (enb.isets.ImagePropertiesTable method)</a>
+      <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable.set_sample_extrema">set_sample_extrema() (enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.isets.ImagePropertiesTable.set_sample_extrema">(enb.isets.ImagePropertiesTable method)</a>
 </li>
+      </ul></li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_samples">set_samples() (enb.isets.ImageGeometryTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarNumericSummary.set_scalar_description">set_scalar_description() (enb.aanalysis.ScalarNumericSummary method)</a>
@@ -2018,6 +2055,8 @@
       <li><a href="api/enb.html#enb.icompression.SpectralAngleTable.set_spectral_distances">set_spectral_distances() (enb.icompression.SpectralAngleTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.StructuralSimilarity.set_StructuralSimilarity">set_StructuralSimilarity() (enb.icompression.StructuralSimilarity method)</a>
+</li>
+      <li><a href="api/enb.html#enb.experiment.Experiment.set_task_apply_time">set_task_apply_time() (enb.experiment.Experiment method)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.set_task_label">set_task_label() (enb.experiment.Experiment method)</a>
 </li>
@@ -2179,6 +2218,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.experiment.Experiment.task_apply_time_column">task_apply_time_column (enb.experiment.Experiment attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.experiment.Experiment.task_label_column">task_label_column (enb.experiment.Experiment attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.task_name_column">task_name_column (enb.experiment.Experiment attribute)</a>
@@ -2275,10 +2316,16 @@
       </ul></li>
       <li><a href="api/enb.html#enb.log.Logger.verbose_active">verbose_active (enb.log.Logger property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.log.Logger.verbose_context">verbose_context() (enb.log.Logger method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable.verify_file_size">verify_file_size (enb.icompression.GeneralLosslessExperiment.GenericFilePropertiesTable attribute)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.isets.ImageGeometryTable.verify_file_size">(enb.isets.ImageGeometryTable attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.PDFToPNG.version">version() (enb.aanalysis.PDFToPNG method)</a>
 
       <ul>

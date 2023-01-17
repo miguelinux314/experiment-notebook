@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image manipulation &mdash; Experiment Notebook MIT License documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Dataset curation and modification" href="data_curation.html" />
+    <link rel="prev" title="Defining new codecs" href="defining_new_compressors.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Experiment Notebook
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                v0.4.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using existing image compression codecs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Image manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#raw-format">Raw format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#read-raw-images-enb-isets-load-array-bsq">Read raw images: enb.isets.load_array_bsq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#images-are-numpy-arrays">Images are numpy arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saving-images-to-disk-enb-isets-dump-array-bsq">Saving images to disk: enb.isets.dump_array_bsq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#appendix-function-interfaces">Appendix: function interfaces</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Thanks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Experiment Notebook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="image_compression.html">Image compression and manipulation</a> &raquo;</li>
+      <li>Image manipulation</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="image-manipulation">
+<h1>Image manipulation<a class="headerlink" href="#image-manipulation" title="Permalink to this headline"></a></h1>
+<p>The <cite>enb</cite> library provides tools to work with image files.</p>
+<p>Special focus has been placed to simplify the <strong>loading and saving of raw BSQ images</strong>.
+In memory, <cite>numpy</cite> is employed, which makes it easy to interface with other libraries.</p>
+<p>The image manipulation tools in <cite>enb</cite> can be useful when defining your own <cite>enb</cite> experiments,
+but also as standalone functions.</p>
+<section id="raw-format">
+<h2>Raw format<a class="headerlink" href="#raw-format" title="Permalink to this headline"></a></h2>
+<p>When in disk, images are assumed to be stored in <strong>raw (uncompressed, BSQ) format</strong>, meaning:</p>
+<ul class="simple">
+<li><p>Each pixel is stored with a constant number of bytes per sample (1, 2, 4 or 8, typically)</p></li>
+<li><p>BSQ order is assumed, <em>i.e.</em>, pixels of each spectral band are sequentially stored in raster order (row by row, left to right).</p></li>
+</ul>
+<p>When storing an image in raw format, its geometry (width, height, number of spectral components)
+and data type (bytes per sample, endianness, integer/float)
+need to be known.</p>
+<p>The <cite>.raw</cite> file format is often assumed.</p>
+</section>
+<section id="read-raw-images-enb-isets-load-array-bsq">
+<h2>Read raw images: enb.isets.load_array_bsq<a class="headerlink" href="#read-raw-images-enb-isets-load-array-bsq" title="Permalink to this headline"></a></h2>
+<p>The <a class="reference internal" href="#enb.isets.load_array_bsq" title="enb.isets.load_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.load_array_bsq()</span></code></a> function allows you to load raw images from disk.
+To specify the geometry and data type of the file, you need to use at least one of the following:</p>
+<ul>
+<li><p>Pass the <cite>width</cite>, <cite>height</cite>, <cite>component_count</cite>, <cite>dtype</cite> (numpy format) parameters to <cite>load_array_bsq</cite>, <em>e.g.</em>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">im</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">isets</span><span class="o">.</span><span class="n">load_array_bsq</span><span class="p">(</span><span class="s2">&quot;img.raw&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;&gt;u4&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2078</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">2136</span><span class="p">,</span> <span class="n">component_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Pass the <cite>image_properties_row</cite> parameter (a dictionary with the above keys) to <cite>load_array_bsq</cite>, <em>e.g.</em>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">image_properties_row</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;&gt;u4&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2078</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">2136</span><span class="p">,</span> <span class="n">component_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">isets</span><span class="o">.</span><span class="n">load_array_bsq</span><span class="p">(</span><span class="s2">&quot;img.raw&quot;</span><span class="p">,</span> <span class="n">image_properties_row</span><span class="o">=</span><span class="n">image_properties_row</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Use <strong>name tags</strong> when choosing filenames for images in raw format.
+These tags, <em>e.g.,</em> <cite>u8be-3x600x800</cite> inform <cite>enb</cite> of all the required geometry.
+The format of these tags (which can appear anywhere in the filename) is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>u</cite> or <cite>s</cite> for unsigned and signed, respectively</p></li>
+<li><p>the number of bits per sample (typically, 8, 16, 32 or 64)</p></li>
+<li><p><cite>be</cite> or <cite>le</cite> for big-endian and little-endian formats, respectively</p></li>
+<li><p><cite>ZxYxX</cite>, where <cite>Z</cite> is the number of spectral compoments (3 in the example),
+<cite>X</cite> the width (number of columns, 800 in the example)
+and <cite>Y</cite> the height (number of rows, 600 in the example).</p></li>
+</ul>
+</div></blockquote>
+<p>When name tags are employed, only the file path parameter is required by <cite>load_array_bsq</cite>, <em>e.g.,</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">im</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">isets</span><span class="o">.</span><span class="n">load_array_bsq</span><span class="p">(</span><span class="s2">&quot;img-u32be-1x2136x2078.raw&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="images-are-numpy-arrays">
+<h2>Images are numpy arrays<a class="headerlink" href="#images-are-numpy-arrays" title="Permalink to this headline"></a></h2>
+<p>The <cite>enb</cite> library uses <cite>numpy</cite> whenever possible.</p>
+<p>The return of <cite>enb.isets.load_array_bsq</cite> is a 3-D numpy array with the image data, which can be indexed as [x,y,z].</p>
+<p>You can use all of numpys functionality directly on these arrays,
+including efficient <a class="reference external" href="https://www.w3schools.com/python/numpy/numpy_array_slicing.asp">slicing</a>,
+<a class="reference external" href="https://scipy-lectures.org/intro/numpy/operations.html">arithmetic operations</a>
+and its use in many other libraries such as <a class="reference external" href="https://scipy.org/">scipy</a> and <a class="reference external" href="https://pandas.pydata.org/">pandas</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The index order of the returned image ((x,y,z), “F”) differs from the default assumed
+by numpy’s functions ((z,y,x), “C”).</p>
+</div>
+</section>
+<section id="saving-images-to-disk-enb-isets-dump-array-bsq">
+<h2>Saving images to disk: enb.isets.dump_array_bsq<a class="headerlink" href="#saving-images-to-disk-enb-isets-dump-array-bsq" title="Permalink to this headline"></a></h2>
+<p>If you have a 3D numpy array indexed by [x,y,z], you can store it in BSQ raw format with
+the <a class="reference internal" href="#enb.isets.dump_array_bsq" title="enb.isets.dump_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.dump_array_bsq()</span></code></a> method, <em>e.g.</em>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">im</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">isets</span><span class="o">.</span><span class="n">load_array_bsq</span><span class="p">(</span><span class="s2">&quot;img-u32be-1x2136x2078.raw&quot;</span><span class="p">)</span>
+<span class="n">enb</span><span class="o">.</span><span class="n">isets</span><span class="o">.</span><span class="n">dump_array_bsq</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="s2">&quot;copy_of_img-u32be-1x2136x2078.raw&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By default, the output geometry and data type are derived from the numpy array type.
+If you loaded the array with <cite>enb.isets.load_array_bsq</cite> and didn’t modify it,
+<cite>enb.isets.dump_array_bsq</cite> stores an identical copy of the original.</p>
+<p>If needed, you can pass the <cite>dtype</cite> argument (numpy format) to <cite>dump_array_bsq</cite>
+and. In this case:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The array is casted to <cite>dtype</cite> (it is up to the user to check it is a safe cast)</p></li>
+<li><p>The raw file format is derived from the chosen value of <cite>dtype</cite>, <em>e.g.,</em>,
+<cite>&gt;u2</cite> for 16-bit unsigned big-endian integers, and <cite>&lt;i4</cite> for 32-bit signed little-endian integers.</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="appendix-function-interfaces">
+<h2>Appendix: function interfaces<a class="headerlink" href="#appendix-function-interfaces" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.isets.load_array_bsq">
+<span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">load_array_bsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_properties_row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.load_array_bsq" title="Permalink to this definition"></a></dt>
+<dd><p>Load a numpy array indexed by [x,y,z] from file_or_path using
+the geometry information in image_properties_row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_or_path</strong> – either a string with the path to the input file,
+or a file open for reading (typically with “b” mode).</p></li>
+<li><p><strong>image_properties_row</strong> – <p>if not None, it shall be a dict-like object. The
+width, height, component_count, bytes_per_sample, signed, big_endian and float
+keys should be present to determine the read parameters. If dtype is provided, then 
+bytes_per_sample, big_endian and float are not used. 
+The remaining arguments overwrite
+those defined in image_properties_row (if image_properties_row is not None and if present).</p>
+<p>If image_properties_row is None and any of (width, height, component_count, dtype) is None,
+the image geometry is required to be in the filename as a name tag.
+These tags, <em>e.g.,</em> <cite>u8be-3x600x800</cite> inform <cite>enb</cite> of all the required geometry.
+The format of these tags (which can appear anywhere in the filename) is:</p>
+<blockquote>
+<div><ul>
+<li><p><cite>u</cite> or <cite>s</cite> for unsigned and signed, respectively</p></li>
+<li><p>the number of bits per sample (typically, 8, 16, 32 or 64)</p></li>
+<li><p><cite>be</cite> or <cite>le</cite> for big-endian and little-endian formats, respectively</p></li>
+<li><p><cite>ZxYxX</cite>, where <cite>Z</cite> is the number of spectral compoments (3 in the example),
+<cite>X</cite> the width (number of columns, 800 in the example)
+and <cite>Y</cite> the height (number of rows, 600 in the example).</p></li>
+</ul>
+</div></blockquote>
+<p>If image_properties_row is not None, then the following parameters must not be None:</p>
+</p></li>
+<li><p><strong>width</strong> – if not None, force the read to assume this image width</p></li>
+<li><p><strong>height</strong> – if not None, force the read to assume this image height</p></li>
+<li><p><strong>component_count</strong> – if not None, force the read to assume this number of components (bands)</p></li>
+<li><p><strong>dtype</strong> – if not None, it must by a valid argument for dtype in numpy, and will be used for reading. In
+this case, the bytes_per_sample, signed, big_endian and float keys are not accessed in image_properties_row.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a 3-D numpy array with the image data, which can be indexed as [x,y,z].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.isets.dump_array_bsq">
+<span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">dump_array_bsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.dump_array_bsq" title="Permalink to this definition"></a></dt>
+<dd><p>Dump a raw array array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
+i.e., the concatenation of each component (z axis), each component in raster
+order. Parent folders are created if not already existing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_or_path</strong> – It can be either a file-like object, or a string-like
+object. If it is a file, contents are writen without altering the file
+pointer beforehand. In this case, the file is not closed afterwards.
+If it is a string-like object, it will be interpreted
+as a file path, open as determined by the mode parameter.</p></li>
+<li><p><strong>mode</strong> – if file_or_path is a path, the output file is opened in this mode</p></li>
+<li><p><strong>dtype</strong> – if not None, the array is casted to this type before dumping</p></li>
+<li><p><strong>force_big_endian</strong> – if True, a copy of the array is made and its bytes are swapped before outputting
+data to file. This parameter is ignored if dtype is provided.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="defining_new_compressors.html" class="btn btn-neutral float-left" title="Defining new codecs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_curation.html" class="btn btn-neutral float-right" title="Dataset curation and modification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-*, Miguel Hernández-Cabronero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
