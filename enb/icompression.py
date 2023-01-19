@@ -768,7 +768,8 @@ class CompressionExperiment(experiment.Experiment):
                     self._compression_results.maximum_memory_kb \
                         = max(kb if kb is not None else -1 for kb in measured_memory)
                 except Exception as ex:
-                    os.remove(tmp_compressed_path)
+                    if os.path.exists(tmp_compressed_path):
+                        os.remove(tmp_compressed_path)
                     raise ex
 
             return self._compression_results
