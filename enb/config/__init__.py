@@ -92,10 +92,7 @@ assert options is aoptions.Options(), "Singleton not working"
 def get_banner():
     """Returns the enb banner showing the current version.
     """
-    contents = f" [ Powered by enb (Experiment NoteBook) " \
-               f"v{ini.get_key('enb', 'version')}" \
-               f"{'::' + str(ini.get_key('enb', 'commit_hash')) if options.verbose else ''}" \
-               f" ] "
+    contents = f" [ Powered by enb (Experiment NoteBook) v{ini.get_key('enb', 'version')} ] "
     contents = f"\n{{contents:.^{_shutil.get_terminal_size()[0]}}}\n".format(contents=contents)
 
     return contents

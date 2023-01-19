@@ -5,8 +5,4 @@
 cd $(dirname $0)
 cd ../..
 
-# Update the commit hash in enb.ini
-sed -i "s:\s*commit_hash\s*=.*:commit_hash = $(git log --pretty=format:'%h' -n 1):g" enb/config/enb.ini
-git add enb/config/enb.ini
-
 ./test/test_all.py
