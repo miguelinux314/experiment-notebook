@@ -187,6 +187,7 @@ After the definition, the table's dataframe can be obtained with
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
+import logging
 import numbers
 from builtins import hasattr
 import ast
@@ -208,7 +209,6 @@ import shutil
 import alive_progress
 
 import enb.config
-from enb import parallel_ray
 from enb.config import options
 from enb.misc import get_defining_class_name
 
@@ -1165,7 +1165,7 @@ class ATable(metaclass=MetaTable):
         if found_exceptions:
             raise ColumnFailedError(f"Error setting {len(found_exceptions)}/{len(target_indices)} indices"
                                     f" with {self.__class__.__name__}",
-                                    exception_list=found_exceptions) from found_exceptions[0]
+                                    exception_list=found_exceptions)
 
         # Return the dataframe with the requested rows and columns, without attempting to updated
         # the loaded dataframe (that is done by methods calling this one)
@@ -1248,12 +1248,17 @@ class ATable(metaclass=MetaTable):
 
                 except Exception as ex:
                     stack_start_message = "-" * (shutil.get_terminal_size()[0] // 5) + \
-                                          f" [START stack trace ({ex.__class__.__name__}) <{self.__class__.__name__}>]"
+                                          f" [START stack trace @ {enb.misc.get_node_name()}#{os.getpid()} " \
+                                          f"({ex.__class__.__name__}) <{self.__class__.__name__}>]"
                     stack_end_message = "-" * (shutil.get_terminal_size()[0] // 5) + \
-                                        f" [END stack trace ({ex.__class__.__name__}) <{self.__class__.__name__}>]"
+                                        f" [END stack trace @ {enb.misc.get_node_name()}#{os.getpid()} " \
+                                        f"({ex.__class__.__name__}) <{self.__class__.__name__}>]"
                     stack_format = f"{{msg:->{shutil.get_terminal_size()[0]}s}}"
-                    msg = f"Error computing column {repr(column)} of {self.__class__.__name__}, index {repr(index)}. " \
-                          f"Found exception: {repr(ex)}\n" \
+                    msg = f"{self.__class__.__name__}: Error computing column {repr(column)}:" \
+                          f"\n\t- Node: {enb.misc.get_node_name()}. PID: {os.getpid()}" \
+                          f"\n\t- Failing function: {fun.__qualname__}" \
+                          f"\n\t- Failing index: {repr(index)}" \
+                          f"\n\t- Caught exception: {repr(ex)}. Showing stack trace next:\n" \
                           + stack_format.format(msg=stack_start_message) + "\n" + \
                           f"{traceback.format_exc().strip()}\n" \
                           + stack_format.format(msg=stack_end_message)
@@ -1264,11 +1269,11 @@ class ATable(metaclass=MetaTable):
                                "you might need to change enb.config.options.base_tmp_dir to an existing dir in " \
                                "a partition with enough space, e.g., running with --base_tmp_dir=./tmp.\n"
                     cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
-
+                    
                     if enb.config.options.verbose >= 0:
                         # Tests can set the verbose level to less than 0 to avoid showing errors on
                         # specific points of their code
-                        enb.logger.error(msg)
+                        enb.logger.error(f"\n{msg}\n")
 
                     return cfe
 
