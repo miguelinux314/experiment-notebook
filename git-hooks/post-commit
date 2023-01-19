@@ -5,4 +5,5 @@
 cd $(dirname $0)
 cd ../..
 
-./test/test_all.py
+# Execute tests only if not in rebase mode
+test -f ./.git/rebase-merge/done || (echo "The commit hash been made. Running the full default battery:"; ./test/test_all.py)
