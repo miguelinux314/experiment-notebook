@@ -76,8 +76,6 @@ From there on, many enb functions adhere to the following principle:
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
 
-import datetime
-
 # Logging tools
 from .. import log
 # enb.config.ini : file-based config management
