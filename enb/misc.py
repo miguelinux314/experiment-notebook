@@ -7,13 +7,10 @@ may use misc tools at definition time.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/11"
 
-import builtins
-import os
-import sys
 import csv
 import re
-import contextlib
 import socket
+import rich
 
 
 def get_defining_class_name(f):
@@ -197,6 +194,10 @@ def get_node_ip():
     s.close()
     return address
 
+def get_node_name():
+    """Get the host name of this node. Alias for socket.gethostname.     
+    """
+    return socket.gethostname()
 
 def capture_usr1():
     """Capture the reception of a USR1 signal into pdb.
