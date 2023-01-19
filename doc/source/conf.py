@@ -48,7 +48,6 @@ extensions = [
 
 intersphinx_mapping = {
     'pandas': ('https://pandas.pydata.org/pandas-docs/dev', None),
-    'torch': ('https://pytorch.org/docs/stable/', None),
     'ray': ('https://docs.ray.io/en/master/', None)
 }
 
