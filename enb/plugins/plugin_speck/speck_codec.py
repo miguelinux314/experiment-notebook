@@ -22,7 +22,7 @@ class SPECK(enb.icompression.LosslessCodec,
         """
         :param wavelet_type:     Discrete wavelet transform type for each image component.
             First value is for the first component, second value for the second component and so on.
-            If only one value is specified, wavelete transform type will be the same for all components.
+            If only one value is specified, wavelet transform type will be the same for all components.
             Valid values are:
                  0 -  No wavelet transform
                  1 - Integer (Reversible) 5/3 DWT
