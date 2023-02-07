@@ -10,5 +10,5 @@ class LCNLPlugin(enb.plugins.Plugin):
         "http://deic.uab.cat/~mhernandez/media/papers/Miguel_Hernandez-IEEE_GRSM_123x0b2_explained.pdf"]
     extra_requirements_message = "Low-complexity near-lossless image compression (LCNL), CCSDS 123.0-B2\n" \
                                  "The source code and the binaries are not redistributed with enb due to intellectual property issues.\n" \
-                                 "The binaries can be obtained at https://logiciels.cnes.fr/en/license/173/728 provided by CNES."
+                                 "The binaries can be obtained at https://www.connectbycnes.fr/en/ccsds-1230-b-2-ccsds-1210-b-3 provided by CNES."
     tested_on = {"linux"}
