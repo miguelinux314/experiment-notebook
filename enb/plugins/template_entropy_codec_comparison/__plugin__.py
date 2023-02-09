@@ -41,5 +41,6 @@ class EntropyCodecComparisonTemplate(enb.plugins.Template):
                 invocation = f"{sys.executable} -m enb plugin install {p} {os.path.join(installation_dir, 'plugins', p)}"
                 status, output = subprocess.getstatusoutput(invocation)
                 if status != 0:
-                    raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                        status, invocation, output))
+                    raise Exception(f"Status = {status} != 0.\n"
+                                    f"Input=[{invocation}].\n"
+                                    f"Output=[{output}]")

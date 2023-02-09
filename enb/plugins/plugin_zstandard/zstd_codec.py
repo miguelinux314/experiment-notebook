@@ -70,8 +70,9 @@ class Zstandard_train(Zstandard):
             invocation = f"{self.compressor_path} --train {original_path} --optimize-cover -o {dict_path}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
 
             # Compress using that dictionary
             invocation = f" {self.compressor_path} " \
@@ -80,8 +81,9 @@ class Zstandard_train(Zstandard):
                          f"-o {dict_compressed_path}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
 
             # Unite the compressed data and the side information
             tarlite.tarlite_files(input_paths=(dict_path, dict_compressed_path), output_tarlite_path=compressed_path)
@@ -98,8 +100,9 @@ class Zstandard_train(Zstandard):
             invocation = f"{self.compressor_path} -d -D {dict_path} -f {dict_compressed_path} -o {reconstructed_path}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
 
     @property
     def label(self):

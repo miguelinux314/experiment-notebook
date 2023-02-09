@@ -592,8 +592,9 @@ class PNGWrapperCodec(WrapperCodec):
             invocation = f"file {tmp_file.name}"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
             img = imageio.imread(tmp_file.name, "png")
             img.swapaxes(0, 1)
             assert len(img.shape) in [2, 3, 4]
