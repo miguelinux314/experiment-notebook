@@ -14,7 +14,8 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## Development version v0.4.5
 
-- No changes from master yet
+- Removed ray as a dependency when installing enb.
+- Partial code cleanup using pylint
 
 # Latest stable version:
 

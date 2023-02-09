@@ -83,8 +83,7 @@ with open("README.md", "r") as readme_file:
             "numpngw",
             "numpy", "pandas >= 1.4.1", "imageio",
             "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
-            "astropy", "alive_progress", "natsort",
-            "ray[default] >= 1.11.0 ; platform_system != 'Windows'"],
+            "astropy", "alive_progress", "natsort"],
 
         # This part determines the contents of the installed folder in your python's
         # site-packages location.

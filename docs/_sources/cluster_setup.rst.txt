@@ -42,16 +42,17 @@ In each computer of the cluster, you will need to do the following (once).
 
     3. **Install and configure ray**
 
-        * **Check ray version**
-            The `ray` library is installed by default on non-Windows platforms.
-            However, you need to make sure that all nodes have the same version
-            of `ray` installed. To install a specific node with pip, you can use:
+        * **Install or check ray version**
+            The `ray` library is needed in all nodes participating in a cluster. 
+            This library is not installed by default from version 0.4.5 onwards.
+            You can install it with:
 
             .. code:: bash
 
-                pip install ray[default]==1.9.1
+                pip install ray[default]
 
-            You will also need to make sure that the `ray` command is present in your PATH.
+
+            You may need to verify that the `ray` command is present in your PATH after installing ray. 
 
         * **Open ray ports**
 

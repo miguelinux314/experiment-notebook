@@ -30,12 +30,14 @@ You may install it easily with pip,
 
           pip install enb --user
 
-If you would like multi-computer parallelization, please install the `ssh` (server and client), `sshfs` and `vde2`
-(for the `dpipe` command) packages.
+If you would like multi-computer parallelization, please install the `ray` python library as well
+as the `ssh` (server and client), `sshfs` and `vde2` (for the `dpipe` command) packages.
+
 On Debian, Ubuntu and derivatives this can be achieved by:
 
 .. code-block:: bash
-
+    
+    pip install ray[default]
     sudo apt install openssh-client openssh-server sshfs vde2
 
 The `enb` library will show a warning and proceed locally if any of these tools are not available.

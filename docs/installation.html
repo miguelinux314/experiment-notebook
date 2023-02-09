@@ -107,10 +107,11 @@ and you don’t have root privileges:</p>
 </pre></div>
 </div>
 </div>
-<p>If you would like multi-computer parallelization, please install the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite>
-(for the <cite>dpipe</cite> command) packages.
-On Debian, Ubuntu and derivatives this can be achieved by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install openssh-client openssh-server sshfs vde2
+<p>If you would like multi-computer parallelization, please install the <cite>ray</cite> python library as well
+as the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite> (for the <cite>dpipe</cite> command) packages.</p>
+<p>On Debian, Ubuntu and derivatives this can be achieved by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]</span>
+sudo apt install openssh-client openssh-server sshfs vde2
 </pre></div>
 </div>
 <p>The <cite>enb</cite> library will show a warning and proceed locally if any of these tools are not available.
