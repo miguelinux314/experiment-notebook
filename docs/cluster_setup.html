@@ -129,13 +129,13 @@ these will need to be installed manually in all nodes in the cluster.</p>
 <blockquote>
 <div><ul>
 <li><dl>
-<dt><strong>Check ray version</strong></dt><dd><p>The <cite>ray</cite> library is installed by default on non-Windows platforms.
-However, you need to make sure that all nodes have the same version
-of <cite>ray</cite> installed. To install a specific node with pip, you can use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]==</span><span class="m">1</span>.9.1
+<dt><strong>Install or check ray version</strong></dt><dd><p>The <cite>ray</cite> library is needed in all nodes participating in a cluster.
+This library is not installed by default from version 0.4.5 onwards.
+You can install it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]</span>
 </pre></div>
 </div>
-<p>You will also need to make sure that the <cite>ray</cite> command is present in your PATH.</p>
+<p>You may need to verify that the <cite>ray</cite> command is present in your PATH after installing ray.</p>
 </dd>
 </dl>
 </li>
