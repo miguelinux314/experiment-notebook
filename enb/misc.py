@@ -10,7 +10,6 @@ __since__ = "2021/07/11"
 import csv
 import re
 import socket
-import rich
 
 
 def get_defining_class_name(f):
@@ -81,7 +80,8 @@ def remove_argparse_action(parser, action):
 def split_camel_case(camel_string):
     """Split a camel case string like ThisIsAClass into a string like "This Is A Class".
     """
-    return " ".join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', camel_string))
+    return " ".join(
+        re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', camel_string))
 
 
 def get_all_subclasses(*base_classes):
@@ -97,7 +97,8 @@ def get_all_subclasses(*base_classes):
         direct_subclasses = set(cls.__subclasses__())
         recursive_subclasses = set()
         for subclass in direct_subclasses:
-            recursive_subclasses = recursive_subclasses.union(get_subclasses_recursive(subclass))
+            recursive_subclasses = recursive_subclasses.union(
+                get_subclasses_recursive(subclass))
         return direct_subclasses.union(recursive_subclasses)
 
     base_classes = set(base_classes)
@@ -155,7 +156,8 @@ def class_to_fqn(cls):
     return cls_fqn
 
 
-def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True, use_booktabks=True):
+def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
+                         use_booktabks=True):
     """Read a CSV table from a file and output it as a latex table to another file.
     The first row is assumed to be the header.
 
@@ -165,7 +167,8 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True, 
     :param use_booktabs: if True, a booktabs-based decoration style is used for the table. Otherwise,
       standard latex is used only.
     """
-    with open(input_csv_path, "r") as csv_file, open(output_tex_path, "w") as tex_file:
+    with open(input_csv_path, "r") as csv_file, open(output_tex_path,
+                                                     "w") as tex_file:
         tex_file.write("\\begin{tabular}{")
 
         for i, row in enumerate(csv.reader(csv_file)):
@@ -174,8 +177,9 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True, 
 
             if i == 0 and contains_header:
                 tex_file.write("\\toprule\n" if use_booktabks else "\\hline\n")
-                tex_file.write(" & ".join(f"\\textbf{{{c}}}" for c in row).replace(
-                    "_", "\\_").replace("%", "\%") + r" \\" + "\n")
+                tex_file.write(
+                    " & ".join(f"\\textbf{{{c}}}" for c in row).replace(
+                        "_", "\\_").replace("%", "\%") + r" \\" + "\n")
                 tex_file.write("\\midrule\n" if use_booktabks else "\\hline\n")
             else:
                 tex_file.write(" & ".join(row).replace(
@@ -194,10 +198,12 @@ def get_node_ip():
     s.close()
     return address
 
+
 def get_node_name():
     """Get the host name of this node. Alias for socket.gethostname.     
     """
     return socket.gethostname()
+
 
 def capture_usr1():
     """Capture the reception of a USR1 signal into pdb.
