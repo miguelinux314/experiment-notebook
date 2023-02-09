@@ -43,6 +43,7 @@ On Debian, Ubuntu and derivatives this can be achieved by:
 The `enb` library will show a warning and proceed locally if any of these tools are not available.
 Please see :doc:`cluster_setup` for full information on how to set up a cluster.
 
+
 Windows and MacOS
 -----------------
 
@@ -59,6 +60,36 @@ Related (external) resources:
 * `Creation of virtual environments on Windows <https://docs.python.org/3/library/venv.html>`_
 * `Python installation and virtual environment setup on MacOS <https://sourabhbajaj.com/mac-setup/Python/virtualenv.html>`_
 
+Raspberry Pi
+------------
+Installation on RaspberryOS is identical to that of other Linux distributions, but requires manual installation
+of some packages.
+
+It is recommended to install the system versions of the following packages:
+
+.. code-block:: bash
+
+   sudo apt install python3-{matplotlib,scipy,numpy,pandas}
+
+And then configure a virtual environment with the `--system-site-packages` flag, e.g.,
+
+.. code-block:: bash
+
+    python -m venv --system-site-packages ~/venv
+
+.. note:: 
+
+    You might need to install specific versions of some packages. For instance, if you get the following error:
+
+    .. code-block:: text 
+
+        ImportError: Pandas requires version '3.0.0' or newer of 'jinja2' (version '2.11.3' currently installed).
+
+    Then you may need to run
+
+    .. code-block:: bash
+
+        pip install --force jinja2==3.0.0
 
 
 Sources and development version
@@ -90,10 +121,17 @@ branch is checked out) with
     cd experiment-notebook.git
     pip install -e .
 
+To update your repository, simply go into your `experiment-notebook.git` folder and type
+
+.. code-block:: bash
+
+    git pull
+
 Feel free to `submit pull_requests <https://github.com/miguelinux314/experiment-notebook/pulls>`_
 for your desired contributions.
 
 .. warning::
 
-    The development version is discouraged for inexperienced users. Use with caution and report
-    any bugs you would like removed.
+    The development version is discouraged for inexperienced users. 
+    These are advised to employ the latest stable version.
+    Don't forget to report in github any bugs you would like removed.

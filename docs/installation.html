@@ -47,6 +47,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#windows-and-macos">Windows and MacOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raspberry-pi">Raspberry Pi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sources-and-development-version">Sources and development version</a></li>
 </ul>
 </li>
@@ -130,6 +131,30 @@ Please see <a class="reference internal" href="cluster_setup.html"><span class="
 <li><p><a class="reference external" href="https://sourabhbajaj.com/mac-setup/Python/virtualenv.html">Python installation and virtual environment setup on MacOS</a></p></li>
 </ul>
 </section>
+<section id="raspberry-pi">
+<h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Permalink to this headline"></a></h2>
+<p>Installation on RaspberryOS is identical to that of other Linux distributions, but requires manual installation
+of some packages.</p>
+<p>It is recommended to install the system versions of the following packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install python3-<span class="o">{</span>matplotlib,scipy,numpy,pandas<span class="o">}</span>
+</pre></div>
+</div>
+<p>And then configure a virtual environment with the <cite>–system-site-packages</cite> flag, e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m venv --system-site-packages ~/venv
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You might need to install specific versions of some packages. For instance, if you get the following error:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ImportError: Pandas requires version &#39;3.0.0&#39; or newer of &#39;jinja2&#39; (version &#39;2.11.3&#39; currently installed).
+</pre></div>
+</div>
+<p>Then you may need to run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --force <span class="nv">jinja2</span><span class="o">==</span><span class="m">3</span>.0.0
+</pre></div>
+</div>
+</div>
+</section>
 <section id="sources-and-development-version">
 <h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Permalink to this headline"></a></h2>
 <div class="admonition note">
@@ -154,12 +179,17 @@ branch is checked out) with</p>
 pip install -e .
 </pre></div>
 </div>
+<p>To update your repository, simply go into your <cite>experiment-notebook.git</cite> folder and type</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git pull
+</pre></div>
+</div>
 <p>Feel free to <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/pulls">submit pull_requests</a>
 for your desired contributions.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The development version is discouraged for inexperienced users. Use with caution and report
-any bugs you would like removed.</p>
+<p>The development version is discouraged for inexperienced users.
+These are advised to employ the latest stable version.
+Don’t forget to report in github any bugs you would like removed.</p>
 </div>
 </section>
 </section>
