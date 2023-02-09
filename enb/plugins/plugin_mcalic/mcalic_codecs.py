@@ -180,8 +180,9 @@ class MCALIC_Magli(icompression.LosslessCodec, icompression.NearLosslessCodec, i
                 invocation = f"ls -lah {tmp_dir}"
                 status, output = subprocess.getstatusoutput(invocation)
                 if status != 0:
-                    raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                        status, invocation, output))
+                    raise Exception(f"Status = {status} != 0.\n"
+                                    f"Input=[{invocation}].\n"
+                                    f"Output=[{output}]")
 
                 for y in range(self.split_height_count):
                     for x in range(self.split_width_count):
@@ -237,8 +238,9 @@ class MCALIC_Magli(icompression.LosslessCodec, icompression.NearLosslessCodec, i
                     invocation = f"ls -lah {tmp_extract_dir}"
                     status, output = subprocess.getstatusoutput(invocation)
                     if status != 0:
-                        raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                            status, invocation, output))
+                        raise Exception(f"Status = {status} != 0.\n"
+                                        f"Input=[{invocation}].\n"
+                                        f"Output=[{output}]")
 
                     with open(glob.glob(os.path.join(tmp_extract_dir, "*.txt"))[0]) as si_file:
                         offset = int(si_file.read())

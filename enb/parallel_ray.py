@@ -4,25 +4,24 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/11/21"
 
+import os
+import sys
+import glob
 import logging
-import shutil
-import string
 import math
 import threading
 import time
-import sys
-import os
 import builtins
+import ast
+import shutil
+import string
 import subprocess
 import random
-import pandas as pd
-import psutil
 import signal
-import glob
 import platform
-import ast
 import importlib
-import textwrap
+import psutil
+import pandas as pd
 
 import enb
 from . import config
@@ -31,6 +30,7 @@ from . import log
 from .log import logger
 
 # Ray is only expected to be available on linux nodes when clustering is desired.
+# pylint: disable=invalid-name
 try:
     import ray
 
@@ -38,13 +38,15 @@ try:
 except ImportError as ex:
     _ray_present = False
 
+# Flags indicating whether external tools are present
 _ssh_present = shutil.which("ssh") is not None
 _sshfs_present = shutil.which("sshfs") is not None
 _dpipe_present = shutil.which("dpipe") is not None
 _ray_cli_present = shutil.which("ray") is not None
-
 _ray_disabled_warning_issued = False
 
+
+# pylint: disable=invalid-name
 
 def is_ray_enabled():
     """Return True if and only if ray is available and the current platform is one
@@ -59,17 +61,22 @@ def is_ray_enabled():
     # ray is disabled if the ray command cannot be found
     if not _ray_present:
         if not _ray_disabled_warning_issued:
-            enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
-                            f"but 'ray' could not be found in the path. "
-                            f"Please install with `pip install ray[default]` and/or fix the path")
+            enb.logger.warn(
+                "An enb cluster configuration was selected "
+                f"({repr(options.ssh_cluster_csv_path)}) "
+                "but 'ray' could not be found in the path. "
+                "Please install with `pip install ray[default]` "
+                "and/or fix the path")
             _ray_disabled_warning_issued = True
         return False
 
     # ray is disabled on windows (it does not seem to work)
-    elif platform.system().lower() == "windows":
+    if platform.system().lower() == "windows":
         if not _ray_disabled_warning_issued:
-            enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
-                            f"but ray is not currently supported on Windows.")
+            enb.logger.warn(
+                "An enb cluster configuration was selected "
+                f"({repr(options.ssh_cluster_csv_path)}) "
+                "but ray is not currently supported on Windows.")
             _ray_disabled_warning_issued = True
         return False
 
@@ -85,11 +92,14 @@ def is_ray_enabled():
         needed_package = "vde2"
     if failing_tool:
         if not _ray_disabled_warning_issued:
-            enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
-                            f"but {failing_tool} was not found in the path. "
-                            f"No remote nodes will be used in this session.\n"
-                            f"Please install {needed_package if needed_package is not None else failing_tool} "
-                            f"in your system and/or fix the path it and retry.")
+            enb.logger.warn(
+                f"An enb cluster configuration was selected "
+                f"({repr(options.ssh_cluster_csv_path)}) "
+                f"but {failing_tool} was not found in the path. "
+                f"No remote nodes will be used in this session.\n"
+                f"Please install "
+                f"{needed_package if needed_package is not None else failing_tool} "
+                f"in your system and/or fix the path it and retry.")
             _ray_disabled_warning_issued = True
         return False
 
@@ -105,29 +115,36 @@ class HeadNode:
 
     def __init__(self, ray_port, ray_port_count):
         if not is_ray_enabled():
-            raise RuntimeError("The ray module is not present or is not available. "
-                               "Please see https://miguelinux314.github.io/experiment-notebook/cluster_setup.html for "
-                               "information about how to configure it.")
+            raise RuntimeError(
+                "The ray module is not present or is not available. "
+                "Please see "
+                "https://miguelinux314.github.io/experiment-notebook/cluster_setup.html "
+                "for information about how to configure it.")
 
         assert ray_port == int(ray_port), ray_port
         assert ray_port_count == int(ray_port_count), ray_port_count
         assert 1025 <= ray_port, ray_port
         assert ray_port_count >= 1
-        assert ray_port + ray_port_count - 1 <= 65535, (ray_port, ray_port_count, ray_port + ray_port_count - 1)
+        assert ray_port + ray_port_count - 1 <= 65535, (
+            ray_port, ray_port_count, ray_port + ray_port_count - 1)
         self.ray_port = int(ray_port)
         self.ray_port_count = int(ray_port_count)
-        self.session_password = ''.join(random.choices(string.ascii_letters, k=128))
+        self.session_password = ''.join(
+            random.choices(string.ascii_letters, k=128))
         # List of RemoteNode instances started by this head node
         self.remote_nodes = []
         self.address = self.get_node_ip()
 
     def start(self):
-        with logger.info_context(f"Stoping any previous instance of ray..."):
+        """Start or restart a ray head node.
+        """
+        with logger.info_context("Stoping any previous instance of ray..."):
             invocation = "ray stop --force"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
 
         with logger.info_context(f"Starting ray on port {self.ray_port}"):
             invocation = f"ray start --head " \
@@ -140,30 +157,45 @@ class HeadNode:
                          f"--min-worker-port  {self.ray_port + 5} " \
                          f"--max-worker-port  {self.ray_port + self.ray_port_count - 1} " \
                          f"--redis-password='{self.session_password}' " \
-                         + (f" --num-cpus {options.cpu_limit}" if options.cpu_limit else "")
+                         + (
+                             f" --num-cpus {options.cpu_limit}" if options.cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise RuntimeError(f"Error starting head ray process\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
-        with logger.info_context(f"Initializing ray client on local port {self.ray_port}"):
+        with logger.info_context(
+                f"Initializing ray client on local port {self.ray_port}"):
             # The exported environment consists of all *.py files.
             # Furthermore, the list of current modules minus the ones found after
             # initializing enb is passed as an environment variable to
             # allow the needed imports before remote methods are invoked.
             excludes = [os.path.relpath(p, options.project_root)
-                        for p in glob.glob(os.path.join(options.project_root, "**", "*"), recursive=True)
-                        if options.ssh_cluster_csv_path or (os.path.isfile(p) and not p.endswith(".py"))]
+                        for p in
+                        glob.glob(os.path.join(options.project_root, "**", "*"),
+                                  recursive=True)
+                        if options.ssh_cluster_csv_path or (
+                                os.path.isfile(p) and not p.endswith(
+                            ".py"))]
 
-            modules_needed_remotely = [m.__name__ for m in sys.modules.values()
-                                       if hasattr(m, "__name__") and m.__name__ not in options._initial_module_names
-                                       and not m.__name__.startswith("_")]
+            # pylint: disable=protected-access
+            modules_needed_remotely = [
+                m.__name__ for m in sys.modules.values()
+                if hasattr(m, "__name__")
+                   and m.__name__ not in options._initial_module_names
+                   and not m.__name__.startswith("_")]
+            # pylint: enable=protected-access
             ray.init(address=f"localhost:{self.ray_port}",
                      _redis_password=self.session_password,
-                     runtime_env=dict(working_dir=options.project_root if options.ssh_cluster_csv_path else None,
-                                      excludes=excludes if options.ssh_cluster_csv_path else None,
-                                      env_vars=dict(_needed_modules=str(modules_needed_remotely))),
-                     logging_level=logging.CRITICAL if options.verbose <= 2 else logging.INFO)
+                     runtime_env=dict(
+                         working_dir=options.project_root
+                         if options.ssh_cluster_csv_path else None,
+                         excludes=excludes
+                         if options.ssh_cluster_csv_path else None,
+                         env_vars=dict(
+                             _needed_modules=str(modules_needed_remotely))),
+                     logging_level=logging.CRITICAL
+                     if options.verbose <= 2 else logging.INFO)
 
         if options.ssh_cluster_csv_path:
             failing_tool = None
@@ -176,39 +208,51 @@ class HeadNode:
                 failing_tool = "dpipe" if not options.no_remote_mount_needed else None
                 needed_package = "vde2"
             if failing_tool:
-                enb.logger.warn(f"An enb cluster configuration was selected ({repr(options.ssh_cluster_csv_path)}) "
-                                f"but {failing_tool} was not found in the path. "
-                                f"No remote nodes will be used in this session.\n"
-                                f"Please install {needed_package if needed_package is not None else failing_tool} "
-                                f"in your system and/or fix the path it and retry.")
+                requirements = needed_package if needed_package is not None \
+                    else failing_tool
+                enb.logger.warn(
+                    f"An enb cluster configuration was selected "
+                    f"({repr(options.ssh_cluster_csv_path)}) "
+                    f"but {failing_tool} was not found in the path. "
+                    f"No remote nodes will be used in this session.\n"
+                    f"Please install {requirements} "
+                    f"in your system and/or fix the path it and retry.")
             else:
                 if not os.path.exists(options.ssh_cluster_csv_path):
-                    raise ValueError(f"The cluster configuration file was set to {repr(options.ssh_cluster_csv_path)}"
-                                     f"but it does not exist. "
-                                     f"Either set enb.config.options.ssh_cluster_csv_path to None "
-                                     f"or to an existing file. See "
-                                     f"https://miguelinux314.github.io/experiment-notebook/installation.html "
-                                     f"for more details.")
+                    raise ValueError(
+                        "The cluster configuration file was set to "
+                        f"{repr(options.ssh_cluster_csv_path)}"
+                        "but it does not exist. "
+                        "Either set enb.config.options.ssh_cluster_csv_path to None "
+                        "or to an existing file. See "
+                        "https://miguelinux314.github.io/experiment-notebook/installation.html"
+                        " for more details.")
 
-                self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
-                with logger.info_context(f"Connecting {len(self.remote_nodes)} remote nodes.",
-                                         msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
+                self.remote_nodes = self.parse_cluster_config_csv(
+                    options.ssh_cluster_csv_path)
+                with logger.info_context(
+                        f"Connecting {len(self.remote_nodes)} remote nodes.",
+                        msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
                     connected_nodes = []
                     for rn in self.remote_nodes:
                         with logger.info_context(f"Connecting to {rn}"):
                             try:
                                 rn.connect()
                                 connected_nodes.append(rn)
-                            except RuntimeError as ex:
+                            except RuntimeError as connection_ex:
                                 print(
-                                    f"Error connecting to {rn}: {repr(ex)}. Execution will continue without this node.")
+                                    f"Error connecting to {rn}: {repr(connection_ex)}. "
+                                    "Execution will continue without this node.")
                     self.remote_nodes = connected_nodes
 
                 logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
 
     def stop(self):
+        """Stop the ray head node after disconnecting from all remote nodes.
+        """
         if self.remote_nodes:
-            with logger.info_context("Stopping remote nodes...\n", msg_after=f"disconnected all remote nodes."):
+            with logger.info_context("Stopping remote nodes...\n",
+                                     msg_after="disconnected all remote nodes."):
                 for rn in self.remote_nodes:
                     rn.disconnect()
             self.remote_nodes = []
@@ -225,8 +269,9 @@ class HeadNode:
             invocation = "ray stop --force"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                logger.error("Error stopping ray process. You might need to run `ray stop` manually.\n"
-                             f"Command: {repr(invocation)}. Ouput:\n{output}")
+                logger.error(
+                    "Error stopping ray process. You might need to run `ray stop` manually.\n"
+                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
     def parse_cluster_config_csv(self, csv_path):
         """Read a CSV defining remote nodes and return a list with as many RemoteNode as
@@ -234,7 +279,8 @@ class HeadNode:
         """
 
         def clean_value(s, default_value=None):
-            return s if (isinstance(s, str) and s) or not math.isnan(s) else default_value
+            return s if (isinstance(s, str) and s) or not math.isnan(
+                s) else default_value
 
         return [RemoteNode(
             address=clean_value(row["address"], None),
@@ -259,12 +305,18 @@ class HeadNode:
     @property
     def status_str(self):
         """Return a string reporting the status of the cluster"""
+        cpu_str = f"{int(ray.cluster_resources()['CPU'])} virtual CPU cores"
+        gpu_str = str(int(ray.cluster_resources()['GPU'])
+                      if 'GPU' in ray.cluster_resources() else 0) + \
+                  " GPU devices"
+        remote_node_str = "\n\t\t * ".join(str(rn) for rn in self.remote_nodes)
+
         return f"The current enb/ray cluster consists of:\n" \
                f"\t- {len(self.remote_nodes) + 1} total nodes.\n" + \
-               ((f"\t- {len(self.remote_nodes)} remote nodes:\n\t\t * " +
-                 f'\n\t\t * '.join(str(rn) for rn in self.remote_nodes) + "\n") if self.remote_nodes else "") + \
-               f"\t- {int(ray.cluster_resources()['CPU'])} virtual CPU cores.\n" \
-               f"\t- {int(ray.cluster_resources()['GPU']) if 'GPU' in ray.cluster_resources() else 0} GPU devices."
+            ((f"\t- {len(self.remote_nodes)} remote nodes:"
+              f"\n\t\t * {remote_node_str}") if self.remote_nodes else "") + \
+            f"\t- {cpu_str}.\n" \
+            f"\t- {gpu_str}."
 
 
 # Single HeadNode instance that controls the ray cluster
@@ -274,9 +326,11 @@ _head_node = None
 class RemoteNode:
     """Represent a remote node of the cluster, with tools to connect via ssh.
     """
-    remote_project_mount_path = os.path.join(enb.user_config_dir, "remote_mount")
+    remote_project_mount_path = os.path.join(enb.user_config_dir,
+                                             "remote_mount")
 
-    def __init__(self, address, ssh_port, head_node, ssh_user=None, local_ssh_file=None, cpu_limit=None,
+    def __init__(self, address, ssh_port, head_node, ssh_user=None,
+                 local_ssh_file=None, cpu_limit=None,
                  remote_mount_needed=None):
         assert is_ray_enabled()
 
@@ -289,33 +343,43 @@ class RemoteNode:
         self.cpu_limit = cpu_limit
         if self.cpu_limit is not None and self.cpu_limit <= 0:
             self.cpu_limit = None
-        self.remote_mount_needed = not options.no_remote_mount_needed if remote_mount_needed is None else remote_mount_needed
+        self.remote_mount_needed = not options.no_remote_mount_needed \
+            if remote_mount_needed is None else remote_mount_needed
 
     def connect(self):
+        """Connect to a remote ray head node.
+        """
         assert not is_parallel_process()
+
+        ssh_address = \
+            f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address}"
 
         # Create remote_node_folder_path on the remote host if not existing
         with logger.info_context(f"Stopping ray on {self.address}"):
-            invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
-                         f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
-                         f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                         f"ray stop --force"
+            invocation = \
+                f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                f"-i {self.local_ssh_file if self.local_ssh_file else ''} " \
+                f"{ssh_address} " \
+                f"ray stop --force"
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise RuntimeError(f"Error stopping remote ray process on {self}.\n"
-                                   f"Command: {repr(invocation)}. Ouput:\n{output}")
+                raise RuntimeError(
+                    f"Error stopping remote ray process on {self}.\n"
+                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
         if self.remote_mount_needed:
             # Create remote_node_folder_path on the remote host if not existing
-            with logger.info_context(f"Creating remote mount point on {self.address}"):
+            with logger.info_context(
+                    f"Creating remote mount point on {self.address}"):
                 invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                              f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                              f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
                              f"mkdir -p {self.remote_project_mount_path}"
                 status, output = subprocess.getstatusoutput(invocation)
                 if status != 0:
-                    raise RuntimeError(f"Error creating remote mount point on {self}.\n"
-                                       f"Command: {repr(invocation)}. Ouput:\n{output}")
+                    raise RuntimeError(
+                        f"Error creating remote mount point on {self}.\n"
+                        f"Command: {repr(invocation)}. Ouput:\n{output}")
             # Mount the project root on remote_node_folder_path - use a separate process
             self.mount_project_remotely()
         else:
@@ -323,46 +387,60 @@ class RemoteNode:
                              f"self.mount_remotely={self.remote_mount_needed}")
 
         with logger.info_context(f"Starting ray process on {self.address}"):
-            invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
-                         f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
-                         f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                         f"ray start --address {self.head_node.address}:{self.head_node.ray_port} " \
-                         f"--ray-client-server-port {self.head_node.ray_port + 1} " \
-                         f"--node-manager-port {self.head_node.ray_port + 2} " \
-                         f"--object-manager-port {self.head_node.ray_port + 3} " \
-                         f"--min-worker-port  {self.head_node.ray_port + 5} " \
-                         f"--max-worker-port  {self.head_node.ray_port + self.head_node.ray_port_count - 1} " \
-                         f"--redis-password='{self.head_node.session_password}' " \
-                         + (f" --num-cpus {self.cpu_limit}" if self.cpu_limit else "")
+            invocation = \
+                f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                f"ray start --address " \
+                f"{self.head_node.address}:{self.head_node.ray_port} " \
+                f"--ray-client-server-port {self.head_node.ray_port + 1} " \
+                f"--node-manager-port {self.head_node.ray_port + 2} " \
+                f"--object-manager-port {self.head_node.ray_port + 3} " \
+                f"--min-worker-port {self.head_node.ray_port + 5} " \
+                f"--max-worker-port " \
+                f"{self.head_node.ray_port + self.head_node.ray_port_count - 1} " \
+                f"--redis-password='{self.head_node.session_password}' " \
+                + (f" --num-cpus {self.cpu_limit}" if self.cpu_limit else "")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise RuntimeError(f"Error starting remote ray on {self}.\n"
                                    f"Command: {repr(invocation)}. Ouput:\n{output}")
 
     def mount_project_remotely(self):
+        """Use sshfs to mount the remote project folder into the remote node.
+        """
         # Mount the project root on remote_node_folder_path
         invocation = f"dpipe /usr/lib/openssh/sftp-server = " \
                      f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                      f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                      f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
-                     f"sshfs :{options.project_root} {self.remote_project_mount_path} -C -o sshfs_sync -o slave"
+                     f"sshfs :{options.project_root} {self.remote_project_mount_path} " \
+                     "-C -o sshfs_sync -o slave"
 
+        # pylint: disable=consider-using-with,subprocess-popen-preexec-fn
         self.mount_popen = subprocess.Popen(
             invocation, stdout=subprocess.PIPE,
             preexec_fn=os.setsid, shell=True)
+        # pylint: enable=consider-using-with,subprocess-popen-preexec-fn
 
-        remote_mount_thread = threading.Thread(target=self.mount_popen.communicate, daemon=True)
+        remote_mount_thread = threading.Thread(
+            target=self.mount_popen.communicate, daemon=True)
         remote_mount_thread.start()
 
         remote_mount_thread.join(timeout=1)
         if not remote_mount_thread.is_alive():
-            raise RuntimeError("Error mounting project folder remotely (is sshfs installed in the remote node?)")
+            raise RuntimeError(
+                "Error mounting project folder remotely "
+                "(is sshfs installed in the remote node?)")
 
     def disconnect(self):
+        """Disconnect from a remote node.
+        """
         assert not is_parallel_process()
 
         # Create remote_node_folder_path on the remote host if not existing
-        with logger.info_context(f"Disconnecting {self.address} (stopping ray)"):
+        with logger.info_context(
+                f"Disconnecting {self.address} (stopping ray)"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                          f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
@@ -381,7 +459,8 @@ class RemoteNode:
                     try:
                         os.kill(proc.pid, signal.SIGTERM)
                     except ProcessLookupError:
-                        logger.info(f"Cannot kill previously found process {proc.pid}")
+                        logger.info(
+                            f"Cannot kill previously found process {proc.pid}")
 
     def __repr__(self):
         return f"{self.__class__.__name__}(address={self.address}, " \
@@ -400,9 +479,11 @@ def init_ray():
             _head_node.stop()
 
         # Initialize cluster of workers
-        with logger.info_context(f"Initializing ray cluster [CPUlimit={options.cpu_limit}]"):
+        with logger.info_context(
+                f"Initializing ray cluster [CPUlimit={options.cpu_limit}]"):
             if not options.disable_swap:
-                # From https://github.com/ray-project/ray/issues/10895 - allow using swap memory when needed,
+                # From https://github.com/ray-project/ray/issues/10895
+                # - allow using swap memory when needed,
                 # avoiding early termination of jobs due to that.
                 os.environ["RAY_DEBUG_DISABLE_MEMORY_MONITOR"] = "1"
 
@@ -414,7 +495,8 @@ def init_ray():
 
 
 def stop_ray():
-    global _head_node
+    """Stop the ray head node, if one is defined.
+    """
     if _head_node is not None:
         _head_node.stop()
 
@@ -423,7 +505,8 @@ def is_parallel_process():
     """Return True if and only if the call is made from a remote ray process,
     which can be running in the head node or any of the remote nodes (if any is present).
     """
-    return os.path.basename(sys.argv[0]) == os.path.basename(options.worker_script_name)
+    return os.path.basename(sys.argv[0]) == os.path.basename(
+        options.worker_script_name)
 
 
 def is_remote_node():
@@ -434,14 +517,18 @@ def is_remote_node():
         return False
     if not is_parallel_process():
         return False
-    else:
-        try:
-            return options._name_to_property["head_address"] != enb.misc.get_node_ip()
-        except KeyError:
-            return False
+    try:
+        # pylint: disable=protected-access
+        return options._name_to_property["head_address"] \
+            != enb.misc.get_node_ip()
+        # pylint: enable=protected-access
+    except KeyError:
+        return False
 
 
 def is_ray_initialized():
+    """Return True if and only if ray is enabled and initialized.
+    """
     return is_ray_enabled() and ray.is_initialized
 
 
@@ -456,10 +543,12 @@ def parallel_decorator(*args, **kwargs):
         enb.logger.debug(f"Wrapping {f} with ray")
 
         def remote_method_wrapper(_opts, *a, **k):
-            """Wrapper for the decorated function f, that updates enb.config.options before f is called.
+            """Wrapper for the decorated function f, that updates
+            enb.config.options before f is called.
             """
             config.options.update(_opts, trigger_events=False)
-            new_level = logger.get_level(logger.level_message.name, config.options.verbose)
+            new_level = logger.get_level(logger.level_message.name,
+                                         config.options.verbose)
             log.logger.selected_log_level = new_level
             log.logger.replace_print()
 
@@ -475,7 +564,9 @@ def parallel_decorator(*args, **kwargs):
             try:
                 try:
                     current_print = builtins.print
+                    # pylint: disable=protected-access
                     builtins.print = logger._original_print
+                    # pylint: enable=protected-access
                 except AttributeError:
                     pass
 
@@ -518,7 +609,8 @@ def fix_imports():
     """
     if is_parallel_process():
         imported_modules = set()
-        for module_name in sorted(ast.literal_eval(os.environ['_needed_modules'])):
+        for module_name in sorted(
+                ast.literal_eval(os.environ['_needed_modules'])):
             try:
                 importlib.import_module(module_name)
                 imported_modules.add(module_name)
@@ -527,5 +619,5 @@ def fix_imports():
                 for i in range(1, len(module_parts) - 1):
                     if ".".join(module_parts[:i]) in imported_modules:
                         break
-                    else:
-                        logger.error(f"Error importing module {repr(module_name)}: {repr(_ex)}.")
+                    logger.error(
+                        f"Error importing module {repr(module_name)}: {repr(_ex)}.")

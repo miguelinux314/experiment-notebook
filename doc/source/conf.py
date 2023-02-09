@@ -112,6 +112,7 @@ shutil.rmtree("doc/source/api/", ignore_errors=True)
 invocation = "sphinx-apidoc -o doc/source/api enb"
 status, output = subprocess.getstatusoutput(invocation)
 if status != 0:
-    raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-        status, invocation, output))
+    raise Exception(f"Status = {status} != 0.\n"
+                    f"Input=[{invocation}].\n"
+                    f"Output=[{output}]")
 os.chdir(cwd)

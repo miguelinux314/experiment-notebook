@@ -88,8 +88,9 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
             header_invocation += f" {image_dependent_header_file.name}"
             status, output = subprocess.getstatusoutput(header_invocation)
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, header_invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
             original_file_info = original_file_info.copy()
             original_file_info["_header_path"] = image_dependent_header_file.name
 
@@ -261,8 +262,9 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             status, output = subprocess.getstatusoutput(header_invocation)
 
             if status != 0:
-                raise Exception("Status = {} != 0.\nInput=[{}].\nOutput=[{}]".format(
-                    status, header_invocation, output))
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{header_invocation}].\n"
+                                f"Output=[{output}]")
             original_file_info = original_file_info.copy()
             original_file_info["_header_path"] = image_dependent_header_file.name
 
