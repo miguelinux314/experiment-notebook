@@ -14,6 +14,8 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## Development version v0.4.5
 
+Tested on Raspberry Pi OS!
+
 - Removed ray as a dependency when installing enb. 
 - Successfully tested on a Raspberry Pi. Extended installation instructions for this platform. 
 - Partial code cleanup using pylint
