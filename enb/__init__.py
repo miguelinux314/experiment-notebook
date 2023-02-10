@@ -126,7 +126,6 @@ if not parallel_ray.is_parallel_process():
             config.options._initial_module_names = list(
                 m.__name__ for m in _sys.modules.values() if
                 hasattr(m, "__name__"))
-            # pylint: enable=W0212
         else:
             logger.info("Using pathos for parallelization.")
 

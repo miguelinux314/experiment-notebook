@@ -109,7 +109,6 @@ def write_ppm(array, bytes_per_sample, output_path):
             for x in range(array.shape[0]):
                 for z in range(array.shape[2]):
                     values.append(array[x, y, z])
-        # pylint: enable=invalid-name
         output_file.write(bytes(values))
 
 
