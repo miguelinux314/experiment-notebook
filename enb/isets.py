@@ -216,7 +216,6 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["big_endian"] = False
         existing_dict["signed"] = True
         existing_dict["float"] = True
-    # pylint: enable=too-many-branches
     assert os.path.getsize(file_path) % existing_dict["bytes_per_sample"] == 0
     existing_dict["samples"] = os.path.getsize(file_path) // existing_dict[
         "bytes_per_sample"]

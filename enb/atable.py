@@ -29,14 +29,18 @@ This offers several key advantages:
 
 - It can help you reuse results from different projects.
 
-This is best supported for numeric, string, and boolean types, which are assumed by default.
-You can also use non-scalar types, e.g., list, tuple and dict types, by setting the `has_iterable_values`
+This is best supported for numeric, string, and boolean types,
+which are assumed by default.
+You can also use non-scalar types, e.g., list, tuple and dict types,
+by setting the `has_iterable_values`
 and `has_dict_values` for |ColumnProperties|'s constructor (more on that later).
 
-Finally, you can use any python object that can be pickled and unpickled. For this to work for a given
+Finally, you can use any python object that can be pickled and unpickled.
+For this to work for a given
 column, the `has_object_values` needs to be set to True it the aforementioned constructor.
 
-The only restriction is not to use None nor any other value detected as null by pandas, because these
+The only restriction is not to use None nor any other value detected
+ as null by pandas, because these
 are used to efficiently signal the absence of data.
 
 
@@ -46,11 +50,13 @@ Using existing |ATable| columns
 |enb| implements several |ATable| subclasses that can be directly used in your code.
 All |ATable| subclasses work as follows:
 
-1. They accept an iterable (e.g., a list) of *indices* as an input. An *index* is often a string, e.g.,
+1. They accept an iterable (e.g., a list) of *indices* as an input.
+   An *index* is often a string, e.g.,
    a path to an element of your test dataset. Note that |enb| is capable of creating that list
    of indices if you point it to your dataset folder.
 
-2. For each row, the set of defined data *columns* (e.g., the dependent/independent variables of an experiment)
+2. For each row, the set of defined data *columns*
+   (e.g., the dependent/independent variables of an experiment)
    is computed and stored to disk along with the row's index.
    You can reuse existing ATable subclasses directly and/or create new subclasses.
 
@@ -63,7 +69,8 @@ Consider the following toy example::
                 return len(index)
 
 Our `TableA` class accepts list-like values (e.g., strings) as indices,
-and defines the `index_length` column as the number of elements (e.g., characters) in the index.
+and defines the `index_length` column as the number of elements
+(e.g., characters) in the index.
 
 One can then use the `get_df` method to obtain a |DataFrame| instance as follows::
 
@@ -72,7 +79,8 @@ One can then use the `get_df` method to obtain a |DataFrame| instance as follows
         df = table_a.get_df(target_indices=example_indices)
         print(df.head())
 
-The previous code should produce the following output (automatic timestamping columns now shown)::
+The previous code should produce the following output
+(automatic timestamping columns now shown)::
 
                                   my_index_name index_length
         __atable_index
@@ -135,11 +143,14 @@ To further customize your new columns, you can use the |column_function| decorat
 
 
 2. You can set two or more columns with a single function.
-   To do so, you can pass a list of |ColumnProperties| instances to the |column_function| decorator.
+   To do so, you can pass a list of |ColumnProperties| instances
+   to the |column_function| decorator.
    Each instance describes one column, which can be independently customized.
 
-3. You can define columns to contain non-scalar data. The following default types are supported:
-   tuples, lists, dicts. Note that using non-scalar data is generally slower than using scalar types,
+3. You can define columns to contain non-scalar data.
+   The following default types are supported:
+   tuples, lists, dicts. Note that using non-scalar data is generally
+   slower than using scalar types,
    but allows easy aggregation and combination of variables.
 
 4. You can mix strings and |ColumnProperties| instances in the |column_function| decorator.
@@ -187,7 +198,6 @@ After the definition, the table's dataframe can be obtained with
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
-import logging
 import numbers
 from builtins import hasattr
 import ast
@@ -202,10 +212,10 @@ import itertools
 import math
 import os
 import sys
-import pandas as pd
 import pickle
-import traceback
 import shutil
+import traceback
+import pandas as pd
 import alive_progress
 
 import enb.config
@@ -222,6 +232,7 @@ class CorruptedTableError(Exception):
         """
         :param msg: message describing the error that took place
         """
+        super().__init__()
         self.atable = atable
         self.ex = ex
         self.msg = msg
@@ -240,7 +251,8 @@ class ColumnFailedError(CorruptedTableError):
     """Raised when a function failed to fill a column.
     """
 
-    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None, exception_list=None):
+    def __init__(self, atable=None, index=None, column=None, msg=None, ex=None,
+                 exception_list=None):
         """
         :param atable: atable instance that originated the problem
         :param column: column where the problem happened
@@ -248,6 +260,7 @@ class ColumnFailedError(CorruptedTableError):
         :param exception_list: a list of exceptions related to this one, e.g., all failing columns
         :param msg: message describing the problem, or None
         """
+        # pylint: disable=too-many-arguments
         exception_list = exception_list if exception_list is not None else []
         super().__init__(atable=atable, msg=msg, ex=ex)
         self.index = index
@@ -263,7 +276,8 @@ class ColumnFailedError(CorruptedTableError):
         if self.column:
             parts.append(f"column={self.column}")
         if self.msg:
-            parts.append(f"msg='{repr(self.msg[:25])[1:-1]}{'...' if len(self.msg) > 25 else ''}'")
+            parts.append(
+                f"msg='{repr(self.msg[:25])[1:-1]}{'...' if len(self.msg) > 25 else ''}'")
 
         failing_columns = set()
         for ex in itertools.chain((self.ex,), self.exception_list):
@@ -273,24 +287,32 @@ class ColumnFailedError(CorruptedTableError):
             except AttributeError:
                 pass
         if failing_columns:
-            parts.append(f"failing columns: {', '.join(repr(c) for c in failing_columns)}")
+            parts.append(
+                f"failing columns: {', '.join(repr(c) for c in failing_columns)}")
 
-        return f"{self.__class__.__name__}({', '.join(parts)}){': ' + repr(self.ex) if self.ex else ''}"
+        return f"{self.__class__.__name__}({', '.join(parts)})" \
+               f"{': ' + repr(self.ex) if self.ex else ''}"
 
 
 class ColumnProperties:
     """All columns defined in an |ATable| subclass have a corresponding |ColumnProperties| instance,
     which provides metainformation about it. Its main uses are providing plotting
     cues and to allow non-scalar data (tuples, lists and dicts).
-    Once an |ATable| subclass c is defined, `c.column_to_properties` contains a mapping from
+    Once an |ATable| subclass c is defined,
+    `c.column_to_properties` contains a mapping from
     a column's name to its ColumnProperties instance.
     It is possible to change attributes of column properties instances, and to replace
     the ColumnProperties instances in `column_to_properties`.
     For instance, one may want to
-    plot a column with its original cues first, and then create a second version with semi-logarithmic
-    axes. Then it would suffice to use |aanalysis| tools with the |ATable| subclass default `column_to_properties`
-    first, then modify one or more ColumnProperties instances, and finally apply the same tools again.
+    plot a column with its original cues first, and then create a
+    second version with semi-logarithmic
+    axes. Then it would suffice to use |aanalysis| tools with the |ATable|
+    subclass default `column_to_properties` first,
+    then modify one or more ColumnProperties instances, and finally apply
+     the same tools again.
     """
+
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self, name, fun=None, label=None,
                  plot_min=None, plot_max=None,
@@ -305,27 +327,31 @@ class ColumnProperties:
                  **extra_attributes):
         """
         Column-function linking:
-        
+
         :param name: unique name that identifies a column.
-        :param fun: function to be invoked to fill a column value. If None, |enb| will set this for you
+        :param fun: function to be invoked to fill a column value.
+          If None, |enb| will set this for you
           when you define columns with `column_` or |column_function|.
-          
+
         Type specification (mutually exclusive).
-        
-        :param has_dict_values: set to True if and only if the column cells contain value mappings (i.e., dicts),
-          as opposed to scalar values. Both keys and values should be valid scalar values (numeric, string or boolean).
+
+        :param has_dict_values: set to True if and only if the column cells
+          contain value mappings (i.e., dicts),
+          as opposed to scalar values. Both keys and values should be valid scalar values
+          (numeric, string or boolean).
           It cannot be True if any other type is specified.
         :param has_iterable_values: set to True if and only if the column cells contain iterables,
           i.e., tuples or lists. It cannot be True if any other type is specified.
-        :param has_object_values: set to True if and only if the column cells contain general python objects
-          that can be pickled an unpickled.
+        :param has_object_values: set to True if and only if the column cells contain
+          general python objects that can be pickled an unpickled.
 
-        .. note:: The `has_ast_values` property of the ColumnProperties instance will return true if and only if
-          iterable or dict values are used.
+        .. note:: The `has_ast_values` property of the ColumnProperties instance
+          will return true if and only if iterable or dict values are used.
 
         Plot rendering hints:
-        
-        :param label: descriptive label of the column, intended to be displayed in plot (e.g., axes) labels
+
+        :param label: descriptive label of the column,
+          intended to be displayed in plot (e.g., axes) labels
         :param plot_min: minimum value to be plotted for the column. For histograms,
           this refers to the range of key (X-axis) values.
         :param plot_max: minimum value to be plotted for the column. For histograms,
@@ -336,7 +362,7 @@ class ColumnProperties:
         :param semilog_y_base: log base to use if semilog_y is true.
 
         Parameters specific to histograms, only applicable when has_dict_values is True.
-        
+
         :param hist_bin_width: histogram bin used when calculating distributions
         :param hist_label_dict: None, or a dictionary with x-value to label dict
         :param secondary_label: secondary label for the column, i.e., the Y axis
@@ -348,11 +374,12 @@ class ColumnProperties:
         :param hist_label: if not None, the label to be shown globally in the Y axis.
 
         User-defined attributes:
-        
+
         :param extra_attributes: any parameters passed are set as attributes of the created
           instance (with __setattr__). These attributes are not directly used by |enb|'s core,
           but can be safely used by client code.
         """
+        # pylint: disable=too-many-arguments,too-many-locals
         self.name = name
         self.fun = fun
         self.label = label if label is not None else clean_column_name(name)
@@ -366,9 +393,12 @@ class ColumnProperties:
         self.has_dict_values = has_dict_values or self.hist_bin_width is not None
         self.has_iterable_values = has_iterable_values
         self.has_object_values = has_object_values
-        if sum(1 for flag in (self.has_iterable_values, self.has_dict_values, self.has_object_values)
+        if sum(1 for flag in (
+                self.has_iterable_values, self.has_dict_values,
+                self.has_object_values)
                if flag is True) > 1:
-            raise ValueError(f"At most one of iterable, dict or object types can be specified.")
+            raise ValueError(
+                "At most one of iterable, dict or object types can be specified.")
         self.hist_label_dict = hist_label_dict
         self.hist_label = hist_label
         self.hist_min = hist_min
@@ -384,7 +414,9 @@ class ColumnProperties:
         return self.has_dict_values or self.has_iterable_values
 
     def __repr__(self):
-        args = ", ".join(f"{repr(k)}={repr(v)}" for k, v in self.__dict__.items() if v is not None)
+        args = ", ".join(
+            f"{repr(k)}={repr(v)}" for k, v in self.__dict__.items() if
+            v is not None)
         return f"{self.__class__.__name__}({args})"
 
 
@@ -399,12 +431,14 @@ class MetaTable(type):
     Note: Table classes should inherit from |ATable|, not |MetaTable|.
     You probably don't ever need to use this class directly.
     """
+    # pylint: disable=too-many-locals,too-many-branches
     automatic_column_function_prefix = "column_"
     pendingdefs_classname_fun_columnpropertylist_kwargs = []
 
     def __new__(cls, name, bases, dct):
         if MetaTable in bases:
-            raise SyntaxError(f"Please use ATable, not MetaTable, for subclassing.")
+            raise SyntaxError(
+                "Please use ATable, not MetaTable, for subclassing.")
 
         # Explore parent classes and search for all column_to_properties definitions,
         # so that they are inherited into the subclass cls.
@@ -437,51 +471,74 @@ class MetaTable(type):
         # (unexpected behavior).
         MetaTable.set_column_mro(subclass)
 
-        # Add pending decorated and column_* methods (declared as columns before subclass existed),
-        # in the order they were declared (needed when there are data dependencies between columns).
+        # Add pending decorated and column_* methods
+        # (declared as columns before subclass existed),
+        # in the order they were declared
+        # (needed when there are data dependencies between columns).
         inherited_classname_fun_columnproperties_kwargs = [
             t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
             if t[0] != subclass.__name__]
         decorated_classname_fun_columnproperties_kwargs = [
             t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
             if t[0] == subclass.__name__]
-        for classname, fun, cp, kwargs in inherited_classname_fun_columnproperties_kwargs:
-            if isinstance(cp, collections.abc.Iterable):
-                # Passed a list of instances: make sure they are all ColumnProperties
-                for p in cp:
-                    if not isinstance(p, ColumnProperties):
-                        raise SyntaxError(f"Found {repr(p)} not a ColumnProperties instance.")
-                    ATable.add_column_function(cls=subclass, fun=fun, column_properties=p, **kwargs)
+        for _, fun, column_properties, kwargs \
+                in inherited_classname_fun_columnproperties_kwargs:
+            if isinstance(column_properties, collections.abc.Iterable):
+                # Passed a list of instances:
+                # make sure they are all ColumnProperties
+                for cp in column_properties:
+                    if not isinstance(cp, ColumnProperties):
+                        raise SyntaxError(
+                            f"Found {repr(cp)} not a ColumnProperties instance.")
+                    ATable.add_column_function(target_class=subclass, fun=fun,
+                                               column_properties=cp, **kwargs)
             else:
-                ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
+                ATable.add_column_function(target_class=subclass, fun=fun,
+                                           column_properties=column_properties,
+                                           **kwargs)
 
         # Column functions are added to a list while the class is being defined.
         # After that, the subclass' column_to_properties attribute is updated according
         # to the column definitions.
-        funname_to_pending_entry = {t[1].__name__: t for t in decorated_classname_fun_columnproperties_kwargs}
+        funname_to_pending_entry = {t[1].__name__: t for t in
+                                    decorated_classname_fun_columnproperties_kwargs}
 
-        for fun in (f for f in subclass.__dict__.values() if inspect.isfunction(f)):
+        for fun in (f for f in subclass.__dict__.values() if
+                    inspect.isfunction(f)):
             try:
                 # Decorated function: the column properties are already present
-                classname, fun, cp_list, kwargs = funname_to_pending_entry[fun.__name__]
-                for cp in cp_list:
-                    if cp.label == cp.name:
-                        cp.label = clean_column_name(cp.name)
-                    ATable.add_column_function(cls=subclass, fun=fun, column_properties=cp, **kwargs)
+                _, fun, cp_list, kwargs = funname_to_pending_entry[
+                    fun.__name__]
+                for column_properties in cp_list:
+                    if column_properties.label == column_properties.name:
+                        column_properties.label = clean_column_name(
+                            column_properties.name)
+                    ATable.add_column_function(target_class=subclass, fun=fun,
+                                               column_properties=column_properties)
                 del funname_to_pending_entry[fun.__name__]
-            except KeyError:
+            except KeyError as ex:
                 # Non decorated function: decorate automatically if it starts with 'column_*'
-                assert all(cp.fun is not fun for cp in subclass.column_to_properties.values())
-                if not fun.__name__.startswith(MetaTable.automatic_column_function_prefix):
+                assert all(cp.fun is not fun for cp in
+                           subclass.column_to_properties.values())
+                if not fun.__name__.startswith(
+                        MetaTable.automatic_column_function_prefix):
                     continue
-                column_name = fun.__name__[len(MetaTable.automatic_column_function_prefix):]
+                column_name = fun.__name__[
+                              len(MetaTable.automatic_column_function_prefix):]
                 if not column_name:
-                    raise SyntaxError(f"Function name '{fun.__name__}' not allowed in ATable subclasses")
+                    raise SyntaxError(
+                        f"Function name '{fun.__name__}' "
+                        f"not allowed in ATable subclasses") from ex
                 wrapper = MetaTable.get_auto_column_wrapper(fun=fun)
-                cp = ColumnProperties(name=column_name, label=clean_column_name(column_name), fun=wrapper)
-                ATable.add_column_function(cls=subclass, fun=wrapper, column_properties=cp)
+                column_properties = ColumnProperties(name=column_name,
+                                                     label=clean_column_name(
+                                                         column_name),
+                                                     fun=wrapper)
+                ATable.add_column_function(target_class=subclass, fun=wrapper,
+                                           column_properties=column_properties)
 
-        assert len(funname_to_pending_entry) == 0, (subclass, funname_to_pending_entry)
+        assert len(funname_to_pending_entry) == 0, (
+            subclass, funname_to_pending_entry)
         cls.pendingdefs_classname_fun_columnpropertylist_kwargs.clear()
         return subclass
 
@@ -496,7 +553,8 @@ class MetaTable(type):
         """
         for column, properties in subclass.column_to_properties.items():
             try:
-                defining_class_name = get_class_that_defined_method(properties.fun).__name__
+                defining_class_name = get_class_that_defined_method(
+                    properties.fun).__name__
             except AttributeError:
                 defining_class_name = None
             if defining_class_name != subclass.__name__:
@@ -508,7 +566,8 @@ class MetaTable(type):
                     continue
 
                 if ctp_fun != sc_fun:
-                    if get_defining_class_name(ctp_fun) != get_defining_class_name(sc_fun):
+                    if get_defining_class_name(
+                            ctp_fun) != get_defining_class_name(sc_fun):
                         enb.logger.debug(f"Redefining column {ctp_fun}. "
                                          f"It now becomes {sc_fun}")
                         properties = copy.copy(properties)
@@ -518,7 +577,8 @@ class MetaTable(type):
 
     @staticmethod
     def get_auto_column_wrapper(fun):
-        """Create a wrapper for a function with a signature compatible with column-setting functions,
+        """Create a wrapper for a function with a signature compatible
+        with column-setting functions,
         so that its returned value is assigned to the row's column.
         """
 
@@ -527,8 +587,9 @@ class MetaTable(type):
             row[_column_name] = fun(self, index, row)
 
         try:
+            # pylint: disable=protected-access
             wrapper._redefines_column = fun._redefines_column
-        except AttributeError as ex:
+        except AttributeError:
             pass
 
         return wrapper
@@ -537,9 +598,9 @@ class MetaTable(type):
 def clean_column_name(column_name):
     """Return a cleaned version of the column name, more indicated for display.
     """
-    s = str(column_name).replace("_", " ").strip()
-    s = s[:1].upper() + s[1:]
-    return s
+    column_name = str(column_name).replace("_", " ").strip()
+    column_name = column_name[:1].upper() + column_name[1:]
+    return column_name
 
 
 class ATable(metaclass=MetaTable):
@@ -552,18 +613,19 @@ class ATable(metaclass=MetaTable):
     `@enb.atable.column_function` decorator on them.
 
     See |atable| for more detailed help and examples.
- 
+
     """
     #: Default input sample extension.
     #: If affects the result of `enb.atable.get_all_test_files`,
     dataset_files_extension = ""
     #: Name of the index used internally.
     private_index_column = "__atable_index"
-    #: Column names in this list are not retrieved nor saved to persistence, 
+    #: Column names in this list are not retrieved nor saved to persistence,
     #: even if they are defined.
     ignored_columns = []
 
-    def __init__(self, index="index", csv_support_path=None, column_to_properties=None,
+    def __init__(self, index="index", csv_support_path=None,
+                 column_to_properties=None,
                  progress_report_period=None):
         """
         :param index: string with column name or list of column names that will be
@@ -581,26 +643,32 @@ class ATable(metaclass=MetaTable):
         progress_report_period = progress_report_period if progress_report_period is not None \
             else enb.config.options.progress_report_period
         if progress_report_period < 0:
-            raise ValueError(f"Invalid progress_report_period {progress_report_period}")
+            raise ValueError(
+                f"Invalid progress_report_period {progress_report_period}")
         self.progress_report_period = progress_report_period
         self.index = index
         self.csv_support_path = csv_support_path
         if column_to_properties is not None:
-            #: The `column_properties` attribute keeps track of what columns 
+            #: The `column_properties` attribute keeps track of what columns
             #: have been defined, and the methods that need to be called to computed them.
-            #: The keys of this attribute can be used to determine the columns defined in a given 
+            #: The keys of this attribute can be used to determine the columns defined in a given
             #: class or instance. The values are |ColumnProperties| instances, which can be set
             #: manually after definition and before calling |Analyzer| subclasses' `get_df`.
-            self.column_to_properties = collections.OrderedDict(column_to_properties)
+            self.column_to_properties = collections.OrderedDict(
+                column_to_properties)
 
         # Add the row_created and row_updated columns. The latter is updated by enb
         # everytime a row is modified.
         self.add_column_function(self.__class__,
-                                 fun=lambda self, index, row: datetime.datetime.now().isoformat(),
-                                 column_properties=ColumnProperties("row_created"))
+                                 fun=lambda self, index,
+                                            row: datetime.datetime.now().isoformat(),
+                                 column_properties=ColumnProperties(
+                                     "row_created"))
         self.add_column_function(self.__class__,
-                                 fun=lambda self, index, row: datetime.datetime.now().isoformat(),
-                                 column_properties=ColumnProperties("row_updated"))
+                                 fun=lambda self, index,
+                                            row: datetime.datetime.now().isoformat(),
+                                 column_properties=ColumnProperties(
+                                     "row_updated"))
 
     # Methods related to defining columns and retrieving them afterwards
 
@@ -623,7 +691,8 @@ class ATable(metaclass=MetaTable):
 
         :param column_properties: a list of one or more of the following types of elements:
 
-          * a string with the column's name to be used in the table. A new |ColumnProperties| instance
+          * a string with the column's name to be used in the table.
+            A new |ColumnProperties| instance
             is then created, passing `**kwargs` to the initializer.
 
           * a ColumnProperties instance. In this case `**kwargs` is ignored.
@@ -631,7 +700,7 @@ class ATable(metaclass=MetaTable):
 
         def decorator_wrapper(fun):
             return ATable.add_column_function(
-                *column_properties, cls=cls, fun=fun, **kwargs)
+                *column_properties, target_class=cls, fun=fun, **kwargs)
 
         return decorator_wrapper
 
@@ -640,18 +709,19 @@ class ATable(metaclass=MetaTable):
         """Decorator to be applied on overwriting methods that are meant to fill
         the same columns as the base class' homonym method.
         """
+        # pylint: disable=protected-access
         fun._redefines_column = True
         return fun
 
     @staticmethod
-    def add_column_function(cls, fun, column_properties, **kwargs):
+    def add_column_function(target_class, fun, column_properties):
         """Main entry point for column definition in |ATable| subclasses.
 
         Methods decorated with |column_function|, or with a name beginning with `column_`
         are automatically "registered" using this function. It can be invoked
         directly to add columns manually, although it is not recommended in most scenarios.
 
-        :param cls: the |ATable| subclass to which a new column is to be added.
+        :param target_class: the |ATable| subclass to which a new column is to be added.
         :param column_properties: a |ColumnProperties| instance describing the
           column to be created. This list may also contain strings, which are interpreted
           as column names, creating the corresponding columns.
@@ -659,54 +729,72 @@ class ATable(metaclass=MetaTable):
           `(self, index, row)`, where `index` is the row's index and `row` is a dict-like
           object where the new column is to be stored. Previously set columns can also be
           read from `row`. When a column-setting method is decorated,
-          fun is automatically set so that the decorated method is called, but it is not guaranteed
+          fun is automatically set so that the decorated method is called,
+          but it is not guaranteed
           that fun is the decorated method.
         """
-        if (type(cls) is type and not issubclass(cls, ATable)) and not isinstance(cls, ATable):
-            raise SyntaxError("Column definition is only supported for classes that inherit from ATable, "
-                              f"but {cls} was found.")
+        if isinstance(target_class, type) \
+                and not issubclass(target_class, ATable) \
+                and not isinstance(target_class, ATable):
+            raise SyntaxError(
+                "Column definition is only supported for classes that inherit from ATable, "
+                f"but {target_class} was found.")
         if not isinstance(column_properties, ColumnProperties):
-            raise SyntaxError("Only subclasses of ColumnProperties are allowed for the column_properties argument "
-                              f"(found type {type(column_properties)} -- {column_properties})")
+            raise SyntaxError(
+                "Only subclasses of ColumnProperties are allowed "
+                "for the column_properties argument "
+                f"(found type {type(column_properties)} -- {column_properties})")
 
         # Effectively register the column function into the class
-        fun_wrapper = cls.build_column_function_wrapper(fun=fun, column_properties=column_properties)
+        fun_wrapper = target_class.build_column_function_wrapper(
+            fun=fun, column_properties=column_properties)
         column_properties.fun = fun_wrapper
-        cls.column_to_properties[column_properties.name] = column_properties
+        target_class.column_to_properties[
+            column_properties.name] = column_properties
 
         return fun_wrapper
 
     @staticmethod
-    def normalize_column_function_arguments(column_property_list, fun, **kwargs):
-        """Helper method to verify and normalize the `column_property_list` varargs passed to add_column_function.
-        Each element of that list is passed as the `column_properties` argument to this function.
+    def normalize_column_function_arguments(column_property_list, fun,
+                                            **kwargs):
+        """Helper method to verify and normalize the `column_property_list`
+        varargs passed to add_column_function.
+        Each element of that list is passed as the `column_properties`
+        argument to this function.
 
-        - If the element is a string, it is interpreted as a column name, and a new ColumnProperties
-          object is is created with that name and the `fun` argument to this function. The kwargs argument
+        - If the element is a string, it is interpreted as a column name,
+          and a new ColumnProperties
+          object is is created with that name and the `fun` argument to this function.
+          The kwargs argument
           is passed to that initializer.
 
-        - If the element is a |ColumnProperties| instance, it is returned without modification.
+        - If the element is a |ColumnProperties| instance,
+          it is returned without modification.
           The kwargs argument is ignored in this case.
 
         - Otherwise, a SyntaxError is raised.
 
-        :param column_property_list: one of the elements of the `*column_property_list` parameter to add_column_function.
+        :param column_property_list: one of the elements of the `*column_property_list`
+          parameter to add_column_function.
         :param fun: the function being decorated.
 
         :return: a nonempty list of valid ColumnProperties instances
         """
         normalized_cp_list = []
-        for cp in column_property_list:
-            if isinstance(cp, str):
-                normalized_cp_list.append(ColumnProperties(name=cp, fun=fun, **kwargs))
-            elif isinstance(cp, ColumnProperties):
-                normalized_cp_list.append(cp)
-            elif isinstance(cp, collections.abc.Iterable):
-                normalized_cp_list.extend(ATable.normalize_column_function_arguments(
-                    column_property_list=cp, fun=fun))
+        for cpl in column_property_list:
+            if isinstance(cpl, str):
+                normalized_cp_list.append(
+                    ColumnProperties(name=cpl, fun=fun, **kwargs))
+            elif isinstance(cpl, ColumnProperties):
+                normalized_cp_list.append(cpl)
+            elif isinstance(cpl, collections.abc.Iterable):
+                normalized_cp_list.extend(
+                    ATable.normalize_column_function_arguments(
+                        column_property_list=cpl, fun=fun))
             else:
-                raise SyntaxError("Invalid arguments passed to add_column_function: "
-                                  f"{cp} (type {type(cp)}), {fun}, {kwargs} ")
+                raise SyntaxError(
+                    "Invalid arguments passed to add_column_function: "
+                    f"{cpl} (type {type(cpl)}), {fun}, {kwargs} ")
 
         return normalized_cp_list
 
@@ -723,16 +811,20 @@ class ATable(metaclass=MetaTable):
         the wrappers for that class' column-setting functions.
 
         :param fun: function to be called by the wrapper.
-        :param column_properties: |ColumnProperties| instance with properties associated to the column.
-        :return: a function that wraps fun adding `_column_name` and `_column_properties` to its scope.
+        :param column_properties: |ColumnProperties| instance with properties associated
+          to the column.
+        :return: a function that wraps fun adding `_column_name`
+          and `_column_properties` to its scope.
         """
-        # Match fun's signature with the expected one (self, index, row). Variable names are not checked.
+        # Match fun's signature with the expected one (self, index, row).
+        # Variable names are not checked.
         fun_spec = inspect.getfullargspec(fun)
         if len(fun_spec.args) != 3 and fun_spec.varargs is None and fun_spec.varkw is None:
-            raise SyntaxError(f"Trying to add a column-setting method {fun} to {cls.__name__}, "
-                              f"but an invalid signature was found. "
-                              f"Column-setting methods should have a (self, index, row) signature. "
-                              f"Instead, the following signature was provided: {fun_spec}.")
+            raise SyntaxError(
+                f"Trying to add a column-setting method {fun} to {cls.__name__}, "
+                f"but an invalid signature was found. "
+                f"Column-setting methods should have a (self, index, row) signature. "
+                f"Instead, the following signature was provided: {fun_spec}.")
 
         # Create a wrapper that adds some temporary globals
         @functools.wraps(fun)
@@ -740,24 +832,26 @@ class ATable(metaclass=MetaTable):
             # The _column_name and _column_properties globals are
             # defined to help define more concise column functions.
             if isinstance(fun, functools.partial):
-                globals = fun.func.__globals__
+                global_variables = fun.func.__globals__
             else:
-                globals = fun.__globals__
-            old_globals = dict(globals)
-            globals.update(_column_name=column_properties.name,
-                           _column_properties=column_properties)
+                global_variables = fun.__globals__
+            old_globals = dict(global_variables)
+            global_variables.update(_column_name=column_properties.name,
+                                    _column_properties=column_properties)
 
-            # The current working dir is updated for remote processes in the head or the remote nodes
+            # The current working dir is updated for remote processes
+            # in the head or the remote nodes
             try:
                 enb.parallel.chdir_project_root()
                 returned_value = fun(self, index, row)
                 if returned_value is not None:
                     row[column_properties.name] = returned_value
             finally:
-                globals.clear()
-                globals.update(old_globals)
+                global_variables.clear()
+                global_variables.update(old_globals)
 
         try:
+            # pylint: disable=protected-access
             column_function_wrapper._redefines_column = fun._redefines_column
         except AttributeError:
             pass
@@ -768,19 +862,21 @@ class ATable(metaclass=MetaTable):
     def indices(self):
         """If `self.index` is a string, it returns a list with that column name.
         If self.index is a list, it returns `self.index`.
-        Useful to iterate homogeneously regardless of whether single or multiple indices are used.
+        Useful to iterate homogeneously regardless of whether single or
+        multiple indices are used.
         """
         return unpack_index_value(self.index)
 
     @property
     def indices_and_columns(self):
-        """:return: a list of all defined columns, i.e., those for which a function has been defined.
+        """:return: a list of all defined columns, i.e.,
+          those for which a function has been defined.
         """
         return self.indices + list(k for k in self.column_to_properties.keys()
-                                   if k not in itertools.chain(self.indices, self.ignored_columns))
+                                   if k not in itertools.chain(self.indices,
+                                                               self.ignored_columns))
 
     # Methods to generate a DataFrame instance with the requested data
-
     def get_df(self, target_indices=None, target_columns=None,
                fill=None, overwrite=None, chunk_size=None):
         """Core method for all |ATable| subclasses to obtain the table's content.
@@ -805,29 +901,37 @@ class ATable(metaclass=MetaTable):
           persistent data storage, even if `target_indices` contains fewer or different
           indices than in previous calls.
 
-        - Beware that if you remove a column definition from this |ATable| subclass and run `get_df`,
+        - Beware that if you remove a column definition from this |ATable|
+          subclass and run `get_df`,
           that column will be removed from persistent storage. If you add a new column,
           that value will be computed for all rows in `target_indices`,
 
-        - You can safely select new and/or different `target_indices`. New data are stored, and existent
-          rows are not removed. If you add new column definitions, those are computed for `target_indices`
+        - You can safely select new and/or different `target_indices`.
+          New data are stored, and existent
+          rows are not removed. If you add new column definitions,
+          those are computed for `target_indices`
           only. If there are other previously existing rows, they are flagged as incomplete, and
-          those new columns will be computed only when those rows' indices are included in `target_indices`.
+          those new columns will be computed only when those rows' indices
+          are included in `target_indices`.
 
         Recall that table cell values are restricted to be
         numeric, string, boolean or non-scalar, i.e., list, tuple or dict.
 
-        :param target_indices: list of indices that are to be contained in the table, or None to infer
+        :param target_indices: list of indices that are to be contained in the table,
+          or None to infer
           automatically from the dataset.
-        :param target_columns: if not None, it must be a list of column names (defined for this class) that
+        :param target_columns: if not None, it must be a list of column names
+          (defined for this class) that
           are to be obtained for the specified indices. If None, all columns are used.
-        :param fill: If True or False, it determines whether values are computed for the selected indices.
+        :param fill: If True or False, it determines whether values are
+          computed for the selected indices.
           If None, values are only computed if enb.config.options.no_new_results is False.
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
         :param chunk_size: If None, its value is assigned from options.chunk_size. After this,
            if not None, the list of target indices is split in
-           chunks of size at most chunk_size elements (each one corresponding to one row in the table).
+           chunks of size at most chunk_size elements
+           (each one corresponding to one row in the table).
            Results are made persistent every time one of these chunks is completed.
            If None, a single chunk is defined with all indices.
 
@@ -835,13 +939,16 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is encountered
           processing the data.
         """
+        # pylint: disable=too-many-arguments
         # Parallelization with ray is only used if it is enabled at this point,
         # i.e., if ray is installed, the current platform is supported, and
         # a cluster configuration file was found. Otherwise, the multiprocessing
-        # library is employed. See the parallel_decorator and parallel_ray modules for more information.
+        # library is employed. See the parallel_decorator and parallel_ray
+        # modules for more information.
         enb.parallel.init()
 
-        target_columns = target_columns if target_columns is not None else list(self.column_to_properties.keys())
+        target_columns = target_columns if target_columns is not None else list(
+            self.column_to_properties.keys())
 
         overwrite = overwrite if overwrite is not None else options.force
         fill = fill if fill is not None else not options.no_new_results
@@ -851,22 +958,26 @@ class ATable(metaclass=MetaTable):
             else self.get_all_input_indices(ext=self.dataset_files_extension)
 
         if not target_indices:
-            raise ValueError(f"No target indices could be found at {repr(options.base_dataset_dir)}. "
-                             f"Please double check that:\n"
-                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} "
-                             f"is correctly set, and it contains the expected samples;\n"
-                             f"(b) you are passing the right value to the "
-                             f"`target_indices` argument of get_df() if not using the default;\n"
-                             f"(c) the experiment class you are using has the intended "
-                             f"`dataset_files_extension` attribute set. It is currently "
-                             f"{repr(self.dataset_files_extension)}. If empty, all files under "
-                             f"the dataset folder should be obtained by default.")
+            raise ValueError(
+                f"No target indices could be found at {repr(options.base_dataset_dir)}. "
+                f"Please double check that:\n"
+                f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} "
+                f"is correctly set, and it contains the expected samples;\n"
+                f"(b) you are passing the right value to the "
+                f"`target_indices` argument of get_df() if not using the default;\n"
+                f"(c) the experiment class you are using has the intended "
+                f"`dataset_files_extension` attribute set. It is currently "
+                f"{repr(self.dataset_files_extension)}. If empty, all files under "
+                f"the dataset folder should be obtained by default.")
 
-        # Split the work into one or more chunks, which are completed before moving on to the next one.
+        # Split the work into one or more chunks, which are completed before
+        # moving on to the next one.
         chunk_size = chunk_size if chunk_size is not None else options.chunk_size
-        chunk_size = chunk_size if chunk_size is not None else len(target_indices)
+        chunk_size = chunk_size if chunk_size is not None else len(
+            target_indices)
         if chunk_size <= 0:
-            raise SyntaxError(f"Invalid chunk_size {chunk_size}. Re-run with -h for syntax help.")
+            raise SyntaxError(
+                f"Invalid chunk_size {chunk_size}. Re-run with -h for syntax help.")
         chunk_list = [target_indices[i:i + chunk_size]
                       for i in range(0, len(target_indices), chunk_size)]
         assert len(chunk_list) > 0
@@ -876,7 +987,8 @@ class ATable(metaclass=MetaTable):
         if fill or overwrite:
             for i, chunk in enumerate(chunk_list):
                 enb.logger.verbose(
-                    f"[{self.__class__.__name__}:get_df] Starting chunk {i + 1}/{len(chunk_list)} "
+                    f"[{self.__class__.__name__}:get_df] Starting chunk "
+                    f"{i + 1}/{len(chunk_list)} "
                     f"(chunk_size={chunk_size}, "
                     f"{100 * i * chunk_size / len(target_indices):.1f}"
                     f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
@@ -899,10 +1011,15 @@ class ATable(metaclass=MetaTable):
                 run_sanity_checks=enb.config.options.force_sanity_checks)
 
         if fill or overwrite:
-            assert len(df) == len(target_indices), (len(df), len(target_indices), target_indices, df)
-            enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved filled dataframe with {len(df)} rows.")
+            assert len(df) == len(target_indices), (
+                len(df), len(target_indices), target_indices, df)
+            enb.logger.verbose(
+                f"[{self.__class__.__name__}:get_df] "
+                f"Retrieved filled dataframe with {len(df)} rows.")
         else:
-            enb.logger.verbose(f"[{self.__class__.__name__}:get_df] Retrieved unfilled dataframe with {len(df)} rows.")
+            enb.logger.verbose(
+                f"[{self.__class__.__name__}:get_df] "
+                f"Retrieved unfilled dataframe with {len(df)} rows.")
 
         return df
 
@@ -910,6 +1027,7 @@ class ATable(metaclass=MetaTable):
         """Get a list of all input indices (recursively) contained in base_dataset_dir.
         By default, the global function enb.atable.get_all_input_files is called.
         """
+        # pylint: disable=no-self-use
         return get_all_input_files(ext=ext, base_dataset_dir=base_dataset_dir)
 
     def get_df_one_chunk(self, target_indices, target_columns, fill_needed,
@@ -917,13 +1035,14 @@ class ATable(metaclass=MetaTable):
         """Internal implementation of the :meth:`get_df` functionality,
         to be applied to a single chunk of indices. It is essentially a self-contained
         call to meth:`enb.atable.ATable.get_df` as described in its documentation, where
-        data are stored in memory until all computations are done, and then the persistent storage
+        data are stored in memory until all computations are done,
+        and then the persistent storage
         is updated if needed.
 
         :param target_columns: list of indices for this chunk
         :param target_columns: list of column names to be filled in this call
-        :param fill_needed: if False, results are not computed (they default to None). Instead,
-          only data in persistent storage is used.
+        :param fill_needed: if False, results are not computed (they default to None).
+          Instead, only data in persistent storage is used.
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
         :param run_sanity_checks: if True, sanity checks are performed on the data
@@ -931,6 +1050,7 @@ class ATable(metaclass=MetaTable):
         :return: a DataFrame instance containing the requested data
         :raises ColumnFailedError: an error was encountered while computing the data.
         """
+        # pylint: disable=too-many-arguments
         # Load all data stored in persistence, or get an empty dataframe.
         # Either way, all columns in self.indices_and_columns are defined.
         loaded_table = self.load_saved_df(run_sanity_checks=run_sanity_checks)
@@ -944,7 +1064,8 @@ class ATable(metaclass=MetaTable):
         # This inner join efficiently queries the loaded table for existing target indices.
         # Its length may be smaller than the requested index length, meaning
         # that some rows are still to be computed.
-        target_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
+        target_df = pd.DataFrame(target_locs,
+                                 columns=[self.private_index_column])
         target_df.set_index(self.private_index_column, drop=True, inplace=True)
         target_df = target_df.merge(
             right=loaded_table,
@@ -953,20 +1074,22 @@ class ATable(metaclass=MetaTable):
             right_index=True,
             copy=False)
 
-        assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
-                                                   f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
+        assert len(target_df) <= len(
+            target_locs), f"Error: Duplicated indices? " \
+                          f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
 
         # This is the case where input samples were previously processed,
         # but new columns were defined/requested.
         fill_needed = fill_needed and (
-                len(target_df) < len(target_indices) or target_df[target_columns].isnull().any().any())
+                len(target_df) < len(target_indices) or target_df[
+            target_columns].isnull().any().any())
 
         if fill_needed or overwrite:
             # This method may raise ColumnFailedError if a column function crashes
             # or fails to fill their associated column(s).
             target_df = self.compute_target_rows(
-                # By passing target_df instead of loaded_table, there is less memory (and possibly network traffic)
-                # footprint.
+                # By passing target_df instead of loaded_table,
+                # there is less memory (and possibly network traffic) footprint.
                 loaded_df=loaded_table,
                 target_df=target_df,
                 target_indices=target_indices,
@@ -982,9 +1105,13 @@ class ATable(metaclass=MetaTable):
             # The new df is available. Now store data into persistence if one is configured
             if self.csv_support_path:
                 loaded_table = pd.concat([loaded_table, target_df])
-                loaded_table = loaded_table[~loaded_table.index.duplicated(keep="last")]
-                os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
-                self.write_persistence(df=loaded_table, output_csv=self.csv_support_path)
+                loaded_table = loaded_table[
+                    ~loaded_table.index.duplicated(keep="last")]
+                os.makedirs(
+                    os.path.dirname(os.path.abspath(self.csv_support_path)),
+                    exist_ok=True)
+                self.write_persistence(df=loaded_table,
+                                       output_csv=self.csv_support_path)
 
         return target_df
 
@@ -1000,7 +1127,9 @@ class ATable(metaclass=MetaTable):
         :raise CorruptedTableError: if run_run_sanity_checks is True and
           a problem is detected.
         """
-        csv_support_path = csv_support_path if csv_support_path is not None else self.csv_support_path
+        # pylint: disable=too-many-branches
+        csv_support_path = csv_support_path \
+            if csv_support_path is not None else self.csv_support_path
 
         try:
             if not csv_support_path:
@@ -1008,24 +1137,30 @@ class ATable(metaclass=MetaTable):
                     f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
 
             # Read CSV from disk
-            with enb.logger.verbose_context(f"Loading dataframe from persistence at {csv_support_path}", sep="... "):
+            with enb.logger.verbose_context(
+                    f"Loading dataframe from persistence at {csv_support_path}",
+                    sep="... "):
                 loaded_df = pd.read_csv(csv_support_path)
                 enb.logger.info(f"Loaded df with {len(loaded_df)} rows")
             loaded_columns = list(loaded_df.columns)
 
-            # Columns defined since the last invocation are initially set to None for all previously
+            # Columns defined since the last invocation are initially set to
+            # None for all previously
             # existing data.
-            for column in self.indices_and_columns:
-                if column not in loaded_df.columns:
-                    loaded_df[column] = None
+            # pylint: disable=no-member
+            for column in (c for c in self.indices_and_columns
+                           if c not in loaded_df.columns):
+                loaded_df[column] = None
 
             if run_sanity_checks:
-                with enb.logger.debug_context("Verifying that no null data is stored in the CSV..."):
+                with enb.logger.debug_context(
+                        "Verifying that no null data is stored in the CSV..."):
                     for index_name in self.indices:
                         if loaded_df[index_name].isnull().any():
-                            raise CorruptedTableError(atable=self,
-                                                      msg=f"Loaded table from {csv_support_path} with empty "
-                                                          f"values for index {index_name} (at least)")
+                            raise CorruptedTableError(
+                                atable=self,
+                                msg=f"Loaded table from {csv_support_path} with empty "
+                                    f"values for index {index_name} (at least)")
 
             # Some columns may have been deleted since the first rows
             # were added to persistence. Only defined columns are selected here,
@@ -1033,24 +1168,30 @@ class ATable(metaclass=MetaTable):
             # whose definition is removed can be removed from persistence
             # when the df is dumped into persistence.
             with enb.logger.debug_context("Loading serialized objects"):
-                loaded_df = loaded_df[self.indices_and_columns + [self.private_index_column]]
+                loaded_df = loaded_df[
+                    self.indices_and_columns + [self.private_index_column]]
                 for column, properties in self.column_to_properties.items():
                     if column in loaded_columns:
                         # Column existed - parse literals if needed
                         if properties.has_ast_values:
-                            loaded_df[column] = loaded_df[column].apply(ast.literal_eval)
+                            loaded_df[column] = loaded_df[column].apply(
+                                ast.literal_eval)
                         elif properties.has_object_values:
-                            loaded_df[column] = loaded_df[column].apply(lambda v: pickle.loads(ast.literal_eval(v)))
+                            loaded_df[column] = loaded_df[column].apply(
+                                lambda v: pickle.loads(ast.literal_eval(v)))
                     else:
                         # Column did not exist: create with None values
                         loaded_df[column] = None
 
-        except (FileNotFoundError, pd.errors.EmptyDataError) as ex:
-            with enb.logger.verbose_context(f"No CSV persistence found for {self.__class__.__name__} "
-                                            f"at {csv_support_path}. Creating an empty one"):
-                loaded_df = pd.DataFrame(columns=self.indices_and_columns + [self.private_index_column])
-                for c in self.indices_and_columns:
-                    loaded_df[c] = None
+        except (FileNotFoundError, pd.errors.EmptyDataError):
+            with enb.logger.verbose_context(
+                    f"No CSV persistence found for {self.__class__.__name__} "
+                    f"at {csv_support_path}. Creating an empty one"):
+                loaded_df = pd.DataFrame(
+                    columns=self.indices_and_columns + [
+                        self.private_index_column])
+                for column in self.indices_and_columns:
+                    loaded_df[column] = None
 
         loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
 
@@ -1059,7 +1200,8 @@ class ATable(metaclass=MetaTable):
                 try:
                     check_unique_indices(loaded_df)
                 except CorruptedTableError as ex:
-                    raise CorruptedTableError(f"Error loading table from {csv_support_path}") from ex
+                    raise CorruptedTableError(
+                        f"Error loading table from {csv_support_path}") from ex
 
         return loaded_df
 
@@ -1070,18 +1212,20 @@ class ATable(metaclass=MetaTable):
                             target_columns,
                             overwrite,
                             target_locs=None):
-        """Generate and return a |DataFrame| with as many rows as given by `target_indices`, with the columns
+        """Generate and return a |DataFrame| with as many rows as given by
+        `target_indices`, with the columns
         given in `target_columns`, using this table's column-setting functions.
 
         This method is run when there are known missing values in the requested df, e.g., there are:
-        
+
         - missing columns of existing rows, and/or
         - new rows to be added (i.e., `target_locs` contains at least one index not
           in `loaded_df`).
-        
+
         Note that this method does not modify `loaded_df`.
 
-        :param loaded_df: the full loaded dataframe read from persistence (or created anew). It is used to avoid
+        :param loaded_df: the full loaded dataframe read from persistence
+          (or created anew). It is used to avoid
           recomputation of existing columns, but it is not modified by this method.
         :param target_df: a dataframe with identical column structure as loaded_table,
           with the subset of loaded_table's rows that match the target indices (i.e., inner join)
@@ -1104,25 +1248,35 @@ class ATable(metaclass=MetaTable):
         :raises ColumnFailedError: if any of the column-setting functions crashes
           or fails to set a value to their assigned table cell.
         """
-        # Get a list of all (column, fun) tuples, where fun is the function that sets column for a given row
+        # pylint: disable=too-many-arguments
+        # Get a list of all (column, fun) tuples,
+        # where fun is the function that sets column for a given row
         try:
-            column_fun_tuples = [(c, self.column_to_properties[c].fun) for c in target_columns]
-            missing_fun_tuples = [fun_tuple for fun_tuple in column_fun_tuples if fun_tuple[1] is None]
+            column_fun_tuples = [(c, self.column_to_properties[c].fun) for c in
+                                 target_columns]
+            missing_fun_tuples = [fun_tuple for fun_tuple in column_fun_tuples
+                                  if fun_tuple[1] is None]
             if missing_fun_tuples:
                 enb.logger.debug(f"Wrong target_columns for {self}. "
                                  "It has None associated functions for the following columns:")
-                enb.logger.debug("\n\t-".join(cft[0] for cft in column_fun_tuples if cft[1] is None))
+                enb.logger.debug("\n\t-".join(
+                    cft[0] for cft in column_fun_tuples if cft[1] is None))
                 enb.logger.debug("These will be ignored")
-                column_fun_tuples = [cft for cft in column_fun_tuples if cft[1] is not None]
+                column_fun_tuples = [cft for cft in column_fun_tuples if
+                                     cft[1] is not None]
         except KeyError as ex:
-            raise ValueError("Invoked with target columns not present in self.column_to_properties. "
-                             f"target_columns={repr(target_columns)}, "
-                             f"column_to_properties.keys()={repr(list(self.column_to_properties.keys()))}") from ex
+            raise ValueError(
+                "Invoked with target columns not present in self.column_to_properties. "
+                f"target_columns={repr(target_columns)}, "
+                f"column_to_properties.keys()="
+                f"{repr(list(self.column_to_properties.keys()))}") from ex
 
-        enb.logger.info(f"Filling {len(target_indices)} rows, {len(target_columns)} columns...")
+        enb.logger.info(
+            f"Filling {len(target_indices)} rows, {len(target_columns)} columns...")
 
         # Get the list of pandas Series instances (table rows) corresponding to target_indices.
-        target_locs = target_locs if target_locs is None else [indices_to_internal_loc(v) for v in target_indices]
+        target_locs = target_locs if target_locs is None else [
+            indices_to_internal_loc(v) for v in target_indices]
 
         # Start computation of new and updated rows in parallel_decorator
         pending_ids = [parallel_compute_one_row.start(
@@ -1134,11 +1288,12 @@ class ATable(metaclass=MetaTable):
             for index, loc in zip(target_indices, target_locs)]
 
         # Iterating a progressive getter continues until all rows are obtained
-        with enb.logger.info_context(f"Parallel computation of {len(pending_ids)} "
-                                     f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
-                                     sep="...\n"):
+        with enb.logger.info_context(
+                f"Parallel computation of {len(pending_ids)} "
+                f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
+                sep="...\n"):
             if options.disable_progress_bar:
-                for pg in enb.parallel.ProgressiveGetter(
+                for _ in enb.parallel.ProgressiveGetter(
                         id_list=pending_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=None):
@@ -1150,22 +1305,24 @@ class ATable(metaclass=MetaTable):
                         title=f"{self.__class__.__name__}.get_df()",
                         spinner="dots_waves2",
                         disable=options.verbose <= 0,
-                        enrich_print=False) as bar:
-                    bar(0)
-                    for pg in enb.parallel.ProgressiveGetter(
+                        enrich_print=False) as abar:
+                    # pylint: disable=not-callable
+                    abar(0)
+                    for _ in enb.parallel.ProgressiveGetter(
                             id_list=pending_ids,
                             iteration_period=self.progress_report_period,
-                            alive_bar=bar):
+                            alive_bar=abar):
                         pass
-                    computed_series = enb.parallel.get(pending_ids)
-                    bar(1)
+                    abar(1)
+                computed_series = enb.parallel.get(pending_ids)
 
         # Verify that everything went well
         found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
         if found_exceptions:
-            raise ColumnFailedError(f"Error setting {len(found_exceptions)}/{len(target_indices)} indices"
-                                    f" with {self.__class__.__name__}",
-                                    exception_list=found_exceptions)
+            raise ColumnFailedError(
+                f"Error setting {len(found_exceptions)}/{len(target_indices)} indices"
+                f" with {self.__class__.__name__}",
+                exception_list=found_exceptions)
 
         # Return the dataframe with the requested rows and columns, without attempting to updated
         # the loaded dataframe (that is done by methods calling this one)
@@ -1177,42 +1334,57 @@ class ATable(metaclass=MetaTable):
 
         return target_df
 
-    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite):
-        """Process a single row of an ATable instance, returning a Series object corresponding to that row.
-        If an error is detected, an exception is returned instead of a Series. Note that the exception
-        is not raised here, but intended to be detected by the compute_target_rows(), i.e., the dispatcher function.
+    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples,
+                        overwrite):
+        """Process a single row of an ATable instance, returning a Series object
+         corresponding to that row.
+        If an error is detected, an exception is returned instead of a Series.
+        Note that the exception
+        is not raised here, but intended to be detected by the compute_target_rows(),
+        i.e., the dispatcher function.
 
-        :param filtered_df: |DataFrame| retrieved from persistent storage, with index compatible with loc.
-          The loc argument itself needs not be present in filtered_df, but is used to avoid recomputing
+        :param filtered_df: |DataFrame| retrieved from persistent storage,
+          with index compatible with loc.
+          The loc argument itself needs not be present in filtered_df,
+          but is used to avoid recomputing
           in case overwrite is not True and columns had been set.
         :param index: index value or values corresponding to the row to
           be processed.
-        :param loc: location compatible with .loc of filtered_df (although it might not be present there),
+        :param loc: location compatible with .loc of filtered_df
+          (although it might not be present there),
           and that will be set into the full loaded_df also using its .loc accessor.
         :param column_fun_tuples: a list of (column, fun) tuples,
            where fun is to be invoked to fill column
         :param overwrite: if True, existing values are overwriten with
           newly computed data
 
-        :return: a `pandas.Series` instance corresponding to this row, with a column named
-          as given by self.private_index_column set to the `loc` argument passed to this function.
+        :return: a `pandas.Series` instance corresponding to this row,
+          with a column named
+          as given by self.private_index_column set to the `loc` argument
+          passed to this function.
         """
+        # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
         try:
             row = filtered_df.loc[loc].copy()
         except KeyError:
             row = pd.Series({k: None for k in self.column_to_properties.keys()})
 
-        with enb.logger.info_context(f"Computing {self.__class__.__name__}'s row for index {index}"):
+        with enb.logger.info_context(
+                f"Computing {self.__class__.__name__}'s row for index {index}"):
             called_functions = set()
             for column, fun in column_fun_tuples:
                 if fun in called_functions:
                     if row[column] is None:
                         raise ValueError(
-                            f"{self.__class__.__name__} failed to fill column {column} with a not-None value. " + (
+                            f"{self.__class__.__name__} failed to fill column {column} "
+                            f"with a not-None value. " + (
                                 "Note that functions starting with column_ should either "
                                 "return a value or raise an exception"
-                                if fun.__name__.startwith(MetaTable.automatic_column_function_prefix) else ""))
-                    enb.logger.info(f"Already called function {fun.__name__} <{self.__class__.__name__}>")
+                                if fun.__name__.startwith(
+                                    MetaTable.automatic_column_function_prefix) else ""))
+                    enb.logger.info(
+                        f"Already called function {fun.__name__} "
+                        f"<{self.__class__.__name__}>")
                     continue
                 if options.selected_columns and column not in options.selected_columns:
                     enb.logger.info(f"Skipping non-selected column {column}")
@@ -1226,58 +1398,83 @@ class ATable(metaclass=MetaTable):
                     except (ValueError, TypeError):
                         skip = len(str(row[column])) > 0
                 if skip:
-                    enb.logger.info(f"Skipping existing value for column {repr(column)},  "
-                                    f"index={repr(index)} <{self.__class__.__name__}>")
+                    enb.logger.info(
+                        f"Skipping existing value for column {repr(column)},  "
+                        f"index={repr(index)} <{self.__class__.__name__}>")
                     continue
 
                 enb.logger.info(f"Calculating {repr(column)} for "
-                                f"index={repr(index)}, fun={fun}, <{self.__class__.__name__}>")
+                                f"index={repr(index)}, fun={fun}, "
+                                f"<{self.__class__.__name__}>")
                 try:
                     result = fun(self, index, row)
                     called_functions.add(fun)
 
                     if row[column] is None:
-                        raise ValueError(f"{self.__class__.__name__} failed to fill "
-                                         f"column {repr(column)}, index {repr(index)}")
+                        raise ValueError(
+                            f"{self.__class__.__name__} failed to fill "
+                            f"column {repr(column)}, index {repr(index)}")
 
                     if result is not None and options.verbose > 1 \
-                            and not fun.__name__.startswith(MetaTable.automatic_column_function_prefix):
-                        enb.logger.warn(f"Function {fun.__name__} returned a non-None value ({repr(result)} "
-                                        f"when setting column {repr(column)}. "
-                                        f"This value is ignored, and row['{column}'] is used instead.")
+                            and not fun.__name__.startswith(
+                        MetaTable.automatic_column_function_prefix):
+                        enb.logger.warn(
+                            f"Function {fun.__name__} returned a non-None value "
+                            f"({repr(result)} "
+                            f"when setting column {repr(column)}. "
+                            f"This value is ignored, and row['{column}'] is used instead.")
 
+                # pylint: disable=broad-except
                 except Exception as ex:
-                    stack_start_message = "-" * (shutil.get_terminal_size()[0] // 5) + \
-                                          f" [START stack trace @ {enb.misc.get_node_name()}#{os.getpid()} " \
-                                          f"({ex.__class__.__name__}) <{self.__class__.__name__}>]"
-                    stack_end_message = "-" * (shutil.get_terminal_size()[0] // 5) + \
-                                        f" [END stack trace @ {enb.misc.get_node_name()}#{os.getpid()} " \
-                                        f"({ex.__class__.__name__}) <{self.__class__.__name__}>]"
+                    stack_start_message = \
+                        "-" * (shutil.get_terminal_size()[0] // 5) + \
+                        f" [START stack trace @ {enb.misc.get_node_name()}" \
+                        f"#{os.getpid()} " \
+                        f"({ex.__class__.__name__}) <{self.__class__.__name__}>]"
+                    stack_end_message = \
+                        "-" * (shutil.get_terminal_size()[0] // 5) + \
+                        f" [END stack trace @ {enb.misc.get_node_name()}" \
+                        f"#{os.getpid()} " \
+                        f"({ex.__class__.__name__}) <{self.__class__.__name__}>]"
                     stack_format = f"{{msg:->{shutil.get_terminal_size()[0]}s}}"
-                    msg = f"{self.__class__.__name__}: Error computing column {repr(column)}:" \
-                          f"\n\t- Node: {enb.misc.get_node_name()}. PID: {os.getpid()}" \
+                    msg = f"{self.__class__.__name__}: " \
+                          f"Error computing column {repr(column)}:" \
+                          f"\n\t- Node: {enb.misc.get_node_name()}. " \
+                          f"PID: {os.getpid()}" \
                           f"\n\t- Failing function: {fun.__qualname__}" \
                           f"\n\t- Failing index: {repr(index)}" \
-                          f"\n\t- Caught exception: {repr(ex)}. Showing stack trace next:\n" \
-                          + stack_format.format(msg=stack_start_message) + "\n" + \
+                          f"\n\t- Caught exception: {repr(ex)}. " \
+                          f"Showing stack trace next:\n" \
+                          + stack_format.format(
+                        msg=stack_start_message) + "\n" + \
                           f"{traceback.format_exc().strip()}\n" \
                           + stack_format.format(msg=stack_end_message)
-                    if isinstance(ex, OSError) and ex.errno == 28:
-                        msg += "\nNOTE: It seems to be an out-of-space error. If your disks have enough space, " \
-                               "you might be running out of space in /dev/shm (or the equivalent in-memory " \
-                               "file used for temporary execution in the experiments by default). If this is the case, " \
-                               "you might need to change enb.config.options.base_tmp_dir to an existing dir in " \
-                               "a partition with enough space, e.g., running with --base_tmp_dir=./tmp.\n"
-                    cfe = ColumnFailedError(atable=self, index=index, column=column, ex=ex, msg=msg)
-                    
+                    if isinstance(ex,
+                                  OSError) and ex.errno == 28:  # pylint: disable=no-member
+                        msg += \
+                            "\nNOTE: It seems to be an out-of-space error. " \
+                            "If your disks have enough space, " \
+                            "you might be running out of space in /dev/shm " \
+                            "(or the equivalent in-memory " \
+                            "file used for temporary execution in the " \
+                            "experiments by default). If this is the case, " \
+                            "you might need to change " \
+                            "enb.config.options.base_tmp_dir to an existing dir in " \
+                            "a partition with enough space, " \
+                            "e.g., running with --base_tmp_dir=./tmp.\n"
+                    cfe = ColumnFailedError(atable=self, index=index,
+                                            column=column, ex=ex, msg=msg)
+
                     if enb.config.options.verbose >= 0:
-                        # Tests can set the verbose level to less than 0 to avoid showing errors on
+                        # Tests can set the verbose level to less than 0
+                        # to avoid showing errors on
                         # specific points of their code
                         enb.logger.error(f"\n{msg}\n")
 
                     return cfe
 
-            for index_name, index_value in zip(self.indices, unpack_index_value(index)):
+            for index_name, index_value in zip(self.indices,
+                                               unpack_index_value(index)):
                 row[index_name] = index_value
 
             row["row_updated"] = datetime.datetime.now().isoformat()
@@ -1291,8 +1488,10 @@ class ATable(metaclass=MetaTable):
         :param output_csv: if None, self.csv_support_path is used as the output path.
         """
         with enb.logger.info_context(
-                msg=f"Dumping CSV with {len(df)} entries into {output_csv}", msg_after=" dumped"):
-            if any(p.has_object_values for p in self.column_to_properties.values()):
+                msg=f"Dumping CSV with {len(df)} entries into {output_csv}",
+                msg_after=" dumped"):
+            if any(p.has_object_values for p in
+                   self.column_to_properties.values()):
                 # If pickling is needed, a copy of the df is made so as not to modify the original.
                 df = df.copy()
                 for column, properties in self.column_to_properties.items():
@@ -1313,14 +1512,18 @@ class ATable(metaclass=MetaTable):
             row = result_df.iloc[i]
             row_str = "struct(" \
                       + f"'{self.index}',{repr(row[self.index])}, " \
-                      + ", ".join(f"'{c}',{repr(row[c])}" for c in self.column_to_properties.keys()) \
+                      + ", ".join(f"'{c}',{repr(row[c])}" for c in
+                                  self.column_to_properties.keys()) \
                       + ");"
-            struct_str_lines.append("".join(row_str.replace("True", "true").replace("False", "false")))
+            struct_str_lines.append("".join(
+                row_str.replace("True", "true").replace("False", "false")))
         struct_str_lines.append("]';")
         return "\n".join(struct_str_lines)
 
     @property
     def name(self):
+        """Return the name of the table. Defaults to the table class name.
+        """
         return f"{self.__class__.__name__}"
 
     def assert_df_sanity(self, df):
@@ -1340,51 +1543,67 @@ class ATable(metaclass=MetaTable):
 
 
 class SummaryTable(ATable):
-    """Summary tables allow to define custom group rows of dataframes, e.g., produced by ATable subclasses,
+    """Summary tables allow to define custom group rows of dataframes,
+     e.g., produced by ATable subclasses,
     and to define new columns (measurements) for each of those groups.
 
-    Column functions can be defined in the same way as for any ATable. In this case, the index elements
-    passed to the column functions are the group labels returned by split_groups(). Column functions can then
+    Column functions can be defined in the same way as for any ATable.
+    In this case, the index elements
+    passed to the column functions are the group labels returned by split_groups().
+    Column functions can then
     access the corresponding dataframe with self.label_to_df[label].
 
-    Note that this behaviour is not unlike the groupby() method of pandas. The main differences are:
+    Note that this behaviour is not unlike the groupby() method of pandas.
+    The main differences are:
 
-        - Grouping can be fully customized, instead of only allowing splitting by one or more column values
+        - Grouping can be fully customized, instead of only allowing splitting
+          by one or more column values
 
-        - The newly defined columns can aggregate data in the group in any arbitrary way. This is of course
-          true for pandas, but SummaryTable tries to gracefully integrate that process into enb, allowing
+        - The newly defined columns can aggregate data in the group in any arbitrary way.
+          This is of course
+          true for pandas, but SummaryTable tries to gracefully integrate
+          that process into enb, allowing
           automatic persistence, easy plotting, etc.
 
-    SummaryTable can be particularly useful as an intermediate step between a complex table's (or enb.Experiment's)
+    SummaryTable can be particularly useful as an intermediate step between
+    a complex table's (or enb.Experiment's)
     get_df and the analyze_df method of analyzers en :mod:`enb.aanalysis`.
     """
 
     def __init__(self, full_df, column_to_properties=None, copy_df=False,
                  csv_support_path=None, group_by=None, include_all_group=False):
         """
-        Initialize a summary table. Group splitting is not invoked until needed by calling self.get_df().
+        Initialize a summary table.
+         Group splitting is not invoked until needed by calling self.get_df().
 
-        Column-setting columns are given the group label and the row to be completed. They can access
+        Column-setting columns are given the group label and the row to be completed.
+        They can access
         self.label_to_df to get the dataframe corresponding to the row's group.
 
         :param full_df: reference pandas dataframe to be summarized.
-        :param column_to_properties: if not None, it should be the column_to_properties attribute
+        :param column_to_properties: if not None,
+        it should be the column_to_properties attribute
           of the table that produced reference_df.
-        :param copy_df: if not True, a pointer to the original reference_df is used. Otherwise, a copy is made.
+        :param copy_df: if not True, a pointer to the original reference_df is used.
+          Otherwise, a copy is made.
           Note that reference_df is typically evaluated each time split_groups() is called.
         :param csv_support_path: if not None, a CSV file is used at that for persistence.
-        :param include_all_group: if True, a group "All" with all samples is included in the summary.
+        :param include_all_group: if True, a group "All" with all
+          samples is included in the summary.
         """
+        # pylint: disable=too-many-arguments
         super().__init__(csv_support_path=csv_support_path, index="group_label")
-        self.reference_df = full_df if copy_df is not True else pd.DataFrame.copy(full_df)
-        self.reference_column_to_properties = dict(column_to_properties) if column_to_properties is not None else None
+        self.reference_df = full_df if copy_df is not True else pd.DataFrame.copy(
+            full_df)
+        self.reference_column_to_properties = dict(
+            column_to_properties) if column_to_properties is not None else None
         self.group_by = group_by
         self.include_all_group = include_all_group
 
     def split_groups(self, reference_df=None, include_all_group=None):
         """Split the reference_df |DataFrame| into an iterable of (label, dataframe) tuples.
         This splitting is performed based on the value of self.group_by:
-        
+
         - If it is None, a single group labelled "all" is created, associated to reference_df.
         - If it is not None:
             - It can be a |DataFrame| column index, e.g., a column name or a list of column names.
@@ -1392,21 +1611,21 @@ class SummaryTable(ATable):
             - It can be a callable with a single argument reference_df.
               In this case, the result of calling that method with reference_df as argument
               is returned by the call to split_groups().
-              
-        
+
+
         Subclasses can easily implement grouping custom grouping methods, which must adhere
         to the following constraints:
         - It must return an iterable of group_label, group_df tuples.
         - Unique group_label values must be returned.
-        
+
         Also note that:
-        
+
         - It is NOT needed that the union of all group_df tuples yield reference_df.
         - It is NOT needed that the intersection of the any two group_df elements is empty.
         - The group_df dataframes normally contain all columns in reference_df, but
           it is NOT mandatory to maintain this behavior.
-        
-        
+
+
         :param reference_df: if not None, a reference dataframe to split.
           If None, self.reference_df is employed instead.
         :param include_all_group: if True, an "All" group is added, containing all input samples,
@@ -1416,41 +1635,53 @@ class SummaryTable(ATable):
         """
         reference_df = reference_df if reference_df is not None else self.reference_df
         all_group_iterable = [("All", reference_df)]
-        include_all_group = include_all_group if include_all_group is not None else self.include_all_group
+        include_all_group = include_all_group \
+            if include_all_group is not None else self.include_all_group
 
         if self.group_by is None:
             return all_group_iterable
-        else:
-            try:
-                return itertools.chain(sorted(self.group_by(reference_df)),
-                                       all_group_iterable if include_all_group else [])
-            except TypeError:
-                groups = list(itertools.chain(sorted(reference_df.groupby(self.group_by)),
-                                              all_group_iterable if include_all_group else []))
-                return groups
+        try:
+            return itertools.chain(sorted(self.group_by(reference_df)),
+                                   all_group_iterable if include_all_group else [])
+        except TypeError:
+            groups = list(
+                itertools.chain(sorted(reference_df.groupby(self.group_by)),
+                                all_group_iterable if include_all_group else []))
+            return groups
 
-    def get_df(self, reference_df=None, include_all_group=None):
+    def get_df(self, *args, reference_df=None, include_all_group=None,
+               **kwargs):
         """
-        Get the summary dataframe. This class only defines the 'group_size' column for the output dataframe.
+        Get the summary dataframe. This class only defines the 'group_size'
+        column for the output dataframe.
         Subclasses may add as many columns to the summary as desired.
 
-        :param reference_df: if not None, the dataframe to be used as reference for the summary. If None,
+        :param reference_df: if not None, the dataframe to be used as
+          reference for the summary. If None,
           the one provided at initialization is used.
 
         :return: the summary dataframe with all columns defined for self's class.
         """
+        # pylint: disable=arguments-differ
         if hasattr(self, "label_to_df"):
-            raise RuntimeError("self.label_to_df should not be defined externally")
+            raise RuntimeError(
+                "self.label_to_df should not be defined externally")
+        # pylint: disable=attribute-defined-outside-init
         self.label_to_df = collections.OrderedDict()
         try:
-            for label, df in self.split_groups(reference_df=reference_df, include_all_group=include_all_group):
-                label = str(label)  # Needed to force labels being displayable strings
+            for label, df in self.split_groups(reference_df=reference_df,
+                                               include_all_group=include_all_group):
+                label = str(
+                    label)  # Needed to force labels being displayable strings
                 if label in self.label_to_df:
-                    raise ValueError(f"[E]rror: split_groups of {self} returned label {label} at least twice. "
-                                     f"Group labels must be unique.")
+                    raise ValueError(
+                        f"[E]rror: split_groups of {self} returned label "
+                        f"{label} at least twice. "
+                        f"Group labels must be unique.")
                 self.label_to_df[label] = df
             target_indices = list(self.label_to_df.keys())
-            return super().get_df(target_indices=target_indices)
+            return super().get_df(target_indices=target_indices, *args,
+                                  **kwargs)
         finally:
             try:
                 del self.label_to_df
@@ -1460,11 +1691,13 @@ class SummaryTable(ATable):
     def column_group_size(self, index, row):
         """Number of elements (rows from full_df) in the group.
         """
+        # pylint: disable=unused-argument
         return len(self.label_to_df[index])
 
     def column_group_label(self, index, row):
         """Set the name of the group in a column.
         """
+        # pylint: disable=unused-argument,no-self-use
         return index
 
 
@@ -1486,23 +1719,25 @@ def string_or_float(cell_value):
 
 
 def get_nonscalar_value(cell_value):
-    """Parse a |DataFrame|'s cell value in a column declared to contain non-scalar types, i.e., dict, list or tuple.
+    """Parse a |DataFrame|'s cell value in a column declared to contain
+    non-scalar types, i.e., dict, list or tuple.
     Return an instance of one of those types.
 
     If cell_value is a string, ast is employed to parse it.
     If cell_Value is a dict, list or tuple, it is returned without modification.
     Otherwise, an error is raised.
 
-    Note that |ATable| subclasses produce dataframes with the intended data types also for non-scalar types.
-    This method is provided as a convenience tool for the case when raw CSV files produced by |enb| are
+    Note that |ATable| subclasses produce dataframes with the intended data
+    types also for non-scalar types.
+    This method is provided as a convenience tool for the case when raw CSV
+    files produced by |enb| are
     read directly, and not through |ATable|'s persistence system.
     """
-    if isinstance(cell_value, dict) or isinstance(cell_value, list) or isinstance(cell_value, tuple):
+    if isinstance(cell_value, (dict, list, tuple)):
         return cell_value
-    elif isinstance(cell_value, str):
+    if isinstance(cell_value, str):
         return ast.literal_eval(cell_value)
-    else:
-        raise ValueError(f"Cannot identify non-scalar value {repr(cell_value)}")
+    raise ValueError(f"Cannot identify non-scalar value {repr(cell_value)}")
 
 
 def check_unique_indices(df):
@@ -1511,9 +1746,10 @@ def check_unique_indices(df):
     # Verify consistency
     duplicated_indices = df.index.duplicated()
     if duplicated_indices.any():
-        msg = f"Loaded table with the following DUPLICATED indices:\n\t: "
+        msg = "Loaded table with the following DUPLICATED indices:\n\t: "
         msg += "\n\t:: ".join(str(' , '.join(values))
-                              for values in df[duplicated_indices][df.example_indices].values)
+                              for values in
+                              df[duplicated_indices][df.example_indices].values)
         raise CorruptedTableError(atable=None, msg=msg)
 
 
@@ -1527,31 +1763,35 @@ def indices_to_internal_loc(values):
 
     :return: a unique string for indexing given the input values
     """
-    if isinstance(values, str) or isinstance(values, numbers.Number):
+    if isinstance(values, (str, numbers.Number)):
         values = [values]
 
-    values = [get_canonical_path(v) if isinstance(v, str) and os.path.exists(v) else v for v in values]
+    values = [
+        get_canonical_path(v) if isinstance(v, str) and os.path.exists(v) else v
+        for v in values]
 
     return str(tuple(values))
 
 
-def unpack_index_value(input):
+def unpack_index_value(index):
     """Unpack an enb-created |DataFrame| index and return its elements.
-    This can be useful to iterate homogeneously regardless of whether single or multiple indices are used.
+    This can be useful to iterate homogeneously regardless of whether single
+    or multiple indices are used.
 
     :return: If input is a string, it returns a list with that column name.
       If input is a list, it returns self.index.
     """
-    if isinstance(input, str) or isinstance(input, numbers.Number):
-        return [input]
-    else:
-        return list(input)
+    if isinstance(index, (str, numbers.Number)):
+        return [index]
+    return list(index)
 
 
 @enb.parallel.parallel()
-def parallel_compute_one_row(atable_instance, filtered_df, index, loc, column_fun_tuples, overwrite):
+def parallel_compute_one_row(atable_instance, filtered_df, index, loc,
+                             column_fun_tuples, overwrite):
     """Ray wrapper for :meth:`ATable.process_row`
     """
+    # pylint: disable=too-many-arguments
     return atable_instance.compute_one_row(
         filtered_df=filtered_df,
         index=index,
@@ -1561,7 +1801,8 @@ def parallel_compute_one_row(atable_instance, filtered_df, index, loc, column_fu
 
 
 def column_function(*column_property_list, **kwargs):
-    """New columns can be added to |ATable| subclasses by decorating them with @enb.atable.column_function,
+    """New columns can be added to |ATable| subclasses by decorating them with
+    @enb.atable.column_function,
     e.g., with code similar to the following::
 
         class TableA(enb.atable.ATable):
@@ -1571,7 +1812,8 @@ def column_function(*column_property_list, **kwargs):
 
     The `column_property_list` argument can be one of the following options:
 
-    - one or more strings, which are interpreted as the new column(s)' name(s). For example::
+    - one or more strings, which are interpreted as the new column(s)' name(s).
+      For example::
 
         class TableC(enb.atable.ATable):
         @enb.atable.column_function("uppercase", "lowercase")
@@ -1581,20 +1823,25 @@ def column_function(*column_property_list, **kwargs):
 
 
     - one or more |ColumnProperties| instances, one for each defined column.
-    - a list of |ColumnProperties| instances, e.g., by invoking `@column_function([cp1,cp2])`
+    - a list of |ColumnProperties| instances, e.g., by invoking
+          `@column_function([cp1,cp2])`
           where `cp1` and `cp2` are |ColumnProperties| instances.
           This option is deprecated and provided for backwards compatibility only.
-          If `properties=[cp1,cp2]`, then `@column_function(l)` (deprecated) and `@column_function(*l)`
+          If `properties=[cp1,cp2]`, then `@column_function(l)` (deprecated)
+          and `@column_function(*l)`
           should result in identical column definitions.
 
 
     Decorator to allow definition of table columns for
-    still undefined classes. To do so, MetaTable keeps track of |column_function|-decorated methods
+    still undefined classes. To do so, MetaTable keeps track of
+    |column_function|-decorated methods
     while the class is being defined.
-    Then, when the class is created, MetaTable adds the columns defined by the decorated functions.
+    Then, when the class is created, MetaTable adds the columns defined
+    by the decorated functions.
 
     :param column_property_list: list of column property definitions, as described above.
-    :return: the wrapper that actually decorates the function using the column_property_list and kwargs parameters.
+    :return: the wrapper that actually decorates the function using the
+      column_property_list and kwargs parameters.
     """
     kwargs = dict(kwargs)
 
@@ -1603,13 +1850,15 @@ def column_function(*column_property_list, **kwargs):
     def inner_wrapper(decorated_method):
         try:
             cls_name = get_defining_class_name(decorated_method)
-        except IndexError:
-            raise SyntaxError(f"Detected a non-class method decorated with @enb.atable.column_function, "
-                              f"which is not supported.")
+        except IndexError as ex:
+            raise SyntaxError(
+                "Detected a non-class method decorated with @enb.atable.column_function, "
+                "which is not supported.") from ex
 
         # Normalize arguments and add to the list of functions pending to be registered.
         normalized_list = ATable.normalize_column_function_arguments(
-            column_property_list=column_property_list, fun=decorated_method, **kwargs)
+            column_property_list=column_property_list, fun=decorated_method,
+            **kwargs)
 
         MetaTable.pendingdefs_classname_fun_columnpropertylist_kwargs.append(
             (cls_name, decorated_method, normalized_list, kwargs))
@@ -1623,18 +1872,23 @@ def redefines_column(f):
     """When an |ATable| subclass defines a method with the same name as any of the
     parent classes, and when that method defines a column, it must be decorated with this.
 
-    Otherwise, a SyntaxError is raised. This is to prevent hard-to-find bugs where a parent
-    class' definition of the method is used when filling a row's column, but calling that method
+    Otherwise, a SyntaxError is raised. This is to prevent hard-to-find bugs
+    where a parent
+    class' definition of the method is used when filling a row's column,
+    but calling that method
     on the child's instance runs the child's code.
 
-    Functions decorated with this method acquire a _redefines_column attribute, that is then identified by
-    :meth:`enb.atable.ATable.add_column_function`, i.e., the method responsible for creating columns.
+    Functions decorated with this method acquire a _redefines_column attribute,
+    that is then identified by
+    :meth:`enb.atable.ATable.add_column_function`, i.e., the method responsible
+    for creating columns.
 
-    Note that _redefines_column attributes for non-column and non-overwritting methods are not employed
-    by |enb| thereafter.
+    Note that _redefines_column attributes for non-column and non-overwritting
+    methods are not employed by |enb| thereafter.
 
     :param f: rewriting function being decorated
     """
+    # pylint: disable=protected-access
     f._redefines_column = True
     return f
 
@@ -1649,8 +1903,9 @@ def get_class_that_defined_method(meth):
                 return cls
         meth = meth.__func__  # fallback to __qualname__ parsing
     if inspect.isfunction(meth):
-        cls = getattr(inspect.getmodule(meth),
-                      meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        cls = getattr(
+            inspect.getmodule(meth),
+            meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
         if isinstance(cls, type):
             return cls
     return getattr(meth, '__objclass__', None)
@@ -1665,10 +1920,13 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     :return: the sorted list of canonical paths to the found input files.
     """
     # Set the input dataset dir
-    base_dataset_dir = base_dataset_dir if base_dataset_dir is not None else options.base_dataset_dir
+    base_dataset_dir = base_dataset_dir \
+        if base_dataset_dir is not None else options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
-        enb.logger.info(f"Cannot get input samples from {base_dataset_dir} (path not found or not a dir). "
-                        f"Using [sys.argv[0]] = [{os.path.basename(sys.argv[0])}] instead.")
+        enb.logger.info(
+            f"Cannot get input samples from {base_dataset_dir} "
+            f"(path not found or not a dir). "
+            f"Using [sys.argv[0]] = [{os.path.basename(sys.argv[0])}] instead.")
         return [os.path.basename(sys.argv[0])]
 
     # Recursively get all files, filtering only those that match the extension, if provided.
@@ -1680,7 +1938,8 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
         key=lambda p: get_canonical_path(p).lower())
 
     # If quick is selected, return at most as many paths as the quick parameter count
-    all_input_files = sorted_path_list if not options.quick else sorted_path_list[:options.quick]
+    all_input_files = sorted_path_list if not options.quick else sorted_path_list[
+                                                                 :options.quick]
 
     return all_input_files
 

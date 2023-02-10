@@ -184,7 +184,6 @@ class HeadNode:
                 if hasattr(m, "__name__")
                    and m.__name__ not in options._initial_module_names
                    and not m.__name__.startswith("_")]
-            # pylint: enable=protected-access
             ray.init(address=f"localhost:{self.ray_port}",
                      _redis_password=self.session_password,
                      runtime_env=dict(
@@ -521,7 +520,6 @@ def is_remote_node():
         # pylint: disable=protected-access
         return options._name_to_property["head_address"] \
             != enb.misc.get_node_ip()
-        # pylint: enable=protected-access
     except KeyError:
         return False
 
