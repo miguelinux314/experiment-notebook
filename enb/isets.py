@@ -6,8 +6,8 @@ __since__ = "2020/04/01"
 
 import os
 import math
-import numpy as np
 import re
+import numpy as np
 import imageio
 import enb
 from enb.config import options
@@ -26,7 +26,8 @@ def entropy(data):
 
 def mutual_information(data1, data2):
     """Compute the mutual information between two vectors of identical length
-    after flattening. Implemented following https://en.wikipedia.org/wiki/Mutual_information#Definition
+    after flattening. Implemented following
+    https://en.wikipedia.org/wiki/Mutual_information#Definition
     """
     # x: data1
     values1, counts1 = np.unique(data1.flatten(), return_counts=True)
@@ -42,8 +43,10 @@ def mutual_information(data1, data2):
     entropy_y = -sum(p * math.log2(p) for p in probabilities2)
 
     # joint (x,y)
-    bin_count = max(max(v) for v in (values1, values2)) - min(min(v) for v in (values1, values2)) + 1
-    count_xy = np.histogram2d(data1.flatten(), data2.flatten(), bin_count)[0].flatten()
+    bin_count = max(max(v) for v in (values1, values2)) - min(
+        min(v) for v in (values1, values2)) + 1
+    count_xy = np.histogram2d(data1.flatten(), data2.flatten(), bin_count)[
+        0].flatten()
     total_sum_xy = count_xy.sum()
     assert total_sum_xy == total_sum1
     probabilities_xy = count_xy / total_sum_xy
@@ -54,13 +57,18 @@ def mutual_information(data1, data2):
 
 def kl_divergence(data1, data2):
     """Return KL(P||Q), KL(Q||P) KL is the KL divergence in bits per sample,
-    P is the sample probability distribution of data1, Q is the sample probability distribution of data2.
-    
-    If both P and Q contain the same values (even if with different counts), both returned values 
-    are identical and as defined in https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence#Definition.
-    
-    Otherwise, the formula is modified so that whenever p or q is 0, the factor is skipped from the count.
-    In this case, the two values most likely differ and they should be carefully interpreted.
+    P is the sample probability distribution of data1, Q is the sample
+    probability distribution of data2.
+
+    If both P and Q contain the same values (even if with different counts),
+    both returned values
+    are identical and as defined in
+    https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence#Definition.
+
+    Otherwise, the formula is modified so that whenever p or q is 0, the factor
+    is skipped from the count.
+    In this case, the two values most likely differ and they should be
+    carefully interpreted.
     """
     # x: data1
     values1, counts1 = np.unique(data1.flatten(), return_counts=True)
@@ -73,35 +81,42 @@ def kl_divergence(data1, data2):
     assert total_sum1 == total_sum2
     probabilities2 = {v: c / total_sum2 for v, c in zip(values2, counts2)}
 
-    kl_pq = sum(probabilities1[k] * math.log(probabilities1[k] / probabilities2[k])
-                if k in probabilities2 and probabilities1[k] != 0 and probabilities2[k] != 0 else 0
-                for k in probabilities1.keys())
-    kl_qp = sum(probabilities2[k] * math.log(probabilities2[k] / probabilities1[k])
-                if k in probabilities1 and probabilities1[k] != 0 and probabilities2[k] != 0 else 0
-                for k in probabilities2.keys())
+    kl_pq = sum(
+        probabilities1[k] * math.log(probabilities1[k] / probabilities2[k])
+        if k in probabilities2 and probabilities1[k] != 0 and probabilities2[
+            k] != 0 else 0
+        for k in probabilities1.keys())
+    kl_qp = sum(
+        probabilities2[k] * math.log(probabilities2[k] / probabilities1[k])
+        if k in probabilities1 and probabilities1[k] != 0 and probabilities2[
+            k] != 0 else 0
+        for k in probabilities2.keys())
 
     return kl_pq, kl_qp
 
 
-def file_path_to_geometry_dict(file_path, existing_dict=None, verify_file_size=True):
+def file_path_to_geometry_dict(file_path, existing_dict=None,
+                               verify_file_size=True):
     """Return a dict with basic geometry dict based on the file path and the file size.
-    
+
         The basename of the file should contain something like u8be-3x1000x2000, where
-        u8be is the data format (unsigned, 8 bits per sample, big endian) 
-        and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000 in this example). 
+        u8be is the data format (unsigned, 8 bits per sample, big endian)
+        and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000 in this example).
 
     :param file_path: file path whose basename is used to determine the image geometry.
     :param existing_dict: if not None, the this dict is updated and then returned. If None,
       a new dictionary is created.
-    :param verify_file_size: if True, file_path is expected to be exactly Z*X*Y*byte_per_samples bytes.
-      Otherwise an exception is thrown. 
+    :param verify_file_size: if True, file_path is expected to be exactly
+      Z*X*Y*byte_per_samples bytes.
+      Otherwise an exception is thrown.
     """
     row = existing_dict if existing_dict is not None else {}
     matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
     if matches:
         if len(matches) > 1:
-            raise ValueError(f"File path {file_path} contains more than one image geometry tag. "
-                             f"Matches: {repr(matches)}.")
+            raise ValueError(
+                f"File path {file_path} contains more than one image geometry tag. "
+                f"Matches: {repr(matches)}.")
         match = matches[0]
         component_count, height, width = (int(match[i]) for i in range(3))
         if any(dim < 1 for dim in (width, height, component_count)):
@@ -112,21 +127,28 @@ def file_path_to_geometry_dict(file_path, existing_dict=None, verify_file_size=T
         _file_path_to_datatype_dict(file_path, row)
 
         if verify_file_size:
-            assert os.path.getsize(file_path) == width * height * component_count * row["bytes_per_sample"], \
-                (file_path, os.path.getsize(file_path), width, height, component_count, row["bytes_per_sample"],
+            assert os.path.getsize(
+                file_path) == width * height * component_count * row[
+                       "bytes_per_sample"], \
+                (file_path, os.path.getsize(file_path), width, height,
+                 component_count, row["bytes_per_sample"],
                  width * height * component_count * row["bytes_per_sample"])
             assert row["samples"] == width * height * component_count
-    elif any(c not in row for c in ("width", "height", "component_count", "samples")):
-        enb.logger.debug("Cannot determine image geometry (X, Y, Z dimensions; number of samples) "
-                         f"from file name {os.path.basename(file_path)}.")
-        return dict()
+    elif any(c not in row for c in
+             ("width", "height", "component_count", "samples")):
+        enb.logger.debug(
+            "Cannot determine image geometry (X, Y, Z dimensions; number of samples) "
+            f"from file name {os.path.basename(file_path)}.")
+        return {}
     return row
 
 
 def _file_path_to_datatype_dict(file_path, existing_dict=None):
-    existing_dict = existing_dict if existing_dict is not None else dict()
+    existing_dict = existing_dict if existing_dict is not None else {}
 
     base_name = os.path.basename(file_path)
+
+    # pylint: disable=too-many-branches
     if "u8be" in base_name:
         existing_dict["bytes_per_sample"] = 1
         existing_dict["big_endian"] = True
@@ -192,9 +214,11 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["big_endian"] = False
         existing_dict["signed"] = True
         existing_dict["float"] = True
+    # pylint: enable=too-many-branches
 
     assert os.path.getsize(file_path) % existing_dict["bytes_per_sample"] == 0
-    existing_dict["samples"] = os.path.getsize(file_path) // existing_dict["bytes_per_sample"]
+    existing_dict["samples"] = os.path.getsize(file_path) // existing_dict[
+        "bytes_per_sample"]
 
     return existing_dict
 
@@ -208,62 +232,89 @@ class ImageGeometryTable(sets.FilePropertiesTable):
 
     # Data type columns
 
-    @atable.column_function("bytes_per_sample", label="Bytes per sample", plot_min=0)
+    @atable.column_function("bytes_per_sample", label="Bytes per sample",
+                            plot_min=0)
     def set_bytes_per_sample(self, file_path, row):
+        """Infer the number of bytes per sample based from the file path.
+        """
         if any(s in file_path for s in ("u8be", "u8le", "s8be", "s8le")):
             row[_column_name] = 1
-        elif any(s in file_path for s in ("u16be", "u16le", "s16be", "s16le", "f16")):
+        elif any(s in file_path for s in
+                 ("u16be", "u16le", "s16be", "s16le", "f16")):
             row[_column_name] = 2
-        elif any(s in file_path for s in ("u32be", "u32le", "s32be", "s32le", "f32")):
+        elif any(s in file_path for s in
+                 ("u32be", "u32le", "s32be", "s32le", "f32")):
             row[_column_name] = 4
         elif any(s in file_path for s in ("f64")):
             row[_column_name] = 8
         else:
-            raise sets.UnkownPropertiesException(f"{self.__class__.__name__}: unknown {_column_name} for {file_path}")
+            raise sets.UnkownPropertiesException(
+                f"{self.__class__.__name__}: "
+                f"unknown {_column_name} for {file_path}")
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
+        """Infer whether the data are floating point from the file path.
+        """
         if any(s in os.path.basename(file_path) for s in
-               ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be", "s16le",
+               ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be",
+                "s16le",
                 "u32be", "u32le", "s32be", "s32le")):
             row[_column_name] = False
-        elif any(s in os.path.basename(file_path) for s in ("f16", "f32", "f64")):
+        elif any(s in os.path.basename(file_path) for s in
+                 ("f16", "f32", "f64")):
             row[_column_name] = True
         else:
-            enb.logger.debug(f"Unknown {_column_name} from {file_path}. Setting to False.")
+            enb.logger.debug(
+                f"Unknown {_column_name} from {file_path}. Setting to False.")
             row[_column_name] = False
 
     @atable.column_function("signed", label="Signed samples")
     def set_signed(self, file_path, row):
-        if any(s in file_path for s in ("u8be", "u16be", "u16le", "u32be", "u32le")):
+        """Infer whether the data are signed from the file path.
+        """
+        if any(s in file_path for s in
+               ("u8be", "u16be", "u16le", "u32be", "u32le")):
             row[_column_name] = False
-        elif any(s in file_path for s in ("s8be", "s16be", "s16le", "s32be", "s32le", "f16", "f32", "f64")):
+        elif any(s in file_path for s in (
+                "s8be", "s16be", "s16le", "s32be", "s32le", "f16", "f32",
+                "f64")):
             row[_column_name] = True
         else:
-            enb.logger.debug(f"Unknown {_column_name} for {file_path}. Setting to False.")
+            enb.logger.debug(
+                f"Unknown {_column_name} for {file_path}. Setting to False.")
             row[_column_name] = False
 
     @atable.column_function("big_endian", label="Big endian?")
     def set_big_endian(self, file_path, row):
-        if any(s in file_path for s in ("u8be", "u16be", "u32be", "s8be", "s16be", "s32be")):
+        """Infer whether the data are big endian from the file path.
+        """
+        if any(s in file_path for s in
+               ("u8be", "u16be", "u32be", "s8be", "s16be", "s32be")):
             row[_column_name] = True
-        elif any(s in file_path for s in ("u8le", "u16le", "u32le", "s8le", "s16le", "s32le")):
+        elif any(s in file_path for s in
+                 ("u8le", "u16le", "u32le", "s8le", "s16le", "s32le")):
             row[_column_name] = False
         elif any(s in file_path for s in ("f16", "f32", "f64")):
             row[_column_name] = True
         else:
-            enb.logger.debug(f"Unknown {_column_name} for {file_path}. Setting to False.")
+            enb.logger.debug(
+                f"Unknown {_column_name} for {file_path}. Setting to False.")
             row[_column_name] = False
 
     @atable.column_function("dtype", label="Numpy dtype")
     def set_column_dtype(self, file_path, row):
+        """Infer whether the data type from the file path.
+        """
         """Set numpy's dtype string
         """
         if row["float"]:
             row[_column_name] = f"f{8 * row['bytes_per_sample']}"
         else:
             row[
-                _column_name] = f"{'>' if row['big_endian'] else '<'}{'i' if row['signed'] else 'u'}{row['bytes_per_sample']}"
+                _column_name] = f"{'>' if row['big_endian'] else '<'}" \
+                                f"{'i' if row['signed'] else 'u'}" \
+                                f"{row['bytes_per_sample']}"
 
     @atable.column_function("type_name", label="Type name usable in file names")
     def set_type_name(self, file_path, row):
@@ -273,7 +324,9 @@ class ImageGeometryTable(sets.FilePropertiesTable):
             row[_column_name] = f"f{8 * row['bytes_per_sample']}"
         else:
             row[
-                _column_name] = f"{'s' if row['signed'] else 'u'}{8 * row['bytes_per_sample']}{'be' if row['big_endian'] else 'le'}"
+                _column_name] = f"{'s' if row['signed'] else 'u'}" \
+                                f"{8 * row['bytes_per_sample']}" \
+                                f"{'be' if row['big_endian'] else 'le'}"
 
     # Image dimension columns
 
@@ -287,17 +340,20 @@ class ImageGeometryTable(sets.FilePropertiesTable):
     @atable.column_function([
         atable.ColumnProperties(name="width", label="Width", plot_min=1),
         atable.ColumnProperties(name="height", label="Height", plot_min=1),
-        atable.ColumnProperties(name="component_count", label="Components", plot_min=1),
+        atable.ColumnProperties(name="component_count", label="Components",
+                                plot_min=1),
     ])
     def set_image_geometry(self, file_path, row):
         """Obtain the image's geometry (width, height and number of components)
         based on the filename tags (and possibly its size)
         """
-        file_path_to_geometry_dict(file_path=file_path, existing_dict=row, verify_file_size=self.verify_file_size)
+        file_path_to_geometry_dict(file_path=file_path, existing_dict=row,
+                                   verify_file_size=self.verify_file_size)
 
 
 class ImagePropertiesTable(ImageGeometryTable):
-    """Properties table for images, with geometry and additional statistical information.
+    """Properties table for images, with geometry
+    and additional statistical information.
     Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
     """
 
@@ -307,7 +363,10 @@ class ImagePropertiesTable(ImageGeometryTable):
         atable.ColumnProperties(name="sample_min", label="Min sample value"),
         atable.ColumnProperties(name="sample_max", label="Max sample value")])
     def set_sample_extrema(self, file_path, row):
-        array = load_array_bsq(file_or_path=file_path, image_properties_row=row).flatten()
+        """Set the minimum and maximum values stored in file_path.
+        """
+        array = load_array_bsq(file_or_path=file_path,
+                               image_properties_row=row).flatten()
         row["sample_min"], row["sample_max"] = array.min(), array.max()
         if row["float"] == False:
             assert row["sample_min"] == int(row["sample_min"])
@@ -317,11 +376,15 @@ class ImagePropertiesTable(ImageGeometryTable):
 
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
+        """Set minimum number of bits per sample that can be used to store
+        the data (without compression).
+        """
         if row["float"] is True:
             range_len = 8 * row["bytes_per_sample"]
         else:
             range_len = int(row["sample_max"]) - int(row["sample_min"])
-        assert range_len >= 0, (file_path, row["sample_max"], row["sample_min"], range_len)
+        assert range_len >= 0, (
+            file_path, row["sample_max"], row["sample_min"], range_len)
         row[_column_name] = max(1, math.ceil(math.log2(range_len + 1)))
 
     @atable.column_function([
@@ -330,33 +393,28 @@ class ImagePropertiesTable(ImageGeometryTable):
                                 plot_min=0, plot_max=8 * bytes)
         for bytes in (1, 2, 4)])
     def set_file_entropy(self, file_path, row):
-        """Set the zero-order entropy of the data in file_path 
-        for 1, 2 and 4 bytes per sample in entropy_1B_bps, entropy_2B_bps and entropy_4B_bpsm, respectively. 
+        """Set the zero-order entropy of the data in file_path
+        for 1, 2 and 4 bytes per sample in entropy_1B_bps, entropy_2B_bps
+        and entropy_4B_bpsm, respectively.
         If the file is not a multiple of those bytes per sample, -1 is stored instead.
         """
         for bytes in (1, 2, 4):
             if row["bytes_per_sample"] % bytes != 0:
                 row[f"entropy_{bytes}B_bps"] = -1
             else:
-                row[f"entropy_{bytes}B_bps"] = entropy(np.fromfile(file_path, dtype=f"uint{8 * bytes}").flatten())
-
-    @atable.column_function(
-        [f"byte_value_{s}" for s in ["min", "max", "avg", "std"]])
-    def set_byte_value_extrema(self, file_path, row):
-        contents = np.fromfile(file_path, dtype="uint8")
-        row["byte_value_min"] = contents.min()
-        row["byte_value_max"] = contents.max()
-        row["byte_value_avg"] = contents.mean()
-        row["byte_value_std"] = contents.std()
+                row[f"entropy_{bytes}B_bps"] = entropy(
+                    np.fromfile(file_path, dtype=f"uint{8 * bytes}").flatten())
 
 
 class SampleDistributionTable(ImageGeometryTable):
     @enb.atable.column_function(
         [enb.atable.ColumnProperties("sample_distribution",
                                      label="Sample probability distribution",
-                                     plot_min=0, plot_max=1, has_dict_values=True)])
+                                     plot_min=0, plot_max=1,
+                                     has_dict_values=True)])
     def set_sample_distribution(self, file_path, row):
-        image = enb.isets.load_array_bsq(file_or_path=file_path, image_properties_row=row)
+        image = enb.isets.load_array_bsq(file_or_path=file_path,
+                                         image_properties_row=row)
         unique, counts = np.unique(image, return_counts=True)
         row[_column_name] = dict(zip(unique, counts / image.size))
 
@@ -369,7 +427,8 @@ class HistogramFullnessTable1Byte(atable.ATable):
         plot_min=0, plot_max=1)
     def set_histogram_fullness_1byte(self, file_path, row):
         """Set the fraction of the histogram (of all possible values that can
-        be represented) is actually present in file_path, considering unsigned  1-byte samples.
+        be represented) is actually present in file_path, considering unsigned
+        1-byte samples.
         """
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint8)).size / (2 ** 8)
@@ -384,7 +443,8 @@ class HistogramFullnessTable2Bytes(atable.ATable):
         plot_min=0, plot_max=1)
     def set_histogram_fullness_2bytes(self, file_path, row):
         """Set the fraction of the histogram (of all possible values that can
-        be represented) is actually present in file_path, considering unsigned 2-byte samples.
+        be represented) is actually present in file_path, considering unsigned
+        2-byte samples.
         """
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint16)).size / (2 ** 16)
@@ -410,7 +470,8 @@ class BandEntropyTable(ImageGeometryTable):
     """Table to calculate the entropy of each band
     """
 
-    @atable.column_function("entropy_per_band", label="Entropy per band", has_dict_values=True)
+    @atable.column_function("entropy_per_band", label="Entropy per band",
+                            has_dict_values=True)
     def set_entropy_per_band(self, file_path, row):
         """Store a dictionary indexed by band index (zero-indexed) with values
         being entropy in bits per sample.
@@ -424,10 +485,12 @@ class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
     dataset_files_extension = "raw"
 
     def __init__(self, version_base_dir, version_name,
-                 original_base_dir=None, csv_support_path=None, check_generated_files=True,
+                 original_base_dir=None, csv_support_path=None,
+                 check_generated_files=True,
                  original_properties_table=None):
         original_properties_table = ImageGeometryTable(
-            base_dir=original_base_dir) if original_properties_table is None else original_properties_table
+            base_dir=original_base_dir) if original_properties_table is None \
+            else original_properties_table
 
         super().__init__(version_base_dir=version_base_dir,
                          version_name=version_name,
@@ -441,13 +504,14 @@ class QuantizedImageVersion(ImageVersionTable):
     dataset_files_extension = "raw"
 
     def __init__(self, version_base_dir, qstep,
-                 original_base_dir=None, csv_support_path=None, check_generated_files=True,
+                 original_base_dir=None, csv_support_path=None,
+                 check_generated_files=True,
                  original_properties_table=None):
         """
         :param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
           the base dir)
-          
+
         :param qstep: quantization step of the uniform quantizer.
 
         :param version_name: arbitrary name of this file version
@@ -460,10 +524,12 @@ class QuantizedImageVersion(ImageVersionTable):
           to be used when reading the original data to be versioned.
           If None, a FilePropertiesTable is instanced automatically.
 
-        :param csv_support_path: path to the file where results (of the versioned data) are to be
+        :param csv_support_path: path to the file where results
+        (of the versioned data) are to be
           long-term stored. If None, one is assigned by default based on options.persistence_dir.
 
-        :param check_generated_files: if True, the table checks that each call to version() produces
+        :param check_generated_files: if True, the table checks that
+         each call to version() produces
           a file to output_path. Set to false to create arbitrarily named output files."""
         assert qstep == int(qstep)
         assert 1 <= qstep <= 65535
@@ -495,7 +561,8 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
     allowed_extensions = ["fit", "fits"]
     version_name = "FitsToRaw"
 
-    # No need to set  dataset_files_extension here, because get_default_target_indices is overwriten.
+    # No need to set  dataset_files_extension here,
+    # because get_default_target_indices is overwriten.
     def __init__(self, original_base_dir, version_base_dir):
         """:param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
@@ -544,16 +611,13 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
         row[_column_name] = 1
 
     def version(self, input_path, output_path, row):
-        if input_path.lower().endswith(".fit"):
-            input_ext = ".fit"
-        elif input_path.lower().endswith(".fits"):
-            input_ext = ".fits"
-        else:
+        if not input_path.lower().endswith(".fit") \
+                and not input_path.lower().endswith(".fits"):
             raise ValueError(f"Invalid extension found in {input_path}")
-        
+
         try:
             import fits
-        except ImportError as ex:
+        except ImportError:
             raise RuntimeError("The fits module is not available.")
 
         hdul = fits.open(input_path)
@@ -584,11 +648,13 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
 
                 elif header['NAXIS'] == 2:
                     if header['BITPIX'] < 0:
-                        name_label = f'-f{-header["BITPIX"]}-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        name_label = f'-f{-header["BITPIX"]}' \
+                                     f'-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
                         dtype_name = f'float{-header["BITPIX"]}'
                         enb_type_name = f"f{-header['BITPIX']}"
                     elif header['BITPIX'] > 0:
-                        name_label = f'-u{header["BITPIX"]}be-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        name_label = f'-u{header["BITPIX"]}be' \
+                                     f'-1x{header["NAXIS2"]}x{header["NAXIS1"]}'
                         dtype_name = f'>u{header["BITPIX"] // 8}'
                         enb_type_name = f"u{header['BITPIX']}be"
                     else:
@@ -597,48 +663,73 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                     data = np.expand_dims(data, axis=2)
                 elif header['NAXIS'] == 3:
                     if header['BITPIX'] < 0:
-                        name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        name_label = f'-f{-header["BITPIX"]}' \
+                                     f'-{header["NAXIS3"]}' \
+                                     f'x{header["NAXIS2"]}' \
+                                     f'x{header["NAXIS1"]}'
                         dtype_name = f'float{-header["BITPIX"]}'
                         enb_type_name = f"f{-header['BITPIX']}"
                     elif header['BITPIX'] > 0:
-                        name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        name_label = f'-u{header["BITPIX"]}be-' \
+                                     f'{header["NAXIS3"]}' \
+                                     f'x{header["NAXIS2"]}' \
+                                     f'x{header["NAXIS1"]}'
                         dtype_name = f'>u{header["BITPIX"] // 8}'
                         enb_type_name = f"u{header['BITPIX']}be"
                     else:
                         raise ValueError(f"Invalid bitpix {header['BITPIX']}")
                 elif header['NAXIS'] == 4:
                     if header['BITPIX'] < 0:
-                        name_label = f'-f{-header["BITPIX"]}-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        name_label = f'-f{-header["BITPIX"]}' \
+                                     f'-{header["NAXIS3"]}' \
+                                     f'x{header["NAXIS2"]}' \
+                                     f'x{header["NAXIS1"]}'
                         dtype_name = f'float{-header["BITPIX"]}'
                         enb_type_name = f"f{-header['BITPIX']}"
                     elif header['BITPIX'] > 0:
-                        name_label = f'-u{header["BITPIX"]}be-{header["NAXIS3"]}x{header["NAXIS2"]}x{header["NAXIS1"]}'
+                        name_label = f'-u{header["BITPIX"]}be' \
+                                     f'-{header["NAXIS3"]}' \
+                                     f'x{header["NAXIS2"]}' \
+                                     f'x{header["NAXIS1"]}'
                         dtype_name = f'>u{header["BITPIX"] // 8}'
                         enb_type_name = f"u{header['BITPIX']}be"
                     else:
                         raise ValueError(f"Invalid bitpix {header['BITPIX']}")
                     data = np.squeeze(data, axis=3)
                 else:
-                    raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
+                    raise Exception(
+                        f"Invalid header['NAXIS'] = {header['NAXIS']}")
 
-                output_dir = os.path.join(os.path.dirname(os.path.abspath(output_path)), enb_type_name)
+                output_dir = os.path.join(
+                    os.path.dirname(os.path.abspath(output_path)),
+                    enb_type_name)
                 effective_output_path = os.path.join(
                     output_dir,
-                    f"{os.path.basename(output_path).replace('.raw', '')}_img{saved_images}{name_label}.raw")
-                os.makedirs(os.path.dirname(effective_output_path), exist_ok=True)
+                    f"{os.path.basename(output_path).replace('.raw', '')}"
+                    f"_img{saved_images}{name_label}.raw")
+                os.makedirs(os.path.dirname(effective_output_path),
+                            exist_ok=True)
                 if os.path.isfile(effective_output_path) == True:
                     pass
                 else:
                     if options.verbose > 2:
-                        print(f"Dumping FITS->raw ({repr(effective_output_path)}) from hdu_index={hdu_index}")
-                    enb.isets.dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
-                    fits_header_path = os.path.join(os.path.dirname(os.path.abspath(effective_output_path)).replace(
+                        print(
+                            f"Dumping FITS->raw ({repr(effective_output_path)})"
+                            f" from hdu_index={hdu_index}")
+                    enb.isets.dump_array_bsq(array=data,
+                                             file_or_path=effective_output_path,
+                                             dtype=dtype_name)
+                    fits_header_path = os.path.join(os.path.dirname(
+                        os.path.abspath(effective_output_path)).replace(
                         os.path.abspath(self.version_base_dir),
                         f"{os.path.abspath(self.version_base_dir)}_headers"),
-                        os.path.basename(effective_output_path).replace('.raw', '') + "-fits_header.txt")
-                    os.makedirs(os.path.dirname(fits_header_path), exist_ok=True)
+                        os.path.basename(effective_output_path).replace(
+                            '.raw', '') + "-fits_header.txt")
+                    os.makedirs(os.path.dirname(fits_header_path),
+                                exist_ok=True)
                     if options.verbose > 2:
-                        print(f"Writing to fits_header_path={repr(fits_header_path)}")
+                        print(
+                            f"Writing to fits_header_path={repr(fits_header_path)}")
                     if os.path.exists(fits_header_path):
                         os.remove(fits_header_path)
                     header.totextfile(fits_header_path)
@@ -653,18 +744,21 @@ class PNGCurationTable(enb.sets.FileVersionTable):
     """
     dataset_files_extension = "png"
 
-    def __init__(self, original_base_dir, version_base_dir, csv_support_path=None):
+    def __init__(self, original_base_dir, version_base_dir,
+                 csv_support_path=None):
         """
         :param original_base_dir: path to the original directory
           (it must contain all indices requested later with self.get_df()).
           If None, options.base_datset_dir is used
-        
+
         :param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
           the base dir)
 
-        :param csv_support_path: path to the file where results (of the versioned data) are to be
-          long-term stored. If None, one is assigned by default based on options.persistence_dir.
+        :param csv_support_path: path to the file where results
+          (of the versioned data) are to be
+          long-term stored.
+          If None, one is assigned by default based on options.persistence_dir.
         """
         super().__init__(version_base_dir=version_base_dir,
                          version_name=self.__class__.__name__,
@@ -677,15 +771,18 @@ class PNGCurationTable(enb.sets.FileVersionTable):
             im = imageio.imread(input_path)
             if len(im.shape) == 2:
                 im = im[:, :, np.newaxis]
-            assert len(im.shape) == 3, f"Invalid shape in read image {input_path}: {im.shape}"
+            assert len(im.shape) == 3, \
+                f"Invalid shape in read image {input_path}: {im.shape}"
             im = im.swapaxes(0, 1)
             if im.dtype == np.uint8:
                 type_str = "u8be"
             elif im.dtype == np.uint16:
                 type_str = "u16be"
             else:
-                raise f"Invalid data type found in read image {input_path}: {im.dtype}"
-            output_path = f"{output_path[:-4]}-{type_str}-{im.shape[2]}x{im.shape[1]}x{im.shape[0]}.raw"
+                raise f"Invalid data type found in read image " \
+                      f"{input_path}: {im.dtype}"
+            output_path = f"{output_path[:-4]}-{type_str}" \
+                          f"-{im.shape[2]}x{im.shape[1]}x{im.shape[0]}.raw"
             dump_array_bsq(array=im, file_or_path=output_path)
 
 
@@ -698,50 +795,63 @@ def load_array_bsq(file_or_path, image_properties_row=None,
       or a file open for reading (typically with "b" mode).
     :param image_properties_row: if not None, it shall be a dict-like object. The
       width, height, component_count, bytes_per_sample, signed, big_endian and float
-      keys should be present to determine the read parameters. If dtype is provided, then 
-      bytes_per_sample, big_endian and float are not used. 
+      keys should be present to determine the read parameters. If dtype is provided, then
+      bytes_per_sample, big_endian and float are not used.
       The remaining arguments overwrite
-      those defined in image_properties_row (if image_properties_row is not None and if present).
-      
-      If image_properties_row is None and any of (width, height, component_count, dtype) is None,
+      those defined in image_properties_row (if image_properties_row
+       is not None and if present).
+
+      If image_properties_row is None and any of
+      (width, height, component_count, dtype) is None,
       the image geometry is required to be in the filename as a name tag.
       These tags, *e.g.,* `u8be-3x600x800` inform `enb` of all the required geometry.
       The format of these tags (which can appear anywhere in the filename) is:
-      
+
          - `u` or `s` for unsigned and signed, respectively
          - the number of bits per sample (typically, 8, 16, 32 or 64)
          - `be` or `le` for big-endian and little-endian formats, respectively
          - `ZxYxX`, where `Z` is the number of spectral compoments (3 in the example),
            `X` the width (number of columns, 800 in the example)
-           and `Y` the height (number of rows, 600 in the example).  
-    
-      If image_properties_row is not None, then the following parameters must not be None:       
-        
+           and `Y` the height (number of rows, 600 in the example).
+
+      If image_properties_row is not None, then the following parameters must not be None:
+
     :param width: if not None, force the read to assume this image width
     :param height: if not None, force the read to assume this image height
-    :param component_count: if not None, force the read to assume this number of components (bands)
-    :param dtype: if not None, it must by a valid argument for dtype in numpy, and will be used for reading. In
-      this case, the bytes_per_sample, signed, big_endian and float keys are not accessed in image_properties_row.
+    :param component_count: if not None, force the read to assume this
+     number of components (bands)
+    :param dtype: if not None, it must by a valid argument for dtype in numpy,
+    and will be used for reading. In
+      this case, the bytes_per_sample, signed, big_endian and float keys
+       are not accessed in image_properties_row.
     :return: a 3-D numpy array with the image data, which can be indexed as [x,y,z].
     """
     if image_properties_row is None:
         try:
             image_properties_row = file_path_to_geometry_dict(file_or_path)
         except ValueError:
-            assert not any(v is None for v in (width, height, component_count, dtype)), \
+            assert not any(
+                v is None for v in (width, height, component_count, dtype)), \
                 f"image_properties_row={image_properties_row} but some None in " \
-                f"(width, height, component_count, dtype): {(width, height, component_count, dtype)}."
+                f"(width, height, component_count, dtype): " \
+                f"{(width, height, component_count, dtype)}."
     width = width if width is not None else image_properties_row["width"]
     height = height if height is not None else image_properties_row["height"]
-    component_count = component_count if component_count is not None else image_properties_row["component_count"]
-    dtype = dtype if dtype is not None else image_properties_row["dtype"] if "dtype" in image_properties_row else None 
-    dtype = dtype if dtype is not None else iproperties_row_to_numpy_dtype(image_properties_row)
+    component_count = component_count if component_count is not None else \
+        image_properties_row["component_count"]
+    dtype = dtype if dtype is not None else image_properties_row[
+        "dtype"] if "dtype" in image_properties_row else None
+    dtype = dtype if dtype is not None else iproperties_row_to_numpy_dtype(
+        image_properties_row)
 
-    return np.fromfile(file_or_path, dtype=dtype).reshape(component_count, height, width).swapaxes(0, 2)
+    return np.fromfile(file_or_path, dtype=dtype).reshape(component_count,
+                                                          height,
+                                                          width).swapaxes(0, 2)
 
 
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
-    """Dump a raw array array indexed in [x,y,z] order into a band sequential (BSQ) ordering,
+    """Dump a raw array array indexed in [x,y,z] order into a
+    band sequential (BSQ) ordering,
     i.e., the concatenation of each component (z axis), each component in raster
     order. Parent folders are created if not already existing.
 
@@ -752,7 +862,8 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
       as a file path, open as determined by the mode parameter.
     :param mode: if file_or_path is a path, the output file is opened in this mode
     :param dtype: if not None, the array is casted to this type before dumping
-    :param force_big_endian: if True, a copy of the array is made and its bytes are swapped before outputting
+    :param force_big_endian: if True, a copy of the array is made and its bytes
+    are swapped before outputting
       data to file. This parameter is ignored if dtype is provided.
     """
     if isinstance(file_or_path, str) and os.path.dirname(file_or_path):
@@ -783,13 +894,13 @@ def iproperties_row_to_numpy_dtype(image_properties_row):
     to represent an image with properties as defined in
     image_properties_row
     """
-    if "float" in image_properties_row and image_properties_row["float"] is True:
+    if "float" in image_properties_row and image_properties_row[
+        "float"] is True:
         return "f" + str(image_properties_row["bytes_per_sample"])
-    else:
-        return ((">" if image_properties_row["big_endian"] else "<")
-                if image_properties_row["bytes_per_sample"] > 1 else "") \
-               + ("i" if image_properties_row["signed"] else "u") \
-               + str(image_properties_row["bytes_per_sample"])
+    return ((">" if image_properties_row["big_endian"] else "<")
+            if image_properties_row["bytes_per_sample"] > 1 else "") \
+        + ("i" if image_properties_row["signed"] else "u") \
+        + str(image_properties_row["bytes_per_sample"])
 
 
 def iproperties_row_to_sample_type_tag(image_properties_row):
@@ -801,13 +912,13 @@ def iproperties_row_to_sample_type_tag(image_properties_row):
     assert image_properties_row["big_endian"] in [True, False]
 
     return ("s" if image_properties_row["signed"] else "u") \
-           + str(8 * image_properties_row["bytes_per_sample"]) \
-           + ("be" if image_properties_row["big_endian"] else "le")
+        + str(8 * image_properties_row["bytes_per_sample"]) \
+        + ("be" if image_properties_row["big_endian"] else "le")
 
 
 def iproperties_row_to_geometry_tag(image_properties_row):
     """Return an image geometry name tag recognized by isets (e.g., 3x600x800
-    for an 800x600, 3 component image), 
+    for an 800x600, 3 component image),
     given an object similar to an ImageGeometryTable row.
     """
     return f"{image_properties_row['component_count']}" \
@@ -815,7 +926,8 @@ def iproperties_row_to_geometry_tag(image_properties_row):
            f"x{image_properties_row['width']}"
 
 
-def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_per_sample, signed):
+def iproperties_to_name_tag(width, height, component_count, big_endian,
+                            bytes_per_sample, signed):
     """Return a full name tag (including sample type and dimension information),
     recognized by isets.
     """
@@ -828,14 +940,16 @@ def iproperties_to_name_tag(width, height, component_count, big_endian, bytes_pe
 
 def raw_path_to_png(raw_path, png_path, image_properties_row=None):
     """Render an uint8 or uint16 raw image with 1, 3 or 4 components.
-    
+
     :param raw_path: path to the image in raw format to render in png.
     :param png_path: path where the png file is to be stored.
     :param image_properties_row: if row_path does not contain geometry information,
-      this parameter should be a dict-like object that indicates width, height, number of components,
+      this parameter should be a dict-like object that
+      indicates width, height, number of components,
       bytes per sample, signedness and endianness if applicable.
     """
-    img = load_array_bsq(file_or_path=raw_path, image_properties_row=image_properties_row)
+    img = load_array_bsq(file_or_path=raw_path,
+                         image_properties_row=image_properties_row)
     render_array_png(img=img, png_path=png_path)
 
 
@@ -853,13 +967,17 @@ def render_array_png(img, png_path):
         elif max_value <= 65535:
             img = img.astype(np.uint16)
         else:
-            raise ValueError(f"Invalid maximum value {max_value} for type {img.dtype}. Not valid for PNG")
+            raise ValueError(
+                f"Invalid maximum value {max_value} for type {img.dtype}. "
+                f"Not valid for PNG")
     else:
-        raise ValueError(f"Image type {img.dtype} not supported for rendering into PNG. "
-                         f"Try np.uint8 or np.uint16.")
+        raise ValueError(
+            f"Image type {img.dtype} not supported for rendering into PNG. "
+            f"Try np.uint8 or np.uint16.")
 
     if img.shape[2] not in {1, 3, 4}:
-        raise ValueError(f"Number of components not valid. Image shape (x,y,z) = {img.shape}")
+        raise ValueError(
+            f"Number of components not valid. Image shape (x,y,z) = {img.shape}")
     if os.path.dirname(png_path):
         os.makedirs(os.path.dirname(png_path), exist_ok=True)
     imageio.imwrite(png_path, img.swapaxes(0, 1), format="png")
