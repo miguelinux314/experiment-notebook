@@ -14,11 +14,16 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## Development version v0.4.5
 
-Tested on Raspberry Pi OS!
+Tested on a Raspberry Pi:
 
-- Removed ray as a dependency when installing enb. 
-- Successfully tested on a Raspberry Pi. Extended installation instructions for this platform. 
+- Removed ray as a dependency when installing enb.
+- Successfully tested on a Raspberry Pi. Extended installation instructions for this platform.
+
+Other changes:
+
 - Partial code cleanup using pylint
+- Removal of the byte_value_* columns in ImagePropertiesTable to speed up compression experiments with
+  large files.
 
 # Latest stable version:
 
@@ -44,11 +49,11 @@ New features:
   before computing any other row.
 - Added the `iraf_photometry` plugin that allows automatic photometry processing using IRAF
   (IRAF must be installed separately).
-- Added the `enb.icompression.GeneralLosslessExperiment` that allows seamless execution of lossless compression 
+- Added the `enb.icompression.GeneralLosslessExperiment` that allows seamless execution of lossless compression
   codecs on files without needed to add image geometry information to their name nor change their extension
-  (e.g, general files). 
+  (e.g, general files).
 
-Improvements: 
+Improvements:
 
 - Updated kakadu and FAPEC codecs to specify the exact dynamic bit range instead of the nominal one,
   which allows compression of 17-28bps images stored in u32be and s32be formats.
