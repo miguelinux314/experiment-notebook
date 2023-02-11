@@ -7,26 +7,29 @@ may use misc tools at definition time.
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/11"
 
-import csv
 import re
+import pdb
+import signal
 import socket
+import csv
 
 
-def get_defining_class_name(f):
-    """Return the name of the class of which f is a method, or None if not bound to any class.
+def get_defining_class_name(method):
+    """Return the name of the class of which f is a method,
+    or None if not bound to any class.
     """
     try:
-        return f.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
+        return method.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
     except IndexError:
         return None
 
 
 def remove_argparse_action(parser, action):
-    """Entirely remove an action from a parser, from its subparsers and groups if it exists.
-    One wonders why this is not part of the default interface...
-
+    """Entirely remove an action from a parser,
+    from its subparsers and groups if it exists.
     Adapted from https://stackoverflow.com/a/49753634.
     """
+    # pylint: disable=protected-access,too-many-branches
     try:
         parser._remove_action(action)
     except ValueError:
@@ -36,52 +39,53 @@ def remove_argparse_action(parser, action):
     except ValueError:
         pass
 
-    for g in parser._action_groups:
+    for group in parser._action_groups:
         try:
-            g._remove_action(action)
+            group._remove_action(action)
         except ValueError:
             pass
         try:
-            g._actions.remove(action)
+            group._actions.remove(action)
         except ValueError:
             pass
         try:
-            g._group_actions.remove(action)
+            group._group_actions.remove(action)
         except ValueError:
             pass
 
-    a = action
+    old_action = action
     try:
-        parser._remove_action(a)
+        parser._remove_action(old_action)
     except ValueError:
         pass
     try:
-        parser._actions.remove(a)
+        parser._actions.remove(old_action)
     except ValueError:
         pass
 
-    for o in a.option_strings:
+    for option_str in old_action.option_strings:
         try:
-            del parser._option_string_actions[o]
+            del parser._option_string_actions[option_str]
         except KeyError:
             pass
 
-    vars_action = vars(a)
+    vars_action = vars(old_action)
     try:
         var_group_actions = vars_action['_group_actions']
     except KeyError:
         var_group_actions = None
     if var_group_actions is not None:
-        for x in var_group_actions:
-            if x.dest == arg:
-                var_group_actions.remove(x)
+        for group_action in var_group_actions:
+            if group_action.dest == action:
+                var_group_actions.remove(group_action)
 
 
 def split_camel_case(camel_string):
-    """Split a camel case string like ThisIsAClass into a string like "This Is A Class".
+    """Split a camel case string like ThisIsAClass
+    into a string like "This Is A Class".
     """
     return " ".join(
-        re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', camel_string))
+        re.findall(r"[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))", camel_string))
 
 
 def get_all_subclasses(*base_classes):
@@ -104,8 +108,9 @@ def get_all_subclasses(*base_classes):
     base_classes = set(base_classes)
     all_subclasses = set()
 
-    for c in base_classes:
-        all_subclasses = all_subclasses.union(get_subclasses_recursive(c))
+    for base_class in base_classes:
+        all_subclasses = all_subclasses.union(
+            get_subclasses_recursive(base_class))
 
     return set(cls for cls in all_subclasses if cls not in base_classes)
 
@@ -116,8 +121,10 @@ class Singleton(type):
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
-        """This method replaces the regular initializer of classes with this as their metaclass.
-        `*args` and `**kwargs` are passed directly to their initializer and do not otherwise affect 
+        """This method replaces the regular initializer of classes
+         with this as their metaclass.
+        `*args` and `**kwargs` are passed directly to their initializer
+        and do not otherwise affect
         the Singleton behavior.
         """
         try:
@@ -132,6 +139,7 @@ class ExposedProperty:
     that return what requesting that property would.
     """
 
+    # pylint: disable=too-few-public-methods
     def __init__(self, instance, property_name):
         self.property_name = property_name
         self.instance = instance
@@ -141,8 +149,10 @@ class ExposedProperty:
 
 
 class CircularList(list):
-    """A tuned list that automatically applies modulo len(self) to the given index,
-    allowing for circular, index-based access to the data (whereas itertools.cycle does
+    """A tuned list that automatically applies modulo len(self)
+    to the given index,
+    allowing for circular, index-based access to the data
+    (whereas itertools.cycle does
     not allow accessing elements by index).
     """
 
@@ -151,9 +161,10 @@ class CircularList(list):
 
 
 def class_to_fqn(cls):
-    cls_fqn = f"{str(cls.__module__) + '.' if cls.__module__ is not None else ''}" \
-              f"{cls.__name__}"
-    return cls_fqn
+    """Given a class (type instance), return its fully qualified name (FQN).
+    """
+    return f"{str(cls.__module__) + '.' if cls.__module__ is not None else ''}" \
+           f"{cls.__name__}"
 
 
 def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
@@ -162,13 +173,15 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
     The first row is assumed to be the header.
 
     :param input_csv_path: path to a file containing CSV data.
-    :param output_tex_file: path where the tex contents are to be stored, ready to be `\input` in latex.
-    :param contains_header: if True, the first line is assumed to be a header containing column names.
-    :param use_booktabs: if True, a booktabs-based decoration style is used for the table. Otherwise,
-      standard latex is used only.
+    :param output_tex_file: path where the tex contents are to be stored,
+      ready to be added to latex with the `input` command.
+    :param contains_header: if True, the first line is assumed to be a header
+      containing column names.
+    :param use_booktabs: if True, a booktabs-based decoration style is used
+      for the table. Otherwise, standard latex is used only.
     """
-    with open(input_csv_path, "r") as csv_file, open(output_tex_path,
-                                                     "w") as tex_file:
+    with open(input_csv_path, "r", encoding="utf-8") as csv_file, \
+            open(output_tex_path, "w", encoding="utf-8") as tex_file:
         tex_file.write("\\begin{tabular}{")
 
         for i, row in enumerate(csv.reader(csv_file)):
@@ -179,11 +192,11 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
                 tex_file.write("\\toprule\n" if use_booktabks else "\\hline\n")
                 tex_file.write(
                     " & ".join(f"\\textbf{{{c}}}" for c in row).replace(
-                        "_", "\\_").replace("%", "\%") + r" \\" + "\n")
+                        "_", r"\_").replace(r"%", r"\%") + r" \\" + "\n")
                 tex_file.write("\\midrule\n" if use_booktabks else "\\hline\n")
             else:
                 tex_file.write(" & ".join(row).replace(
-                    "_", "\\_").replace("%", "\%") + r" \\" + "\n")
+                    "_", r"\_").replace(r"%", r"\%") + r" \\" + "\n")
 
         tex_file.write("\\bottomrule\n" if use_booktabks else "\\hline\n")
         tex_file.write("\\end{tabular}\n")
@@ -192,31 +205,30 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
 def get_node_ip():
     """Get the current IP address of this node.
     """
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    address = s.getsockname()[0]
-    s.close()
+    soc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.connect(("8.8.8.8", 80))
+    address = soc.getsockname()[0]
+    soc.close()
     return address
 
 
 def get_node_name():
-    """Get the host name of this node. Alias for socket.gethostname.     
+    """Get the host name of this node. Alias for socket.gethostname.
     """
     return socket.gethostname()
 
 
 def capture_usr1():
     """Capture the reception of a USR1 signal into pdb.
-    
+
     From http://blog.devork.be/2009/07/how-to-bring-running-python-program.html.
     """
 
     def handle_pdb(sig, frame):
-        import pdb
+        # pylint: disable=unused-argument
         print("\n" * 2)
         print("Captured USR1 signal! Activating pdb...")
         print("\n" * 2)
         pdb.Pdb().set_trace(frame)
 
-    import signal
     signal.signal(signal.SIGUSR1, handle_pdb)
