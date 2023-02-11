@@ -393,10 +393,9 @@ class ColumnProperties:
         self.has_dict_values = has_dict_values or self.hist_bin_width is not None
         self.has_iterable_values = has_iterable_values
         self.has_object_values = has_object_values
-        if sum(1 for flag in (
-                self.has_iterable_values, self.has_dict_values,
-                self.has_object_values)
-               if flag is True) > 1:
+        if sum(1 for flag in (self.has_iterable_values,
+                              self.has_dict_values,
+                              self.has_object_values) if flag is True) > 1:
             raise ValueError(
                 "At most one of iterable, dict or object types can be specified.")
         self.hist_label_dict = hist_label_dict
@@ -433,7 +432,7 @@ class MetaTable(type):
     """
     # pylint: disable=too-many-locals,too-many-branches
     automatic_column_function_prefix = "column_"
-    pendingdefs_classname_fun_columnpropertylist_kwargs = []
+    pendingdefs_classname_fun_columnpropertylist = []
 
     def __new__(cls, name, bases, dct):
         if MetaTable in bases:
@@ -475,14 +474,14 @@ class MetaTable(type):
         # (declared as columns before subclass existed),
         # in the order they were declared
         # (needed when there are data dependencies between columns).
-        inherited_classname_fun_columnproperties_kwargs = [
-            t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
+        inheritedclassname_fun_columnproperties_kwargs = [
+            t for t in cls.pendingdefs_classname_fun_columnpropertylist
             if t[0] != subclass.__name__]
         decorated_classname_fun_columnproperties_kwargs = [
-            t for t in cls.pendingdefs_classname_fun_columnpropertylist_kwargs
+            t for t in cls.pendingdefs_classname_fun_columnpropertylist
             if t[0] == subclass.__name__]
-        for _, fun, column_properties, kwargs \
-                in inherited_classname_fun_columnproperties_kwargs:
+        for _, fun, column_properties \
+                in inheritedclassname_fun_columnproperties_kwargs:
             if isinstance(column_properties, collections.abc.Iterable):
                 # Passed a list of instances:
                 # make sure they are all ColumnProperties
@@ -490,36 +489,39 @@ class MetaTable(type):
                     if not isinstance(cp, ColumnProperties):
                         raise SyntaxError(
                             f"Found {repr(cp)} not a ColumnProperties instance.")
-                    ATable.add_column_function(target_class=subclass, fun=fun,
-                                               column_properties=cp, **kwargs)
+                    ATable.add_column_function(target_class=subclass,
+                                               fun=fun,
+                                               column_properties=cp)
             else:
-                ATable.add_column_function(target_class=subclass, fun=fun,
-                                           column_properties=column_properties,
-                                           **kwargs)
+                ATable.add_column_function(target_class=subclass,
+                                           fun=fun,
+                                           column_properties=column_properties)
 
         # Column functions are added to a list while the class is being defined.
         # After that, the subclass' column_to_properties attribute is updated according
         # to the column definitions.
-        funname_to_pending_entry = {t[1].__name__: t for t in
-                                    decorated_classname_fun_columnproperties_kwargs}
+        funname_to_class_fun_columnproperties = {
+            t[1].__name__: t for t in
+            decorated_classname_fun_columnproperties_kwargs}
 
-        for fun in (f for f in subclass.__dict__.values() if
-                    inspect.isfunction(f)):
+        for fun in (f for f in subclass.__dict__.values()
+                    if inspect.isfunction(f)):
             try:
                 # Decorated function: the column properties are already present
-                _, fun, cp_list, kwargs = funname_to_pending_entry[
-                    fun.__name__]
+                _, fun, cp_list = \
+                    funname_to_class_fun_columnproperties[fun.__name__]
                 for column_properties in cp_list:
                     if column_properties.label == column_properties.name:
                         column_properties.label = clean_column_name(
                             column_properties.name)
-                    ATable.add_column_function(target_class=subclass, fun=fun,
+                    ATable.add_column_function(target_class=subclass,
+                                               fun=fun,
                                                column_properties=column_properties)
-                del funname_to_pending_entry[fun.__name__]
+                del funname_to_class_fun_columnproperties[fun.__name__]
             except KeyError as ex:
                 # Non decorated function: decorate automatically if it starts with 'column_*'
-                assert all(cp.fun is not fun for cp in
-                           subclass.column_to_properties.values())
+                assert all(cp.fun is not fun
+                           for cp in subclass.column_to_properties.values())
                 if not fun.__name__.startswith(
                         MetaTable.automatic_column_function_prefix):
                     continue
@@ -530,16 +532,18 @@ class MetaTable(type):
                         f"Function name '{fun.__name__}' "
                         f"not allowed in ATable subclasses") from ex
                 wrapper = MetaTable.get_auto_column_wrapper(fun=fun)
-                column_properties = ColumnProperties(name=column_name,
-                                                     label=clean_column_name(
-                                                         column_name),
-                                                     fun=wrapper)
-                ATable.add_column_function(target_class=subclass, fun=wrapper,
-                                           column_properties=column_properties)
+                ATable.add_column_function(
+                    target_class=subclass,
+                    fun=wrapper,
+                    column_properties=ColumnProperties(
+                        name=column_name,
+                        label=clean_column_name(column_name),
+                        fun=wrapper))
 
-        assert len(funname_to_pending_entry) == 0, (
-            subclass, funname_to_pending_entry)
-        cls.pendingdefs_classname_fun_columnpropertylist_kwargs.clear()
+        assert len(funname_to_class_fun_columnproperties) == 0, \
+            ("Did not process all pending columndefinitions:",
+             subclass, funname_to_class_fun_columnproperties)
+        cls.pendingdefs_classname_fun_columnpropertylist.clear()
         return subclass
 
     @staticmethod
@@ -566,8 +570,8 @@ class MetaTable(type):
                     continue
 
                 if ctp_fun != sc_fun:
-                    if get_defining_class_name(
-                            ctp_fun) != get_defining_class_name(sc_fun):
+                    if get_defining_class_name(ctp_fun) \
+                            != get_defining_class_name(sc_fun):
                         enb.logger.debug(f"Redefining column {ctp_fun}. "
                                          f"It now becomes {sc_fun}")
                         properties = copy.copy(properties)
@@ -781,20 +785,21 @@ class ATable(metaclass=MetaTable):
         :return: a nonempty list of valid ColumnProperties instances
         """
         normalized_cp_list = []
-        for cpl in column_property_list:
-            if isinstance(cpl, str):
+        for column_properties in column_property_list:
+            if isinstance(column_properties, str):
                 normalized_cp_list.append(
-                    ColumnProperties(name=cpl, fun=fun, **kwargs))
-            elif isinstance(cpl, ColumnProperties):
-                normalized_cp_list.append(cpl)
-            elif isinstance(cpl, collections.abc.Iterable):
+                    ColumnProperties(name=column_properties, fun=fun, **kwargs))
+            elif isinstance(column_properties, ColumnProperties):
+                normalized_cp_list.append(column_properties)
+            elif isinstance(column_properties, collections.abc.Iterable):
                 normalized_cp_list.extend(
                     ATable.normalize_column_function_arguments(
-                        column_property_list=cpl, fun=fun))
+                        column_property_list=column_properties, fun=fun))
             else:
                 raise SyntaxError(
                     "Invalid arguments passed to add_column_function: "
-                    f"{cpl} (type {type(cpl)}), {fun}, {kwargs} ")
+                    f"{column_properties} "
+                    f"(type {type(column_properties)}), {fun}, {kwargs} ")
 
         return normalized_cp_list
 
@@ -872,9 +877,9 @@ class ATable(metaclass=MetaTable):
         """:return: a list of all defined columns, i.e.,
           those for which a function has been defined.
         """
-        return self.indices + list(k for k in self.column_to_properties.keys()
-                                   if k not in itertools.chain(self.indices,
-                                                               self.ignored_columns))
+        return self.indices + list(
+            k for k in self.column_to_properties.keys()
+            if k not in itertools.chain(self.indices, self.ignored_columns))
 
     # Methods to generate a DataFrame instance with the requested data
     def get_df(self, target_indices=None, target_columns=None,
@@ -972,12 +977,14 @@ class ATable(metaclass=MetaTable):
 
         # Split the work into one or more chunks, which are completed before
         # moving on to the next one.
-        chunk_size = chunk_size if chunk_size is not None else options.chunk_size
-        chunk_size = chunk_size if chunk_size is not None else len(
-            target_indices)
+        chunk_size = chunk_size if chunk_size is not None \
+            else options.chunk_size
+        chunk_size = chunk_size if chunk_size is not None \
+            else len(target_indices)
         if chunk_size <= 0:
             raise SyntaxError(
-                f"Invalid chunk_size {chunk_size}. Re-run with -h for syntax help.")
+                f"Invalid chunk_size {chunk_size}. "
+                f"Re-run with -h for syntax help.")
         chunk_list = [target_indices[i:i + chunk_size]
                       for i in range(0, len(target_indices), chunk_size)]
         assert len(chunk_list) > 0
@@ -1317,7 +1324,8 @@ class ATable(metaclass=MetaTable):
                 computed_series = enb.parallel.get(pending_ids)
 
         # Verify that everything went well
-        found_exceptions = [e for e in computed_series if isinstance(e, Exception)]
+        found_exceptions = [e for e in computed_series if
+                            isinstance(e, Exception)]
         if found_exceptions:
             raise ColumnFailedError(
                 f"Error setting {len(found_exceptions)}/{len(target_indices)} indices"
@@ -1860,8 +1868,8 @@ def column_function(*column_property_list, **kwargs):
             column_property_list=column_property_list, fun=decorated_method,
             **kwargs)
 
-        MetaTable.pendingdefs_classname_fun_columnpropertylist_kwargs.append(
-            (cls_name, decorated_method, normalized_list, kwargs))
+        MetaTable.pendingdefs_classname_fun_columnpropertylist.append(
+            (cls_name, decorated_method, normalized_list))
 
         return decorated_method
 
