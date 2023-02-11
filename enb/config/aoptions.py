@@ -165,10 +165,11 @@ class ExecutionOptions:
         is normally most representative in combination with -s to use a single execution process at a time.
         """
         _singleton_cli.PositiveIntegerAction.assert_valid_value(value)
+        return int(value)
 
     @OptionsBase.property(action="store_true")
     def report_wall_time(self, value):
-        """If this flag is activated, the wall time instead of the CPU time is reported by default by 
+        """If this flag is activated, the wall time instead of the CPU time is reported by default by
         tcall.get_status_output_time.
         """
         return bool(value)
@@ -196,10 +197,10 @@ class ExecutionOptions:
          when get_df() is invoked and computation is being processed in parallel.
          """
         return float(value)
-    
+
     @OptionsBase.property(action="store_true")
     def disable_progress_bar(self, value):
-        """If this flag is enabled, no progress bar is employed 
+        """If this flag is enabled, no progress bar is employed
         (useful to minimize the stdout volume of long-running experiments).
         """
         return bool(value)
@@ -373,7 +374,7 @@ class RayOptions:
 
     @OptionsBase.property(action="store_true")
     def no_remote_mount_needed(self, value):
-        """If this flag is used, the calling script's project root path is assumed to 
+        """If this flag is used, the calling script's project root path is assumed to
         be valid AND synchronized (e.g., via NFS). By default, remote mounting via sshfs and vde2 is employed.
         """
         return bool(value)

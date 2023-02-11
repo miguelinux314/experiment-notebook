@@ -52,7 +52,8 @@ class ValidationAction(argparse.Action):
         except Exception as ex:
             parser.print_help()
             print()
-            print(f"PARAMETER ERROR [{option_string}]: {ex} WITH VALUE [{value}]")
+            print(f"PARAMETER ERROR [{option_string}]: {repr(ex)} WITH VALUE [{value}]")
+            raise ex
             parser.exit()
         setattr(namespace, self.dest, value)
 
@@ -175,7 +176,7 @@ class PositiveFloatAction(ValidationAction):
 
     @classmethod
     def assert_valid_value(cls, value):
-        assert value > 0
+        assert float(value) > 0
 
 
 class NonnegativeFloatAction(ValidationAction):
@@ -184,7 +185,7 @@ class NonnegativeFloatAction(ValidationAction):
 
     @classmethod
     def assert_valid_value(cls, value):
-        assert value >= 0
+        assert float(value) >= 0
 
 
 class PositiveIntegerAction(PositiveFloatAction):
@@ -193,7 +194,7 @@ class PositiveIntegerAction(PositiveFloatAction):
 
     @classmethod
     def assert_valid_value(cls, value):
-        assert value == int(value)
+        assert float(value) == int(value)
         super().assert_valid_value(value)
 
 
