@@ -18,6 +18,9 @@ from .png import PNGCurationTable
 from .png import raw_path_to_png
 from .png import render_array_png
 
+
+# pylint: disable=no-self-use
+
 def entropy(data):
     """Compute the zero-order entropy of the provided data
     """

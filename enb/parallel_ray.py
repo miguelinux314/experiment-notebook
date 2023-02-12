@@ -46,12 +46,11 @@ _ray_cli_present = shutil.which("ray") is not None
 _ray_disabled_warning_issued = False
 
 
-# pylint: disable=invalid-name
-
 def is_ray_enabled():
     """Return True if and only if ray is available and the current platform
     is one of the supported for ray clustering (currently only linux).
     """
+    # pylint: disable=global-statement
     global _ray_disabled_warning_issued
 
     # ray is only enabled if an ssh cluster configuration file is provided
@@ -325,12 +324,14 @@ _head_node = None
 class RemoteNode:
     """Represent a remote node of the cluster, with tools to connect via ssh.
     """
+    # pylint: disable=too-many-instance-attributes
     remote_project_mount_path = os.path.join(enb.user_config_dir,
                                              "remote_mount")
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None,
                  local_ssh_file=None, cpu_limit=None,
                  remote_mount_needed=None):
+        # pylint: disable=too-many-arguments
         assert is_ray_enabled()
 
         self.address = address
@@ -471,6 +472,7 @@ class RemoteNode:
 def init_ray():
     """Initialize the ray cluster if it wasn't initialized before.
     """
+    # pylint: disable=global-statement
     global _head_node
 
     if not ray.is_initialized():
