@@ -62,14 +62,12 @@ def kl_divergence(data1, data2):
     probability distribution of data2.
 
     If both P and Q contain the same values (even if with different counts),
-    both returned values
-    are identical and as defined in
+    both returned values are identical and as defined in
     https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence#Definition.
 
-    Otherwise, the formula is modified so that whenever p or q is 0, the factor
-    is skipped from the count.
-    In this case, the two values most likely differ and they should be
-    carefully interpreted.
+    Otherwise, the formula is modified so that whenever p or q is 0,
+    the factor is skipped from the count. In this case, the two values most
+    likely differ and they should be carefully interpreted.
     """
     # x: data1
     values1, counts1 = np.unique(data1.flatten(), return_counts=True)
@@ -98,11 +96,11 @@ def kl_divergence(data1, data2):
 
 def file_path_to_geometry_dict(file_path, existing_dict=None,
                                verify_file_size=True):
-    """Return a dict with basic geometry dict based on the file path and the file size.
-
-        The basename of the file should contain something like u8be-3x1000x2000, where
-        u8be is the data format (unsigned, 8 bits per sample, big endian)
-        and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000 in this example).
+    """Return a dict with basic geometry dict based on the file path and the
+    file size. The basename of the file should contain something like
+    u8be-3x1000x2000, where u8be is the data format (unsigned, 8 bits per
+    sample, big endian) and the dimensions are ZxYxX (Z=3, Y=1000 and X=2000
+    in this example).
 
     :param file_path: file path whose basename is used to determine the image geometry.
     :param existing_dict: if not None, the this dict is updated and then returned. If None,
@@ -145,6 +143,8 @@ def file_path_to_geometry_dict(file_path, existing_dict=None,
 
 
 def _file_path_to_datatype_dict(file_path, existing_dict=None):
+    """Given a file path, try to extract the data type properties from
+    the name tag."""
     # pylint: disable=too-many-statements,too-many-branches
     existing_dict = existing_dict if existing_dict is not None else {}
 
@@ -349,9 +349,9 @@ class ImageGeometryTable(sets.FilePropertiesTable):
 
 
 class ImagePropertiesTable(ImageGeometryTable):
-    """Properties table for images, with geometry
-    and additional statistical information.
-    Allows automatic handling of tags in filenames, e.g., ZxYxX_u16be.
+    """Properties table for images, with geometry and additional statistical
+    information. Allows automatic handling of tags in filenames, e.g.,
+    ZxYxX_u16be.
     """
     dataset_files_extension = "raw"
 
@@ -389,10 +389,10 @@ class ImagePropertiesTable(ImageGeometryTable):
                                 plot_min=0, plot_max=8 * bytes_per_sample)
         for bytes_per_sample in (1, 2, 4)])
     def set_file_entropy(self, file_path, row):
-        """Set the zero-order entropy of the data in file_path
-        for 1, 2 and 4 bytes per sample in entropy_1B_bps, entropy_2B_bps
-        and entropy_4B_bpsm, respectively.
-        If the file is not a multiple of those bytes per sample, -1 is stored instead.
+        """Set the zero-order entropy of the data in file_path for 1, 2 and 4
+        bytes per sample in entropy_1B_bps, entropy_2B_bps and
+        entropy_4B_bps, respectively. If the file is not a multiple of those
+        bytes per sample, -1 is stored instead.
         """
         for bytes_per_sample in (1, 2, 4):
             if row["bytes_per_sample"] % bytes_per_sample != 0:
@@ -431,8 +431,8 @@ class HistogramFullnessTable1Byte(atable.ATable):
         plot_min=0, plot_max=1)
     def set_histogram_fullness_1byte(self, file_path, row):
         """Set the fraction of the histogram (of all possible values that can
-        be represented) is actually present in file_path, considering unsigned
-        1-byte samples.
+        be represented) is actually present in file_path, considering
+        unsigned 1-byte samples.
         """
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint8)).size / (2 ** 8)
@@ -449,8 +449,8 @@ class HistogramFullnessTable2Bytes(atable.ATable):
         plot_min=0, plot_max=1)
     def set_histogram_fullness_2bytes(self, file_path, row):
         """Set the fraction of the histogram (of all possible values that can
-        be represented) is actually present in file_path, considering unsigned
-        2-byte samples.
+        be represented) is actually present in file_path, considering
+        unsigned 2-byte samples.
         """
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint16)).size / (2 ** 16)
@@ -467,7 +467,8 @@ class HistogramFullnessTable4Bytes(atable.ATable):
         plot_min=0, plot_max=1)
     def set_histogram_fullness_4bytes(self, file_path, row):
         """Set the fraction of the histogram (of all possible values that can
-        be represented) is actually present in file_path, considering 4-byte samples.
+        be represented) is actually present in file_path, considering 4-byte
+        samples.
         """
         row[_column_name] = np.unique(np.fromfile(
             file_path, dtype=np.uint32)).size / (2 ** 32)
@@ -533,13 +534,13 @@ class QuantizedImageVersion(ImageVersionTable):
         :param original_properties_table: instance of the file properties subclass
           to be used when reading the original data to be versioned.
           If None, a FilePropertiesTable is instanced automatically.
-        :param csv_support_path: path to the file where results
-        (of the versioned data) are to be
-          long-term stored. If None, one is assigned by default based on options.persistence_dir.
-
+        :param csv_support_path: path to the file where results (of the
+          versioned data) are to be long-term stored. If None, one is assigned
+          by default based on options.persistence_dir.
         :param check_generated_files: if True, the table checks that
          each call to version() produces
-          a file to output_path. Set to false to create arbitrarily named output files."""
+          a file to output_path. Set to false to create arbitrarily named output files.
+        """
         # pylint: disable=too-many-arguments
         assert qstep == int(qstep)
         assert 1 <= qstep <= 65535
@@ -564,8 +565,8 @@ class QuantizedImageVersion(ImageVersionTable):
 
 
 class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
-    """Read FITS files and convert them to raw files,
-    sorting them by type (integer or float)	and by bits per pixel.
+    """Read FITS files and convert them to raw files, sorting them by type (
+    integer or float)	and by bits per pixel.
 
     By Òscar Maireles.
     """
