@@ -11,16 +11,16 @@
 This module defines the |ATable| class,
 which is the base for all automatic tables in |enb|.
 
-All |ATable| subclasses generate a |DataFrame| instance
-when their `get_df` method is successfully called. These are powerful dynamic tables
-that can be used directly, and/or passed to some of the tools in the |aanalysis| module
+All |ATable| subclasses generate a |DataFrame| instance when their `get_df`
+method is successfully called. These are powerful dynamic tables that can be
+used directly, and/or passed to some of the tools in the |aanalysis| module
 to easily produce figures and tables.
 
 |ATable| provides automatic persistence
 =======================================
 
-The produced tables are automatically stored into persistent disk storage in CSV format.
-This offers several key advantages:
+The produced tables are automatically stored into persistent disk storage in
+CSV format. This offers several key advantages:
 
 - It avoids recalculating already known values. This speeds up subsequent
   calls to `get_df` for the same inputs.
@@ -35,13 +35,12 @@ You can also use non-scalar types, e.g., list, tuple and dict types,
 by setting the `has_iterable_values`
 and `has_dict_values` for |ColumnProperties|'s constructor (more on that later).
 
-Finally, you can use any python object that can be pickled and unpickled.
-For this to work for a given
-column, the `has_object_values` needs to be set to True it the aforementioned constructor.
+Finally, you can use any python object that can be pickled and unpickled. For
+this to work for a given column, the `has_object_values` needs to be set to
+True it the aforementioned constructor.
 
-The only restriction is not to use None nor any other value detected
- as null by pandas, because these
-are used to efficiently signal the absence of data.
+The only restriction is not to use None nor any other value detected as null
+by pandas, because these are used to efficiently signal the absence of data.
 
 
 Using existing |ATable| columns
@@ -50,10 +49,10 @@ Using existing |ATable| columns
 |enb| implements several |ATable| subclasses that can be directly used in your code.
 All |ATable| subclasses work as follows:
 
-1. They accept an iterable (e.g., a list) of *indices* as an input.
-   An *index* is often a string, e.g.,
-   a path to an element of your test dataset. Note that |enb| is capable of creating that list
-   of indices if you point it to your dataset folder.
+1. They accept an iterable (e.g., a list) of *indices* as an input. An
+   *index* is often a string, e.g., a path to an element of your test dataset.
+   Note that |enb| is capable of creating that list of indices if you point it
+   to your dataset folder.
 
 2. For each row, the set of defined data *columns*
    (e.g., the dependent/independent variables of an experiment)
@@ -69,13 +68,13 @@ Consider the following toy example::
                 return len(index)
 
 Our `TableA` class accepts list-like values (e.g., strings) as indices,
-and defines the `index_length` column as the number of elements
-(e.g., characters) in the index.
+and defines the `index_length` column as the number of elements (e.g.,
+characters) in the index.
 
 One can then use the `get_df` method to obtain a |DataFrame| instance as follows::
 
         table_a = TableA(index="my_index_name")
-        example_indices = ["ab c" * i for i in range(10)]  # It could be any list of iterables
+        example_indices = ["ab c" * i for i in range(10)]  # List of iterables
         df = table_a.get_df(target_indices=example_indices)
         print(df.head())
 
@@ -92,17 +91,16 @@ The previous code should produce the following output
 
 
 Note that the `__atable_index` is the dataframe's index, which is set and
-used by ATable subclasses internally. This internal index is not
-included in the persistence data
-(i.e., it is not part of the CSV tables output to disk).
-Notwithstanding, the column values needed to build back this index are
-stored in the CSV
+used by ATable subclasses internally. This internal index is not included in
+the persistence data (i.e., it is not part of the CSV tables output to disk).
+Notwithstanding, the column values needed to build back this index are stored
+in the CSV
 
 New columns: defining and composing |ATable| subclasses
 =======================================================
 
-|enb| defines many columns in their core and plugin classes.
-If you need more, you can easily create new |ATable| subclasses with custom columns,
+|enb| defines many columns in their core and plugin classes. If you need
+more, you can easily create new |ATable| subclasses with custom columns,
 as explained next.
 
 You can use string, number and boolean types for scalar columns,
@@ -111,10 +109,9 @@ and dict-like and list-like (mappings and iterables) for non-scalar columns.
 Basic column definition
 +++++++++++++++++++++++
 
-The fastest way of defining a column is to subclass |ATable| and to
-create methods with names that start with `column_`.
-The value returned by these methods is automatically stored
-in the appropriate cell of the dataframe.
+The fastest way of defining a column is to subclass |ATable| and to create
+methods with names that start with `column_`. The value returned by these
+methods is automatically stored in the appropriate cell of the dataframe.
 
 An example of this approach is copied from `TableA` above::
 
@@ -131,27 +128,26 @@ Advanced column definition
 
 To further customize your new columns, you can use the |column_function| decorator.
 
-1. You can add column metainformation on how |aanalysis| plots the data by default,
-   e.g., labels, ranges, logarithmic axes, etc. An example column with descriptive
-   label can be defined as follows::
+1.    You can add column metainformation on how |aanalysis| plots the data by
+    default, e.g., labels, ranges, logarithmic axes, etc. An example column with
+    descriptive label can be defined as follows::
 
         @enb.atable.column_function("uppercase", label="Uppercase version of the index")
         def set_character_sum(self, index, row):
             row["uppercase"] = index.upper()
 
-   See the |ColumnProperties| class for all available plotting cues.
+    See the |ColumnProperties| class for all available plotting cues.
 
 
-2. You can set two or more columns with a single function.
-   To do so, you can pass a list of |ColumnProperties| instances
-   to the |column_function| decorator.
-   Each instance describes one column, which can be independently customized.
+2.  You can set two or more columns with a single function. To do so, you can
+    pass a list of |ColumnProperties| instances to the |column_function|
+    decorator. Each instance describes one column, which can be independently
+    customized.
 
-3. You can define columns to contain non-scalar data.
-   The following default types are supported:
-   tuples, lists, dicts. Note that using non-scalar data is generally
-   slower than using scalar types,
-   but allows easy aggregation and combination of variables.
+3.  You can define columns to contain non-scalar data. The following default
+    types are supported: tuples, lists, dicts. Note that using non-scalar data is
+    generally slower than using scalar types, but allows easy aggregation and
+    combination of variables.
 
 4. You can mix strings and |ColumnProperties| instances in the |column_function| decorator.
 
@@ -184,7 +180,8 @@ The following snippet illustrates points 2 onwards::
                 row["space_count"] = sum(1 for c in index if c == " ")
 
 After the definition, the table's dataframe can be obtained with
-`print(TableB().get_df(target_indices=example_indices).head())` to obtain simething similar to::
+`print(TableB().get_df(target_indices=example_indices).head())`
+to obtain simething similar to::
 
                                       file_path index_length         uppercase               first_and_last space_count constant_zero
     __atable_index
@@ -193,7 +190,6 @@ After the definition, the table's dataframe can be obtained with
     ('ab cab c',)                  ab cab c            8          AB CAB C  {'first': 'a', 'last': 'c'}           2             0
     ('ab cab cab c',)          ab cab cab c           12      AB CAB CAB C  {'first': 'a', 'last': 'c'}           3             0
     ('ab cab cab cab c',)  ab cab cab cab c           16  AB CAB CAB CAB C  {'first': 'a', 'last': 'c'}           4             0
-
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
@@ -295,21 +291,19 @@ class ColumnFailedError(CorruptedTableError):
 
 
 class ColumnProperties:
-    """All columns defined in an |ATable| subclass have a corresponding |ColumnProperties| instance,
-    which provides metainformation about it. Its main uses are providing plotting
-    cues and to allow non-scalar data (tuples, lists and dicts).
-    Once an |ATable| subclass c is defined,
-    `c.column_to_properties` contains a mapping from
-    a column's name to its ColumnProperties instance.
-    It is possible to change attributes of column properties instances, and to replace
-    the ColumnProperties instances in `column_to_properties`.
-    For instance, one may want to
-    plot a column with its original cues first, and then create a
-    second version with semi-logarithmic
-    axes. Then it would suffice to use |aanalysis| tools with the |ATable|
-    subclass default `column_to_properties` first,
-    then modify one or more ColumnProperties instances, and finally apply
-     the same tools again.
+    """All columns defined in an |ATable| subclass have a corresponding
+    |ColumnProperties| instance, which provides metainformation about it. Its
+    main uses are providing plotting cues and to allow non-scalar data (
+    tuples, lists and dicts). Once an |ATable| subclass c is defined,
+    `c.column_to_properties` contains a mapping from a column's name to its
+    ColumnProperties instance. It is possible to change attributes of column
+    properties instances, and to replace the ColumnProperties instances in
+    `column_to_properties`. For instance, one may want to plot a column with
+    its original cues first, and then create a second version with
+    semi-logarithmic axes. Then it would suffice to use |aanalysis| tools
+    with the |ATable| subclass default `column_to_properties` first,
+    then modify one or more ColumnProperties instances, and finally apply the
+    same tools again.
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -420,12 +414,12 @@ class ColumnProperties:
 
 
 class MetaTable(type):
-    """Metaclass for |ATable| and all subclasses, which
-    guarantees that the column_to_properties is a static OrderedDict instance
-    different from other classes' column_to_properties. This way,
-    |ATable| and all subclasses can access and update
-    their dicts separately for each class, effectively allowing to split
-    the definition of columns across multiple |ATable| instances.
+    """Metaclass for |ATable| and all subclasses, which guarantees that the
+    column_to_properties is a static OrderedDict instance different from
+    other classes' column_to_properties. This way, |ATable| and all
+    subclasses can access and update their dicts separately for each class,
+    effectively allowing to split the definition of columns across multiple
+    |ATable| instances.
 
     Note: Table classes should inherit from |ATable|, not |MetaTable|.
     You probably don't ever need to use this class directly.
@@ -549,8 +543,8 @@ class MetaTable(type):
     @staticmethod
     def set_column_mro(subclass):
         """
-        Redefine column properties that have been defined in the child class, making sure
-        the expected method resolution order (MRO) is maintained.
+        Redefine column properties that have been defined in the child class,
+        making sure the expected method resolution order (MRO) is maintained.
 
         This method prevents the parent's method be invoked to fill in the |DataFrame|,
         following intuitive OOP definition.
@@ -581,9 +575,9 @@ class MetaTable(type):
 
     @staticmethod
     def get_auto_column_wrapper(fun):
-        """Create a wrapper for a function with a signature compatible
-        with column-setting functions,
-        so that its returned value is assigned to the row's column.
+        """Create a wrapper for a function with a signature compatible with
+        column-setting functions, so that its returned value is assigned to
+        the row's column.
         """
 
         @functools.wraps(fun)
@@ -610,14 +604,14 @@ def clean_column_name(column_name):
 class ATable(metaclass=MetaTable):
     """Automatic table with implicit column definition.
 
-    ATable subclasses' have the `get_df` method, which returns a |DataFrame| instance with
-    the requested data. You can use (multiple) inheritance using one or more ATable subclasses
-    to combine the columns of those subclasses into the newly defined one. You can then define
-    methods with names that begin with `column_`, or using the
+    ATable subclasses' have the `get_df` method, which returns a |DataFrame|
+    instance with the requested data. You can use (multiple) inheritance
+    using one or more ATable subclasses to combine the columns of those
+    subclasses into the newly defined one. You can then define methods with
+    names that begin with `column_`, or using the
     `@enb.atable.column_function` decorator on them.
 
     See |atable| for more detailed help and examples.
-
     """
     #: Default input sample extension.
     #: If affects the result of `enb.atable.get_all_test_files`,
@@ -681,10 +675,10 @@ class ATable(metaclass=MetaTable):
         """Decorator for functions that produce values for column_name when
         given the current index and current column values.
 
-        Decorated functions are expected to have signature (atable, index, row),
-        where atable is an ATable instance,
-        index is a tuple of index values (corresponding to self.index),
-        and row is a dict-like instance to be filled in by f.
+        Decorated functions are expected to have signature (atable, index,
+        row), where atable is an ATable instance, index is a tuple of index
+        values (corresponding to self.index), and row is a dict-like instance
+        to be filled in by f.
 
         Columns are sorted by the order in which they are defined, i.e., when
         a function is decorated for the corresponding column.
@@ -721,21 +715,24 @@ class ATable(metaclass=MetaTable):
     def add_column_function(target_class, fun, column_properties):
         """Main entry point for column definition in |ATable| subclasses.
 
-        Methods decorated with |column_function|, or with a name beginning with `column_`
-        are automatically "registered" using this function. It can be invoked
-        directly to add columns manually, although it is not recommended in most scenarios.
+        Methods decorated with |column_function|, or with a name beginning
+        with `column_` are automatically "registered" using this function. It
+        can be invoked directly to add columns manually, although it is not
+        recommended in most scenarios.
 
-        :param target_class: the |ATable| subclass to which a new column is to be added.
-        :param column_properties: a |ColumnProperties| instance describing the
-          column to be created. This list may also contain strings, which are interpreted
-          as column names, creating the corresponding columns.
-        :param fun: column-setting function. It must have a signature compatible with a call
-          `(self, index, row)`, where `index` is the row's index and `row` is a dict-like
-          object where the new column is to be stored. Previously set columns can also be
-          read from `row`. When a column-setting method is decorated,
-          fun is automatically set so that the decorated method is called,
-          but it is not guaranteed
-          that fun is the decorated method.
+        :param target_class: the |ATable| subclass to which a new column
+          is to be added.
+        :param column_properties: a |ColumnProperties| instance describing
+          the column to be created. This list may also contain strings,
+          which are interpreted as column names, creating the corresponding
+          columns.
+        :param fun: column-setting function. It must have a signature
+          compatible with a call `(self, index, row)`, where `index` is the
+          row's index and `row` is a dict-like object where the new column is
+          to be stored. Previously set columns can also be read from `row`.
+          When a column-setting method is decorated, fun is automatically set
+          so that the decorated method is called, but it is not guaranteed that
+          fun is the decorated method.
         """
         if isinstance(target_class, type) \
                 and not issubclass(target_class, ATable) \
@@ -767,10 +764,9 @@ class ATable(metaclass=MetaTable):
         argument to this function.
 
         - If the element is a string, it is interpreted as a column name,
-          and a new ColumnProperties
-          object is is created with that name and the `fun` argument to this function.
-          The kwargs argument
-          is passed to that initializer.
+          and a new ColumnProperties object is is created with that name and
+          the `fun` argument to this function. The kwargs argument is passed to
+          that initializer.
 
         - If the element is a |ColumnProperties| instance,
           it is returned without modification.
@@ -778,10 +774,10 @@ class ATable(metaclass=MetaTable):
 
         - Otherwise, a SyntaxError is raised.
 
-        :param column_property_list: one of the elements of the `*column_property_list`
-          parameter to add_column_function.
-        :param fun: the function being decorated.
-
+        :param column_property_list: one of the elements of the
+          `*column_property_list` parameter to add_column_function.
+        :param fun:
+          the function being decorated.
         :return: a nonempty list of valid ColumnProperties instances
         """
         normalized_cp_list = []
@@ -812,8 +808,8 @@ class ATable(metaclass=MetaTable):
         to the column-setting function's scope: `_column_name` and `_column_properties`,
         in addition to verifying the column-setting function's signature.
 
-        Notwithstanding, this behavior can be altered in |ATable| subclasses, affecting only
-        the wrappers for that class' column-setting functions.
+        Notwithstanding, this behavior can be altered in |ATable| subclasses,
+        affecting only the wrappers for that class' column-setting functions.
 
         :param fun: function to be called by the wrapper.
         :param column_properties: |ColumnProperties| instance with properties associated
@@ -865,10 +861,10 @@ class ATable(metaclass=MetaTable):
 
     @property
     def indices(self):
-        """If `self.index` is a string, it returns a list with that column name.
-        If self.index is a list, it returns `self.index`.
-        Useful to iterate homogeneously regardless of whether single or
-        multiple indices are used.
+        """If `self.index` is a string, it returns a list with that column
+        name. If self.index is a list, it returns `self.index`. Useful to
+        iterate homogeneously regardless of whether single or multiple
+        indices are used.
         """
         return unpack_index_value(self.index)
 
@@ -887,36 +883,36 @@ class ATable(metaclass=MetaTable):
         """Core method for all |ATable| subclasses to obtain the table's content.
         The following principles guide the way `get_df` works:
 
-        - This method returns a |DataFrame| containing
-          one row per element in `target_indices`,
-          and as many columns as there are defined in self.column_to_properties.
-          If `target_indices` is None, all files in enb.config.options.base_dataset_dir
-          are used (after filtering by self.dataset_files_extension) by default.
+        - This method returns a |DataFrame| containing one row per element in
+          `target_indices`, and as many columns as there are defined in
+          self.column_to_properties. If `target_indices` is None, all files in
+          enb.config.options.base_dataset_dir are used (after filtering by
+          self.dataset_files_extension) by default.
 
         - Any persistence data already present is loaded, and only new
           indices or columns are added. This way, each column-setting function
           needs to be called only once per index for any given |ATable| subclass.
 
-        - Results are returned only for `target_indices`, even if you previously computed
-          other rows. Thus, only not-already-present indices and new columns require
-          actual computation. Any new result produced by this call is appended to the already
-          existing persistence data.
+        - Results are returned only for `target_indices`, even if you
+          previously computed other rows. Thus, only not-already-present
+          indices and new columns require actual computation. Any new result
+          produced by this call is appended to the already existing persistence
+          data.
 
-        - Rows computed in a previous call to this `get_df` are not deleted from
-          persistent data storage, even if `target_indices` contains fewer or different
-          indices than in previous calls.
+        - Rows computed in a previous call to this `get_df` are not deleted
+          from persistent data storage, even if `target_indices` contains fewer
+          or different indices than in previous calls.
 
         - Beware that if you remove a column definition from this |ATable|
-          subclass and run `get_df`,
-          that column will be removed from persistent storage. If you add a new column,
-          that value will be computed for all rows in `target_indices`,
+          subclass and run `get_df`, that column will be removed from
+          persistent storage. If you add a new column, that value will be
+          computed for all rows in `target_indices`,
 
-        - You can safely select new and/or different `target_indices`.
-          New data are stored, and existent
-          rows are not removed. If you add new column definitions,
-          those are computed for `target_indices`
-          only. If there are other previously existing rows, they are flagged as incomplete, and
-          those new columns will be computed only when those rows' indices
+        - You can safely select new and/or different `target_indices`. New data
+          are stored, and existent rows are not removed. If you add new column
+          definitions, those are computed for `target_indices` only. If there
+          are other previously existing rows, they are flagged as incomplete,
+          and those new columns will be computed only when those rows' indices
           are included in `target_indices`.
 
         Recall that table cell values are restricted to be
@@ -1040,11 +1036,11 @@ class ATable(metaclass=MetaTable):
     def get_df_one_chunk(self, target_indices, target_columns, fill_needed,
                          overwrite, run_sanity_checks):
         """Internal implementation of the :meth:`get_df` functionality,
-        to be applied to a single chunk of indices. It is essentially a self-contained
-        call to meth:`enb.atable.ATable.get_df` as described in its documentation, where
-        data are stored in memory until all computations are done,
-        and then the persistent storage
-        is updated if needed.
+        to be applied to a single chunk of indices. It is essentially a
+        self-contained call to meth:`enb.atable.ATable.get_df` as described
+        in its documentation, where data are stored in memory until all
+        computations are done, and then the persistent storage is updated if
+        needed.
 
         :param target_columns: list of indices for this chunk
         :param target_columns: list of column names to be filled in this call
@@ -1223,7 +1219,8 @@ class ATable(metaclass=MetaTable):
         `target_indices`, with the columns
         given in `target_columns`, using this table's column-setting functions.
 
-        This method is run when there are known missing values in the requested df, e.g., there are:
+        This method is run when there are known missing values in the
+        requested df, e.g., there are:
 
         - missing columns of existing rows, and/or
         - new rows to be added (i.e., `target_locs` contains at least one index not
@@ -1231,20 +1228,25 @@ class ATable(metaclass=MetaTable):
 
         Note that this method does not modify `loaded_df`.
 
-        :param loaded_df: the full loaded dataframe read from persistence
-          (or created anew). It is used to avoid
-          recomputation of existing columns, but it is not modified by this method.
-        :param target_df: a dataframe with identical column structure as loaded_table,
-          with the subset of loaded_table's rows that match the target indices (i.e., inner join)
+        :param loaded_df: the full loaded dataframe read from persistence (or
+          created anew). It is used to avoid recomputation of existing columns,
+          but it is not modified by this method.
+
+        :param target_df: a dataframe with identical column structure as
+          loaded_table, with the subset of loaded_table's rows that match the
+          target indices (i.e., inner join)
+
         :param target_indices: list of indices to be filled
-        :param target_locs: if not None, it must be the resulting list
-          of applying indices_to_internal_loc to target_indices. If None,
-          it is computed in the aforementioned way. Either way,
-          elements must be compatible with `loaded_table.loc`
-          and be present in the same order as their corresponding
-          target_indices.
-        :param target_columns: list of columns that are to be computed. |enb| defaults to calling
-          this function with all columns in the table.
+
+        :param target_locs: if not None, it must be the resulting list of
+          applying indices_to_internal_loc to target_indices. If None,
+          it is computed in the aforementioned way. Either way, elements must
+          be compatible with `loaded_table.loc` and be present in the same
+          order as their corresponding target_indices.
+
+        :param target_columns: list of columns that are to be computed. |enb|
+          defaults to calling this function with all columns in the table.
+
         :param overwrite: if True, cell values are computed even when storage
           data was present. In that case, the newly computed results replace the old ones.
 
@@ -1344,32 +1346,29 @@ class ATable(metaclass=MetaTable):
 
     def compute_one_row(self, filtered_df, index, loc, column_fun_tuples,
                         overwrite):
-        """Process a single row of an ATable instance, returning a Series object
-         corresponding to that row.
-        If an error is detected, an exception is returned instead of a Series.
-        Note that the exception
-        is not raised here, but intended to be detected by the compute_target_rows(),
-        i.e., the dispatcher function.
+        """Process a single row of an ATable instance, returning a Series
+        object corresponding to that row. If an error is detected,
+        an exception is returned instead of a Series. Note that the exception
+        is not raised here, but intended to be detected by the
+        compute_target_rows(), i.e., the dispatcher function.
 
         :param filtered_df: |DataFrame| retrieved from persistent storage,
-          with index compatible with loc.
-          The loc argument itself needs not be present in filtered_df,
-          but is used to avoid recomputing
-          in case overwrite is not True and columns had been set.
+          with index compatible with loc. The loc argument itself needs not be
+          present in filtered_df, but is used to avoid recomputing in case
+          overwrite is not True and columns had been set.
         :param index: index value or values corresponding to the row to
           be processed.
-        :param loc: location compatible with .loc of filtered_df
-          (although it might not be present there),
-          and that will be set into the full loaded_df also using its .loc accessor.
+        :param loc: location compatible with .loc of filtered_df (although it
+          might not be present there), and that will be set into the full
+          loaded_df also using its .loc accessor.
         :param column_fun_tuples: a list of (column, fun) tuples,
            where fun is to be invoked to fill column
-        :param overwrite: if True, existing values are overwriten with
+        :param overwrite: if True, existing values are overwritten with
           newly computed data
 
         :return: a `pandas.Series` instance corresponding to this row,
-          with a column named
-          as given by self.private_index_column set to the `loc` argument
-          passed to this function.
+          with a column named as given by self.private_index_column set to the
+          `loc` argument passed to this function.
         """
         # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
         try:
@@ -1460,7 +1459,7 @@ class ATable(metaclass=MetaTable):
                     if isinstance(ex,
                                   OSError) and ex.errno == 28:  # pylint: disable=no-member
                         msg += \
-                            "\nNOTE: It seems to be an out-of-space error. " \
+                            "NOTE: It seems to be an out-of-space error. " \
                             "If your disks have enough space, " \
                             "you might be running out of space in /dev/shm " \
                             "(or the equivalent in-memory " \
@@ -1555,11 +1554,10 @@ class SummaryTable(ATable):
      e.g., produced by ATable subclasses,
     and to define new columns (measurements) for each of those groups.
 
-    Column functions can be defined in the same way as for any ATable.
-    In this case, the index elements
-    passed to the column functions are the group labels returned by split_groups().
-    Column functions can then
-    access the corresponding dataframe with self.label_to_df[label].
+    Column functions can be defined in the same way as for any ATable. In
+    this case, the index elements passed to the column functions are the
+    group labels returned by split_groups(). Column functions can then access
+    the corresponding dataframe with self.label_to_df[label].
 
     Note that this behaviour is not unlike the groupby() method of pandas.
     The main differences are:
@@ -1567,15 +1565,14 @@ class SummaryTable(ATable):
         - Grouping can be fully customized, instead of only allowing splitting
           by one or more column values
 
-        - The newly defined columns can aggregate data in the group in any arbitrary way.
-          This is of course
-          true for pandas, but SummaryTable tries to gracefully integrate
-          that process into enb, allowing
+        - The newly defined columns can aggregate data in the group in any
+          arbitrary way. This is of course true for pandas, but SummaryTable
+          tries to gracefully integrate that process into enb, allowing
           automatic persistence, easy plotting, etc.
 
-    SummaryTable can be particularly useful as an intermediate step between
-    a complex table's (or enb.Experiment's)
-    get_df and the analyze_df method of analyzers en :mod:`enb.aanalysis`.
+    SummaryTable can be particularly useful as an intermediate step between a
+    complex table's (or enb.Experiment's) get_df and the analyze_df method of
+    analyzers en :mod:`enb.aanalysis`.
     """
 
     def __init__(self, full_df, column_to_properties=None, copy_df=False,
@@ -1584,9 +1581,9 @@ class SummaryTable(ATable):
         Initialize a summary table.
          Group splitting is not invoked until needed by calling self.get_df().
 
-        Column-setting columns are given the group label and the row to be completed.
-        They can access
-        self.label_to_df to get the dataframe corresponding to the row's group.
+        Column-setting columns are given the group label and the row to be
+        completed. They can access self.label_to_df to get the dataframe
+        corresponding to the row's group.
 
         :param full_df: reference pandas dataframe to be summarized.
         :param column_to_properties: if not None,
@@ -1621,14 +1618,15 @@ class SummaryTable(ATable):
               is returned by the call to split_groups().
 
 
-        Subclasses can easily implement grouping custom grouping methods, which must adhere
-        to the following constraints:
+        Subclasses can easily implement grouping custom grouping methods,
+        which must adhere to the following constraints:
         - It must return an iterable of group_label, group_df tuples.
         - Unique group_label values must be returned.
 
         Also note that:
 
-        - It is NOT needed that the union of all group_df tuples yield reference_df.
+        - It is NOT needed that the union of all group_df tuples yield
+          reference_df.
         - It is NOT needed that the intersection of the any two group_df elements is empty.
         - The group_df dataframes normally contain all columns in reference_df, but
           it is NOT mandatory to maintain this behavior.
@@ -1659,14 +1657,13 @@ class SummaryTable(ATable):
 
     def get_df(self, *args, reference_df=None, include_all_group=None,
                **kwargs):
-        """
-        Get the summary dataframe. This class only defines the 'group_size'
-        column for the output dataframe.
-        Subclasses may add as many columns to the summary as desired.
+        """Get the summary dataframe. This class only defines the
+        'group_size' column for the output dataframe. Subclasses may add as
+        many columns to the summary as desired.
 
         :param reference_df: if not None, the dataframe to be used as
-          reference for the summary. If None,
-          the one provided at initialization is used.
+          reference for the summary. If None, the one provided at
+          initialization is used.
 
         :return: the summary dataframe with all columns defined for self's class.
         """
@@ -1710,10 +1707,10 @@ class SummaryTable(ATable):
 
 
 def string_or_float(cell_value):
-    """Takes the input value from an |ATable| cell and returns either
-    its float value or its string value. In the latter case, one level of surrounding
-    ' or " is removed from the value before returning.
-    :return: the string or float value given by cell_value
+    """Takes the input value from an |ATable| cell and returns either its
+    float value or its string value. In the latter case, one level of
+    surrounding ' or " is removed from the value before returning. :return:
+    the string or float value given by cell_value
     """
     try:
         v = float(cell_value)
@@ -1736,10 +1733,9 @@ def get_nonscalar_value(cell_value):
     Otherwise, an error is raised.
 
     Note that |ATable| subclasses produce dataframes with the intended data
-    types also for non-scalar types.
-    This method is provided as a convenience tool for the case when raw CSV
-    files produced by |enb| are
-    read directly, and not through |ATable|'s persistence system.
+    types also for non-scalar types. This method is provided as a convenience
+    tool for the case when raw CSV files produced by |enb| are read directly,
+    and not through |ATable|'s persistence system.
     """
     if isinstance(cell_value, (dict, list, tuple)):
         return cell_value
@@ -1832,20 +1828,18 @@ def column_function(*column_property_list, **kwargs):
 
     - one or more |ColumnProperties| instances, one for each defined column.
     - a list of |ColumnProperties| instances, e.g., by invoking
-          `@column_function([cp1,cp2])`
-          where `cp1` and `cp2` are |ColumnProperties| instances.
-          This option is deprecated and provided for backwards compatibility only.
-          If `properties=[cp1,cp2]`, then `@column_function(l)` (deprecated)
-          and `@column_function(*l)`
-          should result in identical column definitions.
+      `@column_function([cp1,cp2])`,
+      where `cp1` and `cp2` are |ColumnProperties| instances.
+      This option is deprecated and provided for backwards compatibility only.
+      If `properties=[cp1,cp2]`, then `@column_function(l)` (deprecated)
+      and `@column_function(*l)`
+      should result in identical column definitions.
 
 
-    Decorator to allow definition of table columns for
-    still undefined classes. To do so, MetaTable keeps track of
-    |column_function|-decorated methods
-    while the class is being defined.
-    Then, when the class is created, MetaTable adds the columns defined
-    by the decorated functions.
+    Decorator to allow definition of table columns for still undefined
+    classes. To do so, MetaTable keeps track of |column_function|-decorated
+    methods while the class is being defined. Then, when the class is
+    created, MetaTable adds the columns defined by the decorated functions.
 
     :param column_property_list: list of column property definitions, as described above.
     :return: the wrapper that actually decorates the function using the
@@ -1881,10 +1875,9 @@ def redefines_column(f):
     parent classes, and when that method defines a column, it must be decorated with this.
 
     Otherwise, a SyntaxError is raised. This is to prevent hard-to-find bugs
-    where a parent
-    class' definition of the method is used when filling a row's column,
-    but calling that method
-    on the child's instance runs the child's code.
+    where a parent class' definition of the method is used when filling a
+    row's column, but calling that method on the child's instance runs the
+    child's code.
 
     Functions decorated with this method acquire a _redefines_column attribute,
     that is then identified by
