@@ -5,10 +5,14 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2023/02/12"
 
 import os
+import tempfile
 
 import imageio
 import numpy as np
+import pdf2image
+
 import enb
+import enb.sets
 
 
 class PNGCurationTable(enb.sets.FileVersionTable):
@@ -98,11 +102,46 @@ def raw_path_to_png(raw_path, png_path, image_properties_row=None):
 
     :param raw_path: path to the image in raw format to render in png.
     :param png_path: path where the png file is to be stored.
-    :param image_properties_row: if row_path does not contain geometry information,
-      this parameter should be a dict-like object that
-      indicates width, height, number of components,
-      bytes per sample, signedness and endianness if applicable.
+
+    :param image_properties_row: if row_path does not contain geometry
+      information, this parameter should be a dict-like object that indicates
+      width, height, number of components, bytes per sample, signedness and
+      endianness if applicable.
     """
     img = enb.isets.load_array_bsq(file_or_path=raw_path,
                                    image_properties_row=image_properties_row)
     render_array_png(img=img, png_path=png_path)
+
+
+class PDFToPNG(enb.sets.FileVersionTable):
+    """Take all .pdf files in input dir and save them as .png files into
+    output_dir, maintining the relative folder structure.
+    """
+    dataset_files_extension = "pdf"
+
+    def __init__(self, input_pdf_dir, output_png_dir, csv_support_path=None):
+        super().__init__(version_name="pdf_to_png",
+                         original_base_dir=input_pdf_dir,
+                         version_base_dir=output_png_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=True)
+
+    def version(self, input_path, output_path, row):
+        with enb.logger.info_context(
+                f"{self.__class__.__name__}: {input_path} -> {output_path}...\n"):
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            imgs = pdf2image.convert_from_path(pdf_path=input_path)
+            assert len(imgs) == 1
+            imgs[0].save(output_path)
+
+
+def pdf_to_png(input_dir, output_dir):
+    """Take all .pdf files in input dir and save them as .png files into
+    output_dir, maintining the relative folder structure.
+
+    It is perfectly valid for input_dir and output_dir to point to the same
+    location, but input_dir must exist beforehand.
+    """
+    with tempfile.NamedTemporaryFile() as tmp_file:
+        PDFToPNG(input_pdf_dir=input_dir, output_png_dir=output_dir,
+                 csv_support_path=tmp_file.name).get_df()
