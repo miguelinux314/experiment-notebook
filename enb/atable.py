@@ -190,7 +190,7 @@ to obtain simething similar to::
     ('ab cab c',)                  ab cab c            8          AB CAB C  {'first': 'a', 'last': 'c'}           2             0
     ('ab cab cab c',)          ab cab cab c           12      AB CAB CAB C  {'first': 'a', 'last': 'c'}           3             0
     ('ab cab cab cab c',)  ab cab cab cab c           16  AB CAB CAB CAB C  {'first': 'a', 'last': 'c'}           4             0
-"""
+""" # pylint: disable=line-too-long
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
