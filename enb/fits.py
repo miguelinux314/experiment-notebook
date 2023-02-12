@@ -4,11 +4,10 @@ See https://fits.gsfc.nasa.gov/fits_documentation.html.
 """
 __author__ = "Òscar Maireles"
 __since__ = "2020/04/01"
+# pylint: disable=no-self-use
 
 import os
-
 import numpy as np
-
 import enb
 from enb import sets
 from enb.config import options
