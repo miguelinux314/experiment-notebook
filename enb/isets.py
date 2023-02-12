@@ -12,6 +12,7 @@ import enb
 from enb import atable
 from enb import sets
 
+# Imports to maintain compatibility
 # pylint: disable=unused-import
 from .fits import FitsVersionTable
 from .png import PNGCurationTable
