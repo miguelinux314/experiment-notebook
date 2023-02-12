@@ -104,7 +104,6 @@ from . import pgm
 from . import tarlite
 # Plugin and template support
 from . import plugins
-# pylint: disable=wrong-import-position
 
 # Setup to be run only when enb is imported in the main process
 if not parallel_ray.is_parallel_process():
@@ -123,7 +122,7 @@ if not parallel_ray.is_parallel_process():
             _atexit.register(parallel_ray.stop_ray)
             # The list of modules loaded so far passed to any possible ray remote
             # nodes so that they don't attempt to load them again.
-            # pylint: disable=W0212
+            # pylint: disable=protected-access
             config.options._initial_module_names = list(
                 m.__name__ for m in _sys.modules.values() if
                 hasattr(m, "__name__"))
