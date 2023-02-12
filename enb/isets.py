@@ -12,7 +12,8 @@ import imageio
 import enb
 from enb import atable
 from enb import sets
-from .fits import FitsVersionTable
+
+from .fits import FitsVersionTable # pylint: disable=unused-import
 
 def entropy(data):
     """Compute the zero-order entropy of the provided data

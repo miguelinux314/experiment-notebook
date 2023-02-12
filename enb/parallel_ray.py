@@ -49,8 +49,8 @@ _ray_disabled_warning_issued = False
 # pylint: disable=invalid-name
 
 def is_ray_enabled():
-    """Return True if and only if ray is available and the current platform is one
-    of the supported for ray clustering (currently only linux).
+    """Return True if and only if ray is available and the current platform
+    is one of the supported for ray clustering (currently only linux).
     """
     global _ray_disabled_warning_issued
 
@@ -109,8 +109,8 @@ def is_ray_enabled():
 class HeadNode:
     """Class used to initialize and stop a ray head node.
 
-    The stop() method must be called after start(),
-    or a ray cluster will remain active.
+    The stop() method must be called after start(), or a ray cluster will
+    remain active.
     """
 
     def __init__(self, ray_port, ray_port_count):
@@ -273,8 +273,8 @@ class HeadNode:
                     f"Command: {repr(invocation)}. Ouput:\n{output}")
 
     def parse_cluster_config_csv(self, csv_path):
-        """Read a CSV defining remote nodes and return a list with as many RemoteNode as
-        data rows in the CSV.
+        """Read a CSV defining remote nodes and return a list with as many
+        RemoteNode as data rows in the CSV.
         """
 
         def clean_value(s, default_value=None):
@@ -502,15 +502,16 @@ def stop_ray():
 
 def is_parallel_process():
     """Return True if and only if the call is made from a remote ray process,
-    which can be running in the head node or any of the remote nodes (if any is present).
+    which can be running in the head node or any of the remote nodes (if any
+    is present).
     """
     return os.path.basename(sys.argv[0]) == os.path.basename(
         options.worker_script_name)
 
 
 def is_remote_node():
-    """Return True if and only if the call is performed from a remote ray process
-    running on a node different from the head.
+    """Return True if and only if the call is performed from a remote ray
+    process running on a node different from the head.
     """
     if not is_ray_enabled():
         return False
@@ -531,8 +532,9 @@ def is_ray_initialized():
 
 
 def parallel_decorator(*args, **kwargs):
-    """Wrapper of the @`ray.remote` decorator that automatically updates enb.config.options
-    for remote processes, so that they always access the intended configuration.
+    """Wrapper of the @`ray.remote` decorator that automatically updates
+    enb.config.options for remote processes, so that they always access the
+    intended configuration.
     """
     kwargs["num_cpus"] = kwargs["num_cpus"] if "num_cpus" in kwargs else 1
     kwargs["num_gpus"] = kwargs["num_gpus"] if "num_gpus" in kwargs else 0
@@ -556,8 +558,9 @@ def parallel_decorator(*args, **kwargs):
         method_proxy.ray_remote = method_proxy.remote
 
         def local_side_remote(*a, **k):
-            """Wrapper for ray's `.parallel_decorator()` method invoked in the local side.
-            It makes sure that `remote_side_wrapper` receives the options argument.
+            """Wrapper for ray's `.parallel_decorator()` method invoked in
+            the local side. It makes sure that `remote_side_wrapper` receives
+            the options argument.
             """
             try:
                 try:
@@ -599,10 +602,9 @@ def get_completed_pending_ids(ids, timeout=0):
 
 
 def fix_imports():
-    """An environment variable is passed to the children processes
-    for them to be able to import all modules that were
-    imported after loading enb. This prevents the remote
-    functions to fail the deserialization process
+    """An environment variable is passed to the children processes for them
+    to be able to import all modules that were imported after loading enb.
+    This prevents the remote functions to fail the deserialization process
     due to missing definitions.
     """
     if is_parallel_process():
