@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Experiment notebook (enb) library.
 
-Please see https://github.com/miguelinux314/experiment-notebook for further information.
+Please see https://github.com/miguelinux314/experiment-notebook
+for further information.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
