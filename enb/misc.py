@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Miscellaneous tools for `enb`.
 
-This module does not and should not import anything from enb, so that other modules
-may use misc tools at definition time.
-"""
+This module does not and should not import anything from enb, so that other
+modules may use misc tools at definition time."""
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2021/07/11"
 
@@ -15,8 +14,8 @@ import csv
 
 
 def get_defining_class_name(method):
-    """Return the name of the class of which f is a method,
-    or None if not bound to any class.
+    """Return the name of the class of which f is a method, or None if not
+    bound to any class.
     """
     try:
         return method.__qualname__.split('.<locals>', 1)[0].rsplit('.')[-2]
@@ -25,9 +24,8 @@ def get_defining_class_name(method):
 
 
 def remove_argparse_action(parser, action):
-    """Entirely remove an action from a parser,
-    from its subparsers and groups if it exists.
-    Adapted from https://stackoverflow.com/a/49753634.
+    """Entirely remove an action from a parser, from its subparsers and
+    groups if it exists. Adapted from https://stackoverflow.com/a/49753634.
     """
     # pylint: disable=protected-access,too-many-branches
     try:
@@ -81,8 +79,8 @@ def remove_argparse_action(parser, action):
 
 
 def split_camel_case(camel_string):
-    """Split a camel case string like ThisIsAClass
-    into a string like "This Is A Class".
+    """Split a camel case string like ThisIsAClass into a string like "This
+    Is A Class".
     """
     return " ".join(
         re.findall(r"[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))", camel_string))
@@ -121,11 +119,9 @@ class Singleton(type):
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
-        """This method replaces the regular initializer of classes
-         with this as their metaclass.
-        `*args` and `**kwargs` are passed directly to their initializer
-        and do not otherwise affect
-        the Singleton behavior.
+        """This method replaces the regular initializer of classes with this
+        as their metaclass. `*args` and `**kwargs` are passed directly to
+        their initializer and do not otherwise affect the Singleton behavior.
         """
         try:
             return cls._instances[cls]
@@ -149,11 +145,9 @@ class ExposedProperty:
 
 
 class CircularList(list):
-    """A tuned list that automatically applies modulo len(self)
-    to the given index,
-    allowing for circular, index-based access to the data
-    (whereas itertools.cycle does
-    not allow accessing elements by index).
+    """A tuned list that automatically applies modulo len(self) to the given
+    index, allowing for circular, index-based access to the data (whereas
+    itertools.cycle does not allow accessing elements by index).
     """
 
     def __getitem__(self, item):
@@ -169,8 +163,8 @@ def class_to_fqn(cls):
 
 def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
                          use_booktabks=True):
-    """Read a CSV table from a file and output it as a latex table to another file.
-    The first row is assumed to be the header.
+    """Read a CSV table from a file and output it as a latex table to another
+    file. The first row is assumed to be the header.
 
     :param input_csv_path: path to a file containing CSV data.
     :param output_tex_file: path where the tex contents are to be stored,
@@ -213,7 +207,7 @@ def get_node_ip():
 
 
 def get_node_name():
-    """Get the host name of this node. Alias for socket.gethostname.
+    """Get the host name of this node. Alias for `socket.gethostname`.
     """
     return socket.gethostname()
 
