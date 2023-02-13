@@ -7,6 +7,7 @@ for detailed help.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/01/01"
+# pylint: disable=no-self-use
 
 import ast
 import functools
@@ -244,7 +245,7 @@ class Analyzer(enb.atable.ATable):
             return summary_df
 
         normalized_wrapper = self.__class__.normalize_parameters(
-            f=normalized_wrapper,
+            fun=normalized_wrapper,
             group_by=group_by,
             column_to_properties=column_to_properties,
             target_columns=target_columns,
@@ -280,7 +281,7 @@ class Analyzer(enb.atable.ATable):
         indirectly) so make sure all necessary parameters reach the rendering
         function.
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         # If plot rendering is requested, do so for all selected modes, in parallel
         render_ids = []
         for render_mode in selected_render_modes:
@@ -299,45 +300,11 @@ class Analyzer(enb.atable.ATable):
                     column_to_properties=column_to_properties,
                     show_global=show_global, show_count=show_count,
                     **(dict(render_kwargs)
-                       if render_kwargs is not None else dict()))
+                       if render_kwargs is not None else {}))
 
                 if reference_group is not None:
-                    filtered_plds = column_kwargs["pds_by_group_name"]
-                    if not self.show_reference_group:
-                        filtered_plds = {k: v
-                                         for k, v in column_kwargs[
-                                             "pds_by_group_name"].items()
-                                         if k != reference_group}
-
-                        if reference_group not in column_kwargs[
-                            "pds_by_group_name"]:
-                            enb.logger.debug(f"Requested reference_group "
-                                             f"{repr(reference_group)} not found.")
-                        column_kwargs["pds_by_group_name"] = filtered_plds
-                        if "group_name_order" in column_kwargs and \
-                                column_kwargs["group_name_order"]:
-                            column_kwargs["group_name_order"] = \
-                                [n for n in column_kwargs["group_name_order"]
-                                 if n != reference_group]
-
-                    if "combine_groups" in column_kwargs and column_kwargs[
-                        "combine_groups"] is True \
-                            and "reference_group" in column_kwargs and \
-                            column_kwargs["reference_group"] is not None:
-                        for i, name in enumerate(filtered_plds.keys()):
-                            if i > 0:
-                                column_kwargs["pds_by_group_name"][name] = [
-                                    pld for pld in
-                                    column_kwargs["pds_by_group_name"][name]
-                                    if not isinstance(pld,
-                                                      enb.plotdata.VerticalLine)
-                                       or pld.x_position != 0]
-                    try:
-                        column_kwargs["group_name_order"] = [
-                            n for n in column_kwargs["group_name_order"]
-                            if n != reference_group]
-                    except KeyError:
-                        pass
+                    self.update_render_kwargs_reference_group(column_kwargs,
+                                                              reference_group)
 
                 # All arguments to the parallel rendering function are ready;
                 # their associated tasks as created
@@ -363,6 +330,7 @@ class Analyzer(enb.atable.ATable):
                         spinner="dots_waves2",
                         disable=options.verbose <= 0,
                         enrich_print=False) as abar:
+                    # pylint: disable=not-callable
                     abar(0)
                     for _ in enb.parallel.ProgressiveGetter(
                             id_list=render_ids,
@@ -371,6 +339,48 @@ class Analyzer(enb.atable.ATable):
                         pass
                     enb.parallel.get(render_ids)
                     abar(1)
+
+    def update_render_kwargs_reference_group(
+            self, column_kwargs, reference_group):
+        """Update the default render kwargs dir when a reference group
+        is selected.
+        """
+        assert reference_group is not None
+        filtered_plds = column_kwargs["pds_by_group_name"]
+        if not self.show_reference_group:
+            filtered_plds = {k: v
+                             for k, v in column_kwargs[
+                                 "pds_by_group_name"].items()
+                             if k != reference_group}
+
+            if reference_group not in column_kwargs[
+                "pds_by_group_name"]:
+                enb.logger.debug(f"Requested reference_group "
+                                 f"{repr(reference_group)} not found.")
+            column_kwargs["pds_by_group_name"] = filtered_plds
+            if "group_name_order" in column_kwargs and \
+                    column_kwargs["group_name_order"]:
+                column_kwargs["group_name_order"] = \
+                    [n for n in column_kwargs["group_name_order"]
+                     if n != reference_group]
+        if "combine_groups" in column_kwargs and column_kwargs[
+            "combine_groups"] is True \
+                and "reference_group" in column_kwargs and \
+                column_kwargs["reference_group"] is not None:
+            for i, name in enumerate(filtered_plds.keys()):
+                if i > 0:
+                    column_kwargs["pds_by_group_name"][name] = [
+                        pld for pld in
+                        column_kwargs["pds_by_group_name"][name]
+                        if not isinstance(pld,
+                                          enb.plotdata.VerticalLine)
+                           or pld.x_position != 0]
+        try:
+            column_kwargs["group_name_order"] = [
+                n for n in column_kwargs["group_name_order"]
+                if n != reference_group]
+        except KeyError:
+            pass
 
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
@@ -384,21 +394,19 @@ class Analyzer(enb.atable.ATable):
             show_global, show_count,
             # Rendering options, directly passed to plotdata.render_plds_by_group
             **column_kwargs):
-        """Update column_kwargs with the desired rendering arguments for this column
-        and render mode. Return the updated dict.
+        """Update column_kwargs with the desired rendering arguments for this
+        column and render mode. Return the updated dict.
         """
-        # pylint: disable=too-many-arguments
-        if isinstance(column_selection, str):
-            all_columns = [column_selection]
-        elif isinstance(column_selection, collections.abc.Iterable):
+        # pylint: disable=too-many-arguments,unused-argument,too-many-branches
+        if isinstance(column_selection, collections.abc.Iterable):
             all_columns = []
-            for c in column_selection:
-                if isinstance(c, str):
-                    all_columns.append(c)
-                elif isinstance(c, collections.abc.Iterable):
-                    all_columns.extend(c)
+            for column in column_selection:
+                if isinstance(column, str):
+                    all_columns.append(column)
+                elif isinstance(column, collections.abc.Iterable):
+                    all_columns.extend(column)
 
-            if not all(isinstance(c, str) for c in all_columns):
+            if not all(isinstance(column, str) for column in all_columns):
                 raise ValueError(
                     f"Invalid column_selection={repr(column_selection)}. "
                     f"Computed all_columns={repr(all_columns)}, which is not "
@@ -416,7 +424,7 @@ class Analyzer(enb.atable.ATable):
             group_label: group_plds for group_label, group_plds
             in sorted(summary_df[["group_label",
                                   f"{column_selection}_render-{render_mode}"]].values,
-                      key=lambda t: t[0])
+                      key=lambda tup: tup[0])
             if self.show_reference_group or group_label != reference_group}
 
         # General column properties
@@ -442,13 +450,10 @@ class Analyzer(enb.atable.ATable):
         # Control group division and labeling
         if "combine_groups" not in column_kwargs:
             column_kwargs["combine_groups"] = self.combine_groups
-
         if "show_legend" not in column_kwargs:
             column_kwargs["show_legend"] = self.show_legend
-
         if "legend_position" not in column_kwargs:
             column_kwargs["legend_position"] = self.legend_position
-
         if self.style_list is not None:
             column_kwargs["style_list"] = self.style_list
 
@@ -541,7 +546,7 @@ class Analyzer(enb.atable.ATable):
                 analysis_output_path[:-4] + ".tex")
 
     @classmethod
-    def normalize_parameters(cls, f, group_by, column_to_properties,
+    def normalize_parameters(cls, fun, group_by, column_to_properties,
                              target_columns, reference_group,
                              output_plot_dir, selected_render_modes):
         """Optional decorator methods compatible with the Analyzer.get_df
@@ -554,7 +559,7 @@ class Analyzer(enb.atable.ATable):
         column_to_properties = column_to_properties if column_to_properties is not None \
             else collections.OrderedDict()
 
-        @functools.wraps(f)
+        @functools.wraps(fun)
         def wrapper(self,
                     # Dynamic arguments with every call (full_df and group_by
                     # are not normalized)
@@ -592,20 +597,20 @@ class Analyzer(enb.atable.ATable):
             show_count = show_count if show_count is not None else cls.show_count
             plot_title = plot_title if plot_title is not None else cls.plot_title
 
-            for c in full_df.columns:
-                if c not in column_to_properties:
-                    column_to_properties[c] = enb.atable.ColumnProperties(
-                        clean_column_name(c))
+            for column in full_df.columns:
+                if column not in column_to_properties:
+                    column_to_properties[column] = enb.atable.ColumnProperties(
+                        clean_column_name(column))
 
-            return f(self=self, full_df=full_df,
-                     reference_group=reference_group,
-                     selected_render_modes=selected_render_modes,
-                     target_columns=target_columns,
-                     output_plot_dir=output_plot_dir,
-                     show_global=show_global, show_count=show_count,
-                     group_by=group_by,
-                     column_to_properties=column_to_properties,
-                     plot_title=plot_title, **render_kwargs)
+            return fun(self=self, full_df=full_df,
+                       reference_group=reference_group,
+                       selected_render_modes=selected_render_modes,
+                       target_columns=target_columns,
+                       output_plot_dir=output_plot_dir,
+                       show_global=show_global, show_count=show_count,
+                       group_by=group_by,
+                       column_to_properties=column_to_properties,
+                       plot_title=plot_title, **render_kwargs)
 
         return wrapper
 
@@ -775,11 +780,9 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         """
         # The following snippet can be used in overwriting implementations of
         # render_target.
-        _self, group_label, row = args
-        # group_df = self.label_to_df[group_label]
+        _self, group_label, row = args  # pylint: disable=unused-variable
         column_selection = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
-        reference_group = kwargs["reference_group"]
         if render_mode not in self.analyzer.valid_render_modes:
             raise ValueError(
                 f"Invalid requested render mode {repr(render_mode)}")
@@ -814,7 +817,6 @@ class AnalyzerSummary(enb.atable.SummaryTable):
             enb.logger.warning(
                 f"A reference group {repr(self.reference_group)} is selected "
                 f"but {self.__class__} does not implement its apply_reference_bias method.")
-        return
 
     def remove_nans(self, column_series):
         """Remove the infinite and NaN values from a pd.Series instance.
@@ -906,7 +908,7 @@ class ScalarNumericAnalyzer(Analyzer):
         """Update column_kwargs with the desired rendering arguments for this column
         and render mode. Return the updated dict.
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         # Update common rendering kwargs
         column_kwargs = super().update_render_kwargs_one_case(
             column_selection=column_selection, reference_group=reference_group,
@@ -959,8 +961,8 @@ class ScalarNumericAnalyzer(Analyzer):
 
         if self.sort_by_average:
             column_kwargs["group_name_order"] = []
-            for t in sorted(group_avg_tuples, key=lambda t: t[1]):
-                group_name = t[0]
+            for tup in sorted(group_avg_tuples, key=lambda tup: tup[1]):
+                group_name = tup[0]
                 try:
                     group_name = ast.literal_eval(group_name)
                 except ValueError:
@@ -1003,14 +1005,17 @@ class ScalarNumericAnalyzer(Analyzer):
             # Rendering options, directly passed to
             # plotdata.render_plds_by_group
             **column_kwargs):
-        """Update rendering kwargs (e.g., labels) specifically for the histogram mode.
+        """Update rendering kwargs (e.g., labels) specifically for the
+        histogram mode.
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=unused-argument
+        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         # Update specific rendering kwargs for this analyzer:
         if "global_x_label" not in column_kwargs:
             if self.main_alpha <= 0 or self.bar_width_fraction <= 0:
                 column_kwargs[
-                    "global_x_label"] = f"Average {column_to_properties[column_selection].label}"
+                    "global_x_label"] = \
+                    f"Average {column_to_properties[column_selection].label}"
             else:
                 column_kwargs["global_x_label"] = column_to_properties[
                     column_selection].label
@@ -1023,8 +1028,8 @@ class ScalarNumericAnalyzer(Analyzer):
             if self.main_alpha > 0 and self.bar_width_fraction > 0:
                 column_kwargs["global_y_label"] = "Histogram"
                 if self.secondary_alpha != 0:
-                    column_kwargs[
-                        "global_y_label"] += ", average" if self.show_x_std else " and average"
+                    column_kwargs["global_y_label"] += ", average" \
+                        if self.show_x_std else " and average"
             elif self.secondary_alpha != 0:
                 column_kwargs["global_y_label"] = "Average"
             else:
@@ -1078,9 +1083,10 @@ class ScalarNumericAnalyzer(Analyzer):
             }
 
             # Fix pattern
-            for i, ((group_name, group_pds), pattern) in enumerate(zip(
+            # pylint: disable=unused-variable
+            for (group_name, group_pds), pattern in zip(
                     sorted(column_kwargs["pds_by_group_name"].items()),
-                    plotdata.pattern_cycle)):
+                    plotdata.pattern_cycle):
                 for pld in group_pds:
                     if isinstance(pld, plotdata.BarData):
                         pld.pattern = pattern
@@ -1112,7 +1118,7 @@ class ScalarNumericAnalyzer(Analyzer):
             **column_kwargs):
         """Update rendering kwargs (e.g., labels) specifically for the hbarmode.
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,unused-argument,too-many-locals
         if "global_x_label" not in column_kwargs:
 
             column_kwargs["global_x_label"] = column_to_properties[
@@ -1193,7 +1199,8 @@ class ScalarNumericAnalyzer(Analyzer):
         """Update rendering kwargs (e.g., labels) specifically for the
         boxplot mode.
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=unused-argument
+        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         if "global_x_label" not in column_kwargs:
             column_kwargs["global_x_label"] = column_to_properties[
                 column_selection].label
@@ -1352,8 +1359,8 @@ class ScalarNumericSummary(AnalyzerSummary):
                     }
 
                     self.reference_df = self.reference_df.copy()
-                    for c, avg in self.reference_avg_by_column.items():
-                        self.reference_df[c] -= avg
+                    for column, avg in self.reference_avg_by_column.items():
+                        self.reference_df[column] -= avg
                     break
             else:
                 found_groups_str = ','.join(
@@ -1445,6 +1452,8 @@ class ScalarNumericSummary(AnalyzerSummary):
         """Compute the list of `enb.plotdata.PlottableData elements` for
         a single render mode.
         """
+        # pylint: disable=unused-argument,too-many-locals,too-many-branches
+        # pylint: disable=too-many-statements
         _self, group_label, row = args
         group_df = _self.label_to_df[group_label]
         column_name = kwargs["column_selection"]
@@ -1479,7 +1488,7 @@ class ScalarNumericSummary(AnalyzerSummary):
                 f"No finite data found for column {repr(column_name)}. "
                 f"No plottable data is produced for this case.")
             row[_column_name] = []
-            return
+            # return
 
         if math.isinf(analysis_range[0]):
             analysis_range[0] = finite_only_series.min()
@@ -1527,7 +1536,8 @@ class ScalarNumericSummary(AnalyzerSummary):
         row[_column_name] = []
 
         marker_y_position = 0.5
-        if _self.analyzer.bar_width_fraction > 0 and _self.analyzer.main_alpha > 0:
+        if _self.analyzer.bar_width_fraction > 0 \
+                and _self.analyzer.main_alpha > 0:
             # The relative distribution is computed based
             # on the selected analysis range only, which
             # may differ from the full column dynamic range
@@ -1541,7 +1551,7 @@ class ScalarNumericSummary(AnalyzerSummary):
             marker_y_position = 0.5 * (
                     hist_y_values.max() + hist_y_values.min())
 
-            # Create the plotdata.PlottableData instances for this group
+            # Add bars to plot
             row[_column_name].append(plotdata.BarData(
                 x_values=hist_x_values,
                 y_values=hist_y_values,
@@ -1553,11 +1563,14 @@ class ScalarNumericSummary(AnalyzerSummary):
                     width=_self.analyzer.bar_width_fraction * (
                             bin_edges[1] - bin_edges[0]))))
 
+        # Add markers at the average points
         row[_column_name].append(plotdata.ScatterData(
             x_values=[row[f"{column_name}_avg"]],
             y_values=[marker_y_position],
             marker_size=4 * _self.analyzer.main_marker_size,
             alpha=_self.analyzer.main_alpha))
+
+        # Add standard deviation error lines
         if _self.analyzer.show_x_std:
             row[_column_name].append(plotdata.ErrorLines(
                 x_values=[row[f"{column_name}_avg"]],
@@ -1644,6 +1657,7 @@ class ScalarNumericSummary(AnalyzerSummary):
                     """Mimic the description object produced by scipy.stats
                     for cases where automatic description cannot be obtained.
                     """
+                    # pylint: disable=too-few-public-methods
                     try:
                         minmax = [finite_only_series.values[0]] * 2
                         mean = finite_only_series.values[0]
@@ -1748,7 +1762,7 @@ class TwoNumericAnalyzer(Analyzer):
             # Rendering options, directly passed to
             # plotdata.render_plds_by_group
             **column_kwargs):
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         # Update common rendering kwargs, including the 'pds_by_group_name'
         # entry with the data to be plotted
         column_kwargs = super().update_render_kwargs_one_case(
@@ -1761,16 +1775,19 @@ class TwoNumericAnalyzer(Analyzer):
 
         # Combine samples in the same x position
         if self.average_identical_x and render_mode == "line":
+            # pylint: disable=unused-variable
             for group_name, group_pds in column_kwargs[
                 "pds_by_group_name"].items():
-                for pd in group_pds:
+                for plottable_data in group_pds:
                     x_to_ylist = collections.defaultdict(list)
-                    for x_value, y_value in zip(pd.x_values, pd.y_values):
+                    for x_value, y_value in zip(
+                            plottable_data.x_values, plottable_data.y_values):
                         x_to_ylist[x_value].append(y_value)
 
-                    pd.x_values = sorted(x_to_ylist.keys())
-                    pd.y_values = [sum(x_to_ylist[x]) / len(x_to_ylist[x])
-                                   for x in pd.x_values]
+                    plottable_data.x_values = sorted(x_to_ylist.keys())
+                    plottable_data.y_values = [
+                        sum(x_to_ylist[x]) / len(x_to_ylist[x])
+                        for x in plottable_data.x_values]
 
         # Update global x and y labels
         try:
@@ -1871,7 +1888,7 @@ class TwoNumericAnalyzer(Analyzer):
         By default, the CSV contains the min, max, avg, std, and median of
         each group. Subclasses may overwrite this behavior.
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         for render_mode in selected_render_modes:
             if render_mode == "scatter":
                 super().save_analysis_tables(
@@ -1891,7 +1908,8 @@ class TwoNumericAnalyzer(Analyzer):
                         render_mode=render_mode)[:-4] + ".csv"
                     os.makedirs(os.path.dirname(analysis_output_path),
                                 exist_ok=True)
-                    with open(analysis_output_path, "w") as analysis_file:
+                    with open(analysis_output_path, "w", encoding="utf-8") \
+                            as analysis_file:
                         for index, row in summary_df.iterrows():
                             group_name = re.match(
                                 r"\('(.+)',\)", index).group(1)
@@ -1920,10 +1938,11 @@ class TwoNumericSummary(ScalarNumericSummary):
 
     def __init__(self, analyzer, full_df, target_columns, reference_group,
                  group_by, include_all_group):
-        # pylint: disable=too-many-arguments
         # Plot rendering columns are added automatically via this call, with
         # associated function self.render_target with partialed parameters
         # column_name and render_mode.
+        # pylint: disable=too-many-arguments,non-parent-init-called
+        # pylint: disable=super-init-not-called
         AnalyzerSummary.__init__(
             self=self, analyzer=analyzer, full_df=full_df,
             target_columns=target_columns, reference_group=reference_group,
@@ -1975,18 +1994,19 @@ class TwoNumericSummary(ScalarNumericSummary):
             for group_label, group_df in self.split_groups():
                 if group_label == self.reference_group:
                     target_columns = set()
-                    for c1, c2 in self.target_columns:
-                        target_columns.add(c1)
-                        target_columns.add(c2)
+                    for column1, column2 in self.target_columns:
+                        target_columns.add(column1)
+                        target_columns.add(column2)
 
                     self.reference_avg_by_column = {
-                        c: group_df[group_df[c].notna()][c].mean()
-                        for c in target_columns
+                        column:
+                            group_df[group_df[column].notna()][column].mean()
+                        for column in target_columns
                     }
 
                     self.reference_df = self.reference_df.copy()
-                    for c, avg in self.reference_avg_by_column.items():
-                        self.reference_df[c] -= avg
+                    for column, avg in self.reference_avg_by_column.items():
+                        self.reference_df[column] -= avg
                     break
             else:
                 found_groups_str = ','.join(
@@ -2006,16 +2026,16 @@ class TwoNumericSummary(ScalarNumericSummary):
                            "spearman_correlation",
                            "spearman_correlation_pvalue",
                            "linear_lse_slope", "linear_lse_intercept"]:
-            cp = enb.atable.ColumnProperties(
+            column_properties = enb.atable.ColumnProperties(
                 name=f"{column_names[0]}_{column_names[1]}_{descriptor}",
                 label=f"{descriptor[:1].upper() + descriptor[1:]} "
-                      f"for {column_names[0]}, {column_names[1]}".replace("_",
-                                                                          " "))
+                      f"for {column_names[0]}, {column_names[1]}".replace(
+                    "_", " "))
             self.add_column_function(
                 self,
                 fun=functools.partial(self.set_twoscalar_description,
                                       column_selection=column_names),
-                column_properties=cp)
+                column_properties=column_properties)
 
     def set_twoscalar_description(self, *args, **kwargs):
         """Set basic descriptive statistics for the target column
@@ -2072,6 +2092,7 @@ class TwoNumericSummary(ScalarNumericSummary):
         See `enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case`
         for additional information.
         """
+        # pylint: disable=too-many-locals,too-many-locals,too-many-branches
         _self, group_label, row = args
         group_df = self.label_to_df[group_label]
         x_column_name, y_column_name = kwargs["column_selection"]
@@ -2132,10 +2153,10 @@ class TwoNumericSummary(ScalarNumericSummary):
             if self.group_by == "family_label":
                 try:
                     group_by = kwargs["task_families"]
-                except KeyError:
+                except KeyError as ex:
                     raise ValueError(
                         f"Passed {repr(group_by)} for grouping "
-                        "but no task_families parameter found.")
+                        "but no task_families parameter found.") from ex
             else:
                 group_by = self.group_by
 
@@ -2276,12 +2297,13 @@ class DictNumericAnalyzer(Analyzer):
           should be plotted.
         :return: a |DataFrame| instance with analysis results
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals,arguments-differ
+        # pylint: disable=attribute-defined-outside-init
         try:
             self.key_to_x = dict(key_to_x) if key_to_x is not None else key_to_x
 
             combined_df = full_df.copy()
-            self.column_name_to_keys = dict()
+            self.column_name_to_keys = {}
 
             # Keys are combined before analyzing. This allows to compute just
             # once the key_to_x dictionary shared across all groups.
@@ -2424,6 +2446,7 @@ class DictNumericSummary(AnalyzerSummary):
         """Set the columns that compute basic (scalar) numerical stats
         including min, max, avg, standard deviation and median.
         """
+        # pylint: disable=too-many-locals
         _self, group_label, row = args
         column_name = kwargs["column_selection"]
         group_df = _self.label_to_df[group_label]
@@ -2454,7 +2477,8 @@ class DictNumericSummary(AnalyzerSummary):
         std_values = []
         median_values = []
         key_values = []
-        for x, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
+        for i, k in enumerate(_self.analyzer.column_name_to_keys[column_name]):
+            # pylint: disable=cell-var-from-loop
             values = group_df[f"__{column_name}_combined"].apply(
                 lambda d: d[k] if k in d else None).dropna()
             if len(values) > 0:
@@ -2469,7 +2493,7 @@ class DictNumericSummary(AnalyzerSummary):
                             f"Ignoring.")
                         continue
                 else:
-                    x_values.append(x)
+                    x_values.append(i)
                 key_values.append(k)
 
                 with warnings.catch_warnings():
@@ -2489,18 +2513,17 @@ class DictNumericSummary(AnalyzerSummary):
                             values.std() if len(np.unique(values)) > 1 else 0)
                         median_values.append(values.median())
 
-        for label, data_list in [("min", min_values),
+        for label, data_list in (("min", min_values),
                                  ("max", max_values),
                                  ("avg", avg_values),
                                  ("std", std_values),
-                                 ("median", median_values)]:
-            row[f"{column_name}_{label}"] = {k: v for k, v in
-                                             zip(key_values, data_list)}
+                                 ("median", median_values)):
+            row[f"{column_name}_{label}"] = dict(zip(key_values, data_list))
 
     def combine_keys(self, *args, **kwargs):
-        """Combine the keys of a column containing
+        """Combine the keys of a column
         """
-        _, group_label, row = args
+        _self, group_label, row = args  # pylint: disable=unused-variable
         column_name = kwargs["column_selection"]
         try:
             row[_column_name] = self.analyzer.combine_keys_callable(
@@ -2516,12 +2539,9 @@ class DictNumericSummary(AnalyzerSummary):
         See `enb.aanalysis.AnalyzerSummary.compute_plottable_data_one_case`
         for additional information.
         """
-        _self, group_label, row = args
-        group_df = _self.label_to_df[group_label]
+        _self, group_label, row = args  # pylint: disable=unused-variable
         column_name = kwargs["column_selection"]
         render_mode = kwargs["render_mode"]
-        reference_group = kwargs[
-            "reference_group"]  # Bias has already been applied by now, if needed
         if render_mode not in _self.analyzer.valid_render_modes:
             raise ValueError(
                 f"Invalid requested render mode {repr(render_mode)}")
@@ -2597,7 +2617,8 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
             # Rendering options, directly passed to
             # plotdata.render_plds_by_group
             **column_kwargs):
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
+        # pylint: disable=too-many-statements
         column_kwargs = Analyzer.update_render_kwargs_one_case(
             self, column_selection=column_selection,
             reference_group=reference_group,
@@ -2623,8 +2644,10 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
 
         if render_mode == "colormap":
             for group_name, plds in column_kwargs["pds_by_group_name"].items():
-                for pd in (p for p in plds if
-                           isinstance(p, enb.plotdata.Histogram2D)):
+                # p and pd are PlottableData instances
+                for plottable_data in (pld for pld in plds if
+                                       isinstance(pld,
+                                                  enb.plotdata.Histogram2D)):
                     data_column_name = column_selection[2]
                     try:
                         data_column_label = column_to_properties[
@@ -2632,7 +2655,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                     except (TypeError, KeyError):
                         data_column_label = enb.atable.clean_column_name(
                             data_column_name)
-                    pd.colormap_label = data_column_label
+                    plottable_data.colormap_label = data_column_label
 
             histogram_pds = list(
                 p for group_name, plds in
@@ -2696,14 +2719,15 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                     column_kwargs["pds_by_group_name"]) > 1:
                 for group_name, pds in column_kwargs[
                     "pds_by_group_name"].items():
-                    for pd in (p for p in pds
-                               if isinstance(p, enb.plotdata.Histogram2D)):
-                        pd.colormap_label = \
-                            f"{pd.colormap_label}" \
+                    for plottable_data in (p for p in pds
+                                           if isinstance(p,
+                                                         enb.plotdata.Histogram2D)):
+                        plottable_data.colormap_label = \
+                            f"{plottable_data.colormap_label}" \
                             + (
                                 f" vs {column_kwargs['y_labels_by_group_name'][reference_group]}"
-                                if reference_group and pd.colormap_label else "") \
-                            + ("\n" if pd.colormap_label else "") \
+                                if reference_group and plottable_data.colormap_label else "") \
+                            + ("\n" if plottable_data.colormap_label else "") \
                             + f"{column_kwargs['y_labels_by_group_name'][group_name]}"
 
             # The y_labels_by_group_name key is set to the y label name; the
@@ -2732,10 +2756,11 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
 
     def __init__(self, analyzer, full_df, target_columns, reference_group,
                  group_by, include_all_group):
-        # pylint: disable=too-many-arguments
         # Plot rendering columns are added automatically via this call,
         # with associated function self.render_target with partialed
         # parameters column_selection and render_mode.
+        # pylint: disable=too-many-arguments,
+        # pylint: disable=non-parent-init-called,super-init-not-called
         AnalyzerSummary.__init__(
             self=self,
             analyzer=analyzer, full_df=full_df, target_columns=target_columns,
@@ -2791,13 +2816,13 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
             for group_label, group_df in self.split_groups():
                 if group_label == self.reference_group:
                     self.reference_avg_by_column = {
-                        c: group_df[group_df[c].notna()][c].mean()
-                        for c in (t[2] for t in self.target_columns)
+                        colum: group_df[group_df[colum].notna()][colum].mean()
+                        for colum in (t[2] for t in self.target_columns)
                     }
 
                     self.reference_df = self.reference_df.copy()
-                    for c, avg in self.reference_avg_by_column.items():
-                        self.reference_df[c] -= avg
+                    for column, avg in self.reference_avg_by_column.items():
+                        self.reference_df[column] -= avg
                     break
         else:
             self.reference_avg_by_column = None
@@ -2819,6 +2844,7 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
         """Compute the list of `enb.plotdata.PlottableData elements` for
         a single render mode.
         """
+        # pylint: disable=too-many-locals
         _self, group_label, row = args
         group_df = _self.label_to_df[group_label]
         x_column_name, y_column_name, data_column_name = \
@@ -2887,6 +2913,7 @@ class HistogramKeyBinner:
         :param normalize: if True, the relative frequencies are computed,
           instead of the absolute frequences
         """
+        # pylint: disable=too-many-locals
         self.min_value = min_value
         self.max_value = max_value
         self.bin_count = bin_count
@@ -2898,13 +2925,15 @@ class HistogramKeyBinner:
             np.linspace(min_value, max(min_value, max_value - self.bin_width),
                         self.bin_count, endpoint=True)]
 
+        # Define the [a,b), ..., [y,z] binned keys (used by default for
+        # plotting)
         self.binned_keys = []
         for i, interval in enumerate(self.intervals):
-            s = "["
-            s += ",".join(
+            interval_str = "["
+            interval_str += ",".join(
                 f"{v:.2f}" if int(v) != v else str(v) for v in interval)
-            s += ")" if i < len(self.intervals) - 1 else "]"
-            self.binned_keys.append(s)
+            interval_str += ")" if i < len(self.intervals) - 1 else "]"
+            self.binned_keys.append(interval_str)
         self.normalize = normalize
 
     def __call__(self, input_dict):
@@ -2922,7 +2951,7 @@ class HistogramKeyBinner:
             try:
                 index_to_sum[
                     math.floor((k - self.min_value) / self.bin_width)] += v
-            except IndexError as ex:
+            except IndexError:
                 if k == self.max_value:
                     index_to_sum[-1] += v
                 else:
