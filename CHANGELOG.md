@@ -21,6 +21,7 @@ Tested on a Raspberry Pi:
 
 Other changes:
 
+- Fixed CLI argument parsing for some numerical values 
 - Partial code cleanup using pylint
 - Removal of the byte_value_* columns in ImagePropertiesTable to speed up compression experiments with
   large files.
