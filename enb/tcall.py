@@ -56,7 +56,7 @@ def get_status_output_time_memory(
             invocation, shell=True, timeout=timeout).decode("utf-8")
         status = 0
     except subprocess.CalledProcessError as ex:
-        output = ex.output
+        output = ex.output.decode("utf-8")
         status = ex.returncode
     except subprocess.TimeoutExpired as ex:
         output = ex.output if ex.output is not None and ex.output != "None" \
