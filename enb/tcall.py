@@ -64,10 +64,6 @@ def get_status_output_time_memory(
         status = -1
     wall_time_after = time.time()
 
-    print(f"{invocation=}")
-    print(f"{output=}")
-
-
     output_lines = output.splitlines()
     output = "\n".join(output_lines[:-1]
                        if not wall and len(output_lines) > 1 else output_lines)
