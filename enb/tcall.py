@@ -19,17 +19,23 @@ class InvocationError(Exception):
     pass
 
 
-def get_status_output_time_memory(invocation, expected_status_value=0, wall=None):
-    """Run invocation, and return its status, output, and total
-    (wall or user+system) time in seconds.
+def get_status_output_time_memory(
+        invocation, expected_status_value=0, wall=None, timeout=None):
+    """Run invocation, and return its status, output, and total (wall or
+    user+system) time in seconds.
 
-    :param expected_status_value: if not None, status must be equal to this value or
-      an InvocationError is raised.
-    :param wall: if True, execution wall time is returned. If False, user+system CPU time is returned.
-      (both in seconds). If None, the value of enb.config.options.report_wall_time is used.
+    :param expected_status_value: if not None, status must be equal to this
+      value or an InvocationError is raised.
+    :param wall: if True, execution wall time is returned. If False,
+      user+system CPU time is returned. (both in seconds). If None, the value
+      of enb.config.options.report_wall_time is used.
+    :param timeout: if not None and not 0, an exception is raised if the
+      execution exceeds this value
 
     :return: status, output, time, used_memory_kb
     """
+    timeout = None if timeout == 0 else timeout
+
     if wall is None:
         wall = options.report_wall_time
 
@@ -39,17 +45,33 @@ def get_status_output_time_memory(invocation, expected_status_value=0, wall=None
         time_command = "/usr/bin/time"
 
     if os.path.isfile(time_command):
-        invocation = f"{time_command} -f 'u%U@s%S@m%M' {invocation}"
+        invocation = f"{time_command} -f 'u%U@s%S@m%M' {invocation} 2>&1"
     else:
         invocation = f"{invocation}"
         wall = True
 
     wall_time_before = time.time()
-    status, output = subprocess.getstatusoutput(invocation)
+    try:
+        output = subprocess.check_output(
+            invocation, shell=True, timeout=timeout).decode("utf-8")
+        status = 0
+    except subprocess.CalledProcessError as ex:
+        output = ex.output
+        status = ex.returncode
+    except subprocess.TimeoutExpired as ex:
+        output = ex.output if ex.output is not None and ex.output != "None" \
+            else f"Timeout exceeded ({timeout})"
+        status = -1
     wall_time_after = time.time()
 
+    print(f"{invocation=}")
+    print(f"{output=}")
+
+
     output_lines = output.splitlines()
-    output = "\n".join(output_lines[:-1] if not wall else output_lines)
+    output = "\n".join(output_lines[:-1]
+                       if not wall and len(output_lines) > 1 else output_lines)
+
     if expected_status_value is not None and status != expected_status_value:
         raise InvocationError(
             f"status={status} != {expected_status_value}.\nInput=[{invocation}].\nOutput=[{output}]")
@@ -63,21 +85,27 @@ def get_status_output_time_memory(invocation, expected_status_value=0, wall=None
             measured_time = float(m.group(1)) + float(m.group(2))
             measured_memory_kb = int(m.group(3))
         else:
-            raise InvocationError(f"Output {output_lines} did not contain a valid time signature")
+            raise InvocationError(f"Output {output_lines} did not contain "
+                                  f"a valid time signature")
 
     return status, output, measured_time, measured_memory_kb
 
 
-def get_status_output_time(invocation, expected_status_value=0, wall=None):
-    """Run invocation, and return its status, output, and total
-    (wall or user+system) time in seconds.
+def get_status_output_time(invocation, expected_status_value=0, wall=None,
+                           timeout=None):
+    """Run invocation, and return its status, output, and total (wall or
+    user+system) time in seconds.
 
-    :param expected_status_value: if not None, status must be equal to this value or
-      an InvocationError is raised.
-    :param wall: if True, execution wall time is returned. If False, user+system CPU time is returned.
-      (both in seconds). If None, the value of enb.config.options.report_wall_time is used.
+    :param expected_status_value: if not None, status must be equal to this
+      value or an InvocationError is raised.
+    :param wall: if True, execution wall time is returned. If False,
+      user+system CPU time is returned. (both in seconds). If None, the value
+      of enb.config.options.report_wall_time is used.
+    :param timeout: if not None and not 0, an exception is raised if the
+      execution exceeds this value
 
     :return: status, output, time
     """
     return get_status_output_time_memory(
-        invocation=invocation, expected_status_value=expected_status_value, wall=wall)[:3]
+        invocation=invocation, expected_status_value=expected_status_value,
+        wall=wall,timeout=timeout)[:3]
