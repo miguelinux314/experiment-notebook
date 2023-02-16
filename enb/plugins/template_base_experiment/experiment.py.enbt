@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Generic experiment template using enb, the Electronic NoteBook library.
+
+See https://github.com/miguelinux314/experiment-notebook
+and https://miguelinux314.github.io/experiment-notebook/experiments.html
+for additional documentation.
+"""
+
+import os
+import sys
+
+import enb
+from enb.config import options
+
+# All plugins with codecs installed under plugins/ are automatically imported
+import plugins
+
+
+class MyExperiment(enb.experiment.Experiment):
+    """Custom experiment. See
+    https://miguelinux314.github.io/experiment-notebook/experiments.html
+    """
+
+    def column_my_value1(self, index, row):
+        """Methods starting with `column_` are treated as column definitions,
+        and the return value is assigned to the column name (what comes
+        after `column_`, i.e., `my_value1` in this case.
+
+        """
+        path, task = self.index_to_path_task(index)
+        return len(task.name) + len(task.param_dict)
+
+    @enb.atable.column_function(enb.atable.ColumnProperties(
+        name="my_value2", label="A second custom value"))
+    def set_value2(self, index, row):
+        """Methods decorated with @enb.atable.column_function are also
+        treated as column definitions.
+
+        The decorator admits a column name, or a list of |ColumnProperties|
+        instances.
+
+        The column value must be set in the row.
+        """
+        # Columns are processed in the order they are defined, so previously
+        # defined values can be reused.
+        row["my_value2"] = 2 * row["my_value1"]
+
+
+class MyTask(enb.experiment.ExperimentTask):
+    """Custom task for MyExperiment. See
+    https://miguelinux314.github.io/experiment-notebook/experiments.html
+    """
+
+
+if __name__ == '__main__':
+    # Many flags are defined in enb.config.options based on the CLI arguments
+    # with which this script is invoked. Run with -h for a full description.
+    options.verbose = 1
+
+    # By default, Experiments and other ATable subclasses read input samples
+    # from options.base_dataset_dir, which defaults to ./datasets. This can
+    # be uncommented to use other datasets. Make sure to set the Experiment
+    # or ATable instances' dataset_files_extension member to filter the
+    # desired files. options.base_dataset_dir = "./datasets"
+
+    # Experiments take a list of tasks as argument (in addition to the base
+    # dataset dir). For each path,task combination (where path is a unique
+    # element of the dataset), all defined columns are produced when exp.get_df
+    # is called. Automatic analysis, plotting, tabulation in CSV and tex
+    # formats is available.
+    tasks = [MyTask(param_dict={"key1": "value1"}),
+             MyTask(param_dict={"key2": "value2", "key3": "value3"}),
+             MyTask()]
+
+    # Generate pandas dataframe with results. Persistence is automatically added
+    exp = MyExperiment(tasks=tasks)
+    df = exp.get_df()
+
+    # Selection of potentially relevant columns. You can use any of the
+    # columns available in the experiment class (including any column you
+    # defined in MyExperiment).
+    scalar_columns = ["my_value1", "my_value1"]
+
+    column_pairs = [("my_value1", "my_value2")]
+
+    # Scalar column analysis
+    scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
+    scalar_analyzer.get_df(
+        # Mandatory params
+        full_df=df,  # the dataframe produced by exp
+        target_columns=scalar_columns,  # the list of ATable column names
+        # Provide plotting hints based on the defined columns
+        column_to_properties=exp.joined_column_to_properties,
+        # Optional params
+        group_by="task_label",  # one can group by any column name
+    )
+
+    # Two column joint analysis
+    twoscalar_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+    twoscalar_analyzer.get_df(
+        full_df=df,
+        target_columns=column_pairs,
+        column_to_properties=exp.joined_column_to_properties,
+        group_by="task_label",
+        selected_render_modes={"scatter"},
+    )
+
+    print("Experiment complete. You can check the results "
+          f"at {options.plot_dir} and {options.analysis_dir}. "
+          f"Raw data is stored for persistence in {options.persistence_dir}.")
