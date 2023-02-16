@@ -140,7 +140,7 @@ class Template(Installable, metaclass=MetaTemplate):
                             f"and options.force={options.force}. Run with -f to overwrite.")
                     with open(output_path[:-len(cls.templatable_extension)], "w") as output_file:
                         output_file.write(templated_file.read())
-                    if input_is_executable:
+                    if input_is_executable or output_path.endswith(".py"):
                         os.chmod(output_path[:-len(cls.templatable_extension)],
                                  os.stat(output_path[:-len(cls.templatable_extension)]).st_mode | stat.S_IEXEC)
             else:
