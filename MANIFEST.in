@@ -162,6 +162,11 @@ include enb/plugins/template_analysis_gallery_example/input_csv/2d_data_example.
 include enb/plugins/template_analysis_gallery_example/input_csv/hevc_frame_prediction.csv
 include enb/plugins/template_analysis_gallery_example/input_csv/iris_dataset.csv
 include enb/plugins/template_analysis_gallery_example/__plugin__.py
+include enb/plugins/template_base_experiment/datasets/data.bin
+include enb/plugins/template_base_experiment/experiment.py.enbt
+include enb/plugins/template_base_experiment/__plugin__.py
+include enb/plugins/template_base_experiment/plugins/__init__.py
+include enb/plugins/template_base_experiment/README.md
 include enb/plugins/template_basic_workflow_example/basic_workflow.py
 include enb/plugins/template_basic_workflow_example/data/wiki/a_turing.txt
 include enb/plugins/template_basic_workflow_example/data/wiki/c_shannon.txt
