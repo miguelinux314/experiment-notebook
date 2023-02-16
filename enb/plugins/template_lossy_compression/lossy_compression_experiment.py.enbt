@@ -23,6 +23,10 @@ class LossyExperiment(enb.icompression.LossyCompressionExperiment):
 
 
 if __name__ == '__main__':
+    # Many flags are defined in enb.config.options based on the CLI arguments
+    # with which this script is invoked. Run with -h for a full description.
+    options.verbose = 1
+
     # Temporary compressed and reconstructed files are saved under options.base_tmp_dir.
     # By default, a memory disk is used if possible. This can be set to a physical partition if
     # temporary files are expected to be larger than the memory (swap may be used).
@@ -118,3 +122,7 @@ if __name__ == '__main__':
         output_plot_dir=plot_dir,
         show_grid=True,
     )
+
+    print("Experiment complete. You can check the results "
+          f"at {options.plot_dir} and {options.analysis_dir}. "
+          f"Raw data is stored for persistence in {options.persistence_dir}.")

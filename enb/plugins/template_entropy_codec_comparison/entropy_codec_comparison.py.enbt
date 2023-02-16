@@ -14,6 +14,10 @@ from enb.config import options
 import plugins
 
 if __name__ == '__main__':
+    # Many flags are defined in enb.config.options based on the CLI arguments
+    # with which this script is invoked. Run with -h for a full description.
+    options.verbose = 1
+
     # All plugins installed in ./plugins can be instantiated automatically with the following snippet.
     codecs = [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
               if not "abstract" in cls.__name__.lower()]
