@@ -284,6 +284,7 @@ class FileVersionTable(FilePropertiesTable):
     def column_version_name(self, file_path, row):
         """Automatically add the version name as a column
         """
+        # pylint: disable=unused-argument
         return self.version_name
 
     @atable.redefines_column
@@ -306,21 +307,20 @@ class FileVersionTable(FilePropertiesTable):
 
 @enb.parallel.parallel()
 def parallel_version_one_path(version_fun, input_path, output_path, overwrite,
-                              original_info_df, check_generated_files,
-                              options):
+                              original_info_df, check_generated_files):
     """Run the versioning of one path.
     """
+    # pylint: disable=too-many-arguments
     return version_one_path_local(version_fun=version_fun,
                                   input_path=input_path,
                                   output_path=output_path,
                                   overwrite=overwrite,
                                   original_info_df=original_info_df,
-                                  check_generated_files=check_generated_files,
-                                  options=options)
+                                  check_generated_files=check_generated_files)
 
 
 def version_one_path_local(version_fun, input_path, output_path, overwrite,
-                           original_info_df, check_generated_files, options):
+                           original_info_df, check_generated_files):
     """Version input_path into output_path using version_fun.
 
     :param version_fun: function with signature like FileVersionTable.version
@@ -332,13 +332,13 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
       instance that contains an entry for :meth:`atable.indices_to_internal_loc`.
     :param check_generated_files: flag indicating whether failing to produce
       output_path must raise an exception.
-    :param options: additional runtime options
 
     :return: a tuple ``(output_path, l)``, where output_path is the selected
       otuput path and l is a list with the obtained versioning time. The list l
       shall contain options.repetitions elements. NOTE: If the subclass version
       method returns a value, that value is taken as the time measurement.
     """
+    # pylint: disable=too-many-arguments
     time_measurements = []
 
     output_path = get_canonical_path(output_path)
