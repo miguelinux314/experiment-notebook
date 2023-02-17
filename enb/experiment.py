@@ -58,8 +58,11 @@ class ExperimentTask:
 
     def __eq__(self, other):
         try:
-            return all(self.param_dict[k] == other.param_dict[k] for k in self.param_dict.keys()) \
-                   and all(self.param_dict[k] == other.param_dict[k] for k in self.other_dict.keys())
+            return all(self.param_dict[k] == other.param_dict[k] for k in
+                       self.param_dict.keys()) \
+                and all(self.param_dict[k] == other.param_dict[k] for k in
+                        other.param_dict.keys()) \
+                and type(self) == type(other)
         except (KeyError, AttributeError):
             return False
 
