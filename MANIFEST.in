@@ -10,7 +10,6 @@ include enb/config/mpl_styles/single_column
 include enb/config/mpl_styles/slides
 include enb/config/mpl_styles/two_columns
 include enb/config/singleton_cli.py
-include enb/context.py
 include enb/experiment.py
 include enb/fits.py
 include enb/icompression.py
