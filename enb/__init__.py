@@ -116,18 +116,17 @@ if not parallel_ray.is_parallel_process():
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
 
-    if config.options.verbose:
-        if parallel_ray.is_ray_enabled():
-            logger.info("Using ray for parallelization.")
-            _atexit.register(parallel_ray.stop_ray)
-            # The list of modules loaded so far passed to any possible ray remote
-            # nodes so that they don't attempt to load them again.
-            # pylint: disable=protected-access
-            config.options._initial_module_names = list(
-                m.__name__ for m in _sys.modules.values() if
-                hasattr(m, "__name__"))
-        else:
-            logger.info("Using pathos for parallelization.")
+    if parallel_ray.is_ray_enabled():
+        logger.info("Using ray for parallelization.")
+        _atexit.register(parallel_ray.stop_ray)
+        # The list of modules loaded so far passed to any possible ray remote
+        # nodes so that they don't attempt to load them again.
+        # pylint: disable=protected-access
+        config.options._initial_module_names = list(
+            m.__name__ for m in _sys.modules.values() if
+            hasattr(m, "__name__"))
+    else:
+        logger.info("Using pathos for parallelization.")
 
     misc.capture_usr1()
 
