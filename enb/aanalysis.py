@@ -7,7 +7,6 @@ for detailed help.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/01/01"
-# pylint: disable=no-self-use
 
 import ast
 import functools
@@ -673,6 +672,7 @@ class Analyzer(enb.atable.ATable):
     def get_render_column_name(self, column_selection, selected_render_mode):
         """Return the canonical name for columns containing plottable data instances.
         """
+        # pylint: disable=no-self-use
         return f"{column_selection}_render-{selected_render_mode}"
 
 
@@ -821,6 +821,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
     def remove_nans(self, column_series):
         """Remove the infinite and NaN values from a pd.Series instance.
         """
+        # pylint: disable=no-self-use
         return column_series.replace([np.inf, -np.inf], np.nan,
                                      inplace=False).dropna()
 

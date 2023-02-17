@@ -1870,7 +1870,7 @@ def column_function(*column_property_list, **kwargs):
     return inner_wrapper
 
 
-def redefines_column(f):
+def redefines_column(fun):
     """When an |ATable| subclass defines a method with the same name as any of the
     parent classes, and when that method defines a column, it must be decorated with this.
 
@@ -1887,11 +1887,11 @@ def redefines_column(f):
     Note that _redefines_column attributes for non-column and non-overwritting
     methods are not employed by |enb| thereafter.
 
-    :param f: rewriting function being decorated
+    :param fun: rewriting function being decorated
     """
     # pylint: disable=protected-access
-    f._redefines_column = True
-    return f
+    fun._redefines_column = True
+    return fun
 
 
 def get_class_that_defined_method(meth):
