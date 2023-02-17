@@ -12,8 +12,6 @@ import time
 
 import enb.atable
 import enb.sets
-from enb import atable
-from enb import sets
 from enb.config import options
 
 
@@ -26,17 +24,17 @@ class ExperimentTask:
         :param param_dict: dictionary of configuration parameters used
           for this task. By default, they are part of the task's name.
         """
-        self.param_dict = dict(param_dict) if param_dict is not None else dict()
+        self.param_dict = dict(param_dict) if param_dict is not None else {}
 
     def apply(self, experiment, index, row):
-        """This method is called for all combinations of input indices and tasks 
+        """This method is called for all combinations of input indices and tasks
         before computing any additional column.
-        
+
         :param experiment: experiment invoking this method
-        :param index: index being processed by the experiment. Consider experiment.index_to_path_task(index).
+        :param index: index being processed by the experiment. Consider
+          experiment.index_to_path_task(index).
         :param row: row being currently processed by the experiment
         """
-        pass
 
     @property
     def name(self):
@@ -45,7 +43,8 @@ class ExperimentTask:
         """
         name = f"{self.__class__.__name__}"
         if self.param_dict:
-            name += "__" + "_".join(f"{k}={v}" for k, v in sorted(self.param_dict.items()))
+            name += "__" + "_".join(
+                f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
 
     @property
@@ -58,10 +57,11 @@ class ExperimentTask:
 
     def __eq__(self, other):
         try:
-            return all(self.param_dict[k] == other.param_dict[k] for k in
-                       self.param_dict.keys()) \
-                and all(self.param_dict[k] == other.param_dict[k] for k in
-                        other.param_dict.keys()) \
+            # pylint: disable=unidiomatic-typecheck
+            return all(v == other.param_dict[k]
+                       for k, v in self.param_dict.items()) \
+                and all(self.param_dict[k] == v
+                        for k, v in other.param_dict.items()) \
                 and type(self) == type(other)
         except (KeyError, AttributeError):
             return False
@@ -71,12 +71,12 @@ class ExperimentTask:
 
     def __repr__(self):
         return f"<{self.__class__.__name__} (" \
-               + ', '.join(repr(param) + '=' + repr(value)
-                           for param, value in self.param_dict.items()) \
-               + ")>"
+            + ', '.join(repr(param) + '=' + repr(value)
+                        for param, value in self.param_dict.items()) \
+            + ")>"
 
 
-class Experiment(atable.ATable):
+class Experiment(enb.atable.ATable):
     """An Experiment allows seamless execution of one or more tasks upon a
     corpus of test files. Tasks are identified by a file index and a
     :py:class:`ExperimentTask`'s (unique) name.
@@ -98,7 +98,7 @@ class Experiment(atable.ATable):
     task_name_column = "task_name"
     task_label_column = "task_label"
     task_apply_time_column = "task_apply_time"
-    default_file_properties_table_class = sets.FilePropertiesTable
+    default_file_properties_table_class = enb.sets.FilePropertiesTable
     no_family_label = "No family"
 
     def __init__(self, tasks,
@@ -109,80 +109,98 @@ class Experiment(atable.ATable):
                  overwrite_file_properties=False,
                  task_families=None):
         """
-        :param tasks: an iterable of :py:class:`ExperimentTask` instances. Each test file
-          is processed by all defined tasks. For each (file, task) combination,
-          a row is included in the table returned by :py:meth:`~get_df()`.
+        :param tasks: an iterable of :py:class:`ExperimentTask` instances.
+          Each test file is processed by all defined tasks. For each (file,
+          task) combination, a row is included in the table returned by
+          :py:meth:`~get_df()`.
         :param dataset_paths: list of paths to the files to be used as input.
-          If it is None, this list is obtained automatically calling sets.get_all_test_file()
-        :param csv_experiment_path: if not None, path to the CSV file giving persistence
-          support to this experiment.
-          If None, it is automatically determined within options.persistence_dir.
-        :param csv_dataset_path: if not None, path to the CSV file given persistence
-          support to the dataset file properties.
-          If None, it is automatically determined within options.persistence_dir.
-        :param dataset_info_table: if not None, it must be a sets.FilePropertiesTable instance or
-          subclass instance that can be used to obtain dataset file metainformation,
-          and/or gather it from csv_dataset_path. If None, a new sets.FilePropertiesTable
-          instance is created and used for this purpose.
-          This parameter can also be a class (instead of an instance). In this case, it
-          the initializer is asumed to accept a csv_support_path argument and be compatible
-          with the sets.FilePropertiesTable interface.
-        :param overwrite_file_properties: if True, file properties are necessarily
-          computed before starting the experiment. This can be useful for temporary
-          and/or random datasets. If False, file properties are loaded from the
-          persistent storage when available. Note that this parameter does not
-          affect whether experiment results are retrieved from persistent storage if available.
-          This is controlled via the parameters passed to get_df()
-        :param task_families: if not None, it must be a list of TaskFamily instances. It is used to set the
-          "family_label" column for each row. If the codec is not found within the families, a default
-          label is set indicating so.
+          If it is None, this list is obtained automatically calling
+          `enb.sets.get_all_test_file()`
+        :param csv_experiment_path: if not None, path to the CSV file giving
+          persistence support to this experiment. If None, it is automatically
+          determined within options.persistence_dir.
+        :param csv_dataset_path: if not None, path to the CSV file given
+          persistence support to the dataset file properties. If None,
+          it is automatically determined within options.persistence_dir.
+        :param dataset_info_table: if not None, it must be a
+          enb.sets.FilePropertiesTable instance or subclass instance that can
+          be used to obtain dataset file metainformation, and/or gather it from
+          csv_dataset_path. If None, a new enb.sets.FilePropertiesTable
+          instance is created and used for this purpose. This parameter can
+          also be a class (instead of an instance). In this case, it the
+          initializer is asumed to accept a csv_support_path argument and be
+          compatible with the enb.sets.FilePropertiesTable interface.
+        :param overwrite_file_properties: if True, file properties are
+          necessarily computed before starting the experiment. This can be
+          useful for temporary and/or random datasets. If False,
+          file properties are loaded from the persistent storage when
+          available. Note that this parameter does not affect whether
+          experiment results are retrieved from persistent storage if
+          available. This is controlled via the parameters passed to get_df()
+        :param task_families: if not None, it must be a list of TaskFamily
+          instances. It is used to set the "family_label" column for each row.
+          If the codec is not found within the families, a default label is set
+          indicating so.
         """
+        # pylint: disable=too-many-arguments
         overwrite_file_properties = overwrite_file_properties \
             if overwrite_file_properties is not None else options.force
 
         self.tasks = list(tasks)
+        self.tasks_by_name = collections.OrderedDict(
+            {str(task.name): task for task in self.tasks})
+
         self.task_families = task_families
         self.task_name_to_family_label = {}
         try:
             for task_family in task_families:
                 for task_name in task_family.task_names:
                     if task_name in self.task_name_to_family_label:
-                        raise ValueError(f"Found task_name {repr(task_name)} in family {task_family.label} "
-                                         f"that was already present in family {self.task_name_to_family_label[task_name]}. "
-                                         f"No duplicates are allowed.")
-
+                        raise ValueError(
+                            f"Found task_name {repr(task_name)} "
+                            f"in family {task_family.label} "
+                            "that was already present in family "
+                            f"{self.task_name_to_family_label[task_name]}. "
+                            "No duplicates are allowed.")
                     assert task_name not in self.task_name_to_family_label, \
                         self.task_name_to_family_label[task_name]
-                    self.task_name_to_family_label[task_name] = task_family.label
+                    self.task_name_to_family_label[
+                        task_name] = task_family.label
         except TypeError:
             pass
 
         if dataset_paths is not None:
-            dataset_paths = [enb.atable.get_canonical_path(p) for p in dataset_paths]
+            dataset_paths = [enb.atable.get_canonical_path(p) for p in
+                             dataset_paths]
         else:
-            dataset_paths = enb.atable.get_all_input_files(ext=self.dataset_files_extension)
+            dataset_paths = enb.atable.get_all_input_files(
+                ext=self.dataset_files_extension)
 
         if csv_dataset_path is None:
-            csv_dataset_path = os.path.join(options.persistence_dir,
-                                            f"{self.__class__.__name__}_dataset_persistence.csv")
+            csv_dataset_path = os.path.join(
+                options.persistence_dir,
+                f"{self.__class__.__name__}_dataset_persistence.csv")
         os.makedirs(os.path.dirname(csv_dataset_path), exist_ok=True)
 
         if dataset_info_table is None:
-            dataset_info_table = self.default_file_properties_table_class(csv_support_path=csv_dataset_path)
+            dataset_info_table = self.default_file_properties_table_class(
+                csv_support_path=csv_dataset_path)
         else:
             if inspect.isclass(dataset_info_table):
-                dataset_info_table = dataset_info_table(csv_support_path=csv_dataset_path)
+                dataset_info_table = dataset_info_table(
+                    csv_support_path=csv_dataset_path)
         self.dataset_info_table = dataset_info_table
 
         self.dataset_info_table.ignored_columns = \
             set(self.dataset_info_table.ignored_columns + self.ignored_columns)
 
         assert len(self.dataset_info_table.indices) == 1, \
-            f"dataset_info_table is expected to have a single index"
+            "dataset_info_table is expected to have a single index"
 
         with enb.logger.verbose_context(
                 f"[{self.__class__.__name__}:__init__()] "
-                f"Obtaining dataset properties with {self.dataset_info_table.__class__.__name__} "
+                "Obtaining dataset properties with "
+                f"{self.dataset_info_table.__class__.__name__} "
                 f"({len(dataset_paths)} files)"):
             self.dataset_table_df = self.dataset_info_table.get_df(
                 target_indices=dataset_paths,
@@ -192,78 +210,88 @@ class Experiment(atable.ATable):
         self.target_file_paths = dataset_paths
 
         if csv_experiment_path is None:
-            csv_experiment_path = os.path.join(options.persistence_dir,
-                                               f"{self.__class__.__name__}_persistence.csv")
+            csv_experiment_path = os.path.join(
+                options.persistence_dir,
+                f"{self.__class__.__name__}_persistence.csv")
 
         os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
 
         super().__init__(csv_support_path=csv_experiment_path,
-                         index=self.dataset_info_table.indices + [self.task_name_column])
+                         index=self.dataset_info_table.indices + [
+                             self.task_name_column])
 
     def get_df(self, target_indices=None, target_columns=None,
                fill=True, overwrite=None, chunk_size=None):
-        """Get a DataFrame with the results of the experiment. The produced DataFrame
-        contains the columns from the dataset info table (but they are not stored
-        in the experiment's persistence file).
+        """Get a DataFrame with the results of the experiment. The produced
+        DataFrame contains the columns from the dataset info table (but they
+        are not stored in the experiment's persistence file).
 
-        :param target_indices: list of file paths to be processed. If None, self.target_file_paths
-          is used instead.
-        :param chunk_size: if not None, a positive integer that determines the number of table
-          rows that are processed before made persistent.
-        :param overwrite: if not None, a flag determining whether existing values should be
-          calculated again. If none, options
+        :param target_indices: list of file paths to be processed. If None,
+          self.target_file_paths is used instead.
+        :param chunk_size: if not None, a positive integer that determines
+          the number of table rows that are processed before made persistent.
+        :param overwrite: if not None, a flag determining whether existing
+          values should be calculated again. If none, options
         """
-        target_indices = self.target_file_paths if target_indices is None else target_indices
+        # pylint: disable=too-many-arguments
+        target_indices = self.target_file_paths \
+            if target_indices is None else target_indices
         overwrite = overwrite if overwrite is not None else options.force
-        target_tasks = list(self.tasks)
 
         if not self.tasks:
-            raise ValueError(f"No tasks were defined for {self.__class__.__name__}.")
+            raise ValueError(
+                f"No tasks were defined for {self.__class__.__name__}.")
 
-        enb.logger.verbose(f"Starting {self.__class__.__name__} with "
-                           f"{len(target_tasks)} tasks, "
-                           f"{len(target_indices)} indices, and "
-                           f"{len(self.column_to_properties)} columns.")
-
-        self.tasks_by_name = collections.OrderedDict({str(task.name): task for task in target_tasks})
-        target_task_names = [str(t.name) for t in target_tasks]
+        target_task_names = [str(t.name) for t in self.tasks]
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
 
-        with enb.logger.verbose_context("Computing experiment results",
-                                        sep="...\n",
-                                        msg_after="successfully computed experiment results."):
-            df = super().get_df(target_indices=target_indices, fill=fill, overwrite=overwrite,
+        enb.logger.verbose(f"Starting {self.__class__.__name__} with "
+                           f"{len(self.tasks)} tasks, "
+                           f"{len(target_indices)} indices, and "
+                           f"{len(self.column_to_properties)} columns.")
+
+        with enb.logger.verbose_context(
+                "Computing experiment results",
+                sep="...\n",
+                msg_after="successfully computed experiment results."):
+            df = super().get_df(target_indices=target_indices, fill=fill,
+                                overwrite=overwrite,
                                 chunk_size=chunk_size)
 
         # Add dataset columns
-        with enb.logger.verbose_context("Merging dataset and experiment results"):
+        with enb.logger.verbose_context(
+                "Merging dataset and experiment results"):
             rsuffix = "__redundant__index"
-            df = df.join(self.dataset_table_df.set_index(self.dataset_info_table.index),
-                         on=self.dataset_info_table.index, rsuffix=rsuffix)
+            df = df.join(
+                self.dataset_table_df.set_index(self.dataset_info_table.index),
+                on=self.dataset_info_table.index, rsuffix=rsuffix)
             redundant_columns = [c.replace(rsuffix, "")
                                  for c in df.columns
                                  if c.endswith(rsuffix)
                                  and not c.startswith("row_created")
                                  and not c.startswith("row_updated")]
             if redundant_columns:
-                enb.logger.warn(f"Found redundant dataset/experiment column(s): {', '.join(redundant_columns)}.")
+                enb.logger.warn(
+                    f"Found redundant dataset/experiment column(s): "
+                    f"{', '.join(redundant_columns)}.")
 
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 
     def index_to_path_task(self, index):
-        """Given an ATable index, return (task, path), where task is the current row's
-        task name and path the input file's canonical path.
+        """Given an ATable index, return (task, path), where task is the
+        current row's task name and path the input file's canonical path.
 
-        Note that thos index is the same used in every ATable row column signature,
-        e.g., (self, index, row).
+        Note that thos index is the same used in every ATable row column
+        signature, e.g., (self, index, row).
         """
         return index[0], self.tasks_by_name[index[1]]
 
     def get_dataset_info_row(self, file_path):
         """Get the dataset info table row for the file path given as argument.
         """
-        return self.get_dataset_df().loc[atable.indices_to_internal_loc(file_path)]
+        return self.get_dataset_df().loc[
+            enb.atable.indices_to_internal_loc(file_path)]
 
     def get_dataset_df(self):
         """Get the DataFrame of the employed dataset.
@@ -272,63 +300,76 @@ class Experiment(atable.ATable):
 
     @property
     def joined_column_to_properties(self):
-        """Get the combined dictionary of :class:`atable.ColumnProperties`
-        indexed by column name. This dictionary contains the dataset properties
-        columns and the experiment columns.
+        """Get the combined dictionary of :class:`enb.atable.ColumnProperties`
+        indexed by column name. This dictionary contains the dataset
+        properties columns and the experiment columns.
 
-        Note that :py:attr:`~enb.Experiment.column_to_properties` returns only the experiment
-        columns.
+        Note that :py:attr:`~enb.Experiment.column_to_properties` returns
+        only the experiment columns.
         """
         property_dict = dict(self.dataset_info_table.column_to_properties)
         property_dict.update(self.column_to_properties)
         return property_dict
 
-    @atable.column_function(task_apply_time_column)
+    @enb.atable.column_function(task_apply_time_column)
     def set_task_apply_time(self, index, row):
-        path, task = self.index_to_path_task(index)
+        """Run the `task.apply()` method and store its process time.
+        """
+        _, task = self.index_to_path_task(index)
         time_before = time.process_time()
         task.apply(self, index, row)
         row[_column_name] = max(0.0, time.process_time() - time_before)
 
-    @atable.column_function(task_name_column)
+    @enb.atable.column_function(task_name_column)
     def set_task_name(self, index, row):
-        file_path, task_name = index
-        row[_column_name] = self.tasks_by_name[task_name].name
+        """Set the name of the task for this row.
+        """
+        _, task = self.index_to_path_task(index)
+        row[_column_name] = task.name
 
-    @atable.column_function(task_label_column)
+    @enb.atable.column_function(task_label_column)
     def set_task_label(self, index, row):
-        file_path, task_name = index
-        row[_column_name] = self.tasks_by_name[task_name].label
+        """Set the label of the task for this row.
+        """
+        _, task = self.index_to_path_task(index)
+        row[_column_name] = task.label
 
-    @atable.column_function(enb.atable.ColumnProperties("param_dict", has_dict_values=True))
+    @enb.atable.column_function(
+        enb.atable.ColumnProperties("param_dict", has_dict_values=True))
     def set_param_dict(self, index, row):
-        file_path, task_name = index
-        row[_column_name] = self.tasks_by_name[task_name].param_dict
+        """Store the task's param dict for easy reference and access to the
+        param values.
+        """
+        _, task = self.index_to_path_task(index)
+        row[_column_name] = task.param_dict
 
-    @atable.column_function("family_label")
+    @enb.atable.column_function("family_label")
     def set_family_label(self, index, row):
         """Set the label of the family to which this row's task belong,
         or set it to self.no_family_label
         """
-        file_path, task_name = index
+        _, task = self.index_to_path_task(index)
         try:
-            row[_column_name] = self.task_name_to_family_label[task_name]
+            row[_column_name] = self.task_name_to_family_label[task.name]
         except KeyError:
             row[_column_name] = self.no_family_label
 
 
 class TaskFamily:
     """Describe a sorted list of task names that identify a family of related
-    results within a DataFrame. Typically, this family will be constructed using
-    task workers (e.g., :class:`enb.icompression.AbstractCodec` instances) that share
-    all configuration values except for a parameter.
+    results within a DataFrame. Typically, this family will be constructed
+    using task workers (e.g., :class:`enb.icompression.AbstractCodec`
+    instances) that share all configuration values except for a parameter.
     """
 
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, label, task_names=None, name_to_label=None):
-        """:param label: Printable name that identifies the family
-        :param task_names: if not None, it must be a list of task names (strings)
-          that are expected to be found in an ATable's DataFrame when analyzing
-          it.
+        """
+        :param label: Printable name that identifies the family
+        :param task_names: if not None, it must be a list of task names (
+          strings) that are expected to be found in an ATable's DataFrame when
+          analyzing it.
         :param name_to_label: if not None, it must be a dictionary indexed by
           task name that contains a displayable version of it.
         """
@@ -338,12 +379,13 @@ class TaskFamily:
 
     def add_task(self, task_name, task_label=None):
         """
-        Add a new task name to the family (it becomes the last element
-        in self.task_names)
+        Add a new task name to the family (it becomes the last element in
+        self.task_names)
 
-        :param task_name: A new new not previously included in the Family
+        :param task_name: A new not previously included in the Family
         """
-        # Any ExperimentTask-like object can also be passed, and its name is automatically extracted
+        # Any ExperimentTask-like object can also be passed, and its name is
+        # automatically extracted
         try:
             task_name = task_name.name
         except (TypeError, AttributeError):
