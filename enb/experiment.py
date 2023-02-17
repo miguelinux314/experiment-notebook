@@ -99,6 +99,7 @@ class Experiment(atable.ATable):
     task_label_column = "task_label"
     task_apply_time_column = "task_apply_time"
     default_file_properties_table_class = sets.FilePropertiesTable
+    no_family_label = "No family"
 
     def __init__(self, tasks,
                  dataset_paths=None,
@@ -306,11 +307,14 @@ class Experiment(atable.ATable):
 
     @atable.column_function("family_label")
     def set_family_label(self, index, row):
+        """Set the label of the family to which this row's task belong,
+        or set it to self.no_family_label
+        """
         file_path, task_name = index
         try:
             row[_column_name] = self.task_name_to_family_label[task_name]
         except KeyError:
-            row[_column_name] = "No family"
+            row[_column_name] = self.no_family_label
 
 
 class TaskFamily:
