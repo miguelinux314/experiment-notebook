@@ -253,7 +253,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         elif any(s in file_path for s in ("f64")):
             row[_column_name] = 8
         else:
-            raise sets.UnkownPropertiesException(
+            raise Exception(
                 f"{self.__class__.__name__}: "
                 f"unknown {_column_name} for {file_path}")
 
