@@ -17,18 +17,19 @@ def _get_cli_parser():
     """
     cli_parser = argparse.ArgumentParser(
         prog="enb",
-        description="CLI to the experiment notebook (enb) framework\n"
-                    "(see https://github.com/miguelinux314/experiment-notebook).\n\n"
-                    "Several subcommands are available; use `enb <subcommand> -h` \n"
-                    "to show help about any specific command.",
+        description="CLI to the experiment notebook (enb) framework (see "
+                    "https://github.com/miguelinux314/experiment-notebook)."
+                    "\n\nSeveral subcommands are available; "
+                    "use `enb <subcommand> -h` to show help about "
+                    "any specific command.",
         formatter_class=argparse.RawTextHelpFormatter)
     cli_parser.subparsers = cli_parser.add_subparsers(
         dest="command", required=True,
         description="Available enb CLI commands.")
 
     # plugin subcommand
-    cli_parser.plugin_parser = cli_parser.subparsers.add_parser("plugin",
-                                                                help="Install and manage plugins.")
+    cli_parser.plugin_parser = cli_parser.subparsers.add_parser(
+        "plugin", help="Install and manage plugins.")
     cli_parser.plugin_parser.subparsers = cli_parser.plugin_parser.add_subparsers(
         description="Plugin subcommands", dest="subcommand", required=True)
     # # plugin install
@@ -47,8 +48,9 @@ def _get_cli_parser():
         nargs=0, dest="", action=PluginInstall)
 
     # # plugin list
-    cli_parser.plugin_parser.list_parser = cli_parser.plugin_parser.subparsers.add_parser(
-        "list", help="List available plugins.")
+    cli_parser.plugin_parser.list_parser = \
+        cli_parser.plugin_parser.subparsers.add_parser(
+            "list", help="List available plugins.")
     cli_parser.plugin_parser.list_parser.add_argument(
         "-v", action="count", default=0,
         help="Show additional information about the available plugins.")
@@ -73,16 +75,17 @@ def _get_cli_parser():
     cli_parser.show_parser.subparsers = cli_parser.show_parser.add_subparsers(
         description="Show subcommands", dest="subcommand", required=True)
     ## show styles
-    cli_parser.show_parser.styles_parser = cli_parser.show_parser.subparsers.add_parser(
-        "styles", help="Show available style names for plotting.")
+    cli_parser.show_parser.styles_parser = \
+        cli_parser.show_parser.subparsers.add_parser(
+            "styles", help="Show available style names for plotting.")
     cli_parser.show_parser.styles_parser.add_argument(
         "filter", nargs="*", help="Show only styles containing this string.")
     cli_parser.show_parser.styles_parser.add_argument(
         nargs=0, dest="", action=ShowStyles)
 
     # Help command
-    cli_parser.help_parser = cli_parser.subparsers.add_parser("help",
-                                                              help="Show this help and exit.")
+    cli_parser.help_parser = cli_parser.subparsers.add_parser(
+        "help", help="Show this help and exit.")
 
     return cli_parser
 
@@ -93,7 +96,8 @@ class PluginInstall(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         plugin_name = namespace.plugin_name.strip()
-        assert " " not in plugin_name, f"Plugin names cannot have spaces: {repr(plugin_name)}"
+        assert " " not in plugin_name, \
+            f"Plugin names cannot have spaces: {repr(plugin_name)}"
         destination_dir = namespace.destination_dir
 
         try:
@@ -125,35 +129,87 @@ class PluginList(argparse.Action):
     """
 
     def installable_matches_querys(self, installable, query_list):
-        """Return true if and only if the installable matches any of the provided queries.
+        """Return true if and only if the installable matches any of the
+        provided queries.
         """
+        # pylint: disable=no-self-use
         return any(query.lower() in installable.name.lower() or
-                   (
-                           installable.label.lower() and query in installable.label.lower()) or
+                   (installable.label.lower()
+                    and query in installable.label.lower()) or
                    any(query.lower() in author.lower() for author in
                        installable.contrib_authors)
-                   or any(
-            any(query.lower() in t for t in installable.tags) for f in
-            query_list)
-                   or any(
-            any(query.lower() in t for t in installable.tested_on) for f in
-            query_list)
+                   or any(query.lower() in t
+                          for t in installable.tags)
+                   or any(query.lower() in t
+                          for t in installable.tested_on)
                    for query in query_list)
 
     def __call__(self, parser, namespace, values, option_string=None):
+        # Process input and obtain the list of installables (plugins)
+        # that match the query (all if no query was presented)
         all_installables = enb.plugins.list_all_installables()
         filtered_installables = [
             i for i in all_installables
-            if self.installable_matches_querys(i,
-                                               namespace.filter if namespace.filter else [])] \
+            if self.installable_matches_querys(
+                i, namespace.filter if namespace.filter else [])] \
             if namespace.filter else all_installables
-
         if namespace.exclude:
             filtered_installables = [
                 i for i in filtered_installables
-                if not self.installable_matches_querys(installable=i,
-                                                       query_list=namespace.exclude)]
+                if not self.installable_matches_querys(
+                    installable=i, query_list=namespace.exclude)]
 
+        # Print mathing plugins
+        self.print_matching_plugins(all_installables=all_installables,
+                                    filtered_installables=filtered_installables,
+                                    namespace=namespace)
+        print()
+
+        # Print available tags
+        self.print_available_tags()
+
+        # Print extra info
+        if not options.verbose and "-h" not in sys.argv:
+            print()
+            print("Run" + \
+                  (' with -v for authorship and additional information,'
+                   if not enb.config.options.verbose else '') + \
+                  " with -h for full help.")
+
+    def print_available_tags(self):
+        """Show information about what tags that have been defined and
+        # can be used for filtering.
+        """
+        # pylint: disable=no-self-use
+        print("The following plugin tags have been defined and can be "
+              "used for filtering:\n")
+        max_tag_length = max(
+            len(t) for t in
+            enb.plugins.installable.InstallableMeta.tag_to_installable.keys())
+        tag_fmt_str = f"{{tag:{max_tag_length}s}}"
+        for tag, installable_list in sorted(
+                enb.plugins.installable.InstallableMeta.tag_to_installable.items(),
+                key=lambda t: list(
+                    enb.plugins.installable.tag_to_description.keys()).index(
+                    t[0])):
+            print(
+                f"  - {tag_fmt_str.format(tag=tag)} ({len(installable_list):3d} "
+                f"{'' if len(installable_list) != 1 else ' '}"
+                f"plugin{'s' if len(installable_list) != 1 else ''})",
+                end="")
+            try:
+                print(f" {enb.plugins.installable.tag_to_description[tag]}",
+                      end="")
+                print("" if enb.plugins.installable.tag_to_description[
+                    tag].endswith(".") else ".")
+            except KeyError:
+                print()
+
+    def print_matching_plugins(
+            self, all_installables, filtered_installables, namespace):
+        """Print the list of matching plugins.
+        """
+        # pylint: disable=no-self-use
         if namespace.filter and not filtered_installables:
             print(f"No plugin matched the filter criteria "
                   f"({', '.join(repr(f) for f in namespace.filter)}).")
@@ -189,42 +245,12 @@ class PluginList(argparse.Action):
                 print(".")
                 if enb.config.options.verbose:
                     installable.print_info()
-        print()
-
-        print("The following plugin tags have been defined and can be "
-              "used for filtering:\n")
-        max_tag_length = max(
-            len(t) for t in
-            enb.plugins.installable.InstallableMeta.tag_to_installable.keys())
-        tag_fmt_str = f"{{tag:{max_tag_length}s}}"
-        for tag, installable_list in sorted(
-                enb.plugins.installable.InstallableMeta.tag_to_installable.items(),
-                key=lambda t: list(
-                    enb.plugins.installable.tag_to_description.keys()).index(
-                    t[0])):
-            print(
-                f"  - {tag_fmt_str.format(tag=tag)} ({len(installable_list):3d} "
-                f"{'' if len(installable_list) != 1 else ' '}"
-                f"plugin{'s' if len(installable_list) != 1 else ''})",
-                end="")
-            try:
-                print(f" {enb.plugins.installable.tag_to_description[tag]}",
-                      end="")
-                print("" if enb.plugins.installable.tag_to_description[
-                    tag].endswith(".") else ".")
-            except KeyError:
-                print()
-
-        print()
-        print("Run" + \
-              (' with -v for authorship and additional information,'
-               if not enb.config.options.verbose else '') + \
-              " with -h for full help.")
 
 
 class ShowStyles(argparse.Action):
     """Show the list of available styles for plotting.
     """
+
     def __call__(self, parser, namespace, values, option_string=None):
         print("The following styles are available for plotting:\n\n\t- ",
               end="")
