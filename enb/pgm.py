@@ -4,10 +4,73 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/04/08"
 
+import os
 import sys
 import re
+import tempfile
+
+import imageio
+import numpngw
 import numpy as np
+
+import enb
 import enb.isets
+
+
+class PGMWrapperCodec(enb.icompression.WrapperCodec):
+    """Raw images are coded into PNG before compression with the wrapper,
+    and PNG is decoded to raw after decompression.
+    """
+
+    def compress(self, original_path: str, compressed_path: str,
+                 original_file_info=None):
+        assert original_file_info[
+                   "component_count"] == 1, "PGM only supported for 1-component images"
+        assert original_file_info["bytes_per_sample"] in [1, 2], \
+            "PGM only supported for 8 or 16 bit images"
+        img = enb.isets.load_array_bsq(
+            file_or_path=original_path, image_properties_row=original_file_info)
+
+        with tempfile.NamedTemporaryFile(suffix=".pgm", mode="wb") as tmp_file:
+            numpngw.imwrite(tmp_file.name, img)
+            with open(tmp_file, "rb") as raw_file:
+                contents = raw_file.read()
+            os.remove(tmp_file)
+            with open(tmp_file.name, "wb") as pgm_file:
+                pgm_file.write(bytes(
+                    f"P6\n"
+                    f"{original_file_info['width']} "
+                    f"{original_file_info['height']}\n"
+                    f"{255 if original_file_info['bytes_per_sample'] == 1 else 65535}\n"))
+                pgm_file.write(contents)
+
+            compression_results = super().compress(original_path=tmp_file.name,
+                                                   compressed_path=compressed_path,
+                                                   original_file_info=original_file_info)
+            cr = self.compression_results_from_paths(
+                original_path=original_path, compressed_path=compressed_path)
+            cr.compression_time_seconds = max(
+                0, compression_results.compression_time_seconds)
+            cr.maximum_memory_kb = compression_results.maximum_memory_kb
+            return cr
+
+    def decompress(self, compressed_path, reconstructed_path,
+                   original_file_info=None):
+        with tempfile.NamedTemporaryFile(suffix=".pgm") as tmp_file:
+            decompression_results = super().decompress(
+                compressed_path=compressed_path,
+                reconstructed_path=tmp_file.name)
+            img = imageio.imread(tmp_file.name, "pgm")
+            img.swapaxes(0, 1)
+            assert len(img.shape) in [2, 3, 4]
+            if len(img.shape) == 2:
+                img = np.expand_dims(img, axis=2)
+            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path)
+
+            dr = self.decompression_results_from_paths(
+                compressed_path=compressed_path,
+                reconstructed_path=reconstructed_path)
+            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
 
 
 def read_pgm(input_path, byteorder='>'):

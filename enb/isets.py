@@ -12,14 +12,6 @@ import enb
 from enb import atable
 from enb import sets
 
-# Imports to maintain compatibility
-# pylint: disable=unused-import
-from .fits import FitsVersionTable
-from .png import PNGCurationTable
-from .png import raw_path_to_png
-from .png import render_array_png
-
-
 # pylint: disable=no-self-use
 
 def entropy(data):

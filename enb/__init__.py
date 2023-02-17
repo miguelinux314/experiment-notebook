@@ -6,6 +6,7 @@ for further information.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
+
 # pylint: disable wrong-import-position
 
 import warnings as _warnings
@@ -14,7 +15,6 @@ import os as _os
 import sys as _sys
 import appdirs as _appdirs
 import numpy as _np
-
 
 # Make all warnings errors
 _np.seterr(all="raise")
@@ -104,6 +104,22 @@ from . import pgm
 from . import tarlite
 # Plugin and template support
 from . import plugins
+
+# Secondary module import
+from . import fits
+from . import png
+
+# For backwards compatibility
+isets.FitsVersionTable = fits.FitsVersionTable
+isets.PNGCurationTable = png.PNGCurationTable
+isets.raw_path_to_png = png.raw_path_to_png
+isets.render_array_png = png.render_array_png
+
+# Kept for backwards compatibility
+icompression.FitsVersionTable = fits.FitsVersionTable
+icompression.FitsWrapperCodec = fits.FITSWrapperCodec
+icompression.PNGWrapperCodec = png.PNGWrapperCodec
+icompression.PGMWrapperCodec = pgm.PGMWrapperCodec
 
 # Setup to be run only when enb is imported in the main process
 if not parallel_ray.is_parallel_process():
