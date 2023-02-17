@@ -7,7 +7,11 @@ __since__ = "2020/04/01"
 # pylint: disable=no-self-use
 
 import os
+import tempfile
+
 import numpy as np
+from astropy.io import fits
+
 import enb
 from enb import sets
 from enb.config import options
@@ -200,3 +204,69 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                     header.totextfile(fits_header_path)
 
             saved_images += 1
+
+
+class FITSWrapperCodec(enb.icompression.WrapperCodec):
+    """Raw images are coded into FITS before compression with the wrapper,
+    and FITS is decoded to raw after decompression.
+    """
+
+    def compress(self, original_path: str, compressed_path: str,
+                 original_file_info=None):
+        img = enb.isets.load_array_bsq(
+            file_or_path=original_path, image_properties_row=original_file_info)
+        with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
+            os.remove(tmp_file.name)
+            array = img.swapaxes(0, 2)
+            hdu = fits.PrimaryHDU(array)
+            hdu.writeto(tmp_file.name)
+
+            if os.path.exists(compressed_path):
+                os.remove(compressed_path)
+            compression_results = super().compress(original_path=tmp_file.name,
+                                                   compressed_path=compressed_path,
+                                                   original_file_info=original_file_info)
+            cr = self.compression_results_from_paths(
+                original_path=original_path, compressed_path=compressed_path)
+            cr.compression_time_seconds = max(0,
+                                              compression_results.compression_time_seconds)
+            cr.maximum_memory_kb = compression_results.maximum_memory_kb
+            return cr
+
+    def decompress(self, compressed_path, reconstructed_path,
+                   original_file_info=None):
+
+        with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
+            os.remove(tmp_file.name)
+            decompression_results = super().decompress(
+                compressed_path=compressed_path,
+                reconstructed_path=tmp_file.name)
+
+            hdul = fits.open(tmp_file.name)
+            assert len(hdul) == 1
+            data = hdul[0].data.transpose()
+            header = hdul[0].header
+
+            if header['NAXIS'] == 2:
+                if header['BITPIX'] < 0:
+                    dtype_name = f'float{-header["BITPIX"]}'
+                elif header['BITPIX'] > 0:
+                    dtype_name = f'>u{header["BITPIX"] // 8}'
+                else:
+                    raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+            elif header['NAXIS'] == 3:
+                if header['BITPIX'] < 0:
+                    dtype_name = f'float{-header["BITPIX"]}'
+                elif header['BITPIX'] > 0:
+                    dtype_name = f'>u{header["BITPIX"] // 8}'
+                else:
+                    raise ValueError(f"Invalid bitpix {header['BITPIX']}")
+            else:
+                raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
+
+            enb.isets.dump_array_bsq(array=data,
+                                     file_or_path=reconstructed_path,
+                                     dtype=dtype_name)
+            decompression_results.compressed_path = compressed_path
+            decompression_results.reconstructed_path = reconstructed_path
+            return decompression_results

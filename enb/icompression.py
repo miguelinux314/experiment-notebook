@@ -14,11 +14,7 @@ import functools
 import shutil
 import math
 import numpy as np
-import imageio
-import subprocess
 
-import numpngw
-from astropy.io import fits
 from scipy import signal
 from scipy.ndimage.filters import convolve
 
@@ -30,7 +26,6 @@ from enb import isets
 from enb import tcall
 from enb.atable import indices_to_internal_loc
 from enb.config import options
-
 
 class CompressionResults:
     """Base class that defines the minimal fields that are returned by a call
@@ -565,182 +560,6 @@ class LittleEndianWrapper(WrapperCodec):
             return super().decompress(compressed_path=compressed_path,
                                       reconstructed_path=reconstructed_path,
                                       original_file_info=original_file_info)
-
-
-class FITSWrapperCodec(WrapperCodec):
-    """Raw images are coded into FITS before compression with the wrapper,
-    and FITS is decoded to raw after decompression.
-    """
-
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
-        img = enb.isets.load_array_bsq(
-            file_or_path=original_path, image_properties_row=original_file_info)
-        with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
-            os.remove(tmp_file.name)
-            array = img.swapaxes(0, 2)
-            hdu = fits.PrimaryHDU(array)
-            hdu.writeto(tmp_file.name)
-
-            if os.path.exists(compressed_path):
-                os.remove(compressed_path)
-            compression_results = super().compress(original_path=tmp_file.name,
-                                                   compressed_path=compressed_path,
-                                                   original_file_info=original_file_info)
-            cr = self.compression_results_from_paths(
-                original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(0,
-                                              compression_results.compression_time_seconds)
-            cr.maximum_memory_kb = compression_results.maximum_memory_kb
-            return cr
-
-    def decompress(self, compressed_path, reconstructed_path,
-                   original_file_info=None):
-
-        with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
-            os.remove(tmp_file.name)
-            decompression_results = super().decompress(
-                compressed_path=compressed_path,
-                reconstructed_path=tmp_file.name)
-
-            hdul = fits.open(tmp_file.name)
-            assert len(hdul) == 1
-            data = hdul[0].data.transpose()
-            header = hdul[0].header
-
-            if header['NAXIS'] == 2:
-                if header['BITPIX'] < 0:
-                    dtype_name = f'float{-header["BITPIX"]}'
-                elif header['BITPIX'] > 0:
-                    dtype_name = f'>u{header["BITPIX"] // 8}'
-                else:
-                    raise ValueError(f"Invalid bitpix {header['BITPIX']}")
-            elif header['NAXIS'] == 3:
-                if header['BITPIX'] < 0:
-                    dtype_name = f'float{-header["BITPIX"]}'
-                elif header['BITPIX'] > 0:
-                    dtype_name = f'>u{header["BITPIX"] // 8}'
-                else:
-                    raise ValueError(f"Invalid bitpix {header['BITPIX']}")
-            else:
-                raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
-
-            enb.isets.dump_array_bsq(array=data,
-                                     file_or_path=reconstructed_path,
-                                     dtype=dtype_name)
-            decompression_results.compressed_path = compressed_path
-            decompression_results.reconstructed_path = reconstructed_path
-            return decompression_results
-
-
-class PNGWrapperCodec(WrapperCodec):
-    """Raw images are coded into PNG before compression with the wrapper,
-    and PNG is decoded to raw after decompression.
-    """
-
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
-        img = enb.isets.load_array_bsq(
-            file_or_path=original_path, image_properties_row=original_file_info)
-
-        with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
-            numpngw.write_png(tmp_file.name, img)
-            compression_results = super().compress(
-                original_path=tmp_file.name,
-                compressed_path=compressed_path,
-                original_file_info=original_file_info)
-            cr = self.compression_results_from_paths(
-                original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(
-                0, compression_results.compression_time_seconds)
-            cr.maximum_memory_kb = compression_results.maximum_memory_kb
-            return cr
-
-    def decompress(self, compressed_path, reconstructed_path,
-                   original_file_info=None):
-        with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
-            decompression_results = super().decompress(
-                compressed_path=compressed_path,
-                reconstructed_path=tmp_file.name)
-
-            invocation = f"file {tmp_file.name}"
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise Exception(f"Status = {status} != 0.\n"
-                                f"Input=[{invocation}].\n"
-                                f"Output=[{output}]")
-            img = imageio.imread(tmp_file.name, "png")
-            img.swapaxes(0, 1)
-            assert len(img.shape) in [2, 3, 4]
-            if len(img.shape) == 2:
-                img = np.expand_dims(img, axis=2)
-
-            dtype = ">"
-            dtype += "i" if original_file_info["signed"] else "u"
-            dtype += f"{original_file_info['bytes_per_sample']}"
-
-            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path,
-                                     dtype=dtype)
-
-            dr = self.decompression_results_from_paths(
-                compressed_path=compressed_path,
-                reconstructed_path=reconstructed_path)
-            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
-            dr.maximum_memory_kb = decompression_results.maximum_memory_kb
-
-
-class PGMWrapperCodec(WrapperCodec):
-    """Raw images are coded into PNG before compression with the wrapper,
-    and PNG is decoded to raw after decompression.
-    """
-
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
-        assert original_file_info[
-                   "component_count"] == 1, "PGM only supported for 1-component images"
-        assert original_file_info["bytes_per_sample"] in [1,
-                                                          2], "PGM only supported for 8 or 16 bit images"
-        img = enb.isets.load_array_bsq(
-            file_or_path=original_path, image_properties_row=original_file_info)
-
-        with tempfile.NamedTemporaryFile(suffix=".pgm", mode="wb") as tmp_file:
-            numpngw.imwrite(tmp_file.name, img)
-            with open(tmp_file, "rb") as raw_file:
-                contents = raw_file.read()
-            os.remove(tmp_file)
-            with open(tmp_file, "wb") as pgm_file:
-                tmp_file.write(bytes(f"P6\n"
-                                     f"{original_file_info['width']} {original_file_info['height']}\n"
-                                     f"{255 if original_file_info['bytes_per_sample'] == 1 else 65535}\n"))
-                tmp_file.write(contents)
-
-            compression_results = super().compress(original_path=tmp_file.name,
-                                                   compressed_path=compressed_path,
-                                                   original_file_info=original_file_info)
-            cr = self.compression_results_from_paths(
-                original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(
-                0, compression_results.compression_time_seconds)
-            cr.maximum_memory_kb = compression_results.maximum_memory_kb
-            return cr
-
-    def decompress(self, compressed_path, reconstructed_path,
-                   original_file_info=None):
-        with tempfile.NamedTemporaryFile(suffix=".pgm") as tmp_file:
-            decompression_results = super().decompress(
-                compressed_path=compressed_path,
-                reconstructed_path=tmp_file.name)
-            img = imageio.imread(tmp_file.name, "pgm")
-            img.swapaxes(0, 1)
-            assert len(img.shape) in [2, 3, 4]
-            if len(img.shape) == 2:
-                img = np.expand_dims(img, axis=2)
-            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path)
-
-            dr = self.decompression_results_from_paths(
-                compressed_path=compressed_path,
-                reconstructed_path=reconstructed_path)
-            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
 
 
 class CompressionExperiment(experiment.Experiment):
@@ -1605,3 +1424,4 @@ class SpectralAngleTable(LossyCompressionExperiment):
         row["mean_spectral_angle_deg"] = sum(spectral_angles) / len(
             spectral_angles)
         row["max_spectral_angle_deg"] = max(spectral_angles)
+

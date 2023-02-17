@@ -5,14 +5,72 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2023/02/12"
 
 import os
+import subprocess
 import tempfile
 
 import imageio
+import numpngw
 import numpy as np
 import pdf2image
 
 import enb
 import enb.sets
+
+
+class PNGWrapperCodec(enb.icompression.WrapperCodec):
+    """Raw images are coded into PNG before compression with the wrapper,
+    and PNG is decoded to raw after decompression.
+    """
+
+    def compress(self, original_path: str, compressed_path: str,
+                 original_file_info=None):
+        img = enb.isets.load_array_bsq(
+            file_or_path=original_path, image_properties_row=original_file_info)
+
+        with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
+            numpngw.write_png(tmp_file.name, img)
+            compression_results = super().compress(
+                original_path=tmp_file.name,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info)
+            cr = self.compression_results_from_paths(
+                original_path=original_path, compressed_path=compressed_path)
+            cr.compression_time_seconds = max(
+                0, compression_results.compression_time_seconds)
+            cr.maximum_memory_kb = compression_results.maximum_memory_kb
+            return cr
+
+    def decompress(self, compressed_path, reconstructed_path,
+                   original_file_info=None):
+        with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
+            decompression_results = super().decompress(
+                compressed_path=compressed_path,
+                reconstructed_path=tmp_file.name)
+
+            invocation = f"file {tmp_file.name}"
+            status, output = subprocess.getstatusoutput(invocation)
+            if status != 0:
+                raise Exception(f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\n"
+                                f"Output=[{output}]")
+            img = imageio.imread(tmp_file.name, "png")
+            img.swapaxes(0, 1)
+            assert len(img.shape) in [2, 3, 4]
+            if len(img.shape) == 2:
+                img = np.expand_dims(img, axis=2)
+
+            dtype = ">"
+            dtype += "i" if original_file_info["signed"] else "u"
+            dtype += f"{original_file_info['bytes_per_sample']}"
+
+            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path,
+                                     dtype=dtype)
+
+            dr = self.decompression_results_from_paths(
+                compressed_path=compressed_path,
+                reconstructed_path=reconstructed_path)
+            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
+            dr.maximum_memory_kb = decompression_results.maximum_memory_kb
 
 
 class PNGCurationTable(enb.sets.FileVersionTable):
