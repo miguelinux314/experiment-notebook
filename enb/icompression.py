@@ -19,13 +19,8 @@ from scipy import signal
 from scipy.ndimage.filters import convolve
 
 import enb
-import enb.atable
-from enb import atable
-from enb import experiment
-from enb import isets
-from enb import tcall
-from enb.atable import indices_to_internal_loc
 from enb.config import options
+
 
 class CompressionResults:
     """Base class that defines the minimal fields that are returned by a call
@@ -33,9 +28,11 @@ class CompressionResults:
     instance).
     """
 
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, codec_name=None, codec_param_dict=None,
                  original_path=None,
-                 compressed_path=None, side_info_files=[],
+                 compressed_path=None, side_info_files=None,
                  compression_time_seconds=None,
                  maximum_memory_kb=None):
         """
@@ -48,6 +45,10 @@ class CompressionResults:
           seconds
         :param maximum_memory_kb: maximum resident memory in kilobytes
         """
+        # pylint: disable=too-many-arguments
+        side_info_files = side_info_files \
+            if side_info_files is not None else []
+
         self.codec_name = codec_name
         self.codec_param_dict = codec_param_dict
         self.original_path = original_path
@@ -63,9 +64,11 @@ class DecompressionResults:
     CompressionExperiment instance).
     """
 
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, codec_name=None, codec_param_dict=None,
                  compressed_path=None,
-                 reconstructed_path=None, side_info_files=[],
+                 reconstructed_path=None, side_info_files=None,
                  decompression_time_seconds=None,
                  maximum_memory_kb=None):
         """
@@ -79,6 +82,9 @@ class DecompressionResults:
           seconds
         :param maximum_memory_kb: maximum resident memory in kilobytes
         """
+        # pylint: disable=too-many-arguments
+        side_info_files = side_info_files \
+            if side_info_files is not None else []
         self.codec_name = codec_name
         self.codec_param_dict = codec_param_dict
         self.compressed_path = compressed_path
@@ -94,6 +100,7 @@ class CompressionException(Exception):
 
     def __init__(self, original_path=None, compressed_path=None, file_info=None,
                  status=None, output=None):
+        # pylint: disable=too-many-arguments
         super().__init__(f"status={status}, output={output}")
         self.original_path = original_path
         self.compressed_path = compressed_path
@@ -108,6 +115,7 @@ class DecompressionException(Exception):
 
     def __init__(self, compressed_path=None, reconstructed_path=None,
                  file_info=None, status=None, output=None):
+        # pylint: disable=too-many-arguments
         super().__init__(f"status={status}, output={output}")
         self.reconstructed_path = reconstructed_path
         self.compressed_path = compressed_path
@@ -116,7 +124,7 @@ class DecompressionException(Exception):
         self.output = output
 
 
-class AbstractCodec(experiment.ExperimentTask):
+class AbstractCodec(enb.experiment.ExperimentTask):
     """Base class for all codecs
     """
 
@@ -242,6 +250,7 @@ class WrapperCodec(AbstractCodec):
           part of the hexdigest of the compressor and decompressor binaries
           being used
         """
+        # pylint: disable=too-many-arguments
         super().__init__(param_dict=param_dict)
         self.signature_in_name = False
         if os.path.isfile(compressor_path):
@@ -300,12 +309,12 @@ class WrapperCodec(AbstractCodec):
         try:
             enb.logger.debug(f"[{self.name}] executing: {repr(invocation)}")
             status, output, measured_time, memory_kb = \
-                tcall.get_status_output_time_memory(invocation=invocation)
+                enb.tcall.get_status_output_time_memory(invocation=invocation)
             enb.logger.debug(
                 f"[{self.name}] Compression OK; "
                 f"invocation={invocation} - status={status}; "
                 f"output={output}; memory={memory_kb} KB")
-        except tcall.InvocationError as ex:
+        except enb.tcall.InvocationError as ex:
             raise CompressionException(
                 original_path=original_path,
                 compressed_path=compressed_path,
@@ -348,12 +357,12 @@ class WrapperCodec(AbstractCodec):
         enb.logger.info(f"WrapperCodec:decompress invocation={invocation}")
         try:
             status, output, measured_time, memory_kb \
-                = tcall.get_status_output_time_memory(invocation)
+                = enb.tcall.get_status_output_time_memory(invocation)
             enb.logger.debug(
                 f"[{self.name}] Compression OK; "
                 f"invocation={invocation} - status={status}; "
                 f"output={output}; memory={memory_kb} kb")
-        except tcall.InvocationError as ex:
+        except enb.tcall.InvocationError as ex:
             raise DecompressionException(
                 compressed_path=compressed_path,
                 reconstructed_path=reconstructed_path,
@@ -562,7 +571,7 @@ class LittleEndianWrapper(WrapperCodec):
                                       original_file_info=original_file_info)
 
 
-class CompressionExperiment(experiment.Experiment):
+class CompressionExperiment(enb.experiment.Experiment):
     """This class allows seamless execution of compression experiments.
 
     In the functions decorated with @atable,column_function, the row argument
@@ -600,6 +609,7 @@ class CompressionExperiment(experiment.Experiment):
             :param compressed_copy_dir: if not None, a copy of the compressed images
               is stored, based on the class of codec.
             """
+            # pylint: disable=too-many-arguments
             self.file_path = file_path
             self.codec = codec
             self.image_info_row = image_info_row
@@ -643,18 +653,22 @@ class CompressionExperiment(experiment.Experiment):
                                 original_path=self.file_path,
                                 compressed_path=tmp_compressed_path,
                                 file_info=self.image_info_row,
-                                output=f"Compression of {self.file_path} didn't produce a file (or it was empty)")
+                                output=f"Compression of {self.file_path} "
+                                       f"didn't produce a file (or it was empty)")
 
-                        wall_compression_time = (
-                                                        time.time_ns() - time_before_ns) / 1e9
+                        wall_compression_time = \
+                            (time.time_ns() - time_before_ns) / 1e9
                         if self._compression_results is None:
                             enb.logger.info(
-                                f"[W]arning: codec {self.codec.name} did not report execution times. "
+                                f"[W]arning: codec {self.codec.name} "
+                                f"did not report execution times. "
                                 f"Using wall clock instead (might be inaccurate)")
-                            self._compression_results = self.codec.compression_results_from_paths(
-                                original_path=self.file_path,
-                                compressed_path=tmp_compressed_path)
-                            self._compression_results.compression_time_seconds = wall_compression_time
+                            self._compression_results = \
+                                self.codec.compression_results_from_paths(
+                                    original_path=self.file_path,
+                                    compressed_path=tmp_compressed_path)
+                            self._compression_results.compression_time_seconds = \
+                                wall_compression_time
 
                         measured_times.append(
                             self._compression_results.compression_time_seconds)
@@ -662,20 +676,23 @@ class CompressionExperiment(experiment.Experiment):
                             self._compression_results.maximum_memory_kb)
 
                         if self.compressed_copy_dir and repetition_index == 0:
-                            output_path = os.path.join(self.compressed_copy_dir,
-                                                       self.codec.name,
-                                                       f"{os.path.basename(self.file_path)}.compressed")
+                            output_path = os.path.join(
+                                self.compressed_copy_dir,
+                                self.codec.name,
+                                f"{os.path.basename(self.file_path)}.compressed")
                             os.makedirs(os.path.dirname(output_path),
                                         exist_ok=True)
                             enb.logger.info(
-                                f"Storing compressed bitstream for {self.file_path} and {self.codec} "
+                                f"Storing compressed bitstream for "
+                                f"{self.file_path} and {self.codec} "
                                 f"at {repr(output_path)}")
                             shutil.copyfile(tmp_compressed_path, output_path)
 
                         if repetition_index < options.repetitions - 1:
                             os.remove(tmp_compressed_path)
 
-                    # The minimum time is kept, all other values are considered to have noise added by the OS
+                    # The minimum time is kept, all other values are
+                    # considered to have noise added by the OS
                     self._compression_results.compression_time_seconds = min(
                         measured_times)
                     # The maximum resident memory in kb is kept
@@ -705,11 +722,13 @@ class CompressionExperiment(experiment.Experiment):
                     measured_times = []
                     measured_memory = []
                     with enb.logger.info_context(
-                            f"Executing decompression {self.codec.name} on {self.file_path} "
+                            f"Executing decompression {self.codec.name} "
+                            f"on {self.file_path} "
                             f"[{options.repetitions} times]"):
                         for repetition_index in range(options.repetitions):
                             enb.logger.info(
-                                f"Executing decompression {self.codec.name} on {self.file_path} "
+                                f"Executing decompression {self.codec.name} "
+                                f"on {self.file_path} "
                                 f"[rep{repetition_index + 1}/{options.repetitions}]")
 
                             time_before = time.time_ns()
@@ -718,16 +737,20 @@ class CompressionExperiment(experiment.Experiment):
                                 reconstructed_path=tmp_reconstructed_path,
                                 original_file_info=self.image_info_row)
 
-                            wall_decompression_time = (
-                                                              time.time_ns() - time_before) / 1e9
+                            wall_decompression_time = \
+                                (time.time_ns() - time_before) / 1e9
                             if self._decompression_results is None:
                                 enb.logger.info(
-                                    f"Codec {self.codec.name} did not report execution times. "
-                                    f"Using wall clock instead (might be inaccurate)")
-                                self._decompression_results = self.codec.decompression_results_from_paths(
-                                    compressed_path=self.compression_results.compressed_path,
-                                    reconstructed_path=tmp_reconstructed_path)
-                                self._decompression_results.decompression_time_seconds = wall_decompression_time
+                                    f"Codec {self.codec.name} did not report "
+                                    f"execution times. Using wall clock "
+                                    f"instead (might be inaccurate with "
+                                    f"intensive I/O)")
+                                self._decompression_results = \
+                                    self.codec.decompression_results_from_paths(
+                                        compressed_path=self.compression_results.compressed_path,
+                                        reconstructed_path=tmp_reconstructed_path)
+                                self._decompression_results.decompression_time_seconds = \
+                                    wall_decompression_time
 
                             if not os.path.isfile(
                                     tmp_reconstructed_path) or os.path.getsize(
@@ -752,16 +775,18 @@ class CompressionExperiment(experiment.Experiment):
                                 os.makedirs(os.path.dirname(output_path),
                                             exist_ok=True)
                                 enb.logger.info(
-                                    f"Storing reconstructed copy of {self.file_path} with {self.codec} "
+                                    f"Storing reconstructed copy of "
+                                    f"{self.file_path} with {self.codec} "
                                     f"at {repr(output_path)}")
                                 shutil.copyfile(tmp_reconstructed_path,
                                                 output_path)
 
                             if repetition_index < options.repetitions - 1:
                                 os.remove(tmp_reconstructed_path)
-                    # The minimum time is kept, the remaining values are assumed to contain noised added by the OS
-                    self._decompression_results.decompression_time_seconds = min(
-                        measured_times)
+                    # The minimum time is kept, the remaining values are
+                    # assumed to contain noised added by the OS
+                    self._decompression_results.decompression_time_seconds = \
+                        min(measured_times)
                     self._decompression_results.maximum_memory_kb \
                         = max(
                         kb if kb is not None else -1 for kb in measured_memory)
@@ -773,10 +798,12 @@ class CompressionExperiment(experiment.Experiment):
 
         @property
         def numpy_dtype(self):
-            """Get the numpy dtype corresponding to the original image's data format
+            """Get the numpy dtype corresponding to the original image's data
+            format
             """
 
-            return isets.iproperties_row_to_numpy_dtype(self.image_info_row)
+            return enb.isets.iproperties_row_to_numpy_dtype(
+                self.image_info_row)
 
         def __del__(self):
             if self._compression_results is not None:
@@ -802,31 +829,35 @@ class CompressionExperiment(experiment.Experiment):
         """
         :param codecs: list of :py:class:`AbstractCodec` instances. Note that
           codecs are compatible with the interface of :py:class:`ExperimentTask`.
-        :param dataset_paths: list of paths to the files to be used as input for compression.
-          If it is None, this list is obtained automatically from the configured
-          base dataset dir.
-        :param csv_experiment_path: if not None, path to the CSV file giving persistence
-          support to this experiment.
-          If None, it is automatically determined within options.persistence_dir.
-        :param csv_dataset_path: if not None, path to the CSV file given persistence
-          support to the dataset file properties.
-          If None, it is automatically determined within options.persistence_dir.
-        :param dataset_info_table: if not None, it must be a ImagePropertiesTable instance or
-          subclass instance that can be used to obtain dataset file metainformation,
-          and/or gather it from csv_dataset_path. If None, a new ImagePropertiesTable
-          instance is created and used for this purpose.
-        :param overwrite_file_properties: if True, file properties are recomputed before starting
-          the experiment. Useful for temporary and/or random datasets. Note that overwrite
-          control for the experiment results themselves is controlled in the call
-          to get_df
-        :param reconstructed_dir_path: if not None, a directory where reconstructed images are
-          to be stored.
-        :param compressed_copy_dir_path: if not None, it gives the directory where a copy of the compressed images.
-          is to be stored. If may not be generated for images for which all columns are known
-        :param task_families: if not None, it must be a list of TaskFamily instances. It is used to set the
-          "family_label" column for each row. If the codec is not found within the families, a default
-          label is set indicating so.
+        :param dataset_paths: list of paths to the files to be used as input
+          for compression. If it is None, this list is obtained automatically
+          from the configured base dataset dir.
+        :param csv_experiment_path: if not None, path to the CSV file giving
+          persistence support to this experiment. If None, it is automatically
+          determined within options.persistence_dir.
+        :param csv_dataset_path: if not None, path to the CSV file given
+          persistence support to the dataset file properties. If None,
+          it is automatically determined within options.persistence_dir.
+        :param dataset_info_table: if not None, it must be a
+          ImagePropertiesTable instance or subclass instance that can be used
+          to obtain dataset file metainformation, and/or gather it from
+          csv_dataset_path. If None, a new ImagePropertiesTable instance is
+          created and used for this purpose.
+        :param overwrite_file_properties: if True, file properties are
+          recomputed before starting the experiment. Useful for temporary
+          and/or random datasets. Note that overwrite control for the
+          experiment results themselves is controlled in the call to get_df
+        :param reconstructed_dir_path: if not None, a directory where
+          reconstructed images are to be stored.
+        :param compressed_copy_dir_path: if not None, it gives the directory
+          where a copy of the compressed images. is to be stored. If may not be
+          generated for images for which all columns are known
+        :param task_families: if not None, it must be a list of TaskFamily
+          instances. It is used to set the "family_label" column for each row.
+          If the codec is not found within the families, a default label is set
+          indicating so.
         """
+        # pylint: disable=too-many-arguments
         table_class = type(dataset_info_table) if dataset_info_table is not None \
             else self.default_file_properties_table_class
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
@@ -845,11 +876,13 @@ class CompressionExperiment(experiment.Experiment):
                                                                    enb.icompression.AbstractCodec)]
         if non_subclass_codecs:
             enb.logger.warn(
-                f"Compression experiment {self.__class__.__name__} received parameter codecs "
+                f"Compression experiment {self.__class__.__name__} "
+                f"received parameter codecs "
                 f"with {len(non_subclass_codecs)} objects not inheriting from "
                 f"enb.icompression.AbstractCodec: "
                 f"{', '.join(repr(c) for c in non_subclass_codecs)}.\n"
-                f"You can remove this warning by explicitly inheriting from that class for "
+                f"You can remove this warning by explicitly inheriting "
+                f"from that class for "
                 f"the aforementioned instances.")
 
         super().__init__(tasks=codecs,
@@ -861,8 +894,9 @@ class CompressionExperiment(experiment.Experiment):
                          task_families=task_families)
         self.reconstructed_dir_path = reconstructed_dir_path
         self.compressed_copy_dir_path = compressed_copy_dir_path
-        # This attribute is automatically set before running the defined column-setting functions,
-        # then set back to None after that. It enables lazy and at-most-once compression/decompression.
+        # This attribute is automatically set before running the defined
+        # column-setting functions, then set back to None after that. It
+        # enables lazy and at-most-once compression/decompression.
         self.codec_results = None
 
     @property
@@ -884,16 +918,18 @@ class CompressionExperiment(experiment.Experiment):
 
     def compute_one_row(self, filtered_df, index, loc, column_fun_tuples,
                         overwrite):
-
-        # Prepare a new column with a self.CodecRowWrapper instance that allows
-        # automatic, lazy computation of compression and decompression results.
+        # pylint: disable=too-many-arguments
+        # Prepare a new column with a self.CodecRowWrapper instance that
+        # allows automatic, lazy computation of compression and decompression
+        # results.
         file_path, codec_name = index
         codec = self.codecs_by_name[codec_name]
         image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
 
-        # A temporary attribute is created with a self.CompressionDecompressionWrapper instance,
-        # which allows lazy, at-most-one execution of the compression/decompression process.
+        # A temporary attribute is created with a
+        # self.CompressionDecompressionWrapper instance, which allows lazy,
+        # at-most-one execution of the compression/decompression process.
         # Column-setting methods can access the wrapper with self.
         try:
             assert self.codec_results is None
@@ -926,39 +962,41 @@ class CompressionExperiment(experiment.Experiment):
 
         return processed_row
 
-    @atable.column_function("compressed_size_bytes",
+    @enb.atable.column_function("compressed_size_bytes",
                             label="Compressed data size (Bytes)", plot_min=0)
     def set_compressed_data_size(self, index, row):
         row[_column_name] = os.path.getsize(
             self.codec_results.compression_results.compressed_path)
 
-    @atable.column_function([
-        atable.ColumnProperties(name="compression_ratio",
+    @enb.atable.column_function([
+        enb.atable.ColumnProperties(name="compression_ratio",
                                 label="Compression ratio", plot_min=0),
-        atable.ColumnProperties(name="lossless_reconstruction",
+        enb.atable.ColumnProperties(name="lossless_reconstruction",
                                 label="Lossless?"),
-        atable.ColumnProperties(name="compression_time_seconds",
+        enb.atable.ColumnProperties(name="compression_time_seconds",
                                 label="Compression time (s)", plot_min=0),
-        atable.ColumnProperties(name="decompression_time_seconds",
+        enb.atable.ColumnProperties(name="decompression_time_seconds",
                                 label="Decompression time (s)", plot_min=0),
-        atable.ColumnProperties(name="repetitions",
-                                label="Number of compression/decompression repetitions",
+        enb.atable.ColumnProperties(name="repetitions",
+                                label="Number of compression/decompression "
+                                      "repetitions",
                                 plot_min=0),
-        atable.ColumnProperties(name="compressed_file_sha256",
+        enb.atable.ColumnProperties(name="compressed_file_sha256",
                                 label="Compressed file's SHA256"),
-        atable.ColumnProperties(name="compression_memory_kb",
+        enb.atable.ColumnProperties(name="compression_memory_kb",
                                 label="Compression memory usage (KB)",
                                 plot_min=0),
-        atable.ColumnProperties(name="decompression_memory_kb",
+        enb.atable.ColumnProperties(name="decompression_memory_kb",
                                 label="Decompression memory usage (KB)",
                                 plot_min=0),
     ])
     def set_comparison_results(self, index, row):
-        """Perform a compression-decompression cycle and store the comparison results
+        """Perform a compression-decompression cycle and store the comparison
+        results
         """
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         assert self.codec_results.compression_results.compressed_path \
                == self.codec_results.decompression_results.compressed_path
         try:
@@ -977,28 +1015,30 @@ class CompressionExperiment(experiment.Experiment):
         row["lossless_reconstruction"] = filecmp.cmp(
             self.codec_results.compression_results.original_path,
             self.codec_results.decompression_results.reconstructed_path)
-        assert self.codec_results.compression_results.compression_time_seconds is not None
-        row[
-            "compression_time_seconds"] = self.codec_results.compression_results.compression_time_seconds
-        assert self.codec_results.decompression_results.decompression_time_seconds is not None
-        row[
-            "decompression_time_seconds"] = self.codec_results.decompression_results.decompression_time_seconds
+        assert self.codec_results.compression_results.compression_time_seconds \
+               is not None
+        row["compression_time_seconds"] = \
+            self.codec_results.compression_results.compression_time_seconds
+        assert self.codec_results.decompression_results.decompression_time_seconds \
+               is not None
+        row["decompression_time_seconds"] = \
+            self.codec_results.decompression_results.decompression_time_seconds
         row["repetitions"] = options.repetitions
         row["compression_ratio"] = os.path.getsize(
-            self.codec_results.compression_results.original_path) / row[
-                                       "compressed_size_bytes"]
+            self.codec_results.compression_results.original_path) \
+                                   / row["compressed_size_bytes"]
         row["compressed_file_sha256"] = compressed_file_sha256
-        row[
-            "compression_memory_kb"] = self.codec_results.compression_results.maximum_memory_kb
-        row[
-            "decompression_memory_kb"] = self.codec_results.decompression_results.maximum_memory_kb
+        row["compression_memory_kb"] = \
+            self.codec_results.compression_results.maximum_memory_kb
+        row["decompression_memory_kb"] = \
+            self.codec_results.decompression_results.maximum_memory_kb
 
-    @atable.column_function("bpppc", label="Compressed data rate (bpppc)",
+    @enb.atable.column_function("bpppc", label="Compressed data rate (bpppc)",
                             plot_min=0)
     def set_bpppc(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         try:
             row[_column_name] = 8 * row["compressed_size_bytes"] / \
                                 row.image_info_row["samples"]
@@ -1006,34 +1046,34 @@ class CompressionExperiment(experiment.Experiment):
             enb.logger.debug(f"Cannot determine bpppc: {repr(ex)}")
             assert "compressed_size_bytes" in row
 
-    @atable.column_function("compression_ratio_dr", label="Compression ratio",
+    @enb.atable.column_function("compression_ratio_dr", label="Compression ratio",
                             plot_min=0)
     def set_compression_ratio_dr(self, index, row):
-        """Set the compression ratio calculated based on the dynamic range of the
-        input samples, as opposed to 8*bytes_per_sample.
+        """Set the compression ratio calculated based on the dynamic range of
+        the input samples, as opposed to 8*bytes_per_sample.
         """
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         row[_column_name] = (row.image_info_row["dynamic_range_bits"] *
                              row.image_info_row["samples"]) \
                             / (8 * row["compressed_size_bytes"])
 
-    @atable.column_function(
-        [atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
+    @enb.atable.column_function(
+        [enb.atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
                                  label="Compression efficiency (1B entropy)",
                                  plot_min=0),
-         atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
+         enb.atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
                                  label="Compression efficiency (2B entropy)",
                                  plot_min=0),
-         atable.ColumnProperties(name="compression_efficiency_4byte_entropy",
+         enb.atable.ColumnProperties(name="compression_efficiency_4byte_entropy",
                                  label="Compression efficiency (4B entropy)",
                                  plot_min=0),
          ])
     def set_efficiency(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         for bytes in (1, 2, 4):
             column_name = f"compression_efficiency_{bytes}byte_entropy"
             try:
@@ -1043,18 +1083,22 @@ class CompressionExperiment(experiment.Experiment):
                     / (row["compressed_size_bytes"] * 8)
             except KeyError as ex:
                 enb.logger.warn(
-                    f"Could not find a column required to compute {column_name}: {repr(ex)}. "
-                    f"Setting to -1. This is likely due to persistence data produced with "
-                    f"version v0.4.2 or older of enb. It is recommended to delete persistence "
+                    f"Could not find a column required to compute "
+                    f"{column_name}: {repr(ex)}. "
+                    f"Setting to -1. This is likely due to persistence "
+                    f"data produced with "
+                    f"version v0.4.2 or older of enb. It is recommended "
+                    f"to delete persistence "
                     f"data files and re-run the experiment.")
                 row[column_name] = -1
 
 
 class LosslessCompressionExperiment(CompressionExperiment):
-    """Lossless compression of raw image files. The experiment fails if lossless compression is not attained.
+    """Lossless compression of raw image files. The experiment fails if
+    lossless compression is not attained.
     """
 
-    @atable.redefines_column
+    @enb.atable.redefines_column
     def set_comparison_results(self, index, row):
         path, task = self.index_to_path_task(index)
         super().set_comparison_results(index=index, row=row)
@@ -1069,7 +1113,7 @@ class LossyCompressionExperiment(CompressionExperiment):
     """Lossy compression of raw image files.
     """
 
-    @atable.column_function("mse", label="MSE", plot_min=0)
+    @enb.atable.column_function("mse", label="MSE", plot_min=0)
     def set_MSE(self, index, row):
         """Set the mean squared error of the reconstructed image.
         """
@@ -1083,10 +1127,10 @@ class LossyCompressionExperiment(CompressionExperiment):
         row[_column_name] = np.average(
             ((original_array - reconstructed_array) ** 2))
 
-    @atable.column_function("pae", label="PAE", plot_min=0)
+    @enb.atable.column_function("pae", label="PAE", plot_min=0)
     def set_PAE(self, index, row):
-        """Set the peak absolute error (maximum absolute pixelwise difference)
-        of the reconstructed image.
+        """Set the peak absolute error (maximum absolute pixelwise
+        difference) of the reconstructed image.
         """
         original_array = np.fromfile(
             self.codec_results.compression_results.original_path,
@@ -1097,15 +1141,15 @@ class LossyCompressionExperiment(CompressionExperiment):
             dtype=self.codec_results.numpy_dtype).astype(np.int64)
         row[_column_name] = np.max(np.abs(original_array - reconstructed_array))
 
-    @atable.column_function("psnr_bps", label="PSNR (dB)", plot_min=0)
+    @enb.atable.column_function("psnr_bps", label="PSNR (dB)", plot_min=0)
     def set_PSNR_nominal(self, index, row):
-        """Set the PSNR assuming nominal dynamic range given by bytes_per_sample.
+        """Set the PSNR assuming nominal dynamic range given by
+        bytes_per_sample.
         """
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         if row.image_info_row["float"]:
-            # TODO: use the float type dynamic range?
             row[_column_name] = float("inf")
         else:
             max_error = (2 ** (8 * row.image_info_row["bytes_per_sample"])) - 1
@@ -1113,13 +1157,13 @@ class LossyCompressionExperiment(CompressionExperiment):
                     20 * math.log10((max_error) / math.sqrt(row["mse"]))) \
                 if row["mse"] > 0 else float("inf")
 
-    @atable.column_function("psnr_dr", label="PSNR (dB)", plot_min=0)
+    @enb.atable.column_function("psnr_dr", label="PSNR (dB)", plot_min=0)
     def set_PSNR_dynamic_range(self, index, row):
         """Set the PSNR assuming dynamic range given by dynamic_range_bits.
         """
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         max_error = (2 ** row.image_info_row["dynamic_range_bits"]) - 1
         row[_column_name] = 20 * math.log10(max_error / math.sqrt(row["mse"])) \
             if row["mse"] > 0 else float("inf")
@@ -1130,14 +1174,15 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
     """
 
     class GenericFilePropertiesTable(enb.isets.ImagePropertiesTable):
-        """File properties table that considers the input path as a 1D, u8be array.
+        """File properties table that considers the input path as a 1D,
+        u8be array.
         """
         verify_file_size = False
 
-        @atable.column_function([
-            atable.ColumnProperties(name="sample_min",
+        @enb.atable.column_function([
+            enb.atable.ColumnProperties(name="sample_min",
                                     label="Min sample value (byte samples)"),
-            atable.ColumnProperties(name="sample_max",
+            enb.atable.ColumnProperties(name="sample_max",
                                     label="Max sample value (byte samples)")])
         def set_sample_extrema(self, file_path, row):
             """Set the minimum and maximum byte value extrema.
@@ -1147,22 +1192,22 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
                 row["sample_min"] = min(contents)
                 row["sample_max"] = max(contents)
 
-        @atable.column_function("bytes_per_sample", label="Bytes per sample",
+        @enb.atable.column_function("bytes_per_sample", label="Bytes per sample",
                                 plot_min=0)
         def set_bytes_per_sample(self, file_path, row):
             row[_column_name] = 1
 
-        @atable.column_function([
-            atable.ColumnProperties(name="width", label="Width", plot_min=1),
-            atable.ColumnProperties(name="height", label="Height", plot_min=1),
-            atable.ColumnProperties(name="component_count", label="Components",
+        @enb.atable.column_function([
+            enb.atable.ColumnProperties(name="width", label="Width", plot_min=1),
+            enb.atable.ColumnProperties(name="height", label="Height", plot_min=1),
+            enb.atable.ColumnProperties(name="component_count", label="Components",
                                     plot_min=1),
-            atable.ColumnProperties(name="big_endian"),
-            atable.ColumnProperties(name="float"),
+            enb.atable.ColumnProperties(name="big_endian"),
+            enb.atable.ColumnProperties(name="float"),
         ])
         def set_image_geometry(self, file_path, row):
-            """Obtain the image's geometry (width, height and number of components)
-            based on the filename tags (and possibly its size)
+            """Obtain the image's geometry (width, height and number of
+            components) based on the filename tags (and possibly its size)
             """
             row["height"] = 1
             row["width"] = os.path.getsize(file_path)
@@ -1175,21 +1220,21 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
 
 
 class StructuralSimilarity(CompressionExperiment):
-    """Set the Structural Similarity (SSIM) and Multi-Scale Structural Similarity metrics (MS-SSIM)
-    to measure the similarity between two images.
+    """Set the Structural Similarity (SSIM) and Multi-Scale Structural
+    Similarity metrics (MS-SSIM) to measure the similarity between two images.
 
     Authors:
         - http://www.cns.nyu.edu/~lcv/ssim/msssim.zip
         - https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
     """
 
-    @atable.column_function([
-        atable.ColumnProperties(name="ssim", label="SSIM", plot_max=1),
-        atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_max=1)])
+    @enb.atable.column_function([
+        enb.atable.ColumnProperties(name="ssim", label="SSIM", plot_max=1),
+        enb.atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_max=1)])
     def set_StructuralSimilarity(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
-            indices_to_internal_loc(file_path)]
+            enb.atable.indices_to_internal_loc(file_path)]
         original_array = np.fromfile(
             self.codec_results.compression_results.original_path,
             dtype=self.codec_results.numpy_dtype)
@@ -1229,24 +1274,25 @@ class StructuralSimilarity(CompressionExperiment):
 
         :param img1: Numpy array holding the first RGB image batch.
         :param img2: Numpy array holding the second RGB image batch.
-        :param max_val: the dynamic range of the images (i.e., the difference between the
-                maximum the and minimum allowed values).
-        :param filter_size: Size of blur kernel to use (will be reduced for small
-              images).
-        :param filter_sigma: Standard deviation for Gaussian blur kernel (will be reduced
-                for small images).
-        :param k1: Constant used to maintain stability in the SSIM calculation (0.01 in
-                the original paper).
-        :param k2: Constant used to maintain stability in the SSIM calculation (0.03 in
-                the original paper).
+        :param max_val: the dynamic range of the images (i.e., the difference
+          between the maximum the and minimum allowed values).
+        :param filter_size: Size of blur kernel to use (will be reduced for
+          small images).
+        :param filter_sigma: Standard deviation for Gaussian blur kernel (
+          will be reduced for small images).
+        :param k1: Constant used to maintain stability in the SSIM
+          calculation (0.01 in the original paper).
+        :param k2: Constant used to maintain stability in the SSIM
+          calculation (0.03 in the original paper).
         """
+        # pylint: disable=too-many-arguments
         if img1.shape != img2.shape:
             raise RuntimeError(
                 'Input images must have the same shape (%s vs. %s).',
                 img1.shape, img2.shape)
         if img1.ndim != 3:
-            raise RuntimeError('Input images must have four dimensions, not %d',
-                               img1.ndim)
+            raise RuntimeError("Input images must have four dimensions, "
+                               f"not {img1.ndim}")
 
         weights = np.array(weights if weights else
                            [0.0448, 0.2856, 0.3001, 0.2363, 0.1333])
@@ -1272,32 +1318,33 @@ class StructuralSimilarity(CompressionExperiment):
                      filter_sigma=1.5, k1=0.01, k2=0.03, full=False):
         """Return the Structural Similarity Map between `img1` and `img2`.
 
-        This function attempts to match the functionality of ssim_index_new.m by
-        Zhou Wang: http://www.cns.nyu.edu/~lcv/ssim/msssim.zip
+        This function attempts to match the functionality of ssim_index_new.m
+        by Zhou Wang: http://www.cns.nyu.edu/~lcv/ssim/msssim.zip
 
         Author's Python implementation:
         https://github.com/dashayushman/TAC-GAN/blob/master/msssim.py
 
         :param img1: Numpy array holding the first RGB image batch.
         :param img2: Numpy array holding the second RGB image batch.
-        :param max_val: the dynamic range of the images (i.e., the difference between the
-                maximum the and minimum allowed values).
-        :param filter_size: Size of blur kernel to use (will be reduced for small
-              images).
-        :param filter_sigma: Standard deviation for Gaussian blur kernel (will be reduced
-                for small images).
-        :param k1: Constant used to maintain stability in the SSIM calculation (0.01 in
-                the original paper).
-        :param k2: Constant used to maintain stability in the SSIM calculation (0.03 in
-                the original paper).
+
+        :param max_val: the dynamic range of the images (i.e., the difference
+          between the maximum the and minimum allowed values).
+
+        :param filter_size: Size of blur kernel to use (will be reduced for
+          small images). :param filter_sigma: Standard deviation for Gaussian
+          blur kernel (will be reduced for small images). :param k1: Constant
+          used to maintain stability in the SSIM calculation (0.01 in the
+          original paper). :param k2: Constant used to maintain stability in
+          the SSIM calculation (0.03 in the original paper).
         """
+        # pylint: disable=too-many-arguments
         if img1.shape != img2.shape:
             raise RuntimeError(
                 'Input images must have the same shape (%s vs. %s).',
                 img1.shape, img2.shape)
         if img1.ndim != 3:
-            raise RuntimeError('Input images must have four dimensions, not %d',
-                               img1.ndim)
+            raise RuntimeError(
+                f"Input images must have four dimensions, not {img1.ndim}")
         img1 = img1.astype(np.float64)
         img2 = img2.astype(np.float64)
         height, width, bytes = img1.shape
@@ -1371,14 +1418,15 @@ class SpectralAngleTable(LossyCompressionExperiment):
         original_file_path, task_name = index
         image_properties_row = self.get_dataset_info_row(original_file_path)
         decompression_results = self.codec_results.decompression_results
-        original_array = isets.load_array_bsq(
+        original_array = enb.isets.load_array_bsq(
             file_or_path=original_file_path,
             image_properties_row=image_properties_row)
-        reconstructed_array = isets.load_array_bsq(
+        reconstructed_array = enb.isets.load_array_bsq(
             file_or_path=decompression_results.reconstructed_path,
             image_properties_row=image_properties_row)
 
-        # Reshape flattening the x,y axes, and maintaining the z axis for each (x,y) position
+        # Reshape flattening the x,y axes, and maintaining the z axis for
+        # each (x,y) position
         original_array = np.reshape(
             original_array.swapaxes(0, 1),
             (image_properties_row["width"] * image_properties_row["height"],
@@ -1407,11 +1455,11 @@ class SpectralAngleTable(LossyCompressionExperiment):
 
         return angles.tolist()
 
-    @atable.column_function([
-        enb.atable.ColumnProperties("mean_spectral_angle_deg",
+    @enb.atable.column_function([
+        enb.enb.atable.ColumnProperties("mean_spectral_angle_deg",
                                     label="Mean spectral angle (deg)",
                                     plot_min=0, plot_max=None),
-        enb.atable.ColumnProperties("max_spectral_angle_deg",
+        enb.enb.atable.ColumnProperties("max_spectral_angle_deg",
                                     label="Max spectral angle (deg)",
                                     plot_min=0, plot_max=None)])
     def set_spectral_distances(self, index, row):
@@ -1424,4 +1472,3 @@ class SpectralAngleTable(LossyCompressionExperiment):
         row["mean_spectral_angle_deg"] = sum(spectral_angles) / len(
             spectral_angles)
         row["max_spectral_angle_deg"] = max(spectral_angles)
-
