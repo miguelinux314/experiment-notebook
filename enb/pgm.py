@@ -22,17 +22,19 @@ class PGMWrapperCodec(enb.icompression.WrapperCodec):
     and PNG is decoded to raw after decompression.
     """
 
+    # pylint: disable=abstract-method
+
     def compress(self, original_path: str, compressed_path: str,
                  original_file_info=None):
-        assert original_file_info[
-                   "component_count"] == 1, "PGM only supported for 1-component images"
+        assert original_file_info["component_count"] == 1, \
+            "PGM only supported for 1-component images"
         assert original_file_info["bytes_per_sample"] in [1, 2], \
             "PGM only supported for 8 or 16 bit images"
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
 
         with tempfile.NamedTemporaryFile(suffix=".pgm", mode="wb") as tmp_file:
-            numpngw.imwrite(tmp_file.name, img)
+            numpngw.imwrite(tmp_file.name, img) # pylint: disable=no-member
             with open(tmp_file, "rb") as raw_file:
                 contents = raw_file.read()
             os.remove(tmp_file)
@@ -44,15 +46,16 @@ class PGMWrapperCodec(enb.icompression.WrapperCodec):
                     f"{255 if original_file_info['bytes_per_sample'] == 1 else 65535}\n"))
                 pgm_file.write(contents)
 
-            compression_results = super().compress(original_path=tmp_file.name,
-                                                   compressed_path=compressed_path,
-                                                   original_file_info=original_file_info)
-            cr = self.compression_results_from_paths(
+            compression_results = super().compress(
+                original_path=tmp_file.name,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info)
+            crs = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(
+            crs.compression_time_seconds = max(
                 0, compression_results.compression_time_seconds)
-            cr.maximum_memory_kb = compression_results.maximum_memory_kb
-            return cr
+            crs.maximum_memory_kb = compression_results.maximum_memory_kb
+            return crs
 
     def decompress(self, compressed_path, reconstructed_path,
                    original_file_info=None):
@@ -67,10 +70,11 @@ class PGMWrapperCodec(enb.icompression.WrapperCodec):
                 img = np.expand_dims(img, axis=2)
             enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path)
 
-            dr = self.decompression_results_from_paths(
+            drs = self.decompression_results_from_paths(
                 compressed_path=compressed_path,
                 reconstructed_path=reconstructed_path)
-            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
+            drs.decompression_time_seconds = \
+                decompression_results.decompression_time_seconds
 
 
 def read_pgm(input_path, byteorder='>'):
@@ -102,7 +106,8 @@ def read_ppm(input_path, byteorder='>'):
     """Return image data from a raw PGM file as numpy array.
     Format specification: http://netpbm.sourceforge.net/doc/pgm.html
 
-    (From answer: https://stackoverflow.com/questions/7368739/numpy-and-16-bit-pgm)
+    (From answer:
+    https://stackoverflow.com/questions/7368739/numpy-and-16-bit-pgm)
     """
     with open(input_path, 'rb') as input_file:
         buffer = input_file.read()
@@ -150,8 +155,8 @@ def write_ppm(array, bytes_per_sample, output_path):
     """
     assert bytes_per_sample in [
         1], f"bytes_per_sample={bytes_per_sample} not supported"
-    assert len(
-        array.shape) == 3, f"Only 3D arrays can be output as PPM ({array.shape=})"
+    assert len(array.shape) == 3, \
+        f"Only 3D arrays can be output as PPM ({array.shape=})"
     assert (array.astype(int) - array < 2 * sys.float_info.epsilon).all(), \
         "Only integer values can be stored in PPM"
     assert array.min() >= 0, "Only positive values can be stored in PPM"
