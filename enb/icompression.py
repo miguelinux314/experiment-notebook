@@ -699,8 +699,8 @@ class CompressionExperiment(enb.experiment.Experiment):
                         measured_times)
                     # The maximum resident memory in kb is kept
                     self._compression_results.maximum_memory_kb \
-                        = max(
-                        kb if kb is not None else -1 for kb in measured_memory)
+                        = max(kb if kb is not None else -1
+                              for kb in measured_memory)
                 except Exception as ex:
                     if os.path.exists(tmp_compressed_path):
                         os.remove(tmp_compressed_path)
@@ -790,8 +790,8 @@ class CompressionExperiment(enb.experiment.Experiment):
                     self._decompression_results.decompression_time_seconds = \
                         min(measured_times)
                     self._decompression_results.maximum_memory_kb \
-                        = max(
-                        kb if kb is not None else -1 for kb in measured_memory)
+                        = max(kb if kb is not None else -1
+                              for kb in measured_memory)
                 except Exception as ex:
                     os.remove(tmp_reconstructed_path)
                     raise ex

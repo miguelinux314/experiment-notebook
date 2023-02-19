@@ -13,18 +13,15 @@ import matplotlib
 import matplotlib.patheffects
 import matplotlib.patches
 import matplotlib.ticker
+from matplotlib import pyplot as plt
 import numpy as np
 from scipy.stats import norm
 import natsort
-
 import enb
-# import enb.atable
 from enb.config import options
 from enb.misc import CircularList
 
 matplotlib.use("Agg")
-from matplotlib import pyplot as plt
-
 
 marker_cycle = CircularList(
     ["o", "X", "s", "*", "p", "P", "d", "H", "d", "<", ">", "+"])
@@ -33,6 +30,12 @@ pattern_cycle = CircularList(["//", "\\\\", "OO", "**"])
 
 
 class PlottableData:
+    """Base class for plottable data elements. Subclasses are instantiated
+    by the analyzers to define sequences of plotting actions (with pyplot)
+    that result in the desired figure.
+    """
+    # pylint: disable=too-many-instance-attributes
+
     alpha = 0.75
     legend_column_count = 1
     color = None
@@ -46,6 +49,7 @@ class PlottableData:
                  legend_position=None,
                  marker=None, color=None,
                  marker_size=None):
+        # pylint: disable=too-many-arguments
         self.data = data
         self.axis_labels = axis_labels
         self.label = label
@@ -76,6 +80,10 @@ class PlottableData:
         raise NotImplementedError()
 
     def render_legend(self, axes=None):
+        """Tell numpy to render the legend based on self.legend_position.
+        In addition to numpy's legend positions, 'title' is available for
+        top center outside the grid.
+        """
         axes = plt if axes is None else axes
         if self.legend_position == "title":
             legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
@@ -97,8 +105,10 @@ class PlottableData:
 
 
 class PlottableData2D(PlottableData):
-    """Plot 2D data using plt.plot()
+    """Base class for 2D plottable data.
     """
+
+    # pylint: disable=abstract-method
 
     def __init__(self, x_values, y_values,
                  x_label=None, y_label=None,
@@ -114,11 +124,12 @@ class PlottableData2D(PlottableData):
         :param label: line legend label
         :param extra_kwargs: extra arguments to be passed to plt.plot
         """
+        # pylint: disable=too-many-arguments
         assert len(x_values) == len(y_values)
         if remove_duplicates:
             found_pairs = collections.OrderedDict()
-            for x, y in zip(x_values, y_values):
-                found_pairs[(x, y)] = (x, y)
+            for x_val, y_val in zip(x_values, y_values):
+                found_pairs[(x_val, y_val)] = (x_val, y_val)
             if found_pairs:
                 x_values, y_values = zip(*found_pairs.values())
             else:
@@ -150,20 +161,28 @@ class PlottableData2D(PlottableData):
             axes.set_ylabel(self.y_label)
 
     def diff(self, other, ylabel_suffix="_difference"):
+        """Calculate the difference with another PlattableData2D instance.
+        The x values are maintained and other's y values are subtracted
+        from self's.
+        """
         assert len(self.x_values) == len(other.x_values)
         assert len(self.y_values) == len(other.y_values)
         assert all(s == o for s, o in zip(self.x_values, other.x_values))
-        return PlottableData2D(x_values=self.x_values,
-                               y_values=[s - o for s, o in
-                                         zip(self.y_values, other.y_values)],
-                               x_label=self.x_label,
-                               y_label=f"{self.y_label}{ylabel_suffix}",
-                               legend_column_count=self.legend_column_count)
-
-    def shift_y(self, constant):
-        self.y_values = [y + constant for y in self.y_values]
+        return PlottableData2D(
+            x_values=self.x_values,
+            y_values=[s - o for s, o in zip(self.y_values, other.y_values)],
+            x_label=self.x_label,
+            y_label=f"{self.y_label}{ylabel_suffix}",
+            legend_column_count=self.legend_column_count)
 
     def shift_x(self, constant):
+        """Add a constant to all x values.
+        """
+        self.y_values = [y + constant for y in self.y_values]
+
+    def shift_y(self, constant):
+        """Add a constant to all y values.
+        """
         self.y_values = [y + constant for y in self.y_values]
 
 
