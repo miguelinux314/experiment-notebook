@@ -110,13 +110,13 @@ from . import fits
 from . import png
 
 # For backwards compatibility
-isets.FitsVersionTable = fits.FitsVersionTable
+isets.FITSVersionTable = fits.FITSVersionTable
 isets.PNGCurationTable = png.PNGCurationTable
 isets.raw_path_to_png = png.raw_path_to_png
 isets.render_array_png = png.render_array_png
 
 # Kept for backwards compatibility
-icompression.FitsVersionTable = fits.FitsVersionTable
+icompression.FITSVersionTable = fits.FITSVersionTable
 icompression.FitsWrapperCodec = fits.FITSWrapperCodec
 icompression.PNGWrapperCodec = png.PNGWrapperCodec
 icompression.PGMWrapperCodec = pgm.PGMWrapperCodec

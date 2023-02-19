@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Utils to plot data (thinking about pyplot)
+"""Utils to plot data (thinking about pyplot).
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/10"
@@ -8,26 +8,26 @@ import os
 import math
 import itertools
 import glob
+import collections
 import matplotlib
 import matplotlib.patheffects
 import matplotlib.patches
-import natsort
-
-import enb.atable
-
-matplotlib.use("Agg")
-
 import matplotlib.ticker
 import numpy as np
-import collections
 from scipy.stats import norm
-from matplotlib import pyplot as plt
+import natsort
 
 import enb
+# import enb.atable
 from enb.config import options
 from enb.misc import CircularList
 
-marker_cycle = CircularList(["o", "X", "s", "*", "p", "P", "d", "H", "d", "<", ">", "+"])
+matplotlib.use("Agg")
+from matplotlib import pyplot as plt
+
+
+marker_cycle = CircularList(
+    ["o", "X", "s", "*", "p", "P", "d", "H", "d", "<", ">", "+"])
 color_cycle = CircularList([f"C{i}" for i in [0, 1, 2, 3, 6, 7, 9, 8, 5, 10]])
 pattern_cycle = CircularList(["//", "\\\\", "OO", "**"])
 
@@ -51,8 +51,10 @@ class PlottableData:
         self.label = label
         self.extra_kwargs = extra_kwargs if extra_kwargs is not None else {}
         self.alpha = alpha if alpha is not None else self.alpha
-        self.legend_column_count = legend_column_count if legend_column_count is not None else self.legend_column_count
-        self.legend_position = legend_position if legend_position is not None else self.legend_position
+        self.legend_column_count = legend_column_count \
+            if legend_column_count is not None else self.legend_column_count
+        self.legend_position = legend_position \
+            if legend_position is not None else self.legend_position
         self.marker = marker
         self.marker_size = marker_size
         self.color = color if color is not None else self.color
@@ -60,14 +62,16 @@ class PlottableData:
     def render(self, axes=None):
         """Render data in current figure.
 
-        :param axes: if not None, those axes are used for plotting instead of plt
+        :param axes: if not None, those axes are used for plotting instead of
+          plt
         """
         raise NotImplementedError()
 
     def render_axis_labels(self, axes=None):
         """Add axis labels in current figure - don't show or write the result
 
-        :param axes: if not None, those axes are used for plotting instead of plt
+        :param axes: if not None, those axes are used for plotting instead of
+          plt
         """
         raise NotImplementedError()
 
@@ -75,11 +79,14 @@ class PlottableData:
         axes = plt if axes is None else axes
         if self.legend_position == "title":
             legend = axes.legend(loc="lower center", bbox_to_anchor=(0.5, 1),
-                                 ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+                                 ncol=self.legend_column_count,
+                                 edgecolor=(0, 0, 0, 0.2))
             facecolor = (1, 1, 1, 0)
         else:
-            legend = axes.legend(loc=self.legend_position if self.legend_position is not None else "best",
-                                 ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
+            legend = axes.legend(
+                loc=self.legend_position
+                if self.legend_position is not None else "best",
+                ncol=self.legend_column_count, edgecolor=(0, 0, 0, 0.2))
             facecolor = (1, 1, 1, 1)
 
         legend.get_frame().set_alpha(None)
@@ -101,7 +108,8 @@ class PlottableData2D(PlottableData):
                  marker=None,
                  marker_size=None):
         """
-        :param x_values, y_values: values to be plotted (only a reference is kept)
+        :param x_values, y_values: values to be plotted (only a reference is
+          kept)
         :param x_label, y_label: axis labels
         :param label: line legend label
         :param extra_kwargs: extra arguments to be passed to plt.plot
@@ -117,9 +125,11 @@ class PlottableData2D(PlottableData):
                 x_values = []
                 y_values = []
 
-        super().__init__(data=(x_values, y_values), axis_labels=(x_label, y_label),
+        super().__init__(data=(x_values, y_values),
+                         axis_labels=(x_label, y_label),
                          label=label, extra_kwargs=extra_kwargs, alpha=alpha,
-                         legend_column_count=legend_column_count, marker_size=marker_size,
+                         legend_column_count=legend_column_count,
+                         marker_size=marker_size,
                          marker=marker)
         self.x_values = x_values
         self.y_values = y_values
@@ -127,10 +137,11 @@ class PlottableData2D(PlottableData):
         self.y_label = y_label
 
     def render_axis_labels(self, axes=None):
-        """Show the labels in label list (if not None) or in self.axis_label_list
-        (if label_list None) in the current figure.
+        """Show the labels in label list (if not None) or in
+        self.axis_label_list (if label_list None) in the current figure.
 
-        :param axes: if not None, those axes are used for plotting instead of plt
+        :param axes: if not None, those axes are used for plotting instead of
+          plt
         """
         axes = plt if axes is None else axes
         if self.x_label is not None:
@@ -143,7 +154,8 @@ class PlottableData2D(PlottableData):
         assert len(self.y_values) == len(other.y_values)
         assert all(s == o for s, o in zip(self.x_values, other.x_values))
         return PlottableData2D(x_values=self.x_values,
-                               y_values=[s - o for s, o in zip(self.y_values, other.y_values)],
+                               y_values=[s - o for s, o in
+                                         zip(self.y_values, other.y_values)],
                                x_label=self.x_label,
                                y_label=f"{self.y_label}{ylabel_suffix}",
                                legend_column_count=self.legend_column_count)
@@ -161,10 +173,6 @@ class LineData(PlottableData2D):
         self.line_width = line_width
 
     def render(self, axes=None):
-        """Plot 2D data using plt.plot()
-
-        :param axes: if not None, those axes are used for plotting instead of plt
-        """
         try:
             original_kwargs = self.extra_kwargs
             extra_kwargs = dict(self.extra_kwargs)
@@ -175,7 +183,8 @@ class LineData(PlottableData2D):
             except KeyError:
                 ms = self.marker_size
 
-            axes.plot(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
+            axes.plot(self.x_values, self.y_values, label=self.label,
+                      alpha=self.alpha,
                       marker=self.marker, ms=ms, linewidth=self.line_width,
                       **extra_kwargs)
             axes = plt if axes is None else axes
@@ -188,13 +197,15 @@ class LineData(PlottableData2D):
 
 class ScatterData(PlottableData2D):
     def __init__(self, marker="o", alpha=0.5, marker_size=3, **kwargs):
-        super().__init__(marker=marker, alpha=alpha, marker_size=marker_size, **kwargs)
+        super().__init__(marker=marker, alpha=alpha, marker_size=marker_size,
+                         **kwargs)
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
         self.extra_kwargs["s"] = self.marker_size
 
-        axes.scatter(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
+        axes.scatter(self.x_values, self.y_values, label=self.label,
+                     alpha=self.alpha,
                      marker=self.marker,
                      **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
@@ -217,7 +228,8 @@ class BarData(PlottableData2D):
         plot_fun(self.x_values, self.y_values, label=self.label,
                  alpha=self.alpha if not self.pattern else self.alpha * 0.75,
                  hatch=self.pattern,
-                 edgecolor=matplotlib.colors.colorConverter.to_rgba(self.color, 0.9) if self.color else None,
+                 edgecolor=matplotlib.colors.colorConverter.to_rgba(self.color,
+                                                                    0.9) if self.color else None,
                  **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
@@ -238,7 +250,8 @@ class StepData(PlottableData2D):
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
-        axes.step(self.x_values, self.y_values, label=self.label, alpha=self.alpha,
+        axes.step(self.x_values, self.y_values, label=self.label,
+                  alpha=self.alpha,
                   where=self.where, **self.extra_kwargs)
         self.render_axis_labels(axes=axes)
         if self.label is not None and self.legend_column_count != 0:
@@ -246,10 +259,11 @@ class StepData(PlottableData2D):
 
 
 class ErrorLines(PlottableData2D):
-    """One or more error lines    
+    """One or more error lines
     """
 
-    def __init__(self, x_values, y_values, err_neg_values, err_pos_values, vertical=False,
+    def __init__(self, x_values, y_values, err_neg_values, err_pos_values,
+                 vertical=False,
                  alpha=0.5, color=None,
                  marker_size=1, cap_size=2,
                  line_width=1, **kwargs):
@@ -259,7 +273,8 @@ class ErrorLines(PlottableData2D):
         :param err_pos_values: list of lengths for the positive part of the error
         :param vertical: determines whether the error bars are vertical or horizontal
         """
-        super().__init__(x_values=x_values, y_values=y_values, remove_duplicates=False,
+        super().__init__(x_values=x_values, y_values=y_values,
+                         remove_duplicates=False,
                          alpha=alpha, marker_size=marker_size, **kwargs)
         self.err_neg = [v if not np.isnan(v) else 0 for v in err_neg_values]
         self.err_pos = [v if not np.isnan(v) else 0 for v in err_pos_values]
@@ -278,27 +293,32 @@ class ErrorLines(PlottableData2D):
             np.array(self.err_neg).reshape(1, len(self.err_neg)),
             np.array(self.err_pos).reshape(1, len(self.err_pos))),
             axis=0)
-        # When std is computed for constant data, nan is returned. Replace those with 0 to avoid warnings.
+        # When std is computed for constant data, nan is returned. Replace
+        # those with 0 to avoid warnings.
         err_argument = err_argument[:, :len(self.x_values)]
 
         try:
             if self.vertical:
                 axes.errorbar(self.x_values, self.y_values, yerr=err_argument,
-                              fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width,
+                              fmt="-o", capsize=self.cap_size, capthick=0.5,
+                              lw=0, elinewidth=self.line_width,
                               ms=self.marker_size,
                               alpha=self.alpha,
                               **self.extra_kwargs)
             else:
                 axes.errorbar(self.x_values, self.y_values, xerr=err_argument,
-                              fmt="-o", capsize=self.cap_size, capthick=0.5, lw=0, elinewidth=self.line_width,
+                              fmt="-o", capsize=self.cap_size, capthick=0.5,
+                              lw=0, elinewidth=self.line_width,
                               ms=self.marker_size,
                               alpha=self.alpha,
                               **self.extra_kwargs)
         except UserWarning as ex:
-            raise ValueError(f"Error rendering {self}. x_values={repr(self.x_values)}, "
-                             f"y_values={repr(self.y_values)}, self.extra_kwargs={self.extra_kwargs} "
-                             f"self.err_neg={self.err_neg}, "
-                             f"self.err_pos={self.err_pos},") from ex
+            raise ValueError(
+                f"Error rendering {self}. x_values={repr(self.x_values)}, "
+                f"y_values={repr(self.y_values)}, "
+                f"self.extra_kwargs={self.extra_kwargs} "
+                f"self.err_neg={self.err_neg}, "
+                f"self.err_pos={self.err_pos},") from ex
 
         assert len(self.x_values) == len(self.y_values)
 
@@ -308,11 +328,14 @@ class Rectangle(PlottableData2D):
     """
     alpha = 0.5
 
-    def __init__(self, x_values, y_values, width, height, angle_degrees=0, fill=False,
+    def __init__(self, x_values, y_values, width, height, angle_degrees=0,
+                 fill=False,
                  line_width=1, **kwargs):
         """
-        :param x_values: a list with a single element with the x position of the rectangle's center
-        :param y_values: a list with a single element with the y position of the rectangle's center
+        :param x_values: a list with a single element with the x position of
+          the rectangle's center
+        :param y_values: a list with a single element with the y position of
+          the rectangle's center
         :param width: width of the rectangle
         :param height: height of the rectangle
         """
@@ -344,10 +367,13 @@ class LineSegment(PlottableData2D):
     """
     alpha = 0.5
 
-    def __init__(self, x_values, y_values, length, vertical=True, line_width=1, **kwargs):
+    def __init__(self, x_values, y_values, length, vertical=True, line_width=1,
+                 **kwargs):
         """
-        :param x_values: a list with a single element with the x position of the rectangle's center
-        :param y_values: a list with a single element with the y position of the rectangle's center
+        :param x_values: a list with a single element with the x position of
+          the rectangle's center
+        :param y_values: a list with a single element with the y position of
+          the rectangle's center
         :param length: length of the line
         """
         super().__init__(x_values=x_values, y_values=y_values, **kwargs)
@@ -373,7 +399,8 @@ class LineSegment(PlottableData2D):
             x = [center[0] - self.length / 2, center[0] + self.length / 2]
             y = [center[1], center[1]]
 
-        axes.plot(x, y, color=self.color, alpha=self.alpha, linewidth=self.line_width)
+        axes.plot(x, y, color=self.color, alpha=self.alpha,
+                  linewidth=self.line_width)
 
 
 class HorizontalBand(PlottableData2D):
@@ -387,12 +414,15 @@ class HorizontalBand(PlottableData2D):
                  degradation_band_count=None,
                  std_band_add_xmargin=False,
                  **kwargs):
-        super().__init__(x_values=x_values, y_values=y_values, extra_kwargs=kwargs)
+        super().__init__(x_values=x_values, y_values=y_values,
+                         extra_kwargs=kwargs)
         self.extra_kwargs["lw"] = 0
         self.pos_height_values = np.array(pos_height_values)
         self.neg_height_values = np.array(neg_height_values)
-        self.show_bounding_lines = show_bounding_lines if show_bounding_lines is not None else self.show_bounding_lines
-        self.degradation_band_count = degradation_band_count if degradation_band_count is not None \
+        self.show_bounding_lines = show_bounding_lines \
+            if show_bounding_lines is not None else self.show_bounding_lines
+        self.degradation_band_count = degradation_band_count \
+            if degradation_band_count is not None \
             else self.degradation_band_count
         self.std_band_add_xmargin = std_band_add_xmargin
 
@@ -400,7 +430,8 @@ class HorizontalBand(PlottableData2D):
         for i in range(self.degradation_band_count):
             band_fraction = i / self.degradation_band_count
             next_band_fraction = (i + 1) / self.degradation_band_count
-            band_probability = 1 - (norm.cdf(band_fraction) - norm.cdf(-band_fraction))
+            band_probability = 1 - (
+                    norm.cdf(band_fraction) - norm.cdf(-band_fraction))
 
             band_x_values = np.array(self.x_values)
             band_y_values = np.array(self.y_values)
@@ -411,7 +442,9 @@ class HorizontalBand(PlottableData2D):
                 new_y_values = []
                 new_pos_heights = []
                 new_neg_heights = []
-                for x, y, pos_height, neg_height in zip(band_x_values, band_y_values, pos_height_values,
+                for x, y, pos_height, neg_height in zip(band_x_values,
+                                                        band_y_values,
+                                                        pos_height_values,
                                                         neg_height_values):
                     new_x_values.extend([x - 0.5, x + 0.5])
                     new_y_values.extend([y, y])
@@ -462,7 +495,8 @@ class HorizontalLine(PlottableData):
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
-        axes.axhline(y=self.y_position, color=self.color, linestyle=self.line_style,
+        axes.axhline(y=self.y_position, color=self.color,
+                     linestyle=self.line_style,
                      lw=self.line_width, alpha=self.alpha)
 
 
@@ -478,7 +512,8 @@ class VerticalLine(PlottableData):
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
-        axes.axvline(x=self.x_position, color=self.color, linestyle=self.line_style,
+        axes.axvline(x=self.x_position, color=self.color,
+                     linestyle=self.line_style,
                      lw=self.line_width, alpha=self.alpha)
 
 
@@ -497,7 +532,8 @@ class Histogram2D(PlottableData2D):
     no_data_color = (1, 1, 1, 0)
     bad_data_color = "magenta"
 
-    def __init__(self, x_edges, y_edges, matrix_values, color_map=None, colormap_label=None, vmin=None, vmax=None,
+    def __init__(self, x_edges, y_edges, matrix_values, color_map=None,
+                 colormap_label=None, vmin=None, vmax=None,
                  no_data_color=(1, 1, 1, 0), bad_data_color="magenta",
                  **kwargs):
         """
@@ -509,7 +545,8 @@ class Histogram2D(PlottableData2D):
         :param bad_data_color: color shown when nan is found in a bin
         :param vmin: minimum value considered in the histogram
         :param vmax: minimum value considered in the histogram
-        :param kwargs: additional parameters passed to the parent class initializer
+        :param kwargs: additional parameters passed to the parent class
+          initializer
         """
         super().__init__(x_values=tuple(x - 0.5 for x in range(len(x_edges))),
                          y_values=tuple(y - 0.5 for y in range(len(y_edges))),
@@ -546,29 +583,33 @@ class Histogram2D(PlottableData2D):
 
 
 def get_available_styles():
-    """Get a list of all styles available for plotting.
-    It includes installed matplotlib styles plus custom styles 
+    """Get a list of all styles available for plotting. It includes installed
+    matplotlib styles plus custom styles
     """
-    return sorted(itertools.chain(get_matlab_styles(), get_local_styles(), ["default"]))
+    return sorted(
+        itertools.chain(get_matlab_styles(), get_local_styles(), ["default"]))
 
 
 def get_matlab_styles():
     """Return the list of installed matlab styles.
     """
-    return sorted([str(s) for s in matplotlib.style.available if s[0] != "_"] + ["xkcd"])
+    return sorted(
+        [str(s) for s in matplotlib.style.available if s[0] != "_"] + ["xkcd"])
 
 
 def get_local_styles():
-    """Get the list of basenames of all styles in the enb/config/mpl_styles folder.
+    """Get the list of basenames of all styles in the enb/config/mpl_styles
+    folder.
     """
     return sorted(os.path.basename(p)
-                  for p in glob.glob(os.path.join(enb.enb_installation_dir, "config", "mpl_styles", "*"))
+                  for p in glob.glob(
+        os.path.join(enb.enb_installation_dir, "config", "mpl_styles", "*"))
                   if os.path.isfile(p) and os.path.basename(p) != "README.md")
 
 
 def apply_xkcd_style():
-    """Apply a xkcd-like style, based on that found in matplotlib, but 
-    with small modifications to improve visualzation.
+    """Apply a xkcd-like style, based on that found in matplotlib, but with
+    small modifications to improve visualzation.
     """
     plt.rcParams['font.family'] = ['Humor Sans', 'Comic Sans MS']
     plt.rcParams['font.size'] = 14.0
@@ -613,27 +654,35 @@ def parallel_render_plds_by_group(
         plot_title=None, show_legend=True, legend_position=None,
         # Matplotlib styles
         style_list=tuple()):
-    """Ray wrapper for render_plds_by_group. See that method for parameter information.
+    """Ray wrapper for render_plds_by_group. See that method for parameter
+    information.
     """
     try:
         if enb.parallel_ray.is_remote_node():
-            os.chdir(os.path.expanduser(enb.parallel_ray.RemoteNode.remote_project_mount_path))
+            os.chdir(os.path.expanduser(
+                enb.parallel_ray.RemoteNode.remote_project_mount_path))
         else:
             os.chdir(options.project_root)
 
-        return render_plds_by_group(pds_by_group_name=pds_by_group_name, output_plot_path=output_plot_path,
-                                    column_properties=column_properties, global_x_label=global_x_label,
-                                    horizontal_margin=horizontal_margin, vertical_margin=vertical_margin,
+        return render_plds_by_group(pds_by_group_name=pds_by_group_name,
+                                    output_plot_path=output_plot_path,
+                                    column_properties=column_properties,
+                                    global_x_label=global_x_label,
+                                    horizontal_margin=horizontal_margin,
+                                    vertical_margin=vertical_margin,
                                     y_min=y_min, y_max=y_max,
                                     force_monochrome_group=force_monochrome_group,
                                     x_min=x_min, x_max=x_max,
                                     y_labels_by_group_name=y_labels_by_group_name,
-                                    color_by_group_name=color_by_group_name, global_y_label=global_y_label,
-                                    combine_groups=combine_groups, semilog_y_min_bound=semilog_y_min_bound,
+                                    color_by_group_name=color_by_group_name,
+                                    global_y_label=global_y_label,
+                                    combine_groups=combine_groups,
+                                    semilog_y_min_bound=semilog_y_min_bound,
                                     group_row_margin=group_row_margin,
                                     group_name_order=group_name_order,
                                     fig_width=fig_width, fig_height=fig_height,
-                                    global_y_label_pos=global_y_label_pos, legend_column_count=legend_column_count,
+                                    global_y_label_pos=global_y_label_pos,
+                                    legend_column_count=legend_column_count,
                                     show_grid=show_grid,
                                     show_subgrid=show_subgrid,
                                     x_tick_list=x_tick_list,
@@ -641,7 +690,8 @@ def parallel_render_plds_by_group(
                                     x_tick_label_angle=x_tick_label_angle,
                                     y_tick_list=y_tick_list,
                                     y_tick_label_list=y_tick_label_list,
-                                    semilog_y=semilog_y, semilog_y_base=semilog_y_base,
+                                    semilog_y=semilog_y,
+                                    semilog_y_base=semilog_y_base,
                                     left_y_label=left_y_label,
                                     extra_plds=extra_plds,
                                     plot_title=plot_title,
@@ -656,13 +706,15 @@ def parallel_render_plds_by_group(
 def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          global_x_label, global_y_label,
                          # General figure configuration
-                         combine_groups=False, color_by_group_name=None, group_name_order=None,
+                         combine_groups=False, color_by_group_name=None,
+                         group_name_order=None,
                          fig_width=None, fig_height=None,
                          global_y_label_pos=None, legend_column_count=None,
                          force_monochrome_group=True,
                          # Axis configuration
                          show_grid=None, show_subgrid=None,
-                         semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
+                         semilog_y=None, semilog_y_base=10,
+                         semilog_y_min_bound=1e-10,
                          group_row_margin=None,
                          # Axis limits
                          x_min=None, x_max=None,
@@ -670,60 +722,71 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          y_min=None, y_max=None,
                          # Optional axis labeling
                          y_labels_by_group_name=None,
-                         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
+                         x_tick_list=None, x_tick_label_list=None,
+                         x_tick_label_angle=0,
                          y_tick_list=None, y_tick_label_list=None,
                          left_y_label=False,
                          # Additional plottable data
                          extra_plds=tuple(),
                          # Plot title
-                         plot_title=None, show_legend=True, legend_position=None,
+                         plot_title=None, show_legend=True,
+                         legend_position=None,
                          # Matplotlib styles
                          style_list=("default",),
                          ):
-    """Render lists of plotdata.PlottableData instances indexed by group name.
-    Each group is rendered in a row (subplot), with a shared X axis.
-    Groups can also be combined into a single row (subplot), i.e., rending all plottable data into that single subplot.
-    
-    When applicable, None values are substituted by
-    default values given enb.config.options (guaranteed to be updated thanks to the
+    """Render lists of plotdata.PlottableData instances indexed by group
+    name. Each group is rendered in a row (subplot), with a shared X axis.
+    Groups can also be combined into a single row (subplot), i.e., rending
+    all plottable data into that single subplot.
+
+    When applicable, None values are substituted by default values given
+    enb.config.options (guaranteed to be updated thanks to the
     @enb.parallel.parallel decorator) and the current context.
-    
+
     Mandatory parameters:
-    
+
     :param pds_by_group_name: dictionary of lists of PlottableData instances
     :param output_plot_path: path to the file to be created with the plot
     :param column_properties: ColumnProperties instance for the column being plotted
-    :param global_x_label: x-axis label shared by all subplots (there can be just one subplot)
-    :param global_y_label: y-axis label shared by all subplots (there can be just one subplot)
-    
-    General figure configuration. If None, most of these values are retrieved from
-    the [enb.aanalysis.Analyzer] section of `*.ini` files.
-    
-    :param combine_groups: if False, each group is plotted in a different row. If True,
-        all groups share the same subplot (and no group name is displayed).
-    :param color_by_group_name: if not None, a dictionary of pyplot colors for the groups,
-        indexed with the same keys as `pds_by_group_name`.
-    :param group_name_order: if not None, it contains the order in which groups are
-        displayed. If None, alphabetical, case-insensitive order is applied.
-    :param fig_width: figure width. The larger the figure size, the smaller the text will look.
-    :param fig_height: figure height. The larger the figure size, the smaller the text will look.
+    :param global_x_label: x-axis label shared by all subplots (there can be
+       just one subplot)
+    :param global_y_label: y-axis label shared by all subplots (there can be
+      just one subplot)
+
+    General figure configuration. If None, most of these values are retrieved
+    from the [enb.aanalysis.Analyzer] section of `*.ini` files.
+
+    :param combine_groups: if False, each group is plotted in a different
+      row. If True, all groups share the same subplot (and no group name is
+      displayed).
+    :param color_by_group_name: if not None, a dictionary of pyplot colors
+      for the groups, indexed with the same keys as `pds_by_group_name`.
+    :param group_name_order: if not None, it contains the order in which
+      groups are displayed. If None, alphabetical, case-insensitive order is
+      applied.
+    :param fig_width: figure width. The larger the figure size, the smaller
+      the text will look.
+    :param fig_height: figure height. The larger the figure size, the smaller
+      the text will look.
     :param legend_column_count: when the legend is shown, use this many columns.
-    :param force_monochrome_group: if True, all plottable data with non-None color in each group
-      is set to the same color, defined by color_cycle.
-    
+    :param force_monochrome_group: if True, all plottable data with non-None
+      color in each group is set to the same color, defined by color_cycle.
+
     Axis configuration:
-    
-    :param show_grid: if True, or if None and options.show_grid, grid is displayed
-         aligned with the major axes.
-    :param show_grid: if True, or if None and options.show_subgrid, grid is displayed
-        aligned with the minor axes.
+
+    :param show_grid: if True, or if None and options.show_grid, grid is
+      displayed aligned with the major axes.
+    :param show_grid: if True, or if None and options.show_subgrid, grid is
+      displayed aligned with the minor axes.
     :param semilog_y: if True, a logarithmic scale is used in the Y axis.
     :param semilog_y_base: if semilog_y is True, the logarithm base employed.
-    :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum of y_min and this value.
-    :param group_row_margin: if provided, this margin is applied between rows of groups
-    
+    :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum
+      of y_min and this value.
+    :param group_row_margin: if provided, this margin is applied between rows
+      of groups
+
     Axis limits:
-    
+
     :param x_min: if not None, force plots to have this value as left end.
     :param x_max: if not None, force plots to have this value as right end.
     :param horizontal_margin: Horizontal margin to be added to the figures,
@@ -732,46 +795,61 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       expressed as a fraction of the horizontal dynamic range.
     :param y_min: if not None, force plots to have this value as bottom end.
     :param y_max: if not None, force plots to have this value as top end.
-    
+
     Optional axis labeling:
-    
-    :param y_labels_by_group_name: if not None, a dictionary of labels for the groups,
-      indexed with the same keys as pds_by_group_name.
-    :param x_tick_list: if not None, these ticks will be displayed in the x axis.
-    :param x_tick_label_list: if not None, these labels will be displayed in the x axis.
-      Only used when x_tick_list is not None.
-    :param x_tick_label_angle: when label ticks are specified, they will be rotated to this angle
-    :param y_tick_list: if not None, these ticks will be displayed in the y axis.
-    :param y_tick_label_list: if not None, these labels will be displayed in the y axis.
-      Only used when y_tick_list is not None.
-    :param left_y_label: if True, the group label is shown to the left instead of to the right
-      
+
+    :param y_labels_by_group_name: if not None, a dictionary of labels for
+      the groups, indexed with the same keys as pds_by_group_name.
+    :param x_tick_list: if not None, these ticks will be displayed in the x
+      axis.
+    :param x_tick_label_list: if not None, these labels will be displayed in
+      the x axis. Only used when x_tick_list is not None.
+    :param x_tick_label_angle: when label ticks are specified, they will be
+      rotated to this angle
+    :param y_tick_list: if not None, these ticks will be displayed in the y
+      axis.
+    :param y_tick_label_list: if not None, these labels will be displayed in
+      the y axis. Only used when y_tick_list is not None.
+    :param left_y_label: if True, the group label is shown to the left
+      instead of to the right
+
     Additional plottable data:
-    :param extra_plds: an iterable of additional PlottableData instances to be rendered in all subplots. 
-    
+
+    :param extra_plds: an iterable of additional PlottableData instances to
+      be rendered in all subplots.
+
     Global title:
-    
+
     :param plot_title: title to be displayed.
     :param show_legend: if True, legends are added to the plot.
-    :param legend_position: position of the legend (if shown). It can be "title" to display
-      it above the plot, or any matplotlib-recognized argument to the loc argument of legend().
-    
+    :param legend_position: position of the legend (if shown). It can be
+      "title" to display it above the plot, or any matplotlib-recognized
+      argument to the loc argument of legend().
+
     Matplotlib styles:
-    
-    :param style_list: list of valid style arguments recognized by `matplotlib.use`. Each element can be any
-      of matplotlib's default styles or a path to a valid matplotlibrc. Styles are applied from left to right, 
-      overwriting definitions without warning. By default, matplotlib's "default" mode is applied. 
+
+    :param style_list: list of valid style arguments recognized by
+      `matplotlib.use`. Each element can be any of matplotlib's default styles
+      or a path to a valid matplotlibrc. Styles are applied from left to right,
+      overwriting definitions without warning. By default, matplotlib's
+      "default" mode is applied.
     """
-    with enb.logger.info_context(f"Rendering {len(pds_by_group_name)} plottable data groups to {output_plot_path}",
-                                 sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
+    with enb.logger.info_context(
+            f"Rendering {len(pds_by_group_name)} plottable data groups "
+            f"to {output_plot_path}",
+            sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
         if len(pds_by_group_name) < 1:
-            enb.logger.info("Warning: trying to render an empty pds_by_group_name dict. "
-                            f"output_plot_path={output_plot_path}, column_properties={column_properties}. "
-                            f"No analysis is performed.")
+            enb.logger.info(
+                "Warning: trying to render an empty pds_by_group_name dict. "
+                f"output_plot_path={output_plot_path}, "
+                f"column_properties={column_properties}. "
+                f"No analysis is performed.")
             return
 
-        legend_column_count = legend_column_count if legend_column_count is not None \
-            else enb.config.ini.get_key("enb.aanalysis.Analyzer", "legend_column_count")
+        legend_column_count = legend_column_count \
+            if legend_column_count is not None \
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                        "legend_column_count")
         if legend_column_count:
             for name, pds in pds_by_group_name.items():
                 for pld in pds:
@@ -779,38 +857,55 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         y_min = column_properties.hist_min if y_min is None else y_min
         y_min = max(semilog_y_min_bound, y_min if y_min is not None else 0) \
-            if ((column_properties is not None and column_properties.semilog_y) or semilog_y) else y_min
+            if ((column_properties is not None
+                 and column_properties.semilog_y)
+                or semilog_y) \
+            else y_min
         y_max = column_properties.hist_max if y_max is None else y_max
 
         if group_name_order is None:
-            sorted_group_names = natsort.natsorted(pds_by_group_name.keys(), alg=natsort.IGNORECASE)
+            sorted_group_names = natsort.natsorted(pds_by_group_name.keys(),
+                                                   alg=natsort.IGNORECASE)
             if str(sorted_group_names[0]).lower() == "all":
-                sorted_group_names = sorted_group_names[1:] + [str(n) for n in sorted_group_names[:1]]
+                sorted_group_names = \
+                    sorted_group_names[1:] \
+                    + [str(n) for n in sorted_group_names[:1]]
         else:
             sorted_group_names = []
             for group_name in group_name_order:
                 if group_name not in pds_by_group_name:
                     enb.logger.warn(
-                        f"Warning: {repr(group_name)} was provided in group_name_order but is not one of the "
-                        f"produced groups: {sorted(list(pds_by_group_name.keys()))}. Ignoring.")
+                        f"Warning: {repr(group_name)} was provided in "
+                        "group_name_order but is not one of the "
+                        f"produced groups: "
+                        f"{sorted(list(pds_by_group_name.keys()))}. "
+                        f"Ignoring.")
                 else:
                     sorted_group_names.append(group_name)
             for g in pds_by_group_name.keys():
                 if g not in sorted_group_names:
                     if options.verbose > 2:
-                        enb.logger.warn(f"Warning: {repr(g)} was not provided in group_name_order but is one of the "
-                                        f"produced groups: {sorted(list(pds_by_group_name.keys()))}. Appending automatically.")
+                        enb.logger.warn(
+                            f"Warning: {repr(g)} was not provided in "
+                            f"group_name_order but is one of the "
+                            f"produced groups: "
+                            f"{sorted(list(pds_by_group_name.keys()))}. "
+                            f"Appending automatically.")
                     sorted_group_names.append(g)
 
         if combine_groups:
             for i, g in enumerate(sorted_group_names):
                 if show_legend:
-                    if (i == 0 and g.lower() != "all") or len(sorted_group_names) > 1:
+                    if (i == 0 and g.lower() != "all") or len(
+                            sorted_group_names) > 1:
                         try:
                             pds_by_group_name[g][0].label = \
-                                y_labels_by_group_name[
-                                    g] if y_labels_by_group_name and g in y_labels_by_group_name else g
-                            pds_by_group_name[g][0].legend_position = legend_position
+                                y_labels_by_group_name[g] \
+                                    if y_labels_by_group_name \
+                                       and g in y_labels_by_group_name \
+                                    else g
+                            pds_by_group_name[g][0].legend_position = \
+                                legend_position
                         except IndexError:
                             # Ignore empty groups
                             continue
@@ -823,13 +918,15 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
         if color_by_group_name is None:
             color_by_group_name = {}
             for i, group_name in enumerate(sorted_group_names):
-                color_by_group_name[group_name] = color_cycle[i % len(color_cycle)]
+                color_by_group_name[group_name] = color_cycle[
+                    i % len(color_cycle)]
         if os.path.dirname(output_plot_path):
             os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
 
         # Render all gathered data with the selected configuration
         with plt.style.context([]):
-            # Apply selected styles in the given order, based on a default context
+            # Apply selected styles in the given order, based on a default
+            # context
             for style in (style_list if style_list is not None else []):
                 if not style:
                     enb.logger.info(f"Ignoring empty style ({repr(style)}")
@@ -840,24 +937,31 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     # Matplotlib style name or full path
                     plt.style.use(style)
                 elif os.path.isfile(
-                        os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style))):
+                        os.path.join(enb.enb_installation_dir, "config",
+                                     "mpl_styles", os.path.basename(style))):
                     # Path relative to enb's custom mpl_styles
                     plt.style.use(
-                        os.path.join(enb.enb_installation_dir, "config", "mpl_styles", os.path.basename(style)))
+                        os.path.join(enb.enb_installation_dir, "config",
+                                     "mpl_styles", os.path.basename(style)))
                 elif style == "xkcd":
                     apply_xkcd_style()
                 else:
                     raise ValueError(f"Unrecognized style {repr(style)}.")
 
-            fig_width = enb.config.ini.get_key(section="enb.aanalysis.Analyzer", name="fig_width") \
+            fig_width = enb.config.ini.get_key(section="enb.aanalysis.Analyzer",
+                                               name="fig_width") \
                 if fig_width is None else fig_width
-            fig_height = enb.config.ini.get_key(section="enb.aanalysis.Analyzer", name="fig_height") \
+            fig_height = enb.config.ini.get_key(
+                section="enb.aanalysis.Analyzer", name="fig_height") \
                 if fig_height is None else fig_height
 
             fig, group_axis_list = plt.subplots(
-                nrows=max(len(sorted_group_names), 1) if not combine_groups else 1,
+                nrows=max(len(sorted_group_names),
+                          1) if not combine_groups else 1,
                 ncols=1, sharex=True, sharey=combine_groups,
-                figsize=(fig_width, max(3, 0.5 * len(sorted_group_names)) if fig_height is None else fig_height))
+                figsize=(fig_width,
+                         max(3, 0.5 * len(sorted_group_names))
+                         if fig_height is None else fig_height))
 
             if combine_groups:
                 group_axis_list = [group_axis_list]
@@ -865,15 +969,18 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 group_axis_list = [group_axis_list]
 
             plot_title = plot_title if plot_title is not None \
-                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "plot_title")
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                            "plot_title")
             if plot_title:
                 plt.suptitle(plot_title)
 
-            semilog_x, semilog_y = False, semilog_y if semilog_y is not None else semilog_y
+            semilog_x, semilog_y = False, semilog_y \
+                if semilog_y is not None else semilog_y
 
             if combine_groups:
                 assert len(group_axis_list) == 1
-                group_name_axes = zip(sorted_group_names, group_axis_list * len(sorted_group_names))
+                group_name_axes = zip(sorted_group_names,
+                                      group_axis_list * len(sorted_group_names))
             else:
                 group_name_axes = zip(sorted_group_names, group_axis_list)
 
@@ -882,28 +989,39 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             global_x_max = float("-inf")
             global_y_min = float("inf")
             global_y_max = float("-inf")
-            for pld in (plottable for pds in pds_by_group_name.values() for plottable in pds):
+            for pld in (plottable for pds in pds_by_group_name.values() for
+                        plottable in pds):
                 if not isinstance(pld, PlottableData2D):
                     continue
                 x_values = np.array(pld.x_values, copy=False)
                 if len(x_values) > 0:
                     x_values = x_values[~np.isnan(x_values)]
-                global_x_min = min(global_x_min, x_values.min() if len(x_values) > 0 else global_x_min)
-                global_x_max = max(global_x_min, x_values.max() if len(x_values) > 0 else global_x_min)
+                global_x_min = min(global_x_min, x_values.min() if len(
+                    x_values) > 0 else global_x_min)
+                global_x_max = max(global_x_min, x_values.max() if len(
+                    x_values) > 0 else global_x_min)
                 y_values = np.array(pld.y_values, copy=False)
                 if len(y_values) > 0:
                     y_values = y_values[~np.isnan(y_values)]
-                global_y_min = min(global_y_min, y_values.min() if len(y_values) > 0 else global_y_min)
-                global_y_max = max(global_y_min, y_values.max() if len(y_values) > 0 else global_y_min)
+                global_y_min = min(global_y_min, y_values.min() if len(
+                    y_values) > 0 else global_y_min)
+                global_y_max = max(global_y_min, y_values.max() if len(
+                    y_values) > 0 else global_y_min)
             if global_x_max - global_x_min > 1:
-                global_x_min = math.floor(global_x_min) if not math.isinf(global_x_min) else global_x_min
-                global_x_max = math.ceil(global_x_max) if not math.isinf(global_x_max) else global_x_max
+                global_x_min = math.floor(global_x_min) if not math.isinf(
+                    global_x_min) else global_x_min
+                global_x_max = math.ceil(global_x_max) if not math.isinf(
+                    global_x_max) else global_x_max
             if global_y_max - global_y_min > 1:
-                global_y_min = math.floor(global_y_min) if not math.isinf(global_y_min) else global_y_min
-                global_y_max = math.ceil(global_y_max) if not math.isinf(global_y_max) else global_y_max
+                global_y_min = math.floor(global_y_min) if not math.isinf(
+                    global_y_min) else global_y_min
+                global_y_max = math.ceil(global_y_max) if not math.isinf(
+                    global_y_max) else global_y_max
             if column_properties:
-                global_x_min = column_properties.plot_min if column_properties.plot_min is not None else global_x_min
-                global_x_max = column_properties.plot_max if column_properties.plot_max is not None else global_x_max
+                global_x_min = column_properties.plot_min \
+                    if column_properties.plot_min is not None else global_x_min
+                global_x_max = column_properties.plot_max \
+                    if column_properties.plot_max is not None else global_x_max
 
             for i, (group_name, group_axes) in enumerate(group_name_axes):
                 group_color = color_by_group_name[group_name]
@@ -922,62 +1040,88 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                         pld.render(axes=group_axes)
                     except Exception as ex:
                         raise Exception(
-                            f"Error rendering {pld} -- {group_name} -- {output_plot_path}:\n{repr(ex)}") from ex
-                    semilog_x = semilog_x or (column_properties.semilog_x if column_properties else False)
-                    semilog_y = semilog_y or (column_properties.semilog_y if column_properties else False) or semilog_y
+                            f"Error rendering {pld} -- {group_name} "
+                            f"-- {output_plot_path}:\n{repr(ex)}") from ex
+                    semilog_x = semilog_x or (
+                        column_properties.semilog_x
+                        if column_properties else False)
+                    semilog_y = semilog_y or (
+                        column_properties.semilog_y
+                        if column_properties else False)
 
                 if not combine_groups or i == 0:
                     for pld in extra_plds:
                         pld.render(axes=group_axes)
 
-            for (group_name, group_axes) in zip(sorted_group_names, group_axis_list):
+            for (group_name, group_axes) in zip(sorted_group_names,
+                                                group_axis_list):
                 if y_min != y_max:
-                    group_axes.set_ylim(y_min if y_min is not None and not math.isinf(y_min) else None, 
-                                        y_max if y_max is not None and not math.isinf(y_max) else None)
+                    group_axes.set_ylim(
+                        y_min if y_min is not None and not math.isinf(y_min)
+                        else None,
+                        y_max if y_max is not None and not math.isinf(y_max)
+                        else None)
 
                 if semilog_x:
-                    x_base = column_properties.semilog_x_base if column_properties is not None else 10
+                    x_base = column_properties.semilog_x_base \
+                        if column_properties is not None else 10
                     group_axes.semilogx(base=x_base)
-                    group_axes.get_xaxis().set_major_locator(matplotlib.ticker.LogLocator(base=x_base))
+                    group_axes.get_xaxis().set_major_locator(
+                        matplotlib.ticker.LogLocator(base=x_base))
                 else:
                     group_axes.get_xaxis().set_major_locator(
-                        matplotlib.ticker.MaxNLocator(nbins="auto", integer=True, min_n_ticks=5))
-                    group_axes.get_xaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+                        matplotlib.ticker.MaxNLocator(nbins="auto",
+                                                      integer=True,
+                                                      min_n_ticks=5))
+                    group_axes.get_xaxis().set_minor_locator(
+                        matplotlib.ticker.AutoMinorLocator())
 
                 if semilog_y:
-                    base_y = column_properties.semilog_y_base if column_properties is not None else semilog_y_base
+                    base_y = column_properties.semilog_y_base \
+                        if column_properties is not None else semilog_y_base
                     group_axes.semilogy(base=base_y)
                     if combine_groups or len(sorted_group_names) <= 2:
                         numticks = 11
-                    elif len(sorted_group_names) <= 5 and not column_properties.semilog_y:
+                    elif len(sorted_group_names) <= 5 \
+                            and not column_properties.semilog_y:
                         numticks = 6
                     elif len(sorted_group_names) <= 10:
                         numticks = 4
                     else:
                         numticks = 3
                     group_axes.get_yaxis().set_major_locator(
-                        matplotlib.ticker.LogLocator(base=base_y, numticks=numticks))
+                        matplotlib.ticker.LogLocator(
+                            base=base_y, numticks=numticks))
                     group_axes.grid(True, "major", axis="y", alpha=0.2)
                 else:
-                    group_axes.get_yaxis().set_major_locator(matplotlib.ticker.MaxNLocator(nbins="auto", integer=False))
-                    group_axes.get_yaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+                    group_axes.get_yaxis().set_major_locator(
+                        matplotlib.ticker.MaxNLocator(nbins="auto",
+                                                      integer=False))
+                    group_axes.get_yaxis().set_minor_locator(
+                        matplotlib.ticker.AutoMinorLocator())
                 if not combine_groups:
                     if not left_y_label:
                         group_axes.get_yaxis().set_label_position("right")
-                    group_axes.set_ylabel(y_labels_by_group_name[group_name]
-                                          if group_name in y_labels_by_group_name
-                                          else enb.atable.clean_column_name(group_name),
-                                          rotation=0 if not left_y_label else 90,
-                                          ha="left" if not left_y_label else "center",
-                                          va="center" if not left_y_label else "bottom")
+                    group_axes.set_ylabel(
+                        y_labels_by_group_name[group_name]
+                        if group_name in y_labels_by_group_name
+                        else enb.atable.clean_column_name(group_name),
+                        rotation=0 if not left_y_label else 90,
+                        ha="left" if not left_y_label else "center",
+                        va="center" if not left_y_label else "bottom")
 
-            if column_properties and column_properties.hist_label_dict is not None:
+            if column_properties \
+                    and column_properties.hist_label_dict is not None:
                 x_tick_values = sorted(column_properties.hist_label_dict.keys())
-                x_tick_label_list = [column_properties.hist_label_dict[x] for x in x_tick_values]
+                x_tick_label_list = [column_properties.hist_label_dict[x] for x
+                                     in x_tick_values]
 
-            group_row_margin = group_row_margin if group_row_margin is not None \
-                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "group_row_margin")
-            group_row_margin = float(group_row_margin) if group_row_margin is not None else group_row_margin
+            group_row_margin = group_row_margin \
+                if group_row_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                            "group_row_margin")
+            group_row_margin = float(group_row_margin) \
+                if group_row_margin is not None else group_row_margin
             if group_row_margin is None and len(pds_by_group_name) > 5:
                 if len(pds_by_group_name) <= 7:
                     group_row_margin = 0.5
@@ -985,13 +1129,18 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                     group_row_margin = 0.6
                 else:
                     group_row_margin = 0.7
-                enb.logger.info("The `group_row_margin` option "
-                                f"was likely too small to display all {len(pds_by_group_name)} groups: "
-                                f"automatically adjusting to {group_row_margin}. You can set "
-                                f"your desired value at the [enb.aanalysis.Analyzer] section in your *.ini files,"
-                                f"or passing e.g., `group_row_margin=0.9` to your Analyzer get_df() "
-                                f"or adjusting the figure height with `fig_height`.")
-                
+                enb.logger.info(
+                    "The `group_row_margin` option "
+                    "was likely too small to display all "
+                    f"{len(pds_by_group_name)} groups: "
+                    f"automatically adjusting to {group_row_margin}. "
+                    "You can set "
+                    "your desired value at the [enb.aanalysis.Analyzer] "
+                    "section in your *.ini files,"
+                    "or passing e.g., `group_row_margin=0.9` "
+                    "to your Analyzer get_df() "
+                    "or adjusting the figure height with `fig_height`.")
+
             if group_row_margin is not None:
                 plt.subplots_adjust(hspace=group_row_margin)
 
@@ -1003,24 +1152,30 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             ylim[0] = ylim[0] if y_min is None else y_min
             ylim[1] = ylim[1] if y_max is None else y_max
             # Translate relative margin to absolute margin
-            horizontal_margin = horizontal_margin if horizontal_margin is not None \
-                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "horizontal_margin")
-            vertical_margin = vertical_margin if vertical_margin is not None \
-                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "vertical_margin")
+            horizontal_margin = horizontal_margin \
+                if horizontal_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                            "horizontal_margin")
+            vertical_margin = vertical_margin \
+                if vertical_margin is not None \
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                            "vertical_margin")
 
             h_margin = horizontal_margin * (xlim[1] - xlim[0])
             v_margin = vertical_margin * (ylim[1] - ylim[0])
             xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
             ylim = [ylim[0] - v_margin, ylim[1] + v_margin]
             # Apply changes to the figure
-            if xlim[0] != xlim[1] and not math.isnan(xlim[0]) and not math.isnan(xlim[1]):
+            if xlim[0] != xlim[1] and not math.isnan(
+                    xlim[0]) and not math.isnan(xlim[1]):
                 plt.xlim(*xlim)
                 ca = plt.gca()
                 for group_axes in group_axis_list:
                     plt.sca(group_axes)
                     plt.xlim(*xlim)
                 plt.sca(ca)
-            if ylim[0] != ylim[1] and not math.isnan(ylim[0]) and not math.isnan(ylim[1]) \
+            if ylim[0] != ylim[1] and not math.isnan(
+                    ylim[0]) and not math.isnan(ylim[1]) \
                     and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
                 plt.ylim(*ylim)
                 ca = plt.gca()
@@ -1030,16 +1185,20 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 plt.sca(ca)
 
             if xlim[1] < 1e-2:
-                x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
+                x_tick_label_angle = 90 \
+                    if x_tick_label_angle is not None else x_tick_label_angle
             show_grid = show_grid if show_grid is not None \
-                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_grid")
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                            "show_grid")
             show_subgrid = show_subgrid if show_subgrid is not None \
-                else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_subgrid")
+                else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                            "show_subgrid")
             ca = plt.gca()
 
             for group_axes in group_axis_list:
                 plt.sca(group_axes)
-                plt.xticks(x_tick_list, x_tick_label_list, rotation=x_tick_label_angle)
+                plt.xticks(x_tick_list, x_tick_label_list,
+                           rotation=x_tick_label_angle)
                 plt.yticks(y_tick_list, y_tick_label_list)
                 if x_tick_label_list is None and y_tick_label_list is None:
                     plt.minorticks_on()
@@ -1079,10 +1238,12 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
             with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
                 if os.path.dirname(output_plot_path):
-                    os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
+                    os.makedirs(os.path.dirname(output_plot_path),
+                                exist_ok=True)
                 plt.savefig(output_plot_path, bbox_inches="tight")
                 if output_plot_path.endswith(".pdf"):
-                    plt.savefig(output_plot_path[:-3] + "png", bbox_inches="tight", dpi=300,
+                    plt.savefig(output_plot_path[:-3] + "png",
+                                bbox_inches="tight", dpi=300,
                                 transparent=True)
 
             plt.close()

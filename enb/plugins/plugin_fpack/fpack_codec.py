@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Codec wrapper for the Fpack lossless and lossy image coder 
+"""Codec wrapper for the Fpack lossless and lossy image coder
 """
 __author__ = "Òscar Maireles"
 
@@ -7,7 +7,7 @@ import os
 import enb
 
 
-class FPACK_Abstract(enb.icompression.LosslessCodec, enb.icompression.FITSWrapperCodec):
+class FPACK_Abstract(enb.icompression.LosslessCodec, enb.icompression.FitsWrapperCodec):
     def assert_valid_data_type(self, original_file_info):
         assert not original_file_info["float"], \
             f"Only integer samples are currently supported by {self.__class__.__name__}"

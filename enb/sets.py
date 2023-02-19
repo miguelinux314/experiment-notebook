@@ -55,8 +55,8 @@ class FilePropertiesTable(atable.ATable):
                 ext=self.dataset_files_extension,
                 base_dataset_dir=self.base_dir)
         else:
-            target_indices = [enb.atable.get_canonical_path(p) for p in
-                              target_indices]
+            target_indices = [enb.atable.get_canonical_path(p)
+                              for p in target_indices]
 
         return super().get_df(target_indices=target_indices,
                               target_columns=target_columns,
