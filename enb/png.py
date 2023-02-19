@@ -22,6 +22,8 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
     and PNG is decoded to raw after decompression.
     """
 
+    # pylint: disable=abstract-method
+
     def compress(self, original_path: str, compressed_path: str,
                  original_file_info=None):
         img = enb.isets.load_array_bsq(
@@ -33,12 +35,12 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
                 original_path=tmp_file.name,
                 compressed_path=compressed_path,
                 original_file_info=original_file_info)
-            cr = self.compression_results_from_paths(
+            crs = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(
+            crs.compression_time_seconds = max(
                 0, compression_results.compression_time_seconds)
-            cr.maximum_memory_kb = compression_results.maximum_memory_kb
-            return cr
+            crs.maximum_memory_kb = compression_results.maximum_memory_kb
+            return crs
 
     def decompress(self, compressed_path, reconstructed_path,
                    original_file_info=None):
@@ -66,11 +68,11 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
             enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path,
                                      dtype=dtype)
 
-            dr = self.decompression_results_from_paths(
+            drs = self.decompression_results_from_paths(
                 compressed_path=compressed_path,
                 reconstructed_path=reconstructed_path)
-            dr.decompression_time_seconds = decompression_results.decompression_time_seconds
-            dr.maximum_memory_kb = decompression_results.maximum_memory_kb
+            drs.decompression_time_seconds = decompression_results.decompression_time_seconds
+            drs.maximum_memory_kb = decompression_results.maximum_memory_kb
 
 
 class PNGCurationTable(enb.sets.FileVersionTable):
