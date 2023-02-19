@@ -19,6 +19,8 @@ from scipy import signal
 from scipy.ndimage.filters import convolve
 
 import enb
+import enb.isets
+import enb.tcall
 from enb.config import options
 
 
@@ -1456,10 +1458,10 @@ class SpectralAngleTable(LossyCompressionExperiment):
         return angles.tolist()
 
     @enb.atable.column_function([
-        enb.enb.atable.ColumnProperties("mean_spectral_angle_deg",
+        enb.atable.ColumnProperties("mean_spectral_angle_deg",
                                     label="Mean spectral angle (deg)",
                                     plot_min=0, plot_max=None),
-        enb.enb.atable.ColumnProperties("max_spectral_angle_deg",
+        enb.atable.ColumnProperties("max_spectral_angle_deg",
                                     label="Max spectral angle (deg)",
                                     plot_min=0, plot_max=None)])
     def set_spectral_distances(self, index, row):
