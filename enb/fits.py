@@ -4,6 +4,7 @@ See https://fits.gsfc.nasa.gov/fits_documentation.html.
 """
 __author__ = "Òscar Maireles"
 __since__ = "2020/04/01"
+
 # pylint: disable=no-self-use
 
 import os
@@ -82,12 +83,6 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
         if not input_path.lower().endswith(".fit") \
                 and not input_path.lower().endswith(".fits"):
             raise ValueError(f"Invalid extension found in {input_path}")
-
-        try:
-            # pylint: disable=import-outside-toplevel
-            import fits
-        except ImportError as ex:
-            raise RuntimeError("The fits module is not available.") from ex
 
         hdul = fits.open(input_path)
         saved_images = 0
@@ -211,6 +206,8 @@ class FITSWrapperCodec(enb.icompression.WrapperCodec):
     and FITS is decoded to raw after decompression.
     """
 
+    # pylint: disable=abstract-method
+
     def compress(self, original_path: str, compressed_path: str,
                  original_file_info=None):
         img = enb.isets.load_array_bsq(
@@ -226,12 +223,12 @@ class FITSWrapperCodec(enb.icompression.WrapperCodec):
             compression_results = super().compress(original_path=tmp_file.name,
                                                    compressed_path=compressed_path,
                                                    original_file_info=original_file_info)
-            cr = self.compression_results_from_paths(
+            crs = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
-            cr.compression_time_seconds = max(0,
+            crs.compression_time_seconds = max(0,
                                               compression_results.compression_time_seconds)
-            cr.maximum_memory_kb = compression_results.maximum_memory_kb
-            return cr
+            crs.maximum_memory_kb = compression_results.maximum_memory_kb
+            return crs
 
     def decompress(self, compressed_path, reconstructed_path,
                    original_file_info=None):
