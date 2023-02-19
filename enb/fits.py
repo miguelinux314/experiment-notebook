@@ -18,7 +18,7 @@ from enb import sets
 from enb.config import options
 
 
-class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
+class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
     """Read FITS files and convert them to raw files, sorting them by type (
     integer or float) and by bits per pixel.
     """
@@ -68,10 +68,6 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                 f".{input_ext}", ".raw"))
 
     @enb.atable.redefines_column
-    def set_version_time(self, file_path, row):
-        row[_column_name] = 0
-
-    @enb.atable.redefines_column
     def set_version_repetitions(self, file_path, row):
         """Set the number of times the versioning process is performed.
         """
@@ -84,7 +80,7 @@ class FitsVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                 and not input_path.lower().endswith(".fits"):
             raise ValueError(f"Invalid extension found in {input_path}")
 
-        hdul = fits.open(input_path)
+        hdul = fits.open(input_path, ignore_missing_simple=True)
         saved_images = 0
         for hdu_index, hdu in enumerate(hdul):
             if hdu.header["NAXIS"] == 0:
