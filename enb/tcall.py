@@ -46,9 +46,11 @@ def get_status_output_time_memory(
 
     if os.path.isfile(time_command):
         invocation = f"{time_command} -f 'u%U@s%S@m%M' {invocation} 2>&1"
+        memory_available = True
     else:
         invocation = f"{invocation}"
         wall = True
+        memory_available = False
 
     wall_time_before = time.time()
     try:
@@ -72,10 +74,8 @@ def get_status_output_time_memory(
         raise InvocationError(
             f"status={status} != {expected_status_value}.\nInput=[{invocation}].\nOutput=[{output}]")
 
-    if wall:
-        measured_time = wall_time_after - wall_time_before
-        measured_memory_kb = None
-    else:
+    measured_memory_kb = None
+    if memory_available:
         m = re.fullmatch(r"u(\d+\.\d+)@s(\d+\.\d+)@m(\d+)", output_lines[-1])
         if m is not None:
             measured_time = float(m.group(1)) + float(m.group(2))
@@ -83,6 +83,8 @@ def get_status_output_time_memory(
         else:
             raise InvocationError(f"Output {output_lines} did not contain "
                                   f"a valid time signature")
+    if wall:
+        measured_time = wall_time_after - wall_time_before
 
     return status, output, measured_time, measured_memory_kb
 
