@@ -11,7 +11,7 @@ import time
 import platform
 
 from enb.config import options
-
+from enb.log import logger
 
 class InvocationError(Exception):
     """Raised when an invocation fails.
@@ -58,12 +58,18 @@ def get_status_output_time_memory(
             invocation, shell=True, timeout=timeout).decode("utf-8")
         status = 0
     except subprocess.CalledProcessError as ex:
-        output = ex.output.decode("utf-8")
+        output = ex.output
         status = ex.returncode
     except subprocess.TimeoutExpired as ex:
         output = ex.output if ex.output is not None and ex.output != "None" \
             else f"Timeout exceeded ({timeout})"
         status = -1
+    try:
+        output = output.decode("utf-8")
+    except Exception as ex:
+        logger.debug(f"Error decoding output ({type(output)}) to utf-8:\n"
+                     f"{repr(ex)}")
+        pass
     wall_time_after = time.time()
 
     output_lines = output.splitlines()
