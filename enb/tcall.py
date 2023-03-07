@@ -69,7 +69,6 @@ def get_status_output_time_memory(
     except Exception as ex:
         logger.debug(f"Error decoding output ({type(output)}) to utf-8:\n"
                      f"{repr(ex)}")
-        pass
     wall_time_after = time.time()
 
     output_lines = output.splitlines()
