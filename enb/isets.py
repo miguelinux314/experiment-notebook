@@ -12,6 +12,7 @@ import enb
 from enb import atable
 from enb import sets
 
+
 # pylint: disable=no-self-use
 
 def entropy(data):
@@ -512,6 +513,40 @@ class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
                          check_generated_files=check_generated_files)
 
 
+class BIPToBSQ(ImageVersionTable):
+    """Convert raw images (no header) from band-interleaved pixel order (BIP)
+    to band-sequential order (BSQ).
+    """
+    dataset_files_extension = "bip"
+    array_order = "bip"
+
+    def __init__(self, version_base_dir,
+                 original_base_dir=None, csv_support_path=None,
+                 original_properties_table=None):
+        super().__init__(version_base_dir=version_base_dir,
+                         version_name=self.__class__.__name__,
+                         original_base_dir=original_base_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=False,
+                         original_properties_table=original_properties_table)
+
+    def version(self, input_path, output_path, row):
+        if input_path.endswith(f".{self.dataset_files_extension}"):
+            output_path = output_path[:-4] + ".raw"
+        dump_array_bsq(load_array(file_or_path=input_path,
+                                  image_properties_row=row,
+                                  order=self.array_order),
+                       file_or_path=output_path)
+
+
+class BILToBSQ(BIPToBSQ):
+    """Convert raw images (no header) from band-interleaved line order (BIL)
+    to band-sequential order (BSQ).
+    """
+    dataset_files_extension = "bil"
+    array_order = "bil"
+
+
 class QuantizedImageVersion(ImageVersionTable):
     """Apply uniform quantization and store the results.
     """
@@ -529,7 +564,7 @@ class QuantizedImageVersion(ImageVersionTable):
         :param version_name: arbitrary name of this file version
         :param original_base_dir: path to the original directory
           (it must contain all indices requested later with self.get_df()).
-          If None, options.base_datset_dir is used
+          If None, options.base_dataset_dir is used
         :param original_properties_table: instance of the file properties subclass
           to be used when reading the original data to be versioned.
           If None, a FilePropertiesTable is instanced automatically.
@@ -563,10 +598,13 @@ class QuantizedImageVersion(ImageVersionTable):
         dump_array_bsq(array=img, file_or_path=output_path)
 
 
-def load_array_bsq(file_or_path, image_properties_row=None,
-                   width=None, height=None, component_count=None, dtype=None):
+def load_array(file_or_path, image_properties_row=None,
+               width=None, height=None, component_count=None, dtype=None,
+               order="bsq"):
     """Load a numpy array indexed by [x,y,z] from file_or_path using
     the geometry information in image_properties_row.
+
+    Data in the file can be presented in BSQ or BIL order.
 
     :param file_or_path: either a string with the path to the input file,
       or a file open for reading (typically with "b" mode).
@@ -576,7 +614,7 @@ def load_array_bsq(file_or_path, image_properties_row=None,
       bytes_per_sample, big_endian and float are not used.
       The remaining arguments overwrite
       those defined in image_properties_row (if image_properties_row
-       is not None and if present).
+      is not None and if present).
 
       If image_properties_row is None and any of
       (width, height, component_count, dtype) is None,
@@ -591,16 +629,19 @@ def load_array_bsq(file_or_path, image_properties_row=None,
            `X` the width (number of columns, 800 in the example)
            and `Y` the height (number of rows, 600 in the example).
 
-      If image_properties_row is not None, then the following parameters must not be None:
+      If image_properties_row is not None, then the following parameters must
+      not be None:
 
     :param width: if not None, force the read to assume this image width
     :param height: if not None, force the read to assume this image height
     :param component_count: if not None, force the read to assume this
-     number of components (bands)
+      number of components (bands)
     :param dtype: if not None, it must by a valid argument for dtype in numpy,
-    and will be used for reading. In
+      and will be used for reading. In
       this case, the bytes_per_sample, signed, big_endian and float keys
-       are not accessed in image_properties_row.
+      are not accessed in image_properties_row.
+    :param order: "bsq" for band sequential order, or "bil" for band
+      interleaved.
     :return: a 3-D numpy array with the image data, which can be indexed as [x,y,z].
     """
     # pylint: disable=too-many-arguments
@@ -622,16 +663,66 @@ def load_array_bsq(file_or_path, image_properties_row=None,
     dtype = dtype if dtype is not None else iproperties_row_to_numpy_dtype(
         image_properties_row)
 
-    return np.fromfile(file_or_path, dtype=dtype).reshape(component_count,
-                                                          height,
-                                                          width).swapaxes(0, 2)
+    order = order.lower()
+    if order == "bsq":
+        return np.fromfile(file_or_path, dtype=dtype).reshape(
+            (component_count, height, width)).swapaxes(0, 2)
+    if order == "bip":
+        return np.fromfile(file_or_path, dtype=dtype).reshape(
+            (component_count, width, height), order="F") \
+            .swapaxes(0, 2).swapaxes(0, 1)
+    if order == "bil":
+        input_array = np.fromfile(file_or_path, dtype=dtype).reshape(
+            (1, height * component_count, width)).swapaxes(0, 2)
+        output_array = np.zeros((width, height, component_count), dtype=dtype)
+        for z_index in range(component_count):
+            output_array[:, :, z_index] = input_array[:,
+                                          z_index::component_count, 0]
+        return output_array
+    raise ValueError(
+        f"Invalid order {repr(order)}. It must be 'bsq', 'bil' or 'bip'.")
 
 
-def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
-    """Dump a raw array array indexed in [x,y,z] order into a
-    band sequential (BSQ) ordering,
-    i.e., the concatenation of each component (z axis), each component in raster
-    order. Parent folders are created if not already existing.
+def load_array_bsq(file_or_path, image_properties_row=None,
+                   width=None, height=None, component_count=None, dtype=None):
+    """Load an array in BSQ order. See `enb.isets.load_array`.
+    """
+    return load_array(file_or_path=file_or_path,
+                      image_properties_row=image_properties_row,
+                      width=width, height=height,
+                      component_count=component_count,
+                      dtype=dtype, order="bsq")
+
+
+def load_array_bil(file_or_path, image_properties_row=None,
+                   width=None, height=None, component_count=None, dtype=None):
+    """Load an array in BIL order. See `enb.isets.load_array`.
+    """
+    return load_array(file_or_path=file_or_path,
+                      image_properties_row=image_properties_row,
+                      width=width, height=height,
+                      component_count=component_count,
+                      dtype=dtype, order="bil")
+
+
+def load_array_bip(file_or_path, image_properties_row=None,
+                   width=None, height=None, component_count=None, dtype=None):
+    """Load an array in BIP order. See `enb.isets.load_array`.
+    """
+    return load_array(file_or_path=file_or_path,
+                      image_properties_row=image_properties_row,
+                      width=width, height=height,
+                      component_count=component_count,
+                      dtype=dtype, order="bip")
+
+
+def dump_array(array, file_or_path, mode="wb", dtype=None, order="bsq"):
+    """Dump a raw array array indexed in [x,y,z] order into BSQ, BIL or BIP
+    order. BSQ is the concatenation of each component (z axis),
+    each component in raster order. Parent folders are created if not already
+    existing. BIL contains the first row of each of the bands, in order,
+    the the second row of each row, and so forth. BIP contains all components
+    of a pixel, in oder, then the next pixel (in raster order), etc.
 
     :param file_or_path: It can be either a file-like object, or a string-like
       object. If it is a file, contents are writen without altering the file
@@ -643,6 +734,7 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     :param force_big_endian: if True, a copy of the array is made and its bytes
     are swapped before outputting
       data to file. This parameter is ignored if dtype is provided.
+    :param order: "bsq" for band sequential order, or "bil" for band interleaved.
     """
     if isinstance(file_or_path, str) and os.path.dirname(file_or_path):
         os.makedirs(os.path.dirname(file_or_path), exist_ok=True)
@@ -661,11 +753,37 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
     if len(array.shape) == 2:
         array = np.expand_dims(array, 2)
 
-    array = array.swapaxes(0, 2)
-    array.tofile(file_or_path)
+    if order == "bsq":
+        array = array.swapaxes(0, 2)
+        array.tofile(file_or_path)
+    elif order == "bip":
+        array = array.swapaxes(0, 1).swapaxes(0, 2).flatten(order="F")
+        array.tofile(file_or_path)
+    elif order == "bil":
+        for y_index in range(array.shape[1]):
+            for z_index in range(array.shape[2]):
+                array[:, y_index, z_index].tofile(file_or_path)
+    else:
+        raise ValueError(f"Invalid order {repr(order)}. "
+                         f"It must be 'bsq', 'bil' or 'bip'.")
 
     if was_open_here:
         file_or_path.close()
+
+
+def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
+    return dump_array(array=array, file_or_path=file_or_path,
+                      mode=mode, dtype=dtype, order="bsq")
+
+
+def dump_array_bil(array, file_or_path, mode="wb", dtype=None):
+    return dump_array(array=array, file_or_path=file_or_path,
+                      mode=mode, dtype=dtype, order="bil")
+
+
+def dump_array_bip(array, file_or_path, mode="wb", dtype=None):
+    return dump_array(array=array, file_or_path=file_or_path,
+                      mode=mode, dtype=dtype, order="bip")
 
 
 def iproperties_row_to_numpy_dtype(image_properties_row):
