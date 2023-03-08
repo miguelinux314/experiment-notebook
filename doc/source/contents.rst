@@ -9,8 +9,8 @@ Contents
    basic_workflow
    experiments
    analyzing_data
-   image_compression
    data_curation
+   image_compression
    command_line_interface
    cluster_setup
    api
