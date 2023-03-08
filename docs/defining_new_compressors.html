@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
@@ -62,7 +65,6 @@
 <li class="toctree-l2"><a class="reference internal" href="image_manipulation.html">Image manipulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -96,14 +98,14 @@
            <div itemprop="articleBody">
              
   <section id="defining-new-codecs">
-<h1>Defining new codecs<a class="headerlink" href="#defining-new-codecs" title="Permalink to this headline"></a></h1>
+<h1>Defining new codecs<a class="headerlink" href="#defining-new-codecs" title="Permalink to this heading"></a></h1>
 <p>This page provides some detail on how to add new image compressors (codecs) to your experiments.</p>
 <p>In general, to add new custom codecs to your lossless (or lossy) compression experiments,
 you just need to add new instances of <a class="reference internal" href="api/enb.html#enb.icompression.AbstractCodec" title="enb.icompression.AbstractCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec</span></code></a> subclasses.
 Notwithstanding, several helper classes have been added to <a class="reference internal" href="api/enb.html#module-enb.icompression" title="enb.icompression"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.icompression</span></code></a> to speed up
 the creation of new codecs</p>
 <section id="lossless-codecs">
-<h2>Lossless codecs<a class="headerlink" href="#lossless-codecs" title="Permalink to this headline"></a></h2>
+<h2>Lossless codecs<a class="headerlink" href="#lossless-codecs" title="Permalink to this heading"></a></h2>
 <p>Lossless codecs are expected to be able to reconstruct a mathematically identical representation the original data.</p>
 <p>You can define new Lossless codecs by subclassing the <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a> class, like in the
 following example:</p>
@@ -139,7 +141,7 @@ following example:</p>
 plugin.</p>
 </section>
 <section id="lossy-and-near-lossless-codecs">
-<h2>Lossy and near lossless codecs<a class="headerlink" href="#lossy-and-near-lossless-codecs" title="Permalink to this headline"></a></h2>
+<h2>Lossy and near lossless codecs<a class="headerlink" href="#lossy-and-near-lossless-codecs" title="Permalink to this heading"></a></h2>
 <p>Lossy and near-lossless codecs can be defined by subclassing <a class="reference internal" href="api/enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a> and
 <a class="reference internal" href="api/enb.html#enb.icompression.NearLosslessCodec" title="enb.icompression.NearLosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code></a>, respectively.</p>
 <p>As in the previous example, the <cite>compress(self, original_path, compressed_path, original_file_info)</cite>
@@ -147,7 +149,7 @@ and <cite>decompress(self, compressed_path, reconstructed_path, original_file_in
 need to be specified.</p>
 </section>
 <section id="executable-wrapper-codecs">
-<h2>Executable wrapper codecs<a class="headerlink" href="#executable-wrapper-codecs" title="Permalink to this headline"></a></h2>
+<h2>Executable wrapper codecs<a class="headerlink" href="#executable-wrapper-codecs" title="Permalink to this heading"></a></h2>
 <p>Very often, compressors are implemented as an external tools, and compression and decompression
 consists in running those executables. To minimize the amount of lines of code (and bugs) that
 you need to type, the <a class="reference internal" href="api/enb.html#enb.icompression.WrapperCodec" title="enb.icompression.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code></a> is provided.</p>
@@ -175,7 +177,7 @@ path itself, only the parameters.</p>
 </div>
 </section>
 <section id="packing-your-codec-as-a-plugin">
-<span id="creating-codec-plugins"></span><h2>Packing your codec as a plugin<a class="headerlink" href="#packing-your-codec-as-a-plugin" title="Permalink to this headline"></a></h2>
+<span id="creating-codec-plugins"></span><h2>Packing your codec as a plugin<a class="headerlink" href="#packing-your-codec-as-a-plugin" title="Permalink to this heading"></a></h2>
 <p>Once you have tested your codec, you might want to release it as a plugin so that other <cite>enb</cite> users can benefit from
 your development.</p>
 <p>To create your plugin and share it with the community,</p>

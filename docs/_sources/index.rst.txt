@@ -68,8 +68,8 @@ You can also take a look at the automatically generated :ref:`API<api>`.
    basic_workflow
    experiments
    analyzing_data
-   image_compression
    data_curation
+   image_compression
    command_line_interface
    cluster_setup
    api

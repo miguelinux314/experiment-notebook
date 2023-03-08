@@ -29,18 +29,18 @@ enb.atable module
    :undoc-members:
    :show-inheritance:
 
-enb.context module
-------------------
-
-.. automodule:: enb.context
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 enb.experiment module
 ---------------------
 
 .. automodule:: enb.experiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.fits module
+---------------
+
+.. automodule:: enb.fits
    :members:
    :undoc-members:
    :show-inheritance:
@@ -105,6 +105,14 @@ enb.plotdata module
 -------------------
 
 .. automodule:: enb.plotdata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+enb.png module
+--------------
+
+.. automodule:: enb.png
    :members:
    :undoc-members:
    :show-inheritance:

@@ -15,7 +15,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -48,8 +50,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
@@ -96,17 +98,17 @@
            <div itemprop="articleBody">
              
   <section id="enb-plugins-plugin-fpack-package">
-<h1>enb.plugins.plugin_fpack package<a class="headerlink" href="#enb-plugins-plugin-fpack-package" title="Permalink to this headline"></a></h1>
+<h1>enb.plugins.plugin_fpack package<a class="headerlink" href="#enb-plugins-plugin-fpack-package" title="Permalink to this heading"></a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-enb.plugins.plugin_fpack.fpack_codec">
-<span id="enb-plugins-plugin-fpack-fpack-codec-module"></span><h2>enb.plugins.plugin_fpack.fpack_codec module<a class="headerlink" href="#module-enb.plugins.plugin_fpack.fpack_codec" title="Permalink to this headline"></a></h2>
+<span id="enb-plugins-plugin-fpack-fpack-codec-module"></span><h2>enb.plugins.plugin_fpack.fpack_codec module<a class="headerlink" href="#module-enb.plugins.plugin_fpack.fpack_codec" title="Permalink to this heading"></a></h2>
 <p>Codec wrapper for the Fpack lossless and lossy image coder</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_Abstract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decompressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_invocation_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature_in_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.icompression.FITSWrapperCodec" title="enb.icompression.FITSWrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.FITSWrapperCodec</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">LosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.fits.FITSWrapperCodec" title="enb.fits.FITSWrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">FITSWrapperCodec</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract.assert_valid_data_type">
 <span class="sig-name descname"><span class="pre">assert_valid_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract.assert_valid_data_type" title="Permalink to this definition"></a></dt>
@@ -117,7 +119,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_GZIP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a></p>
 <p>fpack wrapper with gzip compression.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.__init__">
@@ -125,16 +127,21 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>compressor_path</strong> – path to the executable to be used for compression</p></li>
-<li><p><strong>decompressor_path</strong> – path to the executable to be used for decompression</p></li>
-<li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used for compression</p></li>
-<li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are stored in this directory
-with name based on the codec and the image’s full path.</p></li>
+<li><p><strong>compressor_path</strong> – path to the executable to be used for
+compression</p></li>
+<li><p><strong>decompressor_path</strong> – path to the executable to be used for
+decompression</p></li>
+<li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used
+for compression</p></li>
+<li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are
+stored in this directory with name based on the codec and the image’s
+full path.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Pram signature_in_name</dt>
-<dd class="field-even"><p>if True, the default codec name includes part of the hexdigest of the
-compressor and decompressor binaries being used</p>
+<dd class="field-even"><p>if True, the default codec name includes
+part of the hexdigest of the compressor and decompressor binaries
+being used</p>
 </dd>
 </dl>
 </dd></dl>
@@ -142,13 +149,13 @@ compressor and decompressor binaries being used</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.get_compression_params">
 <span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.get_compression_params" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string (shell style) with the parameters
-to be passed to the compressor.</p>
+<dd><p>Return a string (shell style) with the parameters to be passed to
+the compressor.</p>
 <p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
-(e.g., geometry), or None</p>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -156,13 +163,13 @@ to be passed to the compressor.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.get_decompression_params">
 <span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.get_decompression_params" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string (shell style) with the parameters
-to be passed to the decompressor.
-Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
+<dd><p>Return a string (shell style) with the parameters to be passed to
+the decompressor. Same parameter semantics as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
-(e.g., geometry), or None</p>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -170,8 +177,8 @@ Same parameter semantics as <code class="xref py py-meth docutils literal notran
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.label">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.label" title="Permalink to this definition"></a></dt>
-<dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
-By default, the original name is returned</p>
+<dd><p>Label to be displayed for the codec. May not be strictly unique
+nor fully informative. By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py property">
@@ -185,7 +192,7 @@ By default, the original name is returned</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_HCOMPRESS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a></p>
 <p>fpack wrapper with hcompress compression.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.__init__">
@@ -193,16 +200,21 @@ By default, the original name is returned</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>compressor_path</strong> – path to the executable to be used for compression</p></li>
-<li><p><strong>decompressor_path</strong> – path to the executable to be used for decompression</p></li>
-<li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used for compression</p></li>
-<li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are stored in this directory
-with name based on the codec and the image’s full path.</p></li>
+<li><p><strong>compressor_path</strong> – path to the executable to be used for
+compression</p></li>
+<li><p><strong>decompressor_path</strong> – path to the executable to be used for
+decompression</p></li>
+<li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used
+for compression</p></li>
+<li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are
+stored in this directory with name based on the codec and the image’s
+full path.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Pram signature_in_name</dt>
-<dd class="field-even"><p>if True, the default codec name includes part of the hexdigest of the
-compressor and decompressor binaries being used</p>
+<dd class="field-even"><p>if True, the default codec name includes
+part of the hexdigest of the compressor and decompressor binaries
+being used</p>
 </dd>
 </dl>
 </dd></dl>
@@ -210,13 +222,13 @@ compressor and decompressor binaries being used</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.get_compression_params">
 <span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.get_compression_params" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string (shell style) with the parameters
-to be passed to the compressor.</p>
+<dd><p>Return a string (shell style) with the parameters to be passed to
+the compressor.</p>
 <p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
-(e.g., geometry), or None</p>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -224,13 +236,13 @@ to be passed to the compressor.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.get_decompression_params">
 <span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.get_decompression_params" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string (shell style) with the parameters
-to be passed to the decompressor.
-Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
+<dd><p>Return a string (shell style) with the parameters to be passed to
+the decompressor. Same parameter semantics as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
-(e.g., geometry), or None</p>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -238,8 +250,8 @@ Same parameter semantics as <code class="xref py py-meth docutils literal notran
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.label">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.label" title="Permalink to this definition"></a></dt>
-<dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
-By default, the original name is returned</p>
+<dd><p>Label to be displayed for the codec. May not be strictly unique
+nor fully informative. By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py property">
@@ -253,7 +265,7 @@ By default, the original name is returned</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_RICE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a></p>
 <p>fpack wrapper with Rice compression.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.__init__">
@@ -261,16 +273,21 @@ By default, the original name is returned</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>compressor_path</strong> – path to the executable to be used for compression</p></li>
-<li><p><strong>decompressor_path</strong> – path to the executable to be used for decompression</p></li>
-<li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used for compression</p></li>
-<li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are stored in this directory
-with name based on the codec and the image’s full path.</p></li>
+<li><p><strong>compressor_path</strong> – path to the executable to be used for
+compression</p></li>
+<li><p><strong>decompressor_path</strong> – path to the executable to be used for
+decompression</p></li>
+<li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used
+for compression</p></li>
+<li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are
+stored in this directory with name based on the codec and the image’s
+full path.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Pram signature_in_name</dt>
-<dd class="field-even"><p>if True, the default codec name includes part of the hexdigest of the
-compressor and decompressor binaries being used</p>
+<dd class="field-even"><p>if True, the default codec name includes
+part of the hexdigest of the compressor and decompressor binaries
+being used</p>
 </dd>
 </dl>
 </dd></dl>
@@ -278,13 +295,13 @@ compressor and decompressor binaries being used</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.get_compression_params">
 <span class="sig-name descname"><span class="pre">get_compression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.get_compression_params" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string (shell style) with the parameters
-to be passed to the compressor.</p>
+<dd><p>Return a string (shell style) with the parameters to be passed to
+the compressor.</p>
 <p>Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.compress()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
-(e.g., geometry), or None</p>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -292,13 +309,13 @@ to be passed to the compressor.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.get_decompression_params">
 <span class="sig-name descname"><span class="pre">get_decompression_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.get_decompression_params" title="Permalink to this definition"></a></dt>
-<dd><p>Return a string (shell style) with the parameters
-to be passed to the decompressor.
-Same parameter semantics as <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
+<dd><p>Return a string (shell style) with the parameters to be passed to
+the decompressor. Same parameter semantics as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCodec.decompress()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing original_path’s properties
-(e.g., geometry), or None</p>
+<dd class="field-odd"><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -306,8 +323,8 @@ Same parameter semantics as <code class="xref py py-meth docutils literal notran
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.label">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.label" title="Permalink to this definition"></a></dt>
-<dd><p>Label to be displayed for the codec. May not be strictly unique nor fully informative.
-By default, the original name is returned</p>
+<dd><p>Label to be displayed for the codec. May not be strictly unique
+nor fully informative. By default, the original name is returned</p>
 </dd></dl>
 
 <dl class="py property">
@@ -320,7 +337,7 @@ By default, the original name is returned</p>
 
 </section>
 <section id="module-enb.plugins.plugin_fpack">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins.plugin_fpack" title="Permalink to this headline"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins.plugin_fpack" title="Permalink to this heading"></a></h2>
 </section>
 </section>
 

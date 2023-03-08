@@ -3,14 +3,14 @@ div.wy-grid-for-nav, div.wy-nav-content, body.wy-body-for-nav {
 }
 
 a {
-    color: #c58b03;
+    color: #c58b03 !important;
 }
 
 a:hover {
-    color: #f3ac05;
+    color: #f3ac05 !important;
 }
 
-.btn-neutral {
+.btn-neutral, .btn-neutral:visited {
     background-color: #3f3f3f !important;
     color: #c58b03 !important;
     border-radius: 10px;

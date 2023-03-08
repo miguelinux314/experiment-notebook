@@ -15,12 +15,14 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The enb command-line tools" href="command_line_interface.html" />
-    <link rel="prev" title="Image manipulation" href="image_manipulation.html" /> 
+    <link rel="next" title="Image compression and manipulation" href="image_compression.html" />
+    <link rel="prev" title="Result analysis and plotting with enb" href="analyzing_data.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,12 +50,12 @@
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dataset curation and modification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-fileversiontable-class">The <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code> class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#predefined-classes">Predefined classes</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -86,7 +88,7 @@
            <div itemprop="articleBody">
              
   <section id="dataset-curation-and-modification">
-<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this headline"></a></h1>
+<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this heading"></a></h1>
 <p>Very often, datasets and test corpora need to be curated and/or modified before
 conducting experimental analysis with them. Typical tasks include:</p>
 <ul class="simple">
@@ -98,7 +100,7 @@ conducting experimental analysis with them. Typical tasks include:</p>
 </ul>
 <p>The <cite>enb</cite> library provides several tools to help do this in the <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules.</p>
 <section id="the-fileversiontable-class">
-<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this headline"></a></h2>
+<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> base class allows to transform an input folder into an output folder
 in a simple way. You just need to:</p>
 <ol class="arabic simple">
@@ -155,13 +157,13 @@ output path passed as argument. This is particularly useful when</p>
 </div>
 </section>
 <section id="predefined-classes">
-<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this headline"></a></h2>
+<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> includes some predefined subclasses of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.PDFToPNG" title="enb.aanalysis.PDFToPNG"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.PDFToPNG</span></code></a>: convert PDF files into high-resolution PNG files.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.PDFToPNG</span></code>: convert PDF files into high-resolution PNG files.</p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.QuantizedImageVersion" title="enb.isets.QuantizedImageVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.QuantizedImageVersion</span></code></a>: apply uniform quantization to raw images.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.isets.PNGCurationTable" title="enb.isets.PNGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.PNGCurationTable</span></code></a>: convert PNG files into raw files.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.isets.FitsVersionTable" title="enb.isets.FitsVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.FitsVersionTable</span></code></a>: extract image data from files in FITS format and save it to raw.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.PNGCurationTable</span></code>: convert PNG files into raw files.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.FitsVersionTable</span></code>: extract image data from files in FITS format and save it to raw.</p></li>
 </ul>
 <p>If you create your own subclasses, don’t hesistate to submit it to us (e.g., via a pull request in github).</p>
 </section>
@@ -171,8 +173,8 @@ output path passed as argument. This is particularly useful when</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="image_manipulation.html" class="btn btn-neutral float-left" title="Image manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="command_line_interface.html" class="btn btn-neutral float-right" title="The enb command-line tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="analyzing_data.html" class="btn btn-neutral float-left" title="Result analysis and plotting with enb" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image_compression.html" class="btn btn-neutral float-right" title="Image compression and manipulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
