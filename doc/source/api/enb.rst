@@ -117,6 +117,14 @@ enb.png module
    :undoc-members:
    :show-inheritance:
 
+enb.render module
+-----------------
+
+.. automodule:: enb.render
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.sets module
 ---------------
 
