@@ -9,6 +9,7 @@ import time
 import datetime
 import pathos
 
+# pylint: disable=relative-beyond-top-level
 from .config import options
 from . import parallel_ray
 
