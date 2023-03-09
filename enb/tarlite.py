@@ -15,10 +15,10 @@ class TarliteWriter:
     discarding any information about their contining dirs.
     """
 
-    def __init__(self, initial_input_paths=[]):
+    def __init__(self, initial_input_paths=None):
         self.input_paths = []
-        for p in initial_input_paths:
-            self.add_file(p)
+        for path in (initial_input_paths if initial_input_paths else []):
+            self.add_file(path)
 
     def add_file(self, input_path):
         """Add a file path to the list of pending ones. Note that files are
@@ -46,11 +46,14 @@ class TarliteWriter:
 class TarliteReader:
     """Extract files created by :class:`TarliteWriter`.
     """
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, tarlite_path):
         self.input_path = tarlite_path
 
     def extract_all(self, output_dir_path):
+        """Extract all files to `output_dir_path`.
+        """
         bn_count = collections.defaultdict(int)
         with open(self.input_path, "rb") as input_file:
             file_sizes = [int(e) for e in input_file.readline().decode("utf-8").split(",")]
@@ -70,12 +73,12 @@ class TarliteReader:
 def tarlite_files(input_paths, output_tarlite_path):
     """Take a list of input paths and combine them into a single tarlite file.
     """
-    tw = TarliteWriter(initial_input_paths=input_paths)
-    tw.write(output_path=output_tarlite_path)
+    writer = TarliteWriter(initial_input_paths=input_paths)
+    writer.write(output_path=output_tarlite_path)
 
 
 def untarlite_files(input_tarlite_path, output_dir_path):
     """Take a tarlite file and output the contents into the given directory.
     """
-    tr = TarliteReader(tarlite_path=input_tarlite_path)
-    tr.extract_all(output_dir_path=output_dir_path)
+    reader = TarliteReader(tarlite_path=input_tarlite_path)
+    reader.extract_all(output_dir_path=output_dir_path)
