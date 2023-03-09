@@ -96,6 +96,7 @@ from . import sets
 from . import experiment
 ## Data analysis (e.g., plotting) modules
 from . import plotdata
+from . import render
 from . import aanalysis
 ## Image compression modules
 from . import icompression

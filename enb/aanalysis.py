@@ -266,7 +266,7 @@ class Analyzer(enb.atable.ATable):
             # @enb.config.aini.managed_attributes decorator.
             selected_render_modes, show_global, show_count,
             # Rendering options, directly passed to
-            # plotdata.render_plds_by_group
+            # render.render_plds_by_group
             **render_kwargs):
         """Render all target modes and columns into output_plot_dir,
         with file names based on self's class name, the target column and the
@@ -308,7 +308,7 @@ class Analyzer(enb.atable.ATable):
                 # All arguments to the parallel rendering function are ready;
                 # their associated tasks as created
                 render_ids.append(
-                    enb.plotdata.parallel_render_plds_by_group.start(
+                    enb.render.parallel_render_plds_by_group.start(
                         **dict(column_kwargs)))
 
         # Wait until all rendering tasks are done while updating about progress
@@ -371,8 +371,7 @@ class Analyzer(enb.atable.ATable):
                     column_kwargs["pds_by_group_name"][name] = [
                         pld for pld in
                         column_kwargs["pds_by_group_name"][name]
-                        if not isinstance(pld,
-                                          enb.plotdata.VerticalLine)
+                        if not isinstance(pld, plotdata.VerticalLine)
                            or pld.x_position != 0]
         try:
             column_kwargs["group_name_order"] = [
@@ -572,7 +571,7 @@ class Analyzer(enb.atable.ATable):
                     selected_render_modes=selected_render_modes,
                     show_global=None, show_count=True, plot_title=None,
                     # Rendering options, directly passed to
-                    # plotdata.render_plds_by_group
+                    # render_plds_by_group
                     **render_kwargs):
             # pylint: disable=too-many-arguments
             selected_render_modes = selected_render_modes if selected_render_modes is not None \
@@ -768,7 +767,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
     def compute_plottable_data_one_case(self, *args, **kwargs):
         """Column-setting function (after "partialing"-out "column_selection"
         and "render_mode"), that computes the list of
-        enb.plotdata.PlottableData instances that represent one group,
+        plotdata.PlottableData instances that represent one group,
         one target column and one render mode.
 
         Subclasses must implement this method.
@@ -904,7 +903,7 @@ class ScalarNumericAnalyzer(Analyzer):
             # in turn manageable through .ini configuration files via the
             # @enb.config.aini.managed_attributes decorator.
             show_global, show_count,
-            # Rendering options, directly passed to plotdata.render_plds_by_group
+            # Rendering options, directly passed to render_plds_by_group
             **column_kwargs):
         """Update column_kwargs with the desired rendering arguments for this column
         and render mode. Return the updated dict.
@@ -928,11 +927,9 @@ class ScalarNumericAnalyzer(Analyzer):
             group_avg_tuples = []
             for group, plds in plds_by_group.items():
                 try:
-                    group_avg_tuples.append((group,
-                                             [p.x_values[0] for p in plds if
-                                              isinstance(p,
-                                                         enb.plotdata.ScatterData)][
-                                                 0]))
+                    group_avg_tuples.append(
+                        (group, [p.x_values[0] for p in plds if
+                                 isinstance(p, plotdata.ScatterData)][0]))
                 except IndexError:
                     # Empty group
                     group_avg_tuples.append((group, 0))
@@ -949,11 +946,9 @@ class ScalarNumericAnalyzer(Analyzer):
             group_avg_tuples = []
             for group, plds in plds_by_group.items():
                 try:
-                    group_avg_tuples.append((group,
-                                             [p.x_values[0] for p in plds if
-                                              isinstance(p,
-                                                         enb.plotdata.ErrorLines)][
-                                                 0]))
+                    group_avg_tuples.append(
+                        (group, [p.x_values[0] for p in plds
+                                 if isinstance(p, plotdata.ErrorLines)][0]))
                 except IndexError:
                     # Empty group
                     group_avg_tuples.append((group, 0))
@@ -1004,7 +999,7 @@ class ScalarNumericAnalyzer(Analyzer):
             # @enb.config.aini.managed_attributes decorator.
             show_global, show_count,
             # Rendering options, directly passed to
-            # plotdata.render_plds_by_group
+            # render_plds_by_group
             **column_kwargs):
         """Update rendering kwargs (e.g., labels) specifically for the
         histogram mode.
@@ -1087,7 +1082,7 @@ class ScalarNumericAnalyzer(Analyzer):
             # pylint: disable=unused-variable
             for (group_name, group_pds), pattern in zip(
                     sorted(column_kwargs["pds_by_group_name"].items()),
-                    plotdata.pattern_cycle):
+                    enb.render.pattern_cycle):
                 for pld in group_pds:
                     if isinstance(pld, plotdata.BarData):
                         pld.pattern = pattern
@@ -1115,7 +1110,7 @@ class ScalarNumericAnalyzer(Analyzer):
             # @enb.config.aini.managed_attributes decorator.
             show_global, show_count,
             # Rendering options, directly passed to
-            # plotdata.render_plds_by_group
+            # render_plds_by_group
             **column_kwargs):
         """Update rendering kwargs (e.g., labels) specifically for the hbarmode.
         """
@@ -1163,7 +1158,7 @@ class ScalarNumericAnalyzer(Analyzer):
             if reference_group and \
                     (self.show_reference_group or name != reference_group):
                 column_kwargs["pds_by_group_name"][name].append(
-                    enb.plotdata.VerticalLine(x_position=0, alpha=0.3,
+                    plotdata.VerticalLine(x_position=0, alpha=0.3,
                                               color="black"))
 
         column_kwargs["y_tick_list"] = list(
@@ -1258,8 +1253,8 @@ class ScalarNumericAnalyzer(Analyzer):
             if reference_group and \
                     (self.show_reference_group or name != reference_group):
                 column_kwargs["pds_by_group_name"][name].append(
-                    enb.plotdata.VerticalLine(x_position=0, alpha=0.3,
-                                              color="black"))
+                    plotdata.VerticalLine(
+                        x_position=0, alpha=0.3, color="black"))
 
         column_kwargs["y_tick_list"] = list(
             range(len(column_kwargs["pds_by_group_name"])))
@@ -1612,7 +1607,7 @@ class ScalarNumericSummary(AnalyzerSummary):
                 f"{100 * (len(finite_only_series) / len(column_series))}% "
                 f"of the total.")
 
-        row[_column_name] = [enb.plotdata.BarData(
+        row[_column_name] = [plotdata.BarData(
             x_values=(0,),
             y_values=(finite_only_series.mean(),),
             vertical=False,
@@ -1674,7 +1669,7 @@ class ScalarNumericSummary(AnalyzerSummary):
             np.seterr(all="warn")
 
         row[_column_name] = [
-            enb.plotdata.ErrorLines(
+            plotdata.ErrorLines(
                 x_values=(description.mean,),
                 y_values=(0,),
                 err_neg_values=(description.mean - description.minmax[0],),
@@ -1683,13 +1678,13 @@ class ScalarNumericSummary(AnalyzerSummary):
                 line_width=_self.analyzer.main_line_width,
                 marker_size=_self.analyzer.main_marker_size,
                 alpha=_self.analyzer.main_alpha),
-            enb.plotdata.Rectangle(
+            plotdata.Rectangle(
                 x_values=(0.5 * (quartiles[0] + quartiles[2]),), y_values=(0,),
                 width=quartiles[2] - quartiles[0],
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
                 height=0.8),
-            enb.plotdata.LineSegment(
+            plotdata.LineSegment(
                 x_values=(quartiles[1],), y_values=(0,),
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
@@ -1698,7 +1693,7 @@ class ScalarNumericSummary(AnalyzerSummary):
         ]
 
         if _self.analyzer.show_individual_samples:
-            row[_column_name].append(enb.plotdata.ScatterData(
+            row[_column_name].append(plotdata.ScatterData(
                 y_values=[0] * len(finite_only_series.values),
                 x_values=list(finite_only_series),
                 alpha=_self.analyzer.secondary_alpha,
@@ -1761,7 +1756,7 @@ class TwoNumericAnalyzer(Analyzer):
             # @enb.config.aini.managed_attributes decorator.
             show_global, show_count,
             # Rendering options, directly passed to
-            # plotdata.render_plds_by_group
+            # render_plds_by_group
             **column_kwargs):
         # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         # Update common rendering kwargs, including the 'pds_by_group_name'
@@ -2564,12 +2559,12 @@ class DictNumericSummary(AnalyzerSummary):
         if _self.analyzer.show_individual_samples and \
                 (self.analyzer.secondary_alpha is None
                  or self.analyzer.secondary_alpha > 0):
-            row[_column_name].append(enb.plotdata.ScatterData(
+            row[_column_name].append(plotdata.ScatterData(
                 x_values=x_values,
                 y_values=avg_values,
                 alpha=self.analyzer.secondary_alpha))
         if render_mode == "line":
-            row[_column_name].append(enb.plotdata.LineData(
+            row[_column_name].append(plotdata.LineData(
                 x_values=x_values, y_values=avg_values,
                 alpha=self.analyzer.main_alpha,
                 line_width=_self.analyzer.main_line_width,
@@ -2577,7 +2572,7 @@ class DictNumericSummary(AnalyzerSummary):
             if _self.analyzer.show_y_std:
                 _, std_values = zip(*sorted(row[f"{column_name}_std"].items()))
                 assert len(_) == len(x_values)
-                row[_column_name].append(enb.plotdata.ErrorLines(
+                row[_column_name].append(plotdata.ErrorLines(
                     x_values=x_values, y_values=avg_values,
                     err_neg_values=std_values, err_pos_values=std_values,
                     alpha=_self.analyzer.secondary_alpha,
@@ -2648,7 +2643,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 # p and pd are PlottableData instances
                 for plottable_data in (pld for pld in plds if
                                        isinstance(pld,
-                                                  enb.plotdata.Histogram2D)):
+                                                  plotdata.Histogram2D)):
                     data_column_name = column_selection[2]
                     try:
                         data_column_label = column_to_properties[
@@ -2661,7 +2656,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
             histogram_pds = list(
                 p for group_name, plds in
                 column_kwargs["pds_by_group_name"].items()
-                for p in plds if isinstance(p, enb.plotdata.Histogram2D))
+                for p in plds if isinstance(p, plotdata.Histogram2D))
             assert histogram_pds
 
             h2d = histogram_pds[0]
@@ -2722,7 +2717,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                     "pds_by_group_name"].items():
                     for plottable_data in (p for p in pds
                                            if isinstance(p,
-                                                         enb.plotdata.Histogram2D)):
+                                                         plotdata.Histogram2D)):
                         plottable_data.colormap_label = \
                             f"{plottable_data.colormap_label}" \
                             + (
@@ -2892,7 +2887,7 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
 
         histogram[counts == 0] = vmin - 1
 
-        row[_column_name] = [enb.plotdata.Histogram2D(
+        row[_column_name] = [plotdata.Histogram2D(
             x_edges=x_edges, y_edges=y_edges, matrix_values=histogram,
             colormap_label=data_column_label,
             vmin=vmin,
