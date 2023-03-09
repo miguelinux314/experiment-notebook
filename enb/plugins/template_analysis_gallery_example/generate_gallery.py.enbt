@@ -102,7 +102,6 @@ if __name__ == '__main__':
             x_tick_label_angle=90,
             fig_width=7.5,
             fig_height=5,
-            global_y_label_pos=-0.01,
             style_list=[style])
 
         # Use a reference group
@@ -163,11 +162,10 @@ if __name__ == '__main__':
             x_tick_label_angle=90,
             fig_width=7.5,
             fig_height=5,
-            global_y_label_pos=-0.01,
             combine_groups=True,
             style_list=[style])
 
-        # Excercise the 2d scalar analyzer 
+        # Excercise the 2d scalar analyzer
         df_2d = pd.read_csv(os.path.join("input_csv", "2d_data_example.csv"))
         sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
         sn2da.bin_count = 10

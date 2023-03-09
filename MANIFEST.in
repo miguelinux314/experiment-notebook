@@ -236,6 +236,7 @@ include enb/plugins/template_test_all_codecs/generate_test_images.py
 include enb/plugins/template_test_all_codecs/__plugin__.py
 include enb/plugins/template_test_all_codecs/test_all_codecs.py
 include enb/png.py
+include enb/render.py
 include enb/sets.py
 include enb/tarlite.py
 include enb/tcall.py
