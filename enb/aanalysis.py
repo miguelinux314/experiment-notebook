@@ -2693,10 +2693,6 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                             len(column_kwargs["y_tick_label_list"]) // 2],
                         column_kwargs["y_tick_label_list"][-1]]
 
-            # print("TODO: clean this")
-            # column_kwargs["x_tick_list"] = [x for x in range(len(h2d.x_edges))]
-            # column_kwargs["x_tick_label_list"] = [str(x) for x in range(len(h2d.x_edges))]
-
             if "x_min" not in column_kwargs:
                 column_kwargs["x_min"] = -0.5
             if "x_max" not in column_kwargs:
