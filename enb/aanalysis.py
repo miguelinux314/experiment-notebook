@@ -1159,7 +1159,7 @@ class ScalarNumericAnalyzer(Analyzer):
                     (self.show_reference_group or name != reference_group):
                 column_kwargs["pds_by_group_name"][name].append(
                     plotdata.VerticalLine(x_position=0, alpha=0.3,
-                                              color="black"))
+                                          color="black"))
 
         column_kwargs["y_tick_list"] = list(
             range(len(column_kwargs["pds_by_group_name"])))
@@ -2662,7 +2662,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
             h2d = histogram_pds[0]
 
             if "x_tick_list" not in column_kwargs:
-                column_kwargs["x_tick_list"] = h2d.x_values
+                column_kwargs["x_tick_list"] = list(h2d.x_values)
                 column_kwargs["x_tick_label_list"] = [
                     self.x_tick_format_str.format(e) for e in h2d.x_edges]
                 if len(column_kwargs["x_tick_label_list"]) > 16:
@@ -2678,7 +2678,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                         column_kwargs["x_tick_label_list"][-1]]
 
             if "y_tick_list" not in column_kwargs:
-                column_kwargs["y_tick_list"] = h2d.y_values
+                column_kwargs["y_tick_list"] = list(h2d.y_values)
                 column_kwargs["y_tick_label_list"] = [
                     self.y_tick_format_str.format(e) for e in h2d.y_edges]
                 if len(column_kwargs["y_tick_label_list"]) > 16:
@@ -2693,12 +2693,16 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                             len(column_kwargs["y_tick_label_list"]) // 2],
                         column_kwargs["y_tick_label_list"][-1]]
 
+            # print("TODO: clean this")
+            # column_kwargs["x_tick_list"] = [x for x in range(len(h2d.x_edges))]
+            # column_kwargs["x_tick_label_list"] = [str(x) for x in range(len(h2d.x_edges))]
+
             if "x_min" not in column_kwargs:
-                column_kwargs["x_min"] = 0
+                column_kwargs["x_min"] = -0.5
             if "x_max" not in column_kwargs:
                 column_kwargs["x_max"] = h2d.x_values[-1]
             if "y_min" not in column_kwargs:
-                column_kwargs["y_min"] = 0
+                column_kwargs["y_min"] = -0.5
             if "y_max" not in column_kwargs:
                 column_kwargs["y_max"] = h2d.y_values[-1]
             column_kwargs["x_tick_label_angle"] = 90
@@ -2875,17 +2879,14 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
             bins=self.analyzer.bin_count)
         histogram /= np.clip(counts, 1, None)
 
-        vmin = self.column_to_min_max[data_column_name][0]
-        vmax = self.column_to_min_max[data_column_name][1]
         try:
-            if kwargs["reference_group"]:
-                reference_mean = self.reference_avg_by_column[data_column_name]
-                vmin -= reference_mean
-                vmax -= reference_mean
-        except KeyError:
-            pass
-
-        histogram[counts == 0] = vmin - 1
+            vmin = kwargs["column_to_properties"][data_column_name].plot_min
+        except (TypeError, KeyError):
+            vmin = None
+        try:
+            vmax = kwargs["column_to_properties"][data_column_name].plot_max
+        except (TypeError, KeyError):
+            vmax = None
 
         row[_column_name] = [plotdata.Histogram2D(
             x_edges=x_edges, y_edges=y_edges, matrix_values=histogram,
