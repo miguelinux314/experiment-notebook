@@ -2665,33 +2665,33 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 column_kwargs["x_tick_list"] = list(h2d.x_values)
                 column_kwargs["x_tick_label_list"] = [
                     self.x_tick_format_str.format(e) for e in h2d.x_edges]
-                if len(column_kwargs["x_tick_label_list"]) > 16:
+                if len(column_kwargs["x_tick_label_list"]) > 5:
                     column_kwargs["x_tick_list"] = [
-                        column_kwargs["x_tick_list"][0],
-                        column_kwargs["x_tick_list"][
-                            len(column_kwargs["x_tick_list"]) // 2],
-                        column_kwargs["x_tick_list"][-1]]
+                        h2d.x_values[0],
+                        0.5 * (h2d.x_values[0] + h2d.x_values[-1]),
+                        h2d.x_values[-1],
+                    ]
                     column_kwargs["x_tick_label_list"] = [
-                        column_kwargs["x_tick_label_list"][0],
-                        column_kwargs["x_tick_label_list"][
-                            len(column_kwargs["x_tick_label_list"]) // 2],
-                        column_kwargs["x_tick_label_list"][-1]]
+                        h2d.x_edges[0],
+                        0.5 * (h2d.x_edges[0] + h2d.x_edges[-1]),
+                        h2d.x_edges[-1],
+                    ]
 
             if "y_tick_list" not in column_kwargs:
                 column_kwargs["y_tick_list"] = list(h2d.y_values)
                 column_kwargs["y_tick_label_list"] = [
                     self.y_tick_format_str.format(e) for e in h2d.y_edges]
-                if len(column_kwargs["y_tick_label_list"]) > 16:
+                if len(column_kwargs["y_tick_label_list"]) > 5:
                     column_kwargs["y_tick_list"] = [
-                        column_kwargs["y_tick_list"][0],
-                        column_kwargs["y_tick_list"][
-                            len(column_kwargs["y_tick_list"]) // 2],
-                        column_kwargs["y_tick_list"][-1]]
+                        h2d.y_values[0],
+                        0.5*(h2d.y_values[0] + h2d.y_values[-1]),
+                        h2d.y_values[-1],
+                    ]
                     column_kwargs["y_tick_label_list"] = [
-                        column_kwargs["y_tick_label_list"][0],
-                        column_kwargs["y_tick_label_list"][
-                            len(column_kwargs["y_tick_label_list"]) // 2],
-                        column_kwargs["y_tick_label_list"][-1]]
+                        h2d.y_edges[0],
+                        0.5 * (h2d.y_edges[0] + h2d.y_edges[-1]),
+                        h2d.y_edges[-1],
+                    ]
 
             if "x_min" not in column_kwargs:
                 column_kwargs["x_min"] = -0.5
