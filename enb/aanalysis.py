@@ -813,9 +813,10 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         Subclasses may overwrite this.
         """
         if self.reference_group:
-            enb.logger.warning(
+            enb.logger.warn(
                 f"A reference group {repr(self.reference_group)} is selected "
-                f"but {self.__class__} does not implement its apply_reference_bias method.")
+                f"but {self.__class__} does not implement "
+                f"its apply_reference_bias method.")
 
     def remove_nans(self, column_series):
         """Remove the infinite and NaN values from a pd.Series instance.
@@ -2057,14 +2058,17 @@ class TwoNumericSummary(ScalarNumericSummary):
                     scipy.stats.spearmanr(finite_series_x, finite_series_y)
                 lr_results = scipy.stats.linregress(finite_series_x,
                                                     finite_series_y)
+                row[f"{x_column_name}_{y_column_name}_linear_lse_slope"] = \
+                    lr_results.slope
                 row[
-                    f"{x_column_name}_{y_column_name}_linear_lse_slope"] = lr_results.slope
-                row[
-                    f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = lr_results.intercept
-            except (RuntimeWarning, FloatingPointError, ValueError):
-                enb.logger.info(
+                    f"{x_column_name}_{y_column_name}_linear_lse_intercept"] = \
+                    lr_results.intercept
+            except (RuntimeWarning, FloatingPointError, ValueError) as ex:
+                enb.logger.debug(
                     f"{self.__class__.__name__}: "
-                    f"Cannot set correlation metrics for dataframes of length 1")
+                    f"Cannot set correlation metrics for "
+                    f"({x_column_name=}, {y_column_name=}, {group_label=}): "
+                    f"{repr(ex)}")
                 row[f"{x_column_name}_{y_column_name}_pearson_correlation"] = \
                     float("inf")
                 row[
@@ -2140,9 +2144,16 @@ class TwoNumericSummary(ScalarNumericSummary):
                 slope = row[f"{x_column_name}_{y_column_name}_linear_lse_slope"]
                 intercept = row[
                     f"{x_column_name}_{y_column_name}_linear_lse_intercept"]
+
+                if any(not math.isfinite(x) for x in (
+                        slope, intercept, x_min, x_max)):
+                    x_values = []
+                    y_values =[]
+                else:
+                    x_values = [x_min, x_max]
+                    y_values = [intercept + slope * x for x in (x_min, x_max)]
                 plds_this_case.append(plotdata.LineData(
-                    x_values=[x_min, x_max],
-                    y_values=[intercept + slope * x for x in (x_min, x_max)],
+                    x_values=x_values, y_values=y_values,
                     marker_size=0, alpha=_self.analyzer.secondary_alpha,
                     line_width=_self.analyzer.secondary_line_width))
         elif render_mode == "line":
@@ -2684,7 +2695,7 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
                 if len(column_kwargs["y_tick_label_list"]) > 5:
                     column_kwargs["y_tick_list"] = [
                         h2d.y_values[0],
-                        0.5*(h2d.y_values[0] + h2d.y_values[-1]),
+                        0.5 * (h2d.y_values[0] + h2d.y_values[-1]),
                         h2d.y_values[-1],
                     ]
                     column_kwargs["y_tick_label_list"] = [
