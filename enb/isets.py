@@ -687,6 +687,7 @@ def load_array_bsq(file_or_path, image_properties_row=None,
                    width=None, height=None, component_count=None, dtype=None):
     """Load an array in BSQ order. See `enb.isets.load_array`.
     """
+    # pylint: disable=too-many-arguments
     return load_array(file_or_path=file_or_path,
                       image_properties_row=image_properties_row,
                       width=width, height=height,
@@ -698,6 +699,7 @@ def load_array_bil(file_or_path, image_properties_row=None,
                    width=None, height=None, component_count=None, dtype=None):
     """Load an array in BIL order. See `enb.isets.load_array`.
     """
+    # pylint: disable=too-many-arguments
     return load_array(file_or_path=file_or_path,
                       image_properties_row=image_properties_row,
                       width=width, height=height,
