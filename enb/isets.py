@@ -248,7 +248,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         else:
             raise Exception(
                 f"{self.__class__.__name__}: "
-                f"unknown {_column_name} for {file_path}")
+                f"unknown column {repr(_column_name)} for file {repr(file_path)}")
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):
@@ -305,7 +305,7 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         """
         # pylint: disable=unused-argument
         if row["float"]:
-            row[_column_name] = f"f{8 * row['bytes_per_sample']}"
+            row[_column_name] = f"f{row['bytes_per_sample']}"
         else:
             row[
                 _column_name] = f"{'>' if row['big_endian'] else '<'}" \
