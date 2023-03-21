@@ -600,7 +600,7 @@ class Histogram2D(PlottableData2D):
         cmap.set_over(color=self.bad_data_color)
         cmap.set_bad(color=self.bad_data_color)
 
-        axes_image = axes.imshow(self.matrix_values, cmap=cmap,
+        axes_image = axes.imshow(self.matrix_values.swapaxes(0,1), cmap=cmap,
                                  origin=self.origin,
                                  interpolation=self.interpolation,
                                  alpha=self.alpha, aspect=self.aspect,
