@@ -149,7 +149,6 @@ class Experiment(enb.atable.ATable):
         self.tasks = list(tasks)
         self.tasks_by_name = collections.OrderedDict(
             {str(task.name): task for task in self.tasks})
-
         self.task_families = task_families
         self.task_name_to_family_label = {}
         try:
@@ -246,18 +245,46 @@ class Experiment(enb.atable.ATable):
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
 
+
+
         enb.logger.verbose(f"Starting {self.__class__.__name__} with "
                            f"{len(self.tasks)} tasks, "
                            f"{len(target_indices)} indices, and "
                            f"{len(self.column_to_properties)} columns.")
 
-        with enb.logger.verbose_context(
-                "Computing experiment results",
-                sep="...\n",
-                msg_after="successfully computed experiment results."):
-            df = super().get_df(target_indices=target_indices, fill=fill,
-                                overwrite=overwrite,
-                                chunk_size=chunk_size)
+        chunk_size = chunk_size if chunk_size is not None \
+            else options.chunk_size
+        chunk_size = chunk_size if chunk_size is not None \
+            else len(target_indices)
+
+        for chunk in [target_indices[i:i+chunk_size]
+                      for i in range(0, len(target_indices), chunk_size)]:
+            try:
+                old_tasks = list(self.tasks)
+                old_tasks_by_name = dict(self.tasks_by_name)
+
+                task_names = list(set(task_name for _, task_name in chunk))
+
+                self.tasks = [old_tasks_by_name[name] for name in task_names]
+                self.tasks_by_name = {name:old_tasks_by_name[name]
+                                      for name in task_names}
+                # Get partial chunk size
+                with enb.logger.verbose_context(
+                        "Computing experiment results",
+                        sep="...\n",
+                        msg_after="successfully computed experiment results."):
+                    _ = super().get_df(target_indices=chunk,
+                                        fill=fill,
+                                        overwrite=overwrite,
+                                        chunk_size=chunk_size)
+            finally:
+                self.tasks = old_tasks
+                self.tasks_by_name = old_tasks_by_name
+
+        # Get all dfs (single chunk)
+        df = super().get_df(target_indices=target_indices, fill=fill,
+                            overwrite=overwrite,
+                            chunk_size=chunk_size)
 
         # Add dataset columns
         with enb.logger.verbose_context(
