@@ -1,0 +1,5 @@
+all: clean
+	g++ -Wall -O2 -Os -fomit-frame-pointer -s -o lpaq8 lpaq8.cpp
+
+clean:
+	rm -f lpaq8

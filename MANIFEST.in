@@ -125,6 +125,11 @@ include enb/plugins/plugin_lcnl/.gitignore
 include enb/plugins/plugin_lcnl/lcnl_codecs.py
 include enb/plugins/plugin_lcnl/__plugin__.py
 include enb/plugins/plugin_lcnl/README.md
+include enb/plugins/plugin_lpaq8/lpaq8_codec.py
+include enb/plugins/plugin_lpaq8/lpaq8.cpp
+include enb/plugins/plugin_lpaq8/Makefile.linux
+include enb/plugins/plugin_lpaq8/__plugin__.py
+include enb/plugins/plugin_lpaq8/readme.txt
 include enb/plugins/plugin_lz4/lz4_codec.py
 include enb/plugins/plugin_lz4/Makefile.linux
 include enb/plugins/plugin_lz4/__plugin__.py
