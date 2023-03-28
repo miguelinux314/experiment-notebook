@@ -11,6 +11,7 @@ import pdb
 import signal
 import socket
 import csv
+import time
 
 
 def get_defining_class_name(method):
@@ -153,6 +154,14 @@ class CircularList(list):
     def __getitem__(self, item):
         return super().__getitem__(item % len(self))
 
+class LapTimer:
+    def __init__(self):
+        self.last_time = time.time()
+
+    def print_lap(self, msg=None):
+        print(f"Elapsed{' ' + msg if msg is not None else ''}: "
+              f"{time.time() - self.last_time}")
+        self.last_time = time.time()
 
 def class_to_fqn(cls):
     """Given a class (type instance), return its fully qualified name (FQN).
