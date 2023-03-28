@@ -918,27 +918,30 @@ class ATable(metaclass=MetaTable):
         Recall that table cell values are restricted to be
         numeric, string, boolean or non-scalar, i.e., list, tuple or dict.
 
-        :param target_indices: list of indices that are to be contained in the table,
-          or None to infer
-          automatically from the dataset.
+        :param target_indices: list of indices that are to be contained in
+          the table, or None to infer automatically from the dataset.
         :param target_columns: if not None, it must be a list of column names
-          (defined for this class) that
-          are to be obtained for the specified indices. If None, all columns are used.
+          (defined for this class) that are to be obtained for the specified
+          indices. If None, all columns are used.
         :param fill: If True or False, it determines whether values are
-          computed for the selected indices.
-          If None, values are only computed if enb.config.options.no_new_results is False.
-        :param overwrite: values selected for filling are computed even if they are present
-          in permanent storage. Otherwise, existing values are skipped from the computation.
-        :param chunk_size: If None, its value is assigned from options.chunk_size. After this,
-           if not None, the list of target indices is split in
-           chunks of size at most chunk_size elements
-           (each one corresponding to one row in the table).
-           Results are made persistent every time one of these chunks is completed.
-           If None, a single chunk is defined with all indices.
+          computed for the selected indices. If None, values are only computed
+          if enb.config.options.no_new_results is False.
+        :param overwrite: values selected for filling are computed even if
+          they are present in permanent storage. Otherwise, existing values are
+          skipped from the computation.
+        :param chunk_size: If None, its value is assigned from
+          options.chunk_size. After this, if not None, the list of target
+          indices is split in chunks of size at most chunk_size elements (each
+          one corresponding to one row in the table). Results are made
+          persistent every time one of these chunks is completed.
+          Setting chunk_size to -1 is functionally identical to setting it
+          to None (or to the number of target indices), but it does not
+          display "Starting chunk 1/1..." (useful if the chunk partitioning
+          is performed outside, i.e., by an Experiment class).
 
         :return: a DataFrame instance containing the requested data
-        :raises: CorruptedTableError, ColumnFailedError, when an error is encountered
-          processing the data.
+        :raises: CorruptedTableError, ColumnFailedError, when an error is
+          encountered processing the data.
         """
         # pylint: disable=too-many-arguments
         # Parallelization with ray is only used if it is enabled at this point,
@@ -973,6 +976,8 @@ class ATable(metaclass=MetaTable):
 
         # Split the work into one or more chunks, which are completed before
         # moving on to the next one.
+        negative_chunk_size = chunk_size is not None and chunk_size < 0
+        chunk_size = None if chunk_size is not None and chunk_size < 0 else chunk_size
         chunk_size = chunk_size if chunk_size is not None \
             else options.chunk_size
         chunk_size = chunk_size if chunk_size is not None \
@@ -989,14 +994,15 @@ class ATable(metaclass=MetaTable):
         df = None
         if fill or overwrite:
             for i, chunk in enumerate(chunk_list):
-                enb.logger.verbose(
-                    f"[{self.__class__.__name__}:get_df] Starting chunk "
-                    f"{i + 1}/{len(chunk_list)} "
-                    f"(chunk_size={chunk_size}, "
-                    f"{100 * i * chunk_size / len(target_indices):.1f}"
-                    f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
-                    f"of {len(target_indices)} total rows) "
-                    f"@ {datetime.datetime.now()}")
+                if not negative_chunk_size:
+                    enb.logger.verbose(
+                        f"[{self.__class__.__name__}:get_df] Starting chunk "
+                        f"{i + 1}/{len(chunk_list)} "
+                        f"(chunk_size={chunk_size}, "
+                        f"{100 * i * chunk_size / len(target_indices):.1f}"
+                        f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
+                        f"of {len(target_indices)} total rows) "
+                        f"@ {datetime.datetime.now()}")
                 df = self.get_df_one_chunk(
                     target_indices=chunk, target_columns=target_columns,
                     fill_needed=True,

@@ -27,8 +27,9 @@ New features:
 
 Other changes:
 
-- Fixed CLI argument parsing for some numerical values 
-- Partial code cleanup using pylint
+- Speedup of experiments with a large number of tasks/target indices. Only chunk_size needs to be touched.
+- Fixed CLI argument parsing for some numerical values. 
+- Partial code cleanup using pylint.
 - Removal of the byte_value_* columns in ImagePropertiesTable to speed up compression experiments with
   large files.
 

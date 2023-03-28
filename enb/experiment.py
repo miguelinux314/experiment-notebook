@@ -9,6 +9,7 @@ import collections
 import itertools
 import inspect
 import time
+import datetime
 
 import enb.atable
 import enb.sets
@@ -257,8 +258,10 @@ class Experiment(enb.atable.ATable):
         chunk_size = chunk_size if chunk_size is not None \
             else len(target_indices)
 
-        for chunk in [target_indices[i:i+chunk_size]
-                      for i in range(0, len(target_indices), chunk_size)]:
+        chunks = [target_indices[i:i+chunk_size]
+                  for i in range(0, len(target_indices), chunk_size)]
+
+        for chunk_index, chunk in enumerate(chunks):
             try:
                 old_tasks = list(self.tasks)
                 old_tasks_by_name = dict(self.tasks_by_name)
@@ -270,13 +273,17 @@ class Experiment(enb.atable.ATable):
                                       for name in task_names}
                 # Get partial chunk size
                 with enb.logger.verbose_context(
-                        "Computing experiment results",
+                        f"Computing experiment chunk "
+                        f"{chunk_index}/{len(chunks)-1} "
+                        f"({100*chunk_index/len(chunks):.2f}%-"
+                        f"{min(100, 100*(chunk_index+1)/len(chunks)):.2f}% "
+                        f"@ {datetime.datetime.now()}",
                         sep="...\n",
-                        msg_after="successfully computed experiment results."):
+                        msg_after=f"completed chunk {chunk_index}/{len(chunks)-1}"):
                     _ = super().get_df(target_indices=chunk,
                                         fill=fill,
                                         overwrite=overwrite,
-                                        chunk_size=chunk_size)
+                                        chunk_size=-1)
             finally:
                 self.tasks = old_tasks
                 self.tasks_by_name = old_tasks_by_name
@@ -284,7 +291,7 @@ class Experiment(enb.atable.ATable):
         # Get all dfs (single chunk)
         df = super().get_df(target_indices=target_indices, fill=fill,
                             overwrite=overwrite,
-                            chunk_size=chunk_size)
+                            chunk_size=len(target_indices))
 
         # Add dataset columns
         with enb.logger.verbose_context(
