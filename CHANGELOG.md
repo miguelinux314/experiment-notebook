@@ -22,6 +22,7 @@ Tested on a Raspberry Pi:
 New features:
 
 - Added a plugin that can apply the direct and inverse BWT. Uses the codec API (compress, decompress).
+- Added a plugin for the LPAQ8 codec.
 - Added support in `enb.isets` for reading and writing BIL and BIP raw data orderings. Added the BIPToBSQ
   and BILToBSQ ImageVersionTable subclasses to facilitate curation of BIL and BIP datasets.
 
