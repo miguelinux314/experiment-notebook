@@ -1009,15 +1009,16 @@ class ATable(metaclass=MetaTable):
                     overwrite=overwrite,
                     run_sanity_checks=False)
 
-        # Get the target df again without filling
-        # - If more than one chunk was used, df contains the last chunk ony
-        # - If fill was False and df was not set
+
+        # Get the target df again
         if len(chunk_list) > 1 or df is None:
             df = self.get_df_one_chunk(
-                target_indices=target_indices, target_columns=target_columns,
-                fill_needed=False,
+                target_indices=target_indices,
+                target_columns=target_columns,
+                fill_needed=fill or overwrite,
                 overwrite=False,
                 run_sanity_checks=enb.config.options.force_sanity_checks)
+
 
         if fill or overwrite:
             assert len(df) == len(target_indices), (
