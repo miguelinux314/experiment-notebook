@@ -6,7 +6,6 @@ import pickle
 import unittest
 import string
 import numpy as np
-import pathos
 
 import enb.atable
 import enb.atable as atable
@@ -155,13 +154,16 @@ class TestSummaryTable(unittest.TestCase):
             p for p in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*"))
             if os.path.isfile(p)]
 
-        base_df = base_table.get_df(target_indices=target_paths)
+        for chunk_size in range(1, len(target_paths)+1):
+            enb.config.options.chunk_size = chunk_size
 
-        summary_table = enb.atable.SummaryTable(full_df=base_df)
-        summary_df = summary_table.get_df()
+            base_df = base_table.get_df(target_indices=target_paths)
 
-        assert summary_df.iloc[0]["group_label"].lower() == "all", summary_df.iloc[0]["group_label"]
-        assert summary_df.iloc[0]["group_size"] == len(target_paths)
+            summary_table = enb.atable.SummaryTable(full_df=base_df)
+            summary_df = summary_table.get_df()
+
+            assert summary_df.iloc[0]["group_label"].lower() == "all", summary_df.iloc[0]["group_label"]
+            assert summary_df.iloc[0]["group_size"] == len(target_paths)
 
 
 class CustomType:
