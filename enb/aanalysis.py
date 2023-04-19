@@ -197,63 +197,68 @@ class Analyzer(enb.atable.ATable):
                 f"Removed {self.csv_support_path} to allow "
                 f"re-analysis with {self.__class__.__name__}.")
 
-        srm = selected_render_modes
+        try:
+            original_srm = self.selected_render_modes
+            srm = set(selected_render_modes if selected_render_modes else self.valid_render_modes)
+            self.selected_render_modes = srm
 
-        def normalized_wrapper(self, full_df, target_columns, output_plot_dir,
-                               selected_render_modes, group_by, reference_group,
-                               column_to_properties,
-                               **render_kwargs):
-            # pylint: disable=too-many-arguments
-            # Get the summary table with the requested data analysis
-            summary_table = self.build_summary_atable(
-                full_df=full_df,
-                target_columns=target_columns,
-                group_by=group_by,
-                reference_group=reference_group,
-                include_all_group=show_global)
+            def normalized_wrapper(self, full_df, target_columns, output_plot_dir,
+                                   selected_render_modes, group_by, reference_group,
+                                   column_to_properties,
+                                   **render_kwargs):
+                # pylint: disable=too-many-arguments
+                # Get the summary table with the requested data analysis
+                summary_table = self.build_summary_atable(
+                    full_df=full_df,
+                    target_columns=target_columns,
+                    group_by=group_by,
+                    reference_group=reference_group,
+                    include_all_group=show_global)
 
-            old_nnr = options.no_new_results
-            try:
-                options.no_new_results = False
-                summary_df = summary_table.get_df()
-            finally:
-                options.no_new_results = old_nnr
+                old_nnr = options.no_new_results
+                try:
+                    options.no_new_results = False
+                    summary_df = summary_table.get_df()
+                finally:
+                    options.no_new_results = old_nnr
 
-            selected_render_modes = selected_render_modes if srm is None else srm
+                selected_render_modes = selected_render_modes if srm is None else srm
 
-            # Render all applicable modes
-            self.render_all_modes(
-                summary_df=summary_df,
-                target_columns=target_columns,
-                output_plot_dir=output_plot_dir,
-                reference_group=reference_group,
+                # Render all applicable modes
+                self.render_all_modes(
+                    summary_df=summary_df,
+                    target_columns=target_columns,
+                    output_plot_dir=output_plot_dir,
+                    reference_group=reference_group,
+                    group_by=group_by,
+                    column_to_properties=column_to_properties,
+                    selected_render_modes=selected_render_modes,
+                    **render_kwargs)
+
+                self.save_analysis_tables(
+                    group_by=group_by,
+                    reference_group=reference_group,
+                    selected_render_modes=selected_render_modes,
+                    summary_df=summary_df,
+                    summary_table=summary_table,
+                    target_columns=target_columns)
+
+                # Return the summary result dataframe
+                return summary_df
+
+            normalized_wrapper = self.__class__.normalize_parameters(
+                fun=normalized_wrapper,
                 group_by=group_by,
                 column_to_properties=column_to_properties,
-                selected_render_modes=selected_render_modes,
-                **render_kwargs)
-
-            self.save_analysis_tables(
-                group_by=group_by,
+                target_columns=target_columns,
                 reference_group=reference_group,
-                selected_render_modes=selected_render_modes,
-                summary_df=summary_df,
-                summary_table=summary_table,
-                target_columns=target_columns)
+                output_plot_dir=output_plot_dir,
+                selected_render_modes=selected_render_modes)
 
-            # Return the summary result dataframe
-            return summary_df
-
-        normalized_wrapper = self.__class__.normalize_parameters(
-            fun=normalized_wrapper,
-            group_by=group_by,
-            column_to_properties=column_to_properties,
-            target_columns=target_columns,
-            reference_group=reference_group,
-            output_plot_dir=output_plot_dir,
-            selected_render_modes=selected_render_modes)
-
-        return normalized_wrapper(self=self, full_df=full_df,
-                                  show_count=show_count, **render_kwargs)
+            return normalized_wrapper(self=self, full_df=full_df,
+                                      show_count=show_count, **render_kwargs)
+        finally:
+            self.selected_render_modes = original_srm
 
     def render_all_modes(
             self,
