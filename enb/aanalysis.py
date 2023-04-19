@@ -1674,7 +1674,15 @@ class ScalarNumericSummary(AnalyzerSummary):
                     quartiles = 0, 0, 0
             np.seterr(all="warn")
 
+        q1_q3_box_width = quartiles[2] - quartiles[0]
+        if q1_q3_box_width < 0:
+            if abs(q1_q3_box_width) > 1e7:
+                enb.logger.error(
+                    f"Error plotting boxplot with {self.__class__} Invalid negative box width ({q1_q3_box_width}). Setting to 0")
+            q1_q3_box_width = 0
+
         row[_column_name] = [
+            # Min-max span lines (centered around mean)
             plotdata.ErrorLines(
                 x_values=(description.mean,),
                 y_values=(0,),
@@ -1684,12 +1692,14 @@ class ScalarNumericSummary(AnalyzerSummary):
                 line_width=_self.analyzer.main_line_width,
                 marker_size=_self.analyzer.main_marker_size,
                 alpha=_self.analyzer.main_alpha),
+            # Box for 1st and 3rd quartiles
             plotdata.Rectangle(
                 x_values=(0.5 * (quartiles[0] + quartiles[2]),), y_values=(0,),
-                width=quartiles[2] - quartiles[0],
+                width=q1_q3_box_width,
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
                 height=0.8),
+            # Line for 2nd quartile (median)
             plotdata.LineSegment(
                 x_values=(quartiles[1],), y_values=(0,),
                 line_width=_self.analyzer.main_line_width,
