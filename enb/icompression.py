@@ -148,9 +148,9 @@ class AbstractCodec(enb.experiment.ExperimentTask):
     @property
     def label(self):
         """Label to be displayed for the codec. May not be strictly unique
-        nor fully informative. By default, the original name is returned
+        nor fully informative. By default, self's class name is returned.
         """
-        return self.name
+        return self.__class__.__name__
 
     @property
     def label_with_params(self):
