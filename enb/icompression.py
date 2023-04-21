@@ -152,12 +152,6 @@ class AbstractCodec(enb.experiment.ExperimentTask):
         """
         return self.__class__.__name__
 
-    @property
-    def label_with_params(self):
-        return self.label + " " + ", ".join(
-            f"{enb.atable.clean_column_name(k)}={self.param_dict[k]}"
-            for k in sorted(self.param_dict.keys()))
-
     def compress(self, original_path: str, compressed_path: str,
                  original_file_info=None):
         """Compress original_path into compress_path using param_dict as params.
@@ -965,32 +959,33 @@ class CompressionExperiment(enb.experiment.Experiment):
         return processed_row
 
     @enb.atable.column_function("compressed_size_bytes",
-                            label="Compressed data size (Bytes)", plot_min=0)
+                                label="Compressed data size (Bytes)",
+                                plot_min=0)
     def set_compressed_data_size(self, index, row):
         row[_column_name] = os.path.getsize(
             self.codec_results.compression_results.compressed_path)
 
     @enb.atable.column_function([
         enb.atable.ColumnProperties(name="compression_ratio",
-                                label="Compression ratio", plot_min=0),
+                                    label="Compression ratio", plot_min=0),
         enb.atable.ColumnProperties(name="lossless_reconstruction",
-                                label="Lossless?"),
+                                    label="Lossless?"),
         enb.atable.ColumnProperties(name="compression_time_seconds",
-                                label="Compression time (s)", plot_min=0),
+                                    label="Compression time (s)", plot_min=0),
         enb.atable.ColumnProperties(name="decompression_time_seconds",
-                                label="Decompression time (s)", plot_min=0),
+                                    label="Decompression time (s)", plot_min=0),
         enb.atable.ColumnProperties(name="repetitions",
-                                label="Number of compression/decompression "
-                                      "repetitions",
-                                plot_min=0),
+                                    label="Number of compression/decompression "
+                                          "repetitions",
+                                    plot_min=0),
         enb.atable.ColumnProperties(name="compressed_file_sha256",
-                                label="Compressed file's SHA256"),
+                                    label="Compressed file's SHA256"),
         enb.atable.ColumnProperties(name="compression_memory_kb",
-                                label="Compression memory usage (KB)",
-                                plot_min=0),
+                                    label="Compression memory usage (KB)",
+                                    plot_min=0),
         enb.atable.ColumnProperties(name="decompression_memory_kb",
-                                label="Decompression memory usage (KB)",
-                                plot_min=0),
+                                    label="Decompression memory usage (KB)",
+                                    plot_min=0),
     ])
     def set_comparison_results(self, index, row):
         """Perform a compression-decompression cycle and store the comparison
@@ -1036,7 +1031,7 @@ class CompressionExperiment(enb.experiment.Experiment):
             self.codec_results.decompression_results.maximum_memory_kb
 
     @enb.atable.column_function("bpppc", label="Compressed data rate (bpppc)",
-                            plot_min=0)
+                                plot_min=0)
     def set_bpppc(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
@@ -1048,8 +1043,9 @@ class CompressionExperiment(enb.experiment.Experiment):
             enb.logger.debug(f"Cannot determine bpppc: {repr(ex)}")
             assert "compressed_size_bytes" in row
 
-    @enb.atable.column_function("compression_ratio_dr", label="Compression ratio",
-                            plot_min=0)
+    @enb.atable.column_function("compression_ratio_dr",
+                                label="Compression ratio",
+                                plot_min=0)
     def set_compression_ratio_dr(self, index, row):
         """Set the compression ratio calculated based on the dynamic range of
         the input samples, as opposed to 8*bytes_per_sample.
@@ -1062,15 +1058,18 @@ class CompressionExperiment(enb.experiment.Experiment):
                             / (8 * row["compressed_size_bytes"])
 
     @enb.atable.column_function(
-        [enb.atable.ColumnProperties(name="compression_efficiency_1byte_entropy",
-                                 label="Compression efficiency (1B entropy)",
-                                 plot_min=0),
-         enb.atable.ColumnProperties(name="compression_efficiency_2byte_entropy",
-                                 label="Compression efficiency (2B entropy)",
-                                 plot_min=0),
-         enb.atable.ColumnProperties(name="compression_efficiency_4byte_entropy",
-                                 label="Compression efficiency (4B entropy)",
-                                 plot_min=0),
+        [enb.atable.ColumnProperties(
+            name="compression_efficiency_1byte_entropy",
+            label="Compression efficiency (1B entropy)",
+            plot_min=0),
+         enb.atable.ColumnProperties(
+             name="compression_efficiency_2byte_entropy",
+             label="Compression efficiency (2B entropy)",
+             plot_min=0),
+         enb.atable.ColumnProperties(
+             name="compression_efficiency_4byte_entropy",
+             label="Compression efficiency (4B entropy)",
+             plot_min=0),
          ])
     def set_efficiency(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
@@ -1183,9 +1182,9 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
 
         @enb.atable.column_function([
             enb.atable.ColumnProperties(name="sample_min",
-                                    label="Min sample value (byte samples)"),
+                                        label="Min sample value (byte samples)"),
             enb.atable.ColumnProperties(name="sample_max",
-                                    label="Max sample value (byte samples)")])
+                                        label="Max sample value (byte samples)")])
         def set_sample_extrema(self, file_path, row):
             """Set the minimum and maximum byte value extrema.
             """
@@ -1194,16 +1193,20 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
                 row["sample_min"] = min(contents)
                 row["sample_max"] = max(contents)
 
-        @enb.atable.column_function("bytes_per_sample", label="Bytes per sample",
-                                plot_min=0)
+        @enb.atable.column_function("bytes_per_sample",
+                                    label="Bytes per sample",
+                                    plot_min=0)
         def set_bytes_per_sample(self, file_path, row):
             row[_column_name] = 1
 
         @enb.atable.column_function([
-            enb.atable.ColumnProperties(name="width", label="Width", plot_min=1),
-            enb.atable.ColumnProperties(name="height", label="Height", plot_min=1),
-            enb.atable.ColumnProperties(name="component_count", label="Components",
-                                    plot_min=1),
+            enb.atable.ColumnProperties(name="width", label="Width",
+                                        plot_min=1),
+            enb.atable.ColumnProperties(name="height", label="Height",
+                                        plot_min=1),
+            enb.atable.ColumnProperties(name="component_count",
+                                        label="Components",
+                                        plot_min=1),
             enb.atable.ColumnProperties(name="big_endian"),
             enb.atable.ColumnProperties(name="float"),
         ])
@@ -1232,7 +1235,8 @@ class StructuralSimilarity(CompressionExperiment):
 
     @enb.atable.column_function([
         enb.atable.ColumnProperties(name="ssim", label="SSIM", plot_max=1),
-        enb.atable.ColumnProperties(name="ms_ssim", label="MS-SSIM", plot_max=1)])
+        enb.atable.ColumnProperties(name="ms_ssim", label="MS-SSIM",
+                                    plot_max=1)])
     def set_StructuralSimilarity(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[

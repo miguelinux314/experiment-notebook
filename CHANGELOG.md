@@ -29,10 +29,13 @@ New features:
 Other changes:
 
 - Speedup of experiments with a large number of tasks/target indices. Only chunk_size needs to be touched.
+- The `task_label` column is now by default the task's class name (elements of the tasks' param_dict are not
+  included in it anymore).
 - Fixed CLI argument parsing for some numerical values. 
 - Partial code cleanup using pylint.
 - Removal of the byte_value_* columns in ImagePropertiesTable to speed up compression experiments with
   large files.
+- Speedup of enb.aanalyis.Analizer subclases with more than one render mode.
 
 # Latest stable version:
 
