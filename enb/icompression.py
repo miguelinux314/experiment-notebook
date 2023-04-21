@@ -192,8 +192,11 @@ class AbstractCodec(enb.experiment.ExperimentTask):
             side_info_files=[],
             compression_time_seconds=None)
 
-    def decompression_results_from_paths(self, compressed_path,
-                                         reconstructed_path):
+    def decompression_results_from_paths(
+            self, compressed_path, reconstructed_path):
+        """Return a enb.icompression.DecompressionResults instance given
+        the compressed and reconstructed paths.
+        """
         return DecompressionResults(
             codec_name=self.name,
             codec_param_dict=self.param_dict,
@@ -209,20 +212,19 @@ class AbstractCodec(enb.experiment.ExperimentTask):
             + ")>"
 
 
-class LosslessCodec(AbstractCodec):
-    """A AbstractCodec that identifies itself as lossless
+class LosslessCodec(AbstractCodec): # pylint: disable=abstract-method
+    """An AbstractCodec that identifies itself as lossless.
     """
-    pass
 
 
-class LossyCodec(AbstractCodec):
-    """A AbstractCodec that identifies itself as lossy
+class LossyCodec(AbstractCodec): # pylint: disable=abstract-method
+    """An AbstractCodec that identifies itself as lossy.
     """
-    pass
 
 
-class NearLosslessCodec(LossyCodec):
-    pass
+class NearLosslessCodec(LossyCodec): # pylint: disable=abstract-method
+    """An AbstractCodec that identifies itself as near lossless.
+    """
 
 
 class WrapperCodec(AbstractCodec):
@@ -1062,15 +1064,15 @@ class CompressionExperiment(enb.experiment.Experiment):
             name="compression_efficiency_1byte_entropy",
             label="Compression efficiency (1B entropy)",
             plot_min=0),
-         enb.atable.ColumnProperties(
-             name="compression_efficiency_2byte_entropy",
-             label="Compression efficiency (2B entropy)",
-             plot_min=0),
-         enb.atable.ColumnProperties(
-             name="compression_efficiency_4byte_entropy",
-             label="Compression efficiency (4B entropy)",
-             plot_min=0),
-         ])
+            enb.atable.ColumnProperties(
+                name="compression_efficiency_2byte_entropy",
+                label="Compression efficiency (2B entropy)",
+                plot_min=0),
+            enb.atable.ColumnProperties(
+                name="compression_efficiency_4byte_entropy",
+                label="Compression efficiency (4B entropy)",
+                plot_min=0),
+        ])
     def set_efficiency(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
