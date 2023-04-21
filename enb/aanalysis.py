@@ -1678,7 +1678,9 @@ class ScalarNumericSummary(AnalyzerSummary):
         if q1_q3_box_width < 0:
             if abs(q1_q3_box_width) > 1e7:
                 enb.logger.error(
-                    f"Error plotting boxplot with {self.__class__} Invalid negative box width ({q1_q3_box_width}). Setting to 0")
+                    f"Error plotting boxplot with {self.__class__}: "
+                    f"invalid negative box width ({q1_q3_box_width}). "
+                    f"Setting to 0 instead.")
             q1_q3_box_width = 0
 
         row[_column_name] = [

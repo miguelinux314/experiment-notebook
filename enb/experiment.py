@@ -233,7 +233,7 @@ class Experiment(enb.atable.ATable):
         :param overwrite: if not None, a flag determining whether existing
           values should be calculated again. If none, options
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         target_indices = self.target_file_paths \
             if target_indices is None else target_indices
         overwrite = overwrite if overwrite is not None else options.force
@@ -279,7 +279,8 @@ class Experiment(enb.atable.ATable):
                         f"{min(100, 100*(chunk_index+1)/len(chunks)):.2f}%) "
                         f"@ {datetime.datetime.now()}",
                         sep="...\n",
-                        msg_after=f"Completed {self.__class__.__name__} chunk #{chunk_index}/{len(chunks)-1}"):
+                        msg_after=f"Completed {self.__class__.__name__} "
+                                  f"chunk #{chunk_index}/{len(chunks)-1}"):
                     _ = super().get_df(target_indices=chunk,
                                         fill=fill,
                                         overwrite=overwrite,

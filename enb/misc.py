@@ -154,14 +154,26 @@ class CircularList(list):
     def __getitem__(self, item):
         return super().__getitem__(item % len(self))
 
+
 class LapTimer:
+    """Keep track of time duration similar to a lap timer. Useful to track
+    the time elapsed between consecutive calls to print_lap.
+    """
+
+    # pylint: disable=too-few-public-methods
+
     def __init__(self):
         self.last_time = time.time()
 
     def print_lap(self, msg=None):
+        """Print the elapsed time since the last time this method was called,
+        or when this instance was created if it is the first time this method
+        is called.
+        """
         print(f"Elapsed{' ' + msg if msg is not None else ''}: "
               f"{time.time() - self.last_time}")
         self.last_time = time.time()
+
 
 def class_to_fqn(cls):
     """Given a class (type instance), return its fully qualified name (FQN).

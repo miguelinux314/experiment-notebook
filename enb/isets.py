@@ -711,6 +711,7 @@ def load_array_bip(file_or_path, image_properties_row=None,
                    width=None, height=None, component_count=None, dtype=None):
     """Load an array in BIP order. See `enb.isets.load_array`.
     """
+    # pylint: disable=too-many-arguments
     return load_array(file_or_path=file_or_path,
                       image_properties_row=image_properties_row,
                       width=width, height=height,
@@ -774,16 +775,25 @@ def dump_array(array, file_or_path, mode="wb", dtype=None, order="bsq"):
 
 
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
+    """Dump an image array into raw format using band sequential (BSQ)
+    sample ordering. See :meth:`enb.isets.dump_array` for more details.
+    """
     return dump_array(array=array, file_or_path=file_or_path,
                       mode=mode, dtype=dtype, order="bsq")
 
 
 def dump_array_bil(array, file_or_path, mode="wb", dtype=None):
+    """Dump an image array into raw format using band interleaved line (BIL)
+    sample ordering. See :meth:`enb.isets.dump_array` for more details.
+    """
     return dump_array(array=array, file_or_path=file_or_path,
                       mode=mode, dtype=dtype, order="bil")
 
 
 def dump_array_bip(array, file_or_path, mode="wb", dtype=None):
+    """Dump an image array into raw format using band interleaved pixel (BIP)
+    sample ordering. See :meth:`enb.isets.dump_array` for more details.
+    """
     return dump_array(array=array, file_or_path=file_or_path,
                       mode=mode, dtype=dtype, order="bip")
 
