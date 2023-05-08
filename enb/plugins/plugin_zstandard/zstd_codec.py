@@ -10,8 +10,7 @@ from enb import tarlite
 import tempfile
 import subprocess
 
-
-class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.FITSWrapperCodec):
+class Zstandard(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.fits.FITSWrapperCodec):
     """Wrapper for the Zstandard codec
     All data types integer and float 16, 32, 64 can be compressed
     """
