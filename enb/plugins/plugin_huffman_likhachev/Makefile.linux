@@ -1,5 +1,0 @@
-all:
-	gcc *.c -o huffman
-
-clean:
-	rm -rf *.o huffman
