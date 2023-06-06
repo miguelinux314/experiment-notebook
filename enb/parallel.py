@@ -8,6 +8,7 @@ import os
 import time
 import datetime
 import pathos
+import dill
 
 # pylint: disable=relative-beyond-top-level
 from .config import options
@@ -123,6 +124,7 @@ class FallbackFuture:
 def fallback_parallel_decorator(*decorator_args, **decorator_kwargs):
     """Decorator for methods intended to run in parallel in the local machine.
     """
+
     # pylint: disable=unused-argument
 
     def wrapper(fun):
@@ -286,3 +288,20 @@ class ProgressiveGetter:
         if not self.pending_ids:
             raise StopIteration
         return self
+
+
+def parallel_fix_dill_crash():
+    """Temporary fix of a crash in dill when a module's __file__ attribute is
+    defined but is None.
+    """
+    original_dill_builtin_check = dill._dill._is_builtin_module
+
+    def robust_dill_builtin_check(module):
+        try:
+            return original_dill_builtin_check(module)
+        except TypeError as ex:
+            if module.__file__ is None:
+                return True
+            raise ex
+
+    dill._dill._is_builtin_module = robust_dill_builtin_check

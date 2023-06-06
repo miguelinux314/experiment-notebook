@@ -77,6 +77,9 @@ from .log import logger
 from . import parallel
 from . import parallel_ray
 
+# Temporary fix until the dill library is fixed
+parallel.parallel_fix_dill_crash()
+
 # Setup logging so that it is used from here on. Done here to avoid circular dependencies.
 logger.selected_log_level = log.get_level(
     name=config.options.selected_log_level,
