@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Lossless compression experiment using enb, the Electronic NoteBook library.
 
-See https://github.com/miguelinux314/experiment-notebook for additional documentation.
+See https://github.com/miguelinux314/experiment-notebook
+for additional documentation.
 """
 
 import os
@@ -14,63 +15,89 @@ from enb.config import options
 import plugins
 
 class LosslessExperiment(enb.icompression.LosslessCompressionExperiment):
-    """Custom data columns can be defined in this class.
-    If no columns are defined, enb.icompression.LosslessCompressionExperiment can
-    be used directly when instantiating the experiment.
+    """Custom data columns can be defined in this class. If no columns are
+    defined, enb.icompression.LosslessCompressionExperiment can be used
+    directly when instantiating the experiment.
     """
     pass
+
 
 if __name__ == '__main__':
     # Many flags are defined in enb.config.options based on the CLI arguments
     # with which this script is invoked. Run with -h for a full description.
     options.verbose = 1
 
-    # Temporary compressed and reconstructed files are saved under options.base_tmp_dir.
-    # By default, a memory disk is used if possible. This can be set to a physical partition if
-    # temporary files are expected to be larger than the memory (swap may be used).
-    # options.base_tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp")
+    # Temporary compressed and reconstructed files are saved under
+    # options.base_tmp_dir. By default, a memory disk is used if possible.
+    # This can be set to a physical partition if temporary files are expected
+    # to be larger than the memory (swap may be used). options.base_tmp_dir =
+    # os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp")
 
-    # By default, Experiments and other ATable subclasses read input samples from options.base_dataset_dir,
-    # which defaults to ./datasets. This can be uncommented to use other datasets. Make sure to set
-    # the Experiment or ATable instances' dataset_files_extension member to filter the desired files.
-    # options.base_dataset_dir = "./datasets"
+    # By default, Experiments and other ATable subclasses read input samples
+    # from options.base_dataset_dir, which defaults to ./datasets. This can
+    # be uncommented to use other datasets. Make sure to set the Experiment
+    # or ATable instances' dataset_files_extension member to filter the
+    # desired files. options.base_dataset_dir = "./datasets"
 
-    # Compression experiments use Codecs as ExperimentTask subclasses. A list of codec
-    # instances (each with their desired parameters) needs to be created.
-    # You can install new codecs (run `enb plugin list` to see a list of all available plugins)
-    # into ./plugins and instantiate them at will.
+    # Compression experiments use Codecs as ExperimentTask subclasses. A list
+    # of codec instances (each with their desired parameters) needs to be
+    # created. You can install new codecs (run `enb plugin list` to see a
+    # list of all available plugins) into ./plugins and instantiate them at
+    # will.
     codecs = []
 
-    # All plugins installed in ./plugins can be instantiated automatically with the following snippet.
-    codecs += [cls() for cls in enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
-              if not "abstract" in cls.__name__.lower()]
+    # All plugins installed in ./plugins can be instantiated automatically
+    # with the following snippet.
+
+    print(f"{enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)=}")
+
+
+    for cls in [c for c in
+                enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
+                if enb.misc.class_to_fqn(c).startswith("plugins.")
+                and not "abstract" in c.__name__.lower()]:
+        try:
+            codecs.append(cls())
+        except Exception as ex:
+            print(f"Error initializing codec {cls.__name__}. "
+                  f"It will not be included in the experiment.\n{repr(ex)}")
 
     if not codecs:
-        enb.logger.error("No codec has been defined, nor installed under ./plugins. "
-                         "Try `enb plugin list codec` for a list of "
-                         "available plugins. You can change 'codec' for any other search string.")
+        enb.logger.error(
+            "No codec has been defined, nor installed under ./plugins. "
+            "Try `enb plugin list codec` for a list of "
+            "available plugins. You can change 'codec' for any "
+            "other search string.")
         sys.exit(1)
 
     # Create experiment.
     exp = LosslessExperiment(codecs=codecs)
 
-    # Generate pandas dataframe with results. Persistence is automatically added
+    # Generate pandas dataframe with results. Persistence is
+    # automatically added
     df = exp.get_df()
 
-    # Selection of potentially relevant columns. You can use any of the columns available in
-    # the experiment class (including any column you defined, e.g., in the LosslessExperiment class above).
-    scalar_columns = ["compression_ratio_dr", "bpppc", "compression_time_seconds", "decompression_time_seconds",
-                      "compression_efficiency_1byte_entropy", "compression_efficiency_2byte_entropy"]
+    # Selection of potentially relevant columns. You can use any of the
+    # columns available in the experiment class (including any column you
+    # defined, e.g., in the LosslessExperiment class above).
+    scalar_columns = ["compression_ratio_dr", "bpppc",
+                      "compression_time_seconds",
+                      "decompression_time_seconds",
+                      "compression_efficiency_1byte_entropy",
+                      "compression_efficiency_2byte_entropy"]
     column_pairs = [("bpppc", "compression_time_seconds"),
-                    ("compression_time_seconds", "compression_efficiency_1byte_entropy"),
-                    ("compression_time_seconds", "compression_efficiency_2byte_entropy")]
+                    ("compression_time_seconds",
+                     "compression_efficiency_1byte_entropy"),
+                    ("compression_time_seconds",
+                     "compression_efficiency_2byte_entropy")]
 
     # Scalar column analysis
     scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
     scalar_analyzer.get_df(
         # Mandatory params
         full_df=df,  # the dataframe produced by exp
-        target_columns=scalar_columns,  # the list of ATable column names
+        target_columns=scalar_columns,
+        # the list of ATable column names
         # Provide plotting hints based on the defined columns
         column_to_properties=exp.joined_column_to_properties,
         # Optional params
