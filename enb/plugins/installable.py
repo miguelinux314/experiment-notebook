@@ -85,7 +85,7 @@ class Installable(metaclass=InstallableMeta):
     contrib_download_url_name = []
 
     # List of pip-installable python module names required by this Installable.
-    # Subclasses must overwrite this member as necessary. 
+    # Subclasses must overwrite this member as necessary.
     # Can be empty if needed.
     # Modules required by enb need not be added.
     required_pip_modules = []
@@ -108,7 +108,7 @@ class Installable(metaclass=InstallableMeta):
     def install(cls, installation_dir, overwrite_destination=False):
         """Install this Installable into `installation_dir`. By default, copy all contents
         of the Installable source dir and install the declared pip requirements.
-        
+
         :param installation_dir: path where the installable is to be copied and, when necessary, built.
         :param overwrite_destination: if True, if the destination exists prior to this call,
             it is removed before installation.
@@ -253,7 +253,7 @@ class Installable(metaclass=InstallableMeta):
 
 def install(name, target_dir=None, overwrite=False, automatic_import=True):
     """Install an Installable by name into target_dir.
-    
+
     :param name: name of the installable (e.g., plugin) to be installed. Run `enb plugin list` in the CLI
       to get a list of all available installables.
     :param target_dir: If `target_dir` is None, it is set to `plugins/<plugin_name>` by default.
