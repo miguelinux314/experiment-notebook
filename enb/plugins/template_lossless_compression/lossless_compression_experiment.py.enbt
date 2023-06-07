@@ -48,10 +48,6 @@ if __name__ == '__main__':
 
     # All plugins installed in ./plugins can be instantiated automatically
     # with the following snippet.
-
-    print(f"{enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)=}")
-
-
     for cls in [c for c in
                 enb.misc.get_all_subclasses(enb.icompression.LosslessCodec)
                 if enb.misc.class_to_fqn(c).startswith("plugins.")
