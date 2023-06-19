@@ -17,7 +17,7 @@ via the following command line command:
 
 .. code-block:: bash
 
-    enb install lossy-compression lc
+    enb plugin install lossy-compression lc
 
 In addition, we are going to install some lossy codecs from the ones listed
 with `enb plugin list codec`. Namely, JPEG-LS and the Versatile Video Coder (VVC).
