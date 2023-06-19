@@ -7,8 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   enb.plugins.plugin_ccsds122
    enb.plugins.plugin_fpack
    enb.plugins.plugin_iraf_photometry
+   enb.plugins.plugin_jpeg_xs
 
 Submodules
 ----------

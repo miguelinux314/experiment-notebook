@@ -1,0 +1,10 @@
+enb.plugins.plugin\_jpeg\_xs package
+====================================
+
+Module contents
+---------------
+
+.. automodule:: enb.plugins.plugin_jpeg_xs
+   :members:
+   :undoc-members:
+   :show-inheritance:

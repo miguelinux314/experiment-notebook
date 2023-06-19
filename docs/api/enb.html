@@ -109,6 +109,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="enb.plugins.html">enb.plugins package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="enb.plugins.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html">enb.plugins.plugin_ccsds122 package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122.ccsds122_codec">enb.plugins.plugin_ccsds122.ccsds122_codec module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_fpack.html">enb.plugins.plugin_fpack package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack.fpack_codec">enb.plugins.plugin_fpack.fpack_codec module</a></li>
@@ -120,6 +126,10 @@
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_jpeg_xs.html">enb.plugins.plugin_jpeg_xs package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_jpeg_xs.html#module-enb.plugins.plugin_jpeg_xs">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -148,7 +158,7 @@ for detailed help.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">Analyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p>
 <p>Base class for all enb analyzers.</p>
-<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling
 get_df. In addition, if render_plots is used in that function, one or
 more figures will be produced. What plots are generated (if any) is based
 on the values of the self.selected_render_modes list, which must contain
@@ -251,7 +261,7 @@ manually after definition and before calling <a class="reference internal" href=
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.get_df">
 <span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition"></a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing
 plots, and returning the computed dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained
 self.selected_render_modes, which must be in self.valid_render_modes.</p>
@@ -290,7 +300,7 @@ self.show_count is used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -585,13 +595,13 @@ attempted after any column the subclass may have defined.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -737,7 +747,7 @@ should be plotted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1284,7 +1294,7 @@ is included in the analysis.</p></li>
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <span class="sig-name descname"><span class="pre">add_scalar_description_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition"></a></dt>
 <dd><p>Add the scalar description columns for a given column_name in the
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance being analyzed.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance being analyzed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1620,10 +1630,10 @@ enb.experiment.TaskFamily instances.</p>
 <section id="enb-atable-automatic-tables-with-implicit-column-definition">
 <h3><a class="reference internal" href="#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: Automatic tables with implicit column definition<a class="headerlink" href="#enb-atable-automatic-tables-with-implicit-column-definition" title="Permalink to this headline"></a></h3>
 <section id="atable-produces-dataframe-instances">
-<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
+<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
 <p>This module defines the <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class,
 which is the base for all automatic tables in <a class="reference internal" href="#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
-<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance when their <cite>get_df</cite>
+<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance when their <cite>get_df</cite>
 method is successfully called. These are powerful dynamic tables that can be
 used directly, and/or passed to some of the tools in the <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 to easily produce figures and tables.</p>
@@ -1674,7 +1684,7 @@ You can reuse existing ATable subclasses directly and/or create new subclasses.<
 <p>Our <cite>TableA</cite> class accepts list-like values (e.g., strings) as indices,
 and defines the <cite>index_length</cite> column as the number of elements (e.g.,
 characters) in the index.</p>
-<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
+<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table_a</span> <span class="o">=</span> <span class="n">TableA</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;my_index_name&quot;</span><span class="p">)</span>
 <span class="n">example_indices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ab c&quot;</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>  <span class="c1"># List of iterables</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">table_a</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">example_indices</span><span class="p">)</span>
@@ -1791,7 +1801,7 @@ to obtain simething similar to:</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">ATable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Automatic table with implicit column definition.</p>
-<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>
+<p>ATable subclasses’ have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>
 instance with the requested data. You can use (multiple) inheritance
 using one or more ATable subclasses to combine the columns of those
 subclasses into the newly defined one. You can then define methods with
@@ -1935,7 +1945,7 @@ compute_target_rows(), i.e., the dispatcher function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
 with index compatible with loc. The loc argument itself needs not be
 present in filtered_df, but is used to avoid recomputing in case
 overwrite is not True and columns had been set.</p></li>
@@ -1961,7 +1971,7 @@ with a column named as given by self.private_index_column set to the
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.compute_target_rows">
 <span class="sig-name descname"><span class="pre">compute_target_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by
+<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by
 <cite>target_indices</cite>, with the columns
 given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are known missing values in the
@@ -1994,7 +2004,7 @@ data was present. In that case, the newly computed results replace the old ones.
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
 (i.e., following this class’ column defintion). Each row corresponds to
 one element in target_indices, maintaining the same order.</p>
 </dd>
@@ -2025,7 +2035,7 @@ By default, the global function enb.atable.get_all_input_files is called.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
 <cite>target_indices</cite>, and as many columns as there are defined in
 self.column_to_properties. If <cite>target_indices</cite> is None, all files in
 enb.config.options.base_dataset_dir are used (after filtering by
@@ -2057,31 +2067,34 @@ numeric, string, boolean or non-scalar, i.e., list, tuple or dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>target_indices</strong> – list of indices that are to be contained in the table,
-or None to infer
-automatically from the dataset.</p></li>
+<li><p><strong>target_indices</strong> – list of indices that are to be contained in
+the table, or None to infer automatically from the dataset.</p></li>
 <li><p><strong>target_columns</strong> – if not None, it must be a list of column names
-(defined for this class) that
-are to be obtained for the specified indices. If None, all columns are used.</p></li>
+(defined for this class) that are to be obtained for the specified
+indices. If None, all columns are used.</p></li>
 <li><p><strong>fill</strong> – If True or False, it determines whether values are
-computed for the selected indices.
-If None, values are only computed if enb.config.options.no_new_results is False.</p></li>
-<li><p><strong>overwrite</strong> – values selected for filling are computed even if they are present
-in permanent storage. Otherwise, existing values are skipped from the computation.</p></li>
-<li><p><strong>chunk_size</strong> – If None, its value is assigned from options.chunk_size. After this,
-if not None, the list of target indices is split in
-chunks of size at most chunk_size elements
-(each one corresponding to one row in the table).
-Results are made persistent every time one of these chunks is completed.
-If None, a single chunk is defined with all indices.</p></li>
+computed for the selected indices. If None, values are only computed
+if enb.config.options.no_new_results is False.</p></li>
+<li><p><strong>overwrite</strong> – values selected for filling are computed even if
+they are present in permanent storage. Otherwise, existing values are
+skipped from the computation.</p></li>
+<li><p><strong>chunk_size</strong> – If None, its value is assigned from
+options.chunk_size. After this, if not None, the list of target
+indices is split in chunks of size at most chunk_size elements (each
+one corresponding to one row in the table). Results are made
+persistent every time one of these chunks is completed.
+Setting chunk_size to -1 is functionally identical to setting it
+to None (or to the number of target indices), but it does not
+display “Starting chunk 1/1…” (useful if the chunk partitioning
+is performed outside, i.e., by an Experiment class).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a DataFrame instance containing the requested data</p>
 </dd>
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p>CorruptedTableError, ColumnFailedError, when an error is encountered
-processing the data.</p>
+<dd class="field-odd"><p>CorruptedTableError, ColumnFailedError, when an error is
+encountered processing the data.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2415,7 +2428,7 @@ the row’s column.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_column_mro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.MetaTable.set_column_mro" title="Permalink to this definition"></a></dt>
 <dd><p>Redefine column properties that have been defined in the child class,
 making sure the expected method resolution order (MRO) is maintained.</p>
-<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
+<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
 following intuitive OOP definition.</p>
 </dd></dl>
 
@@ -2528,13 +2541,13 @@ initialization is used.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.SummaryTable.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -2673,7 +2686,7 @@ indexing is consistent across code using <a class="reference internal" href="#en
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.get_nonscalar_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">get_nonscalar_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.get_nonscalar_value" title="Permalink to this definition"></a></dt>
-<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain
+<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain
 non-scalar types, i.e., dict, list or tuple.
 Return an instance of one of those types.</p>
 <p>If cell_value is a string, ast is employed to parse it.
@@ -2690,8 +2703,8 @@ and not through <a class="reference internal" href="#enb.atable.ATable" title="e
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">indices_to_internal_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.indices_to_internal_loc" title="Permalink to this definition"></a></dt>
 <dd><p>Given an index string or list of strings, return a single index string
 that uniquely identifies those strings and can be used as an internal index.</p>
-<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
-value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
+<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
+value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
 intentionally not used to maintain a simple, flat structure of tables without nesting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2740,7 +2753,7 @@ the string or float value given by cell_value</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.unpack_index_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">unpack_index_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.unpack_index_value" title="Permalink to this definition"></a></dt>
-<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
+<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
 This can be useful to iterate homogeneously regardless of whether single
 or multiple indices are used.</p>
 <dl class="field-list simple">
@@ -3245,19 +3258,16 @@ all needed metainformation in the compressed file.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.icompression.AbstractCodec.decompression_results_from_paths">
 <span class="sig-name descname"><span class="pre">decompression_results_from_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.AbstractCodec.decompression_results_from_paths" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return a enb.icompression.DecompressionResults instance given
+the compressed and reconstructed paths.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.icompression.AbstractCodec.label">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.icompression.AbstractCodec.label" title="Permalink to this definition"></a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique
-nor fully informative. By default, the original name is returned</p>
+nor fully informative. By default, self’s class name is returned.</p>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="enb.icompression.AbstractCodec.label_with_params">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label_with_params</span></span><a class="headerlink" href="#enb.icompression.AbstractCodec.label_with_params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.icompression.AbstractCodec.name">
@@ -3422,7 +3432,7 @@ compute_target_rows(), i.e., the dispatcher function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
 with index compatible with loc. The loc argument itself needs not be
 present in filtered_df, but is used to avoid recomputing in case
 overwrite is not True and columns had been set.</p></li>
@@ -3754,7 +3764,7 @@ all needed metainformation in the compressed file.</p></li>
 <dt class="sig sig-object py" id="enb.icompression.LosslessCodec">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.icompression.</span></span><span class="sig-name descname"><span class="pre">LosslessCodec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LosslessCodec" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.AbstractCodec" title="enb.icompression.AbstractCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec</span></code></a></p>
-<p>A AbstractCodec that identifies itself as lossless</p>
+<p>An AbstractCodec that identifies itself as lossless.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -3786,7 +3796,7 @@ results</p>
 <dt class="sig sig-object py" id="enb.icompression.LossyCodec">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.icompression.</span></span><span class="sig-name descname"><span class="pre">LossyCodec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.LossyCodec" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.AbstractCodec" title="enb.icompression.AbstractCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec</span></code></a></p>
-<p>A AbstractCodec that identifies itself as lossy</p>
+<p>An AbstractCodec that identifies itself as lossy.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -3836,6 +3846,7 @@ bytes_per_sample.</p>
 <dt class="sig sig-object py" id="enb.icompression.NearLosslessCodec">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.icompression.</span></span><span class="sig-name descname"><span class="pre">NearLosslessCodec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.NearLosslessCodec" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a></p>
+<p>An AbstractCodec that identifies itself as near lossless.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -4606,17 +4617,23 @@ as a file path, open as determined by the mode parameter.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.dump_array_bil">
 <span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">dump_array_bil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.dump_array_bil" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Dump an image array into raw format using band interleaved line (BIL)
+sample ordering. See <a class="reference internal" href="#enb.isets.dump_array" title="enb.isets.dump_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.isets.dump_array()</span></code></a> for more details.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.dump_array_bip">
 <span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">dump_array_bip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.dump_array_bip" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Dump an image array into raw format using band interleaved pixel (BIP)
+sample ordering. See <a class="reference internal" href="#enb.isets.dump_array" title="enb.isets.dump_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.isets.dump_array()</span></code></a> for more details.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.dump_array_bsq">
 <span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">dump_array_bsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.dump_array_bsq" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Dump an image array into raw format using band sequential (BSQ)
+sample ordering. See <a class="reference internal" href="#enb.isets.dump_array" title="enb.isets.dump_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.isets.dump_array()</span></code></a> for more details.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.entropy">
@@ -4777,22 +4794,22 @@ after flattening. Implemented following
 <p>It uses only symbols from .misc, but no other module in enb.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.log.LogLevel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">LogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">LogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Each of the available logging levels is an instance of this class.
-A level represents a named type of message, with a priority comparable
-to other levels.</p>
+<p>Each of the available logging levels is an instance of this class. A
+level represents a named type of message, with a priority comparable to
+other levels.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.LogLevel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>priority</strong> – minimum priority level needed to show this level.</p></li>
 <li><p><strong>name</strong> – unique name for the level.</p></li>
-<li><p><strong>prefix</strong> – prefix when printing messages of this level. If None, a default one
-is used based on the name.</p></li>
-<li><p><strong>help</strong> – optional help explaining the purpose of the level.</p></li>
+<li><p><strong>prefix</strong> – prefix when printing messages of this level. If None,
+a default one is used based on the name.</p></li>
+<li><p><strong>help_message</strong> – optional help explaining the purpose of the level.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4805,12 +4822,14 @@ is used based on the name.</p></li>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Message logging and printing hub for <cite>enb</cite>.</p>
-<p>Messages are only shown if their priority is at least as high as the configured minimum.</p>
-<p>The minimum required level name (from “core” down to “debug”) can be selected via the CLI and the file-based configuration
-by setting the <cite>selected_log_level</cite> flag/option.</p>
-<p>You can then modify this minimum value programmatically
-by setting <cite>enb.config.options.minimum_priority_level</cite> to a new <a class="reference internal" href="#enb.log.LogLevel" title="enb.log.LogLevel"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogLevel</span></code></a> instance,
-such as LOG_VERBOSE or any of the other constants defined above.</p>
+<p>Messages are only shown if their priority is at least as high as the
+configured minimum.</p>
+<p>The minimum required level name (from “core” down to “debug”) can be
+selected via the CLI and the file-based configuration by setting the
+<cite>selected_log_level</cite> flag/option.</p>
+<p>You can then modify this minimum value programmatically by setting
+<cite>enb.config.options.minimum_priority_level</cite> to a new <a class="reference internal" href="#enb.log.LogLevel" title="enb.log.LogLevel"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogLevel</span></code></a>
+instance, such as LOG_VERBOSE or any of the other constants defined above.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.__init__" title="Permalink to this definition"></a></dt>
@@ -4822,7 +4841,8 @@ such as LOG_VERBOSE or any of the other constants defined above.</p>
 <dd><p>A message of “core” level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4830,9 +4850,9 @@ such as LOG_VERBOSE or any of the other constants defined above.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.core_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">core_active</span></span><a class="headerlink" href="#enb.log.Logger.core_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the core level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the core level.</p>
+<dd><p>Return True if and only if the core level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the core level.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4843,9 +4863,11 @@ than the core level.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – Message to show before starting the code block.</p></li>
-<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (newline is not required in it to allow single-line reporting).</p></li>
+<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (
+newline is not required in it to allow single-line reporting).</p></li>
 <li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon completion.</p></li>
-<li><p><strong>show_duration</strong> – if True, a message displaying the run time is logged upon completion.</p></li>
+<li><p><strong>show_duration</strong> – if True, a message displaying the run time is
+logged upon completion.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4857,7 +4879,8 @@ than the core level.</p>
 <dd><p>Log a debug trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4865,9 +4888,9 @@ than the core level.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.debug_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debug_active</span></span><a class="headerlink" href="#enb.log.Logger.debug_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the debug level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the debug level.</p>
+<dd><p>Return True if and only if the debug level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the debug level.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4878,10 +4901,11 @@ than the debug level.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – Message to show before starting the code block.</p></li>
-<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (newline is not required in it to allow
-single-line reporting)</p></li>
+<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (
+newline is not required in it to allow single-line reporting)</p></li>
 <li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon completion.</p></li>
-<li><p><strong>show_duration</strong> – if True, a message displaying the run time is logged upon completion.</p></li>
+<li><p><strong>show_duration</strong> – if True, a message displaying the run time is
+logged upon completion.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4893,7 +4917,8 @@ single-line reporting)</p></li>
 <dd><p>Log an error message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4901,16 +4926,17 @@ single-line reporting)</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.error_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_active</span></span><a class="headerlink" href="#enb.log.Logger.error_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the error level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the error level.</p>
+<dd><p>Return True if and only if the error level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the error level.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.get_level">
 <span class="sig-name descname"><span class="pre">get_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.get_level" title="Permalink to this definition"></a></dt>
-<dd><p>If lower_priority is 0, return the logging level associated with the name passed as argument.
-Otherwise, the aforementioned level’s priority is lowered by that numeric amount (positive values means
+<dd><p>If lower_priority is 0, return the logging level associated with
+the name passed as argument. Otherwise, the aforementioned level’s
+priority is lowered by that numeric amount (positive values means
 less prioritary levels can be selected).</p>
 <p>After that, the available level with the closest priority is chosen.</p>
 </dd></dl>
@@ -4921,7 +4947,8 @@ less prioritary levels can be selected).</p>
 <dd><p>Log an extra-informative console message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4929,9 +4956,9 @@ less prioritary levels can be selected).</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.info_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info_active</span></span><a class="headerlink" href="#enb.log.Logger.info_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the info level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the info level.</p>
+<dd><p>Return True if and only if the info level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the info level.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4942,10 +4969,11 @@ than the info level.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – Message to show before starting the code block.</p></li>
-<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (newline is not required in it to allow
-single-line reporting)</p></li>
+<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (
+newline is not required in it to allow single-line reporting)</p></li>
 <li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon completion.</p></li>
-<li><p><strong>show_duration</strong> – if True, a message displaying the run time is logged upon completion.</p></li>
+<li><p><strong>show_duration</strong> – if True, a message displaying the run time is
+logged upon completion.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4954,27 +4982,30 @@ single-line reporting)</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.level_active">
 <span class="sig-name descname"><span class="pre">level_active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.level_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the given name corresponds to a level with
-priority sufficient given self.min_priority_level.</p>
+<dd><p>Return True if and only if the given name corresponds to a level
+with priority sufficient given self.min_priority_level.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.levels_by_priority">
 <span class="sig-name descname"><span class="pre">levels_by_priority</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.levels_by_priority" title="Permalink to this definition"></a></dt>
-<dd><p>Return a list of the available levels, sorted from higher to lower priority.</p>
+<dd><p>Return a list of the available levels, sorted from higher to lower
+priority.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.log">
 <span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.log" title="Permalink to this definition"></a></dt>
-<dd><p>Conditionally log a message given its level. It only shares “end” with builtins.print as keyword argument.</p>
+<dd><p>Conditionally log a message given its level. It only shares “end”
+with builtins.print as keyword argument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – message to be logged</p></li>
 <li><p><strong>level</strong> – priority level for the message</p></li>
 <li><p><strong>end</strong> – string appended after the message, if it is shown.</p></li>
-<li><p><strong>file</strong> – file where to log the message, or None to automatically select sys.stdout</p></li>
+<li><p><strong>file</strong> – file where to log the message, or None to automatically
+select sys.stdout</p></li>
 <li><p><strong>flush</strong> – if True, the output file is flushed after writing.</p></li>
 </ul>
 </dd>
@@ -4984,20 +5015,22 @@ priority sufficient given self.min_priority_level.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.log_context">
 <span class="sig-name descname"><span class="pre">log_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'...'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg_after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.log_context" title="Permalink to this definition"></a></dt>
-<dd><p>Log a message before executing the <cite>with</cite> block code,
-run the block, and log another message when the block is completed.
-The message given the selected priority level, and is only displayed based on <cite>self.selected_log_level</cite>.
-The block of code is executed regardless of the logging options.</p>
+<dd><p>Log a message before executing the <cite>with</cite> block code, run the
+block, and log another message when the block is completed. The
+message given the selected priority level, and is only displayed
+based on <cite>self.selected_log_level</cite>. The block of code is executed
+regardless of the logging options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – Message typically describing the</p></li>
 <li><p><strong>level</strong> – Priority level for the shown messages.</p></li>
-<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (newline is not required in it to allow
-single-line reporting)</p></li>
-<li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon completion. If none, one is automatically selected
-based on msg.</p></li>
-<li><p><strong>show_duration</strong> – if True, a message displaying the run time is logged upon completion.</p></li>
+<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (
+newline is not required in it to allow single-line reporting)</p></li>
+<li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon
+completion. If none, one is automatically selected based on msg.</p></li>
+<li><p><strong>show_duration</strong> – if True, a message displaying the run time is
+logged upon completion.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5009,7 +5042,8 @@ based on msg.</p></li>
 <dd><p>Log a regular console message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5017,9 +5051,9 @@ based on msg.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.message_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message_active</span></span><a class="headerlink" href="#enb.log.Logger.message_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the message level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the message level.</p>
+<dd><p>Return True if and only if the message level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the message level.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -5030,10 +5064,11 @@ than the message level.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – Message to show before starting the code block.</p></li>
-<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (newline is not required in it to allow
-single-line reporting)</p></li>
+<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (
+newline is not required in it to allow single-line reporting)</p></li>
 <li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon completion.</p></li>
-<li><p><strong>show_duration</strong> – if True, a message displaying the run time is logged upon completion.</p></li>
+<li><p><strong>show_duration</strong> – if True, a message displaying the run time is
+logged upon completion.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5049,13 +5084,16 @@ If file is None, then sys.stdout is used by default.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.replace_print">
 <span class="sig-name descname"><span class="pre">replace_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.replace_print" title="Permalink to this definition"></a></dt>
-<dd><p>When invoked with replace set to True,
-it substitutes the builtin print for a wrapper function that logs the contents
-with “message” priority. If invoked more than once in a row with replace set to True, the second
-and following calls just return the original print function.</p>
-<p>When invoked with replace set to False, the original print function is restored if it is not currently
-substituted with enb’s logging method. The original print function is also returned in this case.</p>
-<p>Note that the wrapper function does not admit the file or flush parameters.</p>
+<dd><p>When invoked with replace set to True, it substitutes the builtin
+print for a wrapper function that logs the contents with “message”
+priority. If invoked more than once in a row with replace set to
+True, the second and following calls just return the original print
+function.</p>
+<p>When invoked with replace set to False, the original print function
+is restored if it is not currently substituted with enb’s logging
+method. The original print function is also returned in this case.</p>
+<p>Note that the wrapper function does not admit the file or flush
+parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the original builtin’s print.</p>
@@ -5068,9 +5106,10 @@ substituted with enb’s logging method. The original print function is also ret
 <span class="sig-name descname"><span class="pre">report_level_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.report_level_status" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a string reporting the present logging levels and whether or not they are active.</p>
+<dd class="field-odd"><p>a string reporting the present logging levels and whether</p>
 </dd>
 </dl>
+<p>or not they are active.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -5079,7 +5118,8 @@ substituted with enb’s logging method. The original print function is also ret
 <dd><p>Log a verbose console message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5087,9 +5127,9 @@ substituted with enb’s logging method. The original print function is also ret
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.verbose_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">verbose_active</span></span><a class="headerlink" href="#enb.log.Logger.verbose_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the verbose level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the verbose level.</p>
+<dd><p>Return True if and only if the verbose level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the verbose level.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -5100,10 +5140,11 @@ than the verbose level.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – Message to show before starting the code block.</p></li>
-<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (newline is not required in it to allow
-single-line reporting)</p></li>
+<li><p><strong>sep</strong> – separator printed between msg_before and msg_after (
+newline is not required in it to allow single-line reporting)</p></li>
 <li><p><strong>msg_after</strong> – message shown after <cite>msg</cite> and <cite>sep</cite> upon completion.</p></li>
-<li><p><strong>show_duration</strong> – if True, a message displaying the run time is logged upon completion.</p></li>
+<li><p><strong>show_duration</strong> – if True, a message displaying the run time is
+logged upon completion.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5115,7 +5156,8 @@ single-line reporting)</p></li>
 <dd><p>Log a warning message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5123,9 +5165,9 @@ single-line reporting)</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.log.Logger.warn_active">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">warn_active</span></span><a class="headerlink" href="#enb.log.Logger.warn_active" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if and only if the warn level is currently active, i.e.,
-the current <cite>self.min_priority_level</cite> has a greater or equal priority value
-than the warn level.</p>
+<dd><p>Return True if and only if the warn level is currently active,
+i.e., the current <cite>self.min_priority_level</cite> has a greater or equal
+priority value than the warn level.</p>
 </dd></dl>
 
 </dd></dl>
@@ -5136,7 +5178,8 @@ than the warn level.</p>
 <dd><p>A message of “core” level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5147,7 +5190,8 @@ than the warn level.</p>
 <dd><p>Log a debug trace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5158,7 +5202,8 @@ than the warn level.</p>
 <dd><p>Log an error message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5166,8 +5211,9 @@ than the warn level.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.log.get_level">
 <span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">get_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.get_level" title="Permalink to this definition"></a></dt>
-<dd><p>If lower_priority is 0, return the logging level associated with the name passed as argument.
-Otherwise, the aforementioned level’s priority is lowered by that numeric amount (positive values means
+<dd><p>If lower_priority is 0, return the logging level associated with
+the name passed as argument. Otherwise, the aforementioned level’s
+priority is lowered by that numeric amount (positive values means
 less prioritary levels can be selected).</p>
 <p>After that, the available level with the closest priority is chosen.</p>
 </dd></dl>
@@ -5178,7 +5224,8 @@ less prioritary levels can be selected).</p>
 <dd><p>Log an extra-informative console message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5186,14 +5233,16 @@ less prioritary levels can be selected).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.log.log">
 <span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.log" title="Permalink to this definition"></a></dt>
-<dd><p>Conditionally log a message given its level. It only shares “end” with builtins.print as keyword argument.</p>
+<dd><p>Conditionally log a message given its level. It only shares “end”
+with builtins.print as keyword argument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> – message to be logged</p></li>
 <li><p><strong>level</strong> – priority level for the message</p></li>
 <li><p><strong>end</strong> – string appended after the message, if it is shown.</p></li>
-<li><p><strong>file</strong> – file where to log the message, or None to automatically select sys.stdout</p></li>
+<li><p><strong>file</strong> – file where to log the message, or None to automatically
+select sys.stdout</p></li>
 <li><p><strong>flush</strong> – if True, the output file is flushed after writing.</p></li>
 </ul>
 </dd>
@@ -5206,7 +5255,8 @@ less prioritary levels can be selected).</p>
 <dd><p>Log a regular console message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5216,9 +5266,10 @@ less prioritary levels can be selected).</p>
 <span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">report_level_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.report_level_status" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a string reporting the present logging levels and whether or not they are active.</p>
+<dd class="field-odd"><p>a string reporting the present logging levels and whether</p>
 </dd>
 </dl>
+<p>or not they are active.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -5227,7 +5278,8 @@ less prioritary levels can be selected).</p>
 <dd><p>Log a verbose console message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5238,7 +5290,8 @@ less prioritary levels can be selected).</p>
 <dd><p>Log a warning message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be compatible)</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – optional arguments passed to self.log (must be
+compatible)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5268,6 +5321,27 @@ that return what requesting that property would.</p>
 <dt class="sig sig-object py" id="enb.misc.ExposedProperty.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.ExposedProperty.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.misc.LapTimer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">LapTimer</span></span><a class="headerlink" href="#enb.misc.LapTimer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Keep track of time duration similar to a lap timer. Useful to track
+the time elapsed between consecutive calls to print_lap.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.LapTimer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.LapTimer.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.LapTimer.print_lap">
+<span class="sig-name descname"><span class="pre">print_lap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.LapTimer.print_lap" title="Permalink to this definition"></a></dt>
+<dd><p>Print the elapsed time since the last time this method was called,
+or when this instance was created if it is the first time this method
+is called.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -5526,6 +5600,13 @@ be retrieved by calling <cite>enb.parallel.get</cite> with the id object.</p>
 <p>Important: parallel calls should not generally read or modify global
 variables. The main exception is enb.config.options, which can be read
 from parallel calls.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.parallel.parallel_fix_dill_crash">
+<span class="sig-prename descclassname"><span class="pre">enb.parallel.</span></span><span class="sig-name descname"><span class="pre">parallel_fix_dill_crash</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.parallel.parallel_fix_dill_crash" title="Permalink to this definition"></a></dt>
+<dd><p>Temporary fix of a crash in dill when a module’s __file__ attribute is
+defined but is None.</p>
 </dd></dl>
 
 </section>
@@ -6829,7 +6910,7 @@ If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+163.g7ffb960f6d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0.dev0+977.g0bc16da1e5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
 <cite>target_indices</cite>, and as many columns as there are defined in
 self.column_to_properties. If <cite>target_indices</cite> is None, all files in
 enb.config.options.base_dataset_dir are used (after filtering by
@@ -6861,31 +6942,34 @@ numeric, string, boolean or non-scalar, i.e., list, tuple or dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>target_indices</strong> – list of indices that are to be contained in the table,
-or None to infer
-automatically from the dataset.</p></li>
+<li><p><strong>target_indices</strong> – list of indices that are to be contained in
+the table, or None to infer automatically from the dataset.</p></li>
 <li><p><strong>target_columns</strong> – if not None, it must be a list of column names
-(defined for this class) that
-are to be obtained for the specified indices. If None, all columns are used.</p></li>
+(defined for this class) that are to be obtained for the specified
+indices. If None, all columns are used.</p></li>
 <li><p><strong>fill</strong> – If True or False, it determines whether values are
-computed for the selected indices.
-If None, values are only computed if enb.config.options.no_new_results is False.</p></li>
-<li><p><strong>overwrite</strong> – values selected for filling are computed even if they are present
-in permanent storage. Otherwise, existing values are skipped from the computation.</p></li>
-<li><p><strong>chunk_size</strong> – If None, its value is assigned from options.chunk_size. After this,
-if not None, the list of target indices is split in
-chunks of size at most chunk_size elements
-(each one corresponding to one row in the table).
-Results are made persistent every time one of these chunks is completed.
-If None, a single chunk is defined with all indices.</p></li>
+computed for the selected indices. If None, values are only computed
+if enb.config.options.no_new_results is False.</p></li>
+<li><p><strong>overwrite</strong> – values selected for filling are computed even if
+they are present in permanent storage. Otherwise, existing values are
+skipped from the computation.</p></li>
+<li><p><strong>chunk_size</strong> – If None, its value is assigned from
+options.chunk_size. After this, if not None, the list of target
+indices is split in chunks of size at most chunk_size elements (each
+one corresponding to one row in the table). Results are made
+persistent every time one of these chunks is completed.
+Setting chunk_size to -1 is functionally identical to setting it
+to None (or to the number of target indices), but it does not
+display “Starting chunk 1/1…” (useful if the chunk partitioning
+is performed outside, i.e., by an Experiment class).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a DataFrame instance containing the requested data</p>
 </dd>
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p>CorruptedTableError, ColumnFailedError, when an error is encountered
-processing the data.</p>
+<dd class="field-odd"><p>CorruptedTableError, ColumnFailedError, when an error is
+encountered processing the data.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -7123,13 +7207,14 @@ method returns a value, that value is taken as the time measurement.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.tarlite.TarliteReader.extract_all">
 <span class="sig-name descname"><span class="pre">extract_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.tarlite.TarliteReader.extract_all" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Extract all files to <cite>output_dir_path</cite>.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.tarlite.TarliteWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.tarlite.</span></span><span class="sig-name descname"><span class="pre">TarliteWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_input_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.tarlite.TarliteWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.tarlite.</span></span><span class="sig-name descname"><span class="pre">TarliteWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_input_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.tarlite.TarliteWriter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Input a series of file paths and output a single file with
 all the inputs contents, plus some metainformation to reconstruct them.
@@ -7137,7 +7222,7 @@ Files are stored flatly, i.e., only names are stored,
 discarding any information about their contining dirs.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.tarlite.TarliteWriter.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_input_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.tarlite.TarliteWriter.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_input_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.tarlite.TarliteWriter.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
