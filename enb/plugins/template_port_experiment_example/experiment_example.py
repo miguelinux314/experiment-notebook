@@ -36,8 +36,7 @@ class PortExperiment(enb.experiment.Experiment):
     dataset_files_extension = "txt"
 
     def column_port_open(self, index, row):
-        url_file_path, task_name = index
-        checkport_task = self.tasks_by_name[task_name]
+        url_file_path, checkport_task = self.index_to_path_task(index)
         return checkport_task.check_one_port(url_file_path)
 
 
@@ -57,4 +56,4 @@ if __name__ == '__main__':
     for url_file_path, url_df in open_port_df.groupby("file_path"):
         print(f"Found open ports in {open(url_file_path, 'r').read().strip()}:\n - ", end="")
         print("\n - ".join(str(d['port']) for d in url_df["param_dict"]))
-            
+
