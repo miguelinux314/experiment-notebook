@@ -314,11 +314,9 @@ class Experiment(enb.atable.ATable):
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 
     def index_to_path_task(self, index):
-        """Given an ATable index, return (task, path), where task is the
-        current row's task name and path the input file's canonical path.
-
-        Note that thos index is the same used in every ATable row column
-        signature, e.g., (self, index, row).
+        """Given an Experiment's row index, return `(path, task)`, where
+        `path` is the canonical path of the row's dataset element,
+        and `task` is the task instance corresponding to that row.
         """
         return index[0], self.tasks_by_name[index[1]]
 

@@ -98,7 +98,7 @@ class FilePropertiesTable(atable.ATable):
         """Store the original file size in row.
         :param file_path: path to the file to analyze
         :param row: dictionary of previously computed values for this
-          file_path (to speed up derived values)
+          file_path (to speed up derived values).
         """
         row[_column_name] = os.path.getsize(file_path)
 

@@ -151,11 +151,6 @@ What columns are created?
 You can define as many columns in your |Experiment| class as you need.
 To do so, we follow the same basic idea as in :doc:`basic_workflow`.
 
-The only difference this time is that the `index` parameter passed to
-the column-computing functions is now a tuple with two elements:
-the index in the `dataset_info_table` of the |Experiment|
-and the `name` property of the |ExperimentTask|.
-
 In our example, we can simply define a single column (`port_open`), whose value is
 set to whatever is returned by our `CheckPort` tasks::
 
@@ -165,21 +160,16 @@ set to whatever is returned by our `CheckPort` tasks::
         dataset_files_extension = "txt"
 
         def column_port_open(self, index, row):
-            url_file_path, task_name = index
-            checkport_task = self.tasks_by_name[task_name]
+            url_file_path, checkport_task = self.index_to_path_task(index)
             return checkport_task.check_one_port(url_file_path)
 
 
 .. note::
 
-    Since our experiment table has a file path and a task as an index (i.e., row identifier),
-    the first line of `column_port_open`  allows you to get both::
-
-        url_file_path, task_name = index
-
-    Then one can use |Experiment|'s `task_by_name` dict to retrieve the |ExperimentTask| instance::
-
-        checkport_task = self.tasks_by_name[task_name]
+    The :meth:`enb.experiment.Experiment.index_to_path_task` transforms the index
+    of an experiment's row into a tuple `(path, task)`, where `path` is the file path
+    of the row's dataset element, and `task` is the |ExperimentTask| instance
+    corresponding to that row.
 
 Final steps
 -----------
