@@ -188,10 +188,6 @@ then enb will create 4 (2*2) rows, indexed as follows:</p>
 <h2>What columns are created?<a class="headerlink" href="#what-columns-are-created" title="Permalink to this headline"></a></h2>
 <p>You can define as many columns in your <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class as you need.
 To do so, we follow the same basic idea as in <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a>.</p>
-<p>The only difference this time is that the <cite>index</cite> parameter passed to
-the column-computing functions is now a tuple with two elements:
-the index in the <cite>dataset_info_table</cite> of the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>
-and the <cite>name</cite> property of the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a>.</p>
 <p>In our example, we can simply define a single column (<cite>port_open</cite>), whose value is
 set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PortExperiment</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">Experiment</span><span class="p">):</span>
@@ -200,22 +196,16 @@ set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
     <span class="n">dataset_files_extension</span> <span class="o">=</span> <span class="s2">&quot;txt&quot;</span>
 
     <span class="k">def</span> <span class="nf">column_port_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
-        <span class="n">url_file_path</span><span class="p">,</span> <span class="n">task_name</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="n">checkport_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks_by_name</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span>
+        <span class="n">url_file_path</span><span class="p">,</span> <span class="n">checkport_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_to_path_task</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">checkport_task</span><span class="o">.</span><span class="n">check_one_port</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since our experiment table has a file path and a task as an index (i.e., row identifier),
-the first line of <cite>column_port_open</cite>  allows you to get both:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">url_file_path</span><span class="p">,</span> <span class="n">task_name</span> <span class="o">=</span> <span class="n">index</span>
-</pre></div>
-</div>
-<p>Then one can use <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>’s <cite>task_by_name</cite> dict to retrieve the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkport_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks_by_name</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span>
-</pre></div>
-</div>
+<p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment.index_to_path_task" title="enb.experiment.Experiment.index_to_path_task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.experiment.Experiment.index_to_path_task()</span></code></a> transforms the index
+of an experiment’s row into a tuple <cite>(path, task)</cite>, where <cite>path</cite> is the file path
+of the row’s dataset element, and <cite>task</cite> is the <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> instance
+corresponding to that row.</p>
 </div>
 </section>
 <section id="final-steps">

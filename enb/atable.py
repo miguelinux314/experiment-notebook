@@ -128,7 +128,7 @@ Advanced column definition
 
 To further customize your new columns, you can use the |column_function| decorator.
 
-1.    You can add column metainformation on how |aanalysis| plots the data by
+1.  You can add column metainformation on how |aanalysis| plots the data by
     default, e.g., labels, ranges, logarithmic axes, etc. An example column with
     descriptive label can be defined as follows::
 
@@ -137,7 +137,6 @@ To further customize your new columns, you can use the |column_function| decorat
             row["uppercase"] = index.upper()
 
     See the |ColumnProperties| class for all available plotting cues.
-
 
 2.  You can set two or more columns with a single function. To do so, you can
     pass a list of |ColumnProperties| instances to the |column_function|
@@ -150,7 +149,6 @@ To further customize your new columns, you can use the |column_function| decorat
     combination of variables.
 
 4. You can mix strings and |ColumnProperties| instances in the |column_function| decorator.
-
 
 The following snippet illustrates points 2 onwards::
 

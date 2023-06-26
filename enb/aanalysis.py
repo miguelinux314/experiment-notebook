@@ -281,7 +281,7 @@ class Analyzer(enb.atable.ATable):
         to customize the rendering parameters that are passed to the parallel
         rendering function from enb.plotdata. These overwriting methods are
         encouraged to call
-        `enb.aanalysis.Analyzer.update_render_kwargs_one_case (directly or
+        `enb.aanalysis.Analyzer.update_render_kwargs_one_case` (directly or
         indirectly) so make sure all necessary parameters reach the rendering
         function.
         """
