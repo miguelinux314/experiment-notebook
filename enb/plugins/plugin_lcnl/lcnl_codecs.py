@@ -57,7 +57,7 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
             decompressor_path=ldc_decoder_path, param_dict=param_dict)
         self.ldc_header_tool_path = ldc_header_tool_path
         self.output_header_dir = output_header_dir
-        
+
     @property
     def label(self):
         return f"CCSDS 121.0-B-3 J{self.param_dict['large_j']}"
@@ -99,14 +99,14 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
                              compressed_path=compressed_path,
                              original_file_info=original_file_info)
             cr.original_path = original_path
-            
+
             if self.output_header_dir is not None:
                 header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(
                     os.sep, "_")
                 os.makedirs(self.output_header_dir, exist_ok=True)
                 shutil.copyfile(image_dependent_header_file.name,
                                 os.path.join(self.output_header_dir, header_output_name))
-                
+
             return cr
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
@@ -153,7 +153,6 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
                  output_header_dir=None):
         # Process params
         param_dict = sortedcontainers.SortedDict()
-        # 
         param_dict["a_vector"] = absolute_error_limit
         param_dict["r_vector"] = relative_error_limit
         # entropy coder type always present
@@ -231,11 +230,11 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
                 if image_params["r_vector"] > 0 else 1
 
         if original_file_info["bytes_per_sample"] == 1:
-            large_d = min(8, original_file_info["dynamic_range_bits"] + 1)
+            large_d = min(8, max(2, original_file_info["dynamic_range_bits"]))
         elif original_file_info["bytes_per_sample"] == 2:
-            large_d = max(9, min(16, original_file_info["dynamic_range_bits"] + 1))
+            large_d = max(9, min(16, original_file_info["dynamic_range_bits"]))
         elif original_file_info["bytes_per_sample"] == 4:
-            large_d = max(24, min(32, original_file_info["dynamic_range_bits"] + 1))
+            large_d = max(24, min(32, original_file_info["dynamic_range_bits"]))
         else:
             raise ValueError(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
 
@@ -271,7 +270,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             cr = super().compress(original_path=original_path,
                              compressed_path=compressed_path,
                              original_file_info=original_file_info)
-            
+
 
             if self.output_header_dir is not None:
                 header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(
@@ -279,7 +278,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
                 os.makedirs(self.output_header_dir, exist_ok=True)
                 shutil.copyfile(image_dependent_header_file.name,
                                 os.path.join(self.output_header_dir, header_output_name))
-                
+
             return cr
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
@@ -309,7 +308,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             if self.param_dict['a_vector'] is not None else ''
         s += f" $r_z={self.param_dict['r_vector']}$" \
             if self.param_dict['r_vector'] is not None else ''
-        
+
         return s
 
 
