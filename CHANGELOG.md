@@ -14,20 +14,31 @@ format. Given a code initially developed for one `enb` version and then executed
 
 ## Development version v0.4.5
 
-Tested on a Raspberry Pi:
-
-- Removed ray as a dependency when installing enb.
-- Successfully tested on a Raspberry Pi. Extended installation instructions for this platform.
-
 New features:
 
 - Added a plugin that can apply the direct and inverse BWT. Uses the codec API (compress, decompress).
 - Added a plugin for the LPAQ8 codec.
 - Added support in `enb.isets` for reading and writing BIL and BIP raw data orderings. Added the BIPToBSQ
   and BILToBSQ ImageVersionTable subclasses to facilitate curation of BIL and BIP datasets.
+- Tested on a Raspberry Pi (improved installation instructions for this platform.)
+
+Behavior changes:
+
+- When computing the dynamic range of integer samples in `enb.isets`, 
+  this value was obtained considering only the difference between
+  the `minimum` and `maximum` sample values. Therefore, if `maximum-minimum=1`, then the dynamic range was set as 1 
+  even if min and max are large values, e.g., 4094 and 4095.
+  From version v0.4.5 onwards, the 
+  dynamic range B is the minimum integer so that all data samples lie in 
+  `[0, 2^B-1]` for unsigned data and in `[-2^(B-1), 2^(B-1)-1]` for signed data.
+  The calculation for floating point data is not changed, and is always `8*bytes_per_sample`.
+  **Note**: This change affects only the `dynamic_range_bits` column of `enb.isets.ImagePropertiesTable`, 
+  the `psnr_dr` column of `enb.icompression.LossyCompressionExperiment` and the sample precision selection 
+  of the `lcnl` (CCSDS 123.0-B.2) and `kakadu` (JPEG 2000) plugins. 
 
 Other changes:
 
+- Removed ray as a dependency when installing enb.
 - Speedup of experiments with a large number of tasks/target indices. Only chunk_size needs to be touched.
 - The `task_label` column is now by default the task's class name (elements of the tasks' param_dict are not
   included in it anymore).

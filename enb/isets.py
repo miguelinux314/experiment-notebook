@@ -373,15 +373,22 @@ class ImagePropertiesTable(ImageGeometryTable):
     @atable.column_function("dynamic_range_bits", label="Dynamic range (bits)")
     def set_dynamic_range_bits(self, file_path, row):
         """Set minimum number of bits per sample that can be used to store
-        the data (without compression).
+        the data (without compression). Until v0.4.4, this value was obtained
+        based on the number of bits needed to represent max-min (where min and max
+        are the minimum and maximum sample values). From version v0.4.5 onwards, the
+        dynamic range B is the minimum integer so that all data samples lie in
+        `[0, 2^B-1]` for unsigned data and in `[-2^(B-1), 2^(B-1)-1]` for signed data.
+        The calculation for floating point data is not changed, and is always `8*bytes_per_sample`.
         """
         if row["float"] is True:
-            range_len = 8 * row["bytes_per_sample"]
+            return 8 * row["bytes_per_sample"]
+        if not row["signed"]:
+            return math.ceil(math.log2(row["sample_max"] + 1))
         else:
-            range_len = int(row["sample_max"]) - int(row["sample_min"])
-        assert range_len >= 0, (
-            file_path, row["sample_max"], row["sample_min"], range_len)
-        row[_column_name] = max(1, math.ceil(math.log2(range_len + 1)))
+            B = 1
+            while not -(2 ** (B - 1)) <= row["sample_min"] <= row["sample_max"] <= 2 ** (B - 1) - 1:
+                B += 1
+            return B
 
     @atable.column_function([
         atable.ColumnProperties(f"entropy_{bytes_per_sample}B_bps",
