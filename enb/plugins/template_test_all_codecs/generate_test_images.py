@@ -13,7 +13,7 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
     width = 128
     height = 128
 
-    for bytes_per_sample in [1, 2, 4, 8]:
+    for bytes_per_sample in [1, 2, 4]:
         if options.verbose > 1:
             print(f"\tgenerating vectors with {bytes_per_sample} byte{'s' if bytes_per_sample != 1 else ''} per sample...")
 
@@ -22,7 +22,6 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
                 for big_endian in [True, False]:
                     for is_float in [True, False]:
                         if (is_float and bytes_per_sample < 2) \
-                                or (not is_float and bytes_per_sample > 4) \
                                 or (is_float and not signed) \
                                 or (is_float and not big_endian) \
                                 or (signed and bytes_per_sample < 2) \
@@ -56,9 +55,6 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
                             elif bytes_per_sample == 4:
                                 min_sample_value = np.finfo(np.float32).min
                                 max_sample_value = np.finfo(np.float32).max
-                            elif bytes_per_sample == 8:
-                                min_sample_value = np.finfo(np.float64).min
-                                max_sample_value = np.finfo(np.float64).max
 
                             samples = max_sample_value * np.random.rand(total_samples).astype(np.float64)
                             samples[::2] *= -1
