@@ -138,7 +138,8 @@ class AbstractCodec(enb.experiment.ExperimentTask):
         """Name of the codec. Subclasses are expected to yield different
         values when different parameters are used. By default, the class name
         is folled by all elements in self.param_dict sorted alphabetically
-        are included in the name."""
+        are included in the name.
+        """
         name = f"{self.__class__.__name__}"
         if self.param_dict:
             name += "__" + "_".join(
@@ -152,8 +153,7 @@ class AbstractCodec(enb.experiment.ExperimentTask):
         """
         return self.__class__.__name__
 
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         """Compress original_path into compress_path using param_dict as params.
         :param original_path: path to the original file to be compressed
         :param compressed_path: path to the compressed file to be created
@@ -164,8 +164,7 @@ class AbstractCodec(enb.experiment.ExperimentTask):
         """
         raise NotImplementedError()
 
-    def decompress(self, compressed_path, reconstructed_path,
-                   original_file_info=None):
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         """Decompress compressed_path into reconstructed_path using param_dict
         as params (if needed).
 
@@ -296,8 +295,7 @@ class WrapperCodec(AbstractCodec):
         """
         raise NotImplementedError()
 
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         compression_params = self.get_compression_params(
             original_path=original_path,
             compressed_path=compressed_path,
@@ -505,8 +503,7 @@ class LittleEndianWrapper(WrapperCodec):
     flagged as big endian.
     """
 
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         if original_file_info["big_endian"] and original_file_info[
             "bytes_per_sample"] > 1:
             with tempfile.NamedTemporaryFile(

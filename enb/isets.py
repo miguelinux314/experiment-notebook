@@ -579,7 +579,7 @@ class QuantizedImageVersion(ImageVersionTable):
           versioned data) are to be long-term stored. If None, one is assigned
           by default based on options.persistence_dir.
         :param check_generated_files: if True, the table checks that
-         each call to version() produces
+          each call to version() produces
           a file to output_path. Set to false to create arbitrarily named output files.
         """
         # pylint: disable=too-many-arguments

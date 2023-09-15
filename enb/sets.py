@@ -26,6 +26,7 @@ options = enb.config.options
 # Hash algorithm used to verify file integrity
 HASH_ALGORITHM = "sha256"
 
+
 # pylint: disable=no-self-use
 
 class FilePropertiesTable(atable.ATable):
@@ -97,19 +98,18 @@ class FilePropertiesTable(atable.ATable):
     def set_file_size(self, file_path, row):
         """Store the original file size in row.
         :param file_path: path to the file to analyze
-        :param row: dictionary of previously computed values for this
-          file_path (to speed up derived values).
+        :param row: dictionary of previously computed values for this file_path
+          (to speed up derived values).
         """
         row[_column_name] = os.path.getsize(file_path)
 
     @atable.column_function(hash_field_name,
                             label=f"{hash_field_name} hex digest")
     def set_hash_digest(self, file_path, row):
-        """Store the hexdigest of file_path's contents, using hash_algorithm
-        as configured.
+        """Store the hexdigest of file_path's contents, using hash_algorithm as configured.
         :param file_path: path to the file to analyze
-        :param row: dictionary of previously computed values for this
-          file_path (to speed up derived values)
+        :param row: dictionary of previously computed values for this file_path
+          (to speed up derived values)
         """
         hasher = hashlib.new(HASH_ALGORITHM)
         with open(file_path, "rb") as file:

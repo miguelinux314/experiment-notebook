@@ -24,8 +24,7 @@ class PGMWrapperCodec(enb.icompression.WrapperCodec):
 
     # pylint: disable=abstract-method
 
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         assert original_file_info["component_count"] == 1, \
             "PGM only supported for 1-component images"
         assert original_file_info["bytes_per_sample"] in [1, 2], \

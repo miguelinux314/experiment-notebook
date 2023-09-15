@@ -24,8 +24,7 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
 
     # pylint: disable=abstract-method
 
-    def compress(self, original_path: str, compressed_path: str,
-                 original_file_info=None):
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         img = enb.isets.load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
 
