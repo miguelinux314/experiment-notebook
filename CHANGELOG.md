@@ -12,7 +12,9 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-## Development version v0.4.5
+# Latest stable version:
+
+## 2023/09/15 v0.4.5
 
 New features:
 
@@ -47,8 +49,9 @@ Other changes:
 - Removal of the byte_value_* columns in ImagePropertiesTable to speed up compression experiments with
   large files.
 - Speedup of enb.aanalyis.Analizer subclases with more than one render mode.
+-
 
-# Latest stable version:
+# Version history
 
 ## 2023/01/16 v0.4.4
 
@@ -59,8 +62,6 @@ Small improvements:
   (useful to minimize the stdout output volume, e.g., for logging purposes). This helps executing enb in
   headless and virtualized platforms.
 - Added compression/decompression resident memory size for WrapperCodec subclasses.
-
-# Version history
 
 ## 2022/12/02 v0.4.3
 
