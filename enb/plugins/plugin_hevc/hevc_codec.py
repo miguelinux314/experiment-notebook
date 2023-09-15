@@ -32,13 +32,21 @@ class HEVC(icompression.LittleEndianWrapper):
 
         icompression.WrapperCodec.__init__(
             self,
-            compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "TAppEncoderStatic"),
-            decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "TAppDecoderStatic"),
+            compressor_path=os.path.join(os.path.dirname(
+                os.path.abspath(__file__)), "TAppEncoderStatic"),
+            decompressor_path=os.path.join(os.path.dirname(
+                os.path.abspath(__file__)), "TAppDecoderStatic"),
             param_dict=param_dict)
 
         self.config_path = config_path
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
+        if original_file_info["float"]:
+            raise ValueError("This codec does not support floating point data")
+        if original_file_info['bytes_per_sample'] > 1:
+            raise ValueError(f"Bytes per sample = {original_file_info['bytes_per_sample']} "
+                             f"not supported yet.")
+
         return f"-i {original_path} " \
                f"-c {self.config_path} " \
                f"-b {compressed_path} " \
@@ -66,7 +74,8 @@ class HEVC_lossless(icompression.LosslessCodec, HEVC):
 
     def __init__(self, config_path=None, chroma_format="400"):
         """
-        :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
+        :param chroma_format: Specifies the chroma format used in the input file
+        (only 400 supported).
         """
         config_path = config_path if config_path is not None \
             else os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -87,7 +96,8 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
 
     def __init__(self, config_path=None, chroma_format="400", qp=25, bit_rate=None):
         """
-        :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
+        :param chroma_format: Specifies the chroma format used in the input file
+          (only 400 supported).
         :param qp: Specifies the base value of the quantization parameter (0-51).
         :param bit_rate: target bitrate in bps.
         """
@@ -102,10 +112,6 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
         self.param_dict['bit_rate'] = bit_rate
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
-        if original_file_info['bytes_per_sample'] > 1:
-            raise Exception(f"Bytes per sample = {original_file_info['bytes_per_sample']} "
-                            f"not supported yet.")
-
         params = super().get_compression_params(
             original_path=original_path,
             compressed_path=compressed_path,
