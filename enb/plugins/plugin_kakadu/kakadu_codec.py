@@ -17,9 +17,9 @@ from enb import isets
 
 
 class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompression.LossyCodec):
-    """Kakadu JPEG 2000 wrapper that applies the 5/3 IWT or the 9/7 DWT (spatially) when lossless is True or False, 
+    """Kakadu JPEG 2000 wrapper that applies the 5/3 IWT or the 9/7 DWT (spatially) when lossless is True or False,
     respectively. No spectral decorrelation is applied, unless the apply_ycc flag is selected.
-    
+
     Note that subclasses may overwrite the get_atk_params method to configure specific spatial transforms.
     """
     # When searching for exact PSNR values, this error is tolerated
@@ -54,7 +54,8 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
         assert spatial_dwt_levels in range(0, 34), \
             f"Invalud number of spatial DWT levels {spatial_dwt_levels}"
 
-        lossless = lossless if lossless is not None else (bit_rate is None and quality_factor is None and psnr is None)
+        lossless = lossless if lossless is not None else (
+                bit_rate is None and quality_factor is None and psnr is None)
         if lossless:
             assert all(v is None for v in [bit_rate, quality_factor, psnr]), \
                 f"Cannot set bitrate, quality factor or PSNR when lossless is requested."
@@ -84,13 +85,15 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
             param_dict["apply_ycc"] = True
         icompression.WrapperCodec.__init__(
             self,
-            compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_compress"),
-            decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "kdu_expand"),
+            compressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                         "kdu_compress"),
+            decompressor_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                           "kdu_expand"),
             param_dict=param_dict)
 
     def get_atk_params(self, original_file_info):
         """Get the ATK parameters that allow customization of the spatial 2D DWT applied to the data.
-        If this method returns an empty string, then the default type of DWT is applied 
+        If this method returns an empty string, then the default type of DWT is applied
         (e.g., the reversible 5/3 IWT for lossless compression, or the irreversible 9/7 CDF for lossy compression.
         Note that the Creversible=yes or Creversible=no is already provided by self.get_compression_params()
         """
@@ -101,13 +104,13 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
             enb.logger.warn("Careful! Measuring kakadu's process CPU time with multiple threads. "
                             "Add `options.report_wall_time = True` to your script or "
                             "invoke it with --report_wall_time to enable wall clock time measurements.")
-        
-        try:
-            precision_bits = min(original_file_info['bytes_per_sample'] * 8,
-                                 original_file_info["dynamic_range_bits"] + 1)
-        except KeyError:
-            precision_bits = original_file_info['bytes_per_sample'] * 8
-        
+        if original_file_info["float"]:
+            raise ValueError("This enb codec does not support floating point data. "
+                             "Please refer to the kakadu documentation "
+                             "and perform manual compression")
+
+        precision_bits = original_file_info['bytes_per_sample'] * 8
+
         return f"-i {original_path}*{original_file_info['component_count']}" \
                f"@{original_file_info['width'] * original_file_info['height'] * original_file_info['bytes_per_sample']} " \
                f"-o {compressed_path} -no_info -full -no_weights " \
@@ -123,15 +126,15 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                f"Sprecision={precision_bits} " \
                f"Nsigned={'yes' if original_file_info['signed'] else 'no'} " \
                f"Ssigned={'yes' if original_file_info['signed'] else 'no'} " \
-               + (f"Qstep=0.000000001 " if self.param_dict['bit_rate'] is not None else "") \
-               + f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
-                 f"{'-rate ' + str(self.param_dict['bit_rate'] * original_file_info['component_count']) if self.param_dict['bit_rate'] else ''}" \
-                 f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
+            + (f"Qstep=0.000000001 " if self.param_dict['bit_rate'] is not None else "") \
+            + f"{'Cmodes=HT' if self.param_dict['ht'] else ''} " \
+              f"{'-rate ' + str(self.param_dict['bit_rate'] * original_file_info['component_count']) if self.param_dict['bit_rate'] else ''}" \
+              f"{'Qfactor=' + str(self.param_dict['quality_factor']) if self.param_dict['quality_factor'] else ''}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components " \
                f"-num_threads {self.param_dict['num_threads']}"
-    
+
     def compress(self, original_path, compressed_path, original_file_info=None):
         if self.param_dict['psnr'] is not None:
             with tempfile.NamedTemporaryFile() as tmp_file:
@@ -154,7 +157,8 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
                     dtype = isets.iproperties_row_to_numpy_dtype(original_file_info)
                     original_array = np.fromfile(original_path, dtype=dtype).astype(np.int64)
                     reconstructed_array = np.fromfile(tmp_file.name, dtype=dtype).astype(np.int64)
-                    actual_bps = 8 * os.path.getsize(compressed_path) / original_file_info["samples"]
+                    actual_bps = 8 * os.path.getsize(compressed_path) / original_file_info[
+                        "samples"]
 
                     mse = np.average(((original_array - reconstructed_array) ** 2))
                     psnr = 10 * math.log10((max_error ** 2) / mse) if mse > 0 else float("inf")
@@ -179,7 +183,8 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
         output_path_str = ",".join(tmp_file.name for tmp_file in tmp_file_list)
 
         decompression_results = icompression.WrapperCodec.decompress(
-            self, compressed_path, reconstructed_path=output_path_str, original_file_info=original_file_info)
+            self, compressed_path, reconstructed_path=output_path_str,
+            original_file_info=original_file_info)
 
         with open(reconstructed_path, "wb") as output_file:
             for tmp_file in tmp_file_list:
@@ -196,14 +201,15 @@ class Kakadu2D(icompression.WrapperCodec, icompression.LosslessCodec, icompressi
     def label(self):
         rate_str = "" if not self.param_dict["bit_rate"] else f" R = {self.param_dict['bit_rate']}"
         psnr_str = "" if not self.param_dict["psnr"] else f" PSNR {self.param_dict['psnr']}"
-        ycc_str = "" if "apply_ycc" not in self.param_dict or not self.param_dict["apply_ycc"] else " YCC"
+        ycc_str = "" if "apply_ycc" not in self.param_dict or not self.param_dict[
+            "apply_ycc"] else " YCC"
         return f"Kakadu {'HT' if self.param_dict['ht'] else ''}" \
                f"{'lossless' if self.param_dict['lossless'] else 'lossy'}{rate_str}{psnr_str}{ycc_str}"
 
 
 class Kakadu2DHaar(Kakadu2D, icompression.LosslessCodec):
-    """Kakadu JPEG 2000 wrapper that applies the spatial reversible or irreversible 
-    Haar transform when lossless is True or False, 
+    """Kakadu JPEG 2000 wrapper that applies the spatial reversible or irreversible
+    Haar transform when lossless is True or False,
     respectively. No spectral decorrelation is applied, unless the apply_ycc flag is selected.
     """
 
@@ -245,9 +251,9 @@ class KakaduMCT(Kakadu2D):
                  num_threads=0):
         """
         :param spectral_dwt_levels: number of spectral discrete wavelet transform levels. Must be between 0 and 32.
-        :param mct_offset: integer offset subtracted from the input samples before compression. 
+        :param mct_offset: integer offset subtracted from the input samples before compression.
           For unsigned data, the average pixel value or half the maximum pixel value are often good choices.
-          For signed data, 0 or the average pixel value are often good choices. 
+          For signed data, 0 or the average pixel value are often good choices.
         """
         assert 0 <= spectral_dwt_levels <= 32, f"Invalid number of spectral levels"
         assert mct_offset == int(mct_offset)
@@ -263,15 +269,15 @@ class KakaduMCT(Kakadu2D):
             original_path=original_path,
             compressed_path=compressed_path,
             original_file_info=original_file_info) + \
-               f" Mcomponents={original_file_info['component_count']} " \
-               f"Mstage_inputs:I1=\\{{0,{original_file_info['component_count'] - 1}\\}} " \
-               f"Mstage_outputs:I1=\\{{0,{original_file_info['component_count'] - 1}\\}} " \
-               f"Mstage_collections:I1=\\{{{original_file_info['component_count']},{original_file_info['component_count']}\\}} " \
-               f"Mstage_xforms:I1=\\{{DWT," \
-               + ('1' if self.param_dict['lossless'] else '0') + \
-               f",4,0,{self.param_dict['spectral_dwt_levels']}\\}} " \
-               f"Mvector_size:I4={original_file_info['component_count']} " \
-               f"Mvector_coeffs:I4={self.param_dict['mct_offset']} Mnum_stages=1 Mstages=1"
+            f" Mcomponents={original_file_info['component_count']} " \
+            f"Mstage_inputs:I1=\\{{0,{original_file_info['component_count'] - 1}\\}} " \
+            f"Mstage_outputs:I1=\\{{0,{original_file_info['component_count'] - 1}\\}} " \
+            f"Mstage_collections:I1=\\{{{original_file_info['component_count']},{original_file_info['component_count']}\\}} " \
+            f"Mstage_xforms:I1=\\{{DWT," \
+            + ('1' if self.param_dict['lossless'] else '0') + \
+            f",4,0,{self.param_dict['spectral_dwt_levels']}\\}} " \
+            f"Mvector_size:I4={original_file_info['component_count']} " \
+            f"Mvector_coeffs:I4={self.param_dict['mct_offset']} Mnum_stages=1 Mstages=1"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"-i {compressed_path} -o {reconstructed_path} -raw_components "
