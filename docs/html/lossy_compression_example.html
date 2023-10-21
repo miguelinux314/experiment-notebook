@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,8 +47,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression experiments</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Lossy Compression Experiment</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#lossy-compression-template-installation">Lossy compression template installation</a></li>
@@ -60,6 +61,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using existing image compression codecs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_manipulation.html">Image manipulation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
@@ -82,7 +84,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="image_compression.html">Image compression experiments</a> &raquo;</li>
+          <li><a href="image_compression.html">Image compression and manipulation</a> &raquo;</li>
       <li>Lossy Compression Experiment</li>
       <li class="wy-breadcrumbs-aside">
               <!-- User defined GitHub URL -->
@@ -103,7 +105,7 @@ and computes several distortion metrics on the reconstructed images (compared to
 <h2>Lossy compression template installation<a class="headerlink" href="#lossy-compression-template-installation" title="Permalink to this headline"></a></h2>
 <p>Example code that serves as template for your lossy compression experiments can be installed
 via the following command line command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb install lossy-compression lc
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install lossy-compression lc
 </pre></div>
 </div>
 <p>In addition, we are going to install some lossy codecs from the ones listed
@@ -127,6 +129,26 @@ In this case, we will normally normally use subclasses of <a class="reference in
 <p>In addition, to facilitate analysis and plotting, we will be defining families of codecs.
 To do so, we instantiate the class:<cite>enb.experiment.TaskFamily</cite> class and add the names of our codecs for each family
 as follows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<span class="kn">import</span> <span class="nn">plugins</span>
+
+<span class="c1"># Define the JPEG-LS family</span>
+<span class="n">jpegls_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="s2">&quot;JPEG-LS&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">max_error</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">17</span><span class="p">):</span>
+    <span class="n">codec</span> <span class="o">=</span> <span class="n">plugins</span><span class="o">.</span><span class="n">jpeg</span><span class="o">.</span><span class="n">JPEG_LS</span><span class="p">(</span><span class="n">max_error</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
+    <span class="n">jpegls_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">codec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">codec</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codec</span><span class="p">)</span>
+<span class="n">task_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jpegls_family</span><span class="p">)</span>
+
+<span class="c1"># Define the VVC family</span>
+<span class="n">vvc_family</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">TaskFamily</span><span class="p">(</span><span class="s2">&quot;VVC&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">qp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="n">codec</span> <span class="o">=</span> <span class="n">plugins</span><span class="o">.</span><span class="n">vvc</span><span class="o">.</span><span class="n">VVC_lossy</span><span class="p">(</span><span class="n">qp</span><span class="o">=</span><span class="n">qp</span><span class="p">)</span>
+    <span class="n">vvc_family</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">codec</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">codec</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codec</span><span class="p">)</span>
+<span class="n">task_families</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vvc_family</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="lossy-experiment-execution">
 <h2>Lossy experiment execution<a class="headerlink" href="#lossy-experiment-execution" title="Permalink to this headline"></a></h2>
@@ -148,9 +170,9 @@ actual experiment execution</p>
 </section>
 <section id="lossy-result-analysis-and-plotting">
 <h2>Lossy result analysis and plotting<a class="headerlink" href="#lossy-result-analysis-and-plotting" title="Permalink to this headline"></a></h2>
-<p>The remainder of the template is devoted to plotting results returned in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0.dev0+10.g47081ff131)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> <cite>df</cite>.
+<p>The remainder of the template is devoted to plotting results returned in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+406.g00f10db680)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> <cite>df</cite>.
 You can check
-the <a class="reference internal" href="analyzing_data.html"><span class="doc">Data analysis and plotting with enb</span></a> page for more information on how to analyze and plot
+the <a class="reference internal" href="analyzing_data.html"><span class="doc">Result analysis and plotting with enb</span></a> page for more information on how to analyze and plot
 results with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Selection of potentially relevant columns.</span>
 <span class="c1"># You can use any of the columns available in</span>
@@ -176,7 +198,6 @@ results with <a class="reference internal" href="api/enb.html#module-enb" title=
         <span class="n">options</span><span class="o">.</span><span class="n">analysis_dir</span><span class="p">,</span>
         <span class="s2">&quot;analysis_lossy/&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lossy_compression_analysis_scalar.csv&quot;</span><span class="p">))</span>
-<span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">main_alpha</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_x_std</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">sort_by_average</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">scalar_analyzer</span><span class="o">.</span><span class="n">show_individual_samples</span> <span class="o">=</span> <span class="kc">False</span>

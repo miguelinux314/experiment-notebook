@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Basic workflow: enb.atable.ATable" href="basic_workflow.html" />
-    <link rel="prev" title="Experiment Notebook user manual" href="index.html" /> 
+    <link rel="prev" title="Experiment Notebook (enb) user manual" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,13 +47,15 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#windows-and-macos">Windows and MacOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raspberry-pi">Raspberry Pi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sources-and-development-version">Sources and development version</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -106,10 +108,11 @@ and you don’t have root privileges:</p>
 </pre></div>
 </div>
 </div>
-<p>If you would like multi-computer parallelization, please install the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite>
-(for the <cite>dpipe</cite> command) packages.
-On Debian, Ubuntu and derivatives this can be achieved by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install openssh-client openssh-server sshfs vde2
+<p>If you would like multi-computer parallelization, please install the <cite>ray</cite> python library as well
+as the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite> (for the <cite>dpipe</cite> command) packages.</p>
+<p>On Debian, Ubuntu and derivatives this can be achieved by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]</span>
+sudo apt install openssh-client openssh-server sshfs vde2
 </pre></div>
 </div>
 <p>The <cite>enb</cite> library will show a warning and proceed locally if any of these tools are not available.
@@ -127,6 +130,30 @@ Please see <a class="reference internal" href="cluster_setup.html"><span class="
 <li><p><a class="reference external" href="https://docs.python.org/3/library/venv.html">Creation of virtual environments on Windows</a></p></li>
 <li><p><a class="reference external" href="https://sourabhbajaj.com/mac-setup/Python/virtualenv.html">Python installation and virtual environment setup on MacOS</a></p></li>
 </ul>
+</section>
+<section id="raspberry-pi">
+<h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Permalink to this headline"></a></h2>
+<p>Installation on RaspberryOS is identical to that of other Linux distributions, but requires manual installation
+of some packages.</p>
+<p>It is recommended to install the system versions of the following packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install python3-<span class="o">{</span>matplotlib,scipy,numpy,pandas<span class="o">}</span>
+</pre></div>
+</div>
+<p>And then configure a virtual environment with the <cite>–system-site-packages</cite> flag, e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m venv --system-site-packages ~/venv
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You might need to install specific versions of some packages. For instance, if you get the following error:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ImportError: Pandas requires version &#39;3.0.0&#39; or newer of &#39;jinja2&#39; (version &#39;2.11.3&#39; currently installed).
+</pre></div>
+</div>
+<p>Then you may need to run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --force <span class="nv">jinja2</span><span class="o">==</span><span class="m">3</span>.0.0
+</pre></div>
+</div>
+</div>
 </section>
 <section id="sources-and-development-version">
 <h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Permalink to this headline"></a></h2>
@@ -152,12 +179,17 @@ branch is checked out) with</p>
 pip install -e .
 </pre></div>
 </div>
+<p>To update your repository, simply go into your <cite>experiment-notebook.git</cite> folder and type</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git pull
+</pre></div>
+</div>
 <p>Feel free to <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/pulls">submit pull_requests</a>
 for your desired contributions.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The development version is discouraged for inexperienced users. Use with caution and report
-any bugs you would like removed.</p>
+<p>The development version is discouraged for inexperienced users.
+These are advised to employ the latest stable version.
+Don’t forget to report in github any bugs you would like removed.</p>
 </div>
 </section>
 </section>
@@ -166,7 +198,7 @@ any bugs you would like removed.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Experiment Notebook user manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Experiment Notebook (enb) user manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="basic_workflow.html" class="btn btn-neutral float-right" title="Basic workflow: enb.atable.ATable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

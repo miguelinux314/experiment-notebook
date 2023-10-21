@@ -3,14 +3,15 @@ div.wy-grid-for-nav, div.wy-nav-content, body.wy-body-for-nav {
 }
 
 a {
-    color: #c58b03;
+    color: #c58b03 !important;
 }
 
 a:hover {
-    color: #f3ac05;
+    color: #f3ac05 !important;
+    background: #4e4a4a !important;
 }
 
-.btn-neutral {
+.btn-neutral, .btn-neutral:visited {
     background-color: #3f3f3f !important;
     color: #c58b03 !important;
     border-radius: 10px;
@@ -23,8 +24,8 @@ a:hover {
 }
 
 .wy-side-nav-search .wy-dropdown > a:hover, .wy-side-nav-search > a:hover, .wy-menu-vertical li.current a:hover {
-    color: #463101;
-    background-color: #f3ac05;
+    color: #3f3f3f !important;
+    background-color: #f3ac05 !important;
 }
 
 .wy-side-nav-search {
@@ -44,6 +45,7 @@ a:hover {
 }
 
 .wy-menu-vertical li.toctree-l2.current > a, .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
+    color: #4e4a4a !important;
     background: #ffa513;
 }
 
@@ -84,4 +86,8 @@ div.rst-content .note {
     box-shadow: 3px 3px 5px black;
     border: solid 1px #f3ac05;
     border-radius: 5px;
+}
+
+a.icon.icon-home {
+    color: #3f3f3f !important;
 }

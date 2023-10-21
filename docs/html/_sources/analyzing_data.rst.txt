@@ -2,30 +2,33 @@
 
 .. include:: ./tag_definition.rst
 
-Data analysis and plotting with |enb|
-=====================================
+Result analysis and plotting with |enb|
+=======================================
 
-The :mod:`enb.aanalysis` module provides several classes to help you analyze
-and plot your results:
+The :mod:`enb.aanalysis` module provides several classes to help you analyze and 
+visualize your results. These classes accept |DataFrame| instances, which can
+be produced by your `enb`-based scripts or imported via :meth:`pandas.read_csv`.
 
-* Classes in this module accept |DataFrame| instances, e.g., such as the ones
-  produced by the `get_df` method of |ATable| and |Experiment|.
+These classes produce:
 
-* You can easily import `*.csv` files into dataframes with the `pandas.read_csv` method,
-  and use |enb| with externally produced data.
+* Plots in PDF and PNG format
+* Summary tables in CSV and `.tex` format
 
 The analysis and plotting tools are presented in the following sections, each describing
 a general use case.
 
-If you have |enb| already installed, you can download all the test data and example code into the `ag` folder as with::
+.. note::
+    If you have |enb| already installed, you can download all the test data and example code into the `ag` folder as with
+    
+    .. code-block:: bash
 
-    enb install analysis-gallery ag
+        enb install analysis-gallery ag
 
 
 One numeric column
 ------------------
 
-In this scenario, we want to analyze a column of scalar values, typically integers and floats.
+In this scenario, we want to analyze a column of scalar values, typically integers and/or floats.
 Here we will be using the Iris dataset, which we can load with:
 
 .. code-block:: python
@@ -53,6 +56,8 @@ The following render modes are available for the ScalarNumericAnalyzer (they are
 .. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | tail -n+4
     :shell:
 
+Plots
+_____
 The `histogram` mode  renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
 as shown in the next figure. The returned `analysis_df` dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.
@@ -60,8 +65,32 @@ etc., for each target column.
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png
     :width: 100%
 
-The `hbar` mode is most useful when grouping -- examples are provided below.
+The `hbar` and `boxplot` modes are most useful when 
+grouping -- examples are provided below in the first section about grouping below.
 
+
+.. _sec_one_numeric_summary:
+
+Summary tables
+______________
+
+When the `get_df` method of |ScalarNumericAnalyzer| is invoked, 
+it automatically produces summary tables at `enb.config.options.analysis_dir`.
+More specifically,
+
+* A `CSV file <_static/analysis_gallery/ScalarNumericAnalyzer-columns_sepal_length__sepal_width__petal_length__petal_width-hbar__histogram__boxplot-groupby__class.csv>`_
+  with data statistics for each target column (and each group, if grouping is used):
+
+    - arithmetic mean
+    - minimum and maximum
+    - standard deviation
+    - median
+    - number of samples
+    
+
+* A `.tex file <_static/analysis_gallery/ScalarNumericAnalyzer-columns_sepal_length__sepal_width__petal_length__petal_width-hbar__histogram__boxplot-groupby__class.tex>`_ with a table containing the mean values of the target columns.
+  
+Note that grouping (described in :ref:`sec_grouping`) is employed in these examples to make it a bit clearer.
 
 Two numeric columns
 -------------------
@@ -86,6 +115,8 @@ method that analyzes and plots
     When using |TwoNumericAnalyzer|, the **target_columns** parameter must be a list of tuples, each
     containing two column names, e.g.: `("columnA", "columnB")`.
 
+Plots
+_____
 
 In addition to the `analysis_df` dataframe with numeric results, this will produce a scatter plot like the following,
 which also shows +/- 1 horizontal and vertical standard deviations.
@@ -93,11 +124,52 @@ which also shows +/- 1 horizontal and vertical standard deviations.
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png
     :width: 100%
 
-The previous figure shows an example of the `scatter` plot mode. 
+The previous figure shows an example of the `scatter` plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):
 
 .. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
     :shell:
+
+Note that, for the `scatter` plot mode, it is possible to display linear regression of the data.
+For instance, the following code
+
+.. code-block:: python
+
+    two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+    two_numeric_analyzer.show_x_std = False
+    two_numeric_analyzer.show_y_std = False
+    two_numeric_analyzer.show_linear_regression = True
+    analysis_df = two_numeric_analyzer.get_df(
+        full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
+        output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric", "withregression"),
+        group_by="class",
+        style_list=[style])
+
+will produce a figure like the following:
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png
+    :width: 100%
+
+Additional examples are provided below in :ref:`sec_grouping`, where some of these modes are most useful.
+
+Summary tables
+______________
+
+When the `get_df` method of |TwoNumericAnalyzer| is invoked, 
+it automatically produces summary tables at `enb.config.options.analysis_dir`.
+More specifically,
+
+* A `CSV file <_static/analysis_gallery/TwoNumericAnalyzer-columns_sepal_width__vs__petal_length-scatter.csv>`_
+  with
+
+    - All statistics described above in the :ref:`sec_one_numeric_summary` section for each target column.
+    - For each pair of columns:
+        * Pearson's correlation coefficient and its p-value
+        * Spearman's correlation coefficient and its p-value
+        * The linear regression slope and intercept values
+
+* A `.tex file <_static/analysis_gallery/TwoNumericAnalyzer-columns_sepal_width__vs__petal_length-scatter.tex>`_ with a table containing the mean values of the target columns.
+
 
 Columns with dictionaries
 -------------------------
@@ -149,7 +221,9 @@ Now, we instantiate |DictNumericAnalyzer| and run its `get_df` method. The follo
 count per mode for each of the selected groups (given in the `block_size` column)
 
 .. code-block:: python
-
+    
+    import enb
+    
     # Create the analyzer and plot results
     numeric_dict_analyzer = enb.aanalysis.DictNumericAnalyzer()
     analysis_df = numeric_dict_analyzer.get_df(
@@ -171,12 +245,89 @@ count per mode for each of the selected groups (given in the `block_size` column
     Some additional rendering options are included here to improve presentation.
     Rendering options are discussed in a later section.
 
+Plotting
+________
+
 The resulting figure is shown below
 
 .. figure:: _static/analysis_gallery/DictNumericAnalyzer_mode_count_groupby-block_size_line.png
     :width: 100%
 
 .. _grouping_by_value:
+
+Summary tables
+______________
+
+The |DictNumericAnalyzer| class produces `CSV files <_static/analysis_gallery/DictNumericAnalyzer-columns_mode_count-line-groupby__block_size.csv>`_ with several statistics 
+(mean, min, max, median, standard deviation) for each key of each target column.
+
+Analysis numeric spatial (2D) data
+----------------------------------
+
+The |ScalarNumeric2DAnalyzer| class allows to plot data arranged arbitrarily in the x-y plane.
+
+You will need:
+    - a column with scalar data (integers or float entries), e.g., `column_data`
+    - two more columns specifying the `x` and `y` coordinates of each datapoint, e.g., `column_x` and `column_y`.
+
+You can then invoke the `get_df` method like any other |Analyzer| subclass, with the `target_columns` argument
+being a list of 3-element tuples.
+
+In the following example of the 'colormap' rendermode, 
+the `value` column contains the data of interest, while `x` and `y` contain the spatial 
+information.
+
+.. code-block:: python
+
+    import enb
+    
+    # Read data from CSV - could be obtained from an ATable instance
+    df_2d = pd.read_csv(os.path.join("input_csv", "2d_data_example.csv"))
+    
+    # Perform analysis 
+    sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
+    sn2da.bin_count = 10
+    sn2da.get_df(full_df=df_2d,
+                 target_columns=[("x", "y", "value")],
+                 column_to_properties={
+                                "value": enb.atable.ColumnProperties("value", label="Result of $f(x,y)$"),
+                                "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
+                                "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")})
+
+
+Plots
+_____
+
+The resulting figure is shown in the following figure:
+
+.. figure:: _static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png
+    :width: 100%
+
+.. note:: You can configure the employed colormap by modifying your |ScalarNumeric2DAnalyzer| instance attributes,
+    e.g., you can set `color_map` to any color map name accepted by matplotlib, e.g.,
+
+    .. code-block:: python
+
+        sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
+        sn2da.color_map = "Oranges"
+
+
+    See https://matplotlib.org/stable/gallery/color/colormap_reference.html for more information about available
+    colormaps.
+
+Summary tables
+______________
+
+The |ScalarNumeric2DAnalyzer| class produces:
+
+* `CSV files <_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.csv>`_ 
+  with the same statistics as those of |ScalarNumericAnalyzer| 
+  (see :ref:`sec_one_numeric_summary`: min, max, mean, median, standard deviation) for each selected 
+  `x`, `y` and `value` column.
+
+* `.tex files <_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.tex>`_ with the average of each selected `x`, `y` and `value` column. 
+
+.. _sec_grouping:
 
 Grouping by a column's value
 ----------------------------
@@ -201,14 +352,28 @@ as follows:
                          "petal_length", "petal_width"],
         group_by="class")
 
+By default, all of the following render modes are used with |ScalarNumericAnalyzer|:
+
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | tail -n+4
+    :shell:
+
 The `histogram` render mode produces plots like the following:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
     :width: 100%
 
-The `hbar` render mode produces plots like the following:
+
+The `hbar` render mode produces horizontal bar plots with length equal to the average, as shown in the 
+following image:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png
+    :width: 100%
+
+The `boxplot` render mode produces standard box plots where lines span the entire input data range,
+the vertical lines in the box plot indicates quartiles Q1, Q2 and Q3, and the mean value is also displayed,
+as shown next:
+
+.. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png
     :width: 100%
 
 Grouping with other Analyzer subclasses
@@ -225,9 +390,18 @@ Grouping is not restricted to |ScalarNumericAnalyzer|. It can be used with other
         group_by="class",
     )
 
-The resulting scatter plot from this call is shown next:
+By default, all of the following render modes are used with |TwoNumericAnalyzer|:
+
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
+    :shell:
+
+The resulting plot for the `scatter` mode is shown next:
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-class_scatter.png
+
+The resulting plot for the `line` mode is shown next:
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class.png
 
 
 Grouping by task families
@@ -381,6 +555,45 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
 
 .. code-block:: text
 
+        # List of allowed rendering modes for the analyzer
+        valid_render_modes = set()
+        # Selected render modes (by default, all of them)
+        selected_render_modes = %(valid_render_modes)s
+        # If more than one group is present, they are shown in the same subplot
+        # instead of in different rows
+        combine_groups = False
+        
+        # If not None, it must be a list of matplotlibrc styles (names or file paths) 
+        style_list = None
+        # Default figure width
+        fig_width = 5.0
+        # Default figure height
+        fig_height = 4.0
+        # Relative horizontal margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+        horizontal_margin = 0
+        # Relative vertical margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+        vertical_margin = 0
+        # Margin between group rows (None to use matplotlib's default)
+        group_row_margin = None
+        
+        # Show grid lines at the major ticks?
+        show_grid = False
+        # Show grid lines at the minor ticks?
+        show_subgrid = False
+        # If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
+        show_x_std = False
+        # If applicable, show a vertical +/- 1 standard deviation bar centered on the average
+        show_y_std = False
+        # If True, display group legends when applicable
+        show_legend = True
+        # Default number of columns inside the legend
+        legend_column_count = 2
+        # Legend position (if configured to be shown). It can be "title" to show it above the plot,
+        # or any matplotlib-recognized argument for the loc parameter of legend()
+        legend_position = "title"
+        # If more than one group is displayed, when applicable, adjust plots to use the same scale in every subplot?
+        common_group_scale = True
+        
         # Main title to be displayed
         plot_title = None
         # Show the number of elements in each group?
@@ -389,33 +602,25 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
         show_global = False
         # If a reference group is used as baseline, should it be shown in the analysis itself?
         show_reference_group = True
-        # If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
-        show_x_std = False
-        # If applicable, show a vertical +/- 1 standard deviation bar centered on the average
-        show_y_std = False
+        
         # Main marker size
         main_marker_size = 4
         # Secondary (e.g., individual data) marker size
         secondary_marker_size = 2
-        # Main plot element alpha
-        main_alpha = 0.5
-        # Secondary plot element alpha (often overlaps with data using main_alpha)
-        secondary_alpha = 0.5
-        # If a semilog y axis is used, y_min will be at least this large to avoid math domain errors
-        semilog_y_min_bound = 1e-5
-        # Thickness of the main plot lines
-        main_line_width = 2
         # Thickness of secondary plot lines
         secondary_line_width = 1
-        # Margin between group rows (if there is more than one)
-        group_row_margin = 0.2
-        # If more than one group is displayed, when applicable, adjust plots to use the same scale in every subplot?
-        common_group_scale = True
-        # If more than one group is present, they are shown in the same subplot
-        # instead of in different rows
-        combine_groups = False
-        # If True, display group legends when applicable
-        show_legend = True
+        # Main plot element alpha
+        main_alpha = 0.5
+        # Thickness of the main plot lines
+        main_line_width = 2
+        # Secondary plot element alpha (often overlaps with data using main_alpha)
+        secondary_alpha = 0.3
+        # If a semilog y axis is used, y_min will be at least this large to avoid math domain errors
+        semilog_y_min_bound = 1e-5
+        
+        # Number of decimals used when showing decimal values in latex
+        latex_decimal_count = 3
+
 
 
 
@@ -627,6 +832,6 @@ Each element in `style_list` must be one of the following:
     Therefore, you can compose themes just like one would in 
     Matplotlib `<https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles>`_.
 
-.. warning:: Not all styles are intended for professional usage (-:
+.. warning:: Not all styles are necessarily intended for professional usage (-:
 
     .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-histogram-groupby__class__xkcd.png

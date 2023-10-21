@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Thanks" href="../thanks.html" />
+    <link rel="next" title="enb.plugins.plugin_ccsds122 package" href="enb.plugins.plugin_ccsds122.html" />
     <link rel="prev" title="enb.config package" href="enb.config.html" /> 
 </head>
 
@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -47,32 +47,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="enb.html">enb package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="enb.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.aanalysis">enb.aanalysis module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.atable">enb.atable module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.context">enb.context module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.experiment">enb.experiment module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel">enb.parallel module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel_ray">enb.parallel_ray module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.sets">enb.sets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tarlite">enb.tarlite module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tcall">enb.tcall module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-highlights">API highlights</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="enb.html">enb package</a></li>
 </ul>
 </li>
 </ul>
@@ -112,6 +96,32 @@
              
   <section id="enb-plugins-package">
 <h1>enb.plugins package<a class="headerlink" href="#enb-plugins-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html">enb.plugins.plugin_ccsds122 package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122.ccsds122_codec">enb.plugins.plugin_ccsds122.ccsds122_codec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enb.plugins.plugin_fpack.html">enb.plugins.plugin_fpack package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack.fpack_codec">enb.plugins.plugin_fpack.fpack_codec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_fpack.html#module-enb.plugins.plugin_fpack">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html">enb.plugins.plugin_iraf_photometry package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
 </section>
@@ -166,12 +176,15 @@ By default, the docstring of the selected class is returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.install">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.install" title="Permalink to this definition"></a></dt>
-<dd><p>Install this Installable into installation_dir. By default, copy all contents
-of the Installable’s source dir and install the declared pip requirements.</p>
+<dd><p>Install this Installable into <cite>installation_dir</cite>. By default, copy all contents
+of the Installable source dir and install the declared pip requirements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>overwrite_destination</strong> – if True, if the destination exists prior to this call,
-it is removed before installation</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>installation_dir</strong> – path where the installable is to be copied and, when necessary, built.</p></li>
+<li><p><strong>overwrite_destination</strong> – if True, if the destination exists prior to this call,
+it is removed before installation.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -185,6 +198,12 @@ it is removed before installation</p>
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.name">
 <span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.installable.Installable.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.installable.Installable.print_info">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.print_info" title="Permalink to this definition"></a></dt>
+<dd><p>Print information about this installable.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.repr">
@@ -256,7 +275,24 @@ declared Installable subclasses.</p>
 <span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">import_all_installables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.import_all_installables" title="Permalink to this definition"></a></dt>
 <dd><p>Import all public enb Installables.</p>
 <p>These are recognized by containing a __plugin__.py file in
-them and a installable definition.</p>
+them and an installable definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.plugins.installable.install">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.install" title="Permalink to this definition"></a></dt>
+<dd><p>Install an Installable by name into target_dir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the installable (e.g., plugin) to be installed. Run <cite>enb plugin list</cite> in the CLI
+to get a list of all available installables.</p></li>
+<li><p><strong>target_dir</strong> – If <cite>target_dir</cite> is None, it is set to <cite>plugins/&lt;plugin_name&gt;</cite> by default.</p></li>
+<li><p><strong>overwrite</strong> – If overwrite is False and target_dir already exists, no action is taken.</p></li>
+<li><p><strong>automatic_import</strong> – If True, the installable is imported as a module.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -317,16 +353,19 @@ to be importable and usable. By default:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.install">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.install" title="Permalink to this definition"></a></dt>
-<dd><p>Make a copy of this plugin into installation_dir, ready to be imported.
+<dd><p>Make a copy of this plugin into <cite>installation_dir</cite>, ready to be imported.
 By default, a verbatim copy of the source plugin’s dir is made.
 Any previous contents in installation_dir are overwritten.
 Then any explicit requirements are met (external software may be downloaded
 and pip packages installed).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>overwrite_destination</strong> – if True, the destination path is deleted before
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>installation_dir</strong> – destination dir where the plugin is to be copied to and, when necessary, built.</p></li>
+<li><p><strong>overwrite_destination</strong> – if True, the destination path is deleted before
 installation. If False and installation_dir already exists, an error
-is raised (plugins are intended to be self-contained, isolated python modules).</p>
+is raised (plugins are intended to be self-contained, isolated python modules).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -344,6 +383,46 @@ is raised (plugins are intended to be self-contained, isolated python modules).<
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.tags">
 <span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.plugin.Plugin.tags" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginJava</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginJava" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plugins.plugin.Plugin</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.authors">
+<span class="sig-name descname"><span class="pre">authors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Miguel</span> <span class="pre">Hernández-Cabronero']</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginJava.authors" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.build">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginJava.build" title="Permalink to this definition"></a></dt>
+<dd><p>Perform any additional retrieval, compilation and setup necessary for this plugin
+to be importable and usable. By default:</p>
+<ul class="simple">
+<li><p>The existence of installation_dir as a directory is performed.</p></li>
+<li><p>Install any required apt modules</p></li>
+<li><p>Any needed python modules are installed via pip</p></li>
+<li><p>Cleanup any generic files that might not be needed at this point</p></li>
+<li><p>The __init__.py file is preserved or generated automatically</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginJava.label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginJava.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#enb.plugins.plugin.PluginJava.tags" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -505,7 +584,7 @@ the build method.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="enb.config.html" class="btn btn-neutral float-left" title="enb.config package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../thanks.html" class="btn btn-neutral float-right" title="Thanks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="enb.plugins.plugin_ccsds122.html" class="btn btn-neutral float-right" title="enb.plugins.plugin_ccsds122 package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

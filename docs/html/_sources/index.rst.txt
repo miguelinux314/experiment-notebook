@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Experiment Notebook user manual
+Experiment Notebook (enb) user manual
 ===============================
 
 .. figure:: img/enb_logo.png
@@ -60,10 +60,6 @@ The following help pages will tour you through the most important features of ``
 and show minimal examples that you can use as starting point for your projects.
 You can also take a look at the automatically generated :ref:`API<api>`.
 
-.. warning::
-
-   This project is in beta! Comments welcome.
-
 .. toctree::
    :maxdepth: 1
    :caption: Documentation contents:
@@ -72,6 +68,7 @@ You can also take a look at the automatically generated :ref:`API<api>`.
    basic_workflow
    experiments
    analyzing_data
+   data_curation
    image_compression
    command_line_interface
    cluster_setup

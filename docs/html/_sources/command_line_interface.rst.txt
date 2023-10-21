@@ -46,12 +46,19 @@ For example, `enb plugin install zip ./codecs/zip_codecs` should produce somethi
 
 .. code-block:: text
 
-    ............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
-
     Installing zip into [...]/codecs/zip_codecs...
     Building zip into [...]/codecs/zip_codecs...
     Plugin 'zip' successfully installed into './codecs/zip_codecs'.
 
+.. note:: You can add calls to the :meth:`enb.plugins.install` method within your scripts
+   to automatically install (unless already installed) and import a plugin, e.g.,
+    
+    .. code-block:: python
+
+        enb.plugins.install("zip")
+        
+    .. autofunction:: enb.plugins.install
+        :noindex:
 
 CLI with scripts using `enb`
 ----------------------------
