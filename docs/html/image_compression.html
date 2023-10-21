@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image compression experiments &mdash; Experiment Notebook MIT License documentation</title>
+  <title>Image compression and manipulation &mdash; Experiment Notebook MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Lossless Compression Experiment" href="lossless_compression_example.html" />
-    <link rel="prev" title="Data analysis and plotting with enb" href="analyzing_data.html" /> 
+    <link rel="prev" title="Dataset curation and modification" href="data_curation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,12 +47,14 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Image compression experiments</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Image compression and manipulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="image_compression_plugins.html">Using existing image compression codecs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_manipulation.html">Image manipulation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
@@ -75,7 +77,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Image compression experiments</li>
+      <li>Image compression and manipulation</li>
       <li class="wy-breadcrumbs-aside">
               <!-- User defined GitHub URL -->
               <a href="https://github.com/miguelinux314/experiment-notebook" class="fa fa-github"> enb on GitHub</a>
@@ -86,10 +88,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="image-compression-experiments">
-<h1>Image compression experiments<a class="headerlink" href="#image-compression-experiments" title="Permalink to this headline"></a></h1>
+  <section id="image-compression-and-manipulation">
+<h1>Image compression and manipulation<a class="headerlink" href="#image-compression-and-manipulation" title="Permalink to this headline"></a></h1>
 <p>The <cite>enb</cite> library can be used to create many types of experiments.
-Specific support is provided for image compression experiments.</p>
+Specific support is provided here for image compression experiments.</p>
+<p><strong>Compression experiments</strong></p>
 <p>This section describes how to quickly create and adapt lossless and lossy
 compression experiments with existing and new codecs. Several <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> plugins
 are provided which serve as templates for your work.</p>
@@ -98,18 +101,50 @@ are provided which serve as templates for your work.</p>
 <div><ul class="simple">
 <li><p><cite>lossless-compression</cite></p></li>
 <li><p><cite>lossy-compression</cite></p></li>
-<li><p><cite>test-codecs</cite></p></li>
 </ul>
 </div></blockquote>
+<p>See:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="lossless_compression_example.html"><span class="doc">Lossless Compression Experiment</span></a></p></li>
+<li><p><a class="reference internal" href="lossy_compression_example.html"><span class="doc">Lossy Compression Experiment</span></a></p></li>
+</ul>
+</div></blockquote>
+<p><strong>Custom codecs for compression and decompression</strong></p>
 <p>You will learn how to use and extend these templates, including
 the definition of new codecs, e.g., wrappers for compression tools
 you want to evaluate.</p>
+<p>The <cite>test-codecs</cite> plugin may be of interest to test all available codecs on your platform.</p>
+<p>See:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="image_compression_plugins.html"><span class="doc">Using existing image compression codecs</span></a></p></li>
+<li><p><a class="reference internal" href="defining_new_compressors.html"><span class="doc">Defining new codecs</span></a></p></li>
+</ul>
+</div></blockquote>
+<p><strong>Image manipulation</strong></p>
+<p>The section concludes with hints on how to manipulate images in <cite>enb</cite>.
+Special attention is given to raw (uncoded) images.</p>
+<dl class="simple">
+<dt>See:</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="image_manipulation.html"><span class="doc">Image manipulation</span></a></p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><cite>enb</cite> uses <cite>numpy</cite> arrays, <em>e.g.</em>,  when loading images in memory.
+It1 is recommended that you get acquainted with <cite>numpy</cite> if you intend
+to manipulate images with <cite>enb</cite>.</p>
+</div>
+<p><strong>Contents</strong></p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lossless_compression_example.html">Lossless Compression Experiment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lossy_compression_example.html">Lossy Compression Experiment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image_compression_plugins.html">Using existing image compression codecs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defining_new_compressors.html">Defining new codecs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_manipulation.html">Image manipulation</a></li>
 </ul>
 </div>
 </section>
@@ -118,7 +153,7 @@ you want to evaluate.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="analyzing_data.html" class="btn btn-neutral float-left" title="Data analysis and plotting with enb" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_curation.html" class="btn btn-neutral float-left" title="Dataset curation and modification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="lossless_compression_example.html" class="btn btn-neutral float-right" title="Lossless Compression Experiment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

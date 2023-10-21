@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -47,32 +47,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../command_line_interface.html">The <cite>enb</cite> command-line tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_setup.html">Configuring <cite>enb</cite> in a cluster of computers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="enb.html">enb package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="enb.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.aanalysis">enb.aanalysis module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.atable">enb.atable module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.context">enb.context module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.experiment">enb.experiment module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.icompression">enb.icompression module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.isets">enb.isets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.log">enb.log module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.misc">enb.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.ml">enb.ml module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel">enb.parallel module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.parallel_ray">enb.parallel_ray module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.pgm">enb.pgm module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.plotdata">enb.plotdata module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.sets">enb.sets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tarlite">enb.tarlite module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb.tcall">enb.tcall module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enb.html#module-enb">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-highlights">API highlights</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="modules.html">enb</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="enb.html">enb package</a></li>
 </ul>
 </li>
 </ul>
@@ -281,18 +265,8 @@ avoiding out-of-RAM crashes at the cost of potentially slower execution time.</p
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_analysis_dir">
-<span class="sig-name descname"><span class="pre">default_analysis_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/miguelinux/venv/bin/analysis'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_analysis_dir" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_external_binary_dir">
 <span class="sig-name descname"><span class="pre">default_external_binary_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_external_binary_dir" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.default_output_plots_dir">
-<span class="sig-name descname"><span class="pre">default_output_plots_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/miguelinux/venv/bin/plots'</span></em><a class="headerlink" href="#enb.config.aoptions.DirOptions.default_output_plots_dir" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -322,8 +296,7 @@ avoiding out-of-RAM crashes at the cost of potentially slower execution time.</p
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.DirOptions.project_root">
 <span class="sig-name descname"><span class="pre">project_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.DirOptions.project_root" title="Permalink to this definition"></a></dt>
-<dd><p>If set, data paths relative to the invoked script’s paths are stored instead of their
-absolute path counterparts.</p>
+<dd><p>Project root path. It should not normally be modified.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -353,6 +326,13 @@ This parameter can be used to control the trade-off between error tolerance and 
 <dd><p>Maximum number of CPUs to use for computation in this machine
 See <a class="reference external" href="https://miguelinux314.github.io/experiment-notebook/cluster_setup.html">https://miguelinux314.github.io/experiment-notebook/cluster_setup.html</a> for
 details on how to set the resources employed in remote computation nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.disable_progress_bar">
+<span class="sig-name descname"><span class="pre">disable_progress_bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.disable_progress_bar" title="Permalink to this definition"></a></dt>
+<dd><p>If this flag is enabled, no progress bar is employed
+(useful to minimize the stdout volume of long-running experiments).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -399,6 +379,13 @@ in most get_df methods from ATable instances</p>
 <dd><p>Number of repetitions when calculating execution times.</p>
 <p>This value allows computation of more reliable execution times in some experiments, but
 is normally most representative in combination with -s to use a single execution process at a time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.config.aoptions.ExecutionOptions.report_wall_time">
+<span class="sig-name descname"><span class="pre">report_wall_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.ExecutionOptions.report_wall_time" title="Permalink to this definition"></a></dt>
+<dd><p>If this flag is activated, the wall time instead of the CPU time is reported by default by
+tcall.get_status_output_time.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -474,7 +461,7 @@ when combined with log_print set to True.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.config.aoptions.Options">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">Options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.Options" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RayOptions" title="enb.config.aoptions.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RenderingOptions" title="enb.config.aoptions.RenderingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RenderingOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.LoggingOptions" title="enb.config.aoptions.LoggingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.LoggingOptions</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#enb.config.aoptions.GeneralOptions" title="enb.config.aoptions.GeneralOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.GeneralOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.ExecutionOptions" title="enb.config.aoptions.ExecutionOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.ExecutionOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.DirOptions" title="enb.config.aoptions.DirOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.DirOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.RayOptions" title="enb.config.aoptions.RayOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.RayOptions</span></code></a>, <a class="reference internal" href="#enb.config.aoptions.LoggingOptions" title="enb.config.aoptions.LoggingOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.config.aoptions.LoggingOptions</span></code></a></p>
 <p>Class of the <cite>enb.config.options</cite> object, which exposes
 options for all modules, allowing CLI-based parameter setting.</p>
 <p>Classes wishing to expand the set of global options can be defined above,
@@ -508,7 +495,8 @@ results in <cite>sys.argv</cite> differing in the orchestrating and host process
 <dt class="sig sig-object py" id="enb.config.aoptions.RayOptions">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RayOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RayOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Options related to the ray library, used for parallel/distributed computing.</p>
+<p>Options related to the ray library, used for parallel/distributed computing
+only when –ssh_cluster_csv_path (or, equivalently –ssh_csv) are employed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.disable_swap">
 <span class="sig-name descname"><span class="pre">disable_swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.disable_swap" title="Permalink to this definition"></a></dt>
@@ -517,9 +505,10 @@ Note that your system may become unstable if swap memory is used (specially a bi
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.no_ray">
-<span class="sig-name descname"><span class="pre">no_ray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.no_ray" title="Permalink to this definition"></a></dt>
-<dd><p>If set, no ray is employed.</p>
+<dt class="sig sig-object py" id="enb.config.aoptions.RayOptions.no_remote_mount_needed">
+<span class="sig-name descname"><span class="pre">no_remote_mount_needed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.no_remote_mount_needed" title="Permalink to this definition"></a></dt>
+<dd><p>If this flag is used, the calling script’s project root path is assumed to
+be valid AND synchronized (e.g., via NFS). By default, remote mounting via sshfs and vde2 is employed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -557,70 +546,6 @@ See <a class="reference external" href="https://miguelinux314.github.io/experime
 <span class="sig-name descname"><span class="pre">worker_script_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RayOptions.worker_script_name" title="Permalink to this definition"></a></dt>
 <dd><p>Base name of ray’s worker scripts, invoked to run tasks in parallel processes.
 You don’t need to change this unless you want to use custom ray workers.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.config.aoptions.</span></span><span class="sig-name descname"><span class="pre">RenderingOptions</span></span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Options affecting the rendering of figures.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_height">
-<span class="sig-name descname"><span class="pre">fig_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_height" title="Permalink to this definition"></a></dt>
-<dd><p>Figure height.</p>
-<p>Larger values may make text look smaller when the image is scaled to a constant size.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.fig_width">
-<span class="sig-name descname"><span class="pre">fig_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.fig_width" title="Permalink to this definition"></a></dt>
-<dd><p>Figure width.</p>
-<p>Larger values may make text look smaller when the image is scaled to a constant size.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.global_title">
-<span class="sig-name descname"><span class="pre">global_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.global_title" title="Permalink to this definition"></a></dt>
-<dd><p>When this property is not None, displayed plots will typically include its value as the main title.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.group_row_margin">
-<span class="sig-name descname"><span class="pre">group_row_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.group_row_margin" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.horizontal_margin">
-<span class="sig-name descname"><span class="pre">horizontal_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.horizontal_margin" title="Permalink to this definition"></a></dt>
-<dd><p>Horizontal margin, which effectively expands the (x_min, x_max) limits
-by this amount on each direction.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.legend_column_count">
-<span class="sig-name descname"><span class="pre">legend_column_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.legend_column_count" title="Permalink to this definition"></a></dt>
-<dd><p>Number of columns used in plot legends.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.no_render">
-<span class="sig-name descname"><span class="pre">no_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.no_render" title="Permalink to this definition"></a></dt>
-<dd><p>If set, some rendering options will be skipped.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.show_grid">
-<span class="sig-name descname"><span class="pre">show_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.show_grid" title="Permalink to this definition"></a></dt>
-<dd><p>Show axis grid lines?</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.config.aoptions.RenderingOptions.vertical_margin">
-<span class="sig-name descname"><span class="pre">vertical_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.config.aoptions.RenderingOptions.vertical_margin" title="Permalink to this definition"></a></dt>
-<dd><p>Vertical margin, which effectively expands the (y_min, y_max) limits
-by this amount on each direction.</p>
 </dd></dl>
 
 </dd></dl>

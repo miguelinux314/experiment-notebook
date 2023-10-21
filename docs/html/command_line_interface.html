@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Configuring enb in a cluster of computers" href="cluster_setup.html" />
-    <link rel="prev" title="Defining new codecs" href="defining_new_compressors.html" /> 
+    <link rel="prev" title="Image manipulation" href="image_manipulation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.3.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,8 +47,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic_workflow.html">Basic workflow: <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Data analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_curation.html">Dataset curation and modification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image_compression.html">Image compression and manipulation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The <cite>enb</cite> command-line tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-enb-program">The <cite>enb</cite> program</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#listing-available-plugins-and-templates">Listing available plugins and templates</a></li>
@@ -101,17 +102,15 @@ with enb:</p>
 <h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v1.0.1 ] ................
 
 usage: enb [-h] {plugin,show,help} ...
 
-CLI to the experiment notebook (enb) framework
-(see https://github.com/miguelinux314/experiment-notebook).
+CLI to the experiment notebook (enb) framework (see https://github.com/miguelinux314/experiment-notebook).
 
-Several subcommands are available; use `enb &lt;subcommand&gt; -h` 
-to show help about any specific command.
+Several subcommands are available; use `enb &lt;subcommand&gt; -h` to show help about any specific command.
 
-optional arguments:
+options:
   -h, --help          show this help message and exit
 
 subcommands:
@@ -129,40 +128,50 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.5 ] ................
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v1.0.1 ] ................
 
-Showing 34 plugins.
+Showing 44 plugins.
 You can add arguments to filter this list, and/or use the --exclude argument.
 Add -v for extra information on the listed plugins.
 
          analysis-gallery :: Self-contained gallery of data analysis and plotting examples.
+         arithmetic_codec :: Arithmetic codec (8 bit).
            basic-workflow :: Basic, self-contained example of enb&#39;s workflow.
+                      bwt :: Application of the Burrows-Wheeler Transform (BWT).
                ccsds122x1 :: Wrappers for CCSDS 122.1 (privative).
                ccsds124x0 :: Wrappers for CCSDS 124.0-B-1 (privative).
            cluster-config :: Template of a CSV configuration file for enb clusters.
+                  emporda :: Wrapper for the emporda codec.
                   enb.ini :: Copy a full enb.ini configuration in the destination project folder.
+ entropy-codec-comparison :: Template for the comparison of entropy codecs.
+               experiment :: Generic experiment template. Run `enb plugin list experiment` for specific experiment templates.
                     fapec :: Wrappers for FAPEC (privative).
+     file_version_example :: Template and usage example for the FileVersionTable class for dataset curation.
                      flif :: Wrapper for the FLIF compressor.
                     fpack :: Wrapper for the FPACK compressor.
-                      fpc :: FPC codec wrapers.
+                      fpc :: FPC codec wrappers.
                     fpzip :: Wrappers for FPZIP codecs.
-                      fse :: Wrappers for FSE codecs.
+                      fse :: Wrappers for FSE codecs. Includes a Huffman-only entropy codec.
                      hdf5 :: Codec wrappers for the h5py library.
                      hevc :: Wrapper for the HEVC / H.265 codec.
+                  huffman :: Huffman codec (8 bit).
+          iraf_photometry :: Extra photometry information from image files.
                      jpeg :: Reference JPEG and JPEG-LS implementation.
                    jpegxl :: Wrapper for a reference JPEG-XL implementation.
                    kakadu :: Wrappers for Kakadu JPEG 2000 (privative).
                      lcnl :: Wrappers for LCNL CCSDS 123.0-B-2 (privative).
      lossless-compression :: Template for lossless compression experiments.
         lossy-compression :: Template for lossy compression experiments.
-                      lz4 :: Wraper for a LZ4 codec.
+                    lpaq8 :: Implementation of the LPAQ8 algorithm.
+                      lz4 :: Wrapper for a LZ4 codec.
                    marlin :: Marlin-based image compressor.
              matplotlibrc :: Copy matplotlib&#39;s default rc file into the destination directory.
-                   mcalic :: Wraper for E. Magli et al.&#39;s M-CALIC codec.
+                   mcalic :: Wrapper for E. Magli et al.&#39;s M-CALIC codec.
             montecarlo-pi :: Demo project that approximates pi in a distributed way.
                     ndzip :: Wrapper for ndzip.
   port-experiment-example :: Self-contained port scanning experiment example.
                      spdp :: Wrapper for the spdp codec.
+                    speck :: Wrapper for the SPECK codec.
               test-codecs :: Install all codec plugins verify their availability.
                       v2f :: Wrapper of a codec based on V2F forests (privative).
                       vvc :: Wrapper for the VVC / H.266 codec.
@@ -172,12 +181,13 @@ Add -v for extra information on the listed plugins.
 
 The following plugin tags have been defined and can be used for filtering:
 
-  - documentation    (  4 plugins) Documentation examples referenced in the user manual.
-  - codec            ( 24 plugins) Data compression/decompression class definitions.
-  - data compression ( 28 plugins) Data compression tools.
-  - template         ( 10 plugins) Templates formatteable into the installation dir.
-  - project          (  6 plugins) Project templates, including configuration files.
+  - documentation    (  8 plugins) Documentation examples referenced in the user manual.
+  - codec            ( 30 plugins) Data compression/decompression class definitions.
+  - data compression ( 35 plugins) Data compression tools.
+  - template         ( 12 plugins) Templates formatteable into the installation dir.
+  - project          (  9 plugins) Project templates, including configuration files.
   - test             (  1  plugin) Plugins for testing purposes.
+  - image            ( 18 plugins) Tools for image processing (including compression and analysis).
   - privative        (  6 plugins) Plugins requiring additional privative software.
 
 Run with -v for authorship and additional information, with -h for full help.
@@ -191,12 +201,37 @@ Run with -v for authorship and additional information, with -h for full help.
 </pre></div>
 </div>
 <p>For example, <cite>enb plugin install zip ./codecs/zip_codecs</cite> should produce something similar to:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>............... [ Powered by enb (Experiment NoteBook) v0.3.3 ] ................
-
-Installing zip into [...]/codecs/zip_codecs...
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Installing zip into [...]/codecs/zip_codecs...
 Building zip into [...]/codecs/zip_codecs...
 Plugin &#39;zip&#39; successfully installed into &#39;./codecs/zip_codecs&#39;.
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can add calls to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code> method within your scripts
+to automatically install (unless already installed) and import a plugin, e.g.,</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">&quot;zip&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Install an Installable by name into target_dir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the installable (e.g., plugin) to be installed. Run <cite>enb plugin list</cite> in the CLI
+to get a list of all available installables.</p></li>
+<li><p><strong>target_dir</strong> – If <cite>target_dir</cite> is None, it is set to <cite>plugins/&lt;plugin_name&gt;</cite> by default.</p></li>
+<li><p><strong>overwrite</strong> – If overwrite is False and target_dir already exists, no action is taken.</p></li>
+<li><p><strong>automatic_import</strong> – If True, the installable is imported as a module.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
 </div>
 </section>
 </section>
@@ -206,12 +241,13 @@ Plugin &#39;zip&#39; successfully installed into &#39;./codecs/zip_codecs&#39;.
 it to set the values of <cite>enb.config.options</cite>.</p>
 <p>In addition, to get a list of all of all available options, you can run your script with the <cite>-h</cite>
 options. An example option of this is shown next:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI [INI ...]]]
-                         [--cpu_limit CPU_LIMIT] [-f] [-q] [--render_only]
-                         [--chunk_size CHUNK_SIZE] [--repetitions REPETITIONS]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: basic_workflow.py [-h] [-v] [--ini [INI ...]] [--cpu_limit CPU_LIMIT]
+                         [-f] [-q] [--render_only] [--chunk_size CHUNK_SIZE]
+                         [--repetitions REPETITIONS] [--report_wall_time]
                          [--force_sanity_checks]
                          [--selected_columns SELECTED_COLUMNS [SELECTED_COLUMNS ...]]
                          [--progress_report_period PROGRESS_REPORT_PERIOD]
+                         [--disable_progress_bar]
                          [--project_root PROJECT_ROOT]
                          [--base_dataset_dir BASE_DATASET_DIR]
                          [--persistence_dir PERSISTENCE_DIR]
@@ -220,19 +256,12 @@ options. An example option of this is shown next:</p>
                          [--base_tmp_dir BASE_TMP_DIR]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
                          [--plot_dir PLOT_DIR] [--analysis_dir ANALYSIS_DIR]
-                         [--no_ray] [--disable_swap]
+                         [--ssh_csv SSH_CSV] [--disable_swap]
                          [--worker_script_name WORKER_SCRIPT_NAME]
                          [--preshutdown_wait_seconds PRESHUTDOWN_WAIT_SECONDS]
                          [--ray_port RAY_PORT]
-                         [--ray_port_count RAY_PORT_COUNT] [--ssh_csv SSH_CSV]
-                         [--no_render] [--fig_width FIG_WIDTH]
-                         [--fig_height FIG_HEIGHT]
-                         [--horizontal_margin HORIZONTAL_MARGIN]
-                         [--vertical_margin VERTICAL_MARGIN]
-                         [--global_y_label_pos GLOBAL_Y_LABEL_POS]
-                         [--legend_column_count LEGEND_COLUMN_COUNT]
-                         [--show_grid] [--global_title GLOBAL_TITLE]
-                         [--group_row_margin GROUP_ROW_MARGIN]
+                         [--ray_port_count RAY_PORT_COUNT]
+                         [--no_remote_mount_needed]
                          [--selected_log_level {core,error,warning,message,verbose,informative,debug}]
                          [--default_print_level {core,error,warning,message,verbose,informative,debug}]
                          [--log_print {True,False}]
@@ -243,7 +272,7 @@ A number of options can be set via the command line interface, then accessed
 via enb.config.options.property_name. All of them are optional, and may be
 interpreted differently by enb core modules and client code.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 General Options:
@@ -251,7 +280,7 @@ General Options:
 
   -v, --verbose         Be verbose? Repeat for more. Change at any time to
                         increase the logger&#39;s verbosity. (default: 0)
-  --ini [INI [INI ...]], --extra_ini_paths [INI [INI ...]]
+  --ini [INI ...], --extra_ini_paths [INI ...]
                         Additional .ini files to be used to attain file-based
                         configurations, in addition to the default ones
                         (system, user and project). If defined more than once,
@@ -296,6 +325,9 @@ Execution Options:
                         execution times in some experiments, but is normally
                         most representative in combination with -s to use a
                         single execution process at a time. (default: 1)
+  --report_wall_time    If this flag is activated, the wall time instead of
+                        the CPU time is reported by default by
+                        tcall.get_status_output_time. (default: False)
   --force_sanity_checks
                         If this flag is used, extra sanity checks are
                         performed by enb during the execution of this script.
@@ -310,17 +342,19 @@ Execution Options:
                         Default minimum time in seconds between progress
                         report updates, when get_df() is invoked and
                         computation is being processed in parallel. (default:
-                        5)
+                        1)
+  --disable_progress_bar
+                        If this flag is enabled, no progress bar is employed
+                        (useful to minimize the stdout volume of long-running
+                        experiments). (default: False)
 
 Dir Options:
   Options regarding default data directories.
 
   --project_root PROJECT_ROOT
-                        If set, data paths relative to the invoked script&#39;s
-                        paths are stored instead of their absolute path
-                        counterparts. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example)
+                        Project root path. It should not normally be modified.
+                        (default: /data/Dropbox/desarrollo/experiment-notebook
+                        .git/enb/plugins/template_basic_workflow_example)
   --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
@@ -361,9 +395,14 @@ Dir Options:
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed
-  computing.
+  computing only when --ssh_cluster_csv_path (or, equivalently --ssh_csv)
+  are employed.
 
-  --no_ray              If set, no ray is employed. (default: False)
+  --ssh_csv SSH_CSV, --ssh_cluster_csv_path SSH_CSV
+                        Path to the CSV file containing a enb ssh cluster
+                        configuration. See
+                        https://miguelinux314.github.io/experiment-
+                        notebook/installation.html. (default: None)
   --disable_swap        If this flag is used, then swap memory will not be
                         allowed by ray. By default, swap memory is enabled.
                         Note that your system may become unstable if swap
@@ -390,47 +429,11 @@ Ray Options:
                         `ray_port` is 11000 and `ray_port_count` is 1000, then
                         ports 11000-11999 will be used for parallelization and
                         (if so-configured) enb clusters. (default: 500)
-  --ssh_csv SSH_CSV, --ssh_cluster_csv_path SSH_CSV
-                        Path to the CSV file containing a enb ssh cluster
-                        configuration. See
-                        https://miguelinux314.github.io/experiment-
-                        notebook/installation.html. (default: None)
-
-Rendering Options:
-  Options affecting the rendering of figures.
-
-  --no_render           If set, some rendering options will be skipped.
-                        (default: False)
-  --fig_width FIG_WIDTH
-                        Figure width. Larger values may make text look smaller
-                        when the image is scaled to a constant size. (default:
-                        5.0)
-  --fig_height FIG_HEIGHT
-                        Figure height. Larger values may make text look
-                        smaller when the image is scaled to a constant size.
-                        (default: 4.0)
-  --horizontal_margin HORIZONTAL_MARGIN
-                        Horizontal margin, which effectively expands the
-                        (x_min, x_max) limits by this amount on each
-                        direction. (default: 0)
-  --vertical_margin VERTICAL_MARGIN
-                        Vertical margin, which effectively expands the (y_min,
-                        y_max) limits by this amount on each direction.
-                        (default: 0)
-  --global_y_label_pos GLOBAL_Y_LABEL_POS
-                        Relative position of the global Y label. Can be
-                        negative or positive. Intended as a quick hack when
-                        left y-axis ticks are longer or shorter than the
-                        default assumptions. If None is selected, the position
-                        is attempted to set automatically. (default: None)
-  --legend_column_count LEGEND_COLUMN_COUNT
-                        Number of columns used in plot legends. (default: 2)
-  --show_grid           Show axis grid lines? (default: False)
-  --global_title GLOBAL_TITLE
-                        When this property is not None, displayed plots will
-                        typically include its value as the main title.
-                        (default: None)
-  --group_row_margin GROUP_ROW_MARGIN
+  --no_remote_mount_needed
+                        If this flag is used, the calling script&#39;s project
+                        root path is assumed to be valid AND synchronized
+                        (e.g., via NFS). By default, remote mounting via sshfs
+                        and vde2 is employed. (default: False)
 
 Logging Options:
   Options controlling what and how is printed and/or logged to files.
@@ -480,7 +483,7 @@ a help message with all available options.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="defining_new_compressors.html" class="btn btn-neutral float-left" title="Defining new codecs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image_manipulation.html" class="btn btn-neutral float-left" title="Image manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="cluster_setup.html" class="btn btn-neutral float-right" title="Configuring enb in a cluster of computers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
