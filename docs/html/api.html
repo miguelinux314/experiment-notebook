@@ -28,15 +28,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -99,7 +103,7 @@
 <li><dl class="simple">
 <dt><a class="reference internal" href="api/enb.html#module-enb.atable" title="enb.atable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: definition of the core ATable functionality</dt><dd><ul>
 <li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>: core class with automatic parallelization and persistence management.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a>: method to produce a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+406.g00f10db680)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with the table contents.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a>: method to produce a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with the table contents.</p></li>
 <li><p>See <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> for extra information on <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p></li>
 </ul>
 </dd>
@@ -142,7 +146,7 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>: Tools for automatic analysis and plotting of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+406.g00f10db680)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained</dt><dd><dl class="simple">
+<dt><a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>: Tools for automatic analysis and plotting of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained</dt><dd><dl class="simple">
 <dt>with <a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a> or its subclass implementations, e.g., in <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</dt><dd><ul>
 <li><dl class="simple">
 <dt><a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a>: subclasses implement different types of automatic analysys</dt><dd><ul>
@@ -232,7 +236,7 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 <li class="toctree-l6"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html">enb.plugins.plugin_iraf_photometry package</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#submodules">Submodules</a></li>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry module</a></li>
-<li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#enb-plugins-plugin-iraf-photometry-iraf-photometry-slave-module">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">Module contents</a></li>
 </ul>
 </li>

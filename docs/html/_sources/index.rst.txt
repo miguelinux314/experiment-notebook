@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Experiment Notebook (enb) user manual
-===============================
+=====================================
 
 .. figure:: img/enb_logo.png
     :target: #
