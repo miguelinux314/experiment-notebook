@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PNG manipulation tools.
+"""PNG manipulation (e.g., curation) tools.
 """
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2023/02/12"
@@ -77,7 +77,7 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
 class PNGCurationTable(enb.sets.FileVersionTable):
     """Given a directory tree containing PNG images, copy those images into
     a new directory tree in raw BSQ format adding geometry information tags to
-    the output names recognized by `enb.isets.
+    the output names recognized by `enb.isets.load_array_bsq`.
     """
     dataset_files_extension = "png"
 
