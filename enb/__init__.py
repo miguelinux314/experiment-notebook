@@ -112,6 +112,7 @@ from . import plugins
 # Secondary module import
 from . import fits
 from . import png
+from . import jpg
 
 # For backwards compatibility
 isets.FITSVersionTable = fits.FITSVersionTable
