@@ -15,9 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -95,7 +93,7 @@
            <div itemprop="articleBody">
              
   <section id="configuring-enb-in-a-cluster-of-computers">
-<h1>Configuring <cite>enb</cite> in a cluster of computers<a class="headerlink" href="#configuring-enb-in-a-cluster-of-computers" title="Permalink to this heading"></a></h1>
+<h1>Configuring <cite>enb</cite> in a cluster of computers<a class="headerlink" href="#configuring-enb-in-a-cluster-of-computers" title="Permalink to this headline"></a></h1>
 <p>Thanks to the <cite>ray</cite> library, your code using <cite>enb</cite> can easily scale from one to multiple
 computers.</p>
 <p>This cluster employs <cite>ray</cite>, <cite>ssh</cite> and <cite>sshfs</cite>, and does not require docker, k8s, AWS or anything similar.
@@ -104,7 +102,7 @@ You will most easily set up all these tools on linux.</p>
 to the best of our knowledge only Linux and MacOS. This feature is known not to work on Windows and
 disabled by default on that platform.</p>
 <section id="first-installation">
-<h2>First installation<a class="headerlink" href="#first-installation" title="Permalink to this heading"></a></h2>
+<h2>First installation<a class="headerlink" href="#first-installation" title="Permalink to this headline"></a></h2>
 <p>In each computer of the cluster, you will need to do the following (once).</p>
 <blockquote>
 <div><ol class="arabic">
@@ -224,9 +222,9 @@ You can install it on debian/ubuntu derivates with:</p>
 </div></blockquote>
 </section>
 <section id="running-distributed-experiments">
-<h2>Running distributed experiments<a class="headerlink" href="#running-distributed-experiments" title="Permalink to this heading"></a></h2>
+<h2>Running distributed experiments<a class="headerlink" href="#running-distributed-experiments" title="Permalink to this headline"></a></h2>
 <section id="cluster-configuration-file">
-<h3>Cluster configuration file<a class="headerlink" href="#cluster-configuration-file" title="Permalink to this heading"></a></h3>
+<h3>Cluster configuration file<a class="headerlink" href="#cluster-configuration-file" title="Permalink to this headline"></a></h3>
 <p>Once everything is set up in every node you want to use, you need an enb ssh cluster
 configuration file, e.g., <cite>enb_cluster.csv</cite>. You can install a template for this with</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install cluster-config .
@@ -256,7 +254,7 @@ and for which the key is on <cite>~/.ssh/id_rsa</cite>, the cluster configuratio
 </div>
 </section>
 <section id="distributed-script-execution">
-<h3>Distributed script execution<a class="headerlink" href="#distributed-script-execution" title="Permalink to this heading"></a></h3>
+<h3>Distributed script execution<a class="headerlink" href="#distributed-script-execution" title="Permalink to this headline"></a></h3>
 <p>Once the cluster configuration file is created, you simply need to run your script
 with <cite>–ssh_cluster_csv_path enb_cluster.csv</cite>, or set
 <cite>enb.config.options.ssh_cluster_csv_path</cite> in your code.</p>
@@ -269,7 +267,7 @@ This comment also applies when scripts are run in a single computer.</p>
 </div>
 </section>
 <section id="example-project-montecarlo-pi">
-<h3>Example project: Montecarlo pi<a class="headerlink" href="#example-project-montecarlo-pi" title="Permalink to this heading"></a></h3>
+<h3>Example project: Montecarlo pi<a class="headerlink" href="#example-project-montecarlo-pi" title="Permalink to this headline"></a></h3>
 <p>An installable template is provided for you to test local and distributed experiment execution.
 You can install it with:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install montecarlo-pi mp
@@ -310,7 +308,7 @@ run it with <cite>-vv</cite> for full details.</p>
 </section>
 </section>
 <section id="accessing-files">
-<h2>Accessing files<a class="headerlink" href="#accessing-files" title="Permalink to this heading"></a></h2>
+<h2>Accessing files<a class="headerlink" href="#accessing-files" title="Permalink to this headline"></a></h2>
 <p>When a remote node is connected, the project node of the head node is automatically mounted
 on <cite>~/.enb-remote</cite> in that remote node.</p>
 <p>When a column function is executed remotely, the current working dir is set to either the
@@ -356,7 +354,7 @@ The head and remote nodes do not need to communicate to obtain these data.</p></
 </ol>
 </section>
 <section id="ray-port-testing">
-<h2>Ray port testing<a class="headerlink" href="#ray-port-testing" title="Permalink to this heading"></a></h2>
+<h2>Ray port testing<a class="headerlink" href="#ray-port-testing" title="Permalink to this headline"></a></h2>
 <p>If the previous example worked fine for you, you can safely skip this part.
 If you encountered any problems, you may want to test ray in an isolated
 way.</p>
