@@ -136,7 +136,7 @@ class FileVersionTable(FilePropertiesTable):
         :param version_name: arbitrary name of this file version
         :param original_base_dir: path to the original directory
           (it must contain all indices requested later with self.get_df()).
-          If None, options.base_datset_dir is used
+          If None, `enb.config.options.base_dataset_dir` is used
         :param original_properties_table: instance of the file properties
           subclass to be used when reading the original data to be versioned.
           If None, a FilePropertiesTable is instanced automatically.
