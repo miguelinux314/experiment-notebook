@@ -605,6 +605,63 @@ class QuantizedImageVersion(ImageVersionTable):
         dump_array_bsq(array=img, file_or_path=output_path)
 
 
+class DivisibleSizeVersion(ImageVersionTable):
+    """Crop the spatial dimensions of all (raw) images in a directory so that they are
+    all multiple of a given number. Useful for quickly curating datasets that can be divided
+    into blocks of a given size.
+    """
+
+    def __init__(self,
+                 version_base_dir,
+                 dimension_size_multiple,
+                 original_base_dir=None,
+                 csv_support_path=None,
+                 original_properties_table=None):
+        """
+        :param version_base_dir: path to the versioned base directory
+          (versioned directories preserve names and structure within
+          the base dir)
+        :param dimension_size_multiple: the x and y dimensions of each image are cropped so that
+          they become a multiple of this value, which must be strictly positive.
+          If the image is smaller than this value in either
+          the x dimension, the y dimension, or both, a ValueError is raised.
+        :param original_base_dir: path to the original directory
+          (it must contain all indices requested later with self.get_df()).
+          If None, `enb.config.options.base_dataset_dir` is used
+        :param original_properties_table: instance of the file properties
+          subclass to be used when reading the original data to be versioned.
+          If None, an enb.isets.ImageGeometryTable is instanced automatically.
+        :param csv_support_path: path to the file where results (of the
+          versioned data) are to be long-term stored. If None, one is assigned
+          by default based on options.persistence_dir.
+      """
+        super().__init__(version_base_dir=version_base_dir,
+                         version_name="CropDimensionsMultiple",
+                         original_base_dir=original_base_dir,
+                         csv_support_path=csv_support_path,
+                         check_generated_files=False,
+                         original_properties_table=original_properties_table)
+        assert dimension_size_multiple > 0, dimension_size_multiple
+        self.dimension_size_multiple = dimension_size_multiple
+
+    def version(self, input_path, output_path, row):
+        img = enb.isets.load_array_bsq(file_or_path=input_path)
+        width, height, component_count = img.shape
+        if min(height, width) < self.dimension_size_multiple:
+            raise ValueError(f"Image {input_path} is too small ({self.dimension_size_multiple=})")
+
+        cropped_width = self.dimension_size_multiple * (width // self.dimension_size_multiple)
+        cropped_height = self.dimension_size_multiple * (height // self.dimension_size_multiple)
+        output_path = os.path.join(
+            os.path.dirname(output_path),
+            os.path.basename(output_path).replace(
+                f"{component_count}x{height}x{width}",
+                f"{component_count}x{cropped_height}x{cropped_width}"))
+
+        enb.isets.dump_array_bsq(array=img[:cropped_width, :cropped_height, :],
+                                 file_or_path=output_path)
+
+
 def load_array(file_or_path, image_properties_row=None,
                width=None, height=None, component_count=None, dtype=None,
                order="bsq"):
