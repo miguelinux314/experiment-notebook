@@ -61,6 +61,14 @@ enb.isets module
    :undoc-members:
    :show-inheritance:
 
+enb.jpg module
+--------------
+
+.. automodule:: enb.jpg
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.log module
 --------------
 

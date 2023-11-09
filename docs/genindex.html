@@ -14,9 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -31,7 +29,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -174,6 +172,8 @@
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.__init__">(enb.icompression.WrapperCodec method)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.BIPToBSQ.__init__">(enb.isets.BIPToBSQ method)</a>
+</li>
+        <li><a href="api/enb.html#enb.isets.DivisibleSizeVersion.__init__">(enb.isets.DivisibleSizeVersion method)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.ImageVersionTable.__init__">(enb.isets.ImageVersionTable method)</a>
 </li>
@@ -523,6 +523,8 @@
 </li>
         <li><a href="api/enb.html#enb.isets.BIPToBSQ.column_to_properties">(enb.isets.BIPToBSQ attribute)</a>
 </li>
+        <li><a href="api/enb.html#enb.isets.DivisibleSizeVersion.column_to_properties">(enb.isets.DivisibleSizeVersion attribute)</a>
+</li>
         <li><a href="api/enb.html#enb.isets.HistogramFullnessTable1Byte.column_to_properties">(enb.isets.HistogramFullnessTable1Byte attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.HistogramFullnessTable2Bytes.column_to_properties">(enb.isets.HistogramFullnessTable2Bytes attribute)</a>
@@ -538,6 +540,8 @@
         <li><a href="api/enb.html#enb.isets.QuantizedImageVersion.column_to_properties">(enb.isets.QuantizedImageVersion attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.SampleDistributionTable.column_to_properties">(enb.isets.SampleDistributionTable attribute)</a>
+</li>
+        <li><a href="api/enb.html#enb.jpg.JPEGCurationTable.column_to_properties">(enb.jpg.JPEGCurationTable attribute)</a>
 </li>
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.column_to_properties">(enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment attribute)</a>
 </li>
@@ -697,6 +701,8 @@
 </li>
         <li><a href="api/enb.html#enb.isets.QuantizedImageVersion.dataset_files_extension">(enb.isets.QuantizedImageVersion attribute)</a>
 </li>
+        <li><a href="api/enb.html#enb.jpg.JPEGCurationTable.dataset_files_extension">(enb.jpg.JPEGCurationTable attribute)</a>
+</li>
         <li><a href="api/enb.html#enb.png.PDFToPNG.dataset_files_extension">(enb.png.PDFToPNG attribute)</a>
 </li>
         <li><a href="api/enb.html#enb.png.PNGCurationTable.dataset_files_extension">(enb.png.PNGCurationTable attribute)</a>
@@ -767,6 +773,8 @@
       <li><a href="api/enb.config.html#enb.config.aoptions.RayOptions.disable_swap">disable_swap() (enb.config.aoptions.RayOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.parallel_ray.RemoteNode.disconnect">disconnect() (enb.parallel_ray.RemoteNode method)</a>
+</li>
+      <li><a href="api/enb.html#enb.isets.DivisibleSizeVersion">DivisibleSizeVersion (class in enb.isets)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.dump_array">dump_array() (in module enb.isets)</a>
 </li>
@@ -857,6 +865,13 @@
 
       <ul>
         <li><a href="api/enb.html#module-enb.isets">module</a>
+</li>
+      </ul></li>
+      <li>
+    enb.jpg
+
+      <ul>
+        <li><a href="api/enb.html#module-enb.jpg">module</a>
 </li>
       </ul></li>
       <li>
@@ -967,6 +982,13 @@
 </li>
       </ul></li>
       <li>
+    enb.plugins.plugin_iraf_photometry.iraf_photometry_slave
+
+      <ul>
+        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">module</a>
+</li>
+      </ul></li>
+      <li>
     enb.plugins.template
 
       <ul>
@@ -1073,6 +1095,8 @@
       <li><a href="api/enb.html#enb.sets.FileVersionTable">FileVersionTable (class in enb.sets)</a>
 </li>
       <li><a href="api/enb.html#enb.fits.FITSVersionTable.fits_extension">fits_extension (enb.fits.FITSVersionTable attribute)</a>
+</li>
+      <li><a href="api/enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.fits_to_csv">fits_to_csv() (in module enb.plugins.plugin_iraf_photometry.iraf_photometry_slave)</a>
 </li>
       <li><a href="api/enb.html#enb.fits.FITSVersionTable">FITSVersionTable (class in enb.fits)</a>
 </li>
@@ -1388,6 +1412,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.experiment.Experiment.joined_column_to_properties">joined_column_to_properties (enb.experiment.Experiment property)</a>
 </li>
+      <li><a href="api/enb.html#enb.jpg.JPEGCurationTable">JPEGCurationTable (class in enb.jpg)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1596,6 +1622,8 @@
 </li>
         <li><a href="api/enb.html#module-enb.isets">enb.isets</a>
 </li>
+        <li><a href="api/enb.html#module-enb.jpg">enb.jpg</a>
+</li>
         <li><a href="api/enb.html#module-enb.log">enb.log</a>
 </li>
         <li><a href="api/enb.html#module-enb.misc">enb.misc</a>
@@ -1625,6 +1653,8 @@
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">enb.plugins.plugin_iraf_photometry</a>
 </li>
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry</a>
+</li>
+        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave</a>
 </li>
         <li><a href="api/enb.plugins.html#module-enb.plugins.template">enb.plugins.template</a>
 </li>
@@ -2391,6 +2421,8 @@
 
       <ul>
         <li><a href="api/enb.html#enb.isets.BIPToBSQ.version">(enb.isets.BIPToBSQ method)</a>
+</li>
+        <li><a href="api/enb.html#enb.isets.DivisibleSizeVersion.version">(enb.isets.DivisibleSizeVersion method)</a>
 </li>
         <li><a href="api/enb.html#enb.isets.QuantizedImageVersion.version">(enb.isets.QuantizedImageVersion method)</a>
 </li>

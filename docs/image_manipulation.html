@@ -15,9 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v0.4.5
+                v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,11 +59,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#read-raw-images-enb-isets-load-array-bsq">Read raw images: enb.isets.load_array_bsq</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#images-are-numpy-arrays">Images are numpy arrays</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#saving-images-to-disk-enb-isets-dump-array-bsq">Saving images to disk: enb.isets.dump_array_bsq</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#appendix-function-interfaces">Appendix: function interfaces</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#enb.isets.load_array_bsq"><code class="docutils literal notranslate"><span class="pre">load_array_bsq()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#enb.isets.dump_array_bsq"><code class="docutils literal notranslate"><span class="pre">dump_array_bsq()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#appendix-function-interfaces">Appendix: function interfaces</a></li>
 </ul>
 </li>
 </ul>
@@ -103,14 +97,14 @@
            <div itemprop="articleBody">
              
   <section id="image-manipulation">
-<h1>Image manipulation<a class="headerlink" href="#image-manipulation" title="Permalink to this heading"></a></h1>
+<h1>Image manipulation<a class="headerlink" href="#image-manipulation" title="Permalink to this headline"></a></h1>
 <p>The <cite>enb</cite> library provides tools to work with image files.</p>
 <p>Special focus has been placed to simplify the <strong>loading and saving of raw BSQ images</strong>.
 In memory, <cite>numpy</cite> is employed, which makes it easy to interface with other libraries.</p>
 <p>The image manipulation tools in <cite>enb</cite> can be useful when defining your own <cite>enb</cite> experiments,
 but also as standalone functions.</p>
 <section id="raw-format">
-<h2>Raw format<a class="headerlink" href="#raw-format" title="Permalink to this heading"></a></h2>
+<h2>Raw format<a class="headerlink" href="#raw-format" title="Permalink to this headline"></a></h2>
 <p>When in disk, images are assumed to be stored in <strong>raw (uncompressed, BSQ) format</strong>, meaning:</p>
 <ul class="simple">
 <li><p>Each pixel is stored with a constant number of bytes per sample (1, 2, 4 or 8, typically)</p></li>
@@ -122,7 +116,7 @@ need to be known.</p>
 <p>The <cite>.raw</cite> file format is often assumed.</p>
 </section>
 <section id="read-raw-images-enb-isets-load-array-bsq">
-<h2>Read raw images: enb.isets.load_array_bsq<a class="headerlink" href="#read-raw-images-enb-isets-load-array-bsq" title="Permalink to this heading"></a></h2>
+<h2>Read raw images: enb.isets.load_array_bsq<a class="headerlink" href="#read-raw-images-enb-isets-load-array-bsq" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="#enb.isets.load_array_bsq" title="enb.isets.load_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.load_array_bsq()</span></code></a> function allows you to load raw images from disk.
 To specify the geometry and data type of the file, you need to use at least one of the following:</p>
 <ul>
@@ -158,7 +152,7 @@ and <cite>Y</cite> the height (number of rows, 600 in the example).</p></li>
 </ul>
 </section>
 <section id="images-are-numpy-arrays">
-<h2>Images are numpy arrays<a class="headerlink" href="#images-are-numpy-arrays" title="Permalink to this heading"></a></h2>
+<h2>Images are numpy arrays<a class="headerlink" href="#images-are-numpy-arrays" title="Permalink to this headline"></a></h2>
 <p>The <cite>enb</cite> library uses <cite>numpy</cite> whenever possible.</p>
 <p>The return of <cite>enb.isets.load_array_bsq</cite> is a 3-D numpy array with the image data, which can be indexed as [x,y,z].</p>
 <p>You can use all of numpys functionality directly on these arrays,
@@ -172,7 +166,7 @@ by numpy’s functions ((z,y,x), “C”).</p>
 </div>
 </section>
 <section id="saving-images-to-disk-enb-isets-dump-array-bsq">
-<h2>Saving images to disk: enb.isets.dump_array_bsq<a class="headerlink" href="#saving-images-to-disk-enb-isets-dump-array-bsq" title="Permalink to this heading"></a></h2>
+<h2>Saving images to disk: enb.isets.dump_array_bsq<a class="headerlink" href="#saving-images-to-disk-enb-isets-dump-array-bsq" title="Permalink to this headline"></a></h2>
 <p>If you have a 3D numpy array indexed by [x,y,z], you can store it in BSQ raw format with
 the <a class="reference internal" href="#enb.isets.dump_array_bsq" title="enb.isets.dump_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.dump_array_bsq()</span></code></a> method, <em>e.g.</em>,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">im</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">isets</span><span class="o">.</span><span class="n">load_array_bsq</span><span class="p">(</span><span class="s2">&quot;img-u32be-1x2136x2078.raw&quot;</span><span class="p">)</span>
@@ -193,7 +187,7 @@ and. In this case:</p>
 </div></blockquote>
 </section>
 <section id="appendix-function-interfaces">
-<h2>Appendix: function interfaces<a class="headerlink" href="#appendix-function-interfaces" title="Permalink to this heading"></a></h2>
+<h2>Appendix: function interfaces<a class="headerlink" href="#appendix-function-interfaces" title="Permalink to this headline"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.isets.load_array_bsq">
 <span class="sig-prename descclassname"><span class="pre">enb.isets.</span></span><span class="sig-name descname"><span class="pre">load_array_bsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_or_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_properties_row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.isets.load_array_bsq" title="Permalink to this definition"></a></dt>
