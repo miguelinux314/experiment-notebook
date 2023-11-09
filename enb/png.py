@@ -108,7 +108,7 @@ class PNGCurationTable(enb.sets.FileVersionTable):
         recognized by isets.
         """
         with enb.logger.info_context(f"Versioning {input_path}"):
-            img = imageio.imread(input_path)
+            img = imageio.v2.imread(input_path)
             if len(img.shape) == 2:
                 img = img[:, :, np.newaxis]
             assert len(img.shape) == 3, \
