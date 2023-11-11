@@ -2168,7 +2168,7 @@ class TwoNumericSummary(ScalarNumericSummary):
                 if any(not math.isfinite(x) for x in (
                         slope, intercept, x_min, x_max)):
                     x_values = []
-                    y_values =[]
+                    y_values = []
                 else:
                     x_values = [x_min, x_max]
                     y_values = [intercept + slope * x for x in (x_min, x_max)]
