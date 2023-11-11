@@ -181,6 +181,9 @@ class Analyzer(enb.atable.ATable):
 
         :return: a |DataFrame| instance with analysis results
         """
+        # ATable get_df is not called here, the flag is changed to avoid incorrect warning messages
+        self._was_get_df_called = True
+
         # pylint: disable=arguments-differ,too-many-arguments
         show_count = show_count if show_count is not None else self.show_count
         show_global = show_global if show_global is not None else self.show_global

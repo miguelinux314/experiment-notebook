@@ -636,12 +636,7 @@ class ATable(metaclass=MetaTable):
         :param progress_report_period: if not None, it must be a positive number of seconds
           that are waited between progress report messages (if applicable).
         """
-        progress_report_period = progress_report_period if progress_report_period is not None \
-            else enb.config.options.progress_report_period
-        if progress_report_period < 0:
-            raise ValueError(
-                f"Invalid progress_report_period {progress_report_period}")
-        self.progress_report_period = progress_report_period
+        # Set up the index, column properties and persistence CSV file for this table
         self.index = index
         self.csv_support_path = csv_support_path
         if column_to_properties is not None:
@@ -665,6 +660,20 @@ class ATable(metaclass=MetaTable):
                                             row: datetime.datetime.now().isoformat(),
                                  column_properties=ColumnProperties(
                                      "row_updated"))
+
+        # Initialize the periodicity with which progress is reported when -v is specified
+        # in the CLI.
+        progress_report_period = progress_report_period if progress_report_period is not None \
+            else enb.config.options.progress_report_period
+        if progress_report_period < 0:
+            raise ValueError(
+                f"Invalid progress_report_period {progress_report_period}")
+        self.progress_report_period = progress_report_period
+
+        # ATable instances are intended to be instantiated and their get_df method called.
+        # This variable helps send a user-friendly message if an ATable subclass is instantiated
+        # but that method is not called.
+        self._was_get_df_called = False
 
     # Methods related to defining columns and retrieving them afterwards
 
@@ -941,6 +950,9 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is
           encountered processing the data.
         """
+        # Avoid sending a false warning of not having invoked self.get_df
+        self._was_get_df_called = True
+
         # pylint: disable=too-many-arguments
         # Parallelization with ray is only used if it is enabled at this point,
         # i.e., if ray is installed, the current platform is supported, and
@@ -1552,6 +1564,21 @@ class ATable(metaclass=MetaTable):
                         f"values for index {index_name} (at least)")
 
         check_unique_indices(df)
+
+    def __del__(self):
+        """Upon deletion of an ATable instance, if the get_df method had not been called at
+        some point, then a warning message is shown. This is to help new users realize
+        a potential bug in their scripts that prevent the actual utilities of enb to be employed.
+        """
+        if not self._was_get_df_called:
+            msg = f"WARNING: Instance {self} was initialized " \
+                  f"but its get_df() method was never called.\nThis is not the expected " \
+                  f"behaviour. Please check the documentation in case of doubt."
+            if enb is None or enb.logger is None or enb.logger.warn is None:
+                # The enb.logger subsystem is not available anymore
+                print(msg)
+            else:
+                enb.logger.warn(msg)
 
 
 class SummaryTable(ATable):
