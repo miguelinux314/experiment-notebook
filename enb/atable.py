@@ -188,7 +188,7 @@ to obtain simething similar to::
     ('ab cab c',)                  ab cab c            8          AB CAB C  {'first': 'a', 'last': 'c'}           2             0
     ('ab cab cab c',)          ab cab cab c           12      AB CAB CAB C  {'first': 'a', 'last': 'c'}           3             0
     ('ab cab cab cab c',)  ab cab cab cab c           16  AB CAB CAB CAB C  {'first': 'a', 'last': 'c'}           4             0
-""" # pylint: disable=line-too-long
+"""  # pylint: disable=line-too-long
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2019/09/19"
 
@@ -536,6 +536,7 @@ class MetaTable(type):
             ("Did not process all pending columndefinitions:",
              subclass, funname_to_class_fun_columnproperties)
         cls.pendingdefs_classname_fun_columnpropertylist.clear()
+
         return subclass
 
     @staticmethod
@@ -628,7 +629,7 @@ class ATable(metaclass=MetaTable):
           used for indexing. Indices provided to self.get_df must be
           either one instance (when a single column name is given)
           or a list of as many instances as elements are contained in self.index.
-          See self.indices
+          See `self.indices.
         :param csv_support_path: path to a file where this ATable contents
           are to be stored and retrieved. If None, persistence is disabled.
         :param column_to_properties: if not None, it is a mapping from strings to callables
@@ -1019,7 +1020,6 @@ class ATable(metaclass=MetaTable):
                     overwrite=overwrite,
                     run_sanity_checks=False)
 
-
         # Get the target df again
         if len(chunk_list) > 1 or df is None:
             df = self.get_df_one_chunk(
@@ -1028,7 +1028,6 @@ class ATable(metaclass=MetaTable):
                 fill_needed=fill or overwrite,
                 overwrite=False,
                 run_sanity_checks=enb.config.options.force_sanity_checks)
-
 
         if fill or overwrite:
             assert len(df) == len(target_indices), (
