@@ -4,7 +4,7 @@ Wrappers for the Kakadu codec.
 For instructions on downloading and installing visit:
 https://github.com/miguelinux314/experiment-notebook/blob/master/enb/plugins/plugin_kakadu/README.md
 """
-__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__author__ = "Natalia Blasco, Ester Jara, Artemis Llabrés and Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
 
 import math

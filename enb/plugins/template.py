@@ -72,7 +72,9 @@ class Template(Installable, metaclass=MetaTemplate):
                             raise SyntaxError(
                                 f"Missing field {repr(field_name)}. Help for {field_name}:\n"
                                 f"{cls.required_fields_to_help[field_name]}\n\n"
-                                f"Invoke again with --{field_name}=\"your value\" or with -h for additional help.\n") from ex
+                                f"Invoke again with "
+                                f"--{field_name}=<your value> or with -h for "
+                                f"additional help.\n") from ex
                 if unused_options:
                     print(f"Warning: unused option{'s' if len(unused_options) > 1 else ''}. \n  - ", end="")
                     print('\n  - '.join(repr(o) for o in unused_options))

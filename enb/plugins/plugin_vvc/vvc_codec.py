@@ -4,7 +4,7 @@ Wrapper for the VVC codec, using the reference implementation from
 
 https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/tree/master
 """
-__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__author__ = "Natalia Blasco, Ester Jara, Artemis Llabrés and Miguel Hernández-Cabronero"
 __since__ = "2021/06/01"
 
 import os
@@ -75,7 +75,7 @@ class VVCLosslessIntra(VVC, icompression.LosslessCodec):
 
     def __init__(self, config_path=None, chroma_format="400"):
         """
-        :param config_path: if not None, it must be a path to the .cfg configuration file for VVC. 
+        :param config_path: if not None, it must be a path to the .cfg configuration file for VVC.
           If None, the default configuration file for this class is selected.
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
         """
@@ -97,12 +97,12 @@ class VVCLosslessInter(VVC, icompression.LosslessCodec):
 
     def __init__(self, config_path=None, chroma_format="400"):
         """
-        :param config_path: if not None, it must be a path to the .cfg configuration file for VVC. 
+        :param config_path: if not None, it must be a path to the .cfg configuration file for VVC.
           If None, the default configuration file for this class is selected.
         :param chroma_format: Specifies the chroma format used in the input file (only 400 supported).
         :param gop_size: size of the group of pictures used for coding.
         :param intra_period: an intra slice is used every these many frames. It must be a multiple of
-          gop_size (they can be identical). 
+          gop_size (they can be identical).
         """
         assert chroma_format == "400", f"Only '400' chroma format is supported by this plugin."
         config_path = config_path if config_path is not None \
@@ -117,7 +117,7 @@ class VVCLosslessInter(VVC, icompression.LosslessCodec):
 
 class VVC_lossy(VVC, icompression.LossyCodec):
     """
-    VVC subclass for lossy compression. 
+    VVC subclass for lossy compression.
     This class admits only 1 band (1 frame at a time)
     """
     rate_decimals = 3

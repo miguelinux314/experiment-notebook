@@ -99,6 +99,7 @@ class PluginInstall(argparse.Action):
         assert " " not in plugin_name, \
             f"Plugin names cannot have spaces: {repr(plugin_name)}"
         destination_dir = namespace.destination_dir
+        destination_dir_existed = os.path.exists(destination_dir)
 
         try:
             plugin = [p for p in enb.plugins.list_all_installables() if
@@ -106,18 +107,19 @@ class PluginInstall(argparse.Action):
         except IndexError:
             enb.logger.error(
                 f"Invalid plugin name {repr(plugin_name)}. "
-                "Run `enb plugin list` to see available plugins.")
+                "Run `enb plugin list` to see all available plugins, "
+                "or `enb plugin list <something>` to filter that list.")
             sys.exit(1)
 
-        if os.path.exists(destination_dir) \
-                and not issubclass(plugin, enb.plugins.Template):
+        if destination_dir_existed and not issubclass(plugin, enb.plugins.Template):
             raise ValueError(f"The destination dir {repr(destination_dir)} "
                              "already exists. Remove and try again.")
         try:
             plugin.install(installation_dir=destination_dir)
         except (SyntaxError, ValueError) as ex:
             enb.logger.error(
-                f"Error installing plugin {repr(plugin_name)}: {ex}")
+                f"Error installing plugin {repr(plugin_name)} into {repr(destination_dir)}. "
+                f"The following exception was raised:\n{ex}")
             sys.exit(1)
 
         # Set status
