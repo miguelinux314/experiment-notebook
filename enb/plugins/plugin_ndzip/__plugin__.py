@@ -1,3 +1,4 @@
+import textwrap
 import enb.plugins
 
 
@@ -10,12 +11,12 @@ class NDZIPPlugin(enb.plugins.PluginMake):
     contrib_download_url_name = [
         ("https://github.com/miguelinux314/experiment-notebook/blob/dev/contrib/ndzip-master-enb.zip?raw=true",
          "ndzip-master-enb.zip")]
-    extra_requirements_message = f"""
+    extra_requirements_message = textwrap.dedent("""
     The following system packages should be installed for this plugin to be able to compile:
     
         - cmake
         - libboost-dev
         - libboost-thread-dev
         - libboost-program-options-dev
-    """
+    """)
     tested_on = {"linux"}

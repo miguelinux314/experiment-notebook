@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.abspath('..'), '..')))
 
 # -- Project information -----------------------------------------------------
 
-project = "Experiment Notebook"
+project = "Experiment Notebook (enb)"
 version = f"v{enb.config.ini.get_key('enb', 'version')}"
 release = version
 copyright = f"2020-*, Miguel Hernández-Cabronero"
@@ -64,7 +64,7 @@ def skip(app, what, name, obj, would_skip, options):
         return True
     if any(name == s for s in ("__doc__", "__dict__", "__module__")):
         return True
-    
+
     return False
 
 def setup(app):

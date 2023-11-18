@@ -1,5 +1,5 @@
+import textwrap
 import enb.plugins
-
 
 class HEVCPlugin(enb.plugins.PluginMake):
     name = "hevc"
@@ -10,7 +10,7 @@ class HEVCPlugin(enb.plugins.PluginMake):
     contrib_download_url_name = [
         ("https://github.com/miguelinux314/experiment-notebook/blob/dev/contrib/HM-master.zip?raw=true",
          "HM-master.zip")]
-    extra_requirements_message = """
+    extra_requirements_message = textwrap.dedent("""
     The cmake tool is needed to build this plugin, if not present already. 
     You can install cmake as follows: 
     
@@ -18,5 +18,5 @@ class HEVCPlugin(enb.plugins.PluginMake):
     * MacOS:
         1. Install homebrew from http://brew.sh
         2. `brew install gcc@9`
-    """
+    """)
     tested_on = {"linux"}

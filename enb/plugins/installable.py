@@ -55,10 +55,18 @@ class InstallableMeta(type):
                               f"not in {repr(cls.valid_tested_on_strings)}.")
 
         if cls.extra_requirements_message is None and "privative" in cls.tags:
-            cls.extra_requirements_message = """
+            cls.extra_requirements_message = textwrap.dedent("""
             Neither source code nor binaries of this plugin can be distributed by enb. 
             It will be essentially useless unless you can provide the appropriate binaries.
-            """
+            Typically, you will need to copy them directly into the plugin's installation folder.
+            """).strip()
+            try:
+                cls.extra_requirements_message += (
+                    "\nYou may want to visit " +
+                    ", ".join(url for url in cls.contrib_reference_urls) +
+                    " for additional information and/or the needed binaries.")
+            except AttributeError:
+                pass
 
 
 class Installable(metaclass=InstallableMeta):
@@ -115,11 +123,13 @@ class Installable(metaclass=InstallableMeta):
         """
         installation_dir = os.path.abspath(installation_dir)
 
-        print(f"Installing {cls.name} into {installation_dir}...")
+        print(f"Installing {repr(cls.name)} into {installation_dir}...")
 
         # Warn about any manual requirements reported by the Installable
         if cls.extra_requirements_message:
-            print("\tNote: This plugin contains the following message regarding additional requirements:\n")
+            print()
+            print("\tNote: This plugin contains the following message regarding "
+                  "additional requirements:\n")
             print(textwrap.indent(textwrap.dedent(cls.extra_requirements_message).strip(), '\t'))
             print()
 
@@ -129,49 +139,56 @@ class Installable(metaclass=InstallableMeta):
                 shutil.rmtree(installation_dir)
             except NotADirectoryError:
                 os.remove(installation_dir)
-        if not os.path.exists(installation_dir):
+        installation_dir_existed = os.path.exists(installation_dir)
+        if not installation_dir_existed:
             os.makedirs(os.path.dirname(installation_dir), exist_ok=True)
 
-        shutil.copytree(os.path.dirname(os.path.abspath(inspect.getfile(cls))), installation_dir)
+        try:
+            shutil.copytree(os.path.dirname(os.path.abspath(inspect.getfile(cls))), installation_dir)
 
-        # Install any specified pip modules - subprocess is the officially recommended way
-        if cls.required_pip_modules:
-            invocation = f"{sys.executable} -m pip install {' '.join(cls.required_pip_modules)}"
-            print(f"Installing pip dependencies of {cls.name} with {repr(invocation)}...")
-            status, output = subprocess.getstatusoutput(invocation)
-            if status != 0:
-                raise Exception(f"Error installing {cls.name} dependencies ({cls.required_pip_modules}). "
-                                f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
+            # Install any specified pip modules - subprocess is the officially recommended way
+            if cls.required_pip_modules:
+                invocation = f"{sys.executable} -m pip install {' '.join(cls.required_pip_modules)}"
+                print(f"Installing pip dependencies of {cls.name} with {repr(invocation)}...")
+                status, output = subprocess.getstatusoutput(invocation)
+                if status != 0:
+                    raise Exception(f"Error installing {cls.name} dependencies ({cls.required_pip_modules}). "
+                                    f"Status = {status} != 0.\nInput=[{invocation}].\nOutput=[{output}]")
 
-        # Download any needed external packages before the build
-        cache_dir = os.path.join(enb.user_config_dir, "cache")
-        os.makedirs(cache_dir, exist_ok=True)
-        for url, name in cls.contrib_download_url_name:
-            output_path = os.path.join(installation_dir, name)
-            cached_path = os.path.join(cache_dir, name)
-            try:
-                if os.path.isfile(cached_path):
-                    contrib_sha256_df = pd.read_csv(
-                        os.path.join(enb.enb_installation_dir, "config", "contrib_sha256.csv"))
-                    expected_sha256 = contrib_sha256_df[contrib_sha256_df["file"] == name]["sha256"].values[0]
-                    hasher = hashlib.sha256()
-                    with open(cached_path, "rb") as cached_file:
-                        hasher.update(cached_file.read())
-                    outdated_contrib = expected_sha256 != hasher.hexdigest()
-            except (KeyError, IndexError):
-                outdated_contrib = False
+            # Download any needed external packages before the build
+            cache_dir = os.path.join(enb.user_config_dir, "cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            for url, name in cls.contrib_download_url_name:
+                output_path = os.path.join(installation_dir, name)
+                cached_path = os.path.join(cache_dir, name)
+                try:
+                    if os.path.isfile(cached_path):
+                        contrib_sha256_df = pd.read_csv(
+                            os.path.join(enb.enb_installation_dir, "config", "contrib_sha256.csv"))
+                        expected_sha256 = contrib_sha256_df[contrib_sha256_df["file"] == name]["sha256"].values[0]
+                        hasher = hashlib.sha256()
+                        with open(cached_path, "rb") as cached_file:
+                            hasher.update(cached_file.read())
+                        outdated_contrib = expected_sha256 != hasher.hexdigest()
+                except (KeyError, IndexError):
+                    outdated_contrib = False
 
-            if not os.path.isfile(cached_path) or enb.config.options.force or outdated_contrib:
-                with enb.logger.verbose_context(f"Downloading {url} into cache"):
-                    with open(cached_path, "wb") as output_file:
-                        output_file.write(requests.get(url, allow_redirects=True).content)
-            enb.logger.verbose(f"Copying {cached_path} into {output_path}"
-                               f"{' (run with -f to force download)' if enb.config.options.force else ''}")
-            shutil.copyfile(cached_path, output_path)
+                if not os.path.isfile(cached_path) or enb.config.options.force or outdated_contrib:
+                    with enb.logger.verbose_context(f"Downloading {url} into cache"):
+                        with open(cached_path, "wb") as output_file:
+                            output_file.write(requests.get(url, allow_redirects=True).content)
+                enb.logger.verbose(f"Copying {cached_path} into {output_path}"
+                                   f"{' (run with -f to force download)' if enb.config.options.force else ''}")
+                shutil.copyfile(cached_path, output_path)
 
-        # Custom building of the Installable
-        print(f"Building {cls.name} into {installation_dir}...")
-        cls.build(installation_dir=installation_dir)
+            # Custom building of the Installable
+            print(f"Building plugin {repr(cls.name)} into {installation_dir}...")
+            cls.build(installation_dir=installation_dir)
+        except Exception as ex:
+            if not installation_dir_existed:
+                enb.logger.verbose(f"Removing incomplete installation dir {repr(installation_dir)}.")
+                shutil.rmtree(installation_dir, ignore_errors=True)
+            raise ex
 
     @classmethod
     def build(cls, installation_dir):

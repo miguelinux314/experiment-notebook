@@ -40,18 +40,23 @@ class Plugin(Installable):
         Any previous contents in installation_dir are overwritten.
         Then any explicit requirements are met (external software may be downloaded
         and pip packages installed).
-        
+
         :param installation_dir: destination dir where the plugin is to be copied to and, when necessary, built.
         :param overwrite_destination: if True, the destination path is deleted before
           installation. If False and installation_dir already exists, an error
           is raised (plugins are intended to be self-contained, isolated python modules).
         """
-        if not overwrite_destination and os.path.exists(installation_dir):
+        installation_dir_existed = os.path.exists(installation_dir)
+        if not overwrite_destination and installation_dir_existed:
             raise ValueError(f"Plugin {repr(cls)} cannot be installed into existing "
                              f"path {installation_dir} because "
                              f"overwrite_destination={overwrite_destination}.")
-        super().install(installation_dir=installation_dir,
-                        overwrite_destination=True)
+        try:
+            super().install(installation_dir=installation_dir,
+                            overwrite_destination=True)
+        except Exception as ex:
+            print(f"Error installing plugin {repr(cls.name)}!\n")
+            raise ex
         print(f"Plugin {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
         if enb.config.options.verbose:
             cls.print_info()
@@ -69,13 +74,16 @@ class Plugin(Installable):
         """
         # Existence assertion
         assert os.path.isdir(installation_dir), \
-            f"{cls.__name__}.build(installation_dir={repr(installation_dir)}): installation_dir does not exist"
+            (f"{cls.__name__}.build(installation_dir={repr(installation_dir)}): "
+             f"installation_dir does not exist and it could not be automatically created. "
+             f"Verify you have write permissions on the parent folder(s).")
 
-        # cleanup
+        # cleanup before installation
         shutil.rmtree(os.path.join(installation_dir, "__pycache__"), ignore_errors=True)
 
         # add custom __init__ if needed
-        init_path = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(cls))), "__init__.py")
+        init_path = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(cls))),
+                                 "__init__.py")
         with open(os.path.join(installation_dir, "__init__.py"), "w") as init_file:
             if os.path.exists(init_path):
                 # An __init__.py file already existed, simply copy it
@@ -97,27 +105,57 @@ class PluginMake(Plugin):
 
     @classmethod
     def build(cls, installation_dir):
-        super().build(installation_dir=installation_dir)
         platform_name = platform.system().lower()
+
+        if shutil.which("make") is None:
+            msg = (f"The {repr(cls.name)} plugin requires the `make` program to be "
+                   f"installed and available in the path so that it can be installed. "
+                   f"However, `make` was not found. ")
+            if platform_name == "linux":
+                msg += ("Please try installing it with `apt install build-essential` "
+                        "or the equivalent for your distribution.")
+            elif platform_name == "darwin":
+                msg += ("You might be able to install it with `xcode-select --install` "
+                        "or an alternative way for your platform.")
+            elif platform_name == "windows":
+                msg += ("You will need to install it manually. You might want to try "
+                        "`winget install GnuWin32.Make` or some tools such as "
+                        "https://chocolatey.org/ might be of help. Additional information "
+                        "may be available at https://stackoverflow.com/questions/32127524/"
+                        "how-to-install-and-use-make-in-windows")
+            raise ValueError(msg)
+
+        super().build(installation_dir=installation_dir)
         make_path = os.path.join(installation_dir, f"Makefile.{platform_name}")
         if not os.path.exists(make_path):
             make_path = os.path.join(installation_dir, f"Makefile")
+        if not os.path.exists(make_path) and installation_dir == "darwin":
+            make_path = os.path.join(installation_dir, f"Makefile.linux")
+            if os.path.exists(make_path):
+                enb.logger.warn("Warning! Neither a specific nor a generic Makefile is available "
+                                "for this plugin and your platform. However, a Makefile for linux "
+                                "is. The plugin will be attempted to be installed using that "
+                                "Makefile.")
         if os.path.exists(make_path):
-            print(f"Building downloaded plugin {cls.name}...")
-            invocation = f"cd {os.path.dirname(os.path.abspath(make_path))} && make -f {os.path.basename(make_path)}"
+            print(f"Building downloaded plugin {repr(cls.name)}...")
+            invocation = (f"cd {os.path.dirname(os.path.abspath(make_path))} "
+                          f"&& {shutil.which('make')} -f {os.path.basename(make_path)}")
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
-                raise Exception(f"Error bulding {repr(cls)} with {make_path}. "
-                                f"Status = {status} != 0."
-                                f"\nInput=[{invocation}].\nOutput=[{output}]")
+                raise Exception(f"Error building plugin {repr(cls.name)} with "
+                                f"the Makefile at {make_path}!\n\n"
+                                f"Status = {status} != 0.\n"
+                                f"Input=[{invocation}].\nOutput=[{output}]")
         else:
-            raise ValueError(f"Cannot build {repr(cls)}: no valid makefile "
+            raise ValueError(f"Cannot build {repr(cls.name)}: no valid makefile "
                              f"in {installation_dir}.")
+
 
 class PluginJava(Plugin):
     @classmethod
     def build(cls, installation_dir):
         if shutil.which("java") is None:
-            enb.logger.warn(f"Warning! The 'java' program was not found in the path, but is required by the {repr(cls.name)} plugin. "
+            enb.logger.warn(f"Warning! The 'java' program was not found in the path, "
+                            f"but is required by the {repr(cls.name)} plugin. "
                             f"Installing anyway...")
         super().build(installation_dir=installation_dir)

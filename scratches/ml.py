@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Experimental project module for ML. Incomplete at this point.
 """
-__author__ = "Natalia Blasco, Ester Jara, Artur Llabrés and Miguel Hernández-Cabronero"
+__author__ = "Natalia Blasco, Ester Jara, Artemis Llabrés and Miguel Hernández-Cabronero"
 __since__ = "2021/09/01"
 
 import inspect
