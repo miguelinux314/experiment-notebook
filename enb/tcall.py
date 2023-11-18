@@ -39,7 +39,7 @@ def get_status_output_time_memory(
     if wall is None:
         wall = options.report_wall_time
 
-    if "darwin" in platform.system():
+    if "darwin" in platform.system().lower():
         time_command = "/usr/local/bin/gtime"
     else:
         time_command = "/usr/bin/time"
