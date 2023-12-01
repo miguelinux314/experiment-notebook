@@ -2616,8 +2616,8 @@ class DictNumericSummary(AnalyzerSummary):
 
 @enb.config.aini.managed_attributes
 class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
-    """Analyzer able to process scalar numeric values located on an (x,
-    y) plane. The target_columns parameter must be an iterable of tuples with
+    """Analyzer able to process scalar numeric values located on an (x, y) plane.
+    The target_columns parameter must be an iterable of tuples with
     3 elements, containing the columns with the x, y and data coordinates,
     e.g., ("column_x", "column_y", "column_data").
     """
