@@ -7,6 +7,7 @@ __since__ = "2023/03/09"
 import os
 import math
 import natsort
+import itertools
 import numpy as np
 import matplotlib
 import matplotlib.patheffects
@@ -49,7 +50,9 @@ def parallel_render_plds_by_group(
         # Additional plottable data instances
         extra_plds=tuple(),
         # Plot title
-        plot_title=None, show_legend=True, legend_position=None,
+        plot_title=None, title_y=None,
+        # Legend
+        show_legend=True, legend_position=None,
         # Matplotlib styles
         style_list=tuple()):
     """Ray wrapper for render_plds_by_group. See that method for parameter
@@ -93,6 +96,7 @@ def parallel_render_plds_by_group(
                                     left_y_label=left_y_label,
                                     extra_plds=extra_plds,
                                     plot_title=plot_title,
+                                    title_y=title_y,
                                     show_legend=show_legend,
                                     legend_position=legend_position,
                                     style_list=style_list)
@@ -127,7 +131,9 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          # Additional plottable data
                          extra_plds=tuple(),
                          # Plot title
-                         plot_title=None, show_legend=True,
+                         plot_title=None, title_y=None,
+                         # Legend
+                         show_legend=True,
                          legend_position=None,
                          # Matplotlib styles
                          style_list=("default",),
@@ -219,7 +225,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
     Global title:
 
     :param plot_title: title to be displayed.
-    :param show_legend: if True, legends are added to the plot.
+    :param title_y: y position of the title, when displayed. An attempt is made to
+      automatically situate it without overlapping with the axes or the legend.
+    :param show_legend: if True, legends are added to the plot when one or more
+      PlottableData instances contain a label
     :param legend_position: position of the legend (if shown). It can be
       "title" to display it above the plot, or any matplotlib-recognized
       argument to the loc argument of legend().
@@ -233,10 +242,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       "default" mode is applied.
     """
     # pylint: disable=too-many-arguments,too-many-locals
-    with enb.logger.info_context(
+    with (enb.logger.info_context(
             f"Rendering {len(pds_by_group_name)} plottable data groups "
             f"to {output_plot_path}",
-            sep="...\n", msg_after=f"Done rendering into {output_plot_path}"):
+            sep="...\n", msg_after=f"Done rendering into {output_plot_path}")):
         if len(pds_by_group_name) < 1:
             enb.logger.info(
                 "Warning: trying to render an empty pds_by_group_name dict. "
@@ -250,7 +259,6 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
             _apply_styles(style_list)
 
             _update_legend_count(legend_column_count, pds_by_group_name)
-            _set_title(plot_title)
 
             sorted_group_names = _get_sorted_group_names(group_name_order,
                                                          pds_by_group_name)
@@ -279,6 +287,13 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          y_tick_label_list, y_tick_list,
                          group_row_margin, pds_by_group_name,
                          semilog_y_min_bound)
+
+            # Draw title at the right height of the first axis so that tight_layout works well
+            # and the legend does not (typically) overlap.
+            if title_y is None and show_legend and legend_position == "title" and any(
+                    pd.label is not None for pd in itertools.chain(*pds_by_group_name.values())):
+                title_y = 1.1
+            _set_title(plot_title, axis=groupname_axis_tuples[0][1], title_y=title_y)
 
             _save_figure(output_plot_path)
 
@@ -381,8 +396,7 @@ def _combine_groups(combine_groups, legend_position, pds_by_group_name,
     if combine_groups:
         for i, group_name in enumerate(sorted_group_names):
             if show_legend:
-                if (i == 0 and group_name.lower() != "all") \
-                        or len(sorted_group_names) > 1:
+                if (i == 0 and group_name.lower() != "all") or len(sorted_group_names) > 1:
                     try:
                         pds_by_group_name[group_name][0].label = \
                             y_labels_by_group_name[group_name] \
@@ -482,15 +496,18 @@ def _get_groupname_axis_tuples(combine_groups, fig_height, fig_width,
     return groupname_axis_tuples
 
 
-def _set_title(plot_title):
+def _set_title(plot_title, axis, title_y=1):
     """Private to render_plds_by_group.
+
     Set the plot's title.
+
+    :param axis: axis whose title is set.
+    :param title_y: y position of the title.
     """
     plot_title = plot_title if plot_title is not None \
-        else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                    "plot_title")
+        else enb.config.ini.get_key("enb.aanalysis.Analyzer", "plot_title")
     if plot_title:
-        plt.suptitle(plot_title)
+        axis.set_title(plot_title, y=title_y)
 
 
 def _get_global_extrema(column_properties, pds_by_group_name):
@@ -831,5 +848,4 @@ def _save_figure(output_plot_path):
         plt.savefig(output_plot_path, bbox_inches="tight")
         if output_plot_path.endswith(".pdf"):
             plt.savefig(output_plot_path[:-3] + "png",
-                        bbox_inches="tight", dpi=300,
-                        transparent=True)
+                        bbox_inches="tight", dpi=300, transparent=True)
