@@ -72,6 +72,9 @@ class Analyzer(enb.atable.ATable):
     selected_render_modes = set(valid_render_modes)
     # Main title to be displayed
     plot_title = None
+    # Y position of the main title, if not None. If None, an attempt is automatically made
+    # to avoid overlapping with the axes and legend
+    title_y = None
     # Show the number of elements in each group?
     show_count = True
     # Show a group containing all elements?
@@ -452,6 +455,8 @@ class Analyzer(enb.atable.ATable):
                 summary_df[["group_label", "group_size"]].values}
         if "plot_title" not in column_kwargs:
             column_kwargs["plot_title"] = self.plot_title
+        if "title_y" not in column_kwargs:
+            column_kwargs["title_y"] = self.title_y
 
         # Control group division and labeling
         if "combine_groups" not in column_kwargs:
@@ -616,7 +621,8 @@ class Analyzer(enb.atable.ATable):
                        show_global=show_global, show_count=show_count,
                        group_by=group_by,
                        column_to_properties=column_to_properties,
-                       plot_title=plot_title, **render_kwargs)
+                       plot_title=plot_title,
+                       **render_kwargs)
 
         return wrapper
 
@@ -1074,10 +1080,8 @@ class ScalarNumericAnalyzer(Analyzer):
                                             summary_df=summary_df)
 
         # Fix the patterns used in the bars in the combined case
-        if ("combine_groups" in column_kwargs and column_kwargs[
-            "combine_groups"]) \
-                or (
-                "combine_groups" not in column_kwargs and self.combine_groups):
+        if ("combine_groups" in column_kwargs and column_kwargs["combine_groups"]) \
+                or ("combine_groups" not in column_kwargs and self.combine_groups):
 
             # Combined histograms do not allow showing means.
             column_kwargs["pds_by_group_name"] = {
