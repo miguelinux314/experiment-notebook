@@ -43,9 +43,6 @@ class HEVC(icompression.LittleEndianWrapper):
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         if original_file_info["float"]:
             raise ValueError("This codec does not support floating point data")
-        if original_file_info['bytes_per_sample'] > 1:
-            raise ValueError(f"Bytes per sample = {original_file_info['bytes_per_sample']} "
-                             f"not supported yet.")
 
         return f"-i {original_path} " \
                f"-c {self.config_path} " \
@@ -126,16 +123,6 @@ class HEVC_lossy(icompression.LossyCodec, HEVC):
             params += f" --QP={self.param_dict['QP']} --InitialQP={self.param_dict['QP']}"
 
         return params
-
-    def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
-        if original_file_info['bytes_per_sample'] > 1:
-            raise Exception(f"Bytes per sample = "
-                            f"{original_file_info['bytes_per_sample']} "
-                            f"not supported")
-        else:
-            return super().get_decompression_params(compressed_path=compressed_path,
-                                                    reconstructed_path=reconstructed_path,
-                                                    original_file_info=original_file_info)
 
     @property
     def label(self):

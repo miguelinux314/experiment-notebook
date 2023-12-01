@@ -504,8 +504,7 @@ class LittleEndianWrapper(WrapperCodec):
     """
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        if original_file_info["big_endian"] and original_file_info[
-            "bytes_per_sample"] > 1:
+        if original_file_info["big_endian"] and original_file_info["bytes_per_sample"] > 1:
             with tempfile.NamedTemporaryFile(
                     dir=options.base_tmp_dir,
                     suffix=f"-u{8 * original_file_info['bytes_per_sample']}le"
@@ -522,13 +521,16 @@ class LittleEndianWrapper(WrapperCodec):
                 enb.isets.dump_array_bsq(array=be_img.astype(
                     f"<{sign_str}{original_file_info['bytes_per_sample']}"),
                     file_or_path=reversed_endian_file.name)
+
+                shutil.copyfile(original_path, os.path.expanduser("~/tmp/original.raw"))
+                shutil.copyfile(reversed_endian_file.name, os.path.expanduser("~/tmp/reversed.raw"))
+
                 compression_results = super().compress(
                     original_path=reversed_endian_file.name,
                     compressed_path=compressed_path,
                     original_file_info=reversed_file_info)
                 compression_results.original_path = original_path
                 return compression_results
-
         else:
             return super().compress(
                 original_path=original_path,
@@ -537,8 +539,7 @@ class LittleEndianWrapper(WrapperCodec):
 
     def decompress(self, compressed_path, reconstructed_path,
                    original_file_info=None):
-        if original_file_info["big_endian"] and original_file_info[
-            "bytes_per_sample"] > 1:
+        if original_file_info["big_endian"] and original_file_info["bytes_per_sample"] > 1:
             with tempfile.NamedTemporaryFile(
                     dir=options.base_tmp_dir,
                     suffix=f"-u{8 * original_file_info['bytes_per_sample']}le"
@@ -546,7 +547,7 @@ class LittleEndianWrapper(WrapperCodec):
                            f"x{original_file_info['height']}"
                            f"x{original_file_info['width']}.raw") as reversed_endian_file:
                 reversed_file_info = dict(original_file_info)
-                reversed_file_info["big_endian"] = False
+                reversed_file_info["big_endian"] = True
                 decompression_results = super().decompress(
                     compressed_path=compressed_path,
                     reconstructed_path=reversed_endian_file.name,
@@ -555,10 +556,15 @@ class LittleEndianWrapper(WrapperCodec):
                     file_or_path=reversed_endian_file.name,
                     image_properties_row=reversed_file_info)
                 sign_str = "i" if original_file_info["signed"] else "u"
+                # Store with < (le) instead of > (be) to undo the byte reversal during compression
                 enb.isets.dump_array_bsq(array=le_img.astype(
-                    f">{sign_str}{original_file_info['bytes_per_sample']}"),
+                    f"<{sign_str}{original_file_info['bytes_per_sample']}"),
                     file_or_path=reconstructed_path)
                 decompression_results.reconstructed_path = reconstructed_path
+
+                shutil.copyfile(reversed_endian_file.name, os.path.expanduser("~/tmp/rec_reversed.raw"))
+                shutil.copyfile(reconstructed_path, os.path.expanduser("~/tmp/rec_original.raw"))
+
                 return decompression_results
         else:
             return super().decompress(compressed_path=compressed_path,
