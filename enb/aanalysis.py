@@ -883,6 +883,7 @@ class ScalarNumericAnalyzer(Analyzer):
     valid_render_modes = {"histogram", "hbar", "boxplot"}
     selected_render_modes = set(valid_render_modes)
     plot_title = None
+    title_y = None
     show_count = True
     show_global = True
     show_x_std = True
@@ -1745,6 +1746,7 @@ class TwoNumericAnalyzer(Analyzer):
     valid_render_modes = {"scatter", "line"}
     selected_render_modes = set(valid_render_modes)
     plot_title = None
+    title_y = None
     show_count = True
     show_global = False
     main_marker_size = 5
@@ -2251,6 +2253,7 @@ class DictNumericAnalyzer(Analyzer):
     valid_render_modes = {"line"}
     selected_render_modes = set(valid_render_modes)
     plot_title = None
+    title_y = None
     show_count = True
     show_global = True
     show_x_std = True
