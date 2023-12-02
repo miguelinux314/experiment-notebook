@@ -535,6 +535,8 @@ class Analyzer(enb.atable.ATable):
             enb.logger.info(
                 f"Saving analysis results to {analysis_output_path}")
             os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+
+            # Save CSV analysis
             summary_df[list(
                 c for c in summary_df.columns
                 if c not in summary_table.render_column_names
@@ -2627,6 +2629,12 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
     The target_columns parameter must be an iterable of tuples with
     3 elements, containing the columns with the x, y and data coordinates,
     e.g., ("column_x", "column_y", "column_data").
+
+    Each of the three columns must contain scalar numerical data and are treated as such.
+
+    In order to do something similar but with categorical (string) x and y axis
+    (e.g., to display a table of numerical means indexed by corpus and task label)
+    please see the ScalarTwoGroupAnalyzer class.
     """
 
     bin_count = 50
@@ -2680,15 +2688,12 @@ class ScalarNumeric2DAnalyzer(ScalarNumericAnalyzer):
             for group_name, plds in column_kwargs["pds_by_group_name"].items():
                 # p and pd are PlottableData instances
                 for plottable_data in (pld for pld in plds if
-                                       isinstance(pld,
-                                                  plotdata.Histogram2D)):
+                                       isinstance(pld, plotdata.Histogram2D)):
                     data_column_name = column_selection[2]
                     try:
-                        data_column_label = column_to_properties[
-                            data_column_name].label
+                        data_column_label = column_to_properties[data_column_name].label
                     except (TypeError, KeyError):
-                        data_column_label = enb.atable.clean_column_name(
-                            data_column_name)
+                        data_column_label = enb.atable.clean_column_name(data_column_name)
                     plottable_data.colormap_label = data_column_label
 
             histogram_pds = list(
@@ -2929,6 +2934,314 @@ class ScalarNumeric2DSummary(ScalarNumericSummary):
             vmax=vmax,
             no_data_color=self.analyzer.no_data_color,
             color_map=self.analyzer.color_map)]
+
+
+@enb.config.aini.managed_attributes
+class ScalarNumericJointAnalyzer(Analyzer):
+    """Analyze scalar numeric data, providing joint (simultaneous)
+    grouping by two categories. This is useful to produce tables
+    of averages, e.g., for each corpus/task combination.
+    """
+    valid_render_modes = {"table"}
+    selected_render_modes = set(valid_render_modes)
+    # Number format used for displaying cell data
+    number_format = "{:.3f}"
+    # Alignment ("left", "center", "right") of the data cells
+    cell_alignment = "center"
+    # Alignment ("left", "center", "right") of the column headers
+    col_header_alignment = "center"
+    # Alignment ("left", "center", "right") of the row headers
+    row_header_alignment = "left"
+    # Table width
+    fig_width = None
+    # Table height
+    fig_height = None
+    # "edges" parameter passed to plt.table
+    # (substring of 'BRTL' or {'open', 'closed', 'horizontal', 'vertical'})
+    edges = "closed"
+
+    def update_render_kwargs_one_case(
+            self, column_selection, reference_group, render_mode,
+            # Dynamic arguments with every call
+            summary_df, output_plot_dir,
+            group_by, column_to_properties,
+            # Arguments normalized by the @enb.aanalysis.Analyzer.normalize_parameters,
+            # in turn manageable through .ini configuration files via the
+            # @enb.config.aini.managed_attributes decorator.
+            show_global, show_count,
+            # Rendering options, directly passed to render_plds_by_group
+            **column_kwargs):
+
+        # Update common rendering kwargs
+        column_kwargs = super().update_render_kwargs_one_case(
+            column_selection=column_selection, reference_group=reference_group,
+            render_mode=render_mode,
+            summary_df=summary_df, output_plot_dir=output_plot_dir,
+            group_by=group_by, column_to_properties=column_to_properties,
+            show_global=show_global, show_count=show_count,
+            **column_kwargs)
+
+        if "global_x_label" not in column_kwargs:
+            column_kwargs["global_x_label"] = None
+        if "global_y_label" not in column_kwargs:
+            column_kwargs["global_y_label"] = None
+
+        column_kwargs["fig_height"] = self.fig_height
+        column_kwargs["fig_width"] = self.fig_width
+
+        for group_name, pds in column_kwargs["pds_by_group_name"].items():
+            table = [pd for pd in pds if isinstance(pd, enb.plotdata.Table)]
+            assert len(table) == 1
+            table = table[0]
+
+        if column_kwargs["fig_height"] is None:
+            column_kwargs["fig_height"] = 0
+            column_kwargs["fig_height"] += \
+                0.2 * len(table.y_values) * len(column_kwargs["pds_by_group_name"])
+        if column_kwargs["fig_width"] is None:
+            column_kwargs["fig_width"] = 0.1 * len(table.x_values)
+            column_kwargs["fig_width"] += 0.15 * max(
+                sum(len(cell) for cell in row) for row in table.cell_text)
+
+        return column_kwargs
+
+    def build_summary_atable(self, full_df, target_columns, reference_group,
+                             group_by, include_all_group):
+
+        return ScalarNumericJointSummary(analyzer=self, full_df=full_df,
+                                         target_columns=target_columns,
+                                         reference_group=reference_group,
+                                         group_by=group_by,
+                                         include_all_group=include_all_group)
+
+    def save_analysis_tables(
+            self, group_by, reference_group,
+            selected_render_modes, summary_df, summary_table,
+            target_columns):
+        """
+        Store the joint analysis results in CSV and latex formats.
+
+        If enb.config.options.analysis_dir is None or empty, no analysis is
+        performed.
+        """
+        # pylint: disable=too-many-arguments
+        if options.analysis_dir:
+            # Generate full csv summary
+            try:
+                render_mode_str = "__".join(selected_render_modes)
+            except TypeError:
+                render_mode_str = str(render_mode_str).replace(os.sep, "__")
+            analysis_output_path = self.get_output_pdf_path(
+                column_selection=target_columns,
+                group_by=group_by,
+                reference_group=reference_group,
+                output_plot_dir=options.analysis_dir,
+                render_mode=render_mode_str)[:-4] + ".csv"
+            enb.logger.info(
+                f"Saving analysis results to {analysis_output_path}")
+            os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
+
+            assert set(selected_render_modes) == {"table"}, \
+                f"Only the table render mode is currently supported by {self.__class__.__name__}"
+
+            # Generate CSV table
+            with open(analysis_output_path, "w") as csv_file:
+                for render_column_name in summary_table.render_column_names:
+                    selection = ast.literal_eval(render_column_name.replace('_render-table', ''))
+                    csv_file.write(
+                        f"# Column selection: '{' '.join(repr(s) for s in selection)}'\n")
+
+                    for group_label, row in summary_df.iterrows():
+                        group_label = " ".join(repr(s) for s in ast.literal_eval(group_label))
+                        csv_file.write(f"## Group: {group_label}\n")
+                        pds = row[render_column_name]
+                        assert len(pds) == 1, \
+                            f"Only one enb.plotdata.Table instance was expected in {pds}"
+                        table = pds[0]
+                        csv_file.write("," + ",".join(x for x in table.x_values) + "\n")
+                        for row_header, row_values in zip(table.y_values, table.cell_text):
+                            csv_file.write(",".join([row_header] + row_values) + "\n")
+                        csv_file.write("\n")
+                    csv_file.write("\n")
+
+            # Generate latex table
+            with open(analysis_output_path[:-4] + ".tex", "w") as latex_file:
+                for render_column_name in summary_table.render_column_names:
+                    # Count the number of row and column headers
+                    first_table = summary_df.iloc[0][render_column_name]
+                    assert len(first_table) == 1, \
+                        f"Only one enb.plotdata.Table instance was expected in {first_table}"
+                    first_table = first_table[0]
+                    column_header_count = len(first_table.x_values)
+                    longest_row_header = max(len(y) for y in first_table.y_values) \
+                                         + len(r"\textbf{}") + 1
+
+                    selection = ast.literal_eval(render_column_name.replace('_render-table', ''))
+                    latex_file.write(
+                        f"% Column selection: '{' '.join(repr(s) for s in selection)}'\n")
+                    latex_file.write(r"\begin{tabular}{l" + "c" * column_header_count + r"}" + "\n")
+                    latex_file.write(r"\toprule" + "\n")
+
+                    for group_label, row in summary_df.iterrows():
+                        # Write group separator if there is more than one group
+                        if len(summary_df) > 1:
+                            group_label = " ".join(ast.literal_eval(group_label))
+                            latex_file.write("\\midrule\n")
+                            latex_file.write(f"\\multicolumn{{{column_header_count + 1}}}{{c}}"
+                                             f"{{{enb.misc.escape_latex(group_label)}}} \\\\\n")
+                            latex_file.write("\\midrule\n")
+
+                        # Write column headers
+                        pds = row[render_column_name]
+                        assert len(pds) == 1, \
+                            f"Only one enb.plotdata.Table instance was expected in {pds}"
+                        table = pds[0]
+                        latex_file.write(" " * longest_row_header + " & "
+                                         + " & ".join(f"\\textbf{{{x}}}" for x in table.x_values)
+                                         + " \\\\\n")
+                        latex_file.write("\\toprule\n")
+
+                        # Write data rows
+                        row_header_format = f"{{:{longest_row_header}s}}"
+                        for row_header, row_values in zip(table.y_values, table.cell_text):
+                            latex_file.write(
+                                " & ".join([row_header_format.format(
+                                    f"\\textbf{{{enb.misc.escape_latex(row_header)}}}")]
+                                           + row_values)
+                                + " \\\\\n")
+                        latex_file.write("\n")
+                    latex_file.write("\n")
+
+                    latex_file.write(r"\bottomrule" + "\n")
+                    latex_file.write(r"\end{tabular}" + "\n")
+
+
+class ScalarNumericJointSummary(ScalarNumericSummary):
+    """Summary tables for the ScalarNumericJoinAnalyzer class.
+    """
+
+    def __init__(self, analyzer, full_df, target_columns, reference_group,
+                 group_by, include_all_group):
+        AnalyzerSummary.__init__(
+            self=self,
+            analyzer=analyzer, full_df=full_df, target_columns=target_columns,
+            reference_group=reference_group, group_by=group_by,
+            include_all_group=include_all_group)
+
+        # Build the list of index (categories/groups) and data (scalar numerical) columns
+        self.category_to_values = {}
+        for x_column, y_column, data_column in target_columns:
+            self.category_to_values[x_column] = sorted(
+                self.reference_df[x_column].unique(), key=str.casefold)
+            self.category_to_values[y_column] = sorted(
+                self.reference_df[y_column].unique(), key=str.casefold)
+            self.add_joint_scalar_description_columns(
+                x_column=x_column, y_column=y_column, data_column=data_column)
+
+        self.move_render_columns_back()
+
+    def add_joint_scalar_description_columns(self, x_column, y_column, data_column):
+        """Add column_functions to this summary table that generate the scalar data
+        description of data_column grouped by (x_column, y_column).
+        """
+        for descriptor in ["min", "max", "avg", "std", "median"]:
+            self.add_column_function(
+                self,
+                fun=functools.partial(self.set_joint_scalar_description,
+                                      x_column=x_column, y_column=y_column,
+                                      data_column=data_column),
+                column_properties=enb.atable.ColumnProperties(
+                    name=f"{x_column}_{y_column}_{data_column}_{descriptor}",
+                    label=f"{data_column} by {x_column} and {y_column}: {descriptor}",
+                    has_dict_values=True))
+
+    def set_joint_scalar_description(self, *args, **kwargs):
+        """Set the joint scalar description of a row's column.
+        For each descriptor (e.g., min or std), a dictionary is stored indexed by
+        the group's (x_column,y_column) categories.
+        """
+        _self, group_label, row = args
+        x_column, y_column, data_column = (
+            kwargs[c] for c in ("x_column", "y_column", "data_column"))
+
+        row[f"{x_column}_{y_column}_{data_column}_min"] = dict()
+        row[f"{x_column}_{y_column}_{data_column}_max"] = dict()
+        row[f"{x_column}_{y_column}_{data_column}_avg"] = dict()
+        row[f"{x_column}_{y_column}_{data_column}_std"] = dict()
+        row[f"{x_column}_{y_column}_{data_column}_median"] = dict()
+
+        full_series = _self.label_to_df[group_label]
+
+        for (x_category, y_category), split_df in full_series.groupby([x_column, y_column]):
+            finite_series = self.remove_nans(split_df[data_column])
+
+            if len(split_df) != len(finite_series):
+                if len(finite_series) > 0:
+                    enb.logger.warn(
+                        f"{_self.__class__.__name__}: "
+                        f"set_joint_scalar_description for group {repr(group_label)}, "
+                        f"column {repr(data_column)} "
+                        f"is ignoring infinite values "
+                        f"({100 * (1 - len(finite_series) / len(full_series)):.2f}%"
+                        f" of the total).")
+                else:
+                    enb.logger.warn(
+                        f"{_self.__class__.__name__}: "
+                        f"set_joint_scalar_description for group {repr(group_label)}, "
+                        f"column {repr(data_column)} "
+                        f"found only infinite values. "
+                        f"Several statistics will be nan for this case.")
+
+            if len(np.unique(finite_series.values)) > 1:
+                description_df = finite_series.describe()
+                row[f"{x_column}_{y_column}_{data_column}_min"][(x_category, y_category)] = \
+                    description_df["min"]
+                row[f"{x_column}_{y_column}_{data_column}_max"][(x_category, y_category)] = \
+                    description_df["max"]
+                row[f"{x_column}_{y_column}_{data_column}_avg"][(x_category, y_category)] = \
+                    description_df["mean"]
+                row[f"{x_column}_{y_column}_{data_column}_std"][(x_category, y_category)] = \
+                    description_df["std"]
+                row[f"{x_column}_{y_column}_{data_column}_median"][(x_category, y_category)] = \
+                    description_df["50%"]
+            elif len(finite_series.values) > 0:
+                row[f"{x_column}_{y_column}_{data_column}_min"][(x_category, y_category)] = \
+                    finite_series.values[0]
+                row[f"{x_column}_{y_column}_{data_column}_max"][(x_category, y_category)] = \
+                    finite_series.values[0]
+                row[f"{x_column}_{y_column}_{data_column}_avg"][(x_category, y_category)] = \
+                    finite_series.values[0]
+                row[f"{x_column}_{y_column}_{data_column}_std"][(x_category, y_category)] = \
+                    0
+                row[f"{x_column}_{y_column}_{data_column}_median"][(x_category, y_category)] = \
+                    finite_series.values[0]
+            else:
+                row[f"{x_column}_{y_column}_{data_column}_min"][(x_category, y_category)] = 0
+                row[f"{x_column}_{y_column}_{data_column}_max"][(x_category, y_category)] = 0
+                row[f"{x_column}_{y_column}_{data_column}_avg"][(x_category, y_category)] = 0
+                row[f"{x_column}_{y_column}_{data_column}_std"][(x_category, y_category)] = 0
+                row[f"{x_column}_{y_column}_{data_column}_median"][(x_category, y_category)] = 0
+
+    def compute_plottable_data_one_case(self, *args, **kwargs):
+        _self, group_label, row = args  # pylint: disable=unused-variable
+        # group_df = _self.label_to_df[group_label]
+        x_column, y_column, data_column = kwargs["column_selection"]
+        # render_mode = kwargs["render_mode"]
+
+        x_categories = _self.category_to_values[x_column]
+        y_categories = _self.category_to_values[y_column]
+        avg_dict = row[f"{x_column}_{y_column}_{data_column}_avg"]
+        cell_text = [[_self.analyzer.number_format.format(avg_dict[(x_category, y_category)])
+                      if (x_category, y_category) in avg_dict else ""
+                      for x_category in x_categories]
+                     for y_category in y_categories]
+
+        return [enb.plotdata.Table(x_values=x_categories, y_values=y_categories,
+                                   cell_text=cell_text, x_label=x_column, y_label=y_column,
+                                   cell_alignment=_self.analyzer.cell_alignment,
+                                   col_header_aligment=_self.analyzer.col_header_alignment,
+                                   row_header_alignment=_self.analyzer.row_header_alignment,
+                                   edges=_self.analyzer.edges)]
 
 
 class HistogramKeyBinner:
