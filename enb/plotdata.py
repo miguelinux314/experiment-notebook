@@ -113,7 +113,7 @@ class PlottableData2D(PlottableData):
         """
         # pylint: disable=too-many-arguments,too-many-locals
         assert len(x_values) == len(y_values), \
-            f"Invalid lengths of x_valuesa and y_values ({len(x_values), len(y_values)}"
+            f"Invalid lengths of x_values and y_values ({len(x_values), len(y_values)}"
         if remove_duplicates:
             found_pairs = collections.OrderedDict()
             for x_val, y_val in zip(x_values, y_values):
@@ -612,6 +612,49 @@ class Histogram2D(PlottableData2D):
                          fraction=0.1, ax=axes)
         if self.y_label:
             axes.set_ylabel(self.y_label)
+
+class Table(PlottableData2D):
+    """Display a 2D table of data.
+    """
+    def __init__(self, x_values, y_values, cell_text, x_label=None, y_label=None,
+                 cell_alignment="center",
+                 col_header_aligment="center",
+                 row_header_alignment="left",
+                 edges="open"):
+        """
+        :param x_values: list of column headers
+        :param y_values: list of row headers
+        :param cell_text: list of lists containing the cell text to display
+        :param cell_alignment: text alignment for the data cells
+        :param col_header_alignment: text alignment for the column headers
+        :param row_header_alignment: text alignment for the row headers
+        :param edges: argument passed to plt.table
+          (substring of 'BRTL' or {'open', 'closed', 'horizontal', 'vertical'})
+        """
+        super().__init__(x_values=[None], y_values=[None], x_label=x_label, y_label=y_label)
+        self.x_values = x_values
+        self.y_values = y_values
+        self.cell_text = cell_text
+        self.cell_alignment = cell_alignment
+        self.col_header_alignment = col_header_aligment
+        self.row_header_alignment = row_header_alignment
+        self.edges = edges
+
+    def render(self, axes=None):
+        axes = plt if axes is None else axes
+        axes.axis('tight')
+        axes.axis('off')
+
+        table = axes.table(cellText=self.cell_text,colLabels=self.x_values,rowLabels=self.y_values,
+                   loc="center", cellLoc=self.cell_alignment,
+                   rowLoc=self.row_header_alignment, colLoc=self.col_header_alignment,
+                   bbox=[0,0,1,1], edges=self.edges)
+
+        # Make headers bold
+        for (row, col), cell in table.get_celld().items():
+            if (row == 0) or (col == -1):
+                cell.set_text_props(
+                    fontproperties=matplotlib.font_manager.FontProperties(weight='bold'))
 
 
 def get_available_styles():
