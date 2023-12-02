@@ -3059,9 +3059,9 @@ class ScalarNumericJointAnalyzer(Analyzer):
                         assert len(pds) == 1, \
                             f"Only one enb.plotdata.Table instance was expected in {pds}"
                         table = pds[0]
-                        csv_file.write("," + ",".join(x for x in table.x_values) + "\n")
+                        csv_file.write("," + ",".join(str(x) for x in table.x_values) + "\n")
                         for row_header, row_values in zip(table.y_values, table.cell_text):
-                            csv_file.write(",".join([row_header] + row_values) + "\n")
+                            csv_file.write(",".join([str(row_header)] + row_values) + "\n")
                         csv_file.write("\n")
                     csv_file.write("\n")
 
@@ -3074,7 +3074,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                         f"Only one enb.plotdata.Table instance was expected in {first_table}"
                     first_table = first_table[0]
                     column_header_count = len(first_table.x_values)
-                    longest_row_header = max(len(y) for y in first_table.y_values) \
+                    longest_row_header = max(len(str(y)) for y in first_table.y_values) \
                                          + len(r"\textbf{}") + 1
 
                     selection = ast.literal_eval(render_column_name.replace('_render-table', ''))
@@ -3107,7 +3107,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                         for row_header, row_values in zip(table.y_values, table.cell_text):
                             latex_file.write(
                                 " & ".join([row_header_format.format(
-                                    f"\\textbf{{{enb.misc.escape_latex(row_header)}}}")]
+                                    f"\\textbf{{{enb.misc.escape_latex(str(row_header))}}}")]
                                            + row_values)
                                 + " \\\\\n")
                         latex_file.write("\n")
@@ -3133,9 +3133,9 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
         self.category_to_values = {}
         for x_column, y_column, data_column in target_columns:
             self.category_to_values[x_column] = sorted(
-                self.reference_df[x_column].unique(), key=str.casefold)
+                self.reference_df[x_column].unique(), key=lambda o: str.casefold(str(o)))
             self.category_to_values[y_column] = sorted(
-                self.reference_df[y_column].unique(), key=str.casefold)
+                self.reference_df[y_column].unique(), key=lambda o: str.casefold(str(o)))
             self.add_joint_scalar_description_columns(
                 x_column=x_column, y_column=y_column, data_column=data_column)
 
