@@ -650,11 +650,12 @@ class Table(PlottableData2D):
                    rowLoc=self.row_header_alignment, colLoc=self.col_header_alignment,
                    bbox=[0,0,1,1], edges=self.edges)
 
-        # Make headers bold
+        # Make headers bold and the background transparent
         for (row, col), cell in table.get_celld().items():
             if (row == 0) or (col == -1):
                 cell.set_text_props(
                     fontproperties=matplotlib.font_manager.FontProperties(weight='bold'))
+            cell.set_facecolor((1,1,0,0))
 
 
 def get_available_styles():
