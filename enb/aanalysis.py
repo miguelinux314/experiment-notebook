@@ -2997,10 +2997,11 @@ class ScalarNumericJointAnalyzer(Analyzer):
         if column_kwargs["fig_height"] is None:
             column_kwargs["fig_height"] = 0
             column_kwargs["fig_height"] += \
-                0.2 * len(table.y_values) * len(column_kwargs["pds_by_group_name"])
+                0.3 * len(table.y_values) * len(column_kwargs["pds_by_group_name"]) \
+                + 0.15 * len(column_kwargs["pds_by_group_name"])
         if column_kwargs["fig_width"] is None:
-            column_kwargs["fig_width"] = 0.1 * len(table.x_values)
-            column_kwargs["fig_width"] += 0.15 * max(
+            column_kwargs["fig_width"] = 0.2 * (len(table.x_values) + 1)
+            column_kwargs["fig_width"] += 0.25 * max(
                 sum(len(cell) for cell in row) for row in table.cell_text)
 
         return column_kwargs
