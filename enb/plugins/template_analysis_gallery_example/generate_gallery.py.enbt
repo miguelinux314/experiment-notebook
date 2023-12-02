@@ -194,6 +194,14 @@ if __name__ == '__main__':
                      output_plot_dir=os.path.join(options.plot_dir, "styles", style, "histogram2d"),
                      fig_height=6, fig_width=5, show_count=False)
 
+        # Exercise the joint categorical 2d scalar analyzer
+        df_joint = pd.read_csv(os.path.join("input_csv", "continent_data_example.csv"))
+        snja = enb.aanalysis.ScalarNumericJointAnalyzer()
+        snja.get_df(full_df=df_joint,
+                    target_columns=[("Color", "Origin", "Price")],
+                    output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_joint"))
+
+
     # Example of style composition
     two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
     analysis_df = two_numeric_analyzer.get_df(
