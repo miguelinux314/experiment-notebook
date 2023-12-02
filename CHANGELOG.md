@@ -14,9 +14,23 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Development version v1.0.1
 
-Changes:
+After 4 years of development, switched from beta status to stable/production.
 
-- After 4 years of development, switched from beta status to stable/production
+**NOTE**: This version change does NOT imply a change in the API (backwards compatibility with 0.4.x is expected).
+
+Improvements:
+
+- Added the `ScalarNumericJointAnalyzer` class, which allows numerical data analysis considering two classifications
+  at the same time. Useful to produce 2D tables (also in latex format) with categorical columns and rows. 
+- Enhanced plugin installation messages and behavior.
+
+Bug fixes:
+
+- Fixed regression bug that prevented the `plot_title` from being displayed on `enb.aanalysis.Analyzer` subclasses.
+  Also added a `title_y` parameter to their `get_df` method to allow manual title height adjustment.
+- Fixed a bug in the `enb.icompression.LittleEndianWrapper` class that prevented lossless reconstruction.
+  Updated the HEVC codec to accept 16 bit samples (now that the endianness is properly handled).
+ 
 
 # Latest stable version:
 
