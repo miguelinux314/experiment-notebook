@@ -206,15 +206,18 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
             if i == 0 and contains_header:
                 tex_file.write("\\toprule\n" if use_booktabks else "\\hline\n")
                 tex_file.write(
-                    " & ".join(f"\\textbf{{{c}}}" for c in row).replace(
-                        "_", r"\_").replace(r"%", r"\%") + r" \\" + "\n")
+                    " & ".join(f"\\textbf{{{escape_latex(c)}}}" for c in row) + r" \\" + "\n")
                 tex_file.write("\\midrule\n" if use_booktabks else "\\hline\n")
             else:
-                tex_file.write(" & ".join(row).replace(
-                    "_", r"\_").replace(r"%", r"\%") + r" \\" + "\n")
+                tex_file.write(" & ".join(escape_latex(row)) + r" \\" + "\n")
 
         tex_file.write("\\bottomrule\n" if use_booktabks else "\\hline\n")
         tex_file.write("\\end{tabular}\n")
+
+def escape_latex(s):
+    """Return a latex-scaped version of string s.
+    """
+    return s.replace("\\", "\\\\").replace("_", r"\_").replace(r"%", r"\%").replace("&", "\&")
 
 
 def get_node_ip():
