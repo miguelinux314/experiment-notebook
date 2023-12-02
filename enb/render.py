@@ -513,51 +513,59 @@ def _set_title(plot_title, axis, title_y=1):
 def _get_global_extrema(column_properties, pds_by_group_name):
     """Private to render_plds_by_group.
     Get the x and y extrema of the PlottableData2D instances in all groups.
-    Align to integer extrema if the maximum is above 1.
+    For numerical data, align to integer extrema if the maximum is above 1.
     """
-    global_x_min = float("inf")
-    global_x_max = float("-inf")
-    global_y_min = float("inf")
-    global_y_max = float("-inf")
+    try:
+        global_x_min = float("inf")
+        global_x_max = float("-inf")
+        global_y_min = float("inf")
+        global_y_max = float("-inf")
 
-    for pld in (plottable for pds in pds_by_group_name.values() for
-                plottable in pds):
-        if not isinstance(pld, enb.plotdata.PlottableData2D):
-            continue
-        x_values = np.array(pld.x_values, copy=False)
-        if len(x_values) > 0:
-            x_values = x_values[~np.isnan(x_values)]
-        global_x_min = min(global_x_min, x_values.min() if len(
-            x_values) > 0 else global_x_min)
-        global_x_max = max(global_x_min, x_values.max() if len(
-            x_values) > 0 else global_x_min)
-        y_values = np.array(pld.y_values, copy=False)
-        if len(y_values) > 0:
-            y_values = y_values[~np.isnan(y_values)]
-        global_y_min = min(global_y_min, y_values.min() if len(
-            y_values) > 0 else global_y_min)
-        global_y_max = max(global_y_min, y_values.max() if len(
-            y_values) > 0 else global_y_min)
+        for pld in (plottable for pds in pds_by_group_name.values() for
+                    plottable in pds):
+            if not isinstance(pld, enb.plotdata.PlottableData2D):
+                continue
+            x_values = np.array(pld.x_values, copy=False)
+            if len(x_values) > 0:
+                x_values = x_values[~np.isnan(x_values)]
+            global_x_min = min(global_x_min, x_values.min() if len(
+                x_values) > 0 else global_x_min)
+            global_x_max = max(global_x_min, x_values.max() if len(
+                x_values) > 0 else global_x_min)
+            y_values = np.array(pld.y_values, copy=False)
+            if len(y_values) > 0:
+                y_values = y_values[~np.isnan(y_values)]
+            global_y_min = min(global_y_min, y_values.min() if len(
+                y_values) > 0 else global_y_min)
+            global_y_max = max(global_y_min, y_values.max() if len(
+                y_values) > 0 else global_y_min)
 
-    if global_x_max - global_x_min > 1:
-        global_x_min = math.floor(global_x_min) if not math.isinf(
-            global_x_min) else global_x_min
-        global_x_max = math.ceil(global_x_max) if not math.isinf(
-            global_x_max) else global_x_max
+        if global_x_max - global_x_min > 1:
+            global_x_min = math.floor(global_x_min) if not math.isinf(
+                global_x_min) else global_x_min
+            global_x_max = math.ceil(global_x_max) if not math.isinf(
+                global_x_max) else global_x_max
 
-    if global_y_max - global_y_min > 1:
-        global_y_min = math.floor(global_y_min) if not math.isinf(
-            global_y_min) else global_y_min
-        global_y_max = math.ceil(global_y_max) if not math.isinf(
-            global_y_max) else global_y_max
+        if global_y_max - global_y_min > 1:
+            global_y_min = math.floor(global_y_min) if not math.isinf(
+                global_y_min) else global_y_min
+            global_y_max = math.ceil(global_y_max) if not math.isinf(
+                global_y_max) else global_y_max
 
-    if column_properties:
-        global_x_min = column_properties.plot_min \
-            if column_properties.plot_min is not None else global_x_min
-        global_x_max = column_properties.plot_max \
-            if column_properties.plot_max is not None else global_x_max
+        if column_properties:
+            global_x_min = column_properties.plot_min \
+                if column_properties.plot_min is not None else global_x_min
+            global_x_max = column_properties.plot_max \
+                if column_properties.plot_max is not None else global_x_max
 
-    return global_x_max, global_x_min, global_y_max, global_y_min
+        return global_x_max, global_x_min, global_y_max, global_y_min
+
+    except TypeError:
+        # Likely not numerical data - apply the min and max methods directly
+        all_pds = tuple(itertools.chain(*itertools.chain(pds_by_group_name.values())))
+        all_x_values = tuple(itertools.chain(pd.x_values for pd in all_pds))
+        all_y_values = tuple(itertools.chain(pd.y_values for pd in all_pds))
+        return max(all_x_values), min(all_x_values), max(all_y_values), min(all_y_values)
 
 
 def _render_plottable_data(color_by_group_name, combine_groups, extra_plds,
@@ -721,13 +729,17 @@ def _update_ticks_and_grid(column_properties, combine_groups, global_x_max,
             plt.tick_params(which="minor", bottom=False)
             subgrid_axis = "y"
 
-        if global_x_max < 1e-2:
-            x_tick_label_angle = 90 \
-                if x_tick_label_angle is not None else x_tick_label_angle
+        try:
+            if global_x_max < 1e-2:
+                x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
+        except TypeError:
+            # Likely not numerical data - skip adjustments
+            pass
         if show_grid:
             plt.grid(which="major", axis="both", alpha=0.5)
         if show_subgrid:
             plt.grid(which="minor", axis=subgrid_axis, alpha=0.4)
+
     return semilog_y
 
 
@@ -739,46 +751,50 @@ def _update_axis_limits(global_x_max, global_x_min, global_y_max, global_y_min,
     """
     # pylint: disable=too-many-arguments,too-many-locals
 
-    # Set the axis limits
-    xlim = [global_x_min, global_x_max]
-    ylim = [global_y_min, global_y_max]
-    xlim[0] = xlim[0] if x_min is None else x_min
-    xlim[1] = xlim[1] if x_max is None else x_max
-    ylim[0] = ylim[0] if y_min is None else y_min
-    ylim[1] = ylim[1] if y_max is None else y_max
-    # Translate relative margin to absolute margin
-    horizontal_margin = horizontal_margin \
-        if horizontal_margin is not None \
-        else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                    "horizontal_margin")
-    vertical_margin = vertical_margin \
-        if vertical_margin is not None \
-        else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                    "vertical_margin")
-    h_margin = horizontal_margin * (xlim[1] - xlim[0])
-    v_margin = vertical_margin * (ylim[1] - ylim[0])
-    xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
-    ylim = [ylim[0] - v_margin, ylim[1] + v_margin]
-    # Apply changes to the figure
-    if xlim[0] != xlim[1] and not math.isnan(
-            xlim[0]) and not math.isnan(xlim[1]):
-        plt.xlim(*xlim)
-        current_axis = plt.gca()
-        for group_axes in [t[1] for t in groupname_axis_tuples]:
-            plt.sca(group_axes)
+    try:
+        # Set the axis limits
+        xlim = [global_x_min, global_x_max]
+        ylim = [global_y_min, global_y_max]
+        xlim[0] = xlim[0] if x_min is None else x_min
+        xlim[1] = xlim[1] if x_max is None else x_max
+        ylim[0] = ylim[0] if y_min is None else y_min
+        ylim[1] = ylim[1] if y_max is None else y_max
+        # Translate relative margin to absolute margin
+        horizontal_margin = horizontal_margin \
+            if horizontal_margin is not None \
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                        "horizontal_margin")
+        vertical_margin = vertical_margin \
+            if vertical_margin is not None \
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer",
+                                        "vertical_margin")
+        h_margin = horizontal_margin * (xlim[1] - xlim[0])
+        v_margin = vertical_margin * (ylim[1] - ylim[0])
+        xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
+        ylim = [ylim[0] - v_margin, ylim[1] + v_margin]
+        # Apply changes to the figure
+        if xlim[0] != xlim[1] and not math.isnan(
+                xlim[0]) and not math.isnan(xlim[1]):
             plt.xlim(*xlim)
-        plt.sca(current_axis)
-    # pylint: disable=too-many-boolean-expressions
-    if ylim[0] != ylim[1] \
-            and not math.isnan(ylim[0]) \
-            and not math.isnan(ylim[1]) \
-            and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
-        plt.ylim(*ylim)
-        current_axis = plt.gca()
-        for group_axes in [t[1] for t in groupname_axis_tuples]:
-            plt.sca(group_axes)
+            current_axis = plt.gca()
+            for group_axes in [t[1] for t in groupname_axis_tuples]:
+                plt.sca(group_axes)
+                plt.xlim(*xlim)
+            plt.sca(current_axis)
+        # pylint: disable=too-many-boolean-expressions
+        if ylim[0] != ylim[1] \
+                and not math.isnan(ylim[0]) \
+                and not math.isnan(ylim[1]) \
+                and (not semilog_y or (ylim[0] > 0 and ylim[1] > 0)):
             plt.ylim(*ylim)
-        plt.sca(current_axis)
+            current_axis = plt.gca()
+            for group_axes in [t[1] for t in groupname_axis_tuples]:
+                plt.sca(group_axes)
+                plt.ylim(*ylim)
+            plt.sca(current_axis)
+    except TypeError:
+        # Likely not numerical data
+        pass
 
 
 def _update_axis_labels(global_x_label, global_y_label, groupname_axis_tuples):
