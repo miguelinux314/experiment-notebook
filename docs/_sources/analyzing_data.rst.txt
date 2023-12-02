@@ -5,7 +5,7 @@
 Result analysis and plotting with |enb|
 =======================================
 
-The :mod:`enb.aanalysis` module provides several classes to help you analyze and 
+The :mod:`enb.aanalysis` module provides several classes to help you analyze and
 visualize your results. These classes accept |DataFrame| instances, which can
 be produced by your `enb`-based scripts or imported via :meth:`pandas.read_csv`.
 
@@ -19,7 +19,7 @@ a general use case.
 
 .. note::
     If you have |enb| already installed, you can download all the test data and example code into the `ag` folder as with
-    
+
     .. code-block:: bash
 
         enb install analysis-gallery ag
@@ -34,6 +34,7 @@ Here we will be using the Iris dataset, which we can load with:
 .. code-block:: python
 
     import pandas as pd
+
     iris_df = pd.read_csv("./input_csv/iris_dataset.csv")
 
 This particular dataframe has the `sepal_length`, `sepal_width`, `petal_length`, `petal_width` and `class` columns defined.
@@ -42,6 +43,7 @@ We can analyze the general petal and sepal dimensions using the **`get_df`** met
 .. code-block:: python
 
     import enb
+
     analyzer = enb.aanalysis.ScalarNumericAnalyzer()
     analysis_df = analyzer.get_df(
         full_df=iris_df, target_columns=["sepal_length", "sepal_width",
@@ -63,9 +65,8 @@ as shown in the next figure. The returned `analysis_df` dataframe contains the e
 etc., for each target column.
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png
-    :width: 100%
 
-The `hbar` and `boxplot` modes are most useful when 
+The `hbar` and `boxplot` modes are most useful when
 grouping -- examples are provided below in the first section about grouping below.
 
 
@@ -74,7 +75,7 @@ grouping -- examples are provided below in the first section about grouping belo
 Summary tables
 ______________
 
-When the `get_df` method of |ScalarNumericAnalyzer| is invoked, 
+When the `get_df` method of |ScalarNumericAnalyzer| is invoked,
 it automatically produces summary tables at `enb.config.options.analysis_dir`.
 More specifically,
 
@@ -86,10 +87,10 @@ More specifically,
     - standard deviation
     - median
     - number of samples
-    
+
 
 * A `.tex file <_static/analysis_gallery/ScalarNumericAnalyzer-columns_sepal_length__sepal_width__petal_length__petal_width-hbar__histogram__boxplot-groupby__class.tex>`_ with a table containing the mean values of the target columns.
-  
+
 Note that grouping (described in :ref:`sec_grouping`) is employed in these examples to make it a bit clearer.
 
 Two numeric columns
@@ -122,7 +123,6 @@ In addition to the `analysis_df` dataframe with numeric results, this will produ
 which also shows +/- 1 horizontal and vertical standard deviations.
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png
-    :width: 100%
 
 The previous figure shows an example of the `scatter` plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):
@@ -148,14 +148,13 @@ For instance, the following code
 will produce a figure like the following:
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png
-    :width: 100%
 
 Additional examples are provided below in :ref:`sec_grouping`, where some of these modes are most useful.
 
 Summary tables
 ______________
 
-When the `get_df` method of |TwoNumericAnalyzer| is invoked, 
+When the `get_df` method of |TwoNumericAnalyzer| is invoked,
 it automatically produces summary tables at `enb.config.options.analysis_dir`.
 More specifically,
 
@@ -182,6 +181,8 @@ contains a column `mode_count` where keys are the set of possible modes and the 
 each mode has been employed. We can import the dataset with the following lines
 
 .. code-block:: python
+
+    import pandas as pd
 
     hevc_df = pd.read_csv("./input_csv/hevc_frame_prediction.csv")
     ## These two lines are automatically applied
@@ -221,9 +222,9 @@ Now, we instantiate |DictNumericAnalyzer| and run its `get_df` method. The follo
 count per mode for each of the selected groups (given in the `block_size` column)
 
 .. code-block:: python
-    
+
     import enb
-    
+
     # Create the analyzer and plot results
     numeric_dict_analyzer = enb.aanalysis.DictNumericAnalyzer()
     analysis_df = numeric_dict_analyzer.get_df(
@@ -251,40 +252,49 @@ ________
 The resulting figure is shown below
 
 .. figure:: _static/analysis_gallery/DictNumericAnalyzer_mode_count_groupby-block_size_line.png
-    :width: 100%
 
 .. _grouping_by_value:
 
 Summary tables
 ______________
 
-The |DictNumericAnalyzer| class produces `CSV files <_static/analysis_gallery/DictNumericAnalyzer-columns_mode_count-line-groupby__block_size.csv>`_ with several statistics 
+The |DictNumericAnalyzer| class produces `CSV files <_static/analysis_gallery/DictNumericAnalyzer-columns_mode_count-line-groupby__block_size.csv>`_ with several statistics
 (mean, min, max, median, standard deviation) for each key of each target column.
 
-Analysis numeric spatial (2D) data
-----------------------------------
+.. _scalar_numeric_2d_analyzer
+
+Analysis of numeric data in an x-y (2D) space
+---------------------------------------------
 
 The |ScalarNumeric2DAnalyzer| class allows to plot data arranged arbitrarily in the x-y plane.
+It is useful to create heatmap figures.
+
+.. note:: The |ScalarNumeric2DAnalyzer| class **cannot** handle categorical (e.g., string) x or y columns.
+   In that scenario, you can consider the |ScalarNumericJointAnalyzer| class in :ref:`sec_joint_analysis`.
+
 
 You will need:
-    - a column with scalar data (integers or float entries), e.g., `column_data`
-    - two more columns specifying the `x` and `y` coordinates of each datapoint, e.g., `column_x` and `column_y`.
+    - a column with scalar numerical data (integers or float entries), e.g., `column_data`
+    - two more columns with scalar numerical data
+      specifying the `x` and `y` coordinates of each datapoint, e.g., `column_x` and `column_y`.
 
 You can then invoke the `get_df` method like any other |Analyzer| subclass, with the `target_columns` argument
 being a list of 3-element tuples.
 
-In the following example of the 'colormap' rendermode, 
-the `value` column contains the data of interest, while `x` and `y` contain the spatial 
+In the following example of the 'colormap' render mode,
+the `value` column contains the data of interest, while `x` and `y` contain the spatial
 information.
 
 .. code-block:: python
 
+    import os
+    import pandas as pd
     import enb
-    
+
     # Read data from CSV - could be obtained from an ATable instance
     df_2d = pd.read_csv(os.path.join("input_csv", "2d_data_example.csv"))
-    
-    # Perform analysis 
+
+    # Perform analysis
     sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
     sn2da.bin_count = 10
     sn2da.get_df(full_df=df_2d,
@@ -298,10 +308,9 @@ information.
 Plots
 _____
 
-The resulting figure is shown in the following figure:
+The resulting figure is shown next:
 
 .. figure:: _static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png
-    :width: 100%
 
 .. note:: You can configure the employed colormap by modifying your |ScalarNumeric2DAnalyzer| instance attributes,
     e.g., you can set `color_map` to any color map name accepted by matplotlib, e.g.,
@@ -320,12 +329,98 @@ ______________
 
 The |ScalarNumeric2DAnalyzer| class produces:
 
-* `CSV files <_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.csv>`_ 
-  with the same statistics as those of |ScalarNumericAnalyzer| 
-  (see :ref:`sec_one_numeric_summary`: min, max, mean, median, standard deviation) for each selected 
+* `CSV files <_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.csv>`_
+  with the same statistics as those of |ScalarNumericAnalyzer|
+  (see :ref:`sec_one_numeric_summary`: min, max, mean, median, standard deviation) for each selected
   `x`, `y` and `value` column.
 
-* `.tex files <_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.tex>`_ with the average of each selected `x`, `y` and `value` column. 
+* `.tex files <_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.tex>`_ with the average of each selected `x`, `y` and `value` column.
+
+.. _sec_joint_analysis:
+
+Joint numeric analysis (double categorical grouping)
+----------------------------------------------------
+
+With |ScalarNumericJointAnalyzer|, it is possible to analyze scalar numeric data
+jointly splitting it by two different groupings. This results in a table where the
+columns correspond to one of the categories/groupings (e.g., corpus name)
+and the rows to the other category/grouping (e.g., task label).
+Cells correspond to the averages for the data column.
+
+.. note:: The |ScalarNumericJointAnalyzer| supports any type for the x and y columns as long
+  as `str` can be applied to them. If you want to use numeric data for x and y, consider |ScalarNumeric2DAnalyzer|
+  in :ref:`_scalar_numeric_2d_analyzer`.
+
+You will need:
+    - a column with scalar numerical data (integers or float entries), e.g., `column_data`
+    - two more columns with categorical (e.g., string) data
+      specifying the grouping along the x axis and the y axis, e.g., `column_x` and `column_y`.
+
+In the following example of the 'table' render mode,
+the `Price` column contains the data of interest, while `Color` and `Origin` contain the categorical
+data for joint analysis.
+
+.. code-block:: python
+
+    import os
+    import pandas as pd
+    import enb
+
+    df_joint = pd.read_csv(os.path.join("input_csv", "continent_data_example.csv"))
+
+    snja = enb.aanalysis.ScalarNumericJointAnalyzer()
+    snja.get_df(full_df=df_joint,
+                target_columns=[("Color", "Origin", "Price")])
+
+Plots
+_____
+
+The resulting plot is shown in the following figure:
+
+.. figure:: _static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png
+
+.. note:: You can pass `fig_height`, `fig_width` or both to the `get_df` method of |ScalarNumericJointAnalyzer|
+   to control the size of the displayed table.
+
+Summary tables
+______________
+
+The |ScalarNumericJointAnalyzer| produces custom
+`CSV <_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv>`_
+and
+`CSV file <_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv>`_
+files corresponding to the above table.
+
+An example of LaTeX output is shown below
+
+.. code-block:: latex
+
+    % Column selection: 'Color' 'Origin' 'Price'
+    \begin{tabular}{lccc}
+    \toprule
+                      & \textbf{Blue} & \textbf{Green} & \textbf{Red} \\
+    \toprule
+    \textbf{Africa}   & 1081.500 & 569.000  & 966.750  \\
+    \textbf{America}  & 924.000  & 325.000  & 1014.000 \\
+    \textbf{Asia}     & 675.333  & 738.000  & 1044.500 \\
+    \textbf{Europe}   & 498.000  & 767.500  & 723.200  \\
+    \textbf{Oceania}  & 660.600  & 990.667  & 1150.667 \\
+
+    \bottomrule
+    \end{tabular}
+
+The corresponding CSV file is as follows:
+
+.. code-block:: csv
+
+    # Column selection: 'Color' 'Origin' 'Price'
+    ## Group: 'All'
+    ,Blue,Green,Red
+    Africa,1081.500,569.000,966.750
+    America,924.000,325.000,1014.000
+    Asia,675.333,738.000,1044.500
+    Europe,498.000,767.500,723.200
+    Oceania,660.600,990.667,1150.667
 
 .. _sec_grouping:
 
@@ -360,21 +455,18 @@ By default, all of the following render modes are used with |ScalarNumericAnalyz
 The `histogram` render mode produces plots like the following:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png
-    :width: 100%
 
 
-The `hbar` render mode produces horizontal bar plots with length equal to the average, as shown in the 
+The `hbar` render mode produces horizontal bar plots with length equal to the average, as shown in the
 following image:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png
-    :width: 100%
 
 The `boxplot` render mode produces standard box plots where lines span the entire input data range,
 the vertical lines in the box plot indicates quartiles Q1, Q2 and Q3, and the mean value is also displayed,
 as shown next:
 
 .. figure:: _static/analysis_gallery/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png
-    :width: 100%
 
 Grouping with other Analyzer subclasses
 _______________________________________
@@ -544,7 +636,7 @@ You can change the type of plot by selecting one of the available |Analyzer| cla
 See above for examples on all available classes.
 
 Some analyzers provide several render modes. You can select one or more of them by
-passing the `selected_render_modes` argument to your `get_df` calls. 
+passing the `selected_render_modes` argument to your `get_df` calls.
 By default, all render modes in an |Analyzer| are used.
 
 Modifying your Analyzers
@@ -562,8 +654,8 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
         # If more than one group is present, they are shown in the same subplot
         # instead of in different rows
         combine_groups = False
-        
-        # If not None, it must be a list of matplotlibrc styles (names or file paths) 
+
+        # If not None, it must be a list of matplotlibrc styles (names or file paths)
         style_list = None
         # Default figure width
         fig_width = 5.0
@@ -575,7 +667,7 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
         vertical_margin = 0
         # Margin between group rows (None to use matplotlib's default)
         group_row_margin = None
-        
+
         # Show grid lines at the major ticks?
         show_grid = False
         # Show grid lines at the minor ticks?
@@ -593,7 +685,7 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
         legend_position = "title"
         # If more than one group is displayed, when applicable, adjust plots to use the same scale in every subplot?
         common_group_scale = True
-        
+
         # Main title to be displayed
         plot_title = None
         # Show the number of elements in each group?
@@ -602,7 +694,7 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
         show_global = False
         # If a reference group is used as baseline, should it be shown in the analysis itself?
         show_reference_group = True
-        
+
         # Main marker size
         main_marker_size = 4
         # Secondary (e.g., individual data) marker size
@@ -617,7 +709,7 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
         secondary_alpha = 0.3
         # If a semilog y axis is used, y_min will be at least this large to avoid math domain errors
         semilog_y_min_bound = 1e-5
-        
+
         # Number of decimals used when showing decimal values in latex
         latex_decimal_count = 3
 
@@ -626,7 +718,7 @@ produce plots. Some examples common to all |Analyzer| instances are as follows.
 
 Default values for these attributes can be set by placing a file with `.ini` extension
 in your project root (where your scripts are placed). This file should contain a subset
-of the attributes defined in the 
+of the attributes defined in the
 `full enb.ini configuration file <https://github.com/miguelinux314/experiment-notebook/blob/dev/enb/config/enb.ini>`_.
 
 .. note:: Attributes must be stored in sections with name given by the |Analyzer| class, e.g.,
@@ -647,14 +739,14 @@ Attribute values are independently read for each call to `get_df`.
 
 Setting column plotting hints
 _____________________________
-   
-All columns defined in |ATable| subclasses (including |Experiment| subclasses) 
-have a corresponding |ColumnProperties| instance. 
+
+All columns defined in |ATable| subclasses (including |Experiment| subclasses)
+have a corresponding |ColumnProperties| instance.
 
 These instances contain rendering hints when plotting that column such as:
 
 - axis labels (e.g., `label='Average duration (s)'`)
-- plot limits (e.g., `plot_min=0`, `plot_max=60`, which can also be set to None for automatic limits) 
+- plot limits (e.g., `plot_min=0`, `plot_max=60`, which can also be set to None for automatic limits)
 - axis type (e.g., `semilog_x=True`)
 
 As detailed in :doc:`basic_workflow`, these hints can be set when defining custom columns, e.g.,
@@ -669,57 +761,57 @@ As detailed in :doc:`basic_workflow`, these hints can be set when defining custo
             plot_max=60))
         def set_average_duration_seconds(self, file_path, row):
             row[_column_name] = # ... your code here
-    
+
 One can then pass the `column_to_properties` argument to an Analyzer's `get_df` method, e.g.,
 
 .. code-block:: python
 
     mt = MyTable()
-    df = # ... e.g., mt.get_df(), see examples above  
+    df = # ... e.g., mt.get_df(), see examples above
     enb.aanalysis.ScalarNumericAnalyzer().get_df(
-        full_df=df, 
+        full_df=df,
         column_to_properties=mt.column_to_properties)
-        
+
 See :meth:`enb.atable.ColumnProperties.__init__` for full details on all available attributes.
-        
-.. note:: 
+
+.. note::
 
     * You can modify |ColumnProperties| instances after they have been associated to a column, e.g.,
-      
+
       .. code-block:: python
-         
+
          mt.column_properties["average_duration_seconds"].plot_max = 30
-      
-      
+
+
     * You can create your own dictionary indexed by column name, containing |ColumnProperties| instances,
       and then pass it to `get_df`, e.g.,:
 
       .. code-block:: python
-         
+
          enb.aanalysis.ScalarNumericAnalyzer().get_df(
-            full_df=df, 
+            full_df=df,
             column_to_properties=dict(average_duration_seconds=enb.atable.ColumnProperties(
                 plot_min=0, plot_max=30, label=r"$\Gamma$ routine execution time (seconds)")))
-      
-      
+
+
 
     * |Experiment| subclasses also offer the `joined_column_to_properties` property, which
        contains the columns defined in that experiment, and in the |ATable| subclass employed
        for the dataset (see :doc:`experiments` for more information about experiments), e.g.:
 
       .. code-block:: python
-            
-            # Initialize and run experiment 
+
+            # Initialize and run experiment
             exp = MyExperimentClass()
             df = exp.get_df()
-            
+
             # Analyze results
             scalar_columns = ["column_A", "column_B"]
             scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
             scalar_analyzer.get_df(
                 full_df=df,  target_columns=scalar_columns,
                 group_by="task_label",  selected_render_modes={"histogram"},
-                
+
                 # Experiments offer the `joined_column_to_properties` property
                 column_to_properties=exp.joined_column_to_properties,
             )
@@ -738,7 +830,7 @@ You can add one or more `key=value` arguments to the `get_df` call, as shown in 
 .. code-block:: python
 
     numeric_dict_analyzer = enb.aanalysis.DictNumericAnalyzer()
-    hevc_df = pd.read_csv("./input_csv/hevc_frame_prediction.csv") 
+    hevc_df = pd.read_csv("./input_csv/hevc_frame_prediction.csv")
     numeric_dict_analyzer.secondary_alpha = 0
     analysis_df = numeric_dict_analyzer.get_df(
         full_df=hevc_df,
@@ -764,7 +856,7 @@ Note that the `pds_by_group_name` parameter and others are automatically set by 
 Using styles
 ____________
 
-The `enb` library employs `matplotlib` for plotting. 
+The `enb` library employs `matplotlib` for plotting.
 Matplotlib's `styling features <https://matplotlib.org/stable/tutorials/introductory/customizing.html>`_
 are available in two ways:
 
@@ -783,7 +875,7 @@ For instance, to set Matlplotlib's dark style, the following code can be used:
         full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
         output_plot_dir=os.path.join(options.plot_dir, "scalar_numeric_dark", "instance"),
         group_by="class")
-    
+
     ## Option 2: use get_df's **kwargs
     scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
     analysis_df = scalar_analyzer.get_df(
@@ -800,23 +892,23 @@ Each element in `style_list` must be one of the following:
 * One of enb's predefined style names.
 
   .. note:: You can get a list of all available style names from the CLI with
-        
-      .. code-block:: bash 
-            
+
+      .. code-block:: bash
+
             enb show styles
 
-      or within python with 
+      or within python with
 
       .. code-block:: python
-        
+
             enb.plotdata.get_available_styles()
-            
+
       An example output is as follows:
 
         .. program-output:: enb show styles | tail -n+3
             :shell:
 
-* The path of a matplotlib rc style. 
+* The path of a matplotlib rc style.
 
   See `matplotlib's rc file documentation <https://matplotlib.org/stable/tutorials/introductory/customizing.html#the-matplotlibrc-file>`_
   for more information on how to create and modify this type of files.
@@ -829,7 +921,7 @@ Each element in `style_list` must be one of the following:
 
 .. note:: You can select any number of styles for your plots.
     When a list of styles is used for a plot, its elements are processed from left to right.
-    Therefore, you can compose themes just like one would in 
+    Therefore, you can compose themes just like one would in
     Matplotlib `<https://matplotlib.org/stable/tutorials/introductory/customizing.html#composing-styles>`_.
 
 .. warning:: Not all styles are necessarily intended for professional usage (-:
