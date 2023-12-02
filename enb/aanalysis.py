@@ -3050,7 +3050,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                 for render_column_name in summary_table.render_column_names:
                     selection = ast.literal_eval(render_column_name.replace('_render-table', ''))
                     csv_file.write(
-                        f"# Column selection: '{' '.join(repr(s) for s in selection)}'\n")
+                        f"# Column selection: {' '.join(repr(s) for s in selection)}\n")
 
                     for group_label, row in summary_df.iterrows():
                         group_label = " ".join(repr(s) for s in ast.literal_eval(group_label))
@@ -3076,10 +3076,17 @@ class ScalarNumericJointAnalyzer(Analyzer):
                     column_header_count = len(first_table.x_values)
                     longest_row_header = max(len(str(y)) for y in first_table.y_values) \
                                          + len(r"\textbf{}") + 1
+                    longest_cell_length = max(len(str(c))
+                                              for tables in summary_df[render_column_name].values
+                                              for table in tables
+                                              for row in table.cell_text
+                                              for c in row)
+                    cell_format = f"{{:{longest_cell_length}s}}"
+
 
                     selection = ast.literal_eval(render_column_name.replace('_render-table', ''))
                     latex_file.write(
-                        f"% Column selection: '{' '.join(repr(s) for s in selection)}'\n")
+                        f"% Column selection: {' '.join(repr(s) for s in selection)}\n")
                     latex_file.write(r"\begin{tabular}{l" + "c" * column_header_count + r"}" + "\n")
                     latex_file.write(r"\toprule" + "\n")
 
@@ -3108,11 +3115,9 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             latex_file.write(
                                 " & ".join([row_header_format.format(
                                     f"\\textbf{{{enb.misc.escape_latex(str(row_header))}}}")]
-                                           + row_values)
+                                           + [cell_format.format(v) for v in row_values])
                                 + " \\\\\n")
                         latex_file.write("\n")
-                    latex_file.write("\n")
-
                     latex_file.write(r"\bottomrule" + "\n")
                     latex_file.write(r"\end{tabular}" + "\n")
 
