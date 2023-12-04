@@ -269,8 +269,6 @@ class WrapperCodec(AbstractCodec):
                 f"Decompressor path {repr(compressor_path)} is not available "
                 f"for {self.__class__.__name__}")
         self.output_invocation_dir = output_invocation_dir
-        if self.output_invocation_dir is not None:
-            os.makedirs(self.output_invocation_dir, exist_ok=True)
 
     def get_compression_params(self, original_path, compressed_path,
                                original_file_info):
@@ -324,6 +322,7 @@ class WrapperCodec(AbstractCodec):
         compression_results.maximum_memory_kb = memory_kb
 
         if self.output_invocation_dir is not None:
+            os.makedirs(self.output_invocation_dir, exist_ok=True)
             invocation_name = "invocation_compression_" \
                               + self.name \
                               + os.path.abspath(
