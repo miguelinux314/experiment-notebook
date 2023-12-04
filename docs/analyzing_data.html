@@ -375,7 +375,7 @@ It is useful to create heatmap figures.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class <strong>cannot</strong> handle categorical (e.g., string) x or y columns.
-In that scenario, you can consider the <a href="#id12"><span class="problematic" id="id13">|ScalarNumericJointAnalyzer|</span></a> class in <a class="reference internal" href="#sec-joint-analysis"><span class="std std-ref">Joint numeric analysis (double categorical grouping)</span></a>.</p>
+In that scenario, you can consider the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> class in <a class="reference internal" href="#sec-joint-analysis"><span class="std std-ref">Joint numeric analysis (double categorical grouping)</span></a>.</p>
 </div>
 <dl class="simple">
 <dt>You will need:</dt><dd><ul class="simple">
@@ -440,14 +440,14 @@ with the same statistics as those of <a class="reference internal" href="api/enb
 </section>
 <section id="joint-numeric-analysis-double-categorical-grouping">
 <span id="sec-joint-analysis"></span><h2>Joint numeric analysis (double categorical grouping)<a class="headerlink" href="#joint-numeric-analysis-double-categorical-grouping" title="Permalink to this headline"></a></h2>
-<p>With <a href="#id14"><span class="problematic" id="id15">|ScalarNumericJointAnalyzer|</span></a>, it is possible to analyze scalar numeric data
+<p>With <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a>, it is possible to analyze scalar numeric data
 jointly splitting it by two different groupings. This results in a table where the
 columns correspond to one of the categories/groupings (e.g., corpus name)
 and the rows to the other category/grouping (e.g., task label).
 Cells correspond to the averages for the data column.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <a href="#id16"><span class="problematic" id="id17">|ScalarNumericJointAnalyzer|</span></a> supports any type for the x and y columns as long
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> supports any type for the x and y columns as long
 as <cite>str</cite> can be applied to them. If you want to use numeric data for x and y, consider <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a>
 in <span class="xref std std-ref">_scalar_numeric_2d_analyzer</span>.</p>
 </div>
@@ -481,13 +481,13 @@ data for joint analysis.</p>
 </figure>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You can pass <cite>fig_height</cite>, <cite>fig_width</cite> or both to the <cite>get_df</cite> method of <a href="#id18"><span class="problematic" id="id19">|ScalarNumericJointAnalyzer|</span></a>
+<p>You can pass <cite>fig_height</cite>, <cite>fig_width</cite> or both to the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a>
 to control the size of the displayed table.</p>
 </div>
 </section>
 <section id="id10">
 <h3>Summary tables<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h3>
-<p>The <a href="#id20"><span class="problematic" id="id21">|ScalarNumericJointAnalyzer|</span></a> produces custom
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> produces custom
 <a class="reference external" href="_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv">CSV</a>
 and
 <a class="reference external" href="_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv">CSV file</a>
