@@ -15,14 +15,14 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
     default_band_format = BAND_FORMAT_BSQ
 
     def __init__(self, bin_dir=None, chunk_size_str="128M", threads=1,
-                 lsb_discard_count=0,
-                 adaptiveness_block_length=128,
+                 lsb_discard_count=0, adaptiveness_block_length=128,
                  output_invocation_dir=None):
         """
         :param bin_dir: path to the dir with the fapec and unfapec binaries
         :param chunk_size_str: string to be passed in the -chunk argument
         :param threads: number of threads to use for compression/decompression
-        :param output_invocation_dir
+        :param output_invocation_dir: directory where text files describing the invocation
+          parameters are to be stored (if None, they are not stored).
         """
         param_dict = dict()
         param_dict["chunk"] = chunk_size_str
@@ -37,21 +37,15 @@ class FAPEC_Abstract(icompression.LossyCodec, icompression.LosslessCodec, icompr
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
         super().__init__(compressor_path=os.path.join(bin_dir, "fapec"),
                          decompressor_path=os.path.join(bin_dir, "unfapec"),
-                         param_dict=param_dict, output_invocation_dir=output_invocation_dir)
+                         param_dict=param_dict,
+                         output_invocation_dir=output_invocation_dir)
+
 
     def get_transform_dict_params(self, original_file_info):
         raise NotImplementedError("Please select one of the subclasses")
 
     def get_dtype(self, original_file_info):
-        try:
-            dtype = original_file_info["dynamic_range_bits"]
-        except KeyError:
-            dtype = 8 * original_file_info["bytes_per_sample"]
-
-        if dtype > 28:
-            raise ValueError(f"FAPEC supports dynamic ranges only up to 28, however {dtype} was selected")
-        
-        return max(4, dtype)
+        return max(4, min(28, 8 * original_file_info["bytes_per_sample"]))
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         invocation_params = dict(self.param_dict)
@@ -83,7 +77,7 @@ class FAPEC_NP(FAPEC_Abstract):
 
     @property
     def label(self):
-        return "FAPEC-NP"
+        return f"FAPEC-NP"
 
 
 class FAPEC_SPA(FAPEC_Abstract):
@@ -95,7 +89,7 @@ class FAPEC_SPA(FAPEC_Abstract):
 
     @property
     def label(self):
-        return "FAPEC-SPA"
+        return f"FAPEC-SPA"
 
 
 class FAPEC_MB(FAPEC_Abstract):
@@ -103,11 +97,11 @@ class FAPEC_MB(FAPEC_Abstract):
     """
 
     def get_transform_dict_params(self, original_file_info):
-        return dict(bands=original_file_info["component_count"])
+        return dict()
 
     @property
     def label(self):
-        return "FAPEC-MB"
+        return f"FAPEC-MB"
 
 
 class FAPEC_LP(FAPEC_Abstract):
@@ -140,7 +134,7 @@ class FAPEC_LP(FAPEC_Abstract):
 
     @property
     def label(self):
-        return "FAPEC-LP"
+        return f"FAPEC-LP"
 
 
 class FAPEC_DWT(FAPEC_Abstract):
