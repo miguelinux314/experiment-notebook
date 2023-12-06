@@ -375,7 +375,7 @@ data for joint analysis.
 Plots
 _____
 
-The resulting plot is shown in the following figure:
+The resulting plot, corresponding to the average value of the data column, is shown in the following figure:
 
 .. figure:: _static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png
 
@@ -391,36 +391,79 @@ and
 `CSV file <_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv>`_
 files corresponding to the above table.
 
+These files contain tables for several statistics: average, min, max, standard deviation, median and count.
+All these correspond to the *finite* data found for each x-category and y-category combination.
+
 An example of LaTeX output is shown below
 
 .. code-block:: latex
 
     % Column selection: 'Color' 'Origin' 'Price'
+    % Statistic: avg
     \begin{tabular}{lccc}
     \toprule
-                      & \textbf{Blue} & \textbf{Green} & \textbf{Red} \\
+                     & \textbf{Blue} & \textbf{Green} & \textbf{Red} \\
     \toprule
-    \textbf{Africa}   & 1081.500 & 569.000  & 966.750  \\
-    \textbf{America}  & 924.000  & 325.000  & 1014.000 \\
-    \textbf{Asia}     & 675.333  & 738.000  & 1044.500 \\
-    \textbf{Europe}   & 498.000  & 767.500  & 723.200  \\
-    \textbf{Oceania}  & 660.600  & 990.667  & 1150.667 \\
-
+    \textbf{Africa}  & 1081.500 & 569.000  & 966.750  \\
+    \textbf{America} & 924.000  & 325.000  & 1014.000 \\
+    \textbf{Asia}    & 675.333  & 738.000  & 1044.500 \\
+    \textbf{Europe}  & 498.000  & 767.500  & 723.200  \\
+    \textbf{Oceania} & 660.600  & 990.667  & 1150.667 \\
+    \midrule
+    \textbf{All}     & 738.286  & 744.600  & 948.889  \\
     \bottomrule
     \end{tabular}
+
 
 The corresponding CSV file is as follows:
 
 .. code-block:: csv
 
     # Column selection: 'Color' 'Origin' 'Price'
-    ## Group: 'All'
+    ## Statistic: avg
+    ### Group: 'All'
     ,Blue,Green,Red
     Africa,1081.500,569.000,966.750
     America,924.000,325.000,1014.000
     Asia,675.333,738.000,1044.500
     Europe,498.000,767.500,723.200
     Oceania,660.600,990.667,1150.667
+    All,738.286,744.600,948.889
+
+Output configuration
+____________________
+
+You can select the order of column headers and/or row headers by passing `x_header_list`, `y_header_list`, or both
+to :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. When one is present, it must be a non-empty list
+containing strings that match exactly one or more of the existing row or column headers
+(e.g., one or more of `["Blue", "Green", "Red"]` when specifying `x_header_list` in the previous example.
+
+You can also disable the global "All" row by adding `show_global=False` to the `get_df`
+call of your |ScalarNumericJointAnalyzer| instance.
+
+The following example displays both of these features (they can be used independently):
+
+    .. code-block:: python
+
+        import os
+        import pandas as pd
+        import enb
+
+        df_joint = pd.read_csv(os.path.join("input_csv", "continent_data_example.csv"))
+
+        snja = enb.aanalysis.ScalarNumericJointAnalyzer()
+        snja.get_df(full_df=df_joint,
+                    target_columns=[("Color", "Origin", "Price")],
+                    # Show only these columns, in this order:
+                    x_header_list=["Red", "Blue"],
+                    # Show only these rows, in this order:
+                    y_header_list=["Oceania", "Africa"],
+                    # Hide the "All" row
+                    show_global=False)
+
+and produces the following result:
+
+.. figure:: _static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png
 
 .. _sec_grouping:
 

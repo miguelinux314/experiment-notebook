@@ -71,6 +71,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#joint-numeric-analysis-double-categorical-grouping">Joint numeric analysis (double categorical grouping)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id9">Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id10">Summary tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output-configuration">Output configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a><ul>
@@ -475,7 +476,7 @@ data for joint analysis.</p>
 </div>
 <section id="id9">
 <h3>Plots<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h3>
-<p>The resulting plot is shown in the following figure:</p>
+<p>The resulting plot, corresponding to the average value of the data column, is shown in the following figure:</p>
 <figure class="align-default">
 <img alt="_images/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
 </figure>
@@ -492,33 +493,72 @@ to control the size of the displayed table.</p>
 and
 <a class="reference external" href="_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv">CSV file</a>
 files corresponding to the above table.</p>
+<p>These files contain tables for several statistics: average, min, max, standard deviation, median and count.
+All these correspond to the <em>finite</em> data found for each x-category and y-category combination.</p>
 <p>An example of LaTeX output is shown below</p>
 <div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="c">% Column selection: &#39;Color&#39; &#39;Origin&#39; &#39;Price&#39;</span>
+<span class="c">% Statistic: avg</span>
 <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>lccc<span class="nb">}</span>
 <span class="k">\toprule</span>
-                  <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Blue<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Green<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Red<span class="nb">}</span> <span class="k">\\</span>
+                 <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Blue<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Green<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Red<span class="nb">}</span> <span class="k">\\</span>
 <span class="k">\toprule</span>
-<span class="k">\textbf</span><span class="nb">{</span>Africa<span class="nb">}</span>   <span class="nb">&amp;</span> 1081.500 <span class="nb">&amp;</span> 569.000  <span class="nb">&amp;</span> 966.750  <span class="k">\\</span>
-<span class="k">\textbf</span><span class="nb">{</span>America<span class="nb">}</span>  <span class="nb">&amp;</span> 924.000  <span class="nb">&amp;</span> 325.000  <span class="nb">&amp;</span> 1014.000 <span class="k">\\</span>
-<span class="k">\textbf</span><span class="nb">{</span>Asia<span class="nb">}</span>     <span class="nb">&amp;</span> 675.333  <span class="nb">&amp;</span> 738.000  <span class="nb">&amp;</span> 1044.500 <span class="k">\\</span>
-<span class="k">\textbf</span><span class="nb">{</span>Europe<span class="nb">}</span>   <span class="nb">&amp;</span> 498.000  <span class="nb">&amp;</span> 767.500  <span class="nb">&amp;</span> 723.200  <span class="k">\\</span>
-<span class="k">\textbf</span><span class="nb">{</span>Oceania<span class="nb">}</span>  <span class="nb">&amp;</span> 660.600  <span class="nb">&amp;</span> 990.667  <span class="nb">&amp;</span> 1150.667 <span class="k">\\</span>
-
+<span class="k">\textbf</span><span class="nb">{</span>Africa<span class="nb">}</span>  <span class="nb">&amp;</span> 1081.500 <span class="nb">&amp;</span> 569.000  <span class="nb">&amp;</span> 966.750  <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>America<span class="nb">}</span> <span class="nb">&amp;</span> 924.000  <span class="nb">&amp;</span> 325.000  <span class="nb">&amp;</span> 1014.000 <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Asia<span class="nb">}</span>    <span class="nb">&amp;</span> 675.333  <span class="nb">&amp;</span> 738.000  <span class="nb">&amp;</span> 1044.500 <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Europe<span class="nb">}</span>  <span class="nb">&amp;</span> 498.000  <span class="nb">&amp;</span> 767.500  <span class="nb">&amp;</span> 723.200  <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Oceania<span class="nb">}</span> <span class="nb">&amp;</span> 660.600  <span class="nb">&amp;</span> 990.667  <span class="nb">&amp;</span> 1150.667 <span class="k">\\</span>
+<span class="k">\midrule</span>
+<span class="k">\textbf</span><span class="nb">{</span>All<span class="nb">}</span>     <span class="nb">&amp;</span> 738.286  <span class="nb">&amp;</span> 744.600  <span class="nb">&amp;</span> 948.889  <span class="k">\\</span>
 <span class="k">\bottomrule</span>
 <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 </pre></div>
 </div>
 <p>The corresponding CSV file is as follows:</p>
 <div class="highlight-csv notranslate"><div class="highlight"><pre><span></span># Column selection: &#39;Color&#39; &#39;Origin&#39; &#39;Price&#39;
-## Group: &#39;All&#39;
+## Statistic: avg
+### Group: &#39;All&#39;
 ,Blue,Green,Red
 Africa,1081.500,569.000,966.750
 America,924.000,325.000,1014.000
 Asia,675.333,738.000,1044.500
 Europe,498.000,767.500,723.200
 Oceania,660.600,990.667,1150.667
+All,738.286,744.600,948.889
 </pre></div>
 </div>
+</section>
+<section id="output-configuration">
+<h3>Output configuration<a class="headerlink" href="#output-configuration" title="Permalink to this headline"></a></h3>
+<p>You can select the order of column headers and/or row headers by passing <cite>x_header_list</cite>, <cite>y_header_list</cite>, or both
+to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. When one is present, it must be a non-empty list
+containing strings that match exactly one or more of the existing row or column headers
+(e.g., one or more of <cite>[“Blue”, “Green”, “Red”]</cite> when specifying <cite>x_header_list</cite> in the previous example.</p>
+<p>You can also disable the global “All” row by adding <cite>show_global=False</cite> to the <cite>get_df</cite>
+call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p>
+<p>The following example displays both of these features (they can be used independently):</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">enb</span>
+
+<span class="n">df_joint</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;continent_data_example.csv&quot;</span><span class="p">))</span>
+
+<span class="n">snja</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericJointAnalyzer</span><span class="p">()</span>
+<span class="n">snja</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">full_df</span><span class="o">=</span><span class="n">df_joint</span><span class="p">,</span>
+            <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="s2">&quot;Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;Price&quot;</span><span class="p">)],</span>
+            <span class="c1"># Show only these columns, in this order:</span>
+            <span class="n">x_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">],</span>
+            <span class="c1"># Show only these rows, in this order:</span>
+            <span class="n">y_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Oceania&quot;</span><span class="p">,</span> <span class="s2">&quot;Africa&quot;</span><span class="p">],</span>
+            <span class="c1"># Hide the &quot;All&quot; row</span>
+            <span class="n">show_global</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>and produces the following result:</p>
+<figure class="align-default">
+<img alt="_static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
+</figure>
 </section>
 </section>
 <section id="grouping-by-a-column-s-value">
