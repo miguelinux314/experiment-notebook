@@ -80,7 +80,8 @@ class FilePropertiesTable(atable.ATable):
         By default, it is the name of the folder in which the sample is stored.
         """
         file_path = os.path.abspath(os.path.realpath(file_path))
-        if options.base_dataset_dir is not None:
+        if options.base_dataset_dir is not None \
+                and os.path.dirname(file_path) != os.path.abspath(os.path.realpath(options.base_dataset_dir)):
             file_dir = os.path.dirname(file_path)
             if self.base_dir is not None:
                 file_dir = file_dir.replace(self.base_dir, "")
@@ -88,10 +89,12 @@ class FilePropertiesTable(atable.ATable):
                 file_dir = file_dir[1:]
         else:
             file_dir = os.path.basename(
-                os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
+                os.path.dirname(file_path))
+
         if not file_dir:
             file_dir = os.path.basename(
-                os.path.dirname(os.path.abspath(os.path.realpath(file_path))))
+                os.path.dirname(file_path))
+
         row[_column_name] = os.path.basename(os.path.abspath(file_dir))
 
     @atable.column_function("size_bytes", label="File size (bytes)")
