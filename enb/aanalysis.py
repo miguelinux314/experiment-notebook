@@ -507,10 +507,8 @@ class Analyzer(enb.atable.ATable):
             output_plot_dir,
             f"{self.__class__.__name__}-"
             f"{column_selection_str}-{render_mode}" +
-            (f"-groupby__"
-             f"{get_groupby_str(group_by=group_by)}" if group_by else "") +
-            (f"-referencegroup__"
-             f"{reference_group}" if reference_group else "") +
+            (f"-groupby__{get_groupby_str(group_by=group_by)}" if group_by else "") +
+            (f"-referencegroup__{reference_group}" if reference_group else "") +
             ".pdf")
 
     def save_analysis_tables(
@@ -2968,6 +2966,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
     selected_render_modes = set(valid_render_modes)
     # Show global statistics ("All" row) when more than one row is present in the table?
     show_global = True
+    # Show the reference group when one is selected?
+    show_reference_group = False
     # Number format used for displaying cell data. Note that latex_decimal_count is not used in this class
     number_format = "{:.3f}"
     # Alignment ("left", "center", "right") of the data cells
@@ -3007,6 +3007,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
           invoke this function multiple times if different headers (or ordering) are needed for
           different elements in target_columns.
         """
+        render_kwargs = dict(render_kwargs)
         render_kwargs["x_header_list"] = x_header_list
         render_kwargs["y_header_list"] = y_header_list
         return super().get_df(full_df=full_df, target_columns=target_columns,
@@ -3108,9 +3109,6 @@ class ScalarNumericJointAnalyzer(Analyzer):
             assert set(selected_render_modes) == {"table"}, \
                 f"Only the table render mode is currently supported by {self.__class__.__name__}"
 
-            # TODO: allow user-defined x and y category order
-            # TODO: reference group
-
             # Generate CSV tables
             with open(analysis_output_path, "w") as csv_file:
                 for x_column, y_column, data_column in target_columns:
@@ -3125,8 +3123,11 @@ class ScalarNumericJointAnalyzer(Analyzer):
 
                             group_label = " ".join(repr(s) for s in ast.literal_eval(group_name))
                             csv_file.write(f"### Group: {group_label}\n")
-                            x_categories = summary_table.category_to_values[x_column]
-                            y_categories = summary_table.category_to_values[y_column]
+
+                            x_categories, y_categories = self.get_filtered_x_y_categories(
+                                x_categories=summary_table.category_to_values[x_column],
+                                y_categories=summary_table.category_to_values[y_column],
+                                reference_group=summary_table.reference_group)
 
                             csv_file.write("," + ",".join(str(x) for x in x_categories) + "\n")
                             number_format = self.number_format if stat != "count" else "{:d}"
@@ -3184,8 +3185,10 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                                  f"{{{enb.misc.escape_latex(group_label)}}} \\\\\n")
                                 latex_file.write("\\midrule\n")
 
-                            x_categories = summary_table.category_to_values[x_column]
-                            y_categories = summary_table.category_to_values[y_column]
+                            x_categories, y_categories = self.get_filtered_x_y_categories(
+                                x_categories=summary_table.category_to_values[x_column],
+                                y_categories=summary_table.category_to_values[y_column],
+                                reference_group=summary_table.reference_group)
 
                             # Write the (sub) table headers
                             latex_file.write(" " * longest_row_header + " & "
@@ -3221,6 +3224,27 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             latex_file.write(r"\bottomrule" + "\n")
                             latex_file.write(r"\end{tabular}" + "\n")
 
+    def get_filtered_x_y_categories(self, x_categories, y_categories, reference_group):
+        """Take the list of x and y category values and filter out the reference group if show_reference_group
+        is False.
+        """
+        if reference_group and not self.show_reference_group:
+            if reference_group in x_categories and reference_group in y_categories:
+                enb.logger.warn(f"Reference group {reference_group} is present "
+                                f"both in the row and the column headers. "
+                                f"It will only be considered as a reference column and not "
+                                f"as a reference row.")
+            if reference_group in x_categories:
+                x_categories = [c for c in x_categories if c != reference_group]
+            elif reference_group in y_categories:
+                y_categories = [c for c in y_categories if c != reference_group]
+            else:
+                enb.logger.warn(f"Warning: trying to remove {reference_group=} from "
+                                f"{x_categories=} and {y_categories=}, but it was not found in "
+                                f"either")
+
+        return x_categories, y_categories
+
 
 class ScalarNumericJointSummary(ScalarNumericSummary):
     """Summary tables for the ScalarNumericJoinAnalyzer class.
@@ -3237,6 +3261,11 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
 
         The following parameters differ from :meth:`enb.aanalysis.ScalarNumericSummary.__init__`:
 
+        :param reference_group: if not None, it must be either an x-category value (column header)
+          or a y-category value (row header). If present, the data columns are subtracted the averages
+          of the entries of the selected category so that that column (if an x-category value is selected)
+          or that row (if a y-category value is selected) is all zeros, and all other entries are relative
+          to the selected category.
         :param x_header_list: non-empty list of strings corresponding to the x categories (column headers).
           All strings in this list must exist as a category. However, not all categories need to
           be present in this list. If None, all headers are used in alphabetical order.
@@ -3263,19 +3292,21 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
                 if y_column not in self.category_to_values else self.category_to_values[y_column]
 
             # Categories can be sorted y lists are manually passed to this analyzer's get_df method
-            for header_list, column_name, label in ((x_header_list, x_column, "x"), (y_header_list, y_column, "y")):
+            for header_list, column_name, label in (
+                    (x_header_list, x_column, "x"), (y_header_list, y_column, "y")):
                 if header_list is not None:
                     if not header_list:
-                        raise ValueError(f"Invalid empty {label}_header_list for {self.__class__.__name__}. "
-                                         f"It must contain at least one element.")
+                        raise ValueError(
+                            f"Invalid empty {label}_header_list for {self.__class__.__name__}. "
+                            f"It must contain at least one element.")
                     for header in header_list:
                         if header not in self.category_to_values[column_name]:
-                            raise ValueError(f"Invalid element {repr(header)} in {label}_header_list={header_list} "
-                                             f"for {self.__class__.__name__}. "
-                                             f"In this call, it must contain one or more of "
-                                             f"{self.category_to_values[column_name]}.")
+                            raise ValueError(
+                                f"Invalid element {repr(header)} in {label}_header_list={header_list} "
+                                f"for {self.__class__.__name__}. "
+                                f"In this call, it must contain one or more of "
+                                f"{self.category_to_values[column_name]}.")
                     self.category_to_values[column_name] = list(header_list)
-
 
             # Add the column functions for computing scalar numeric statistics for each (x,y,data) combination
             self.add_joint_scalar_description_columns(
@@ -3315,34 +3346,51 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
         row[f"{x_column}_{y_column}_{data_column}_median"] = dict()
         row[f"{x_column}_{y_column}_{data_column}_count"] = dict()
 
-        full_series = _self.label_to_df[group_label]
+        full_df = _self.label_to_df[group_label]
+
+        # If a reference group is defined, subtract the average
+        if _self.reference_group is not None:
+            full_df = self.remove_nans(full_df)
+            if _self.reference_group in self.category_to_values[x_column]:
+                for y_category in self.category_to_values[y_column]:
+                    reference_average = full_df[
+                        (full_df[y_column] == y_category)
+                        & (full_df[x_column] == _self.reference_group)][data_column].mean()
+                    full_df.loc[full_df[y_column] == y_category, data_column] -= reference_average
+            elif _self.reference_group in self.category_to_values[y_column]:
+                for x_category in self.category_to_values[x_column]:
+                    reference_average = full_df[
+                        (full_df[x_column] == x_category)
+                        & (full_df[y_column] == _self.reference_group)][data_column].mean()
+                    full_df.loc[full_df[x_column] == x_category, data_column] -= reference_average
 
         # Add the (x,y) cell values
-        for (x_category, y_category), split_df in full_series.groupby([x_column, y_column]):
+        for (x_category, y_category), split_df in full_df.groupby([x_column, y_column]):
             for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
                 row[f"{x_column}_{y_column}_{data_column}_{stat}"][(x_category, y_category)] = value
 
         # Add the "all" row elements
-        for x_category, split_df in full_series.groupby(x_column):
+        for x_category, split_df in full_df.groupby(x_column):
             for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
                 row[f"{x_column}_{y_column}_{data_column}_{stat}"][(x_category, None)] = value
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         _self, group_label, row = args  # pylint: disable=unused-variable
-        # group_df = _self.label_to_df[group_label]
         x_column, y_column, data_column = kwargs["column_selection"]
-        # render_mode = kwargs["render_mode"]
 
         assert kwargs["render_mode"] == "table", (f"Only the 'table' render mode is currently "
                                                   f"supported by {_self.analyzer.__class__.__name__}")
 
-        x_categories = _self.category_to_values[x_column]
-        y_categories = _self.category_to_values[y_column]
+        x_categories, y_categories = _self.analyzer.get_filtered_x_y_categories(
+            _self.category_to_values[x_column],
+            _self.category_to_values[y_column],
+            _self.reference_group)
+
         avg_dict = row[f"{x_column}_{y_column}_{data_column}_avg"]
         cell_text = [[_self.analyzer.number_format.format(avg_dict[(x_category, y_category)])
                       if (x_category, y_category) in avg_dict else ""
                       for x_category in x_categories]
-                     for y_category in y_categories]
+                      for y_category in y_categories]
 
         if self.include_all_group and len(y_categories) > 1:
             y_categories.append("All")
@@ -3355,6 +3403,11 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
                                    col_header_aligment=_self.analyzer.col_header_alignment,
                                    row_header_alignment=_self.analyzer.row_header_alignment,
                                    edges=_self.analyzer.edges)]
+
+    def apply_reference_bias(self):
+        """If applicable, group reference bias is applied when computing the joint scalar descriptions.
+        """
+        pass
 
 
 class HistogramKeyBinner:
