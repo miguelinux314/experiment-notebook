@@ -620,7 +620,9 @@ class Table(PlottableData2D):
                  cell_alignment="center",
                  col_header_aligment="center",
                  row_header_alignment="left",
-                 edges="open"):
+                 edges="open",
+                 highlight_best_row=None,
+                 highlight_best_col=None):
         """
         :param x_values: list of column headers
         :param y_values: list of row headers
@@ -630,6 +632,10 @@ class Table(PlottableData2D):
         :param row_header_alignment: text alignment for the row headers
         :param edges: argument passed to plt.table
           (substring of 'BRTL' or {'open', 'closed', 'horizontal', 'vertical'})
+        :param highlight_best_row: if not None, it must be either "low" or "high". In those cases, the
+          best (lowest or highest) value of each column is highlighted.
+        :param highlight_best_col: if not None, it must be either "low" or "high". In those cases, the
+          best (lowest or highest) value of each row is highlighted.
         """
         super().__init__(x_values=[None], y_values=[None], x_label=x_label, y_label=y_label)
         self.x_values = x_values
@@ -639,6 +645,8 @@ class Table(PlottableData2D):
         self.col_header_alignment = col_header_aligment
         self.row_header_alignment = row_header_alignment
         self.edges = edges
+        self.highlight_best_row = highlight_best_row
+        self.highlight_best_col = highlight_best_col
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
@@ -656,6 +664,35 @@ class Table(PlottableData2D):
                 cell.set_text_props(
                     fontproperties=matplotlib.font_manager.FontProperties(weight='bold'))
             cell.set_facecolor((1,1,0,0))
+
+        # Highlight the best column in each row
+        if self.highlight_best_col is not None:
+            for row_index, row in enumerate(self.cell_text):
+                row_values = [float(c) for c in row]
+                if self.highlight_best_col.lower() == "low":
+                    best_value = min(row_values)
+                else:
+                    assert self.highlight_best_col.lower() == "high", f"Invalid {self.highlight_best_col=}"
+                    best_value = max(row_values)
+                for col_index, col_value in enumerate(row_values):
+                    if col_value == best_value:
+                        table.get_celld()[(row_index+1, col_index)].set_text_props(
+                            fontproperties=matplotlib.font_manager.FontProperties(weight='bold'))
+
+        # Highlight the best row in each column
+        if self.highlight_best_row is not None:
+            column_count = len(self.cell_text[0])
+            for col_index in range(column_count):
+                col_values = [float(r[col_index]) for r in self.cell_text]
+                if self.highlight_best_row == "low":
+                    best_value = min(col_values)
+                else:
+                    assert self.highlight_best_row == "high", f"Invalid {self.highlight_best_row=}"
+                    best_value = max(col_values)
+                for row_index, row in enumerate(self.cell_text):
+                    if float(row[col_index]) == best_value:
+                        table.get_celld()[(row_index+1, col_index)].set_text_props(
+                            fontproperties=matplotlib.font_manager.FontProperties(weight='bold'))
 
 
 def get_available_styles():
