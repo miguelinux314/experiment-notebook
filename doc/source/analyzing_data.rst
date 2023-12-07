@@ -261,7 +261,7 @@ ______________
 The |DictNumericAnalyzer| class produces `CSV files <_static/analysis_gallery/DictNumericAnalyzer-columns_mode_count-line-groupby__block_size.csv>`_ with several statistics
 (mean, min, max, median, standard deviation) for each key of each target column.
 
-.. _scalar_numeric_2d_analyzer
+.. _scalar_numeric_2d_analyzer:
 
 Analysis of numeric data in an x-y (2D) space
 ---------------------------------------------
@@ -349,7 +349,7 @@ Cells correspond to the averages for the data column.
 
 .. note:: The |ScalarNumericJointAnalyzer| supports any type for the x and y columns as long
   as `str` can be applied to them. If you want to use numeric data for x and y, consider |ScalarNumeric2DAnalyzer|
-  in :ref:`_scalar_numeric_2d_analyzer`.
+  in :ref:`scalar_numeric_2d_analyzer`.
 
 You will need:
     - a column with scalar numerical data (integers or float entries), e.g., `column_data`
@@ -417,7 +417,7 @@ An example of LaTeX output is shown below
 
 The corresponding CSV file is as follows:
 
-.. code-block:: csv
+.. code-block::
 
     # Column selection: 'Color' 'Origin' 'Price'
     ## Statistic: avg
@@ -464,6 +464,10 @@ The following example displays both of these features (they can be used independ
 and produces the following result:
 
 .. figure:: _static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png
+
+Also, you can select a column or a row as reference, by passing the `reference_group` parameter to
+:meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. You can control whether the reference group is
+shown or not by modifying the `show_reference_group` of your |ScalarNumericJointAnalyzer| instance.
 
 .. _sec_grouping:
 

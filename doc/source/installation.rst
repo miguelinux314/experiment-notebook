@@ -53,7 +53,7 @@ the compilation of most plugins:
 
     sudo apt install build-essential cmake
 
-Additional information on plugins specific for image compression is provided in :doc:`image_compression_codecs`.
+Additional information on plugins specific for image compression is provided in :doc:`image_compression_plugins`.
 
 Cluster installation
 ^^^^^^^^^^^^^^^^^^^^

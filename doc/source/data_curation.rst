@@ -57,7 +57,7 @@ converting them to lowercase and removing leading and trailing spaces from each 
         tnt.get_df()
 
 This code is made available as a plugin named `file_version_example`
-(see :doc:`image_compression_codecs` for more information about installing
+(see :doc:`image_compression_plugins` for more information about installing
 and using plugins), i.e.,
 
 .. code-block:: bash

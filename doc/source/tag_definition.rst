@@ -5,7 +5,7 @@
 
 .. |options| replace:: `enb.config.options`
 
-.. |atable| replace:: :class:`enb.atable`
+.. |atable| replace:: :mod:`enb.atable`
 .. |ATable| replace:: :class:`enb.atable.ATable`
 .. |MetaTable| replace:: :class:`enb.atable.MetaTable`
 .. |column_function| replace:: :meth:`enb.atable.column_function`

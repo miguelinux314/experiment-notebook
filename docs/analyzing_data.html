@@ -132,7 +132,7 @@
   <section id="result-analysis-and-plotting-with-enb">
 <h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+782.g7c6d26f632)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -173,8 +173,8 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
-- boxplot
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
+- histogram
 - hbar
 </pre></div>
 </div>
@@ -370,7 +370,7 @@ Rendering options are discussed in a later section.</p>
 </section>
 </section>
 <section id="analysis-of-numeric-data-in-an-x-y-2d-space">
-<h2>Analysis of numeric data in an x-y (2D) space<a class="headerlink" href="#analysis-of-numeric-data-in-an-x-y-2d-space" title="Permalink to this headline"></a></h2>
+<span id="scalar-numeric-2d-analyzer"></span><h2>Analysis of numeric data in an x-y (2D) space<a class="headerlink" href="#analysis-of-numeric-data-in-an-x-y-2d-space" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class allows to plot data arranged arbitrarily in the x-y plane.
 It is useful to create heatmap figures.</p>
 <div class="admonition note">
@@ -450,7 +450,7 @@ Cells correspond to the averages for the data column.</p>
 <p class="admonition-title">Note</p>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> supports any type for the x and y columns as long
 as <cite>str</cite> can be applied to them. If you want to use numeric data for x and y, consider <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a>
-in <span class="xref std std-ref">_scalar_numeric_2d_analyzer</span>.</p>
+in <a class="reference internal" href="#scalar-numeric-2d-analyzer"><span class="std std-ref">Analysis of numeric data in an x-y (2D) space</span></a>.</p>
 </div>
 <dl class="simple">
 <dt>You will need:</dt><dd><ul class="simple">
@@ -514,16 +514,16 @@ All these correspond to the <em>finite</em> data found for each x-category and y
 </pre></div>
 </div>
 <p>The corresponding CSV file is as follows:</p>
-<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span># Column selection: &#39;Color&#39; &#39;Origin&#39; &#39;Price&#39;
-## Statistic: avg
-### Group: &#39;All&#39;
-,Blue,Green,Red
-Africa,1081.500,569.000,966.750
-America,924.000,325.000,1014.000
-Asia,675.333,738.000,1044.500
-Europe,498.000,767.500,723.200
-Oceania,660.600,990.667,1150.667
-All,738.286,744.600,948.889
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Column selection: &#39;Color&#39; &#39;Origin&#39; &#39;Price&#39;</span>
+<span class="c1">## Statistic: avg</span>
+<span class="c1">### Group: &#39;All&#39;</span>
+<span class="p">,</span><span class="n">Blue</span><span class="p">,</span><span class="n">Green</span><span class="p">,</span><span class="n">Red</span>
+<span class="n">Africa</span><span class="p">,</span><span class="mf">1081.500</span><span class="p">,</span><span class="mf">569.000</span><span class="p">,</span><span class="mf">966.750</span>
+<span class="n">America</span><span class="p">,</span><span class="mf">924.000</span><span class="p">,</span><span class="mf">325.000</span><span class="p">,</span><span class="mf">1014.000</span>
+<span class="n">Asia</span><span class="p">,</span><span class="mf">675.333</span><span class="p">,</span><span class="mf">738.000</span><span class="p">,</span><span class="mf">1044.500</span>
+<span class="n">Europe</span><span class="p">,</span><span class="mf">498.000</span><span class="p">,</span><span class="mf">767.500</span><span class="p">,</span><span class="mf">723.200</span>
+<span class="n">Oceania</span><span class="p">,</span><span class="mf">660.600</span><span class="p">,</span><span class="mf">990.667</span><span class="p">,</span><span class="mf">1150.667</span>
+<span class="n">All</span><span class="p">,</span><span class="mf">738.286</span><span class="p">,</span><span class="mf">744.600</span><span class="p">,</span><span class="mf">948.889</span>
 </pre></div>
 </div>
 </section>
@@ -557,8 +557,11 @@ call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.Scal
 </div></blockquote>
 <p>and produces the following result:</p>
 <figure class="align-default">
-<img alt="_static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
+<img alt="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
 </figure>
+<p>Also, you can select a column or a row as reference, by passing the <cite>reference_group</cite> parameter to
+<a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. You can control whether the reference group is
+shown or not by modifying the <cite>show_reference_group</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p>
 </section>
 </section>
 <section id="grouping-by-a-column-s-value">
@@ -579,8 +582,8 @@ as follows:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
-- boxplot
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
+- histogram
 - hbar
 </pre></div>
 </div>

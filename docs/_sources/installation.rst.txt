@@ -53,7 +53,7 @@ the compilation of most plugins:
 
     sudo apt install build-essential cmake
 
-Additional information on plugins specific for image compression is provided in :doc:`image_compression_codecs`.
+Additional information on plugins specific for image compression is provided in :doc:`image_compression_plugins`.
 
 Cluster installation
 ^^^^^^^^^^^^^^^^^^^^
@@ -143,6 +143,12 @@ You can access the development version with
     git clone https://github.com/miguelinux314/experiment-notebook.git
     cd experiment-notebook.git
     git checkout dev
+
+.. note:: You can clone only the last commit and avoid a bulky download by using istead:
+
+    .. code-block:: bash
+
+    git clone --depth=1 -b dev https://github.com/miguelinux314/experiment-notebook.git
 
 You can install a symbolic link to your local copy of the code (for whichever
 branch is checked out) with

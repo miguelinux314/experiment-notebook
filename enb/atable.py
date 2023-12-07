@@ -603,7 +603,7 @@ def clean_column_name(column_name):
 class ATable(metaclass=MetaTable):
     """Automatic table with implicit column definition.
 
-    ATable subclasses' have the `get_df` method, which returns a |DataFrame|
+    ATable subclasses have the `get_df` method, which returns a |DataFrame|
     instance with the requested data. You can use (multiple) inheritance
     using one or more ATable subclasses to combine the columns of those
     subclasses into the newly defined one. You can then define methods with
@@ -878,8 +878,8 @@ class ATable(metaclass=MetaTable):
 
     @property
     def indices_and_columns(self):
-        """:return: a list of all defined columns, i.e.,
-          those for which a function has been defined.
+        """
+        :return: a list of all defined columns, i.e., those for which a function has been defined.
         """
         return self.indices + list(
             k for k in self.column_to_properties.keys()
@@ -1582,7 +1582,7 @@ class ATable(metaclass=MetaTable):
 
 class SummaryTable(ATable):
     """Summary tables allow to define custom group rows of dataframes,
-     e.g., produced by ATable subclasses,
+    e.g., produced by ATable subclasses,
     and to define new columns (measurements) for each of those groups.
 
     Column functions can be defined in the same way as for any ATable. In
@@ -1593,13 +1593,13 @@ class SummaryTable(ATable):
     Note that this behaviour is not unlike the groupby() method of pandas.
     The main differences are:
 
-        - Grouping can be fully customized, instead of only allowing splitting
-          by one or more column values
+    - Grouping can be fully customized, instead of only allowing splitting
+      by one or more column values
 
-        - The newly defined columns can aggregate data in the group in any
-          arbitrary way. This is of course true for pandas, but SummaryTable
-          tries to gracefully integrate that process into enb, allowing
-          automatic persistence, easy plotting, etc.
+    - The newly defined columns can aggregate data in the group in any
+      arbitrary way. This is of course true for pandas, but SummaryTable
+      tries to gracefully integrate that process into enb, allowing
+      automatic persistence, easy plotting, etc.
 
     SummaryTable can be particularly useful as an intermediate step between a
     complex table's (or enb.Experiment's) get_df and the analyze_df method of

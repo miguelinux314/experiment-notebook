@@ -133,7 +133,7 @@ the compilation of most plugins:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install build-essential cmake
 </pre></div>
 </div>
-<p>Additional information on plugins specific for image compression is provided in <span class="xref std std-doc">image_compression_codecs</span>.</p>
+<p>Additional information on plugins specific for image compression is provided in <a class="reference internal" href="image_compression_plugins.html"><span class="doc">Using existing image compression codecs</span></a>.</p>
 </section>
 <section id="cluster-installation">
 <h3>Cluster installation<a class="headerlink" href="#cluster-installation" title="Permalink to this headline"></a></h3>
@@ -204,6 +204,14 @@ of some packages.</p>
 <span class="nb">cd</span> experiment-notebook.git
 git checkout dev
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can clone only the last commit and avoid a bulky download by using istead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p>git clone –depth=1 -b dev <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook.git">https://github.com/miguelinux314/experiment-notebook.git</a></p>
 </div>
 <p>You can install a symbolic link to your local copy of the code (for whichever
 branch is checked out) with</p>
