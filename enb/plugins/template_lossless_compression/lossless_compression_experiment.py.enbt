@@ -111,6 +111,13 @@ if __name__ == '__main__':
         selected_render_modes={"scatter"},
     )
 
+    # Joint analysis of the compressed data rate splitting by codec name and corpus
+    joint_analyzer = enb.aanalysis.ScalarNumericJointAnalyzer()
+    joint_analyzer.get_df(
+        full_df=df,
+        target_columns=[("task_label", "corpus", "bpppc")],
+        column_to_properties=exp.joined_column_to_properties)
+
     print("Experiment complete. You can check the results "
           f"at {options.plot_dir} and {options.analysis_dir}. "
           f"Raw data is stored for persistence in {options.persistence_dir}.")
