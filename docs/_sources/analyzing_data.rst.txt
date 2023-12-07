@@ -433,13 +433,13 @@ The corresponding CSV file is as follows:
 Output configuration
 ____________________
 
-You can select the order of column headers and/or row headers by passing `x_header_list`, `y_header_list`, or both
-to :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. When one is present, it must be a non-empty list
-containing strings that match exactly one or more of the existing row or column headers
-(e.g., one or more of `["Blue", "Green", "Red"]` when specifying `x_header_list` in the previous example.
+* You can select the order of column headers and/or row headers by passing `x_header_list`, `y_header_list`, or both
+  to :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. When one is present, it must be a non-empty list
+  containing strings that match exactly one or more of the existing row or column headers
+  (e.g., one or more of `["Blue", "Green", "Red"]` when specifying `x_header_list` in the previous example.
 
-You can also disable the global "All" row by adding `show_global=False` to the `get_df`
-call of your |ScalarNumericJointAnalyzer| instance.
+* You can also disable the global "All" row by adding `show_global=False` to the `get_df`
+  call of your |ScalarNumericJointAnalyzer| instance.
 
 The following example displays both of these features (they can be used independently):
 
@@ -465,9 +465,14 @@ and produces the following result:
 
 .. figure:: _static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png
 
-Also, you can select a column or a row as reference, by passing the `reference_group` parameter to
-:meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. You can control whether the reference group is
-shown or not by modifying the `show_reference_group` of your |ScalarNumericJointAnalyzer| instance.
+* You can select a column or a row as reference, by passing the `reference_group` parameter to
+  :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. You can control whether the reference group is
+  shown or not by modifying the `show_reference_group` of your |ScalarNumericJointAnalyzer| instance.
+
+* You can pass `highlight_best_col="low"` or highlight_best_col="high"
+  to :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df` to automatically highlight the best
+  (lowest or highest) value in each row. Conversely, you can use `highlight_best_row="low"`
+  or `highlight_best_row="high"` to highlight the best value in each column.
 
 .. _sec_grouping:
 

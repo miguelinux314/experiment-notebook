@@ -529,12 +529,14 @@ All these correspond to the <em>finite</em> data found for each x-category and y
 </section>
 <section id="output-configuration">
 <h3>Output configuration<a class="headerlink" href="#output-configuration" title="Permalink to this headline"></a></h3>
-<p>You can select the order of column headers and/or row headers by passing <cite>x_header_list</cite>, <cite>y_header_list</cite>, or both
+<ul class="simple">
+<li><p>You can select the order of column headers and/or row headers by passing <cite>x_header_list</cite>, <cite>y_header_list</cite>, or both
 to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. When one is present, it must be a non-empty list
 containing strings that match exactly one or more of the existing row or column headers
-(e.g., one or more of <cite>[“Blue”, “Green”, “Red”]</cite> when specifying <cite>x_header_list</cite> in the previous example.</p>
-<p>You can also disable the global “All” row by adding <cite>show_global=False</cite> to the <cite>get_df</cite>
-call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p>
+(e.g., one or more of <cite>[“Blue”, “Green”, “Red”]</cite> when specifying <cite>x_header_list</cite> in the previous example.</p></li>
+<li><p>You can also disable the global “All” row by adding <cite>show_global=False</cite> to the <cite>get_df</cite>
+call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
+</ul>
 <p>The following example displays both of these features (they can be used independently):</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -559,9 +561,15 @@ call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.Scal
 <figure class="align-default">
 <img alt="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
 </figure>
-<p>Also, you can select a column or a row as reference, by passing the <cite>reference_group</cite> parameter to
+<ul class="simple">
+<li><p>You can select a column or a row as reference, by passing the <cite>reference_group</cite> parameter to
 <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. You can control whether the reference group is
-shown or not by modifying the <cite>show_reference_group</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p>
+shown or not by modifying the <cite>show_reference_group</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
+<li><p>You can pass <cite>highlight_best_col=”low”</cite> or highlight_best_col=”high”
+to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a> to automatically highlight the best
+(lowest or highest) value in each row. Conversely, you can use <cite>highlight_best_row=”low”</cite>
+or <cite>highlight_best_row=”high”</cite> to highlight the best value in each column.</p></li>
+</ul>
 </section>
 </section>
 <section id="grouping-by-a-column-s-value">
