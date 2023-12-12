@@ -1070,16 +1070,12 @@ class CompressionExperiment(enb.experiment.Experiment):
                 name="compression_efficiency_2byte_entropy",
                 label="Compression efficiency (2B entropy)",
                 plot_min=0),
-            enb.atable.ColumnProperties(
-                name="compression_efficiency_4byte_entropy",
-                label="Compression efficiency (4B entropy)",
-                plot_min=0),
         ])
     def set_efficiency(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
             enb.atable.indices_to_internal_loc(file_path)]
-        for bytes in (1, 2, 4):
+        for bytes in (1, 2):
             column_name = f"compression_efficiency_{bytes}byte_entropy"
             try:
                 row[column_name] = \
