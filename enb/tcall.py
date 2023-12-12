@@ -67,8 +67,9 @@ def get_status_output_time_memory(
     try:
         output = output.decode("utf-8")
     except Exception as ex:
-        logger.debug(f"Error decoding output ({type(output)}) to utf-8:\n"
-                     f"{repr(ex)}")
+        if not isinstance(output, str):
+            logger.debug(f"Error decoding output ({type(output)}) to utf-8:\n"
+                         f"{repr(ex)}")
     wall_time_after = time.time()
 
     output_lines = output.splitlines()
