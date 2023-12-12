@@ -14,9 +14,11 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Development version v1.0.1
 
-After 4 years of development, switched from beta status to stable/production.
+After 4 years of development and a lot of user feedback, switched from beta status to stable/production!
 
 **NOTE**: This version change does NOT imply a change in the API (backwards compatibility with 0.4.x is expected).
+However, a cleanup of old blobs was performed on the repository. Therefore, you might need to use `git pull --force`
+to update your local development repository. 
 
 Improvements:
 
