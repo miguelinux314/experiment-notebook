@@ -126,12 +126,11 @@ def file_path_to_geometry_dict(file_path, existing_dict=None,
         _file_path_to_datatype_dict(file_path, row)
 
         if verify_file_size:
-            assert os.path.getsize(
-                file_path) == width * height * component_count * row[
-                       "bytes_per_sample"], \
-                (file_path, os.path.getsize(file_path), width, height,
-                 component_count, row["bytes_per_sample"],
-                 width * height * component_count * row["bytes_per_sample"])
+            if os.path.getsize(file_path) != width * height * component_count * row["bytes_per_sample"]:
+                raise ValueError(f"Found invalid file size {os.path.getsize(file_path)} bytes. Expected "
+                                 f"{width * height * component_count * row['bytes_per_sample']} bytes "
+                                 f"for {width=}, {height=}, {component_count=}, "
+                                 f"bytes_per_sample={row['bytes_per_sample']}")
             assert row["samples"] == width * height * component_count
     elif any(c not in row for c in
              ("width", "height", "component_count", "samples")):
@@ -216,6 +215,8 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
         existing_dict["big_endian"] = False
         existing_dict["signed"] = True
         existing_dict["float"] = True
+    else:
+        enb.logger.warn(f"Warning: cannot find valid data type tag in {base_name=}.")
     assert os.path.getsize(file_path) % existing_dict["bytes_per_sample"] == 0
     existing_dict["samples"] = os.path.getsize(file_path) // existing_dict[
         "bytes_per_sample"]
