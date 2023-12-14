@@ -468,7 +468,7 @@ class GiciLibHelper:
                 return "4"
             else:
                 raise ValueError(
-                    "32-bit samples are supported, by they must be signed.")
+                    "32-bit samples are supported, but they must be signed.")
         else:
             raise ValueError(
                 f"Invalid data type, not supported by "
