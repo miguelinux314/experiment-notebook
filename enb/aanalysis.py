@@ -100,6 +100,8 @@ class Analyzer(enb.atable.ATable):
     secondary_line_width = 1
     # Margin between group rows (if there is more than one)
     group_row_margin = None
+    # Padding between the global y label and the y axis (when present)
+    global_y_label_margin = 15
     # If more than group is displayed, when applicable, adjust plots to use
     # the same scale in every subplot?
     common_group_scale = True
@@ -473,6 +475,8 @@ class Analyzer(enb.atable.ATable):
             column_kwargs["legend_position"] = self.legend_position
         if self.style_list is not None:
             column_kwargs["style_list"] = self.style_list
+        if "global_y_label_margin" not in column_kwargs:
+            column_kwargs["global_y_label_margin"] = self.global_y_label_margin
 
         return column_kwargs
 

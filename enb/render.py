@@ -42,6 +42,7 @@ def parallel_render_plds_by_group(
         # Axis limits
         x_min=None, x_max=None, y_min=None, y_max=None,
         horizontal_margin=None, vertical_margin=None,
+        global_y_label_margin=None,
         # Optional axis labeling
         y_labels_by_group_name=None,
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
@@ -78,6 +79,7 @@ def parallel_render_plds_by_group(
                                     y_labels_by_group_name=y_labels_by_group_name,
                                     color_by_group_name=color_by_group_name,
                                     global_y_label=global_y_label,
+                                    global_y_label_margin=global_y_label_margin,
                                     combine_groups=combine_groups,
                                     semilog_y_min_bound=semilog_y_min_bound,
                                     group_row_margin=group_row_margin,
@@ -122,6 +124,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          x_min=None, x_max=None,
                          horizontal_margin=None, vertical_margin=None,
                          y_min=None, y_max=None,
+                         global_y_label_margin=None,
                          # Optional axis labeling
                          y_labels_by_group_name=None,
                          x_tick_list=None, x_tick_label_list=None,
@@ -199,6 +202,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       expressed as a fraction of the horizontal dynamic range.
     :param y_min: if not None, force plots to have this value as bottom end.
     :param y_max: if not None, force plots to have this value as top end.
+    :param global_y_label_margin: if not None, the padding to be applied between
+      the global_y_label and the y axis (if such label is enabled).
 
     Optional axis labeling:
 
@@ -256,44 +261,68 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
         # Render all gathered data with the selected configuration
         with plt.style.context([]):
-            _apply_styles(style_list)
+            _apply_styles(style_list=style_list)
 
-            _update_legend_count(legend_column_count, pds_by_group_name)
+            _update_legend_count(
+                legend_column_count=legend_column_count,
+                pds_by_group_name=pds_by_group_name)
 
-            sorted_group_names = _get_sorted_group_names(group_name_order,
-                                                         pds_by_group_name)
+            sorted_group_names = _get_sorted_group_names(
+                group_name_order=group_name_order,
+                pds_by_group_name=pds_by_group_name)
 
             groupname_axis_tuples = _get_groupname_axis_tuples(
-                combine_groups, fig_height, fig_width, sorted_group_names)
+                combine_groups=combine_groups,
+                fig_height=fig_height,
+                fig_width=fig_width,
+                sorted_group_names=sorted_group_names)
 
-            _combine_groups(combine_groups, legend_position, pds_by_group_name,
-                            show_legend, [t[0] for t in groupname_axis_tuples],
-                            y_labels_by_group_name)
+            _combine_groups(
+                combine_groups=combine_groups,
+                legend_position=legend_position,
+                pds_by_group_name=pds_by_group_name,
+                show_legend=show_legend,
+                sorted_group_names=[t[0] for t in groupname_axis_tuples],
+                y_labels_by_group_name=y_labels_by_group_name)
 
-            _render_plottable_data(color_by_group_name, combine_groups,
-                                   extra_plds, force_monochrome_group,
-                                   groupname_axis_tuples, output_plot_path,
-                                   pds_by_group_name)
+            _render_plottable_data(
+                color_by_group_name=color_by_group_name,
+                combine_groups=combine_groups,
+                extra_plds=extra_plds,
+                force_monochrome_group=force_monochrome_group,
+                groupname_axis_tuples=groupname_axis_tuples,
+                output_plot_path=output_plot_path,
+                pds_by_group_name=pds_by_group_name)
 
-            _update_axes(column_properties, combine_groups, global_x_label,
-                         global_y_label,
-                         groupname_axis_tuples,
-                         horizontal_margin, left_y_label, semilog_y,
-                         semilog_y_base, show_grid, show_subgrid,
-                         [t[0] for t in groupname_axis_tuples],
-                         vertical_margin, x_max, x_min,
-                         x_tick_label_angle, x_tick_label_list, x_tick_list,
-                         y_labels_by_group_name, y_max, y_min,
-                         y_tick_label_list, y_tick_list,
-                         group_row_margin, pds_by_group_name,
-                         semilog_y_min_bound)
+            _update_axes(
+                column_properties=column_properties,
+                combine_groups=combine_groups,
+                global_x_label=global_x_label,
+                global_y_label=global_y_label,
+                global_y_label_margin=global_y_label_margin,
+                groupname_axis_tuples=groupname_axis_tuples,
+                horizontal_margin=horizontal_margin,
+                left_y_label=left_y_label, semilog_y=semilog_y,
+                semilog_y_base=semilog_y_base, show_grid=show_grid,
+                show_subgrid=show_subgrid,
+                sorted_group_names=[t[0] for t in groupname_axis_tuples],
+                vertical_margin=vertical_margin, x_max=x_max, x_min=x_min,
+                x_tick_label_angle=x_tick_label_angle,
+                x_tick_label_list=x_tick_label_list, x_tick_list=x_tick_list,
+                y_labels_by_group_name=y_labels_by_group_name, y_max=y_max, y_min=y_min,
+                y_tick_label_list=y_tick_label_list, y_tick_list=y_tick_list,
+                group_row_margin=group_row_margin, pds_by_group_name=pds_by_group_name,
+                semilog_y_min_bound=semilog_y_min_bound)
 
             # Draw title at the right height of the first axis so that tight_layout works well
             # and the legend does not (typically) overlap.
             if title_y is None and show_legend and legend_position == "title" and any(
                     pd.label is not None for pd in itertools.chain(*pds_by_group_name.values())):
                 title_y = 1.1
-            _set_title(plot_title, axis=groupname_axis_tuples[0][1], title_y=title_y)
+            _set_title(
+                plot_title=plot_title,
+                axis=groupname_axis_tuples[0][1],
+                title_y=title_y)
 
             _save_figure(output_plot_path)
 
@@ -604,7 +633,7 @@ def _render_plottable_data(color_by_group_name, combine_groups, extra_plds,
 
 
 def _update_axes(column_properties, combine_groups, global_x_label,
-                 global_y_label, groupname_axis_tuples, horizontal_margin,
+                 global_y_label, global_y_label_margin, groupname_axis_tuples, horizontal_margin,
                  left_y_label, semilog_y, semilog_y_base, show_grid,
                  show_subgrid, sorted_group_names, vertical_margin, x_max,
                  x_min, x_tick_label_angle, x_tick_label_list, x_tick_list,
@@ -617,37 +646,67 @@ def _update_axes(column_properties, combine_groups, global_x_label,
     """
     # pylint: disable=too-many-arguments,too-many-locals
     y_min, y_max = _get_y_lims(
-        column_properties, semilog_y,
-        semilog_y_min_bound, y_max, y_min)
+        column_properties=column_properties,
+        semilog_y=semilog_y,
+        semilog_y_min_bound=semilog_y_min_bound,
+        y_max=y_max,
+        y_min=y_min)
 
-    global_x_max, global_x_min, global_y_max, global_y_min = \
-        _get_global_extrema(column_properties, pds_by_group_name)
+    global_x_max, global_x_min, global_y_max, global_y_min = _get_global_extrema(
+        column_properties=column_properties,
+        pds_by_group_name=pds_by_group_name)
 
     show_grid = show_grid if show_grid is not None \
-        else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                    "show_grid")
+        else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_grid")
     show_subgrid = show_subgrid if show_subgrid is not None \
-        else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                    "show_subgrid")
+        else enb.config.ini.get_key("enb.aanalysis.Analyzer", "show_subgrid")
 
     y_labels_by_group_name = {g: g for g in sorted_group_names} \
         if y_labels_by_group_name is None else y_labels_by_group_name
 
     semilog_y = _update_ticks_and_grid(
-        column_properties, combine_groups, global_x_max, groupname_axis_tuples,
-        left_y_label, semilog_y, semilog_y_base, show_grid, show_subgrid,
-        sorted_group_names, x_tick_label_angle, x_tick_label_list, x_tick_list,
-        y_labels_by_group_name, y_max, y_min, y_tick_label_list, y_tick_list)
+        column_properties=column_properties,
+        combine_groups=combine_groups,
+        global_x_max=global_x_max,
+        groupname_axis_tuples=groupname_axis_tuples,
+        left_y_label=left_y_label,
+        semilog_y=semilog_y,
+        semilog_y_base=semilog_y_base,
+        show_grid=show_grid,
+        show_subgrid=show_subgrid,
+        sorted_group_names=sorted_group_names,
+        x_tick_label_angle=x_tick_label_angle,
+        x_tick_label_list=x_tick_label_list,
+        x_tick_list=x_tick_list,
+        y_labels_by_group_name=y_labels_by_group_name,
+        y_max=y_max,
+        y_min=y_min,
+        y_tick_label_list=y_tick_label_list,
+        y_tick_list=y_tick_list)
 
     _update_axis_limits(
-        global_x_max, global_x_min, global_y_max, global_y_min,
-        groupname_axis_tuples, horizontal_margin, semilog_y, vertical_margin,
-        x_max, x_min, y_max, y_min)
+        global_x_max=global_x_max,
+        global_x_min=global_x_min,
+        global_y_max=global_y_max,
+        global_y_min=global_y_min,
+        groupname_axis_tuples=groupname_axis_tuples,
+        horizontal_margin=horizontal_margin,
+        semilog_y=semilog_y,
+        vertical_margin=vertical_margin,
+        x_max=x_max,
+        x_min=x_min,
+        y_max=y_max,
+        y_min=y_min)
 
     _update_axis_labels(
-        global_x_label, global_y_label, groupname_axis_tuples)
+        global_x_label=global_x_label,
+        global_y_label=global_y_label,
+        groupname_axis_tuples=groupname_axis_tuples,
+        global_y_label_margin=global_y_label_margin)
 
-    _adjust_subplot_position(group_row_margin, pds_by_group_name)
+    _adjust_subplot_position(
+        group_row_margin=group_row_margin,
+        pds_by_group_name=pds_by_group_name)
 
 
 def _update_ticks_and_grid(column_properties, combine_groups, global_x_max,
@@ -762,12 +821,10 @@ def _update_axis_limits(global_x_max, global_x_min, global_y_max, global_y_min,
         # Translate relative margin to absolute margin
         horizontal_margin = horizontal_margin \
             if horizontal_margin is not None \
-            else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                        "horizontal_margin")
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer", "horizontal_margin")
         vertical_margin = vertical_margin \
             if vertical_margin is not None \
-            else enb.config.ini.get_key("enb.aanalysis.Analyzer",
-                                        "vertical_margin")
+            else enb.config.ini.get_key("enb.aanalysis.Analyzer", "vertical_margin")
         h_margin = horizontal_margin * (xlim[1] - xlim[0])
         v_margin = vertical_margin * (ylim[1] - ylim[0])
         xlim = [xlim[0] - h_margin, xlim[1] + h_margin]
@@ -797,7 +854,7 @@ def _update_axis_limits(global_x_max, global_x_min, global_y_max, global_y_min,
         pass
 
 
-def _update_axis_labels(global_x_label, global_y_label, groupname_axis_tuples):
+def _update_axis_labels(global_x_label, global_y_label, groupname_axis_tuples, global_y_label_margin):
     """Private to render_plds_by_group.
     Update the axes labels.
     """
@@ -816,7 +873,7 @@ def _update_axis_labels(global_x_label, global_y_label, groupname_axis_tuples):
             plt.tick_params(labelcolor="none", bottom=False, left=False)
             plt.grid(False)
             plt.minorticks_off()
-            plt.ylabel(global_y_label, labelpad=15)
+            plt.ylabel(global_y_label, labelpad=global_y_label_margin)
 
 
 def _adjust_subplot_position(group_row_margin, pds_by_group_name):
