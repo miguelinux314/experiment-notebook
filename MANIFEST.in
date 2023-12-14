@@ -153,6 +153,9 @@ include enb/plugins/plugin_mcalic/README.txt
 include enb/plugins/plugin_mhdc_transforms/abstract_mhdc_transform.py
 include enb/plugins/plugin_mhdc_transforms/iwt.py
 include enb/plugins/plugin_mhdc_transforms/pot.py
+include enb/plugins/plugin_montsec/montsec_codec.py
+include enb/plugins/plugin_montsec/montsec.jar
+include enb/plugins/plugin_montsec/__plugin__.py
 include enb/plugins/plugin_ndzip/Makefile.linux
 include enb/plugins/plugin_ndzip/ndzip_codec.py
 include enb/plugins/plugin_ndzip/__plugin__.py

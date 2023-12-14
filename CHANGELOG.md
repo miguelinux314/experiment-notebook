@@ -25,6 +25,7 @@ Improvements:
 - Added the `ScalarNumericJointAnalyzer` class, which allows numerical data analysis considering two classifications
   at the same time. Useful to produce 2D tables (also in latex format) with categorical columns and rows. 
 - Enhanced plugin installation messages and behavior.
+- Added a plugin for the Montsec compressor.
 
 Bug fixes:
 
