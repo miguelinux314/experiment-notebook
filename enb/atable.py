@@ -1093,44 +1093,55 @@ class ATable(metaclass=MetaTable):
             right_index=True,
             copy=False)
 
-        assert len(target_df) <= len(
-            target_locs), f"Error: Duplicated indices? " \
-                          f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
+        assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
+                                                   f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
 
         # This is the case where input samples were previously processed,
         # but new columns were defined/requested.
-        fill_needed = fill_needed and (
-                len(target_df) < len(target_indices) or target_df[
-            target_columns].isnull().any().any())
+        fill_needed = (fill_needed
+                       and (len(target_df) < len(target_indices)
+                            or target_df[target_columns].isnull().any().any()))
 
         if fill_needed or overwrite:
-            # This method may raise ColumnFailedError if a column function crashes
-            # or fails to fill their associated column(s).
-            target_df = self.compute_target_rows(
+            # Needed locs are those of the rows that require an update or do not exist in the loaded df
+            if overwrite:
+                needed_indices = target_indices
+            else:
+                needed_indices = [
+                    index
+                    for index in target_df[target_columns].isnull().any(axis=1).index
+                    if index in target_indices]
+                needed_indices.extend(
+                    index
+                    for index in target_indices
+                    if indices_to_internal_loc(index) not in target_df.index)
+
+            # Process only columns that need an update and rows that did not exist.
+            computed_df = self.compute_target_rows(
                 # By passing target_df instead of loaded_table,
                 # there is less memory (and possibly network traffic) footprint.
                 loaded_df=loaded_table,
                 target_df=target_df,
-                target_indices=target_indices,
-                target_locs=target_locs,
+                target_indices=needed_indices,
                 target_columns=target_columns,
                 overwrite=overwrite)
-            assert len(target_df) == len(target_indices)
 
+            # Insert or update rows
+            target_df = pd.concat([target_df, computed_df])
+            target_df = target_df[~target_df.index.duplicated(keep="last")]
+            assert len(target_df) == len(target_indices), (len(target_df), len(target_indices))
+
+            # Not all columns might have been requested
             if self.ignored_columns:
                 target_df = target_df[[c for c in loaded_table.columns
                                        if c not in self.ignored_columns]]
 
-            # The new df is available. Now store data into persistence if one is configured
+            # The new df is available. Store data into persistence if one is configured
             if self.csv_support_path:
                 loaded_table = pd.concat([loaded_table, target_df])
-                loaded_table = loaded_table[
-                    ~loaded_table.index.duplicated(keep="last")]
-                os.makedirs(
-                    os.path.dirname(os.path.abspath(self.csv_support_path)),
-                    exist_ok=True)
-                self.write_persistence(df=loaded_table,
-                                       output_csv=self.csv_support_path)
+                loaded_table = loaded_table[~loaded_table.index.duplicated(keep="last")]
+                os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
+                self.write_persistence(df=loaded_table, output_csv=self.csv_support_path)
 
         return target_df
 
@@ -1229,18 +1240,18 @@ class ATable(metaclass=MetaTable):
                             target_df,
                             target_indices,
                             target_columns,
-                            overwrite,
-                            target_locs=None):
+                            overwrite):
         """Generate and return a |DataFrame| with as many rows as given by
-        `target_indices`, with the columns
-        given in `target_columns`, using this table's column-setting functions.
+        `target_indices`, with the columns given in `target_columns`, using this table's column-setting functions.
 
-        This method is run when there are known missing values in the
+        This method is run when there are one or more known missing values in the
         requested df, e.g., there are:
 
         - missing columns of existing rows, and/or
         - new rows to be added (i.e., `target_locs` contains at least one index not
           in `loaded_df`).
+
+        The calling function must choose target_indices to be the list of needed indices (not locs).
 
         Note that this method does not modify `loaded_df`.
 
@@ -1254,16 +1265,10 @@ class ATable(metaclass=MetaTable):
 
         :param target_indices: list of indices to be filled
 
-        :param target_locs: if not None, it must be the resulting list of
-          applying indices_to_internal_loc to target_indices. If None,
-          it is computed in the aforementioned way. Either way, elements must
-          be compatible with `loaded_table.loc` and be present in the same
-          order as their corresponding target_indices.
-
         :param target_columns: list of columns that are to be computed. |enb|
           defaults to calling this function with all columns in the table.
 
-        :param overwrite: if True, cell values are computed even when storage
+        :param overwrite: if True, all cell values are computed even when storage
           data was present. In that case, the newly computed results replace the old ones.
 
         :return: a |DataFrame| instance with the same column structure as loaded_df
@@ -1299,18 +1304,14 @@ class ATable(metaclass=MetaTable):
         enb.logger.info(
             f"Filling {len(target_indices)} rows, {len(target_columns)} columns...")
 
-        # Get the list of pandas Series instances (table rows) corresponding to target_indices.
-        target_locs = target_locs if target_locs is None else [
-            indices_to_internal_loc(v) for v in target_indices]
-
         # Start computation of new and updated rows in parallel_decorator
         pending_ids = [parallel_compute_one_row.start(
             atable_instance=self,
             filtered_df=target_df,
-            index=index, loc=loc,
+            index=index, loc=indices_to_internal_loc(index),
             column_fun_tuples=column_fun_tuples,
             overwrite=overwrite)
-            for index, loc in zip(target_indices, target_locs)]
+            for index in target_indices]
 
         # Iterating a progressive getter continues until all rows are obtained
         with enb.logger.info_context(
@@ -1496,8 +1497,7 @@ class ATable(metaclass=MetaTable):
 
                     return cfe
 
-            for index_name, index_value in zip(self.indices,
-                                               unpack_index_value(index)):
+            for index_name, index_value in zip(self.indices, unpack_index_value(index)):
                 row[index_name] = index_value
 
             row["row_updated"] = datetime.datetime.now().isoformat()
