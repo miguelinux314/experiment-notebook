@@ -2210,12 +2210,11 @@ class TwoNumericSummary(ScalarNumericSummary):
                     line_width=_self.analyzer.secondary_line_width))
         elif render_mode == "line":
             if self.group_by == "family_label":
+                # If available,
                 try:
                     group_by = kwargs["task_families"]
-                except KeyError as ex:
-                    raise ValueError(
-                        f"Passed {repr(group_by)} for grouping "
-                        "but no task_families parameter found.") from ex
+                except KeyError:
+                    group_by = self.group_by
             else:
                 group_by = self.group_by
 
