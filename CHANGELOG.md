@@ -20,16 +20,20 @@ After 4 years of development and a lot of user feedback, switched from beta stat
 However, a cleanup of old blobs was performed on the repository. 
 You might need to use `git pull --force` to update your local development repository. 
 
-Improvements:
-
+New features:
 - Added the `enb.aanalysis.ScalarNumericJointAnalyzer` class, 
   which allows numerical data analysis considering two classifications
   at the same time. Useful to produce 2D tables (also in latex format) with categorical columns and rows. 
-- Enhanced plugin installation messages and behavior.
-- Added a plugin for the Montsec compressor.
-- Improved computation time of ATable.get_df when part of the rows already existed.
 - Added support for group comparison in the `enb.aanalysis.TwoNumericAnalyzer` 
   class when the `line` render mode is requested.
+- Added a plugin for the Montsec compressor.
+
+Improvements:
+
+- Enhanced plugin installation messages and behavior.
+- Improved computation time of ATable.get_df when part of the rows already existed.
+- All `enb.aanalysis.Analyzer` subclasses now accept single strings in the `selected_render_mode` argument. 
+  Previously, a list empty or containing mode names was mandatory. 
 
 Bug fixes:
 
