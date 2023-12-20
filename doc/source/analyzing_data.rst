@@ -655,24 +655,40 @@ where both options are used is shown next:
 Example with |TwoNumericAnalyzer|
 _________________________________
 
-The |TwoNumericAnalyzer| class has a similar sintax as |ScalarNumericAnalyzer|.
-Both the `line` and `scatter` render modes are available. If none is selected,
-both are employed.
+The |TwoNumericAnalyzer| class has a sintax similar to |ScalarNumericAnalyzer|.
+Both the `line` and `scatter` render modes are available, but only one can be used per call to `get_df`.
 
 .. code-block:: python
 
     two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+    # scatter baseline reference
     analysis_df = two_numeric_analyzer.get_df(
         full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
         output_plot_dir=os.path.join(options.plot_dir, "two_numeric_reference"),
         group_by="class", reference_group="Iris-versicolor",
+        selected_render_modes=["scatter"]
+    )
+    # line baseline reference
+    function_df = pd.read_csv("./input_csv/function.csv")
+    analysis_df = two_numeric_analyzer.get_df(
+        full_df=function_df, target_columns=[("sepal_width", "petal_length")],
+        output_plot_dir=os.path.join(options.plot_dir, "two_numeric_reference"),
+        group_by="class", reference_group="Iris-versicolor",
+        selected_render_modes=["scatter"]
     )
 
-The plots resulting from the above snippet are shown next.
+When `scatter` is selected, the average value for the reference group is calculated for each x and y column.
+Then that value is subtracted from all samples. The point cloud of the reference group is then centered
+at `(0,0)` and all other groups are compared both in the x and y column to the reference.
 
 .. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png
 
-.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png
+When `line` is selected, groups are expected to be x-aligned. That is, they share the same values
+of the x column. The average value of the y column for each x value is subtracted from all samples at that x value.
+For instance, if the x column contains values of a variable x, and the y column contains f(x), g(x), h(x),
+then one can use f as the reference group, which results in plotting f(x)-f(x), g(x)-f(x) and h(x)-f(x).
+
+.. figure:: _static/analysis_gallery/TwoNumericAnalyzer-functions-line-withreference.png
 
 
 Customizing plot appearance

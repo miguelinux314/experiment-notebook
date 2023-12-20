@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; Experiment Notebook MIT License documentation</title>
+  <title>Installation &mdash; Experiment Notebook (enb) MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
@@ -28,19 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            Experiment Notebook
-              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -49,7 +45,12 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-installation">Basic installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugin-installation">Plugin installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cluster-installation">Cluster installation</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#windows-and-macos">Windows and MacOS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#raspberry-pi">Raspberry Pi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sources-and-development-version">Sources and development version</a></li>
@@ -72,7 +73,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook (enb)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -94,11 +95,18 @@
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
 <p>This page provides help on how to install <cite>enb</cite> in a single computer.</p>
-<p>Instructions are provided for Linux, Windows and Mac.</p>
+<p>Instructions are provided for:</p>
+<ul class="simple">
+<li><p>Linux</p></li>
+<li><p>Mac OS, Windows</p></li>
+<li><p>RaspberryOS (Raspberry Pi)</p></li>
+</ul>
 <p>If you want to set up a cluster of multiple computers for distributed
 execution of your experiments, see <a class="reference internal" href="cluster_setup.html"><span class="doc">Configuring enb in a cluster of computers</span></a>.</p>
 <section id="linux">
 <h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline"></a></h2>
+<section id="basic-installation">
+<h3>Basic installation<a class="headerlink" href="#basic-installation" title="Permalink to this headline"></a></h3>
 <p>The <cite>enb</cite> library and all its dependencies are available by default in most Linux distributions.</p>
 <p>You may install it easily with pip,</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
@@ -112,6 +120,23 @@ and you don’t have root privileges:</p>
 </pre></div>
 </div>
 </div>
+</section>
+<section id="plugin-installation">
+<h3>Plugin installation<a class="headerlink" href="#plugin-installation" title="Permalink to this headline"></a></h3>
+<p>The <cite>enb</cite> library comes with many installable plugins and project templates.
+After you complete the basic installation of <cite>enb</cite>, you can use its command line interface
+to install them (see <a class="reference internal" href="command_line_interface.html"><span class="doc">The enb command-line tools</span></a> for more details).</p>
+<p>In several cases, plugins consist of source code that needs to be compiled before using the plugin.
+Therefore, you might need to install tools such as <cite>make</cite>, <cite>cmake</cite>, <cite>gcc</cite>, <cite>g++</cite>, etc.
+In Debian-based systems like Ubuntu, you might want to install <cite>build-essential</cite> and <cite>cmake</cite>, which allow
+the compilation of most plugins:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install build-essential cmake
+</pre></div>
+</div>
+<p>Additional information on plugins specific for image compression is provided in <a class="reference internal" href="image_compression_plugins.html"><span class="doc">Using existing image compression codecs</span></a>.</p>
+</section>
+<section id="cluster-installation">
+<h3>Cluster installation<a class="headerlink" href="#cluster-installation" title="Permalink to this headline"></a></h3>
 <p>If you would like multi-computer parallelization, please install the <cite>ray</cite> python library as well
 as the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite> (for the <cite>dpipe</cite> command) packages.</p>
 <p>On Debian, Ubuntu and derivatives this can be achieved by:</p>
@@ -122,18 +147,22 @@ sudo apt install openssh-client openssh-server sshfs vde2
 <p>The <cite>enb</cite> library will show a warning and proceed locally if any of these tools are not available.
 Please see <a class="reference internal" href="cluster_setup.html"><span class="doc">Configuring enb in a cluster of computers</span></a> for full information on how to set up a cluster.</p>
 </section>
+</section>
 <section id="windows-and-macos">
 <h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Permalink to this headline"></a></h2>
 <p>Installation of <cite>enb</cite> for Windows and MacOS can be performed via pip:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">enb</span>
 </pre></div>
 </div>
-<p>Related (external) resources:</p>
+<p>You might need to install <cite>python</cite> and the <cite>pip</cite> system manually. The following related (external) resources
+might be of help:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.python.org/downloads/">Python installer download</a></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/venv.html">Creation of virtual environments on Windows</a></p></li>
 <li><p><a class="reference external" href="https://sourabhbajaj.com/mac-setup/Python/virtualenv.html">Python installation and virtual environment setup on MacOS</a></p></li>
 </ul>
+<p>To install some of the plugins available in <cite>enb</cite>, you may need additional tools such as <cite>make</cite>, <cite>cmake</cite>, <cite>gcc</cite>, etc:
+In MacOS, you might want to use Homebrew (<cite>https://brew.sh/</cite>) and/or <cite>xcode-select –install</cite>.</p>
 </section>
 <section id="raspberry-pi">
 <h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Permalink to this headline"></a></h2>
@@ -175,6 +204,14 @@ of some packages.</p>
 <span class="nb">cd</span> experiment-notebook.git
 git checkout dev
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can clone only the last commit and avoid a bulky download by using istead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p>git clone –depth=1 -b dev <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook.git">https://github.com/miguelinux314/experiment-notebook.git</a></p>
 </div>
 <p>You can install a symbolic link to your local copy of the code (for whichever
 branch is checked out) with</p>

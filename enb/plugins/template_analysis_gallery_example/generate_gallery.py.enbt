@@ -13,7 +13,10 @@ import enb
 from enb.config import options
 
 if __name__ == '__main__':
+    # Iris dataset
     iris_df = pd.read_csv("./input_csv/iris_dataset.csv")
+    # Simple function data
+    function_df = pd.read_csv("./input_csv/function.csv")
 
     # Scalar numeric analysis
     scalar_analyzer = enb.aanalysis.ScalarNumericAnalyzer()
@@ -116,11 +119,22 @@ if __name__ == '__main__':
 
         ## Two scalar values: scatter and line
         two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()
+        ### Scatter
         analysis_df = two_numeric_analyzer.get_df(
             full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
             output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric_reference"),
             group_by="class", reference_group="Iris-versicolor",
-            style_list=[style]
+            style_list=[style],
+            selected_render_modes="scatter",
+        )
+        ### Line (x-aligned)
+        two_numeric_analyzer.get_df(
+            full_df=function_df, target_columns=[("x", "f(x)")],
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style,
+                                         "two_numeric_reference"),
+            group_by="f", reference_group="2·x",
+            style_list=[style],
+            selected_render_modes="line",
         )
 
         # Generate combined plots

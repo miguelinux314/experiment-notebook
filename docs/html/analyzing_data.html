@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Result analysis and plotting with enb &mdash; Experiment Notebook MIT License documentation</title>
+  <title>Result analysis and plotting with enb &mdash; Experiment Notebook (enb) MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
@@ -28,19 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            Experiment Notebook
-              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -67,9 +63,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#grouping-by-value">Summary tables</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#analysis-numeric-spatial-2d-data">Analysis numeric spatial (2D) data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#analysis-of-numeric-data-in-an-x-y-2d-space">Analysis of numeric data in an x-y (2D) space</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id6">Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id7">Summary tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#joint-numeric-analysis-double-categorical-grouping">Joint numeric analysis (double categorical grouping)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Summary tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output-configuration">Output configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#grouping-by-a-column-s-value">Grouping by a column’s value</a><ul>
@@ -108,7 +110,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook (enb)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -130,7 +132,7 @@
   <section id="result-analysis-and-plotting-with-enb">
 <h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+936.g98e1d2f8ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -151,12 +153,14 @@ a general use case.</p>
 <p>In this scenario, we want to analyze a column of scalar values, typically integers and/or floats.
 Here we will be using the Iris dataset, which we can load with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="n">iris_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/iris_dataset.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This particular dataframe has the <cite>sepal_length</cite>, <cite>sepal_width</cite>, <cite>petal_length</cite>, <cite>petal_width</cite> and <cite>class</cite> columns defined.
 We can analyze the general petal and sepal dimensions using the <strong>`get_df`</strong> method of <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+
 <span class="n">analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
     <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span>
@@ -169,8 +173,8 @@ We can analyze the general petal and sepal dimensions using the <strong>`get_df`
 column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
-- boxplot
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
+- histogram
 - hbar
 </pre></div>
 </div>
@@ -180,7 +184,7 @@ column names present in the dataframe being analyzed.</p>
 as shown in the next figure. The returned <cite>analysis_df</cite> dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png"><img alt="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" style="width: 100%;" /></a>
+<img alt="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" src="_images/ScalarNumericAnalyzer_sepal_width_groupby-None_histogram.png" />
 </figure>
 <p>The <cite>hbar</cite> and <cite>boxplot</cite> modes are most useful when
 grouping – examples are provided below in the first section about grouping below.</p>
@@ -232,7 +236,7 @@ containing two column names, e.g.: <cite>(“columnA”, “columnB”)</cite>.<
 <p>In addition to the <cite>analysis_df</cite> dataframe with numeric results, this will produce a scatter plot like the following,
 which also shows +/- 1 horizontal and vertical standard deviations.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png"><img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" style="width: 100%;" /></a>
+<img alt="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" src="_images/TwoNumericAnalyzer_sepal_width__petal_length_groupby-None_scatter.png" />
 </figure>
 <p>The previous figure shows an example of the <cite>scatter</cite> plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):</p>
@@ -255,7 +259,7 @@ For instance, the following code</p>
 </div>
 <p>will produce a figure like the following:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png"><img alt="_images/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png" src="_images/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png" style="width: 100%;" /></a>
+<img alt="_images/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png" src="_images/TwoNumericAnalyzer-columns_sepal_width__petal_length-scatter-groupby__class_withregression.png" />
 </figure>
 <p>Additional examples are provided below in <a class="reference internal" href="#sec-grouping"><span class="std std-ref">Grouping by a column’s value</span></a>, where some of these modes are most useful.</p>
 </section>
@@ -293,7 +297,9 @@ the <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAn
 <p>In the following example, the dataset
 contains a column <cite>mode_count</cite> where keys are the set of possible modes and the values are the number of times
 each mode has been employed. We can import the dataset with the following lines</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hevc_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/hevc_frame_prediction.csv&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">hevc_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/hevc_frame_prediction.csv&quot;</span><span class="p">)</span>
 <span class="c1">## These two lines are automatically applied</span>
 <span class="c1">## by get_df of the appropriate experiment - they can be safely ignored</span>
 <span class="n">hevc_df</span><span class="p">[</span><span class="s2">&quot;mode_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hevc_df</span><span class="p">[</span><span class="s2">&quot;mode_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -354,7 +360,7 @@ Rendering options are discussed in a later section.</p>
 <h3>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline"></a></h3>
 <p>The resulting figure is shown below</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png"><img alt="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" src="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" style="width: 100%;" /></a>
+<img alt="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" src="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" />
 </figure>
 </section>
 <section id="grouping-by-value">
@@ -363,22 +369,31 @@ Rendering options are discussed in a later section.</p>
 (mean, min, max, median, standard deviation) for each key of each target column.</p>
 </section>
 </section>
-<section id="analysis-numeric-spatial-2d-data">
-<h2>Analysis numeric spatial (2D) data<a class="headerlink" href="#analysis-numeric-spatial-2d-data" title="Permalink to this headline"></a></h2>
-<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class allows to plot data arranged arbitrarily in the x-y plane.</p>
+<section id="analysis-of-numeric-data-in-an-x-y-2d-space">
+<span id="scalar-numeric-2d-analyzer"></span><h2>Analysis of numeric data in an x-y (2D) space<a class="headerlink" href="#analysis-of-numeric-data-in-an-x-y-2d-space" title="Permalink to this headline"></a></h2>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class allows to plot data arranged arbitrarily in the x-y plane.
+It is useful to create heatmap figures.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class <strong>cannot</strong> handle categorical (e.g., string) x or y columns.
+In that scenario, you can consider the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> class in <a class="reference internal" href="#sec-joint-analysis"><span class="std std-ref">Joint numeric analysis (double categorical grouping)</span></a>.</p>
+</div>
 <dl class="simple">
 <dt>You will need:</dt><dd><ul class="simple">
-<li><p>a column with scalar data (integers or float entries), e.g., <cite>column_data</cite></p></li>
-<li><p>two more columns specifying the <cite>x</cite> and <cite>y</cite> coordinates of each datapoint, e.g., <cite>column_x</cite> and <cite>column_y</cite>.</p></li>
+<li><p>a column with scalar numerical data (integers or float entries), e.g., <cite>column_data</cite></p></li>
+<li><p>two more columns with scalar numerical data
+specifying the <cite>x</cite> and <cite>y</cite> coordinates of each datapoint, e.g., <cite>column_x</cite> and <cite>column_y</cite>.</p></li>
 </ul>
 </dd>
 </dl>
 <p>You can then invoke the <cite>get_df</cite> method like any other <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass, with the <cite>target_columns</cite> argument
 being a list of 3-element tuples.</p>
-<p>In the following example of the ‘colormap’ rendermode,
+<p>In the following example of the ‘colormap’ render mode,
 the <cite>value</cite> column contains the data of interest, while <cite>x</cite> and <cite>y</cite> contain the spatial
 information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">enb</span>
 
 <span class="c1"># Read data from CSV - could be obtained from an ATable instance</span>
 <span class="n">df_2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;2d_data_example.csv&quot;</span><span class="p">))</span>
@@ -396,9 +411,9 @@ information.</p>
 </div>
 <section id="id6">
 <h3>Plots<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
-<p>The resulting figure is shown in the following figure:</p>
+<p>The resulting figure is shown next:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png"><img alt="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" src="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" style="width: 100%;" /></a>
+<img alt="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" src="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" />
 </figure>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -424,6 +439,139 @@ with the same statistics as those of <a class="reference internal" href="api/enb
 </ul>
 </section>
 </section>
+<section id="joint-numeric-analysis-double-categorical-grouping">
+<span id="sec-joint-analysis"></span><h2>Joint numeric analysis (double categorical grouping)<a class="headerlink" href="#joint-numeric-analysis-double-categorical-grouping" title="Permalink to this headline"></a></h2>
+<p>With <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a>, it is possible to analyze scalar numeric data
+jointly splitting it by two different groupings. This results in a table where the
+columns correspond to one of the categories/groupings (e.g., corpus name)
+and the rows to the other category/grouping (e.g., task label).
+Cells correspond to the averages for the data column.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> supports any type for the x and y columns as long
+as <cite>str</cite> can be applied to them. If you want to use numeric data for x and y, consider <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a>
+in <a class="reference internal" href="#scalar-numeric-2d-analyzer"><span class="std std-ref">Analysis of numeric data in an x-y (2D) space</span></a>.</p>
+</div>
+<dl class="simple">
+<dt>You will need:</dt><dd><ul class="simple">
+<li><p>a column with scalar numerical data (integers or float entries), e.g., <cite>column_data</cite></p></li>
+<li><p>two more columns with categorical (e.g., string) data
+specifying the grouping along the x axis and the y axis, e.g., <cite>column_x</cite> and <cite>column_y</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>In the following example of the ‘table’ render mode,
+the <cite>Price</cite> column contains the data of interest, while <cite>Color</cite> and <cite>Origin</cite> contain the categorical
+data for joint analysis.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">enb</span>
+
+<span class="n">df_joint</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;continent_data_example.csv&quot;</span><span class="p">))</span>
+
+<span class="n">snja</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericJointAnalyzer</span><span class="p">()</span>
+<span class="n">snja</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">full_df</span><span class="o">=</span><span class="n">df_joint</span><span class="p">,</span>
+            <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="s2">&quot;Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;Price&quot;</span><span class="p">)])</span>
+</pre></div>
+</div>
+<section id="id9">
+<h3>Plots<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h3>
+<p>The resulting plot, corresponding to the average value of the data column, is shown in the following figure:</p>
+<figure class="align-default">
+<img alt="_images/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can pass <cite>fig_height</cite>, <cite>fig_width</cite> or both to the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a>
+to control the size of the displayed table.</p>
+</div>
+</section>
+<section id="id10">
+<h3>Summary tables<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h3>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> produces custom
+<a class="reference external" href="_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv">CSV</a>
+and
+<a class="reference external" href="_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv">CSV file</a>
+files corresponding to the above table.</p>
+<p>These files contain tables for several statistics: average, min, max, standard deviation, median and count.
+All these correspond to the <em>finite</em> data found for each x-category and y-category combination.</p>
+<p>An example of LaTeX output is shown below</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="c">% Column selection: &#39;Color&#39; &#39;Origin&#39; &#39;Price&#39;</span>
+<span class="c">% Statistic: avg</span>
+<span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>lccc<span class="nb">}</span>
+<span class="k">\toprule</span>
+                 <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Blue<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Green<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Red<span class="nb">}</span> <span class="k">\\</span>
+<span class="k">\toprule</span>
+<span class="k">\textbf</span><span class="nb">{</span>Africa<span class="nb">}</span>  <span class="nb">&amp;</span> 1081.500 <span class="nb">&amp;</span> 569.000  <span class="nb">&amp;</span> 966.750  <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>America<span class="nb">}</span> <span class="nb">&amp;</span> 924.000  <span class="nb">&amp;</span> 325.000  <span class="nb">&amp;</span> 1014.000 <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Asia<span class="nb">}</span>    <span class="nb">&amp;</span> 675.333  <span class="nb">&amp;</span> 738.000  <span class="nb">&amp;</span> 1044.500 <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Europe<span class="nb">}</span>  <span class="nb">&amp;</span> 498.000  <span class="nb">&amp;</span> 767.500  <span class="nb">&amp;</span> 723.200  <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Oceania<span class="nb">}</span> <span class="nb">&amp;</span> 660.600  <span class="nb">&amp;</span> 990.667  <span class="nb">&amp;</span> 1150.667 <span class="k">\\</span>
+<span class="k">\midrule</span>
+<span class="k">\textbf</span><span class="nb">{</span>All<span class="nb">}</span>     <span class="nb">&amp;</span> 738.286  <span class="nb">&amp;</span> 744.600  <span class="nb">&amp;</span> 948.889  <span class="k">\\</span>
+<span class="k">\bottomrule</span>
+<span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
+</pre></div>
+</div>
+<p>The corresponding CSV file is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Column selection: &#39;Color&#39; &#39;Origin&#39; &#39;Price&#39;</span>
+<span class="c1">## Statistic: avg</span>
+<span class="c1">### Group: &#39;All&#39;</span>
+<span class="p">,</span><span class="n">Blue</span><span class="p">,</span><span class="n">Green</span><span class="p">,</span><span class="n">Red</span>
+<span class="n">Africa</span><span class="p">,</span><span class="mf">1081.500</span><span class="p">,</span><span class="mf">569.000</span><span class="p">,</span><span class="mf">966.750</span>
+<span class="n">America</span><span class="p">,</span><span class="mf">924.000</span><span class="p">,</span><span class="mf">325.000</span><span class="p">,</span><span class="mf">1014.000</span>
+<span class="n">Asia</span><span class="p">,</span><span class="mf">675.333</span><span class="p">,</span><span class="mf">738.000</span><span class="p">,</span><span class="mf">1044.500</span>
+<span class="n">Europe</span><span class="p">,</span><span class="mf">498.000</span><span class="p">,</span><span class="mf">767.500</span><span class="p">,</span><span class="mf">723.200</span>
+<span class="n">Oceania</span><span class="p">,</span><span class="mf">660.600</span><span class="p">,</span><span class="mf">990.667</span><span class="p">,</span><span class="mf">1150.667</span>
+<span class="n">All</span><span class="p">,</span><span class="mf">738.286</span><span class="p">,</span><span class="mf">744.600</span><span class="p">,</span><span class="mf">948.889</span>
+</pre></div>
+</div>
+</section>
+<section id="output-configuration">
+<h3>Output configuration<a class="headerlink" href="#output-configuration" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>You can select the order of column headers and/or row headers by passing <cite>x_header_list</cite>, <cite>y_header_list</cite>, or both
+to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. When one is present, it must be a non-empty list
+containing strings that match exactly one or more of the existing row or column headers
+(e.g., one or more of <cite>[“Blue”, “Green”, “Red”]</cite> when specifying <cite>x_header_list</cite> in the previous example.</p></li>
+<li><p>You can also disable the global “All” row by adding <cite>show_global=False</cite> to the <cite>get_df</cite>
+call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
+</ul>
+<p>The following example displays both of these features (they can be used independently):</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">enb</span>
+
+<span class="n">df_joint</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;continent_data_example.csv&quot;</span><span class="p">))</span>
+
+<span class="n">snja</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericJointAnalyzer</span><span class="p">()</span>
+<span class="n">snja</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">full_df</span><span class="o">=</span><span class="n">df_joint</span><span class="p">,</span>
+            <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="s2">&quot;Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;Price&quot;</span><span class="p">)],</span>
+            <span class="c1"># Show only these columns, in this order:</span>
+            <span class="n">x_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">],</span>
+            <span class="c1"># Show only these rows, in this order:</span>
+            <span class="n">y_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Oceania&quot;</span><span class="p">,</span> <span class="s2">&quot;Africa&quot;</span><span class="p">],</span>
+            <span class="c1"># Hide the &quot;All&quot; row</span>
+            <span class="n">show_global</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>and produces the following result:</p>
+<figure class="align-default">
+<img alt="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
+</figure>
+<ul class="simple">
+<li><p>You can select a column or a row as reference, by passing the <cite>reference_group</cite> parameter to
+<a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. You can control whether the reference group is
+shown or not by modifying the <cite>show_reference_group</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
+<li><p>You can pass <cite>highlight_best_col=”low”</cite> or highlight_best_col=”high”
+to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a> to automatically highlight the best
+(lowest or highest) value in each row. Conversely, you can use <cite>highlight_best_row=”low”</cite>
+or <cite>highlight_best_row=”high”</cite> to highlight the best value in each column.</p></li>
+</ul>
+</section>
+</section>
 <section id="grouping-by-a-column-s-value">
 <span id="sec-grouping"></span><h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this headline"></a></h2>
 <section id="grouping-with-scalarnumericanalysis">
@@ -442,25 +590,25 @@ as follows:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- histogram
-- boxplot
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
+- histogram
 - hbar
 </pre></div>
 </div>
 <p>The <cite>histogram</cite> render mode produces plots like the following:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png"><img alt="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" src="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" style="width: 100%;" /></a>
+<img alt="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" src="_images/ScalarNumericAnalyzer_petal_width_groupby-class_histogram.png" />
 </figure>
 <p>The <cite>hbar</cite> render mode produces horizontal bar plots with length equal to the average, as shown in the
 following image:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png"><img alt="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" style="width: 100%;" /></a>
+<img alt="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_width-hbar-groupby__class.png" />
 </figure>
 <p>The <cite>boxplot</cite> render mode produces standard box plots where lines span the entire input data range,
 the vertical lines in the box plot indicates quartiles Q1, Q2 and Q3, and the mean value is also displayed,
 as shown next:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png"><img alt="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png" style="width: 100%;" /></a>
+<img alt="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png" src="_images/ScalarNumericAnalyzer-petal_length-boxplot-groupby__class.png" />
 </figure>
 </section>
 <section id="grouping-with-other-analyzer-subclasses">
@@ -583,23 +731,38 @@ where both options are used is shown next:</p>
 </section>
 <section id="example-with-twonumericanalyzer">
 <h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Permalink to this headline"></a></h3>
-<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a similar sintax as <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
-Both the <cite>line</cite> and <cite>scatter</cite> render modes are available. If none is selected,
-both are employed.</p>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a sintax similar to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
+Both the <cite>line</cite> and <cite>scatter</cite> render modes are available, but only one can be used per call to <cite>get_df</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
+<span class="c1"># scatter baseline reference</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
     <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
     <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;two_numeric_reference&quot;</span><span class="p">),</span>
     <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+    <span class="n">selected_render_modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;scatter&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># line baseline reference</span>
+<span class="n">function_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/function.csv&quot;</span><span class="p">)</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">function_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;two_numeric_reference&quot;</span><span class="p">),</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+    <span class="n">selected_render_modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;scatter&quot;</span><span class="p">]</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>The plots resulting from the above snippet are shown next.</p>
+<p>When <cite>scatter</cite> is selected, the average value for the reference group is calculated for each x and y column.
+Then that value is subtracted from all samples. The point cloud of the reference group is then centered
+at <cite>(0,0)</cite> and all other groups are compared both in the x and y column to the reference.</p>
 <figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" />
 </figure>
+<p>When <cite>line</cite> is selected, groups are expected to be x-aligned. That is, they share the same values
+of the x column. The average value of the y column for each x value is subtracted from all samples at that x value.
+For instance, if the x column contains values of a variable x, and the y column contains f(x), g(x), h(x),
+then one can use f as the reference group, which results in plotting f(x)-f(x), g(x)-f(x) and h(x)-f(x).</p>
 <figure class="align-default">
-<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" />
+<img alt="_images/TwoNumericAnalyzer-functions-line-withreference.png" src="_images/TwoNumericAnalyzer-functions-line-withreference.png" />
 </figure>
 </section>
 </section>

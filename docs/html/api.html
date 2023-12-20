@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; Experiment Notebook MIT License documentation</title>
+  <title>API &mdash; Experiment Notebook (enb) MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
@@ -28,19 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            Experiment Notebook
-              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -73,7 +69,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook (enb)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -101,25 +97,25 @@
 <li><dl class="simple">
 <dt>Core modules:</dt><dd><ul>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.atable" title="enb.atable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: definition of the core ATable functionality</dt><dd><ul>
+<dt><a class="reference internal" href="api/enb.html#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: definition of the core ATable functionality</dt><dd><ul>
 <li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>: core class with automatic parallelization and persistence management.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a>: method to produce a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with the table contents.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a>: method to produce a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+936.g98e1d2f8ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with the table contents.</p></li>
 <li><p>See <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> for extra information on <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a>: Definition of ATable subclasses defining datasets</dt><dd><ul>
+<dt><a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.sets</span></code></a>: Definition of ATable subclasses defining datasets</dt><dd><ul>
 <li><p><a class="reference internal" href="api/enb.html#enb.sets.FilePropertiesTable" title="enb.sets.FilePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FilePropertiesTable</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a>: Definition of image datasets based on <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a></dt><dd><ul>
-<li><p><a class="reference internal" href="image_manipulation.html#enb.isets.load_array_bsq" title="enb.isets.load_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.load_array_bsq()</span></code></a>: load a raw image as a 3D numpy array indexed as [x,y,z]</p></li>
-<li><p><a class="reference internal" href="image_manipulation.html#enb.isets.dump_array_bsq" title="enb.isets.dump_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.dump_array_bsq()</span></code></a>: dump a 3D numpy array indexed as [x,y,z] as a BSQ raw image.</p></li>
+<dt><a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.isets</span></code></a>: Definition of image datasets based on <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a></dt><dd><ul>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.load_array_bsq" title="enb.isets.load_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.load_array_bsq()</span></code></a>: load a raw image as a 3D numpy array indexed as [x,y,z]</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.dump_array_bsq" title="enb.isets.dump_array_bsq"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.isets.dump_array_bsq()</span></code></a>: dump a 3D numpy array indexed as [x,y,z] as a BSQ raw image.</p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.ImagePropertiesTable" title="enb.isets.ImagePropertiesTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.ImagePropertiesTable</span></code></a>: ATable subclass for image datasets, including relevant image properties.</p></li>
 </ul>
 </dd>
@@ -136,7 +132,7 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.icompression" title="enb.icompression"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression</span></code></a>: Tools for easy definition of lossless and lossy compression experiments.</dt><dd><ul>
+<dt><a class="reference internal" href="api/enb.html#module-enb.icompression" title="enb.icompression"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.icompression</span></code></a>: Tools for easy definition of lossless and lossy compression experiments.</dt><dd><ul>
 <li><p><a class="reference internal" href="api/enb.html#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a></p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a></p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a></p></li>
@@ -146,14 +142,17 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>: Tools for automatic analysis and plotting of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained</dt><dd><dl class="simple">
+<dt><a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>: Tools for automatic analysis and plotting of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+936.g98e1d2f8ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained</dt><dd><dl class="simple">
 <dt>with <a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a> or its subclass implementations, e.g., in <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</dt><dd><ul>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a>: subclasses implement different types of automatic analysys</dt><dd><ul>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a></p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a></p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a></p></li>
+<dt><a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a>: subclasses implement different types of automatic analysis</dt><dd><ul>
+<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> : for individual columns of numeric data</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> : for comparing pairs of columns with numeric data</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a> : for analyzing columns with cells containing dictionaries with numeric values</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> : for spatially analyzing numeric data whose x and y position is given in
+other columns</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> : for splitting a data column into two categories, one giving multiple
+columns, the other givin multiple rows.</p></li>
 </ul>
 </dd>
 </dl>
@@ -173,8 +172,8 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 <li><dl class="simple">
 <dt>Utility modules</dt><dd><ul>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.plotdata" title="enb.plotdata"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.plotdata</span></code></a>: module with the implementation of the low-level plotting routines.</dt><dd><ul>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.plotdata.render_plds_by_group()</span></code>: used to generate plots by all <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses.</p></li>
+<dt><a class="reference internal" href="api/enb.html#module-enb.plotdata" title="enb.plotdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.plotdata</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.render" title="enb.render"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.render</span></code></a>: module with the implementation of the low-level plotting routines.</dt><dd><ul>
+<li><p><a class="reference internal" href="api/enb.html#enb.render.render_plds_by_group" title="enb.render.render_plds_by_group"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.render.render_plds_by_group()</span></code></a>: used to generate plots by all <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses.</p></li>
 </ul>
 </dd>
 </dl>
@@ -182,21 +181,25 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 <li><p><a class="reference internal" href="api/enb.html#module-enb.log" title="enb.log"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.log</span></code></a>: Logging utilities for <cite>enb</cite>.</p></li>
 <li><dl class="simple">
 <dt>Parallelization</dt><dd><ul>
-<li><p><a class="reference internal" href="api/enb.html#module-enb.parallel" title="enb.parallel"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.parallel</span></code></a>: Implementation of the multiprocess parallelization functionality using pathos (default)</p></li>
-<li><p><a class="reference internal" href="api/enb.html#module-enb.parallel_ray" title="enb.parallel_ray"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.parallel_ray</span></code></a>: Implementation of the multiprocess parallelization functionality using ray.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#module-enb.parallel" title="enb.parallel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.parallel</span></code></a>: Implementation of the multiprocess parallelization functionality using pathos (default)</p></li>
+<li><p><a class="reference internal" href="api/enb.html#module-enb.parallel_ray" title="enb.parallel_ray"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.parallel_ray</span></code></a>: Implementation of the multiprocess parallelization functionality using ray.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.tarlite" title="enb.tarlite"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.tarlite</span></code></a>: module with tools that implement a lightweight tar-like format (a concatenation of files).</dt><dd><ul>
+<dt><a class="reference internal" href="api/enb.html#module-enb.tarlite" title="enb.tarlite"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.tarlite</span></code></a>: module with tools that implement a lightweight tar-like format (a concatenation of files).</dt><dd><ul>
 <li><p><a class="reference internal" href="api/enb.html#enb.tarlite.tarlite_files" title="enb.tarlite.tarlite_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.tarlite.tarlite_files()</span></code></a></p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.tarlite.untarlite_files" title="enb.tarlite.untarlite_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.tarlite.untarlite_files()</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p><a class="reference internal" href="api/enb.html#module-enb.pgm" title="enb.pgm"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.pgm</span></code></a>: manipulation (load/save) of PGM and PPM images in/to 3D numpy arrays</p></li>
+<li><dl class="simple">
+<dt><a class="reference internal" href="api/enb.html#module-enb.pgm" title="enb.pgm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.pgm</span></code></a>, <a class="reference internal" href="api/enb.html#module-enb.jpg" title="enb.jpg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.jpg</span></code></a>, <a class="reference internal" href="api/enb.html#module-enb.png" title="enb.png"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.png</span></code></a>: manipulation (load/save) of PGM, PPM, PNG, JPG images</dt><dd><p>to and from 2D or 3D numpy arrays</p>
+</dd>
+</dl>
+</li>
 </ul>
 </dd>
 </dl>
@@ -236,7 +239,7 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 <li class="toctree-l6"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html">enb.plugins.plugin_iraf_photometry package</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#submodules">Submodules</a></li>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry module</a></li>
-<li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#enb-plugins-plugin-iraf-photometry-iraf-photometry-slave-module">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">Module contents</a></li>
 </ul>
 </li>
@@ -271,6 +274,7 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 <li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.fits">enb.fits module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.icompression">enb.icompression module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.isets">enb.isets module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.jpg">enb.jpg module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.log">enb.log module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.misc">enb.misc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/enb.html#module-enb.parallel">enb.parallel module</a></li>

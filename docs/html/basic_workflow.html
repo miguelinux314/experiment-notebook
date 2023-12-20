@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic workflow: enb.atable.ATable &mdash; Experiment Notebook MIT License documentation</title>
+  <title>Basic workflow: enb.atable.ATable &mdash; Experiment Notebook (enb) MIT License documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
@@ -28,19 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            Experiment Notebook
-              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
+            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 v1.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -73,7 +69,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Experiment Notebook</a>
+          <a href="index.html">Experiment Notebook (enb)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -172,9 +168,9 @@ from <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result_df</span> <span class="o">=</span> <span class="n">WikiTable</span><span class="p">()</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">sample_paths</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here, <cite>result_df</cite> is a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance contains one row per element in <cite>sample_paths</cite>.
+<p>Here, <cite>result_df</cite> is a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance contains one row per element in <cite>sample_paths</cite>.
 The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> provides tools for analyzing and plotting results for columns you define.
-Notwithstanding, you can use <cite>result_df</cite> directly as the full-fledged <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> dataframe it is.
+Notwithstanding, you can use <cite>result_df</cite> directly as the full-fledged <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> dataframe it is.
 For instance, you can access and print the <cite>line_count</cite> column as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">result_df</span><span class="p">[[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;line_count&quot;</span><span class="p">]])</span>
 </pre></div>
@@ -207,7 +203,7 @@ with the default interfaces of these libraries.</p></li>
 <cite>R</cite>/<cite>SPSS</cite>/<cite>Office</cite> to conduct your analysis.</p></li>
 </ol>
 <p>In all cases, the result dataframe may be further manipulated if needed,
-e.g., using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a>’ grouping and selection interface. For instance, rows with certain values in a column
+e.g., using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/index.html#module-pandas" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a>’ grouping and selection interface. For instance, rows with certain values in a column
 may need to be discarded from the analysis.</p>
 <p>Using approach (1) above, i.e., pure <cite>enb</cite>, there are several tools at your avail
 to analyze and report one or more data columns from a dataframe returned by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>’s <cite>get_df</cite> method.</p>
@@ -216,7 +212,7 @@ to analyze and report one or more data columns from a dataframe returned by <a c
 <ul class="simple">
 <li><p>The <a class="reference internal" href="analyzing_data.html"><span class="doc">Result analysis and plotting with enb</span></a> page provides detailed information on how to analyze and plot
 different types of data with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>, using the <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module.</p></li>
-<li><p>You can use <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> tools also for <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained from <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances
+<li><p>You can use <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> tools also for <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained from <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances
 directly obtained from CSV files (e.g., produced by some other tool).</p></li>
 </ul>
 </div>
@@ -238,7 +234,7 @@ plot related to the <cite>line_count</cite> column defined above.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+502.gba4322431d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_df</span></code> is the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance produced by <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>.</p></li>
 </ul>
 </div>
 <p>Note that several grouping options are available when reporting data.
