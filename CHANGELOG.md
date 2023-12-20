@@ -17,15 +17,19 @@ format. Given a code initially developed for one `enb` version and then executed
 After 4 years of development and a lot of user feedback, switched from beta status to stable/production!
 
 **NOTE**: This version change does NOT imply a change in the API (backwards compatibility with 0.4.x is expected).
-However, a cleanup of old blobs was performed on the repository. Therefore, you might need to use `git pull --force`
-to update your local development repository. 
+However, a cleanup of old blobs was performed on the repository. 
+You might need to use `git pull --force` to update your local development repository. 
 
 Improvements:
 
-- Added the `ScalarNumericJointAnalyzer` class, which allows numerical data analysis considering two classifications
+- Added the `enb.aanalysis.ScalarNumericJointAnalyzer` class, 
+  which allows numerical data analysis considering two classifications
   at the same time. Useful to produce 2D tables (also in latex format) with categorical columns and rows. 
 - Enhanced plugin installation messages and behavior.
 - Added a plugin for the Montsec compressor.
+- Improved computation time of ATable.get_df when part of the rows already existed.
+- Added support for group comparison in the `enb.aanalysis.TwoNumericAnalyzer` 
+  class when the `line` render mode is requested.
 
 Bug fixes:
 
@@ -41,7 +45,8 @@ Bug fixes:
 
 New features:
 
-- Added a plugin that can apply the direct and inverse BWT. Uses the codec API (compress, decompress).
+- Added a plugin that can apply the direct and inverse BWT (Burrows-Wheeler Transform). 
+  It uses the codec API (compress, decompress), although no compression is actually performed.
 - Added a plugin for the LPAQ8 codec.
 - Added support in `enb.isets` for reading and writing BIL and BIP raw data orderings. Added the BIPToBSQ
   and BILToBSQ ImageVersionTable subclasses to facilitate curation of BIL and BIP datasets.

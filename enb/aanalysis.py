@@ -478,6 +478,10 @@ class Analyzer(enb.atable.ATable):
         if "global_y_label_margin" not in column_kwargs:
             column_kwargs["global_y_label_margin"] = self.global_y_label_margin
 
+        if "show_reference_group" in column_kwargs:
+            self.show_reference_group = column_kwargs["show_reference_group"]
+            del column_kwargs["show_reference_group"]
+
         return column_kwargs
 
     def get_output_pdf_path(self, column_selection, group_by, reference_group,
@@ -1858,7 +1862,7 @@ class TwoNumericAnalyzer(Analyzer):
             column_kwargs["global_x_label"] = \
                 x_column_properties.label + \
                 (f" difference vs. {reference_group}"
-                 if reference_group else "")
+                 if reference_group and "scatter" in self.selected_render_modes else "")
         if "global_y_label" not in column_kwargs:
             column_kwargs["global_y_label"] = \
                 y_column_properties.label + \
@@ -2030,42 +2034,137 @@ class TwoNumericSummary(ScalarNumericSummary):
         self.move_render_columns_back()
 
     def apply_reference_bias(self):
-        """Compute the average value of the reference group for each target
-        column and subtract it from the dataframe being analyzed. If not
-        reference group is present, no action is performed.
+        """If a reference group is selected, subtract the reference_group's
+        average values from all groups, so that reference_group becomes the baseline.
+
+        The scatter and line render modes cannot be simultaneously selected
+        if a reference group is selected, since the bias is applied differently
+        for each mode.
         """
         if self.reference_group is not None:
             if self.group_by is None:
                 raise ValueError(
                     f"Cannot use a not None reference_group if group_by is None "
                     f"(here is {repr(self.reference_group)})")
+            if all(mode in self.analyzer.selected_render_modes for mode in ("line", "scatter")):
+                raise ValueError(f"{self.analyzer.__class__.__name__} does not support using a "
+                                 f"reference group (here {self.reference_group}) "
+                                 f"simultaneously for the 'line' and 'scatter' render modes. "
+                                 f"Please run this analyzer twice, "
+                                 f"once for 'line' and another for 'scatter', "
+                                 f"if both are needed.")
 
-            for group_label, group_df in self.split_groups():
-                if group_label == self.reference_group:
-                    target_columns = set()
-                    for column1, column2 in self.target_columns:
-                        target_columns.add(column1)
-                        target_columns.add(column2)
-
-                    self.reference_avg_by_column = {
-                        column:
-                            group_df[group_df[column].notna()][column].mean()
-                        for column in target_columns
-                    }
-
-                    self.reference_df = self.reference_df.copy()
-                    for column, avg in self.reference_avg_by_column.items():
-                        self.reference_df[column] -= avg
-                    break
+            if "scatter" in self.analyzer.selected_render_modes:
+                self.apply_reference_bias_scatter()
+            elif "line" in self.analyzer.selected_render_modes:
+                self.apply_reference_bias_line()
             else:
-                found_groups_str = ','.join(
-                    repr(label) for label, _ in self.split_groups(
-                        reference_df=self.reference_df,
-                        include_all_group=self.include_all_group))
-                raise ValueError(f"Cannot find {self.reference_group} "
-                                 f"among defined groups ({found_groups_str})")
+                raise ValueError(
+                    f"Unsupported render mode(s) {self.analyzer.selected_render_modes} "
+                    f"in {self.analyzer.__class__.__name__}.")
         else:
             self.reference_avg_by_column = None
+
+    def apply_reference_bias_line(self):
+        """Make the reference group the baseline (if one is selected).
+        For each x value, subtract the reference group's average value of each y column.
+
+        All groups must share their x values, i.e., must be x-aligned, or a ValueError
+        is raised.
+
+        Each y-column can only be used with one x-column, or a ValueError is raised.
+        """
+        if self.reference_group is None:
+            return
+        if "line" not in self.analyzer.selected_render_modes:
+            raise ValueError("This method is meant to be called for the scatter render mode,"
+                             f"but {self.analyzer.selected_render_modes=}")
+        self.reference_df = self.reference_df.copy()
+
+        for group_label, group_df in self.split_groups():
+            if group_label == self.reference_group:
+                # Keys are the y-column names that have been processed. Values
+                # are the corresponding x-columns for each y-column
+                # (each y-column can only be used with one x-column)
+                processed_y_to_x_columns = dict()
+                for x_column, y_column in self.target_columns:
+                    try:
+                        if processed_y_to_x_columns[y_column] != x_column:
+                            raise ValueError(
+                                "Each y-column can only be used with one x-column."
+                                f"However, {repr(y_column)} was used for "
+                                f"{repr(x_column)} and {repr(processed_y_to_x_columns[y_column])}")
+                        processed_y_to_x_columns[y_column] = x_column
+                    except KeyError:
+                        pass
+
+                reference_count_by_xvalue = dict()
+                for x_value in group_df[x_column].unique():
+                    reference_filtered_df = group_df.loc[group_df[x_column] == x_value]
+                    reference_filtered_df = reference_filtered_df.loc[reference_filtered_df[y_column].notna()]
+                    reference_count_by_xvalue[x_value] = len(reference_filtered_df)
+                    self.reference_df.loc[self.reference_df[x_column] == x_value, y_column] \
+                        -= reference_filtered_df[y_column].mean()
+
+
+                warning_shown = False
+                for target_group_label, target_group_df in self.split_groups():
+                    for y_column, x_column in processed_y_to_x_columns.items():
+                        for x_value in target_group_df[x_column].unique():
+                            target_filtered_df = target_group_df[
+                                target_group_df[x_column] == x_value].notna()
+                            target_count = len(target_filtered_df)
+                            if not warning_shown and target_count != reference_count_by_xvalue[x_value]:
+                                enb.logger.warn(
+                                    "Warning: when applying group reference bias, it was found that "
+                                    f"group {repr(target_group_label)} contained {target_count} elements "
+                                    f"for {x_column}={x_value} but the reference group ({self.reference_group}) "
+                                    f"contained {reference_count_by_xvalue[x_value]}. This message is shown "
+                                    f"only once per call: other columns and/or x values might have the same "
+                                    f"problem.")
+
+                break
+        else:
+            found_groups_str = ','.join(
+                repr(label) for label, _ in self.split_groups(
+                    reference_df=self.reference_df,
+                    include_all_group=self.include_all_group))
+            raise ValueError(f"Cannot find {self.reference_group} "
+                             f"among defined groups ({found_groups_str})")
+
+    def apply_reference_bias_scatter(self):
+        """Subtract the reference group's average value of all requested x and y columns.
+        """
+        if self.reference_group is None:
+            return
+        if "scatter" not in self.analyzer.selected_render_modes:
+            raise ValueError("This method is meant to be called for the scatter render mode,"
+                             f"but {self.analyzer.selected_render_modes=}")
+
+        for group_label, group_df in self.split_groups():
+            if group_label == self.reference_group:
+                target_columns = set()
+                for column1, column2 in self.target_columns:
+                    target_columns.add(column1)
+                    target_columns.add(column2)
+
+                self.reference_avg_by_column = {
+                    column:
+                        group_df[group_df[column].notna()][column].mean()
+                    for column in target_columns
+                }
+
+                self.reference_df = self.reference_df.copy()
+                for column, avg in self.reference_avg_by_column.items():
+                    self.reference_df[column] -= avg
+                break
+        else:
+            found_groups_str = ','.join(
+                repr(label) for label, _ in self.split_groups(
+                    reference_df=self.reference_df,
+                    include_all_group=self.include_all_group))
+            raise ValueError(f"Cannot find {self.reference_group} "
+                             f"among defined groups ({found_groups_str})")
 
     def add_twoscalar_description_columns(self, column_names):
         """Add columns that compute several statistics considering two
@@ -2251,16 +2350,17 @@ class TwoNumericSummary(ScalarNumericSummary):
                     0] and group_label != reference_group)
                  or (sorted(self.label_to_df.keys())[0] == reference_group
                      and sorted(self.label_to_df.keys())[0] == group_label)):
-            plds_this_case.append(plotdata.VerticalLine(
-                x_position=self.reference_avg_by_column[x_column_name],
-                color="black",
-                alpha=0.3,
-                line_width=1))
-            plds_this_case.append(plotdata.HorizontalLine(
-                y_position=self.reference_avg_by_column[y_column_name],
-                color="black",
-                alpha=0.3,
-                line_width=1))
+            if "scatter" in self.analyzer.selected_render_modes:
+                plds_this_case.append(plotdata.VerticalLine(
+                    x_position=self.reference_avg_by_column[x_column_name],
+                    color="black",
+                    alpha=0.3,
+                    line_width=1))
+                plds_this_case.append(plotdata.HorizontalLine(
+                    y_position=self.reference_avg_by_column[y_column_name],
+                    color="black",
+                    alpha=0.3,
+                    line_width=1))
 
         return plds_this_case
 
