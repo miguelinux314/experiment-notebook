@@ -168,7 +168,7 @@ class Analyzer(enb.atable.ATable):
           columns are used.
         :param selected_render_modes: a potentially empty list of mode names,
           all of which must be in self.valid_render_modes. Each mode represents
-          a type of analysis or plotting.
+          a type of analysis or plotting. A single string can also be passed.
         :param group_by: if not None, the name of the column to be used for
           grouping.
         :param reference_group: if not None, the reference group name against
@@ -212,6 +212,8 @@ class Analyzer(enb.atable.ATable):
 
         try:
             original_srm = self.selected_render_modes
+            if isinstance(selected_render_modes, str):
+                selected_render_modes = [selected_render_modes]
             srm = set(selected_render_modes if selected_render_modes else self.valid_render_modes)
             self.selected_render_modes = srm
 
