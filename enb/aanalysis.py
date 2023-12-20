@@ -1051,8 +1051,7 @@ class ScalarNumericAnalyzer(Analyzer):
                     column_selection].label
 
             if reference_group is not None:
-                column_kwargs[
-                    "global_x_label"] += f" difference vs. {reference_group}"
+                column_kwargs["global_x_label"] += f" difference vs. {reference_group}"
 
         if "global_y_label" not in column_kwargs:
             if self.main_alpha > 0 and self.bar_width_fraction > 0:
@@ -1152,8 +1151,7 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["global_x_label"] = column_to_properties[
                 column_selection].label
             if reference_group is not None:
-                column_kwargs[
-                    "global_x_label"] += f" difference vs. {reference_group}"
+                column_kwargs["global_x_label"] += f" difference vs. {reference_group}"
 
         if "global_y_label" not in column_kwargs:
             column_kwargs["global_y_label"] = ""
@@ -1233,8 +1231,7 @@ class ScalarNumericAnalyzer(Analyzer):
             column_kwargs["global_x_label"] = column_to_properties[
                 column_selection].label
             if reference_group is not None:
-                column_kwargs[
-                    "global_x_label"] += f" difference vs. {reference_group}"
+                column_kwargs["global_x_label"] += f" difference vs. {reference_group}"
 
         if "global_y_label" not in column_kwargs:
             column_kwargs["global_y_label"] = ""
@@ -3338,7 +3335,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                         latex_file.write(
                                             " & " + cell_format.format(
                                                 ("\\textbf{" if highlight else "")
-                                                + number_format.format(summary_dict[(x_category, y_category)])
+                                                + number_format.format(
+                                                    summary_dict[(x_category, y_category)])
                                                 + ("}" if highlight else "")))
                                     except KeyError:
                                         latex_file.write(" & " + " " * longest_cell_length)
