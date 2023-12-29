@@ -3118,10 +3118,10 @@ class ScalarNumericJointAnalyzer(Analyzer):
         :param highlight_best_row:  Optionally highlight the best results in each column.
           Must be one of "low", "high" or None
         """
-        if highlight_best_col is not None and highlight_best_col.lower() not in ("low", "high"):
+        if highlight_best_col is not None and str(highlight_best_col).lower() not in ("low", "high"):
             raise ValueError(
                 f"Invalid {highlight_best_col=}. Must be one of {('low', 'high', None)}")
-        if highlight_best_row is not None and highlight_best_row.lower() not in ("low", "high"):
+        if highlight_best_row is not None and str(highlight_best_row).lower() not in ("low", "high"):
             raise ValueError(
                 f"Invalid {highlight_best_row=}. Must be one of {('low', 'high', None)}")
 
