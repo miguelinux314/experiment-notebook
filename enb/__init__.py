@@ -104,15 +104,13 @@ from . import aanalysis
 ## Image compression modules
 from . import icompression
 from . import isets
+from . import fits
+from . import png
+from . import jpg
 from . import pgm
 from . import tarlite
 # Plugin and template support
 from . import plugins
-
-# Secondary module import
-from . import fits
-from . import png
-from . import jpg
 
 # For backwards compatibility
 isets.FITSVersionTable = fits.FITSVersionTable

@@ -75,6 +75,13 @@ class PGMWrapperCodec(enb.icompression.WrapperCodec):
             drs.decompression_time_seconds = \
                 decompression_results.decompression_time_seconds
 
+class PGMCurationTable(enb.png.PNGCurationTable):
+    """Given a directory tree containing PGM images, copy those images into
+    a new directory tree in raw BSQ format adding geometry information tags to
+    the output names recognized by `enb.isets.load_array_bsq`.
+    """
+    dataset_files_extension = "pgm"
+
 
 def read_pgm(input_path, byteorder='>'):
     """Return image data from a raw PGM file as numpy array.
