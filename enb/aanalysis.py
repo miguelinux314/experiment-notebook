@@ -3540,12 +3540,12 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
         # Add the (x,y) cell values
         for (x_category, y_category), split_df in full_df.groupby([x_column, y_column]):
             for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
-                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(x_category, y_category)] = value
+                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), str(y_category))] = value
 
         # Add the "all" row elements
         for x_category, split_df in full_df.groupby(x_column):
             for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
-                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(x_category, None)] = value
+                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), None)] = value
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         _self, group_label, row = args  # pylint: disable=unused-variable
@@ -3561,7 +3561,7 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
 
         avg_dict = row[f"{x_column}_{y_column}_{data_column}_avg"]
         cell_text = [[_self.analyzer.number_format.format(avg_dict[(x_category, y_category)])
-                      if (x_category, y_category) in avg_dict else ""
+                      if (str(x_category), str(y_category)) in avg_dict else ""
                       for x_category in x_categories]
                      for y_category in y_categories]
 
