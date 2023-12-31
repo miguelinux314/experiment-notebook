@@ -3066,8 +3066,10 @@ class ScalarNumericJointAnalyzer(Analyzer):
     """
     valid_render_modes = {"table"}
     selected_render_modes = set(valid_render_modes)
-    # Show global statistics ("All" row) when more than one row is present in the table?
-    show_global = True
+    # Show the global "All" row
+    show_global_row = False
+    # Show the global "All" column
+    show_global_column = False
     # Show the reference group when one is selected?
     show_reference_group = False
     # Optionally highlight the best results in each row. Must be one of "low", "high" or None
@@ -3094,7 +3096,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                selected_render_modes=None,
                output_plot_dir=None, group_by=None, reference_group=None,
                column_to_properties=None,
-               show_global=None, show_count=None,
+               show_global_row=None, show_global_column=None,
+               show_count=None,
                x_header_list=None, y_header_list=None,
                highlight_best_col=None, highlight_best_row=None,
                **render_kwargs):
@@ -3117,6 +3120,12 @@ class ScalarNumericJointAnalyzer(Analyzer):
           Must be one of "low", "high" or None.
         :param highlight_best_row:  Optionally highlight the best results in each column.
           Must be one of "low", "high" or None
+        :param show_global_row: if True, or if None and self.show_global is True, an extra row is
+          added to the analysis, corresponding to not splitting the data into the y categories
+          (i.e., considering the average for all possible y categories). Note that if y_header_list is selected,
+          averages are considered only for those categories.
+        :param show_global_column: like show_global_row, but adds a new column corresponding to not splitting
+          into x categories. Note that if x_header_list is selected, averages are considered only for those categories.
         """
         if highlight_best_col is not None and str(highlight_best_col).lower() not in ("low", "high"):
             raise ValueError(
@@ -3125,18 +3134,24 @@ class ScalarNumericJointAnalyzer(Analyzer):
             raise ValueError(
                 f"Invalid {highlight_best_row=}. Must be one of {('low', 'high', None)}")
 
+        if "show_global" in render_kwargs:
+            enb.logger.warn(f"Warning: `show_global` is ignored in {self.__class__.__name__}; "
+                            f"use `show_global_row` and/or `show_global_column` instead.")
+
         render_kwargs = dict(render_kwargs)
         render_kwargs["x_header_list"] = x_header_list
         render_kwargs["y_header_list"] = y_header_list
         render_kwargs["highlight_best_col"] = highlight_best_col
         render_kwargs["highlight_best_row"] = highlight_best_row
+        render_kwargs["show_global_row"] = show_global_row
+        render_kwargs["show_global_column"] = show_global_column
         return super().get_df(full_df=full_df, target_columns=target_columns,
                               selected_render_modes=selected_render_modes,
                               output_plot_dir=output_plot_dir,
                               group_by=group_by,
                               reference_group=reference_group,
                               column_to_properties=column_to_properties,
-                              show_global=show_global, show_count=show_count,
+                              show_count=show_count,
                               **render_kwargs)
 
     def update_render_kwargs_one_case(
@@ -3156,7 +3171,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
             render_mode=render_mode,
             summary_df=summary_df, output_plot_dir=output_plot_dir,
             group_by=group_by, column_to_properties=column_to_properties,
-            show_global=show_global, show_count=show_count,
+            show_global=None, show_count=show_count,
             **column_kwargs)
 
         if "global_x_label" not in column_kwargs:
@@ -3187,6 +3202,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
         del column_kwargs["y_header_list"]
         del column_kwargs["highlight_best_row"]
         del column_kwargs["highlight_best_col"]
+        del column_kwargs["show_global_column"]
+        del column_kwargs["show_global_row"]
 
         return column_kwargs
 
@@ -3197,7 +3214,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                          target_columns=target_columns,
                                          reference_group=reference_group,
                                          group_by=group_by,
-                                         include_all_group=include_all_group,
+                                         show_global_row=render_kwargs["show_global_row"],
+                                         show_global_column=render_kwargs["show_global_column"],
                                          x_header_list=render_kwargs["x_header_list"],
                                          y_header_list=render_kwargs["y_header_list"],
                                          highlight_best_row=render_kwargs["highlight_best_row"],
@@ -3253,10 +3271,15 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 y_categories=summary_table.category_to_values[y_column],
                                 reference_group=summary_table.reference_group)
 
-                            csv_file.write("," + ",".join(str(x) for x in x_categories) + "\n")
+                            if summary_table.show_global_row:
+                                y_categories.append(None)
+                            if summary_table.show_global_column:
+                                x_categories.append(None)
+
+                            csv_file.write("," + ",".join(str(x) if x is not None else "All" for x in x_categories) + "\n")
                             number_format = self.number_format if stat != "count" else "{:d}"
                             for y_category in y_categories:
-                                csv_file.write(str(y_category))
+                                csv_file.write(str(y_category) if y_category is not None else "All")
                                 for x_category in x_categories:
                                     try:
                                         csv_file.write("," + number_format.format(
@@ -3410,7 +3433,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 f"{x_categories=} and {y_categories=}, but it was not found in "
                                 f"either")
 
-        return x_categories, y_categories
+        return list(x_categories), list(y_categories)
 
 
 class ScalarNumericJointSummary(ScalarNumericSummary):
@@ -3418,7 +3441,7 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
     """
 
     def __init__(self, analyzer, full_df, target_columns, reference_group,
-                 group_by, include_all_group,
+                 group_by, show_global_row, show_global_column,
                  x_header_list, y_header_list, highlight_best_row, highlight_best_col):
         """
         Identical to :meth:`enb.aanalysis.ScalarNumericSummary.__init__`, but calculates
@@ -3443,14 +3466,22 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
           element in each column is selected, and highlighted.
         :param highlight_best_col: if not None, it must be "low" or "hight", which determines how the best
           element in each row is selected, and highlighted.
+        :param show_global_row: if True, an "All" row is added with the average of all rows (assuming at least
+          two rows are present)
+        :param show_global_column: if True, an "All" row is added with the average of all columns (assuming at least
+          two columns are present)
         """
         AnalyzerSummary.__init__(
             self=self,
             analyzer=analyzer, full_df=full_df, target_columns=target_columns,
             reference_group=reference_group, group_by=group_by,
-            include_all_group=include_all_group)
+            include_all_group=None)
+        self.show_global_row = show_global_row
+        self.show_global_column = show_global_column
         self.highlight_best_row = highlight_best_row
         self.highlight_best_col = highlight_best_col
+        self.x_header_list = [str(x) for x in x_header_list] if x_header_list else x_header_list
+        self.y_header_list = [str(y) for y in y_header_list] if y_header_list else y_header_list
 
         self.category_to_values = {}
         for x_column, y_column, data_column in target_columns:
@@ -3520,10 +3551,10 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
         row[f"{x_column}_{y_column}_{data_column}_count"] = dict()
 
         full_df = _self.label_to_df[group_label]
+        full_df = self.remove_nans(full_df)
 
-        # If a reference group is defined, subtract the average
+        # If a reference group is defined, subtract its average
         if _self.reference_group is not None:
-            full_df = self.remove_nans(full_df)
             if _self.reference_group in self.category_to_values[x_column]:
                 for y_category in self.category_to_values[y_column]:
                     reference_average = full_df[
@@ -3539,13 +3570,41 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
 
         # Add the (x,y) cell values
         for (x_category, y_category), split_df in full_df.groupby([x_column, y_column]):
+            if _self.x_header_list and str(x_category) not in _self.x_header_list:
+                continue
+            if _self.y_header_list and str(y_category) not in _self.y_header_list:
+                continue
             for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
                 row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), str(y_category))] = value
 
-        # Add the "all" row elements
-        for x_category, split_df in full_df.groupby(x_column):
-            for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
-                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), None)] = value
+        # Add the "All" row
+        if _self.show_global_row:
+            # If a list of y categories is specified, only those are used for the global row "All"
+            if _self.y_header_list:
+                global_df = full_df[full_df[y_column].apply(str).isin(_self.y_header_list)]
+            else:
+                global_df = full_df
+
+            for x_category, split_df in global_df.groupby(x_column):
+                for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
+                    row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), None)] = value
+
+        # Add the "All" column
+        if _self.show_global_column:
+            # If a list of x categories is specified, only those are used for the global column "All"
+            if _self.x_header_list:
+                global_df = full_df[full_df[x_column].apply(str).isin(_self.x_header_list)]
+            else:
+                global_df = full_df
+
+            for y_category, split_df in global_df.groupby(y_column):
+                for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
+                    row[f"{x_column}_{y_column}_{data_column}_{stat}"][(None, y_category)] = value
+
+        # Add the "All"x"All" cell
+        if _self.show_global_row and _self.show_global_column:
+            for stat, value in _self.numeric_series_to_stat_dict(full_df[data_column]).items():
+                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(None, None)] = value
 
     def compute_plottable_data_one_case(self, *args, **kwargs):
         _self, group_label, row = args  # pylint: disable=unused-variable
@@ -3565,10 +3624,20 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
                       for x_category in x_categories]
                      for y_category in y_categories]
 
-        if self.include_all_group and len(y_categories) > 1:
+        if self.show_global_row and len(y_categories) > 1:
+            # show_global option
             y_categories.append("All")
             cell_text.append([_self.analyzer.number_format.format(avg_dict[(x_category, None)])
                               for x_category in x_categories])
+
+        if self.show_global_column and len(x_categories) > 1:
+            x_categories.append("All")
+            if self.show_global_row and len(y_categories) > 1:
+                y_cat_iterable = y_categories[:-1] + [None]
+            else:
+                y_cat_iterable = y_categories
+            cell_text = [row + [_self.analyzer.number_format.format(avg_dict[(None, y_category)])]
+                         for row, y_category in zip(cell_text, y_cat_iterable)]
 
         return [enb.plotdata.Table(x_values=x_categories, y_values=y_categories,
                                    cell_text=cell_text, x_label=x_column, y_label=y_column,
