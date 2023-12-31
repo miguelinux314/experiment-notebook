@@ -132,7 +132,7 @@
   <section id="result-analysis-and-plotting-with-enb">
 <h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0.dev0+823.g0d853e7707)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -174,8 +174,8 @@ column names present in the dataframe being analyzed.</p>
 </div>
 <p>The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
-- histogram
 - hbar
+- histogram
 </pre></div>
 </div>
 <section id="plots">
@@ -240,8 +240,8 @@ which also shows +/- 1 horizontal and vertical standard deviations.</p>
 </figure>
 <p>The previous figure shows an example of the <cite>scatter</cite> plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- line
-- scatter
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- scatter
+- line
 </pre></div>
 </div>
 <p>Note that, for the <cite>scatter</cite> plot mode, it is possible to display linear regression of the data.
@@ -591,8 +591,8 @@ as follows:</p>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- boxplot
-- histogram
 - hbar
+- histogram
 </pre></div>
 </div>
 <p>The <cite>histogram</cite> render mode produces plots like the following:</p>
@@ -623,8 +623,8 @@ as shown next:</p>
 </pre></div>
 </div>
 <p>By default, all of the following render modes are used with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- line
-- scatter
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- scatter
+- line
 </pre></div>
 </div>
 <p>The resulting plot for the <cite>scatter</cite> mode is shown next:</p>
@@ -731,23 +731,38 @@ where both options are used is shown next:</p>
 </section>
 <section id="example-with-twonumericanalyzer">
 <h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Permalink to this headline"></a></h3>
-<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a similar sintax as <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
-Both the <cite>line</cite> and <cite>scatter</cite> render modes are available. If none is selected,
-both are employed.</p>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a sintax similar to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
+Both the <cite>line</cite> and <cite>scatter</cite> render modes are available, but only one can be used per call to <cite>get_df</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
+<span class="c1"># scatter baseline reference</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
     <span class="n">full_df</span><span class="o">=</span><span class="n">iris_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
     <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;two_numeric_reference&quot;</span><span class="p">),</span>
     <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+    <span class="n">selected_render_modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;scatter&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># line baseline reference</span>
+<span class="n">function_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/function.csv&quot;</span><span class="p">)</span>
+<span class="n">analysis_df</span> <span class="o">=</span> <span class="n">two_numeric_analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
+    <span class="n">full_df</span><span class="o">=</span><span class="n">function_df</span><span class="p">,</span> <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">)],</span>
+    <span class="n">output_plot_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">plot_dir</span><span class="p">,</span> <span class="s2">&quot;two_numeric_reference&quot;</span><span class="p">),</span>
+    <span class="n">group_by</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">reference_group</span><span class="o">=</span><span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">,</span>
+    <span class="n">selected_render_modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;scatter&quot;</span><span class="p">]</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>The plots resulting from the above snippet are shown next.</p>
+<p>When <cite>scatter</cite> is selected, the average value for the reference group is calculated for each x and y column.
+Then that value is subtracted from all samples. The point cloud of the reference group is then centered
+at <cite>(0,0)</cite> and all other groups are compared both in the x and y column to the reference.</p>
 <figure class="align-default">
 <img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-scatter-groupby__class-referencegroup__Iris-versicolor.png" />
 </figure>
+<p>When <cite>line</cite> is selected, groups are expected to be x-aligned. That is, they share the same values
+of the x column. The average value of the y column for each x value is subtracted from all samples at that x value.
+For instance, if the x column contains values of a variable x, and the y column contains f(x), g(x), h(x),
+then one can use f as the reference group, which results in plotting f(x)-f(x), g(x)-f(x) and h(x)-f(x).</p>
 <figure class="align-default">
-<img alt="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" src="_images/TwoNumericAnalyzer-sepal_width__vs__petal_length-line-groupby__class-referencegroup__Iris-versicolor.png" />
+<img alt="_images/TwoNumericAnalyzer-functions-line-withreference.png" src="_images/TwoNumericAnalyzer-functions-line-withreference.png" />
 </figure>
 </section>
 </section>
