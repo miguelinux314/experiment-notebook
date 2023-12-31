@@ -257,7 +257,8 @@ class Analyzer(enb.atable.ATable):
                     selected_render_modes=selected_render_modes,
                     summary_df=summary_df,
                     summary_table=summary_table,
-                    target_columns=target_columns)
+                    target_columns=target_columns,
+                    **render_kwargs)
 
                 # Return the summary result dataframe
                 return summary_df
@@ -524,7 +525,7 @@ class Analyzer(enb.atable.ATable):
     def save_analysis_tables(
             self, group_by, reference_group,
             selected_render_modes, summary_df, summary_table,
-            target_columns):
+            target_columns, **render_kwargs):
         """Save csv and tex files into enb.config.options.analysis_dir that
         summarize the results of one target_columns element. If
         enb.config.options.analysis_dir is None or empty, no analysis is
@@ -559,12 +560,13 @@ class Analyzer(enb.atable.ATable):
                 analysis_output_path, index=False)
 
             # Generate tex summary
+            show_count = "show_count" in render_kwargs and render_kwargs["show_count"] is True
             summary_df[list(
                 c for c in summary_df.columns
                 if c not in summary_table.render_column_names
                 and c not in ["row_created", "row_updated",
                               enb.atable.ATable.private_index_column]
-                and (c in ("group_label", "group_size")
+                and (c in ("group_label", "group_size" if show_count else "")
                      or c.endswith("_avg")))].style.format(
                 escape="latex",
                 precision=self.latex_decimal_count).format_index(
@@ -1931,7 +1933,7 @@ class TwoNumericAnalyzer(Analyzer):
 
     def save_analysis_tables(
             self, group_by, reference_group, selected_render_modes, summary_df,
-            summary_table, target_columns):
+            summary_table, target_columns, **render_kwargs):
         """Save csv and tex files into enb.config.options.analysis_dir that
         summarize the results of one target_columns element. If
         enb.config.options.analysis_dir is None or empty, no analysis is
@@ -1949,7 +1951,8 @@ class TwoNumericAnalyzer(Analyzer):
                     selected_render_modes={render_mode},
                     summary_df=summary_df,
                     summary_table=summary_table,
-                    target_columns=target_columns)
+                    target_columns=target_columns,
+                    **render_kwargs)
             elif options.analysis_dir:
                 for column_pair in target_columns:
                     analysis_output_path = self.get_output_pdf_path(
@@ -3224,7 +3227,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
     def save_analysis_tables(
             self, group_by, reference_group,
             selected_render_modes, summary_df, summary_table,
-            target_columns):
+            target_columns, **render_kwargs):
         """
         Store the joint analysis results in CSV and latex formats.
 
