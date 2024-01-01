@@ -15,6 +15,7 @@ import os as _os
 import sys as _sys
 import appdirs as _appdirs
 import numpy as _np
+import builtins as _builtins
 
 # Make all warnings errors
 _np.seterr(all="raise")
@@ -43,6 +44,9 @@ calling_script_dir = _os.path.realpath(
 # Are we currently running the main enb CLI or the CLI for a host script?
 # True means main enb CLI.
 is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
+
+# Is the original stdout a real terminal, or is it piped? Animated progress is only intended for actual terminals
+is_stdout_tty = _sys.stdout.isatty()
 
 # Data dir
 default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
@@ -88,8 +92,8 @@ logger.show_prefixes = config.options.log_level_prefix
 logger.show_prefix_level = logger.get_level(
     name=config.options.show_prefix_level)
 
-if config.options.log_print and not parallel_ray.is_parallel_process():
-    logger.replace_print()
+# Redirect print calls to enb's logger
+_builtins.print = logger.print_to_log
 
 # Remaining core modules
 ## Keystone ATable features
@@ -127,7 +131,9 @@ icompression.PGMWrapperCodec = pgm.PGMWrapperCodec
 # Setup to be run only when enb is imported in the main process
 if not parallel_ray.is_parallel_process():
     # Setup common to
-    log.core(config.get_banner())
+    log.verbose("\n")
+    log.verbose(config.get_banner(markup=True), rule=True, markup=True)
+    log.verbose("\n")
     log.debug(
         f"Additional .ini files employed: {repr(config.ini.all_ini_paths)}.")
 

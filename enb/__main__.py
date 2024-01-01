@@ -275,7 +275,7 @@ def main():
         return
     else:
         # Successful command run
-        print()
+        enb.logger.verbose("")
 
 
 if __name__ == '__main__':

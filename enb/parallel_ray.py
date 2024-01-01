@@ -22,6 +22,8 @@ import platform
 import importlib
 import psutil
 import pandas as pd
+import textwrap
+import itertools
 
 import enb
 from . import config
@@ -142,8 +144,8 @@ class HeadNode:
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise Exception(f"Status = {status} != 0.\n"
-                                f"Input=[{invocation}].\n"
-                                f"Output=[{output}]")
+                                f"Input={repr(invocation)}].\n"
+                                f"Output={repr(output)}")
 
         with logger.info_context(f"Starting ray on port {self.ray_port}"):
             invocation = f"ray start --head " \
@@ -161,7 +163,8 @@ class HeadNode:
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise RuntimeError(f"Error starting head ray process\n"
-                                   f"Command: {repr(invocation)}. Ouput:\n{output}")
+                                   f"Command: {repr(invocation)}.\n"
+                                   f"Output:{repr(output)}")
 
         with logger.info_context(
                 f"Initializing ray client on local port {self.ray_port}"):
@@ -238,9 +241,16 @@ class HeadNode:
                                 rn.connect()
                                 connected_nodes.append(rn)
                             except RuntimeError as connection_ex:
-                                print(
-                                    f"Error connecting to {rn}: {repr(connection_ex)}. "
-                                    "Execution will continue without this node.")
+                                reason_str = textwrap.indent("\n".join(
+                                    itertools.chain(
+                                        *(textwrap.wrap(line, shutil.get_terminal_size()[0] - 6)
+                                        for line in repr(connection_ex).replace(r"\n", "\n").splitlines()))),
+                                    " "*4)
+
+                                logger.warn(
+                                    f"Cannot connect to {rn.address}:{rn.ssh_port}. Reason:\n" +
+                                    reason_str +
+                                    f".\nExecution will continue without node {rn.address}:{rn.ssh_port}.")
                     self.remote_nodes = connected_nodes
 
                 logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
@@ -269,7 +279,7 @@ class HeadNode:
             if status != 0:
                 logger.error(
                     "Error stopping ray process. You might need to run `ray stop` manually.\n"
-                    f"Command: {repr(invocation)}. Ouput:\n{output}")
+                    f"Command: {repr(invocation)}.\nOutput: {repr(output)}")
 
     def parse_cluster_config_csv(self, csv_path):
         """Read a CSV defining remote nodes and return a list with as many
@@ -365,7 +375,7 @@ class RemoteNode:
             if status != 0:
                 raise RuntimeError(
                     f"Error stopping remote ray process on {self}.\n"
-                    f"Command: {repr(invocation)}. Ouput:\n{output}")
+                    f"Command: {repr(invocation)}.\nOutput: {repr(output)}")
 
         if self.remote_mount_needed:
             # Create remote_node_folder_path on the remote host if not existing
@@ -379,7 +389,7 @@ class RemoteNode:
                 if status != 0:
                     raise RuntimeError(
                         f"Error creating remote mount point on {self}.\n"
-                        f"Command: {repr(invocation)}. Ouput:\n{output}")
+                        f"Command: {repr(invocation)}.\nOutput: {repr(output)}")
             # Mount the project root on remote_node_folder_path - use a separate process
             self.mount_project_remotely()
         else:
@@ -404,7 +414,7 @@ class RemoteNode:
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise RuntimeError(f"Error starting remote ray on {self}.\n"
-                                   f"Command: {repr(invocation)}. Ouput:\n{output}")
+                                   f"Command: {repr(invocation)}.\nOutput: {repr(output)}")
 
     def mount_project_remotely(self):
         """Use sshfs to mount the remote project folder into the remote node.
@@ -448,7 +458,7 @@ class RemoteNode:
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 logger.debug(f"Error disconnecting {self}. "
-                             f"Command: {repr(invocation)}. Output:\n{output}")
+                             f"Command: {repr(invocation)}.\nOutput: {repr(output)}")
 
         if self.remote_mount_needed:
             target_str = f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
@@ -532,7 +542,6 @@ def is_ray_initialized():
     """
     return is_ray_enabled() and ray.is_initialized
 
-
 def parallel_decorator(*args, **kwargs):
     """Wrapper of the @`ray.remote` decorator that automatically updates
     enb.config.options for remote processes, so that they always access the
@@ -552,7 +561,7 @@ def parallel_decorator(*args, **kwargs):
             new_level = logger.get_level(logger.level_message.name,
                                          config.options.verbose)
             log.logger.selected_log_level = new_level
-            log.logger.replace_print()
+            builtins.print = logger.print_to_log
 
             return f(*a, **k)
 
@@ -564,25 +573,12 @@ def parallel_decorator(*args, **kwargs):
             the local side. It makes sure that `remote_side_wrapper` receives
             the options argument.
             """
-            try:
-                try:
-                    current_print = builtins.print
-                    # pylint: disable=protected-access
-                    builtins.print = logger._original_print
-                    # pylint: enable=protected-access
-                except AttributeError:
-                    pass
+            # apply ray.put to all arguments before passing them
+            return method_proxy.ray_remote(
+                ray.put(dict(config.options.items())),
+                *[ray.put(argument) for argument in a],
+                **{key: ray.put(value) for key, value in k.items()})
 
-                # apply ray.put to all arguments before passing them
-                return method_proxy.ray_remote(
-                    ray.put(dict(config.options.items())),
-                    *[ray.put(argument) for argument in a],
-                    **{key: ray.put(value) for key, value in k.items()})
-            finally:
-                builtins.print = current_print
-
-        # method_proxy.remote = local_side_remote
-        # method_proxy.start = method_proxy.remote
         del method_proxy.remote
         method_proxy.start = local_side_remote
 

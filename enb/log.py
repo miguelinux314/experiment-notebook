@@ -9,8 +9,11 @@ __date__ = "2021/08/13"
 
 import contextlib
 import sys
-import builtins
 import time
+import re
+import rich
+import rich.markup
+import rich.console
 
 from .misc import ExposedProperty
 from .misc import Singleton
@@ -24,13 +27,16 @@ class LogLevel:
 
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
 
-    def __init__(self, name, priority=0, prefix=None, help_message=None):
+    def __init__(self, name, priority=0, prefix=None, help_message=None, color=None):
         """
         :param priority: minimum priority level needed to show this level.
         :param name: unique name for the level.
         :param prefix: prefix when printing messages of this level. If None,
           a default one is used based on the name.
         :param help_message: optional help explaining the purpose of the level.
+        :param color: if not None, a color with which messages of this level are displayed. See
+          https://rich.readthedocs.io/en/stable/appendix/colors.html for more details about
+          available colors. If None, the default color is used.
         """
         self.name = name
         self.priority = priority
@@ -40,6 +46,7 @@ class LogLevel:
             self.prefix = prefix
         else:
             self.prefix = f"[{name[0].upper()}] "
+        self.color = color
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}:{self.priority})"
@@ -67,26 +74,34 @@ class Logger(metaclass=Singleton):
         self.levels = [
             LogLevel("core",
                      help_message="Messages always shown, "
-                                  "no matter the priority level"),
+                                  "no matter the priority level",
+                     color="#28c9ff"),
             LogLevel("error",
                      help_message="A critical error that prevents "
-                                  "from completing the main task"),
+                                  "from completing the main task",
+                     color="#ff5255"
+                     ),
             LogLevel("warn",
                      help_message="Something wrong or bogus happened, "
-                                  "but the main task can be completed"),
+                                  "but the main task can be completed",
+                     color="#ffca4f"),
             LogLevel("message",
                      help_message="Task-central messages intended "
-                                  "to appear in console"),
+                                  "to appear in console",
+                     color="#28c9ff"),
             LogLevel("verbose",
                      help_message="Messages for the interested user, "
-                                  "e.g., task progress"),
+                                  "e.g., task progress",
+                     color="#c8ffc8"),
             LogLevel("info",
                      help_message="Messages for the very interested "
                                   "user/developer, e.g., detailed "
-                                  "task progress"),
+                                  "task progress",
+                     color="#afffbe"),
             LogLevel("debug",
                      help_message="Messages for debugging purposes, "
-                                  "e.g., traces and watches"),
+                                  "e.g., traces and watches",
+                     color="#909090"),
         ]
         # Assign an integer priority level to each defined level (higher:
         # less priority).
@@ -122,6 +137,9 @@ class Logger(metaclass=Singleton):
         self._last_level = None
         # Store the original builtins print function when replacing
         self._original_print = None
+        # Lazy imports from parallel_ray, to avoid circular definitions
+        self._is_parallel_process = None
+        self._is_ray_enabled = None
 
     def levels_by_priority(self):
         """Return a list of the available levels, sorted from higher to lower
@@ -130,7 +148,8 @@ class Logger(metaclass=Singleton):
         return sorted(self.name_to_level.values(),
                       key=lambda level: level.priority)
 
-    def log(self, msg, level, end="\n", file=None, flush=True):
+    def log(self, msg, level, end="\n", file=None, markup=False, highlight=False, style=None,
+            rule=False, rule_kwargs=None):
         """Conditionally log a message given its level. It only shares "end"
         with builtins.print as keyword argument.
 
@@ -139,10 +158,20 @@ class Logger(metaclass=Singleton):
         :param end: string appended after the message, if it is shown.
         :param file: file where to log the message, or None to automatically
           select sys.stdout
-        :param flush: if True, the output file is flushed after writing.
+        :param markup: should rich markup be interpreted within the message?
+        :param highlight: should rich apply automatic highlighting of numbers, constants, etc., to the message?
+        :param style: if not None, the level's style is overwritten by this
+        :param rule: should the message be displayed with console.rule()?
+        :param rule_kwargs: if rule_kwargs is True, these parameters are passed to console.rule
         """
+        if not self.is_parallel_process() and self.is_ray_enabled():
+            match = re.search(r"(.*)__ray_parallel:lvl(\d+)__(.*)", msg)
+            if match:
+                msg = match.group(3).replace("__\\\\n__", "\n")
+                level = self.levels[int(match.group(2))]
+
         # pylint: disable=too-many-arguments
-        file = sys.stdout if file is None else file
+        file = file or sys.stdout
 
         if level.priority <= self.selected_log_level.priority:
             try:
@@ -169,12 +198,38 @@ class Logger(metaclass=Singleton):
                                         and not forfeit_prefix else '') + \
                 f"{msg}{end}"
 
-            file.write(output_msg)
-            if flush:
-                file.flush()
+            console = rich.console.Console(file=file, markup=markup, highlight=highlight)
+
+            if self.is_parallel_process():
+                output_msg = f"__ray_parallel:lvl{level.priority}__{output_msg}".replace("\n",
+                                                                                         "__\\\\n__")
+
+            style = style or level.color
+            if rule:
+                console.rule(output_msg, **(rule_kwargs or dict()))
+            else:
+                console.print(output_msg, end="", style=style)
 
             self._last_end = end
             self._last_level = level
+
+    @property
+    def is_parallel_process(self):
+        if self._is_parallel_process:
+            is_parallel_process = self._is_parallel_process
+        else:
+            from .parallel_ray import is_parallel_process
+            self._is_parallel_process = is_parallel_process
+        return is_parallel_process
+
+    @property
+    def is_ray_enabled(self):
+        if self._is_ray_enabled:
+            is_ray_enabled = self._is_ray_enabled
+        else:
+            from .parallel_ray import is_ray_enabled
+            self._is_ray_enabled = is_ray_enabled
+        return is_ray_enabled
 
     def core(self, msg, **kwargs):
         """A message of "core" level.
@@ -447,42 +502,11 @@ class Logger(metaclass=Singleton):
 
         return base_level
 
-    def replace_print(self, replace=True):
-        """When invoked with replace set to True, it substitutes the builtin
-        print for a wrapper function that logs the contents with "message"
-        priority. If invoked more than once in a row with replace set to
-        True, the second and following calls just return the original print
-        function.
-
-        When invoked with replace set to False, the original print function
-        is restored if it is not currently substituted with enb's logging
-        method. The original print function is also returned in this case.
-
-        Note that the wrapper function does not admit the file or flush
-        parameters.
-
-        :return: the original builtin's print.
-        """
-        if self._original_print is not None:
-            if replace:
-                builtins.print = self._original_print
-        else:
-            if not replace:
-                # No substitution has been made, builtins contains the
-                # original function
-                return builtins.print
-            # _original_print is only set to the original print function
-            self._original_print = builtins.print
-            builtins.print = self.print_to_log
-
-        return self._original_print
-
-    def print_to_log(self, *args, sep=" ", end="\n", file=None, flush=False):
+    def print_to_log(self, *args, sep=" ", end="\n", file=None):
         """Method used to substitute print if configured to do so.
         If file is None, then sys.stdout is used by default.
         """
-        self.message(f"{sep.join((str(a) for a in args))}", end=end, file=file,
-                     flush=flush)
+        self.message(f"{sep.join((str(a) for a in args))}", end=end, file=file)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(selected={self.selected_log_level})"
@@ -507,13 +531,10 @@ debug = logger.debug
 core_active = ExposedProperty(instance=logger, property_name="core_active")
 error_active = ExposedProperty(instance=logger, property_name="error_active")
 warn_active = ExposedProperty(instance=logger, property_name="warn_active")
-message_active = ExposedProperty(instance=logger,
-                                 property_name="message_active")
-verbose_active = ExposedProperty(instance=logger,
-                                 property_name="verbose_active")
+message_active = ExposedProperty(instance=logger, property_name="message_active")
+verbose_active = ExposedProperty(instance=logger, property_name="verbose_active")
 info_active = ExposedProperty(instance=logger, property_name="info_active")
 debug_active = ExposedProperty(instance=logger, property_name="debug_active")
 
 # Expose report functions
-
 report_level_status = logger.report_level_status

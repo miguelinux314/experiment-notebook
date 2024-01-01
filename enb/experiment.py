@@ -197,7 +197,7 @@ class Experiment(enb.atable.ATable):
         assert len(self.dataset_info_table.indices) == 1, \
             "dataset_info_table is expected to have a single index"
 
-        with enb.logger.verbose_context(
+        with enb.logger.info_context(
                 f"[{self.__class__.__name__}:__init__()] "
                 "Obtaining dataset properties with "
                 f"{self.dataset_info_table.__class__.__name__} "

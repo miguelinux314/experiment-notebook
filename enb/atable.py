@@ -211,6 +211,7 @@ import shutil
 import traceback
 import pandas as pd
 import alive_progress
+import builtins
 
 import enb.config
 from enb.config import options
@@ -1006,7 +1007,7 @@ class ATable(metaclass=MetaTable):
         if fill or overwrite:
             for i, chunk in enumerate(chunk_list):
                 if not negative_chunk_size:
-                    enb.logger.verbose(
+                    enb.logger.info(
                         f"[{self.__class__.__name__}:get_df] Starting chunk "
                         f"{i + 1}/{len(chunk_list)} "
                         f"(chunk_size={chunk_size}, "
@@ -1032,11 +1033,11 @@ class ATable(metaclass=MetaTable):
         if fill or overwrite:
             assert len(df) == len(target_indices), (
                 len(df), len(target_indices), target_indices, df)
-            enb.logger.verbose(
+            enb.logger.info(
                 f"[{self.__class__.__name__}:get_df] "
                 f"Retrieved filled dataframe with {len(df)} rows.")
         else:
-            enb.logger.verbose(
+            enb.logger.info(
                 f"[{self.__class__.__name__}:get_df] "
                 f"Retrieved unfilled dataframe with {len(df)} rows.")
 
@@ -1167,7 +1168,7 @@ class ATable(metaclass=MetaTable):
                     f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
 
             # Read CSV from disk
-            with enb.logger.verbose_context(
+            with enb.logger.info_context(
                     f"Loading dataframe from persistence at {csv_support_path}",
                     sep="... "):
                 loaded_df = pd.read_csv(csv_support_path)
@@ -1214,7 +1215,7 @@ class ATable(metaclass=MetaTable):
                         loaded_df[column] = None
 
         except (FileNotFoundError, pd.errors.EmptyDataError):
-            with enb.logger.verbose_context(
+            with enb.logger.info_context(
                     f"No CSV persistence found for {self.__class__.__name__} "
                     f"at {csv_support_path}. Creating an empty one"):
                 loaded_df = pd.DataFrame(
@@ -1422,12 +1423,12 @@ class ATable(metaclass=MetaTable):
                     except (ValueError, TypeError):
                         skip = len(str(row[column])) > 0
                 if skip:
-                    enb.logger.info(
+                    enb.logger.debug(
                         f"Skipping existing value for column {repr(column)},  "
                         f"index={repr(index)} <{self.__class__.__name__}>")
                     continue
 
-                enb.logger.info(f"Calculating {repr(column)} for "
+                enb.logger.debug(f"Calculating {repr(column)} for "
                                 f"index={repr(index)}, fun={fun}, "
                                 f"<{self.__class__.__name__}>")
                 try:
@@ -1569,15 +1570,18 @@ class ATable(metaclass=MetaTable):
         some point, then a warning message is shown. This is to help new users realize
         a potential bug in their scripts that prevent the actual utilities of enb to be employed.
         """
-        if not self._was_get_df_called:
-            msg = f"WARNING: Instance {self} was initialized " \
-                  f"but its get_df() method was never called.\nThis is not the expected " \
-                  f"behaviour. Please check the documentation in case of doubt."
-            if enb is None or enb.logger is None or enb.logger.warn is None:
-                # The enb.logger subsystem is not available anymore
-                print(msg)
-            else:
-                enb.logger.warn(msg)
+        try:
+            if not self._was_get_df_called:
+                msg = f"WARNING: Instance {self} was initialized " \
+                      f"but its get_df() method was never called.\nThis is not the expected " \
+                      f"behaviour. Please check the documentation in case of doubt."
+                if enb is None or enb.logger is None or enb.logger.warn is None:
+                    # The enb.logger subsystem is not available anymore
+                    print(msg)
+                else:
+                    enb.logger.warn(msg)
+        except AttributeError:
+            pass
 
 
 class SummaryTable(ATable):

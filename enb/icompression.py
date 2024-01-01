@@ -634,11 +634,11 @@ class CompressionExperiment(enb.experiment.Experiment):
                     measured_times = []
                     measured_memory = []
 
-                    enb.logger.info(
+                    enb.logger.debug(
                         f"Executing compression {self.codec.name} on {self.file_path} "
                         f"[{options.repetitions} times]")
                     for repetition_index in range(options.repetitions):
-                        enb.logger.info(
+                        enb.logger.debug(
                             f"Executing compression {self.codec.name} on {self.file_path} "
                             f"[rep{repetition_index + 1}/{options.repetitions}]")
                         time_before_ns = time.time_ns()
