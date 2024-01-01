@@ -152,6 +152,8 @@ class Template(Installable, metaclass=MetaTemplate):
                         f"and options.force={options.force}. Run with -f to overwrite.")
                 shutil.copy(input_path, output_path)
 
+        cls.warn_extra_requirements()
+
         cls.build(installation_dir=installation_dir)
         print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
 

@@ -123,15 +123,10 @@ class Installable(metaclass=InstallableMeta):
         """
         installation_dir = os.path.abspath(installation_dir)
 
-        print(f"Installing {repr(cls.name)} into {installation_dir}...")
+        enb.logger.message(f"Installing {repr(cls.name)} into {installation_dir}...")
 
         # Warn about any manual requirements reported by the Installable
-        if cls.extra_requirements_message:
-            print()
-            print("\tNote: This plugin contains the following message regarding "
-                  "additional requirements:\n")
-            print(textwrap.indent(textwrap.dedent(cls.extra_requirements_message).strip(), '\t'))
-            print()
+        cls.warn_extra_requirements()
 
         # Create output dir if needed and copy Installable contents
         if overwrite_destination and os.path.exists(installation_dir):
@@ -198,6 +193,16 @@ class Installable(metaclass=InstallableMeta):
         Note that the installation dir is created before calling build.
         """
         pass
+
+    @classmethod
+    def warn_extra_requirements(cls):
+        if cls.extra_requirements_message:
+            enb.logger.warn("This plugin contains the following message regarding additional requirements:\n")
+            enb.logger.warn("\n".join(
+                textwrap.indent(l, " " * 4)
+                for line in textwrap.dedent(cls.extra_requirements_message).strip().splitlines()
+                for l in textwrap.wrap(line, shutil.get_terminal_size()[0] - 10)))
+            enb.logger.warn("")
 
     @classmethod
     def repr(cls):
