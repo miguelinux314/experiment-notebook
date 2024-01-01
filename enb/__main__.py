@@ -112,8 +112,10 @@ class PluginInstall(argparse.Action):
             sys.exit(1)
 
         if destination_dir_existed and not issubclass(plugin, enb.plugins.Template):
-            raise ValueError(f"The destination dir {repr(destination_dir)} "
+            enb.logger.error(f"Error installing {repr(plugin.name)}.\n"
+                             f"The destination dir {repr(destination_dir)} "
                              "already exists. Remove and try again.")
+            sys.exit(1)
         try:
             plugin.install(installation_dir=destination_dir)
         except (SyntaxError, ValueError) as ex:
