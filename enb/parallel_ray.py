@@ -621,5 +621,4 @@ def fix_imports():
                 for i in range(1, len(module_parts) - 1):
                     if ".".join(module_parts[:i]) in imported_modules:
                         break
-                    logger.error(
-                        f"Error importing module {repr(module_name)}: {repr(_ex)}.")
+                    logger.error(f"Error importing module {repr(module_name)}: {repr(_ex)}.")
