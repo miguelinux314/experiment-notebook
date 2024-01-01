@@ -622,7 +622,7 @@ class Table(PlottableData2D):
                  row_header_alignment="left",
                  edges="open",
                  highlight_best_row=None,
-                 highlight_best_col=None):
+                 highlight_best_column=None):
         """
         :param x_values: list of column headers
         :param y_values: list of row headers
@@ -634,7 +634,7 @@ class Table(PlottableData2D):
           (substring of 'BRTL' or {'open', 'closed', 'horizontal', 'vertical'})
         :param highlight_best_row: if not None, it must be either "low" or "high". In those cases, the
           best (lowest or highest) value of each column is highlighted.
-        :param highlight_best_col: if not None, it must be either "low" or "high". In those cases, the
+        :param highlight_best_column: if not None, it must be either "low" or "high". In those cases, the
           best (lowest or highest) value of each row is highlighted.
         """
         super().__init__(x_values=[None], y_values=[None], x_label=x_label, y_label=y_label)
@@ -646,7 +646,7 @@ class Table(PlottableData2D):
         self.row_header_alignment = row_header_alignment
         self.edges = edges
         self.highlight_best_row = highlight_best_row
-        self.highlight_best_col = highlight_best_col
+        self.highlight_best_column = highlight_best_column
 
     def render(self, axes=None):
         axes = plt if axes is None else axes
@@ -666,13 +666,13 @@ class Table(PlottableData2D):
             cell.set_facecolor((1,1,0,0))
 
         # Highlight the best column in each row
-        if self.highlight_best_col is not None:
+        if self.highlight_best_column is not None:
             for row_index, row in enumerate(self.cell_text):
                 row_values = [float(c) for c in row]
-                if self.highlight_best_col.lower() == "low":
+                if self.highlight_best_column.lower() == "low":
                     best_value = min(row_values)
                 else:
-                    assert self.highlight_best_col.lower() == "high", f"Invalid {self.highlight_best_col=}"
+                    assert self.highlight_best_column.lower() == "high", f"Invalid {self.highlight_best_column=}"
                     best_value = max(row_values)
                 for col_index, col_value in enumerate(row_values):
                     if col_value == best_value:

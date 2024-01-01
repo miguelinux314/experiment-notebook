@@ -320,8 +320,7 @@ class Analyzer(enb.atable.ATable):
                     output_plot_dir=output_plot_dir, group_by=group_by,
                     column_to_properties=column_to_properties,
                     show_global=show_global, show_count=show_count,
-                    **(dict(render_kwargs)
-                       if render_kwargs is not None else {}))
+                    **(dict(render_kwargs or {})))
 
                 if reference_group is not None:
                     self.update_render_kwargs_reference_group(column_kwargs,
@@ -3076,7 +3075,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
     # Show the reference group when one is selected?
     show_reference_group = False
     # Optionally highlight the best results in each row. Must be one of "low", "high" or None
-    highlight_best_col = None
+    highlight_best_column = None
     # Optionally highlight the best results in each column. Must be one of "low", "high" or None
     highlight_best_row = None
     # Number format used for displaying cell data. Note that latex_decimal_count is not used in this class
@@ -3102,7 +3101,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                show_global_row=None, show_global_column=None,
                show_count=None,
                x_header_list=None, y_header_list=None,
-               highlight_best_col=None, highlight_best_row=None,
+               highlight_best_column=None, highlight_best_row=None,
                **render_kwargs):
         """Wrapper for enb.aanalysis.Analyzer.get_df, but adding support for the
         x_header_list and y_header_list parameters to control the row and column order.
@@ -3119,7 +3118,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
           Note that this applies to all elements of target_columns - please
           invoke this function multiple times if different headers (or ordering) are needed for
           different elements in target_columns.
-        :param highlight_best_col: Optionally highlight the best results in each row.
+        :param highlight_best_column: Optionally highlight the best results in each row.
           Must be one of "low", "high" or None.
         :param highlight_best_row:  Optionally highlight the best results in each column.
           Must be one of "low", "high" or None
@@ -3130,9 +3129,9 @@ class ScalarNumericJointAnalyzer(Analyzer):
         :param show_global_column: like show_global_row, but adds a new column corresponding to not splitting
           into x categories. Note that if x_header_list is selected, averages are considered only for those categories.
         """
-        if highlight_best_col is not None and str(highlight_best_col).lower() not in ("low", "high"):
+        if highlight_best_column is not None and str(highlight_best_column).lower() not in ("low", "high"):
             raise ValueError(
-                f"Invalid {highlight_best_col=}. Must be one of {('low', 'high', None)}")
+                f"Invalid {highlight_best_column=}. Must be one of {('low', 'high', None)}")
         if highlight_best_row is not None and str(highlight_best_row).lower() not in ("low", "high"):
             raise ValueError(
                 f"Invalid {highlight_best_row=}. Must be one of {('low', 'high', None)}")
@@ -3144,7 +3143,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
         render_kwargs = dict(render_kwargs)
         render_kwargs["x_header_list"] = x_header_list
         render_kwargs["y_header_list"] = y_header_list
-        render_kwargs["highlight_best_col"] = highlight_best_col
+        render_kwargs["highlight_best_column"] = highlight_best_column
         render_kwargs["highlight_best_row"] = highlight_best_row
         render_kwargs["show_global_row"] = show_global_row
         render_kwargs["show_global_column"] = show_global_column
@@ -3204,7 +3203,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
         del column_kwargs["x_header_list"]
         del column_kwargs["y_header_list"]
         del column_kwargs["highlight_best_row"]
-        del column_kwargs["highlight_best_col"]
+        del column_kwargs["highlight_best_column"]
         del column_kwargs["show_global_column"]
         del column_kwargs["show_global_row"]
 
@@ -3222,7 +3221,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                          x_header_list=render_kwargs["x_header_list"],
                                          y_header_list=render_kwargs["y_header_list"],
                                          highlight_best_row=render_kwargs["highlight_best_row"],
-                                         highlight_best_col=render_kwargs["highlight_best_col"])
+                                         highlight_best_column=render_kwargs["highlight_best_column"])
 
     def save_analysis_tables(
             self, group_by, reference_group,
@@ -3274,15 +3273,16 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 y_categories=summary_table.category_to_values[y_column],
                                 reference_group=summary_table.reference_group)
 
-                            if summary_table.show_global_row:
+                            if summary_table.show_global_row and len(y_categories) > 1:
                                 y_categories.append(None)
-                            if summary_table.show_global_column:
+                            if summary_table.show_global_column and len(x_categories) > 1:
                                 x_categories.append(None)
 
-                            csv_file.write("," + ",".join(str(x) if x is not None else "All" for x in x_categories) + "\n")
+                            csv_file.write("," + ",".join(
+                                str(x or "All") for x in x_categories) + "\n")
                             number_format = self.number_format if stat != "count" else "{:d}"
                             for y_category in y_categories:
-                                csv_file.write(str(y_category) if y_category is not None else "All")
+                                csv_file.write(str(y_category or "All"))
                                 for x_category in x_categories:
                                     try:
                                         csv_file.write("," + number_format.format(
@@ -3301,7 +3301,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 csv_file.write("\n")
 
             # Generate latex tables
-            with open(analysis_output_path[:-4] + ".tex", "w") as latex_file:
+            with (open(analysis_output_path[:-4] + ".tex", "w") as latex_file):
                 for x_column, y_column, data_column in target_columns:
                     column_header_count = len(summary_table.category_to_values[x_column])
                     longest_row_header = max(
@@ -3320,12 +3320,18 @@ class ScalarNumericJointAnalyzer(Analyzer):
                         latex_file.write(r"\toprule" + "\n")
 
                         for group_name, group_df in summary_df.iterrows():
+                            x_categories, y_categories = self.get_filtered_x_y_categories(
+                                x_categories=summary_table.category_to_values[x_column],
+                                y_categories=summary_table.category_to_values[y_column],
+                                reference_group=summary_table.reference_group)
+
                             summary_dict = group_df[f"{x_column}_{y_column}_{data_column}_{stat}"]
                             number_format = self.number_format if stat != "count" else "{:d}"
                             longest_cell_length = max(
-                                len(number_format.format(val)) for val in summary_dict.values())
-                            if summary_table.highlight_best_row or summary_table.highlight_best_col:
-                                longest_cell_length += len(r"\textbf{}")
+                                max(len(number_format.format(val)) for val in summary_dict.values()),
+                                max(len(str(x)) for x in x_categories)) + len(r"\textbf{}")
+                            row_header_format = f"{{:{longest_row_header}s}}"
+                            cell_format = f"{{:{longest_cell_length}s}}"
 
                             # Write group separator if there is more than one group
                             if len(summary_df) > 1:
@@ -3337,23 +3343,23 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                                  f"{{{enb.misc.escape_latex(group_label)}}} \\\\\n")
                                 latex_file.write("\\midrule\n")
 
-                            x_categories, y_categories = self.get_filtered_x_y_categories(
-                                x_categories=summary_table.category_to_values[x_column],
-                                y_categories=summary_table.category_to_values[y_column],
-                                reference_group=summary_table.reference_group)
+                            if summary_table.show_global_row and len(y_categories) > 1:
+                                y_categories.append(None)
+                            if summary_table.show_global_column and len(x_categories) > 1:
+                                x_categories.append(None)
 
                             # Write the (sub) table headers
-                            latex_file.write(" " * longest_row_header + " & "
-                                             + " & ".join(f"\\textbf{{{x}}}" for x in x_categories)
-                                             + " \\\\\n")
+                            latex_file.write(
+                                " " * longest_row_header + " & "
+                                + " & ".join(cell_format.format(r"\textbf{" + str(x or 'All') + r"}")
+                                             for x in x_categories)
+                                + " \\\\\n")
                             latex_file.write("\\toprule\n")
 
                             # Write data rows
-                            cell_format = f"{{:{longest_cell_length}s}}"
-                            row_header_format = f"{{:{longest_row_header}s}}"
                             for y_category in y_categories:
                                 latex_file.write(row_header_format.format(
-                                    f"\\textbf{{{enb.misc.escape_latex(str(y_category))}}}"))
+                                    f"\\textbf{{{enb.misc.escape_latex(str(y_category if y_category else 'All'))}}}"))
                                 for x_category in x_categories:
                                     highlight = self.should_highlight_cell(
                                         summary_dict=summary_dict, summary_table=summary_table,
@@ -3369,7 +3375,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                     except KeyError:
                                         latex_file.write(" & " + " " * longest_cell_length)
                                 latex_file.write(" \\\\\n")
-                            if summary_table.include_all_group and len(y_categories) > 1:
+                            if summary_table.show_global_row and len(y_categories) > 1:
                                 latex_file.write("\\midrule\n")
                                 latex_file.write(row_header_format.format("\\textbf{All}"))
                                 for x_category in x_categories:
@@ -3393,6 +3399,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
     def should_highlight_cell(self, summary_dict, summary_table, x_categories, x_category,
                               y_categories, y_category):
         highlight = False
+
         if summary_table.highlight_best_row:
             if summary_table.highlight_best_row.lower() == "low":
                 best_value = min(summary_dict[(x_category, y)]
@@ -3404,17 +3411,18 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                  for y in y_categories
                                  if (x_category, y) in summary_dict)
             highlight = highlight or summary_dict[(x_category, y_category)] == best_value
-        if summary_table.highlight_best_col:
-            if summary_table.highlight_best_col.lower() == "low":
+        if summary_table.highlight_best_column:
+            if summary_table.highlight_best_column.lower() == "low":
                 best_value = min(summary_dict[(x, y_category)]
                                  for x in x_categories
                                  if (x, y_category) in summary_dict)
             else:
-                assert summary_table.highlight_best_col.lower() == "high"
+                assert summary_table.highlight_best_column.lower() == "high"
                 best_value = max(summary_dict[(x, y_category)]
                                  for x in x_categories
                                  if (x, y_category) in summary_dict)
             highlight = highlight or summary_dict[(x_category, y_category)] == best_value
+
         return highlight
 
     def get_filtered_x_y_categories(self, x_categories, y_categories, reference_group):
@@ -3445,7 +3453,7 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
 
     def __init__(self, analyzer, full_df, target_columns, reference_group,
                  group_by, show_global_row, show_global_column,
-                 x_header_list, y_header_list, highlight_best_row, highlight_best_col):
+                 x_header_list, y_header_list, highlight_best_row, highlight_best_column):
         """
         Identical to :meth:`enb.aanalysis.ScalarNumericSummary.__init__`, but calculates
         the scalar numeric description for each x-category/y-category combination (instead of for all samples,
@@ -3467,7 +3475,7 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
           be present in this list. If None, all headers are used in alphabetical order.
         :param highlight_best_row: if not None, it must be "low" or "hight", which determines how the best
           element in each column is selected, and highlighted.
-        :param highlight_best_col: if not None, it must be "low" or "hight", which determines how the best
+        :param highlight_best_column: if not None, it must be "low" or "hight", which determines how the best
           element in each row is selected, and highlighted.
         :param show_global_row: if True, an "All" row is added with the average of all rows (assuming at least
           two rows are present)
@@ -3482,7 +3490,7 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
         self.show_global_row = show_global_row
         self.show_global_column = show_global_column
         self.highlight_best_row = highlight_best_row
-        self.highlight_best_col = highlight_best_col
+        self.highlight_best_column = highlight_best_column
         self.x_header_list = [str(x) for x in x_header_list] if x_header_list else x_header_list
         self.y_header_list = [str(y) for y in y_header_list] if y_header_list else y_header_list
 
@@ -3649,7 +3657,7 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
                                    row_header_alignment=_self.analyzer.row_header_alignment,
                                    edges=_self.analyzer.edges,
                                    highlight_best_row=_self.highlight_best_row,
-                                   highlight_best_col=_self.highlight_best_col)]
+                                   highlight_best_column=_self.highlight_best_column)]
 
     def apply_reference_bias(self):
         """If applicable, group reference bias is applied when computing the joint scalar descriptions.
