@@ -347,14 +347,15 @@ columns correspond to one of the categories/groupings (e.g., corpus name)
 and the rows to the other category/grouping (e.g., task label).
 Cells correspond to the averages for the data column.
 
-.. note:: The |ScalarNumericJointAnalyzer| supports any type for the x and y columns as long
-  as `str` can be applied to them. If you want to use numeric data for x and y, consider |ScalarNumeric2DAnalyzer|
-  in :ref:`scalar_numeric_2d_analyzer`.
-
 You will need:
-    - a column with scalar numerical data (integers or float entries), e.g., `column_data`
-    - two more columns with categorical (e.g., string) data
+    - A column with scalar numerical data (integers or float entries), e.g., `column_data`
+    - Two more columns with categorical (e.g., string) data
       specifying the grouping along the x axis and the y axis, e.g., `column_x` and `column_y`.
+
+.. note:: The |ScalarNumericJointAnalyzer| supports any type for the x and y columns as long
+  as `str` can be applied to them. If you want to use numeric data for both x and y,
+  where `(x,y)` conveys some spatial location notion, consider |ScalarNumeric2DAnalyzer|
+  in :ref:`scalar_numeric_2d_analyzer`.
 
 In the following example of the 'table' render mode,
 the `Price` column contains the data of interest, while `Color` and `Origin` contain the categorical
@@ -438,10 +439,23 @@ ____________________
   containing strings that match exactly one or more of the existing row or column headers
   (e.g., one or more of `["Blue", "Green", "Red"]` when specifying `x_header_list` in the previous example.
 
-* You can also disable the global "All" row by adding `show_global=False` to the `get_df`
-  call of your |ScalarNumericJointAnalyzer| instance.
+* You can also enable/disable the global "All" row by adding `show_global_row=True`/`show_global_row=False`
+  to the `get_df` call of your |ScalarNumericJointAnalyzer| instance. The "All" row contains the average of
+  all samples in all other rows. Similarly, the "All" column contains the average of all samples in all other columns.
+  Note that, if different rows/columns are computed using different numbers of elements, the "All" column/row will
+  not necesssarily be identical to the average of row/column averages. Also note that, if `x_header_list` and/or
+  `y_header_list` is employed, the "All" row/column is computed using only the samples of those selected rows/columns.
 
-The following example displays both of these features (they can be used independently):
+* You can pass the `highlight_best_row` and/or the `highlight_best_column` arguments to `get_df`. If you do,
+  their value should be `"high"`, `"low"` to highlight the highest and lowest value in each row and/or column,
+  respectively.
+
+* As explained later in :ref:`making_baseline_comparisons`, you can select a column or a row as reference,
+  by passing the `reference_group` parameter to
+  :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. You can control whether the reference group is
+  shown or not by modifying the `show_reference_group` of your |ScalarNumericJointAnalyzer| instance.
+
+The following example uses all these features (except for `reference_group`), which can be independently selected:
 
     .. code-block:: python
 
@@ -454,25 +468,35 @@ The following example displays both of these features (they can be used independ
         snja = enb.aanalysis.ScalarNumericJointAnalyzer()
         snja.get_df(full_df=df_joint,
                     target_columns=[("Color", "Origin", "Price")],
-                    # Show only these columns, in this order:
-                    x_header_list=["Red", "Blue"],
-                    # Show only these rows, in this order:
-                    y_header_list=["Oceania", "Africa"],
+                    # Show only these x/y categories, in this order
+                    x_header_list=["Green", "Blue"],
+                    y_header_list=["Europe", "America", "Africa"],
                     # Hide the "All" row
-                    show_global=False)
+                    show_global_row=False,
+                    # Show the "All" column
+                    show_global_column=True,
+                    # Highlight the lowest element in each row
+                    highlight_best_row="low")
 
-and produces the following result:
+and produces the following result,
 
 .. figure:: _static/analysis_gallery/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png
 
-* You can select a column or a row as reference, by passing the `reference_group` parameter to
-  :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df`. You can control whether the reference group is
-  shown or not by modifying the `show_reference_group` of your |ScalarNumericJointAnalyzer| instance.
+and corresponding Latex code:
 
-* You can pass `highlight_best_col="low"` or highlight_best_col="high"
-  to :meth:`enb.aanalysis.ScalarNumericJointAnalyzer.get_df` to automatically highlight the best
-  (lowest or highest) value in each row. Conversely, you can use `highlight_best_row="low"`
-  or `highlight_best_row="high"` to highlight the best value in each column.
+.. code:: latex
+
+    % Statistic: avg
+    \begin{tabular}{lcc}
+    \toprule
+                     & \textbf{Green}    & \textbf{Blue}     & \textbf{All}      \\
+    \toprule
+    \textbf{Europe}  & 767.500           & \textbf{498.000}  & \textbf{632.750}  \\
+    \textbf{America} & \textbf{325.000}  & 924.000           & 724.333           \\
+    \textbf{Africa}  & 569.000           & 1081.500          & 825.250           \\
+    \bottomrule
+    \end{tabular}
+
 
 .. _sec_grouping:
 
@@ -595,6 +619,8 @@ Groups are automatically combined for |TwoNumericAnalyzer|, but are optional for
 An example is provided next:
 
 .. figure:: _static/analysis_gallery/DictNumericAnalyzer-mode_count-line-groupby__block_size__combine_groups.png
+
+.. _making_baseline_comparisons:
 
 Making baseline comparisons
 ---------------------------

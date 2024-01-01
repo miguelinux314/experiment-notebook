@@ -21,12 +21,14 @@ However, a cleanup of old blobs was performed on the repository.
 You might need to use `git pull --force` to update your local development repository. 
 
 New features:
+
 - Added the `enb.aanalysis.ScalarNumericJointAnalyzer` class, 
   which allows numerical data analysis considering two classifications
-  at the same time. Useful to produce 2D tables (also in latex format) with categorical columns and rows. 
+  at the same time. Useful to produce 2D tables (also in latex format) with categorical columns and rows.
+  (Check out the [documentation](https://miguelinux314.github.io/experiment-notebook/analyzing_data.html#joint-numeric-analysis-double-categorical-grouping)).
 - Added support for group comparison in the `enb.aanalysis.TwoNumericAnalyzer` 
   class when the `line` render mode is requested.
-- Added a plugin for the Montsec compressor.
+- Added a plugin for the Montsec codec. You can install it with `enb plugin install montsec plugins/montsec`. 
 
 Improvements:
 

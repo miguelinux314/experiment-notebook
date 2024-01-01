@@ -26,14 +26,16 @@ if __name__ == '__main__':
 
         ## One numeric analysis
         analysis_df = scalar_analyzer.get_df(
-            full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+            full_df=iris_df,
+            target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_numeric"),
             style_list=[style])
 
         ## With grouping
         scalar_analyzer.sort_by_average = True
         analysis_df = scalar_analyzer.get_df(
-            full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+            full_df=iris_df,
+            target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_numeric"),
             group_by="class",
             style_list=[style])
@@ -41,8 +43,10 @@ if __name__ == '__main__':
         ## Grouping and individual samples for the boxplot
         scalar_analyzer.show_individual_samples = True
         analysis_df = scalar_analyzer.get_df(
-            full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
-            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_numeric_show_individual"),
+            full_df=iris_df,
+            target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style,
+                                         "scalar_numeric_show_individual"),
             group_by="class", show_grid=True,
             style_list=[style], selected_render_modes={"boxplot"})
         scalar_analyzer.show_individual_samples = False
@@ -73,7 +77,8 @@ if __name__ == '__main__':
         two_numeric_analyzer.show_linear_regression = True
         analysis_df = two_numeric_analyzer.get_df(
             full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
-            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric", "withregression"),
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric",
+                                         "withregression"),
             group_by="class",
             style_list=[style]
         )
@@ -110,10 +115,12 @@ if __name__ == '__main__':
         # Use a reference group
         # One scalar value
         analysis_df = scalar_analyzer.get_df(
-            full_df=iris_df, target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+            full_df=iris_df,
+            target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             group_by="class",
             reference_group="Iris-versicolor",
-            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_numeric_reference"),
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style,
+                                         "scalar_numeric_reference"),
             style_list=[style]
         )
 
@@ -122,7 +129,8 @@ if __name__ == '__main__':
         ### Scatter
         analysis_df = two_numeric_analyzer.get_df(
             full_df=iris_df, target_columns=[("sepal_width", "petal_length")],
-            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "two_numeric_reference"),
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style,
+                                         "two_numeric_reference"),
             group_by="class", reference_group="Iris-versicolor",
             style_list=[style],
             selected_render_modes="scatter",
@@ -142,7 +150,8 @@ if __name__ == '__main__':
             full_df=iris_df,
             target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             group_by="class",
-            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_combined_groups"),
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style,
+                                         "scalar_combined_groups"),
             combine_groups=True,
             legend_column_count=3,
             style_list=[style]
@@ -154,7 +163,8 @@ if __name__ == '__main__':
             full_df=iris_df,
             target_columns=["sepal_length", "sepal_width", "petal_length", "petal_width"],
             group_by="class",
-            output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_combined_reference"),
+            output_plot_dir=os.path.join(options.plot_dir, "styles", style,
+                                         "scalar_combined_reference"),
             combine_groups=True,
             legend_column_count=3,
             reference_group="Iris-versicolor",
@@ -183,9 +193,10 @@ if __name__ == '__main__':
         df_2d = pd.read_csv(os.path.join("input_csv", "2d_data_example.csv"))
         sn2da = enb.aanalysis.ScalarNumeric2DAnalyzer()
         sn2da.bin_count = 10
-        h2d_column_to_properties = {"value": enb.atable.ColumnProperties("value", label="Result of $f(x,y)$"),
-                                    "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
-                                    "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")}
+        h2d_column_to_properties = {
+            "value": enb.atable.ColumnProperties("value", label="Result of $f(x,y)$"),
+            "x": enb.atable.ColumnProperties("x", label="Offset in the $x$ axis"),
+            "y": enb.atable.ColumnProperties("y", label="Offset in the $y$ axis")}
 
         # No grouping
         sn2da.get_df(full_df=df_2d,
@@ -211,10 +222,23 @@ if __name__ == '__main__':
         # Exercise the joint categorical 2d scalar analyzer
         df_joint = pd.read_csv(os.path.join("input_csv", "continent_data_example.csv"))
         snja = enb.aanalysis.ScalarNumericJointAnalyzer()
+        # Basic render
         snja.get_df(full_df=df_joint,
                     target_columns=[("Color", "Origin", "Price")],
                     output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_joint"))
-
+        # Render with several configuration options
+        snja.get_df(full_df=df_joint,
+                    target_columns=[("Color", "Origin", "Price")],
+                    output_plot_dir=os.path.join(options.plot_dir, "styles", style, "scalar_joint_tuned"),
+                    # Show only these x/y categories, in this order
+                    x_header_list=["Green", "Blue"],
+                    y_header_list=["Europe", "America", "Africa"],
+                    # Hide the "All" row
+                    show_global_row=False,
+                    # Show the "All" column
+                    show_global_column=True,
+                    # Highlight the lowest element in each row
+                    highlight_best_row="low")
 
     # Example of style composition
     two_numeric_analyzer = enb.aanalysis.TwoNumericAnalyzer()

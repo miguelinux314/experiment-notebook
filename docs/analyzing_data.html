@@ -446,20 +446,21 @@ jointly splitting it by two different groupings. This results in a table where t
 columns correspond to one of the categories/groupings (e.g., corpus name)
 and the rows to the other category/grouping (e.g., task label).
 Cells correspond to the averages for the data column.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> supports any type for the x and y columns as long
-as <cite>str</cite> can be applied to them. If you want to use numeric data for x and y, consider <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a>
-in <a class="reference internal" href="#scalar-numeric-2d-analyzer"><span class="std std-ref">Analysis of numeric data in an x-y (2D) space</span></a>.</p>
-</div>
 <dl class="simple">
 <dt>You will need:</dt><dd><ul class="simple">
-<li><p>a column with scalar numerical data (integers or float entries), e.g., <cite>column_data</cite></p></li>
-<li><p>two more columns with categorical (e.g., string) data
+<li><p>A column with scalar numerical data (integers or float entries), e.g., <cite>column_data</cite></p></li>
+<li><p>Two more columns with categorical (e.g., string) data
 specifying the grouping along the x axis and the y axis, e.g., <cite>column_x</cite> and <cite>column_y</cite>.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> supports any type for the x and y columns as long
+as <cite>str</cite> can be applied to them. If you want to use numeric data for both x and y,
+where <cite>(x,y)</cite> conveys some spatial location notion, consider <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a>
+in <a class="reference internal" href="#scalar-numeric-2d-analyzer"><span class="std std-ref">Analysis of numeric data in an x-y (2D) space</span></a>.</p>
+</div>
 <p>In the following example of the ‘table’ render mode,
 the <cite>Price</cite> column contains the data of interest, while <cite>Color</cite> and <cite>Origin</cite> contain the categorical
 data for joint analysis.</p>
@@ -534,10 +535,21 @@ All these correspond to the <em>finite</em> data found for each x-category and y
 to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. When one is present, it must be a non-empty list
 containing strings that match exactly one or more of the existing row or column headers
 (e.g., one or more of <cite>[“Blue”, “Green”, “Red”]</cite> when specifying <cite>x_header_list</cite> in the previous example.</p></li>
-<li><p>You can also disable the global “All” row by adding <cite>show_global=False</cite> to the <cite>get_df</cite>
-call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
+<li><p>You can also enable/disable the global “All” row by adding <cite>show_global_row=True</cite>/<cite>show_global_row=False</cite>
+to the <cite>get_df</cite> call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance. The “All” row contains the average of
+all samples in all other rows. Similarly, the “All” column contains the average of all samples in all other columns.
+Note that, if different rows/columns are computed using different numbers of elements, the “All” column/row will
+not necesssarily be identical to the average of row/column averages. Also note that, if <cite>x_header_list</cite> and/or
+<cite>y_header_list</cite> is employed, the “All” row/column is computed using only the samples of those selected rows/columns.</p></li>
+<li><p>You can pass the <cite>highlight_best_row</cite> and/or the <cite>highlight_best_column</cite> arguments to <cite>get_df</cite>. If you do,
+their value should be <cite>“high”</cite>, <cite>“low”</cite> to highlight the highest and lowest value in each row and/or column,
+respectively.</p></li>
+<li><p>As explained later in <a class="reference internal" href="#making-baseline-comparisons"><span class="std std-ref">Making baseline comparisons</span></a>, you can select a column or a row as reference,
+by passing the <cite>reference_group</cite> parameter to
+<a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. You can control whether the reference group is
+shown or not by modifying the <cite>show_reference_group</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
 </ul>
-<p>The following example displays both of these features (they can be used independently):</p>
+<p>The following example uses all these features (except for <cite>reference_group</cite>), which can be independently selected:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -548,28 +560,35 @@ call of your <a class="reference internal" href="api/enb.html#enb.aanalysis.Scal
 <span class="n">snja</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericJointAnalyzer</span><span class="p">()</span>
 <span class="n">snja</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">full_df</span><span class="o">=</span><span class="n">df_joint</span><span class="p">,</span>
             <span class="n">target_columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="s2">&quot;Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;Price&quot;</span><span class="p">)],</span>
-            <span class="c1"># Show only these columns, in this order:</span>
-            <span class="n">x_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">],</span>
-            <span class="c1"># Show only these rows, in this order:</span>
-            <span class="n">y_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Oceania&quot;</span><span class="p">,</span> <span class="s2">&quot;Africa&quot;</span><span class="p">],</span>
+            <span class="c1"># Show only these x/y categories, in this order</span>
+            <span class="n">x_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">],</span>
+            <span class="n">y_header_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Europe&quot;</span><span class="p">,</span> <span class="s2">&quot;America&quot;</span><span class="p">,</span> <span class="s2">&quot;Africa&quot;</span><span class="p">],</span>
             <span class="c1"># Hide the &quot;All&quot; row</span>
-            <span class="n">show_global</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">show_global_row</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="c1"># Show the &quot;All&quot; column</span>
+            <span class="n">show_global_column</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="c1"># Highlight the lowest element in each row</span>
+            <span class="n">highlight_best_row</span><span class="o">=</span><span class="s2">&quot;low&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p>and produces the following result:</p>
+<p>and produces the following result,</p>
 <figure class="align-default">
 <img alt="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/filtered_ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
 </figure>
-<ul class="simple">
-<li><p>You can select a column or a row as reference, by passing the <cite>reference_group</cite> parameter to
-<a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. You can control whether the reference group is
-shown or not by modifying the <cite>show_reference_group</cite> of your <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> instance.</p></li>
-<li><p>You can pass <cite>highlight_best_col=”low”</cite> or highlight_best_col=”high”
-to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a> to automatically highlight the best
-(lowest or highest) value in each row. Conversely, you can use <cite>highlight_best_row=”low”</cite>
-or <cite>highlight_best_row=”high”</cite> to highlight the best value in each column.</p></li>
-</ul>
+<p>and corresponding Latex code:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="c">% Statistic: avg</span>
+<span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>lcc<span class="nb">}</span>
+<span class="k">\toprule</span>
+                 <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Green<span class="nb">}</span>    <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>Blue<span class="nb">}</span>     <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>All<span class="nb">}</span>      <span class="k">\\</span>
+<span class="k">\toprule</span>
+<span class="k">\textbf</span><span class="nb">{</span>Europe<span class="nb">}</span>  <span class="nb">&amp;</span> 767.500           <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>498.000<span class="nb">}</span>  <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>632.750<span class="nb">}</span>  <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>America<span class="nb">}</span> <span class="nb">&amp;</span> <span class="k">\textbf</span><span class="nb">{</span>325.000<span class="nb">}</span>  <span class="nb">&amp;</span> 924.000           <span class="nb">&amp;</span> 724.333           <span class="k">\\</span>
+<span class="k">\textbf</span><span class="nb">{</span>Africa<span class="nb">}</span>  <span class="nb">&amp;</span> 569.000           <span class="nb">&amp;</span> 1081.500          <span class="nb">&amp;</span> 825.250           <span class="k">\\</span>
+<span class="k">\bottomrule</span>
+<span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="grouping-by-a-column-s-value">
@@ -683,7 +702,7 @@ An example is provided next:</p>
 </figure>
 </section>
 <section id="making-baseline-comparisons">
-<h2>Making baseline comparisons<a class="headerlink" href="#making-baseline-comparisons" title="Permalink to this headline"></a></h2>
+<span id="id12"></span><h2>Making baseline comparisons<a class="headerlink" href="#making-baseline-comparisons" title="Permalink to this headline"></a></h2>
 <p>When grouping is used, it is possible to select one of the groups as baseline and then perform
 analysis and plotting on the differences against that baseline.</p>
 <p>For the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses and render modes that support it, it suffices to pass
