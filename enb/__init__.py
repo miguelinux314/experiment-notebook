@@ -131,9 +131,9 @@ icompression.PGMWrapperCodec = pgm.PGMWrapperCodec
 # Setup to be run only when enb is imported in the main process
 if not parallel_ray.is_parallel_process():
     # Setup common to
-    log.verbose("\n")
-    log.verbose(config.get_banner(markup=True), rule=True, markup=True)
-    log.verbose("\n")
+    log.verbose("")
+    log.verbose(config.get_banner(markup=True), rule=True, markup=True, rule_kwargs=dict(style="bold green on black"))
+    log.verbose("")
     log.debug(
         f"Additional .ini files employed: {repr(config.ini.all_ini_paths)}.")
 

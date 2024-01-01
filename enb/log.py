@@ -75,33 +75,33 @@ class Logger(metaclass=Singleton):
             LogLevel("core",
                      help_message="Messages always shown, "
                                   "no matter the priority level",
-                     color="#28c9ff"),
+                     color="#28c9ff on black"),
             LogLevel("error",
                      help_message="A critical error that prevents "
                                   "from completing the main task",
-                     color="#ff5255"
+                     color="#ff5255 on black"
                      ),
             LogLevel("warn",
                      help_message="Something wrong or bogus happened, "
                                   "but the main task can be completed",
-                     color="#ffca4f"),
+                     color="#ffca4f on black"),
             LogLevel("message",
                      help_message="Task-central messages intended "
                                   "to appear in console",
-                     color="#28c9ff"),
+                     color="#28c9ff on black"),
             LogLevel("verbose",
                      help_message="Messages for the interested user, "
                                   "e.g., task progress",
-                     color="#c8ffc8"),
+                     color="#c8ffc8 on black"),
             LogLevel("info",
                      help_message="Messages for the very interested "
                                   "user/developer, e.g., detailed "
                                   "task progress",
-                     color="#afffbe"),
+                     color="#afffbe on black"),
             LogLevel("debug",
                      help_message="Messages for debugging purposes, "
                                   "e.g., traces and watches",
-                     color="#909090"),
+                     color="#909090 on black"),
         ]
         # Assign an integer priority level to each defined level (higher:
         # less priority).
