@@ -118,6 +118,6 @@ if __name__ == '__main__':
         target_columns=[("task_label", "corpus", "bpppc")],
         column_to_properties=exp.joined_column_to_properties)
 
-    print("Experiment complete. You can check the results "
-          f"at {options.plot_dir} and {options.analysis_dir}. "
+    print("Experiment complete!\n"
+          f"You can check the results at {options.plot_dir} and {options.analysis_dir}.\n"
           f"Raw data is stored for persistence in {options.persistence_dir}.")
