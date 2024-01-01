@@ -385,7 +385,7 @@ def _get_sorted_group_names(group_name_order, pds_by_group_name):
         # pylint: disable=no-member
         sorted_group_names = natsort.natsorted(pds_by_group_name.keys(),
                                                alg=natsort.IGNORECASE)
-        if str(sorted_group_names[0]).lower() == "all":
+        if str(sorted_group_names[0]).lower() == enb.aanalysis.Analyzer.global_group_name.lower():
             sorted_group_names = \
                 sorted_group_names[1:] \
                 + [str(n) for n in sorted_group_names[:1]]
@@ -425,7 +425,8 @@ def _combine_groups(combine_groups, legend_position, pds_by_group_name,
     if combine_groups:
         for i, group_name in enumerate(sorted_group_names):
             if show_legend:
-                if (i == 0 and group_name.lower() != "all") or len(sorted_group_names) > 1:
+                if ((i == 0 and group_name.lower() != enb.aanalysis.Analyzer.global_group_name.lower())
+                        or len(sorted_group_names) > 1):
                     try:
                         pds_by_group_name[group_name][0].label = \
                             y_labels_by_group_name[group_name] \

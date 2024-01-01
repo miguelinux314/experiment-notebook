@@ -80,6 +80,8 @@ class Analyzer(enb.atable.ATable):
     show_count = True
     # Show a group containing all elements?
     show_global = False
+    # Name of the global group
+    global_group_name = "All"
     # If a reference group is used as baseline, should it be shown in the
     # analysis itself?
     show_reference_group = False
@@ -3279,10 +3281,10 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 x_categories.append(None)
 
                             csv_file.write("," + ",".join(
-                                str(x or "All") for x in x_categories) + "\n")
+                                str(x or self.global_group_name) for x in x_categories) + "\n")
                             number_format = self.number_format if stat != "count" else "{:d}"
                             for y_category in y_categories:
-                                csv_file.write(str(y_category or "All"))
+                                csv_file.write(str(y_category or self.global_group_name))
                                 for x_category in x_categories:
                                     try:
                                         csv_file.write("," + number_format.format(
@@ -3291,7 +3293,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                         csv_file.write(",")
                                 csv_file.write("\n")
                             if summary_table.include_all_group and len(y_categories) > 1:
-                                csv_file.write("All")
+                                csv_file.write(self.global_group_name)
                                 for x_category in x_categories:
                                     try:
                                         csv_file.write("," + number_format.format(
@@ -3308,7 +3310,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                         len(str(y)) for y in summary_table.category_to_values[y_column])
                     if summary_table.include_all_group and len(
                             summary_table.category_to_values[y_column]) > 1:
-                        longest_row_header = max(len("All"), longest_row_header)
+                        longest_row_header = max(len(self.global_group_name), longest_row_header)
                     longest_row_header += len(r"\textbf{}")
 
                     latex_file.write(f"\n\n% Column selection: "
@@ -3351,7 +3353,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             # Write the (sub) table headers
                             latex_file.write(
                                 " " * longest_row_header + " & "
-                                + " & ".join(cell_format.format(r"\textbf{" + str(x or 'All') + r"}")
+                                + " & ".join(cell_format.format(r"\textbf{" + str(x or self.global_group_name) + r"}")
                                              for x in x_categories)
                                 + " \\\\\n")
                             latex_file.write("\\toprule\n")
@@ -3359,7 +3361,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             # Write data rows
                             for y_category in y_categories:
                                 latex_file.write(row_header_format.format(
-                                    f"\\textbf{{{enb.misc.escape_latex(str(y_category if y_category else 'All'))}}}"))
+                                    f"\\textbf{{{enb.misc.escape_latex(str(y_category or self.global_group_name))}}}"))
                                 for x_category in x_categories:
                                     highlight = self.should_highlight_cell(
                                         summary_dict=summary_dict, summary_table=summary_table,
@@ -3377,7 +3379,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 latex_file.write(" \\\\\n")
                             if summary_table.show_global_row and len(y_categories) > 1:
                                 latex_file.write("\\midrule\n")
-                                latex_file.write(row_header_format.format("\\textbf{All}"))
+                                latex_file.write(row_header_format.format(f"\\textbf{{{self.global_group_name}}}"))
                                 for x_category in x_categories:
                                     highlight = self.should_highlight_cell(
                                         summary_dict=summary_dict, summary_table=summary_table,
@@ -3635,15 +3637,15 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
                       for x_category in x_categories]
                      for y_category in y_categories]
 
-        if self.show_global_row and len(y_categories) > 1:
+        if _self.show_global_row and len(y_categories) > 1:
             # show_global option
-            y_categories.append("All")
+            y_categories.append(_self.analyzer.global_group_name)
             cell_text.append([_self.analyzer.number_format.format(avg_dict[(x_category, None)])
                               for x_category in x_categories])
 
-        if self.show_global_column and len(x_categories) > 1:
+        if _self.show_global_column and len(x_categories) > 1:
             x_categories.append("All")
-            if self.show_global_row and len(y_categories) > 1:
+            if _self.show_global_row and len(y_categories) > 1:
                 y_cat_iterable = y_categories[:-1] + [None]
             else:
                 y_cat_iterable = y_categories
