@@ -12,7 +12,9 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version v1.0.1
+# Latest stable version:
+
+# 2024/01/01 v1.0.1
 
 After 4 years of development and a lot of user feedback, switched from beta status to stable/production!
 
@@ -43,9 +45,9 @@ Bug fixes:
   Also added a `title_y` parameter to their `get_df` method to allow manual title height adjustment.
 - Fixed a bug in the `enb.icompression.LittleEndianWrapper` class that prevented lossless reconstruction.
   Updated the HEVC codec to accept 16 bit samples (now that the endianness is properly handled).
- 
 
-# Latest stable version:
+
+# Version history
 
 ## 2023/09/15 v0.4.5
 
@@ -83,9 +85,6 @@ Other changes:
 - Removal of the byte_value_* columns in ImagePropertiesTable to speed up compression experiments with
   large files.
 - Speedup of enb.aanalyis.Analizer subclases with more than one render mode.
--
-
-# Version history
 
 ## 2023/01/16 v0.4.4
 
