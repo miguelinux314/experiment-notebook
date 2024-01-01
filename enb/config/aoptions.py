@@ -399,13 +399,6 @@ class LoggingOptions(OptionsBase):
         return str(value)
 
     @OptionsBase.property(type=bool, choices=[True, False])
-    def log_print(self, value):
-        """If True, the default print command is substituted by enb's logging system when enb is imported.
-        """
-        log.logger.replace_print(bool(value))
-        return bool(value)
-
-    @OptionsBase.property(type=bool, choices=[True, False])
     def log_level_prefix(self, value):
         """If True, logged messages include a prefix, e.g., based on their priority.
         """
