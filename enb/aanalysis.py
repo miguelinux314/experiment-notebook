@@ -17,7 +17,7 @@ import collections.abc
 import numbers
 import re
 import warnings
-import alive_progress
+import shutil
 import numpy as np
 import scipy.stats
 import pandas as pd
@@ -338,7 +338,7 @@ class Analyzer(enb.atable.ATable):
         with enb.logger.info_context(
                 f"Rendering {len(render_ids)} plots with "
                 f"{self.__class__.__name__}...\n"):
-            if options.disable_progress_bar:
+            if options.disable_progress_bar or True:
                 for _ in enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
@@ -346,21 +346,17 @@ class Analyzer(enb.atable.ATable):
                     pass
                 enb.parallel.get(render_ids)
             else:
-                with alive_progress.alive_bar(
-                        len(render_ids), manual=True, ctrl_c=False,
-                        title=f"{self.__class__.__name__}.get_df()",
-                        spinner="dots_waves2",
-                        disable=options.verbose <= 0,
-                        enrich_print=False) as abar:
-                    # pylint: disable=not-callable
-                    abar(0)
-                    for _ in enb.parallel.ProgressiveGetter(
-                            id_list=render_ids,
-                            iteration_period=self.progress_report_period,
-                            alive_bar=abar):
-                        pass
+
+                with enb.progress.get_rich_progress() as progress:
+                    progress_task = progress.add_task(self.__class__.__name__, total=len(render_ids))
+                    progressive_getter = enb.parallel.ProgressiveGetter(
+                        id_list=render_ids,
+                        iteration_period=self.progress_report_period,
+                        alive_bar=None)
+                    for _ in progressive_getter:
+                        progress.update(task_id=progress_task, completed=len(progressive_getter.completed_ids))
                     enb.parallel.get(render_ids)
-                    abar(1)
+                    progress.update(task_id=progress_task, completed=len(progressive_getter.completed_ids))
 
     def update_render_kwargs_reference_group(
             self, column_kwargs, reference_group):

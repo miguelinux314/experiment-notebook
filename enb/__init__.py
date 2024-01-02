@@ -45,9 +45,6 @@ calling_script_dir = _os.path.realpath(
 # True means main enb CLI.
 is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
-# Is the original stdout a real terminal, or is it piped? Animated progress is only intended for actual terminals
-is_stdout_tty = _sys.stdout.isatty()
-
 # Data dir
 default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
 # Persistence dir
@@ -80,6 +77,8 @@ from .log import logger
 # Paralellization modules
 from . import parallel
 from . import parallel_ray
+# Live progress display
+from . import progress
 
 # Temporary fix until the dill library is fixed
 parallel.parallel_fix_dill_crash()

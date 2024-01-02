@@ -261,41 +261,45 @@ class Experiment(enb.atable.ATable):
         chunks = [target_indices[i:i+chunk_size]
                   for i in range(0, len(target_indices), chunk_size)]
 
-        for chunk_index, chunk in enumerate(chunks):
-            try:
-                old_tasks = list(self.tasks)
-                old_tasks_by_name = dict(self.tasks_by_name)
-
-                task_names = list(set(task_name for _, task_name in chunk))
-
-                self.tasks = [old_tasks_by_name[name] for name in task_names]
-                self.tasks_by_name = {name:old_tasks_by_name[name]
-                                      for name in task_names}
-                # Get partial chunk size
-                with enb.logger.verbose_context(
-                        f"Computing experiment chunk "
-                        f"{chunk_index}/{len(chunks)-1} "
-                        f"({100*chunk_index/len(chunks):.2f}%-"
-                        f"{min(100, 100*(chunk_index+1)/len(chunks)):.2f}%) "
-                        f"@ {datetime.datetime.now()}",
-                        sep="...\n",
-                        msg_after=f"Completed {self.__class__.__name__} "
-                                  f"chunk #{chunk_index}/{len(chunks)-1}"):
+        with enb.progress.ProgressTracker(atable=self, row_count=len(target_indices),
+                                          chunk_size=chunk_size) as progress_tracker:
+            for chunk_index, chunk in enumerate(chunks):
+                try:
+                    old_tasks = list(self.tasks)
+                    old_tasks_by_name = dict(self.tasks_by_name)
+                    task_names = list(set(task_name for _, task_name in chunk))
+                    self.tasks = [old_tasks_by_name[name] for name in task_names]
+                    self.tasks_by_name = {name:old_tasks_by_name[name]
+                                          for name in task_names}
+                    # Get partial chunk size
+                    # with enb.logger.info_context(
+                    #         f"Computing experiment chunk "
+                    #         f"{chunk_index}/{len(chunks)-1} "
+                    #         f"({100*chunk_index/len(chunks):.2f}%-"
+                    #         f"{min(100, 100*(chunk_index+1)/len(chunks)):.2f}%) "
+                    #         f"@ {datetime.datetime.now()}",
+                    #         sep="...\n",
+                    #         msg_after=f"Completed {self.__class__.__name__} "
+                    #                   f"chunk #{chunk_index}/{len(chunks)-1}"):
                     _ = super().get_df(target_indices=chunk,
                                         fill=fill,
                                         overwrite=overwrite,
-                                        chunk_size=-1)
-            finally:
-                self.tasks = old_tasks
-                self.tasks_by_name = old_tasks_by_name
+                                        chunk_size=-1,
+                                        progress_tracker=progress_tracker)
+                finally:
+                    self.tasks = old_tasks
+                    self.tasks_by_name = old_tasks_by_name
+
+                progress_tracker.complete_chunk()
 
         # Get all dfs (single chunk)
         df = super().get_df(target_indices=target_indices, fill=fill,
                             overwrite=overwrite,
-                            chunk_size=len(target_indices))
+                            chunk_size=len(target_indices),
+                            progress_tracker=False)
 
         # Add dataset columns
-        with enb.logger.verbose_context(
+        with enb.logger.debug_context(
                 "Merging dataset and experiment results"):
             rsuffix = "__redundant__index"
             df = df.join(

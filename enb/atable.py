@@ -210,8 +210,7 @@ import pickle
 import shutil
 import traceback
 import pandas as pd
-import alive_progress
-import builtins
+import rich.progress
 
 import enb.config
 from enb.config import options
@@ -888,7 +887,8 @@ class ATable(metaclass=MetaTable):
 
     # Methods to generate a DataFrame instance with the requested data
     def get_df(self, target_indices=None, target_columns=None,
-               fill=None, overwrite=None, chunk_size=None):
+               fill=None, overwrite=None, chunk_size=None,
+               progress_tracker=None):
         """Core method for all |ATable| subclasses to obtain the table's content.
         The following principles guide the way `get_df` works:
 
@@ -947,6 +947,8 @@ class ATable(metaclass=MetaTable):
           to None (or to the number of target indices), but it does not
           display "Starting chunk 1/1..." (useful if the chunk partitioning
           is performed outside, i.e., by an Experiment class).
+        :param progress_tracker: if not None, the enb.progress.ProgressTracker
+          instance being used to keep track of an ATable instance at an upper level.
 
         :return: a DataFrame instance containing the requested data
         :raises: CorruptedTableError, ColumnFailedError, when an error is
@@ -1005,21 +1007,24 @@ class ATable(metaclass=MetaTable):
         # Split in chunks and add/update the persistent storage
         df = None
         if fill or overwrite:
-            for i, chunk in enumerate(chunk_list):
-                if not negative_chunk_size:
-                    enb.logger.info(
-                        f"[{self.__class__.__name__}:get_df] Starting chunk "
-                        f"{i + 1}/{len(chunk_list)} "
-                        f"(chunk_size={chunk_size}, "
-                        f"{100 * i * chunk_size / len(target_indices):.1f}"
-                        f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
-                        f"of {len(target_indices)} total rows) "
-                        f"@ {datetime.datetime.now()}")
-                df = self.get_df_one_chunk(
-                    target_indices=chunk, target_columns=target_columns,
-                    fill_needed=True,
-                    overwrite=overwrite,
-                    run_sanity_checks=False)
+            if progress_tracker is None:
+                with enb.progress.ProgressTracker(self, len(target_indices), chunk_size) as tracker:
+                    for i, chunk in enumerate(chunk_list):
+                        df = self.get_df_one_chunk(
+                            target_indices=chunk, target_columns=target_columns,
+                            fill_needed=True,
+                            overwrite=overwrite,
+                            run_sanity_checks=False,
+                            progress_tracker=tracker)
+                        tracker.complete_chunk()
+            else:
+                for i, chunk in enumerate(chunk_list):
+                    df = self.get_df_one_chunk(
+                        target_indices=chunk, target_columns=target_columns,
+                        fill_needed=True,
+                        overwrite=overwrite,
+                        run_sanity_checks=False,
+                        progress_tracker=progress_tracker)
 
         # Get the target df again
         if len(chunk_list) > 1 or df is None:
@@ -1028,16 +1033,17 @@ class ATable(metaclass=MetaTable):
                 target_columns=target_columns,
                 fill_needed=fill or overwrite,
                 overwrite=False,
-                run_sanity_checks=enb.config.options.force_sanity_checks)
+                run_sanity_checks=enb.config.options.force_sanity_checks,
+                progress_tracker=False)
 
         if fill or overwrite:
             assert len(df) == len(target_indices), (
                 len(df), len(target_indices), target_indices, df)
-            enb.logger.info(
+            enb.logger.debug(
                 f"[{self.__class__.__name__}:get_df] "
                 f"Retrieved filled dataframe with {len(df)} rows.")
         else:
-            enb.logger.info(
+            enb.logger.debug(
                 f"[{self.__class__.__name__}:get_df] "
                 f"Retrieved unfilled dataframe with {len(df)} rows.")
 
@@ -1051,7 +1057,8 @@ class ATable(metaclass=MetaTable):
         return get_all_input_files(ext=ext, base_dataset_dir=base_dataset_dir)
 
     def get_df_one_chunk(self, target_indices, target_columns, fill_needed,
-                         overwrite, run_sanity_checks):
+                         overwrite, run_sanity_checks,
+                         progress_tracker=None):
         """Internal implementation of the :meth:`get_df` functionality,
         to be applied to a single chunk of indices. It is essentially a
         self-contained call to meth:`enb.atable.ATable.get_df` as described
@@ -1066,6 +1073,9 @@ class ATable(metaclass=MetaTable):
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
         :param run_sanity_checks: if True, sanity checks are performed on the data
+        :param progress_tracker: the ProgressTracker instance being used to track progress
+          of this call, or None if None is being used, or False if no progress tracker is
+          to be employed.
 
         :return: a DataFrame instance containing the requested data
         :raises ColumnFailedError: an error was encountered while computing the data.
@@ -1125,7 +1135,8 @@ class ATable(metaclass=MetaTable):
                 target_df=target_df,
                 target_indices=needed_indices,
                 target_columns=target_columns,
-                overwrite=overwrite)
+                overwrite=overwrite,
+                progress_tracker=progress_tracker)
 
             # Insert or update rows
             target_df = pd.concat([target_df, computed_df])
@@ -1143,6 +1154,9 @@ class ATable(metaclass=MetaTable):
                 loaded_table = loaded_table[~loaded_table.index.duplicated(keep="last")]
                 os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
                 self.write_persistence(df=loaded_table, output_csv=self.csv_support_path)
+
+        if progress_tracker:
+            progress_tracker.update_chunk_completed_rows(len(target_indices))
 
         return target_df
 
@@ -1168,11 +1182,11 @@ class ATable(metaclass=MetaTable):
                     f"[W]arning: csv_support_path {csv_support_path} not set for {self}")
 
             # Read CSV from disk
-            with enb.logger.info_context(
+            with enb.logger.debug_context(
                     f"Loading dataframe from persistence at {csv_support_path}",
                     sep="... "):
                 loaded_df = pd.read_csv(csv_support_path)
-                enb.logger.info(f"Loaded df with {len(loaded_df)} rows")
+                enb.logger.debug(f"Loaded df with {len(loaded_df)} rows")
             loaded_columns = list(loaded_df.columns)
 
             # Columns defined since the last invocation are initially set to
@@ -1215,7 +1229,7 @@ class ATable(metaclass=MetaTable):
                         loaded_df[column] = None
 
         except (FileNotFoundError, pd.errors.EmptyDataError):
-            with enb.logger.info_context(
+            with enb.logger.debug_context(
                     f"No CSV persistence found for {self.__class__.__name__} "
                     f"at {csv_support_path}. Creating an empty one"):
                 loaded_df = pd.DataFrame(
@@ -1241,7 +1255,8 @@ class ATable(metaclass=MetaTable):
                             target_df,
                             target_indices,
                             target_columns,
-                            overwrite):
+                            overwrite,
+                            progress_tracker=None):
         """Generate and return a |DataFrame| with as many rows as given by
         `target_indices`, with the columns given in `target_columns`, using this table's column-setting functions.
 
@@ -1271,6 +1286,9 @@ class ATable(metaclass=MetaTable):
 
         :param overwrite: if True, all cell values are computed even when storage
           data was present. In that case, the newly computed results replace the old ones.
+
+        :param progress_tracker: if not None, an enb.progress.ProgressTracker instance
+          currently being used to keep track of this ATable's get_df call.
 
         :return: a |DataFrame| instance with the same column structure as loaded_df
           (i.e., following this class' column defintion). Each row corresponds to
@@ -1319,29 +1337,16 @@ class ATable(metaclass=MetaTable):
                 f"Parallel computation of {len(pending_ids)} "
                 f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
                 sep="...\n"):
-            if options.disable_progress_bar:
-                for _ in enb.parallel.ProgressiveGetter(
-                        id_list=pending_ids,
-                        iteration_period=self.progress_report_period,
-                        alive_bar=None):
-                    pass
-                computed_series = enb.parallel.get(pending_ids)
-            else:
-                with alive_progress.alive_bar(
-                        len(pending_ids), manual=True, ctrl_c=False,
-                        title=f"{self.__class__.__name__}.get_df()",
-                        spinner="dots_waves2",
-                        disable=options.verbose <= 0,
-                        enrich_print=False) as abar:
-                    # pylint: disable=not-callable
-                    abar(0)
-                    for _ in enb.parallel.ProgressiveGetter(
-                            id_list=pending_ids,
-                            iteration_period=self.progress_report_period,
-                            alive_bar=abar):
-                        pass
-                    abar(1)
-                computed_series = enb.parallel.get(pending_ids)
+            progressive_getter = enb.parallel.ProgressiveGetter(
+                id_list=pending_ids,
+                iteration_period=self.progress_report_period,
+                alive_bar=None)
+            for _ in progressive_getter:
+                if options.disable_progress_bar or progress_tracker is None:
+                    progressive_getter.report()
+                else:
+                    progress_tracker.update_chunk_completed_rows(len(progressive_getter.completed_ids))
+            computed_series = enb.parallel.get(pending_ids)
 
         # Verify that everything went well
         found_exceptions = [e for e in computed_series if
