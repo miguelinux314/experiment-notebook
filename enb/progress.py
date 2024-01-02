@@ -39,8 +39,13 @@ class ProgressTracker(rich.live.Live):
             expand=True,
             disable=options.verbose < 1)
 
-        self.chunk_task_id = self.progress.add_task(f"Chunks", total=math.ceil(self.row_count / self.chunk_size))
-        self.chunk_task = [t for t in self.progress.tasks if t.id == self.chunk_task_id][0]
+        if self.chunk_count > 1:
+            self.chunk_task_id = self.progress.add_task(f"Chunks", total=math.ceil(self.row_count / self.chunk_size))
+            self.chunk_task = [t for t in self.progress.tasks if t.id == self.chunk_task_id][0]
+        else:
+            self.chunk_task_id = None
+            self.chunk_task = None
+
         self.row_task_id = self.progress.add_task("Rows", total=self.row_count)
         self.row_task = [t for t in self.progress.tasks if t.id == self.row_task_id][0]
 
@@ -60,9 +65,11 @@ class ProgressTracker(rich.live.Live):
     def update_chunk_completed_rows(self, chunk_completed_rows):
         """Set the number of rows completed for the current chunk.
         """
+        previously_completed = self.chunk_task.completed * self.chunk_size \
+            if self.chunk_task is not None else 0
         self.progress.update(
             self.row_task_id,
-            completed=self.chunk_task.completed * self.chunk_size + chunk_completed_rows)
+            completed= previously_completed + chunk_completed_rows)
 
     @property
     def chunk_count(self):
