@@ -490,19 +490,18 @@ def init_ray():
             _head_node.stop()
 
         # Initialize cluster of workers
-        with logger.info_context(
-                f"Initializing ray cluster [CPUlimit={options.cpu_limit}]"):
-            if not options.disable_swap:
-                # From https://github.com/ray-project/ray/issues/10895
-                # - allow using swap memory when needed,
-                # avoiding early termination of jobs due to that.
-                os.environ["RAY_DEBUG_DISABLE_MEMORY_MONITOR"] = "1"
+        logger.info(f"Initializing ray cluster [CPUlimit={options.cpu_limit}]...")
+        if not options.disable_swap:
+            # From https://github.com/ray-project/ray/issues/10895
+            # - allow using swap memory when needed,
+            # avoiding early termination of jobs due to that.
+            os.environ["RAY_DEBUG_DISABLE_MEMORY_MONITOR"] = "1"
 
-            _head_node = HeadNode(ray_port=options.ray_port,
-                                  ray_port_count=options.ray_port_count)
-            _head_node.start()
-            options.head_address = _head_node.get_node_ip()
-            logger.verbose(_head_node.status_str)
+        _head_node = HeadNode(ray_port=options.ray_port,
+                              ray_port_count=options.ray_port_count)
+        _head_node.start()
+        options.head_address = _head_node.get_node_ip()
+        logger.info(_head_node.status_str + "\n")
 
 
 def stop_ray():

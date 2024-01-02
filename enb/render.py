@@ -247,12 +247,12 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
       "default" mode is applied.
     """
     # pylint: disable=too-many-arguments,too-many-locals
-    with (enb.logger.info_context(
+    with (enb.logger.debug_context(
             f"Rendering {len(pds_by_group_name)} plottable data groups "
             f"to {output_plot_path}",
             sep="...\n", msg_after=f"Done rendering into {output_plot_path}")):
         if len(pds_by_group_name) < 1:
-            enb.logger.info(
+            enb.logger.warn(
                 "Warning: trying to render an empty pds_by_group_name dict. "
                 f"output_plot_path={output_plot_path}, "
                 f"column_properties={column_properties}. "
@@ -449,7 +449,7 @@ def _apply_styles(style_list):
     """
     for style in (style_list if style_list is not None else []):
         if not style:
-            enb.logger.info(f"Ignoring empty style ({repr(style)}")
+            enb.logger.debug(f"Ignoring empty style ({repr(style)}")
             continue
         if style.lower() == "default":
             continue
@@ -894,17 +894,12 @@ def _adjust_subplot_position(group_row_margin, pds_by_group_name):
             group_row_margin = 0.6
         else:
             group_row_margin = 0.7
-        enb.logger.info(
-            "The `group_row_margin` option "
-            "was likely too small to display all "
-            f"{len(pds_by_group_name)} groups: "
-            f"automatically adjusting to {group_row_margin}. "
-            "You can set "
-            "your desired value at the [enb.aanalysis.Analyzer] "
-            "section in your *.ini files,"
-            "or passing e.g., `group_row_margin=0.9` "
-            "to your Analyzer get_df() "
-            "or adjusting the figure height with `fig_height`.")
+        enb.logger.debug(
+            "The `group_row_margin` option was likely too small to display all "
+            f"{len(pds_by_group_name)} groups: automatically adjusting to {group_row_margin}. "
+            "You can set  your desired value at the [enb.aanalysis.Analyzer] "
+            "section in your *.ini files, or passing e.g., `group_row_margin=0.9` "
+            "to your Analyzer get_df() or adjusting the figure height with `fig_height`.")
     if group_row_margin is not None:
         plt.subplots_adjust(hspace=group_row_margin)
 
@@ -915,11 +910,11 @@ def _save_figure(output_plot_path):
     """
     if os.path.dirname(output_plot_path):
         os.makedirs(os.path.dirname(output_plot_path), exist_ok=True)
-    with enb.logger.info_context(f"Saving plot to {output_plot_path} "):
-        if os.path.dirname(output_plot_path):
-            os.makedirs(os.path.dirname(output_plot_path),
-                        exist_ok=True)
-        plt.savefig(output_plot_path, bbox_inches="tight")
-        if output_plot_path.endswith(".pdf"):
-            plt.savefig(output_plot_path[:-3] + "png",
-                        bbox_inches="tight", dpi=300, transparent=True)
+    if os.path.dirname(output_plot_path):
+        os.makedirs(os.path.dirname(output_plot_path),
+                    exist_ok=True)
+    plt.savefig(output_plot_path, bbox_inches="tight")
+    if output_plot_path.endswith(".pdf"):
+        plt.savefig(output_plot_path[:-3] + "png",
+                    bbox_inches="tight", dpi=300, transparent=True)
+    enb.logger.debug(f"Saved plot to {output_plot_path}")

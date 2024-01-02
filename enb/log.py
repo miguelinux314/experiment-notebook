@@ -176,12 +176,6 @@ class Logger(metaclass=Singleton):
         :param rule: should the message be displayed with console.rule()?
         :param rule_kwargs: if rule_kwargs is True, these parameters are passed to console.rule
         """
-        if not self.is_parallel_process() and self.is_ray_enabled():
-            match = re.search(r"(.*)__ray_parallel:lvl(\d+)__(.*)", msg)
-            if match:
-                msg = match.group(3).replace("__\\\\n__", "\n")
-                level = self.levels[int(match.group(2))]
-
         # pylint: disable=too-many-arguments
         file = file or sys.stdout
 
@@ -211,10 +205,6 @@ class Logger(metaclass=Singleton):
                 f"{msg}{end}"
 
             console = rich.console.Console(file=file, markup=markup, highlight=highlight)
-
-            if self.is_parallel_process():
-                output_msg = f"__ray_parallel:lvl{level.priority}__{output_msg}".replace("\n",
-                                                                                         "__\\\\n__")
 
             style = style or level.color
             if rule:
@@ -331,10 +321,8 @@ class Logger(metaclass=Singleton):
             space = " "
             try:
                 space = space if not self._last_end.endswith("\n") else ""
-                msg_after = \
-                    f"{space}done" if self._last_level is level \
-                                      and self._last_end == sep \
-                        else f"done ({msg})"
+                msg_after = f"{space}done" if self._last_level is level and self._last_end == sep \
+                    else f"done ({msg.rstrip()})"
             except AttributeError:
                 msg_after = f"{space}done"
         if show_duration:

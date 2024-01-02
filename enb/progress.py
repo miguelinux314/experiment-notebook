@@ -53,7 +53,7 @@ class ProgressTracker(rich.live.Live):
             title=f"[bold]{atable.__class__.__name__}[/bold]",
             title_align="left", expand=True)
 
-        super().__init__(self.panel)
+        super().__init__(self.panel, transient=options.verbose < 2)
 
     def complete_chunk(self):
         """Add 1 to the number of completed chunks if a chunk task has been defined.
@@ -103,3 +103,10 @@ class RemainingTimeColumn(rich.progress.TextColumn):
         else:
             time_str = ""
         return rich.progress.Text(f"{time_str}")
+
+def is_progress_enabled():
+    """Return True if and only if all conditions for displaying progress are met:
+    - verbose being level 1 (verbose) or 2 (info)
+    - disable_progress_bar is set to False
+    """
+    return options.verbose in (1,2) and not options.disable_progress_bar

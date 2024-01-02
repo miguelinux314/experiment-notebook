@@ -1007,7 +1007,7 @@ class ATable(metaclass=MetaTable):
         # Split in chunks and add/update the persistent storage
         df = None
         if fill or overwrite:
-            if progress_tracker is None and enb.config.options.verbose >= 1:
+            if progress_tracker is None and enb.progress.is_progress_enabled():
                 with enb.progress.ProgressTracker(self, len(target_indices), chunk_size) as tracker:
                     for i, chunk in enumerate(chunk_list):
                         df = self.get_df_one_chunk(
@@ -1019,12 +1019,22 @@ class ATable(metaclass=MetaTable):
                         tracker.complete_chunk()
             else:
                 for i, chunk in enumerate(chunk_list):
+                    if not negative_chunk_size:
+                        enb.logger.debug(
+                            f"[{self.__class__.__name__}:get_df] Starting chunk "
+                            f"{i + 1}/{len(chunk_list)} "
+                            f"(chunk_size={chunk_size}, "
+                            f"{100 * i * chunk_size / len(target_indices):.1f}"
+                            f"-{min(100, 100 * ((i + 1) * chunk_size) / len(target_indices)):.1f}% "
+                            f"of {len(target_indices)} total rows) "
+                            f"@ {datetime.datetime.now()}")
+
                     df = self.get_df_one_chunk(
                         target_indices=chunk, target_columns=target_columns,
                         fill_needed=True,
                         overwrite=overwrite,
                         run_sanity_checks=False,
-                        progress_tracker=progress_tracker if enb.config.options.verbose >= 1 else False)
+                        progress_tracker=progress_tracker if enb.progress.is_progress_enabled() else False)
 
         # Get the target df again
         if len(chunk_list) > 1 or df is None:
@@ -1320,7 +1330,7 @@ class ATable(metaclass=MetaTable):
                 f"column_to_properties.keys()="
                 f"{repr(list(self.column_to_properties.keys()))}") from ex
 
-        enb.logger.info(
+        enb.logger.debug(
             f"Filling {len(target_indices)} rows, {len(target_columns)} columns...")
 
         # Start computation of new and updated rows in parallel_decorator
@@ -1333,7 +1343,7 @@ class ATable(metaclass=MetaTable):
             for index in target_indices]
 
         # Iterating a progressive getter continues until all rows are obtained
-        with enb.logger.info_context(
+        with enb.logger.debug_context(
                 f"Parallel computation of {len(pending_ids)} "
                 f"rows using {self.__class__.__name__} [CPU limit: {enb.config.options.cpu_limit}]",
                 sep="...\n"):
@@ -1342,8 +1352,8 @@ class ATable(metaclass=MetaTable):
                 iteration_period=self.progress_report_period,
                 alive_bar=None)
             for _ in progressive_getter:
-                if options.disable_progress_bar or progress_tracker is None:
-                    progressive_getter.report()
+                if not progress_tracker:
+                    enb.logger.debug(progressive_getter.report())
                 else:
                     progress_tracker.update_chunk_completed_rows(len(progressive_getter.completed_ids))
             computed_series = enb.parallel.get(pending_ids)
@@ -1359,7 +1369,7 @@ class ATable(metaclass=MetaTable):
 
         # Return the dataframe with the requested rows and columns, without attempting to updated
         # the loaded dataframe (that is done by methods calling this one)
-        with enb.logger.info_context(msg="Merging requested rows"):
+        with enb.logger.debug_context(msg="Merging requested rows"):
             target_df = pd.DataFrame(
                 computed_series,
                 columns=[self.private_index_column] + list(loaded_df.columns))
@@ -1399,7 +1409,7 @@ class ATable(metaclass=MetaTable):
         except KeyError:
             row = pd.Series({k: None for k in self.column_to_properties.keys()})
 
-        with enb.logger.info_context(
+        with enb.logger.debug_context(
                 f"Computing {self.__class__.__name__}'s row for index {index}"):
             called_functions = set()
             for column, fun in column_fun_tuples:
@@ -1412,12 +1422,12 @@ class ATable(metaclass=MetaTable):
                                 "return a value or raise an exception"
                                 if fun.__name__.startwith(
                                     MetaTable.automatic_column_function_prefix) else ""))
-                    enb.logger.info(
+                    enb.logger.debug(
                         f"Already called function {fun.__name__} "
                         f"<{self.__class__.__name__}>")
                     continue
                 if options.selected_columns and column not in options.selected_columns:
-                    enb.logger.info(f"Skipping non-selected column {column}")
+                    enb.logger.debug(f"Skipping non-selected column {column}")
                     continue
 
                 if overwrite or column not in row or row[column] is None:
@@ -1516,7 +1526,7 @@ class ATable(metaclass=MetaTable):
 
         :param output_csv: if None, self.csv_support_path is used as the output path.
         """
-        with enb.logger.info_context(
+        with enb.logger.debug_context(
                 msg=f"Dumping CSV with {len(df)} entries into {output_csv}",
                 msg_after=" dumped"):
             if any(p.has_object_values for p in
@@ -1964,7 +1974,7 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     base_dataset_dir = base_dataset_dir \
         if base_dataset_dir is not None else options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
-        enb.logger.info(
+        enb.logger.debug(
             f"Cannot get input samples from {base_dataset_dir} "
             f"(path not found or not a dir). "
             f"Using [sys.argv[0]] = [{os.path.basename(sys.argv[0])}] instead.")

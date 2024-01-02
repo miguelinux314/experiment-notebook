@@ -133,15 +133,15 @@ if not parallel_ray.is_parallel_process():
     log.verbose("")
     log.verbose(config.get_banner(markup=True), rule=True, markup=True, rule_kwargs=dict(style="bold green on black"))
     log.verbose("")
-    log.debug(
-        f"Additional .ini files employed: {repr(config.ini.all_ini_paths)}.")
+    log.info(
+        f"Additional .ini files employed: {', '.join(repr(p) for p in config.ini.all_ini_paths)}.")
 
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
         _os.chdir(calling_script_dir)
 
     if parallel_ray.is_ray_enabled():
-        logger.info("Using ray for parallelization.")
+        logger.info(f"Using ray for parallelization (CPU limit: {config.options.cpu_limit})\n")
         _atexit.register(parallel_ray.stop_ray)
         # The list of modules loaded so far passed to any possible ray remote
         # nodes so that they don't attempt to load them again.
@@ -150,7 +150,7 @@ if not parallel_ray.is_parallel_process():
             m.__name__ for m in _sys.modules.values() if
             hasattr(m, "__name__"))
     else:
-        logger.info("Using pathos for parallelization.")
+        logger.info(f"Using pathos for parallelization (CPU limit: {config.options.cpu_limit})\n")
 
     misc.capture_usr1()
 

@@ -299,7 +299,7 @@ class WrapperCodec(AbstractCodec):
             compressed_path=compressed_path,
             original_file_info=original_file_info)
         invocation = f"{self.compressor_path} {compression_params}"
-        enb.logger.info(f"[{self.name}] Invocation: '{invocation}'")
+        enb.logger.debug(f"[{self.name}] Invocation: '{invocation}'")
         try:
             enb.logger.debug(f"[{self.name}] executing: {repr(invocation)}")
             status, output, measured_time, memory_kb = \
@@ -349,7 +349,7 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-        enb.logger.info(f"WrapperCodec:decompress invocation={invocation}")
+        enb.logger.debug(f"WrapperCodec({self.__class__.__name__}:decompress invocation={invocation}")
         try:
             status, output, measured_time, memory_kb \
                 = enb.tcall.get_status_output_time_memory(invocation)
@@ -659,7 +659,7 @@ class CompressionExperiment(enb.experiment.Experiment):
                         wall_compression_time = \
                             (time.time_ns() - time_before_ns) / 1e9
                         if self._compression_results is None:
-                            enb.logger.info(
+                            enb.logger.debug(
                                 f"[W]arning: codec {self.codec.name} "
                                 f"did not report execution times. "
                                 f"Using wall clock instead (might be inaccurate)")
@@ -682,7 +682,7 @@ class CompressionExperiment(enb.experiment.Experiment):
                                 f"{os.path.basename(self.file_path)}.compressed")
                             os.makedirs(os.path.dirname(output_path),
                                         exist_ok=True)
-                            enb.logger.info(
+                            enb.logger.debug(
                                 f"Storing compressed bitstream for "
                                 f"{self.file_path} and {self.codec} "
                                 f"at {repr(output_path)}")
@@ -721,12 +721,12 @@ class CompressionExperiment(enb.experiment.Experiment):
                 try:
                     measured_times = []
                     measured_memory = []
-                    with enb.logger.info_context(
+                    with enb.logger.debug_context(
                             f"Executing decompression {self.codec.name} "
-                            f"on {self.file_path} "
-                            f"[{options.repetitions} times]"):
+                            f"on {self.file_path} [{options.repetitions} times]"
+                            + ("\n" if options.repetitions > 1 else "")):
                         for repetition_index in range(options.repetitions):
-                            enb.logger.info(
+                            enb.logger.debug(
                                 f"Executing decompression {self.codec.name} "
                                 f"on {self.file_path} "
                                 f"[rep{repetition_index + 1}/{options.repetitions}]")
@@ -740,7 +740,7 @@ class CompressionExperiment(enb.experiment.Experiment):
                             wall_decompression_time = \
                                 (time.time_ns() - time_before) / 1e9
                             if self._decompression_results is None:
-                                enb.logger.info(
+                                enb.logger.debug(
                                     f"Codec {self.codec.name} did not report "
                                     f"execution times. Using wall clock "
                                     f"instead (might be inaccurate with "
@@ -774,7 +774,7 @@ class CompressionExperiment(enb.experiment.Experiment):
                                     os.path.basename(self.file_path))
                                 os.makedirs(os.path.dirname(output_path),
                                             exist_ok=True)
-                                enb.logger.info(
+                                enb.logger.debug(
                                     f"Storing reconstructed copy of "
                                     f"{self.file_path} with {self.codec} "
                                     f"at {repr(output_path)}")

@@ -197,15 +197,12 @@ class Experiment(enb.atable.ATable):
         assert len(self.dataset_info_table.indices) == 1, \
             "dataset_info_table is expected to have a single index"
 
-        with enb.logger.info_context(
-                f"[{self.__class__.__name__}:__init__()] "
-                "Obtaining dataset properties with "
-                f"{self.dataset_info_table.__class__.__name__} "
-                f"({len(dataset_paths)} files)"):
-            self.dataset_table_df = self.dataset_info_table.get_df(
-                target_indices=dataset_paths,
-                overwrite=overwrite_file_properties,
-                fill=True)
+        enb.logger.debug(f"[{self.__class__.__name__}] ", end="")
+        enb.logger.info(f"Obtaining dataset properties table for {self.__class__.__name__}...")
+        self.dataset_table_df = self.dataset_info_table.get_df(
+            target_indices=dataset_paths,
+            overwrite=overwrite_file_properties,
+            fill=True)
 
         self.target_file_paths = dataset_paths
 
@@ -246,43 +243,49 @@ class Experiment(enb.atable.ATable):
         target_indices = tuple(itertools.product(
             sorted(set(target_indices)), sorted(set(target_task_names))))
 
-
-
-        enb.logger.verbose(f"Starting {self.__class__.__name__} with "
-                           f"{len(self.tasks)} tasks, "
-                           f"{len(target_indices)} indices, and "
-                           f"{len(self.column_to_properties)} columns.")
+        enb.logger.info(f"Computing {self.__class__.__name__} ({len(self.column_to_properties)} columns)...")
+        enb.logger.debug(f"({len(self.tasks)} tasks, {len(target_indices)} indices)")
 
         chunk_size = chunk_size if chunk_size is not None \
             else options.chunk_size
         chunk_size = chunk_size if chunk_size is not None \
             else len(target_indices)
 
-        chunks = [target_indices[i:i+chunk_size]
+        chunks = [target_indices[i:i + chunk_size]
                   for i in range(0, len(target_indices), chunk_size)]
 
-        if enb.config.options.verbose >= 1:
-            progress_tracker = enb.progress.ProgressTracker(atable=self, row_count=len(target_indices),
-                                         chunk_size=chunk_size).__enter__()
+        if enb.progress.is_progress_enabled():
+            progress_tracker = enb.progress.ProgressTracker(atable=self,
+                                                            row_count=len(target_indices),
+                                                            chunk_size=chunk_size).__enter__()
         else:
             progress_tracker = False
         try:
             for chunk_index, chunk in enumerate(chunks):
-                try:
-                    old_tasks = list(self.tasks)
-                    old_tasks_by_name = dict(self.tasks_by_name)
-                    task_names = list(set(task_name for _, task_name in chunk))
-                    self.tasks = [old_tasks_by_name[name] for name in task_names]
-                    self.tasks_by_name = {name:old_tasks_by_name[name]
-                                          for name in task_names}
-                    _ = super().get_df(target_indices=chunk,
-                                        fill=fill,
-                                        overwrite=overwrite,
-                                        chunk_size=-1,
-                                        progress_tracker=progress_tracker)
-                finally:
-                    self.tasks = old_tasks
-                    self.tasks_by_name = old_tasks_by_name
+                with enb.logger.debug_context(
+                        f"Computing experiment chunk "
+                        f"{chunk_index}/{len(chunks) - 1} "
+                        f"({100 * chunk_index / len(chunks):.2f}%-"
+                        f"{min(100, 100 * (chunk_index + 1) / len(chunks)):.2f}%) "
+                        f"@ {datetime.datetime.now()}",
+                        sep="...\n",
+                        msg_after=f"Completed {self.__class__.__name__} "
+                                  f"chunk #{chunk_index}/{len(chunks) - 1}"):
+                    try:
+                        old_tasks = list(self.tasks)
+                        old_tasks_by_name = dict(self.tasks_by_name)
+                        task_names = list(set(task_name for _, task_name in chunk))
+                        self.tasks = [old_tasks_by_name[name] for name in task_names]
+                        self.tasks_by_name = {name: old_tasks_by_name[name]
+                                              for name in task_names}
+                        _ = super().get_df(target_indices=chunk,
+                                           fill=fill,
+                                           overwrite=overwrite,
+                                           chunk_size=-1,
+                                           progress_tracker=progress_tracker)
+                    finally:
+                        self.tasks = old_tasks
+                        self.tasks_by_name = old_tasks_by_name
 
                 if progress_tracker:
                     progress_tracker.complete_chunk()
@@ -312,6 +315,8 @@ class Experiment(enb.atable.ATable):
                 enb.logger.warn(
                     f"Found redundant dataset/experiment column(s): "
                     f"{', '.join(redundant_columns)}.")
+
+        enb.logger.info("")
 
         return df[(c for c in df.columns if not c.endswith(rsuffix))]
 

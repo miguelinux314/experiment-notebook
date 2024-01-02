@@ -208,7 +208,7 @@ class Analyzer(enb.atable.ATable):
             # cannot be assumed to be the same as the previous invocation of
             # this analyzer's get_df method).
             os.remove(self.csv_support_path)
-            enb.logger.info(
+            enb.logger.debug(
                 f"Removed {self.csv_support_path} to allow "
                 f"re-analysis with {self.__class__.__name__}.")
 
@@ -224,7 +224,9 @@ class Analyzer(enb.atable.ATable):
                                    column_to_properties,
                                    **render_kwargs):
                 # pylint: disable=too-many-arguments
+
                 # Get the summary table with the requested data analysis
+                enb.logger.info(f"Analyzing data with {self.__class__.__name__}...")
                 summary_table = self.build_summary_atable(
                     full_df=full_df,
                     target_columns=target_columns,
@@ -278,6 +280,7 @@ class Analyzer(enb.atable.ATable):
                                       show_count=show_count, **render_kwargs)
         finally:
             self.selected_render_modes = original_srm
+            enb.logger.info("")
 
     def render_all_modes(
             self,
@@ -335,10 +338,10 @@ class Analyzer(enb.atable.ATable):
                         **dict(column_kwargs)))
 
         # Wait until all rendering tasks are done while updating about progress
-        with enb.logger.info_context(
+        with enb.logger.debug_context(
                 f"Rendering {len(render_ids)} plots with "
                 f"{self.__class__.__name__}...\n"):
-            if options.disable_progress_bar or enb.config.options.verbose < 1:
+            if not enb.progress.is_progress_enabled():
                 # Silent processing
                 for _ in enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
@@ -347,6 +350,7 @@ class Analyzer(enb.atable.ATable):
                     pass
                 enb.parallel.get(render_ids)
             else:
+                # Rich progress reporting
                 with enb.progress.ProgressTracker(self, len(render_ids), len(render_ids)) as progress_tracker:
                     progressive_getter = enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
@@ -543,7 +547,7 @@ class Analyzer(enb.atable.ATable):
                 reference_group=reference_group,
                 output_plot_dir=options.analysis_dir,
                 render_mode=render_mode_str)[:-4] + ".csv"
-            enb.logger.info(
+            enb.logger.debug(
                 f"Saving analysis results to {analysis_output_path}")
             os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
 
@@ -3243,7 +3247,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                 reference_group=reference_group,
                 output_plot_dir=options.analysis_dir,
                 render_mode=render_mode_str)[:-4] + ".csv"
-            enb.logger.info(
+            enb.logger.debug(
                 f"Saving analysis results to {analysis_output_path}")
             os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
 
