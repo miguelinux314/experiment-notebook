@@ -222,7 +222,7 @@ class HeadNode:
                 if not os.path.exists(options.ssh_cluster_csv_path):
                     raise ValueError(
                         "The cluster configuration file was set to "
-                        f"{repr(options.ssh_cluster_csv_path)}"
+                        f"{repr(options.ssh_cluster_csv_path)} "
                         "but it does not exist. "
                         "Either set enb.config.options.ssh_cluster_csv_path to None "
                         "or to an existing file. See "
