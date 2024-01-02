@@ -36,8 +36,7 @@ class ProgressTracker(rich.live.Live):
             SpeedColumn(),
             RemainingTimeColumn(),
             rich.progress.BarColumn(bar_width=None),
-            expand=True,
-            disable=options.verbose < 1)
+            expand=True)
 
         if self.chunk_count > 1:
             self.chunk_task_id = self.progress.add_task(f"Chunks", total=math.ceil(self.row_count / self.chunk_size))
@@ -57,7 +56,7 @@ class ProgressTracker(rich.live.Live):
         super().__init__(self.panel)
 
     def complete_chunk(self):
-        """Add 1 to the number of completed chunks if a chunk task has been defined
+        """Add 1 to the number of completed chunks if a chunk task has been defined.
         """
         if self.chunk_task_id is not None:
             self.progress.advance(self.chunk_task_id)

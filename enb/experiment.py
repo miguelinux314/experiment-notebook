@@ -261,8 +261,12 @@ class Experiment(enb.atable.ATable):
         chunks = [target_indices[i:i+chunk_size]
                   for i in range(0, len(target_indices), chunk_size)]
 
-        with enb.progress.ProgressTracker(atable=self, row_count=len(target_indices),
-                                          chunk_size=chunk_size) as progress_tracker:
+        if enb.config.options.verbose >= 1:
+            progress_tracker = enb.progress.ProgressTracker(atable=self, row_count=len(target_indices),
+                                         chunk_size=chunk_size).__enter__()
+        else:
+            progress_tracker = False
+        try:
             for chunk_index, chunk in enumerate(chunks):
                 try:
                     old_tasks = list(self.tasks)
@@ -271,16 +275,6 @@ class Experiment(enb.atable.ATable):
                     self.tasks = [old_tasks_by_name[name] for name in task_names]
                     self.tasks_by_name = {name:old_tasks_by_name[name]
                                           for name in task_names}
-                    # Get partial chunk size
-                    # with enb.logger.info_context(
-                    #         f"Computing experiment chunk "
-                    #         f"{chunk_index}/{len(chunks)-1} "
-                    #         f"({100*chunk_index/len(chunks):.2f}%-"
-                    #         f"{min(100, 100*(chunk_index+1)/len(chunks)):.2f}%) "
-                    #         f"@ {datetime.datetime.now()}",
-                    #         sep="...\n",
-                    #         msg_after=f"Completed {self.__class__.__name__} "
-                    #                   f"chunk #{chunk_index}/{len(chunks)-1}"):
                     _ = super().get_df(target_indices=chunk,
                                         fill=fill,
                                         overwrite=overwrite,
@@ -290,7 +284,11 @@ class Experiment(enb.atable.ATable):
                     self.tasks = old_tasks
                     self.tasks_by_name = old_tasks_by_name
 
-                progress_tracker.complete_chunk()
+                if progress_tracker:
+                    progress_tracker.complete_chunk()
+        finally:
+            if progress_tracker:
+                progress_tracker.__exit__(None, None, None)
 
         # Get all dfs (single chunk)
         df = super().get_df(target_indices=target_indices, fill=fill,

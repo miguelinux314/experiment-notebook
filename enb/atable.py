@@ -1007,7 +1007,7 @@ class ATable(metaclass=MetaTable):
         # Split in chunks and add/update the persistent storage
         df = None
         if fill or overwrite:
-            if progress_tracker is None:
+            if progress_tracker is None and enb.config.options.verbose >= 1:
                 with enb.progress.ProgressTracker(self, len(target_indices), chunk_size) as tracker:
                     for i, chunk in enumerate(chunk_list):
                         df = self.get_df_one_chunk(
@@ -1024,7 +1024,7 @@ class ATable(metaclass=MetaTable):
                         fill_needed=True,
                         overwrite=overwrite,
                         run_sanity_checks=False,
-                        progress_tracker=progress_tracker)
+                        progress_tracker=progress_tracker if enb.config.options.verbose >= 1 else False)
 
         # Get the target df again
         if len(chunk_list) > 1 or df is None:

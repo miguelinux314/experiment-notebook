@@ -338,7 +338,8 @@ class Analyzer(enb.atable.ATable):
         with enb.logger.info_context(
                 f"Rendering {len(render_ids)} plots with "
                 f"{self.__class__.__name__}...\n"):
-            if options.disable_progress_bar or True:
+            if options.disable_progress_bar or enb.config.options.verbose < 1:
+                # Silent processing
                 for _ in enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
@@ -346,17 +347,15 @@ class Analyzer(enb.atable.ATable):
                     pass
                 enb.parallel.get(render_ids)
             else:
-
-                with enb.progress.get_rich_progress() as progress:
-                    progress_task = progress.add_task(self.__class__.__name__, total=len(render_ids))
+                with enb.progress.ProgressTracker(self, len(render_ids), len(render_ids)) as progress_tracker:
                     progressive_getter = enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=None)
                     for _ in progressive_getter:
-                        progress.update(task_id=progress_task, completed=len(progressive_getter.completed_ids))
+                        progress_tracker.update_chunk_completed_rows(len(progressive_getter.completed_ids))
                     enb.parallel.get(render_ids)
-                    progress.update(task_id=progress_task, completed=len(progressive_getter.completed_ids))
+                    progress_tracker.update_chunk_completed_rows(len(render_ids))
 
     def update_render_kwargs_reference_group(
             self, column_kwargs, reference_group):
