@@ -176,9 +176,7 @@ class HeadNode:
                         for p in
                         glob.glob(os.path.join(options.project_root, "**", "*"),
                                   recursive=True)
-                        if options.ssh_cluster_csv_path or (
-                                os.path.isfile(p) and not p.endswith(
-                            ".py"))]
+                        if options.ssh_cluster_csv_path or (os.path.isfile(p) and not p.endswith(".py"))]
 
             # pylint: disable=protected-access
             modules_needed_remotely = [
@@ -287,8 +285,7 @@ class HeadNode:
         """
 
         def clean_value(s, default_value=None):
-            return s if (isinstance(s, str) and s) or not math.isnan(
-                s) else default_value
+            return s if (isinstance(s, str) and s) or not math.isnan(s) else default_value
 
         return [RemoteNode(
             address=clean_value(row["address"], None),
@@ -501,7 +498,7 @@ def init_ray():
                               ray_port_count=options.ray_port_count)
         _head_node.start()
         options.head_address = _head_node.get_node_ip()
-        logger.info(_head_node.status_str + "\n")
+        logger.verbose(_head_node.status_str + "\n")
 
 
 def stop_ray():
