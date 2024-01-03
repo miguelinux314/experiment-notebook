@@ -216,6 +216,8 @@ include enb/plugins/template_basic_workflow_example/data/wiki/s_beauvoir.txt
 include enb/plugins/template_basic_workflow_example/__plugin__.py
 include enb/plugins/template_cluster_config/enb_cluster.csv
 include enb/plugins/template_cluster_config/__plugin__.py
+include enb/plugins/template_colors/colors-dark.ini
+include enb/plugins/template_colors/__plugin__.py
 include enb/plugins/template_enb_ini/__plugin__.py
 include enb/plugins/template_entropy_codec_comparison/datasets/image_u8be-1x256x128.raw
 include enb/plugins/template_entropy_codec_comparison/entropy_codec_comparison.py.enbt
