@@ -43,7 +43,6 @@ from .. import default_persistence_dir
 from .. import default_output_plots_dir
 from .. import default_analysis_dir
 from .. import calling_script_dir
-from .. import log
 from . import ini
 from . import singleton_cli as _singleton_cli
 
@@ -90,6 +89,8 @@ class GeneralOptions:
     def verbose(self, value):
         """Be verbose? Repeat for more. Change at any time to increase the logger's verbosity.
         """
+        from .. import log
+
         log.logger.selected_log_level = log.get_level(
             name=log.logger.level_message.name, lower_priority=float(value))
 
@@ -402,11 +403,15 @@ class LoggingOptions(OptionsBase):
     def log_level_prefix(self, value):
         """If True, logged messages include a prefix, e.g., based on their priority.
         """
+        from .. import log
+
         log.logger.show_prefixes = bool(value)
         return log.logger.show_prefixes
 
     @OptionsBase.property(type=str, choices=_logging_level_names)
     def show_prefix_level(self, value):
+        from .. import log
+
         log.logger.show_prefix_level = log.logger.get_level(value)
 
 

@@ -12,6 +12,7 @@ import signal
 import socket
 import csv
 import time
+import rich
 
 
 def get_defining_class_name(method):
@@ -250,3 +251,41 @@ def capture_usr1():
         pdb.Pdb().set_trace(frame)
 
     signal.signal(signal.SIGUSR1, handle_pdb)
+
+class BootstrapLogger:
+    """Imitate enb.log.Logger's interface before it is loaded. This is needed to solve circular imports,
+    i.e., when an error with the managed attributes decorator takes place before the full logger is available
+    (within the config submodule).
+    """
+
+    def __init__(self):
+        from .config.aoptions import get_options
+        self.options = get_options()
+        self.console = rich.console.Console(highlight=False, markup=False)
+
+    def log(self, *args, style=None, **kwargs):
+        self.console.print(*args, **kwargs, style=style, highlight=False, markup=False)
+
+    def core(self, *args, **kwargs):
+        self.log(*args, **kwargs, style="#28c9ff on #000000")
+
+    def error(self, *args, **kwargs):
+        self.log(*args, **kwargs, style="#ff5255 on #000000")
+
+    def warn(self, *args, **kwargs):
+        self.log(*args, **kwargs, style="#ffca4f on #000000")
+
+    def message(self, *args, **kwargs):
+        self.log(*args, **kwargs, style="#28c9ff on #000000")
+
+    def verbose(self, *args, **kwargs):
+        if self.options.verbose >= 1:
+            self.log(*args, **kwargs, style="#c8ffc8 on #000000")
+
+    def info(self, *args, **kwargs):
+        if self.options.verbose >= 2:
+            self.log(*args, **kwargs, style="#afffbe on #000000")
+
+    def debug(self, *args, **kwargs):
+        if self.options.verbose >= 3:
+            self.log(*args, **kwargs, style="#909090 on #000000")

@@ -68,11 +68,10 @@ if _os.path.basename(_sys.argv[0]) == "sphinx-build":
 # pylint: disable=wrong-import-position
 # Basic tools among core modules
 from . import misc
-# Logging tools
-from . import log
 # Global configuration modules
 from . import config
 # Logging tools
+from . import log
 from .log import logger
 # Paralellization modules
 from . import parallel

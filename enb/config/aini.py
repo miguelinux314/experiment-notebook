@@ -32,9 +32,8 @@ import ast
 import configparser
 import textwrap
 
-import enb
 from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
-from ..misc import Singleton as _Singleton, class_to_fqn
+from ..misc import Singleton as _Singleton, class_to_fqn, BootstrapLogger
 
 
 class AdditionalIniParser(argparse.ArgumentParser):
@@ -145,7 +144,12 @@ def managed_attributes(cls):
     Note that adding keys to that section corresponding to attributes not present
     in the definition of cls are ignored, i.e., new attributes are not added to cls.
     """
-    from enb import logger
+    try:
+        # This import will work once the config submodule is finished loading
+        from ..log import logger
+    except ImportError:
+        # Allow displaying messages conditionally while the config submodule is loading
+        logger = BootstrapLogger()
 
     cls_fqn = class_to_fqn(cls)
 
