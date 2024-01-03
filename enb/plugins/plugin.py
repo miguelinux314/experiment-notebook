@@ -57,7 +57,7 @@ class Plugin(Installable):
         except Exception as ex:
             print(f"Error installing plugin {repr(cls.name)}!\n")
             raise ex
-        print(f"Plugin {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
+        cls.report_successful_installation(installation_dir=installation_dir)
         if enb.config.options.verbose:
             cls.print_info()
 

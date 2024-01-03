@@ -179,6 +179,7 @@ class Installable(metaclass=InstallableMeta):
             # Custom building of the Installable
             print(f"Building plugin {repr(cls.name)} into {installation_dir}...")
             cls.build(installation_dir=installation_dir)
+            cls.report_successful_installation(installation_dir=installation_dir)
         except Exception as ex:
             if not installation_dir_existed:
                 enb.logger.verbose(f"Removing incomplete installation dir {repr(installation_dir)}.")
@@ -193,6 +194,11 @@ class Installable(metaclass=InstallableMeta):
         Note that the installation dir is created before calling build.
         """
         pass
+
+    @classmethod
+    def report_successful_installation(cls, installation_dir):
+        print(
+            f"Successfully installed {repr(cls.name)} into {repr(os.path.abspath(installation_dir))}.")
 
     @classmethod
     def warn_extra_requirements(cls):
