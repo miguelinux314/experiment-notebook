@@ -120,7 +120,7 @@ class PluginInstall(argparse.Action):
             plugin.install(installation_dir=destination_dir)
         except (SyntaxError, ValueError) as ex:
             enb.logger.error(
-                f"Error installing plugin {repr(plugin_name)} into {repr(destination_dir)}. "
+                f"Error installing plugin {repr(plugin_name)} into {repr(os.path.abspath(destination_dir))}. "
                 f"The following exception was raised:\n{ex}")
             sys.exit(1)
 
