@@ -253,6 +253,8 @@ class Logger(metaclass=Singleton):
 
     @property
     def is_parallel_process(self):
+        """Lazy property to determine whether this is currently a parallel process.
+        """
         if self._is_parallel_process:
             is_parallel_process = self._is_parallel_process
         else:
@@ -262,6 +264,8 @@ class Logger(metaclass=Singleton):
 
     @property
     def is_ray_enabled(self):
+        """Lazy property to determine whether ray is available and enabled.
+        """
         if self._is_ray_enabled:
             is_ray_enabled = self._is_ray_enabled
         else:
