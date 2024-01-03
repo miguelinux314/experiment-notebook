@@ -51,17 +51,6 @@ class LogLevel:
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}:{self.priority})"
 
-class PickableConsole(rich.console.Console):
-    """The rich.console.Console class cannot be directly pickled and causes problems when
-    using remote (parallel) methods. This wrapper prevents pickling of unpicklable members such as locks.
-    This can be done because the state of the console needs not be propagated to child/remote processes
-    """
-    def __getstate__(self):
-        return {}
-
-    def __setstate__(self, state):
-        self.__dict__.update(rich.console.Console().__dict__)
-
 
 class Logger(metaclass=Singleton):
     """Message logging and printing hub for `enb`.
