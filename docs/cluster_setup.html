@@ -32,7 +32,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.1
+                v1.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -94,13 +94,17 @@
              
   <section id="configuring-enb-in-a-cluster-of-computers">
 <h1>Configuring <cite>enb</cite> in a cluster of computers<a class="headerlink" href="#configuring-enb-in-a-cluster-of-computers" title="Permalink to this headline"></a></h1>
-<p>Thanks to the <cite>ray</cite> library, your code using <cite>enb</cite> can easily scale from one to multiple
-computers.</p>
+<p>Thanks to the <cite>ray</cite> library, your code using <cite>enb</cite> can easily scale from one to multiple computers.</p>
 <p>This cluster employs <cite>ray</cite>, <cite>ssh</cite> and <cite>sshfs</cite>, and does not require docker, k8s, AWS or anything similar.
 You will most easily set up all these tools on linux.</p>
 <p>Multi-computer processing is only supported in <cite>enb</cite> in platforms where <cite>ray</cite> is available and working,
 to the best of our knowledge only Linux and MacOS. This feature is known not to work on Windows and
 disabled by default on that platform.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Using parallelization with <cite>ray</cite> with a one-computer cluster (the computer invoking your experiment script)
+is recommended when you have many dataset elements and/or tasks, which involve little processing per row.</p>
+</div>
 <section id="first-installation">
 <h2>First installation<a class="headerlink" href="#first-installation" title="Permalink to this headline"></a></h2>
 <p>In each computer of the cluster, you will need to do the following (once).</p>
@@ -251,6 +255,10 @@ and for which the key is on <cite>~/.ssh/id_rsa</cite>, the cluster configuratio
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can edit this file with most spreadsheet software, as long as you keep it in CSV format.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can comment-out lines adding a <cite>#</cite> character at the beginning</p>
 </div>
 </section>
 <section id="distributed-script-execution">

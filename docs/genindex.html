@@ -29,7 +29,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.1
+                v1.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -185,6 +185,8 @@
 </li>
         <li><a href="api/enb.html#enb.log.LogLevel.__init__">(enb.log.LogLevel method)</a>
 </li>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.__init__">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.misc.ExposedProperty.__init__">(enb.misc.ExposedProperty method)</a>
 </li>
         <li><a href="api/enb.html#enb.misc.LapTimer.__init__">(enb.misc.LapTimer method)</a>
@@ -244,6 +246,8 @@
         <li><a href="api/enb.html#enb.png.PDFToPNG.__init__">(enb.png.PDFToPNG method)</a>
 </li>
         <li><a href="api/enb.html#enb.png.PNGCurationTable.__init__">(enb.png.PNGCurationTable method)</a>
+</li>
+        <li><a href="api/enb.html#enb.progress.ProgressTracker.__init__">(enb.progress.ProgressTracker method)</a>
 </li>
         <li><a href="api/enb.html#enb.sets.FilePropertiesTable.__init__">(enb.sets.FilePropertiesTable method)</a>
 </li>
@@ -396,6 +400,14 @@
       </ul></li>
       <li><a href="api/enb.html#enb.isets.BandEntropyTable">BandEntropyTable (class in enb.isets)</a>
 </li>
+      <li><a href="api/enb.html#enb.log.Logger.banner_enb_name_style">banner_enb_name_style (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.banner_enb_version_style">banner_enb_version_style (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.banner_line_style">banner_line_style (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.banner_plain_text_style">banner_plain_text_style (enb.log.Logger attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer.bar_width_fraction">bar_width_fraction (enb.aanalysis.ScalarNumericAnalyzer attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.BarData">BarData (class in enb.plotdata)</a>
@@ -410,11 +422,13 @@
 </li>
       <li><a href="api/enb.html#enb.isets.BILToBSQ">BILToBSQ (class in enb.isets)</a>
 </li>
-      <li><a href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer.bin_count">bin_count (enb.aanalysis.ScalarNumeric2DAnalyzer attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer.bin_count">bin_count (enb.aanalysis.ScalarNumeric2DAnalyzer attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.isets.BIPToBSQ">BIPToBSQ (class in enb.isets)</a>
+</li>
+      <li><a href="api/enb.html#enb.misc.BootstrapLogger">BootstrapLogger (class in enb.misc)</a>
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.build">build() (enb.plugins.installable.Installable class method)</a>
 
@@ -459,6 +473,8 @@
       <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.ValidationAction.check_valid_value">check_valid_value() (enb.config.singleton_cli.ValidationAction class method)</a>
+</li>
+      <li><a href="api/enb.html#enb.progress.ProgressTracker.chunk_count">chunk_count (enb.progress.ProgressTracker property)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.chunk_size">chunk_size() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
@@ -610,6 +626,8 @@
         <li><a href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer.common_group_scale">(enb.aanalysis.TwoNumericAnalyzer attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.html#enb.progress.ProgressTracker.complete_chunk">complete_chunk() (enb.progress.ProgressTracker method)</a>
+</li>
       <li><a href="api/enb.html#enb.fits.FITSWrapperCodec.compress">compress() (enb.fits.FITSWrapperCodec method)</a>
 
       <ul>
@@ -679,6 +697,8 @@
       <li><a href="api/enb.html#enb.log.Logger.core">core() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.core">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.core">(in module enb.log)</a>
 </li>
       </ul></li>
@@ -741,6 +761,8 @@
       <li><a href="api/enb.html#enb.log.Logger.debug">debug() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.debug">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.debug">(in module enb.log)</a>
 </li>
       </ul></li>
@@ -967,8 +989,6 @@
         <li><a href="api/enb.plugins.html#module-enb.plugins.plugin">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins.plugin_ccsds122
 
@@ -976,6 +996,8 @@
         <li><a href="api/enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins.plugin_ccsds122.ccsds122_codec
 
@@ -1033,6 +1055,13 @@
 </li>
       </ul></li>
       <li>
+    enb.progress
+
+      <ul>
+        <li><a href="api/enb.html#module-enb.progress">module</a>
+</li>
+      </ul></li>
+      <li>
     enb.render
 
       <ul>
@@ -1065,6 +1094,8 @@
       <li><a href="api/enb.html#enb.log.Logger.error">error() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.error">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.error">(in module enb.log)</a>
 </li>
       </ul></li>
@@ -1185,8 +1216,6 @@
       <li><a href="api/enb.html#enb.atable.MetaTable.get_auto_column_wrapper">get_auto_column_wrapper() (enb.atable.MetaTable static method)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.get_available_styles">get_available_styles() (in module enb.plotdata)</a>
-</li>
-      <li><a href="api/enb.config.html#enb.config.get_banner">get_banner() (in module enb.config)</a>
 </li>
       <li><a href="api/enb.html#enb.icompression.WrapperCodec.get_binary_signature">get_binary_signature() (enb.icompression.WrapperCodec static method)</a>
 </li>
@@ -1324,6 +1353,8 @@
       </ul></li>
       <li><a href="api/enb.html#enb.icompression.GiciLibHelper">GiciLibHelper (class in enb.icompression)</a>
 </li>
+      <li><a href="api/enb.html#enb.aanalysis.Analyzer.global_group_name">global_group_name (enb.aanalysis.Analyzer attribute)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aini.Ini.global_ini_path">global_ini_path (enb.config.aini.Ini attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.global_y_label_margin">global_y_label_margin (enb.aanalysis.Analyzer attribute)</a>
@@ -1395,6 +1426,8 @@
       <li><a href="api/enb.html#enb.log.Logger.info">info() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.info">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.info">(in module enb.log)</a>
 </li>
       </ul></li>
@@ -1440,7 +1473,13 @@
 </li>
       <li><a href="api/enb.html#enb.aanalysis.is_family_grouping">is_family_grouping() (in module enb.aanalysis)</a>
 </li>
+      <li><a href="api/enb.html#enb.log.Logger.is_parallel_process">is_parallel_process (enb.log.Logger property)</a>
+</li>
       <li><a href="api/enb.html#enb.parallel_ray.is_parallel_process">is_parallel_process() (in module enb.parallel_ray)</a>
+</li>
+      <li><a href="api/enb.html#enb.progress.is_progress_enabled">is_progress_enabled() (in module enb.progress)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.is_ray_enabled">is_ray_enabled (enb.log.Logger property)</a>
 </li>
       <li><a href="api/enb.html#enb.parallel_ray.is_ray_enabled">is_ray_enabled() (in module enb.parallel_ray)</a>
 </li>
@@ -1553,14 +1592,14 @@
       <li><a href="api/enb.html#enb.log.Logger.log">log() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.log">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.log">(in module enb.log)</a>
 </li>
       </ul></li>
       <li><a href="api/enb.html#enb.log.Logger.log_context">log_context() (enb.log.Logger method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.LoggingOptions.log_level_prefix">log_level_prefix() (enb.config.aoptions.LoggingOptions method)</a>
-</li>
-      <li><a href="api/enb.config.html#enb.config.aoptions.LoggingOptions.log_print">log_print() (enb.config.aoptions.LoggingOptions method)</a>
 </li>
       <li><a href="api/enb.html#enb.log.Logger">Logger (class in enb.log)</a>
 </li>
@@ -1621,6 +1660,8 @@
       <li><a href="api/enb.html#enb.log.Logger.message">message() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.message">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.message">(in module enb.log)</a>
 </li>
       </ul></li>
@@ -1709,6 +1750,8 @@
         <li><a href="api/enb.plugins.html#module-enb.plugins.template">enb.plugins.template</a>
 </li>
         <li><a href="api/enb.html#module-enb.png">enb.png</a>
+</li>
+        <li><a href="api/enb.html#module-enb.progress">enb.progress</a>
 </li>
         <li><a href="api/enb.html#module-enb.render">enb.render</a>
 </li>
@@ -1903,6 +1946,8 @@
 </li>
       <li><a href="api/enb.html#enb.parallel.ProgressiveGetter">ProgressiveGetter (class in enb.parallel)</a>
 </li>
+      <li><a href="api/enb.html#enb.progress.ProgressTracker">ProgressTracker (class in enb.progress)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.DirOptions.project_root">project_root() (enb.config.aoptions.DirOptions method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.propagates_options">propagates_options() (in module enb.config.aoptions)</a>
@@ -2017,8 +2062,6 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.repetitions">repetitions() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.log.Logger.replace_print">replace_print() (enb.log.Logger method)</a>
-</li>
       <li><a href="api/enb.html#enb.parallel.ProgressiveGetter.report">report() (enb.parallel.ProgressiveGetter method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.report_configuration">report_configuration() (in module enb.config)</a>
@@ -2029,6 +2072,8 @@
         <li><a href="api/enb.html#enb.log.report_level_status">(in module enb.log)</a>
 </li>
       </ul></li>
+      <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.report_successful_installation">report_successful_installation() (enb.plugins.installable.Installable class method)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.report_wall_time">report_wall_time() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.repr">repr() (enb.plugins.installable.Installable class method)</a>
@@ -2205,8 +2250,6 @@
 </li>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_PSNR_dynamic_range">set_PSNR_dynamic_range() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.icompression.LossyCompressionExperiment.set_PSNR_nominal">set_PSNR_nominal() (enb.icompression.LossyCompressionExperiment method)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.SampleDistributionTable.set_sample_distribution">set_sample_distribution() (enb.isets.SampleDistributionTable method)</a>
@@ -2219,6 +2262,8 @@
       </ul></li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_samples">set_samples() (enb.isets.ImageGeometryTable method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.aanalysis.ScalarNumericSummary.set_scalar_description">set_scalar_description() (enb.aanalysis.ScalarNumericSummary method)</a>
 </li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_signed">set_signed() (enb.isets.ImageGeometryTable method)</a>
@@ -2251,6 +2296,12 @@
       </ul></li>
       <li><a href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.should_highlight_cell">should_highlight_cell() (enb.aanalysis.ScalarNumericJointAnalyzer method)</a>
 </li>
+      <li><a href="api/enb.html#enb.log.Logger.show_banner">show_banner() (enb.log.Logger method)</a>
+
+      <ul>
+        <li><a href="api/enb.html#enb.log.show_banner">(in module enb.log)</a>
+</li>
+      </ul></li>
       <li><a href="api/enb.html#enb.plotdata.HorizontalBand.show_bounding_lines">show_bounding_lines (enb.plotdata.HorizontalBand attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.Histogram2D.show_cmap_bar">show_cmap_bar (enb.plotdata.Histogram2D attribute)</a>
@@ -2363,7 +2414,21 @@
 </li>
       <li><a href="api/enb.html#enb.icompression.StructuralSimilarity">StructuralSimilarity (class in enb.icompression)</a>
 </li>
+      <li><a href="api/enb.html#enb.log.Logger.style_core">style_core (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.style_debug">style_debug (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.style_error">style_error (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.style_info">style_info (enb.log.Logger attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.style_list">style_list (enb.aanalysis.Analyzer attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.style_message">style_message (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.style_verbose">style_verbose (enb.log.Logger attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.log.Logger.style_warn">style_warn (enb.log.Logger attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.SummaryTable">SummaryTable (class in enb.atable)</a>
 </li>
@@ -2437,6 +2502,8 @@
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.SingletonCLI.update">update() (enb.config.singleton_cli.SingletonCLI method)</a>
 </li>
+      <li><a href="api/enb.html#enb.progress.ProgressTracker.update_chunk_completed_rows">update_chunk_completed_rows() (enb.progress.ProgressTracker method)</a>
+</li>
       <li><a href="api/enb.html#enb.parallel.ProgressiveGetter.update_finished_tasks">update_finished_tasks() (enb.parallel.ProgressiveGetter method)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aini.Ini.update_from_path">update_from_path() (enb.config.aini.Ini method)</a>
@@ -2498,6 +2565,8 @@
       <ul>
         <li><a href="api/enb.html#enb.log.Logger.verbose">(enb.log.Logger method)</a>
 </li>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.verbose">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.verbose">(in module enb.log)</a>
 </li>
       </ul></li>
@@ -2556,19 +2625,23 @@
       <li><a href="api/enb.html#enb.log.Logger.warn">warn() (enb.log.Logger method)</a>
 
       <ul>
+        <li><a href="api/enb.html#enb.misc.BootstrapLogger.warn">(enb.misc.BootstrapLogger method)</a>
+</li>
         <li><a href="api/enb.html#enb.log.warn">(in module enb.log)</a>
 </li>
       </ul></li>
       <li><a href="api/enb.html#enb.log.Logger.warn_active">warn_active (enb.log.Logger property)</a>
 </li>
+      <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.warn_extra_requirements">warn_extra_requirements() (enb.plugins.installable.Installable class method)</a>
+</li>
       <li><a href="api/enb.html#enb.plotdata.StepData.where">where (enb.plotdata.StepData attribute)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.aoptions.RayOptions.worker_script_name">worker_script_name() (enb.config.aoptions.RayOptions method)</a>
 </li>
-      <li><a href="api/enb.html#enb.icompression.WrapperCodec">WrapperCodec (class in enb.icompression)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.icompression.WrapperCodec">WrapperCodec (class in enb.icompression)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.WritableDirAction">WritableDirAction (class in enb.config.singleton_cli)</a>
 </li>
       <li><a href="api/enb.config.html#enb.config.singleton_cli.WritableOrCreableDirAction">WritableOrCreableDirAction (class in enb.config.singleton_cli)</a>

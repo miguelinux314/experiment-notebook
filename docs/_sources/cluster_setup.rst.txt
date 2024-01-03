@@ -5,8 +5,7 @@
 Configuring `enb` in a cluster of computers
 ===========================================
 
-Thanks to the `ray` library, your code using `enb` can easily scale from one to multiple
-computers.
+Thanks to the `ray` library, your code using `enb` can easily scale from one to multiple computers.
 
 This cluster employs `ray`, `ssh` and `sshfs`, and does not require docker, k8s, AWS or anything similar.
 You will most easily set up all these tools on linux.
@@ -14,6 +13,9 @@ You will most easily set up all these tools on linux.
 Multi-computer processing is only supported in `enb` in platforms where `ray` is available and working,
 to the best of our knowledge only Linux and MacOS. This feature is known not to work on Windows and
 disabled by default on that platform.
+
+.. note:: Using parallelization with `ray` with a one-computer cluster (the computer invoking your experiment script)
+  is recommended when you have many dataset elements and/or tasks, which involve little processing per row.
 
 First installation
 ------------------
@@ -43,7 +45,7 @@ In each computer of the cluster, you will need to do the following (once).
     3. **Install and configure ray**
 
         * **Install or check ray version**
-            The `ray` library is needed in all nodes participating in a cluster. 
+            The `ray` library is needed in all nodes participating in a cluster.
             This library is not installed by default from version 0.4.5 onwards.
             You can install it with:
 
@@ -52,7 +54,7 @@ In each computer of the cluster, you will need to do the following (once).
                 pip install ray[default]
 
 
-            You may need to verify that the `ray` command is present in your PATH after installing ray. 
+            You may need to verify that the `ray` command is present in your PATH after installing ray.
 
         * **Open ray ports**
 
@@ -159,6 +161,10 @@ and for which the key is on `~/.ssh/id_rsa`, the cluster configuration file woul
 .. note::
 
     You can edit this file with most spreadsheet software, as long as you keep it in CSV format.
+
+.. note::
+
+    You can comment-out lines adding a `#` character at the beginning
 
 Distributed script execution
 ............................

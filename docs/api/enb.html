@@ -32,7 +32,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.1
+                v1.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -321,6 +321,11 @@ parameter selection.</p>
 <span class="sig-name descname"><span class="pre">get_render_column_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_render_column_name" title="Permalink to this definition"></a></dt>
 <dd><p>Return the canonical name for columns containing plottable data instances.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.aanalysis.Analyzer.global_group_name">
+<span class="sig-name descname"><span class="pre">global_group_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'All'</span></em><a class="headerlink" href="#enb.aanalysis.Analyzer.global_group_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.global_y_label_margin">
@@ -2304,7 +2309,7 @@ with a column named as given by self.private_index_column set to the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.compute_target_rows">
-<span class="sig-name descname"><span class="pre">compute_target_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_target_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition"></a></dt>
 <dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by
 <cite>target_indices</cite>, with the columns given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are one or more known missing values in the
@@ -2330,6 +2335,8 @@ target indices (i.e., inner join)</p></li>
 defaults to calling this function with all columns in the table.</p></li>
 <li><p><strong>overwrite</strong> – if True, all cell values are computed even when storage
 data was present. In that case, the newly computed results replace the old ones.</p></li>
+<li><p><strong>progress_tracker</strong> – if not None, an enb.progress.ProgressTracker instance
+currently being used to keep track of this ATable’s get_df call.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2360,7 +2367,7 @@ By default, the global function enb.atable.get_all_input_files is called.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.get_df">
-<span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df" title="Permalink to this definition"></a></dt>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
@@ -2416,6 +2423,8 @@ Setting chunk_size to -1 is functionally identical to setting it
 to None (or to the number of target indices), but it does not
 display “Starting chunk 1/1…” (useful if the chunk partitioning
 is performed outside, i.e., by an Experiment class).</p></li>
+<li><p><strong>progress_tracker</strong> – if not None, the enb.progress.ProgressTracker
+instance being used to keep track of an ATable instance at an upper level.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2430,7 +2439,7 @@ encountered processing the data.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.get_df_one_chunk">
-<span class="sig-name descname"><span class="pre">get_df_one_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_needed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_sanity_checks</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df_one_chunk" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_df_one_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_needed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_sanity_checks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.get_df_one_chunk" title="Permalink to this definition"></a></dt>
 <dd><p>Internal implementation of the <a class="reference internal" href="#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_df()</span></code></a> functionality,
 to be applied to a single chunk of indices. It is essentially a
 self-contained call to meth:<cite>enb.atable.ATable.get_df</cite> as described
@@ -2447,6 +2456,9 @@ Instead, only data in persistent storage is used.</p></li>
 <li><p><strong>overwrite</strong> – values selected for filling are computed even if they are present
 in permanent storage. Otherwise, existing values are skipped from the computation.</p></li>
 <li><p><strong>run_sanity_checks</strong> – if True, sanity checks are performed on the data</p></li>
+<li><p><strong>progress_tracker</strong> – the ProgressTracker instance being used to track progress
+of this call, or None if None is being used, or False if no progress tracker is
+to be employed.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -5215,14 +5227,14 @@ If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 <p>It uses only symbols from .misc, but no other module in enb.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.log.LogLevel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">LogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">LogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Each of the available logging levels is an instance of this class. A
 level represents a named type of message, with a priority comparable to
 other levels.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.LogLevel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.LogLevel.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -5231,6 +5243,9 @@ other levels.</p>
 <li><p><strong>prefix</strong> – prefix when printing messages of this level. If None,
 a default one is used based on the name.</p></li>
 <li><p><strong>help_message</strong> – optional help explaining the purpose of the level.</p></li>
+<li><p><strong>style</strong> – if not None, a color with which messages of this level are displayed. See
+<a class="reference external" href="https://rich.readthedocs.io/en/stable/appendix/colors.html">https://rich.readthedocs.io/en/stable/appendix/colors.html</a> for more details about
+available colors. If None, the default color is used.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5254,6 +5269,26 @@ instance, such as LOG_VERBOSE or any of the other constants defined above.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.banner_enb_name_style">
+<span class="sig-name descname"><span class="pre">banner_enb_name_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#f3ac05</span> <span class="pre">bold</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_enb_name_style" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.banner_enb_version_style">
+<span class="sig-name descname"><span class="pre">banner_enb_version_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b5ccb</span> <span class="pre">bold</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_enb_version_style" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.banner_line_style">
+<span class="sig-name descname"><span class="pre">banner_line_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#767676</span> <span class="pre">bold</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_line_style" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.banner_plain_text_style">
+<span class="sig-name descname"><span class="pre">banner_plain_text_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#767676</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_plain_text_style" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5400,6 +5435,18 @@ logged upon completion.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.log.Logger.is_parallel_process">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_parallel_process</span></span><a class="headerlink" href="#enb.log.Logger.is_parallel_process" title="Permalink to this definition"></a></dt>
+<dd><p>Lazy property to determine whether this is currently a parallel process.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.log.Logger.is_ray_enabled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_ray_enabled</span></span><a class="headerlink" href="#enb.log.Logger.is_ray_enabled" title="Permalink to this definition"></a></dt>
+<dd><p>Lazy property to determine whether ray is available and enabled.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.level_active">
 <span class="sig-name descname"><span class="pre">level_active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.level_active" title="Permalink to this definition"></a></dt>
@@ -5416,7 +5463,7 @@ priority.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.log">
-<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.log" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.log" title="Permalink to this definition"></a></dt>
 <dd><p>Conditionally log a message given its level. It only shares “end”
 with builtins.print as keyword argument.</p>
 <dl class="field-list simple">
@@ -5427,7 +5474,11 @@ with builtins.print as keyword argument.</p>
 <li><p><strong>end</strong> – string appended after the message, if it is shown.</p></li>
 <li><p><strong>file</strong> – file where to log the message, or None to automatically
 select sys.stdout</p></li>
-<li><p><strong>flush</strong> – if True, the output file is flushed after writing.</p></li>
+<li><p><strong>markup</strong> – should rich markup be interpreted within the message?</p></li>
+<li><p><strong>highlight</strong> – should rich apply automatic highlighting of numbers, constants, etc., to the message?</p></li>
+<li><p><strong>style</strong> – if not None, the level’s current style is overwritten by this</p></li>
+<li><p><strong>rule</strong> – should the message be displayed with console.rule()?</p></li>
+<li><p><strong>rule_kwargs</strong> – if rule_kwargs is True, these parameters are passed to console.rule</p></li>
 </ul>
 </dd>
 </dl>
@@ -5497,29 +5548,9 @@ logged upon completion.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.print_to_log">
-<span class="sig-name descname"><span class="pre">print_to_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.print_to_log" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">print_to_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.print_to_log" title="Permalink to this definition"></a></dt>
 <dd><p>Method used to substitute print if configured to do so.
 If file is None, then sys.stdout is used by default.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="enb.log.Logger.replace_print">
-<span class="sig-name descname"><span class="pre">replace_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.replace_print" title="Permalink to this definition"></a></dt>
-<dd><p>When invoked with replace set to True, it substitutes the builtin
-print for a wrapper function that logs the contents with “message”
-priority. If invoked more than once in a row with replace set to
-True, the second and following calls just return the original print
-function.</p>
-<p>When invoked with replace set to False, the original print function
-is restored if it is not currently substituted with enb’s logging
-method. The original print function is also returned in this case.</p>
-<p>Note that the wrapper function does not admit the file or flush
-parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the original builtin’s print.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -5532,6 +5563,52 @@ parameters.</p>
 </dl>
 <p>or not they are active.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.log.Logger.show_banner">
+<span class="sig-name descname"><span class="pre">show_banner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.Logger.show_banner" title="Permalink to this definition"></a></dt>
+<dd><p>Shows the enb banner, including the current version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> – the priority level with which the banner is shown. If None, verbose is used by default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_core">
+<span class="sig-name descname"><span class="pre">style_core</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#28c9ff</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_core" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_debug">
+<span class="sig-name descname"><span class="pre">style_debug</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#909090</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_debug" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_error">
+<span class="sig-name descname"><span class="pre">style_error</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bold</span> <span class="pre">#ff5255</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_error" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_info">
+<span class="sig-name descname"><span class="pre">style_info</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#995cc8</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_info" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_message">
+<span class="sig-name descname"><span class="pre">style_message</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#28c9ff</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_message" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_verbose">
+<span class="sig-name descname"><span class="pre">style_verbose</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#8db872</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_verbose" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.log.Logger.style_warn">
+<span class="sig-name descname"><span class="pre">style_warn</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#ffca4f</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_warn" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.log.Logger.verbose">
@@ -5653,7 +5730,7 @@ compatible)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.log.log">
-<span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.log" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.log" title="Permalink to this definition"></a></dt>
 <dd><p>Conditionally log a message given its level. It only shares “end”
 with builtins.print as keyword argument.</p>
 <dl class="field-list simple">
@@ -5664,7 +5741,11 @@ with builtins.print as keyword argument.</p>
 <li><p><strong>end</strong> – string appended after the message, if it is shown.</p></li>
 <li><p><strong>file</strong> – file where to log the message, or None to automatically
 select sys.stdout</p></li>
-<li><p><strong>flush</strong> – if True, the output file is flushed after writing.</p></li>
+<li><p><strong>markup</strong> – should rich markup be interpreted within the message?</p></li>
+<li><p><strong>highlight</strong> – should rich apply automatic highlighting of numbers, constants, etc., to the message?</p></li>
+<li><p><strong>style</strong> – if not None, the level’s current style is overwritten by this</p></li>
+<li><p><strong>rule</strong> – should the message be displayed with console.rule()?</p></li>
+<li><p><strong>rule_kwargs</strong> – if rule_kwargs is True, these parameters are passed to console.rule</p></li>
 </ul>
 </dd>
 </dl>
@@ -5691,6 +5772,17 @@ compatible)</p>
 </dd>
 </dl>
 <p>or not they are active.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.log.show_banner">
+<span class="sig-prename descclassname"><span class="pre">enb.log.</span></span><span class="sig-name descname"><span class="pre">show_banner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.log.show_banner" title="Permalink to this definition"></a></dt>
+<dd><p>Shows the enb banner, including the current version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> – the priority level with which the banner is shown. If None, verbose is used by default.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -5723,6 +5815,60 @@ compatible)</p>
 <p>Miscellaneous tools for <cite>enb</cite>.</p>
 <p>This module does not and should not import anything from enb, so that other
 modules may use misc tools at definition time.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">BootstrapLogger</span></span><a class="headerlink" href="#enb.misc.BootstrapLogger" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Imitate enb.log.Logger’s interface before it is loaded. This is needed to solve circular imports,
+i.e., when an error with the managed attributes decorator takes place before the full logger is available
+(within the config submodule).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.core">
+<span class="sig-name descname"><span class="pre">core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.core" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.debug">
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.debug" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.error">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.error" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.info" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.log" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.message" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.verbose" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.misc.BootstrapLogger.warn">
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.BootstrapLogger.warn" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.misc.CircularList">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">CircularList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.misc.CircularList" title="Permalink to this definition"></a></dt>
@@ -7200,6 +7346,57 @@ endianness if applicable.</p></li>
 </dd></dl>
 
 </section>
+<section id="module-enb.progress">
+<span id="enb-progress-module"></span><h2>enb.progress module<a class="headerlink" href="#module-enb.progress" title="Permalink to this headline"></a></h2>
+<p>Tools to display live progress of ATable instances based on the rich library.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.progress.</span></span><span class="sig-name descname"><span class="pre">ProgressTracker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.progress.ProgressTracker" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rich.live.Live</span></code></p>
+<p>Keep track of the progress of an ATable’s (incl. Experiments’) get_df.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.progress.ProgressTracker.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atable</strong> – ATable subclass instance for which the progress is to be tracked</p></li>
+<li><p><strong>row_count</strong> – total number of rows that need to be computed</p></li>
+<li><p><strong>chunk_size</strong> – chunk size (any non-positive number
+is also interpreted as a chunk size equal to row_count)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.chunk_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chunk_count</span></span><a class="headerlink" href="#enb.progress.ProgressTracker.chunk_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.complete_chunk">
+<span class="sig-name descname"><span class="pre">complete_chunk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.progress.ProgressTracker.complete_chunk" title="Permalink to this definition"></a></dt>
+<dd><p>Add 1 to the number of completed chunks if a chunk task has been defined.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.update_chunk_completed_rows">
+<span class="sig-name descname"><span class="pre">update_chunk_completed_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chunk_completed_rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.progress.ProgressTracker.update_chunk_completed_rows" title="Permalink to this definition"></a></dt>
+<dd><p>Set the number of rows completed for the current chunk.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.progress.is_progress_enabled">
+<span class="sig-prename descclassname"><span class="pre">enb.progress.</span></span><span class="sig-name descname"><span class="pre">is_progress_enabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.progress.is_progress_enabled" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if and only if all conditions for displaying progress are met:
+- verbose being level 1 (verbose) or 2 (info)
+- disable_progress_bar is set to False</p>
+</dd></dl>
+
+</section>
 <section id="module-enb.render">
 <span id="enb-render-module"></span><h2>enb.render module<a class="headerlink" href="#module-enb.render" title="Permalink to this headline"></a></h2>
 <p>Render plots using matplotlib and enb.plotdata.PlottableData instances.</p>
@@ -7462,6 +7659,8 @@ Setting chunk_size to -1 is functionally identical to setting it
 to None (or to the number of target indices), but it does not
 display “Starting chunk 1/1…” (useful if the chunk partitioning
 is performed outside, i.e., by an Experiment class).</p></li>
+<li><p><strong>progress_tracker</strong> – if not None, the enb.progress.ProgressTracker
+instance being used to keep track of an ATable instance at an upper level.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

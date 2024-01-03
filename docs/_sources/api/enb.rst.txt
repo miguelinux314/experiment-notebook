@@ -125,6 +125,14 @@ enb.png module
    :undoc-members:
    :show-inheritance:
 
+enb.progress module
+-------------------
+
+.. automodule:: enb.progress
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 enb.render module
 -----------------
 
