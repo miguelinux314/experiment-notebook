@@ -133,8 +133,8 @@ if not parallel_ray.is_parallel_process():
     log.verbose("")
     log.verbose(config.get_banner(markup=True), rule=True, markup=True, rule_kwargs=dict(style="bold green on black"))
     log.verbose("")
-    log.info(
-        f"Additional .ini files employed: {', '.join(repr(p) for p in config.ini.all_ini_paths)}.")
+    if config.ini.all_ini_paths:
+        log.info(f"Additional .ini files employed: {', '.join(repr(p) for p in config.ini.all_ini_paths)}.")
 
     __file__ = _os.path.abspath(__file__)
     if not is_enb_cli:
