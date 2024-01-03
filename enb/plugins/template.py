@@ -155,7 +155,7 @@ class Template(Installable, metaclass=MetaTemplate):
         cls.warn_extra_requirements()
 
         cls.build(installation_dir=installation_dir)
-        print(f"Template {repr(cls.name)} successfully installed into {repr(installation_dir)}.")
+        print(f"Template {repr(cls.name)} successfully installed into {repr(os.path.abspath(installation_dir))}.")
 
     @classmethod
     def get_field_parser(cls):
