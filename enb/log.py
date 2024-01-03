@@ -10,7 +10,6 @@ __date__ = "2021/08/13"
 import contextlib
 import sys
 import time
-import re
 import rich
 import rich.progress
 import rich.markup
