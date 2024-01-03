@@ -17,7 +17,6 @@ import collections.abc
 import numbers
 import re
 import warnings
-import shutil
 import numpy as np
 import scipy.stats
 import pandas as pd
@@ -359,7 +358,8 @@ class Analyzer(enb.atable.ATable):
                     for _ in progressive_getter:
                         progress_tracker.update_chunk_completed_rows(len(progressive_getter.completed_ids))
                     enb.parallel.get(render_ids)
-                    progress_tracker.update_chunk_completed_rows(len(render_ids))
+                    progress_tracker.complete_chunk() # A single chunk is employed
+                    progress_tracker.update_chunk_completed_rows(0)
 
     def update_render_kwargs_reference_group(
             self, column_kwargs, reference_group):
