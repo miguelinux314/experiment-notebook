@@ -294,7 +294,7 @@ class HeadNode:
             local_ssh_file=clean_value(row["local_ssh_file"], None),
             cpu_limit=clean_value(row["cpu_limit"], None),
             head_node=self)
-            for _, row in pd.read_csv(csv_path).iterrows()]
+            for _, row in pd.read_csv(csv_path, comment="#").iterrows()]
 
     def get_node_ip(self):
         """Adapted from https://stackoverflow.com/a/166589/992926.
