@@ -17,6 +17,7 @@ import rich.console
 
 from .misc import ExposedProperty
 from .misc import Singleton
+from . import config
 
 
 class LogLevel:
@@ -27,14 +28,14 @@ class LogLevel:
 
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
 
-    def __init__(self, name, priority=0, prefix=None, help_message=None, color=None):
+    def __init__(self, name, priority=0, prefix=None, help_message=None, style=None):
         """
         :param priority: minimum priority level needed to show this level.
         :param name: unique name for the level.
         :param prefix: prefix when printing messages of this level. If None,
           a default one is used based on the name.
         :param help_message: optional help explaining the purpose of the level.
-        :param color: if not None, a color with which messages of this level are displayed. See
+        :param style: if not None, a color with which messages of this level are displayed. See
           https://rich.readthedocs.io/en/stable/appendix/colors.html for more details about
           available colors. If None, the default color is used.
         """
@@ -46,12 +47,13 @@ class LogLevel:
             self.prefix = prefix
         else:
             self.prefix = f"[{name[0].upper()}] "
-        self.color = color
+        self.style = style
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name}:{self.priority})"
 
 
+@config.aini.managed_attributes
 class Logger(metaclass=Singleton):
     """Message logging and printing hub for `enb`.
 
@@ -69,39 +71,61 @@ class Logger(metaclass=Singleton):
 
     # pylint: disable=too-many-instance-attributes,too-many-public-methods
 
+    # Default style for core level messages
+    style_core = "#28c9ff on black"
+    # Default style for error level messages
+    style_error = "bold #ff5255 on black"
+    # Default style for warning level messages
+    style_warn = "#ffca4f on black"
+    # Default style for message level messages
+    style_message = "#28c9ff on black"
+    # Default style for verbose level messages
+    style_verbose = "#8db872 on black"
+    # Default style for info level messages
+    style_info = "#995cc8 on black"
+    # Default style for debug level messages
+    style_debug = "#909090 on black"
+    # Style for the banner line
+    banner_line_style = "#f3ac05 bold on black"
+    # Style for the regular text in the banner
+    banner_plain_text_style = "#767676 on black"
+    # Style for the 'enb' part in the banner
+    banner_enb_name_style = "#f3ac05 bold on black"
+    # Style for the version part in the banner
+    banner_enb_version_style = "#9b5ccb bold on black"
+
     def __init__(self):
         # Available logging levels and their intended usage
         self.levels = [
             LogLevel("core",
                      help_message="Messages always shown, "
                                   "no matter the priority level",
-                     color="#28c9ff on black"),
+                     style=self.style_core),
             LogLevel("error",
                      help_message="A critical error that prevents "
                                   "from completing the main task",
-                     color="#ff5255 on black"
-                     ),
+                     style=self.style_error),
             LogLevel("warn",
                      help_message="Something wrong or bogus happened, "
                                   "but the main task can be completed",
-                     color="#ffca4f on black"),
+                     style=self.style_warn),
             LogLevel("message",
                      help_message="Task-central messages intended "
                                   "to appear in console",
-                     color="#28c9ff on black"),
+                     style=self.style_message),
             LogLevel("verbose",
                      help_message="Messages for the interested user, "
                                   "e.g., task progress",
-                     color="#c8ffc8 on black"),
+                     style=self.style_verbose),
             LogLevel("info",
                      help_message="Messages for the very interested "
                                   "user/developer, e.g., detailed "
                                   "task progress",
-                     color="#afffbe on black"),
+                     style=self.style_info),
             LogLevel("debug",
                      help_message="Messages for debugging purposes, "
                                   "e.g., traces and watches",
-                     color="#909090 on black"),
+                     style=self.style_debug),
         ]
         # Assign an integer priority level to each defined level (higher:
         # less priority).
@@ -160,7 +184,7 @@ class Logger(metaclass=Singleton):
           select sys.stdout
         :param markup: should rich markup be interpreted within the message?
         :param highlight: should rich apply automatic highlighting of numbers, constants, etc., to the message?
-        :param style: if not None, the level's style is overwritten by this
+        :param style: if not None, the level's current style is overwritten by this
         :param rule: should the message be displayed with console.rule()?
         :param rule_kwargs: if rule_kwargs is True, these parameters are passed to console.rule
         """
@@ -193,8 +217,8 @@ class Logger(metaclass=Singleton):
                 f"{msg}{end}"
 
             console = rich.console.Console(file=file, markup=markup, highlight=highlight)
+            style = style or level.style
 
-            style = style or level.color
             if rule:
                 console.rule(output_msg, **(rule_kwargs or dict()))
             else:
@@ -202,6 +226,30 @@ class Logger(metaclass=Singleton):
 
             self._last_end = end
             self._last_level = level
+
+    def show_banner(self, level=None):
+        """Shows the enb banner, including the current version.
+
+        :param level: the priority level with which the banner is shown. If None, verbose is used by default.
+        """
+        banner_contents = (
+            f"[{self.banner_line_style}][bold])[/bold][/{self.banner_line_style}] "
+            f"[{self.banner_plain_text_style}]"
+            f"Powered by "
+            f"[{self.banner_enb_name_style}]enb[/{self.banner_enb_name_style}] "
+            f"[{self.banner_enb_version_style}]"
+            f"v{config.ini.get_key('enb', 'version')}"
+            f"[/{self.banner_enb_version_style}]"
+            f"[/{self.banner_plain_text_style}]"
+            f" [{self.banner_line_style}][bold]([/bold][/{self.banner_line_style}]"
+            )
+
+        level = level or self.level_verbose
+        self.log("", level=level)
+        self.log(banner_contents, end="", rule=True, markup=True,
+                 rule_kwargs=dict(style=self.banner_line_style,
+                                  align="center"), level=level)
+        self.log("", level=level)
 
     @property
     def is_parallel_process(self):
@@ -524,5 +572,6 @@ verbose_active = ExposedProperty(instance=logger, property_name="verbose_active"
 info_active = ExposedProperty(instance=logger, property_name="info_active")
 debug_active = ExposedProperty(instance=logger, property_name="debug_active")
 
-# Expose report functions
+# Expose status report functions
+show_banner = logger.show_banner
 report_level_status = logger.report_level_status

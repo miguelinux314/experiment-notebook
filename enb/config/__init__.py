@@ -85,27 +85,6 @@ options = aoptions.Options()
 assert options is aoptions.Options(), "Singleton not working"
 
 
-def get_banner(markup=True):
-    """Returns the enb banner showing the current version.
-
-    :param markup: if True, rich markup is added to the banner
-    """
-    bold_start = "[bold]" if markup else ""
-    bold_end = "[/bold]" if markup else ""
-    base_color_start = "[#7de6e6 on black]" if markup else ""
-    base_color_end = "[/#7de6e6 on black]" if markup else ""
-    bracket_color_start = "[green]" if markup else ""
-    bracket_color_end = "[/green]" if markup else ""
-    enb_color_start = "[#00b4ff]" if markup else ""
-    enb_color_end = "[/#00b4ff]" if markup else ""
-    return (f"{base_color_start}"
-            f"{bold_start}{bracket_color_start}[{bracket_color_end}{bold_end} "
-            f"Powered by {bold_start}{enb_color_start}enb{enb_color_end}{bold_end} (Experiment NoteBook) "
-            f"{bold_start}{enb_color_start}v{ini.get_key('enb', 'version')}{enb_color_end}{bold_end} "
-            f"{bold_start}{bracket_color_start}]{bracket_color_end}{bold_end}"
-            f"{base_color_end}")
-
-
 def report_configuration():
     """Return a string describing the current configuration status.
     """
