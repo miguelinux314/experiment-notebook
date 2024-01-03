@@ -149,18 +149,19 @@ def managed_attributes(cls):
 
     cls_fqn = class_to_fqn(cls)
 
-    for attribute in (k for k, v in cls.__dict__.items()
-                      if not k.startswith("_")
-                         and not k == "column_to_properties"
-                         and not callable(v)
-                         and not isinstance(v, classmethod)):
-        old_value = getattr(cls, attribute)
+    for attribute, old_value in ((k, v) for k, v in cls.__dict__.items()
+                                 if not k.startswith("_")
+                                    and not k == "column_to_properties"
+                                    and not callable(v)
+                                    and not isinstance(v, classmethod)
+                                    and not isinstance(v, property)):
         try:
             setattr(cls, attribute, ini.get_key(cls_fqn, attribute))
             if getattr(cls, attribute) != old_value \
                     and str(getattr(cls, attribute)) != str(old_value):
-                logger.debug(f"Updating {cls_fqn}.{attribute} = {getattr(cls, attribute)} based on .ini files "
-                             f"(it was {old_value})")
+                logger.debug(
+                    f"Updating {cls_fqn}.{attribute} = {getattr(cls, attribute)} based on .ini files "
+                    f"(it was {old_value})")
         except KeyError:
             found_in_bases = _add_base_attributes_recursively(attribute, cls)
             if not found_in_bases:
@@ -173,9 +174,10 @@ def managed_attributes(cls):
 
     for k, v in ini.sections_by_name[cls_fqn].items():
         if not hasattr(cls, k):
-            logger.warn(f"In the .ini configuration files, managed attribute {repr(k)} is defined for {cls_fqn}, "
-                        f"but {cls.__name__} itself does not define that class attribute. The attribute is NOT added "
-                        f"to {cls.__name__}.")
+            logger.warn(
+                f"In the .ini configuration files, managed attribute {repr(k)} is defined for {cls_fqn}, "
+                f"but {cls.__name__} itself does not define that class attribute. The attribute is NOT added "
+                f"to {cls.__name__}.")
 
     return cls
 
@@ -200,7 +202,8 @@ def _add_base_attributes_recursively(attribute, base_cls, current_cls=None):
         for base in current_cls.__bases__:
             if base is None:
                 continue
-            if _add_base_attributes_recursively(attribute=attribute, base_cls=base_cls, current_cls=base):
+            if _add_base_attributes_recursively(attribute=attribute, base_cls=base_cls,
+                                                current_cls=base):
                 found_in_bases = True
                 break
 
