@@ -141,7 +141,7 @@ class ProgressTracker(rich.live.Live):
             title_align="left",
             expand=True,
             border_style=self.style_border)
-        super().__init__(self.panel, transient=options.verbose < 1)
+        super().__init__(self.panel)
 
     def complete_chunk(self):
         """Add 1 to the number of completed chunks if a chunk task has been defined.
