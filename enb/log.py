@@ -72,27 +72,27 @@ class Logger(metaclass=Singleton):
     # pylint: disable=too-many-instance-attributes,too-many-public-methods
 
     # Default style for core level messages
-    style_core = "#28c9ff on black"
+    style_core = "#28c9ff"
     # Default style for error level messages
-    style_error = "bold #ff5255 on black"
+    style_error = "bold #ff5255"
     # Default style for warning level messages
-    style_warn = "#ffca4f on black"
+    style_warn = "#ffca4f"
     # Default style for message level messages
-    style_message = "#28c9ff on black"
+    style_message = "#28c9ff"
     # Default style for verbose level messages
-    style_verbose = "#8db872 on black"
+    style_verbose = "#8db872"
     # Default style for info level messages
-    style_info = "#995cc8 on black"
+    style_info = "#995cc8"
     # Default style for debug level messages
-    style_debug = "#909090 on black"
+    style_debug = "#909090"
     # Style for the banner line
-    banner_line_style = "#f3ac05 bold on black"
+    banner_line_style = "#767676 bold"
     # Style for the regular text in the banner
-    banner_plain_text_style = "#767676 on black"
+    banner_plain_text_style = "#767676"
     # Style for the 'enb' part in the banner
-    banner_enb_name_style = "#f3ac05 bold on black"
+    banner_enb_name_style = "#f3ac05 bold"
     # Style for the version part in the banner
-    banner_enb_version_style = "#9b5ccb bold on black"
+    banner_enb_version_style = "#9b5ccb bold"
 
     def __init__(self):
         # Available logging levels and their intended usage

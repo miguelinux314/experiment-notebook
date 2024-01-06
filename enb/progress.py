@@ -12,7 +12,9 @@ import rich.layout
 import rich.console
 import rich.progress_bar
 
+import enb.experiment
 from .config import options
+from .config.aini import managed_attributes
 
 
 def is_progress_enabled():
@@ -23,9 +25,52 @@ def is_progress_enabled():
     return options.verbose in (1, 2) and not options.disable_progress_bar
 
 
+@managed_attributes
 class ProgressTracker(rich.live.Live):
     """Keep track of the progress of an ATable's (incl. Experiments') get_df.
     """
+    # Style for the panel border surrounding each progress track
+    style_border = "#505050 bold"
+
+    # Style for the completed portion of the progress bar while it's being filled
+    style_bar_complete = "#9b5ccb bold"
+    # Style for the incomplete portion of the progress bar
+    style_bar_incomplete = "#252525"
+    # Style for the bar once the task is finished
+    style_bar_finished = "#f3ac05"
+
+    # Style for the panel title when the instance being tracked is an enb.sets.FilePropertiesTable subclass
+    style_title_dataset = "#4effa7"
+    # Style for the panel title when the instance being tracked is an enb.experiment.Experiment subclass
+    style_title_experiment = "#13bf00"
+    # Style for the panel title when the instance being tracked is an enb.aanalysis.Analyzer subclass
+    style_title_analyzer = "#1990ff"
+    # Style for the panel title when the instance being tracked is an enb.aanalysis.AnalyzerSummary subclass
+    style_title_summary = "#23cfff"
+    # Style for the panel title when the instance being tracked is any other type of enb.atable.ATable instance
+    style_title_atable = "#9b59ff"
+    # Style for the panel title when the instance being tracked is not an enb.atable.ATable subclass
+    style_title_other = "#cdabff"
+
+    # Style for the text labels (e.g., "Rows", "Chunks")
+    style_text_label = "#e0e0e0"
+    # Style for the text separators (e.g., ":", "/")
+    style_text_separator = "#505050"
+    # Style for the text indicating units or scale (e.g., "s", "%")
+    style_text_unit = "#707070"
+    # Style for the text displaying the number of completed elements
+    style_text_completed = "#bcbcbc bold"
+    # Style for the text displaying the total number of elements
+    style_text_total = "#bcbcbc"
+    # Style for the text displaying speed
+    style_text_speed = "#bcbcbc"
+    # Style for the text displaying completion percentage
+    style_text_percentage = "#bcbcbc"
+    # Style for text displaying time values (not units)
+    style_text_time = "#bcbcbc"
+
+    # Style for the spinner
+    style_spinner = "#9b5ccb bold"
 
     def __init__(self, atable, row_count: int, chunk_size: int):
         """
@@ -45,7 +90,7 @@ class ProgressTracker(rich.live.Live):
 
         # Define the upper and lower progress rows
         self.upper_progress = rich.progress.Progress(
-            rich.progress.SpinnerColumn(),
+            rich.progress.SpinnerColumn(style=self.style_spinner),
             row_progress_column,
             _SeparatorColumn(self, width=1),
             elapsed_and_expected_column,
@@ -65,8 +110,9 @@ class ProgressTracker(rich.live.Live):
         self.chunk_task = [t for t in self.lower_progress.tasks if t.id == self.chunk_task_id][0]
 
         # Fix some column widths for a visually pleasant distribution
-        first_column_width = max(len(row_progress_column.get_render_str()),
-                                 len(chunk_progress_column.get_render_str()))
+        first_column_width = max(
+            len(rich.text.Text.from_markup(row_progress_column.get_render_str()).plain),
+            len(rich.text.Text.from_markup(chunk_progress_column.get_render_str()).plain))
         row_progress_column.width = first_column_width
         chunk_progress_column.width = first_column_width
 
@@ -74,8 +120,12 @@ class ProgressTracker(rich.live.Live):
         self.group = rich.console.Group(self.upper_progress, self.lower_progress)
         self.panel = rich.panel.Panel(
             self.group,
-            title=f"[bold]{atable.__class__.__name__}[/bold]",
-            title_align="left", expand=True)
+            title=f"[{self._instance_to_title_style(atable)}]"
+                  f"{atable.__class__.__name__}"
+                  f"[/{self._instance_to_title_style(atable)}]",
+            title_align="left",
+            expand=True,
+            border_style=self.style_border)
         super().__init__(self.panel, transient=options.verbose < 1)
 
     def complete_chunk(self):
@@ -98,6 +148,22 @@ class ProgressTracker(rich.live.Live):
     @property
     def chunk_count(self):
         return math.ceil(self.row_count / self.chunk_size)
+
+    def _instance_to_title_style(self, instance):
+        """Return the current configured title style for the
+        type of the instance whose progress is being tracked.
+        """
+        if isinstance(instance, enb.experiment.Experiment):
+            return self.style_title_experiment
+        if isinstance(instance, enb.sets.FilePropertiesTable):
+            return self.style_title_dataset
+        if isinstance(instance, enb.aanalysis.Analyzer):
+            return self.style_title_analyzer
+        if isinstance(instance, enb.aanalysis.AnalyzerSummary):
+            return self.style_title_summary
+        if isinstance(instance, enb.atable.ATable):
+            return self.style_title_atable
+        return self.style_title_other
 
 
 class _ProgressColumn:
@@ -135,25 +201,51 @@ class _ProgressTextColumn(_ProgressColumn, rich.progress.TextColumn):
         self.width = width
 
     def render(self, task):
-        return rich.progress.Text(f"{{:{self.width}s}}".format(self.get_render_str()))
+        return rich.progress.Text.from_markup(f"{{:{self.width}s}}".format(self.get_render_str()))
 
     def get_render_str(self) -> str:
         raise NotImplemented
 
-    def seconds_to_time_str(self, seconds: float, decimals=0) -> str:
+    def seconds_to_time_str(self, seconds: float, decimals=1, markup=True) -> str:
         """Convert the passed number of seconds to an HH:MM:SS format.
         :param seconds: the number of seconds (can be fractional)
         :param decimals: the number of decimals to which the number of seconds
           is rounded to.
+        :param markup: if True, the values and units are surrounded by style markup tags.
         """
         seconds = round(seconds, decimals)
         second_fraction = seconds - int(seconds)
         minutes, seconds = divmod(int(seconds), 60)
         hours, minutes = divmod(minutes, 60)
-        return ((f"{hours:02d}h " if hours else "")
-                + (f"{minutes:02d}m " if minutes else "")
-                + (f"{seconds:02d}s" if minutes or hours else f"{seconds}s")
-                + (f".{second_fraction}" if decimals > 0 else ""))
+
+        if markup is True:
+            value_tag_start = f"[{self.progress_tracker.style_text_time}]"
+            value_tag_end = f"[/{self.progress_tracker.style_text_time}]"
+            unit_tag_start = f"[{self.progress_tracker.style_text_unit}]"
+            unit_tag_end = f"[/{self.progress_tracker.style_text_unit}]"
+        else:
+            value_tag_start = ""
+            value_tag_end = ""
+            unit_tag_start = ""
+            unit_tag_end = ""
+
+        second_fraction_formatter = f"{{:.{decimals}f}}"
+
+        return ((f"{value_tag_start}{hours:02d}{value_tag_end}{unit_tag_start}h{unit_tag_end} "
+                 if hours else "")
+                + (f"{value_tag_start}{minutes:02d}{value_tag_end}{unit_tag_start}m{unit_tag_end} "
+                   if minutes else "")
+                + (f"{value_tag_start}{seconds:02d}{value_tag_end}{unit_tag_start}s{unit_tag_end}"
+                   if minutes or hours else
+                   (f"{value_tag_start}{seconds}{value_tag_end}"
+                    + (f"{unit_tag_start}s{unit_tag_end}" if decimals <= 0 else "")
+                    + ((f"{value_tag_start}."
+                       f"{second_fraction_formatter.format(second_fraction)[2:]}"
+                       f"{value_tag_end}"
+                       f"{unit_tag_start}s{unit_tag_end}")
+                       if decimals > 0 else "")
+                    ))
+                )
 
 
 class _RowProgressColumn(_ProgressTextColumn):
@@ -165,19 +257,62 @@ class _RowProgressColumn(_ProgressTextColumn):
         total_row_digits = len(str(self.row_task.total))
         row_count_formatter = f"{{:0{total_row_digits}d}}"
         speed_formatter = "{:>11s}"
-        render_str = (f"Rows  : {row_count_formatter.format(self.row_task.completed)}"
-                      f"/{self.row_task.total} ")
+        render_str = (f"[{self.progress_tracker.style_text_label}]"
+                      f"Rows[/{self.progress_tracker.style_text_label}]"
+                      f"  [{self.progress_tracker.style_text_separator}]"
+                      f":[/{self.progress_tracker.style_text_separator}] "
+                      f"[{self.progress_tracker.style_text_completed}]"
+                      f"{row_count_formatter.format(self.row_task.completed)}"
+                      f"[/{self.progress_tracker.style_text_completed}]"
+                      f"[{self.progress_tracker.style_text_separator}]"
+                      f"/[/{self.progress_tracker.style_text_separator}]"
+                      f"[{self.progress_tracker.style_text_total}]"
+                      f"{self.row_task.total}[/{self.progress_tracker.style_text_total}]"
+                      f" ")
 
         # Add extra spaces so that any row count up to 5 digits generates the same width
         render_str += " " * 2 * (5 - total_row_digits)
 
         # Add speed if available
         if self.row_task.speed:
+            # Padding needs to take into account the markup to maintain alignment
+            formatted_length = (
+                    11
+                    + (2 * len(self.progress_tracker.style_text_unit) + len("[][/]")
+                       if not self.row_task.finished else 0)
+                    + 2 * len(self.progress_tracker.style_text_speed) + len("[][/]")
+                    + 2 * len(self.progress_tracker.style_text_unit) + len("[][/]")
+            )
+            speed_formatter = f"{{:>{formatted_length}s}}"
             render_str += speed_formatter.format(
-                f"{'+' if not self.row_task.finished else ' '}{self.row_task.speed:.2f}/s")
+                (f"[{self.progress_tracker.style_text_unit}]"
+                 f"+[/{self.progress_tracker.style_text_unit}]"
+                 if not self.row_task.finished else ' ') +
+                f"[{self.progress_tracker.style_text_speed}]"
+                f"{self.row_task.speed:.2f}[/{self.progress_tracker.style_text_speed}]"
+                f"[{self.progress_tracker.style_text_unit}]"
+                f"/s[/{self.progress_tracker.style_text_unit}]")
         else:
+            speed_formatter = "{:>11s}"
             render_str += speed_formatter.format("")
 
+        return render_str
+
+
+class _ElapsedAndExpectedColumn(_ProgressTextColumn):
+    """Display the total elapsed and expected times.
+    """
+
+    def get_render_str(self) -> str:
+        render_str = (f"[{self.progress_tracker.style_text_total}]"
+                      f"{self.seconds_to_time_str(self.chunk_task.elapsed, markup=True)}"
+                      f"[/{self.progress_tracker.style_text_total}]")
+        if self.row_task.time_remaining:
+            render_str += (f" [{self.progress_tracker.style_text_separator}]"
+                           f"+~[/{self.progress_tracker.style_text_separator}] "
+                           f"[{self.progress_tracker.style_text_total}]"
+                           f"{self.seconds_to_time_str(self.row_task.time_remaining, markup=True)}"
+                           f"[/{self.progress_tracker.style_text_total}]")
         return render_str
 
 
@@ -188,9 +323,18 @@ class _ChunkProgressColumn(_ProgressTextColumn):
     def get_render_str(self) -> str:
         # Calculate the completed/total chunk string
         self.chunk_count_format = f"{{:0{len(str(self.chunk_count))}d}}"
-        render_str = (f"Chunks: "
+        render_str = (f"[{self.progress_tracker.style_text_label}]Chunks"
+                      f"[/{self.progress_tracker.style_text_label}]"
+                      f"[{self.progress_tracker.style_text_separator}]"
+                      f":[/{self.progress_tracker.style_text_separator}] "
+                      f"[{self.progress_tracker.style_text_completed}]"
                       f"{self.chunk_count_format.format(self.chunk_task.completed)}"
-                      f"/{self.chunk_count_format.format(self.chunk_task.total)}")
+                      f"[/{self.progress_tracker.style_text_completed}]"
+                      f"[{self.progress_tracker.style_text_separator}]"
+                      f"/[/{self.progress_tracker.style_text_separator}]"
+                      f"[{self.progress_tracker.style_text_total}]"
+                      f"{self.chunk_count_format.format(self.chunk_task.total)}"
+                      f"[/{self.progress_tracker.style_text_total}]")
 
         # Add extra spaces so that any row count up to 5 digits generates the same width
         render_str += " " * 2 * (5 - len(str(self.chunk_count)))
@@ -199,19 +343,19 @@ class _ChunkProgressColumn(_ProgressTextColumn):
         render_str += " " * 6
 
         # Add a fixed-length, right-aligned percentage meter to align with the speed
-        render_str += "{:>6s}".format(f"{100 * self.row_task.completed / self.row_task.total:.1f}%")
+        formatter_length = (
+            6
+            + 2*len(self.progress_tracker.style_text_total) + len("[][/]")
+            + 2 * len(self.progress_tracker.style_text_unit) + len("[][/]")
+        )
+        formatter = f"{{:>{formatter_length}s}}"
+        render_str += formatter.format(
+            f"[{self.progress_tracker.style_text_total}]"
+            f"{100 * self.row_task.completed / self.row_task.total:.1f}"
+            f"[/{self.progress_tracker.style_text_total}]"
+            f"[{self.progress_tracker.style_text_unit}]"
+            f"%[/{self.progress_tracker.style_text_unit}]")
 
-        return render_str
-
-
-class _ElapsedAndExpectedColumn(_ProgressTextColumn):
-    """Display the total elapsed and expected times.
-    """
-
-    def get_render_str(self) -> str:
-        render_str = f"{self.seconds_to_time_str(self.chunk_task.elapsed)}"
-        if self.row_task.time_remaining:
-            render_str += f" +~ {self.seconds_to_time_str(self.row_task.time_remaining)}"
         return render_str
 
 
@@ -222,6 +366,10 @@ class _RowProgressBar(rich.progress.BarColumn):
     def __init__(self, progress_tracker: ProgressTracker):
         super().__init__(bar_width=None)
         self.progress_tracker = progress_tracker
+        self.complete_style = progress_tracker.style_bar_complete
+        self.finished_style = progress_tracker.style_bar_finished
+        self.style = progress_tracker.style_bar_incomplete
+        self.pulse_style = "#0000ff"
 
     def render(self, task):
         return super().render(self.progress_tracker.row_task)

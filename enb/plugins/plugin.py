@@ -57,7 +57,7 @@ class Plugin(Installable):
         except Exception as ex:
             print(f"Error installing plugin {repr(cls.name)}!\n")
             raise ex
-        
+
         if enb.config.options.verbose:
             cls.print_info()
 
