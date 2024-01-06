@@ -4,7 +4,9 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2024/01/01"
 
+import os
 import math
+import inspect
 import rich
 import rich.progress
 import rich.panel
@@ -118,11 +120,24 @@ class ProgressTracker(rich.live.Live):
 
         # Display the progress rows one above the other
         self.group = rich.console.Group(self.upper_progress, self.lower_progress)
+
+        title = (f"[{self._instance_to_title_style(atable)}]"
+                 f"{atable.__class__.__name__}"
+                 f"[/{self._instance_to_title_style(atable)}]")
+
+        # Display the caller information for info and higher verbose level
+        if enb.logger.level_active(enb.logger.level_info.name):
+            for record in inspect.stack():
+                if os.path.dirname(record.filename).startswith(os.path.dirname(__file__)):
+                    continue
+                title += (f"[not bold][{enb.logger.style_info}]"
+                          f" < {os.path.basename(record.filename)}:{record.lineno}"
+                          f"[/{enb.logger.style_info}][/not bold]")
+                break
+
         self.panel = rich.panel.Panel(
             self.group,
-            title=f"[{self._instance_to_title_style(atable)}]"
-                  f"{atable.__class__.__name__}"
-                  f"[/{self._instance_to_title_style(atable)}]",
+            title=title,
             title_align="left",
             expand=True,
             border_style=self.style_border)
