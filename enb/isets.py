@@ -110,7 +110,7 @@ def file_path_to_geometry_dict(file_path, existing_dict=None,
       Otherwise an exception is thrown.
     """
     row = existing_dict if existing_dict is not None else {}
-    matches = re.findall(r"(\d+)x(\d+)x(\d+)", file_path)
+    matches = re.findall(r"(\d+)x(\d+)x(\d+)", os.path.basename(file_path))
     if matches:
         if len(matches) > 1:
             raise ValueError(
