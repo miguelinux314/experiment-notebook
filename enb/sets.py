@@ -345,8 +345,7 @@ def version_one_path_local(version_fun, input_path, output_path, overwrite,
 
     output_path = get_canonical_path(output_path)
     if os.path.exists(output_path) and not overwrite:
-        if options.verbose > 2:
-            print(f"[S]kipping versioning of {input_path}->{output_path}")
+        enb.logger.debug(f"[S]kipping versioning of {input_path}->{output_path}")
         return output_path, [-1]
 
     enb.logger.verbose(

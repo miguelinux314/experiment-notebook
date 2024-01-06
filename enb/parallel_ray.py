@@ -193,8 +193,9 @@ class HeadNode:
                          if options.ssh_cluster_csv_path else None,
                          env_vars=dict(
                              _needed_modules=str(modules_needed_remotely))),
-                     logging_level=logging.CRITICAL
-                     if options.verbose <= 2 else logging.INFO)
+                     logging_level=(logging.CRITICAL
+                                    if enb.logger.level_active(enb.logger.level_info.name)
+                                    else logging.INFO))
 
         if options.ssh_cluster_csv_path:
             failing_tool = None

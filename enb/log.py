@@ -447,8 +447,9 @@ class Logger(metaclass=Singleton):
         with priority sufficient given self.min_priority_level.
         """
         # pylint: disable=unused-argument
-        return self.name_to_level[
-            name].priority <= self.selected_log_level.priority
+        if isinstance(name, LogLevel):
+            name = name.name
+        return self.name_to_level[name].priority <= self.selected_log_level.priority
 
     @property
     def core_active(self):

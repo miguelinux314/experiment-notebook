@@ -1455,7 +1455,8 @@ class ATable(metaclass=MetaTable):
                             f"{self.__class__.__name__} failed to fill "
                             f"column {repr(column)}, index {repr(index)}")
 
-                    if result is not None and options.verbose > 1 \
+                    if result is not None \
+                            and enb.logger.level_active(enb.logger.info.name) \
                             and not fun.__name__.startswith(
                         MetaTable.automatic_column_function_prefix):
                         enb.logger.warn(

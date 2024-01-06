@@ -3724,7 +3724,7 @@ class HistogramKeyBinner:
                     ignored_sum += v
             total_sum += v
 
-        if ignored_sum > 0 and options.verbose > 2:
+        if ignored_sum > 0 and enb.logger.level_active(enb.logger.level_debug.name):
             enb.log.warn(
                 f"{self.__class__.__name__} is ignorning "
                 f"{100 * ignored_sum / total_sum:.6f}% "

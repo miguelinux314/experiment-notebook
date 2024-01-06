@@ -403,7 +403,7 @@ def _get_sorted_group_names(group_name_order, pds_by_group_name):
                 sorted_group_names.append(group_name)
         for group_name in pds_by_group_name.keys():
             if group_name not in sorted_group_names:
-                if options.verbose > 2:
+                if enb.logger.level_active(enb.logger.level_debug.name):
                     enb.logger.warn(
                         f"Warning: {repr(group_name)} was not provided in "
                         f"group_name_order but is one of the "

@@ -7,6 +7,7 @@ __since__ = "2021/02/24"
 import os
 import shutil
 import numpy as np
+import enb
 from enb.config import options
 
 def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")):
@@ -14,8 +15,8 @@ def generate_test_images(base_dir=os.path.join(os.path.dirname(os.path.abspath(_
     height = 128
 
     for bytes_per_sample in [1, 2, 4]:
-        if options.verbose > 1:
-            print(f"\tgenerating vectors with {bytes_per_sample} byte{'s' if bytes_per_sample != 1 else ''} per sample...")
+        enb.logger.verbose(f"\tgenerating vectors with {bytes_per_sample} "
+                           f"byte{'s' if bytes_per_sample != 1 else ''} per sample...")
 
         for label, component_count in [("mono", 1), ("rgb", 3), ("rgba", 4), ("multi", 32)]:
             for signed in [True, False]:
