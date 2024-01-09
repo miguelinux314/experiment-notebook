@@ -50,8 +50,15 @@ class AbstractColorsTemplate:
         cls.report_successful_installation(installation_dir=installation_dir)
 
 
+class DefaultColorsTemplate(AbstractColorsTemplate, enb.plugins.Template):
+    """Default color template.
+    """
+    name = "colors-default"
+    label = "Default color template for light or dark background terminals"
+
+
 class DarkColorsTemplate(AbstractColorsTemplate, enb.plugins.Template):
     """Dark color template.
     """
     name = "colors-dark"
-    label = "Color template for a dark background terminal"
+    label = "Color template for dark background terminals"

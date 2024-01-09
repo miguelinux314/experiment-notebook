@@ -32,7 +32,7 @@ class ProgressTracker(rich.live.Live):
     """Keep track of the progress of an ATable's (incl. Experiments') get_df.
     """
     # Style for the panel border surrounding each progress track
-    style_border = "#505050 bold"
+    style_border = "#adadad bold"
 
     # Style for the completed portion of the progress bar while it's being filled
     style_bar_complete = "#9b5ccb bold"
@@ -42,7 +42,7 @@ class ProgressTracker(rich.live.Live):
     style_bar_finished = "#f3ac05"
 
     # Style for the panel title when the instance being tracked is an enb.sets.FilePropertiesTable subclass
-    style_title_dataset = "#4effa7"
+    style_title_dataset = "#45e193"
     # Style for the panel title when the instance being tracked is an enb.experiment.Experiment subclass
     style_title_experiment = "#13bf00"
     # Style for the panel title when the instance being tracked is an enb.aanalysis.Analyzer subclass
@@ -55,7 +55,7 @@ class ProgressTracker(rich.live.Live):
     style_title_other = "#cdabff"
 
     # Style for the text labels (e.g., "Rows", "Chunks")
-    style_text_label = "#e0e0e0"
+    style_text_label = "#787878"
     # Style for the text separators (e.g., ":", "/")
     style_text_separator = "#505050"
     # Style for the text indicating units or scale (e.g., "s", "%")
