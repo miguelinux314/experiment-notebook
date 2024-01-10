@@ -82,7 +82,7 @@ class Logger(metaclass=Singleton):
     # Default style for verbose level messages
     style_verbose = "#a5d3a5"
     # Default style for info level messages
-    style_info = "#afffbe"
+    style_info = "#9b5ccb"
     # Default style for debug level messages
     style_debug = "#909090"
     # Style for the banner line
