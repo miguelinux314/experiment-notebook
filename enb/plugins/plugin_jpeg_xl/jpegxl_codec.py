@@ -39,11 +39,10 @@ class JPEG_XL(icompression.LosslessCodec, icompression.LossyCodec, icompression.
             f"Only one component seems to be supported by {self.__class__.__name__}"
         assert original_file_info["big_endian"], \
             f"Only big-endian samples are supported by {self.__class__.__name__}"
-        
+
         return f"{original_path} {compressed_path} " \
                f"-q {self.param_dict['quality_0_to_100']} " \
-               f"-s {self.param_dict['compression_level']}" \
-               f"{' -m' if self.param_dict['lossless'] else ''}"
+               f"-e {self.param_dict['compression_level']}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"{compressed_path} {reconstructed_path}"

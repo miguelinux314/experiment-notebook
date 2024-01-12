@@ -19,5 +19,8 @@ class JPEGXLPlugin(enb.plugins.PluginMake):
             * MacOS:
                 1. Install homebrew from http://brew.sh
                 2. `brew install gcc@9`
+                
+            Also, if execution fails due to the lack of libraries such as `libjxl_threads.so.0.8`, 
+            you may need to manually compile the plugin and copy the resulting libraries, e.g., in `/usr/lib`. 
             """)
     tested_on = {"linux"}
