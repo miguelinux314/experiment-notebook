@@ -37,7 +37,10 @@ class Montsec(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec
 
     @property
     def label(self):
-        return "Montsec"
+        return ("Montsec"
+                + (" self context" if self.param_dict['cm'] == 1 else "")
+                + (" HV context" if self.param_dict['cm'] == 2 else "")
+                + (" HVDS context" if self.param_dict['cm'] == 3 else ""))
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         assert not original_file_info["float"], \
