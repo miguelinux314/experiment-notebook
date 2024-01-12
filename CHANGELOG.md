@@ -14,7 +14,35 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Development version v1.0.2
 
-No relevant changes so far with respect to the stable version.
+Improvements:
+
+- Enhanced progress reporting of parallel row computation. It requires `-v` or `-vv` 
+  (`enb.config.options.verbose in (1,2)`).
+
+- Messages displayed with `enb.logger` (and, by default also with `print`) are now colorized based on their priority.
+  You can easily configure the styles by installing the `colors-default`, `colors-dark` or `enb.ini` plugins
+  (e.g., `enb plugin install colors-default .` in your project folder) and modifying the installed `.ini` file,
+  and/or by modifying the `style_*` members of `enb.logger`.
+
+- Added the `compression_results` and `decompression_results` properties to `enb.icompression.CompressionExperiment`,
+  which are `enb.icompression.CompressionResults` and `enb.icompression.DecompressionResults` instances, respectively.
+  These can be called from functions that set row columns of compression experiment subclasses. For instance,
+  they can be used to access the original, compressed and/or reconstructed file paths, e.g., 
+  ```
+  import enb
+  
+  class CustomExperiment(enb.icompression.LosslessCompressionExperiment):
+     def column_first_compressed_byte(self, index, row):
+          """Set the 'first_compressed_byte' column of the experiment.
+          """
+          with open(self.compression_results.compressed_path, "r") as compressed_file:
+              return int(compressed_file.read(1))
+  ```
+
+Bug fixes:
+
+- Prevented spurious exceptions while shutting down, which could happen when an `enb.atable.ATable` instance 
+  is created but its `get_df` method is not called.
 
 # Latest stable version:
 

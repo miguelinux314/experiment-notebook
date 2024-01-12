@@ -916,8 +916,26 @@ class CompressionExperiment(enb.experiment.Experiment):
         """
         return self.tasks_by_name
 
-    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples,
-                        overwrite):
+    @property
+    def compression_results(self) -> CompressionResults:
+        """Get the current compression results from self.codec_results.
+        This property is intended to be read from functions that set columns of a row.
+        It triggers the compression of that row's sample with that row's codec if it hasn't been compressed yet.
+        Otherwise, None is returned.
+        """
+        return self.codec_results.compression_results if self.codec_results else None
+
+    @property
+    def decompression_results(self) -> DecompressionResults:
+        """Get the current decompression results from self.codec_results.
+        This property is intended to be read from functions that set columns of a row.
+        It triggers the compression and decompression of that row's sample with that row's codec if
+        they have not been compressed yet.
+        Otherwise, None is returned.
+        """
+        return self.codec_results.decompression_results if self.codec_results else None
+
+    def compute_one_row(self, filtered_df, index, loc, column_fun_tuples, overwrite):
         # pylint: disable=too-many-arguments
         # Prepare a new column with a self.CodecRowWrapper instance that
         # allows automatic, lazy computation of compression and decompression
