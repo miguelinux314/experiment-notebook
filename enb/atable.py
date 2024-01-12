@@ -1588,14 +1588,14 @@ class ATable(metaclass=MetaTable):
         """
         try:
             if not self._was_get_df_called:
-                msg = f"WARNING: Instance {self} was initialized " \
+                msg = f"\nWARNING: Instance {self} was initialized " \
                       f"but its get_df() method was never called.\nThis is not the expected " \
                       f"behaviour. Please check the documentation in case of doubt."
-                if enb is None or enb.logger is None or enb.logger.warn is None:
+                try:
+                    enb.logger.warn(msg)
+                except:
                     # The enb.logger subsystem is not available anymore
                     print(msg)
-                else:
-                    enb.logger.warn(msg)
         except AttributeError:
             pass
 
