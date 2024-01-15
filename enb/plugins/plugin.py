@@ -137,7 +137,6 @@ class PluginMake(Plugin):
                                 "is. The plugin will be attempted to be installed using that "
                                 "Makefile.")
         if os.path.exists(make_path):
-            print(f"Building downloaded plugin {repr(cls.name)}...")
             invocation = (f"cd {os.path.dirname(os.path.abspath(make_path))} "
                           f"&& {shutil.which('make')} -f {os.path.basename(make_path)}")
             status, output = subprocess.getstatusoutput(invocation)

@@ -123,7 +123,7 @@ class Installable(metaclass=InstallableMeta):
         """
         installation_dir = os.path.abspath(installation_dir)
 
-        enb.logger.message(f"Installing {repr(cls.name)} into {installation_dir}...")
+        enb.logger.message(f"Installing {repr(cls.name)} into {repr(installation_dir)}...")
 
         # Warn about any manual requirements reported by the Installable
         cls.warn_extra_requirements()
@@ -177,7 +177,7 @@ class Installable(metaclass=InstallableMeta):
                 shutil.copyfile(cached_path, output_path)
 
             # Custom building of the Installable
-            print(f"Building plugin {repr(cls.name)} into {installation_dir}...")
+            print(f"Building plugin {repr(cls.name)} into {repr(installation_dir)}...")
             cls.build(installation_dir=installation_dir)
             cls.report_successful_installation(installation_dir=installation_dir)
         except Exception as ex:
