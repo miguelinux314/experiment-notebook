@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wrapper for Nayuki's arithmetic coder, originally downloaded from 
+"""Wrapper for Nayuki's arithmetic coder, originally downloaded from
 https://github.com/nayuki/Reference-arithmetic-coding/
 """
 __author__ = "Miguel Hernández-Cabronero"
@@ -10,7 +10,7 @@ from enb import icompression
 
 
 class ArithmeticCodec(icompression.WrapperCodec, icompression.LosslessCodec):
-    """Wrapper for Nayuki's arithmetic coder, originally downloaded from 
+    """Wrapper for Nayuki's arithmetic coder, originally downloaded from
     https://github.com/nayuki/Reference-arithmetic-coding/
     """
 
@@ -37,4 +37,4 @@ class ArithmeticCodec(icompression.WrapperCodec, icompression.LosslessCodec):
 
     @property
     def label(self):
-        return "AC"
+        return "Arithmetic Coder"
