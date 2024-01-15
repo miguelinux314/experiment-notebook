@@ -116,7 +116,7 @@ def get_all_subclasses(*base_classes):
 
 
 class Singleton(type):
-    """Classes using this as will only be instantiated once.
+    """Classes using this as metaclass will only be instantiated once.
     """
     _instances = {}
 
