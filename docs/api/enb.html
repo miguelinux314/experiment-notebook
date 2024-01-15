@@ -154,7 +154,7 @@ for detailed help.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.aanalysis.</span></span><span class="sig-name descname"><span class="pre">Analyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p>
 <p>Base class for all enb analyzers.</p>
-<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling
+<p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results can be obtained by calling
 get_df. In addition, if render_plots is used in that function, one or
 more figures will be produced. What plots are generated (if any) is based
 on the values of the self.selected_render_modes list, which must contain
@@ -261,7 +261,7 @@ manually after definition and before calling <a class="reference internal" href=
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.Analyzer.get_df">
 <span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_render_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_global</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">render_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.Analyzer.get_df" title="Permalink to this definition"></a></dt>
-<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing
+<dd><p>Analyze a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance, optionally producing
 plots, and returning the computed dataframe with the analysis results.</p>
 <p>Rendering is performed for all modes contained
 self.selected_render_modes, which must be in self.valid_render_modes.
@@ -304,7 +304,7 @@ which will in turn be sent to enb.render.render_plds_by_group</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -614,13 +614,13 @@ attempted after any column the subclass may have defined.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.AnalyzerSummary.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.AnalyzerSummary.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -770,7 +770,7 @@ should be plotted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with analysis results</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1593,7 +1593,7 @@ is included in the analysis.</p></li>
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns">
 <span class="sig-name descname"><span class="pre">add_scalar_description_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.add_scalar_description_columns" title="Permalink to this definition"></a></dt>
 <dd><p>Add the scalar description columns for a given column_name in the
-<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance being analyzed.</p>
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance being analyzed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1647,7 +1647,7 @@ for additional information.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.aanalysis.ScalarNumericSummary.numeric_series_to_stat_dict">
-<span class="sig-name descname"><span class="pre">numeric_series_to_stat_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><span class="pre">pandas.core.series.Series</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.numeric_series_to_stat_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">numeric_series_to_stat_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><span class="pre">pandas.core.series.Series</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.aanalysis.ScalarNumericSummary.numeric_series_to_stat_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a series of numeric data into a dictionary of
 stats (‘avg’, ‘min’, ‘max’, ‘std’, ‘count’).</p>
 <dl class="field-list simple">
@@ -1972,10 +1972,10 @@ enb.experiment.TaskFamily instances.</p>
 <section id="enb-atable-automatic-tables-with-implicit-column-definition">
 <h3><a class="reference internal" href="#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: Automatic tables with implicit column definition<a class="headerlink" href="#enb-atable-automatic-tables-with-implicit-column-definition" title="Permalink to this headline"></a></h3>
 <section id="atable-produces-dataframe-instances">
-<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
+<h4><a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> produces <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances<a class="headerlink" href="#atable-produces-dataframe-instances" title="Permalink to this headline"></a></h4>
 <p>This module defines the <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> class,
 which is the base for all automatic tables in <a class="reference internal" href="#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a>.</p>
-<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance when their <cite>get_df</cite>
+<p>All <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses generate a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance when their <cite>get_df</cite>
 method is successfully called. These are powerful dynamic tables that can be
 used directly, and/or passed to some of the tools in the <a class="reference internal" href="#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module
 to easily produce figures and tables.</p>
@@ -2026,7 +2026,7 @@ You can reuse existing ATable subclasses directly and/or create new subclasses.<
 <p>Our <cite>TableA</cite> class accepts list-like values (e.g., strings) as indices,
 and defines the <cite>index_length</cite> column as the number of elements (e.g.,
 characters) in the index.</p>
-<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
+<p>One can then use the <cite>get_df</cite> method to obtain a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table_a</span> <span class="o">=</span> <span class="n">TableA</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;my_index_name&quot;</span><span class="p">)</span>
 <span class="n">example_indices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ab c&quot;</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>  <span class="c1"># List of iterables</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">table_a</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">target_indices</span><span class="o">=</span><span class="n">example_indices</span><span class="p">)</span>
@@ -2140,7 +2140,7 @@ to obtain simething similar to:</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">ATable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_report_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Automatic table with implicit column definition.</p>
-<p>ATable subclasses have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>
+<p>ATable subclasses have the <cite>get_df</cite> method, which returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>
 instance with the requested data. You can use (multiple) inheritance
 using one or more ATable subclasses to combine the columns of those
 subclasses into the newly defined one. You can then define methods with
@@ -2284,7 +2284,7 @@ compute_target_rows(), i.e., the dispatcher function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
 with index compatible with loc. The loc argument itself needs not be
 present in filtered_df, but is used to avoid recomputing in case
 overwrite is not True and columns had been set.</p></li>
@@ -2310,7 +2310,7 @@ with a column named as given by self.private_index_column set to the
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.ATable.compute_target_rows">
 <span class="sig-name descname"><span class="pre">compute_target_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loaded_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_tracker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.ATable.compute_target_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by
+<dd><p>Generate and return a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with as many rows as given by
 <cite>target_indices</cite>, with the columns given in <cite>target_columns</cite>, using this table’s column-setting functions.</p>
 <p>This method is run when there are one or more known missing values in the
 requested df, e.g., there are:</p>
@@ -2340,7 +2340,7 @@ currently being used to keep track of this ATable’s get_df call.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
+<dd class="field-even"><p>a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instance with the same column structure as loaded_df
 (i.e., following this class’ column defintion). Each row corresponds to
 one element in target_indices, maintaining the same order.</p>
 </dd>
@@ -2371,7 +2371,7 @@ By default, the global function enb.atable.get_all_input_files is called.</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
 <cite>target_indices</cite>, and as many columns as there are defined in
 self.column_to_properties. If <cite>target_indices</cite> is None, all files in
 enb.config.options.base_dataset_dir are used (after filtering by
@@ -2768,7 +2768,7 @@ the row’s column.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_column_mro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.MetaTable.set_column_mro" title="Permalink to this definition"></a></dt>
 <dd><p>Redefine column properties that have been defined in the child class,
 making sure the expected method resolution order (MRO) is maintained.</p>
-<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
+<p>This method prevents the parent’s method be invoked to fill in the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>,
 following intuitive OOP definition.</p>
 </dd></dl>
 
@@ -2877,13 +2877,13 @@ initialization is used.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.atable.SummaryTable.split_groups">
 <span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.SummaryTable.split_groups" title="Permalink to this definition"></a></dt>
-<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
+<dd><p>Split the reference_df <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> into an iterable of (label, dataframe) tuples.
 This splitting is performed based on the value of self.group_by:</p>
 <ul class="simple">
 <li><p>If it is None, a single group labelled “all” is created, associated to reference_df.</p></li>
 <li><dl class="simple">
 <dt>If it is not None:</dt><dd><ul>
-<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
+<li><p>It can be a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> column index, e.g., a column name or a list of column names.
 In this case, the result pandas’ groupby is returned.</p></li>
 <li><p>It can be a callable with a single argument reference_df.
 In this case, the result of calling that method with reference_df as argument
@@ -3022,7 +3022,7 @@ indexing is consistent across code using <a class="reference internal" href="#en
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.get_nonscalar_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">get_nonscalar_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.get_nonscalar_value" title="Permalink to this definition"></a></dt>
-<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain
+<dd><p>Parse a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s cell value in a column declared to contain
 non-scalar types, i.e., dict, list or tuple.
 Return an instance of one of those types.</p>
 <p>If cell_value is a string, ast is employed to parse it.
@@ -3039,8 +3039,8 @@ and not through <a class="reference internal" href="#enb.atable.ATable" title="e
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">indices_to_internal_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.indices_to_internal_loc" title="Permalink to this definition"></a></dt>
 <dd><p>Given an index string or list of strings, return a single index string
 that uniquely identifies those strings and can be used as an internal index.</p>
-<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
-value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
+<p>This is used internally to set the actual <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s index value to a unique
+value that represents the row’s index. Note that <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>’s subindexing is
 intentionally not used to maintain a simple, flat structure of tables without nesting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -3089,7 +3089,7 @@ the string or float value given by cell_value</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="enb.atable.unpack_index_value">
 <span class="sig-prename descclassname"><span class="pre">enb.atable.</span></span><span class="sig-name descname"><span class="pre">unpack_index_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.atable.unpack_index_value" title="Permalink to this definition"></a></dt>
-<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
+<dd><p>Unpack an enb-created <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> index and return its elements.
 This can be useful to iterate homogeneously regardless of whether single
 or multiple indices are used.</p>
 <dl class="field-list simple">
@@ -3756,6 +3756,15 @@ class or instance. The values are <a class="reference internal" href="#enb.atabl
 manually after definition and before calling <a class="reference internal" href="#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses’ <cite>get_df</cite>.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.icompression.CompressionExperiment.compression_results">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compression_results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#enb.icompression.CompressionResults" title="enb.icompression.CompressionResults"><span class="pre">enb.icompression.CompressionResults</span></a></em><a class="headerlink" href="#enb.icompression.CompressionExperiment.compression_results" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current compression results from self.codec_results.
+This property is intended to be read from functions that set columns of a row.
+It triggers the compression of that row’s sample with that row’s codec if it hasn’t been compressed yet.
+Otherwise, None is returned.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.icompression.CompressionExperiment.compute_one_row">
 <span class="sig-name descname"><span class="pre">compute_one_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filtered_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_fun_tuples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.icompression.CompressionExperiment.compute_one_row" title="Permalink to this definition"></a></dt>
@@ -3767,7 +3776,7 @@ compute_target_rows(), i.e., the dispatcher function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
+<li><p><strong>filtered_df</strong> – <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> retrieved from persistent storage,
 with index compatible with loc. The loc argument itself needs not be
 present in filtered_df, but is used to avoid recomputing in case
 overwrite is not True and columns had been set.</p></li>
@@ -3795,6 +3804,16 @@ with a column named as given by self.private_index_column set to the
 <span class="sig-name descname"><span class="pre">dataset_files_extension</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'raw'</span></em><a class="headerlink" href="#enb.icompression.CompressionExperiment.dataset_files_extension" title="Permalink to this definition"></a></dt>
 <dd><p>Default input sample extension.
 If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.icompression.CompressionExperiment.decompression_results">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">decompression_results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#enb.icompression.DecompressionResults" title="enb.icompression.DecompressionResults"><span class="pre">enb.icompression.DecompressionResults</span></a></em><a class="headerlink" href="#enb.icompression.CompressionExperiment.decompression_results" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current decompression results from self.codec_results.
+This property is intended to be read from functions that set columns of a row.
+It triggers the compression and decompression of that row’s sample with that row’s codec if
+they have not been compressed yet.
+Otherwise, None is returned.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -5273,22 +5292,22 @@ instance, such as LOG_VERBOSE or any of the other constants defined above.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.banner_enb_name_style">
-<span class="sig-name descname"><span class="pre">banner_enb_name_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#f3ac05</span> <span class="pre">bold</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_enb_name_style" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">banner_enb_name_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#f3ac05</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.log.Logger.banner_enb_name_style" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.banner_enb_version_style">
-<span class="sig-name descname"><span class="pre">banner_enb_version_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b5ccb</span> <span class="pre">bold</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_enb_version_style" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">banner_enb_version_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b5ccb</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.log.Logger.banner_enb_version_style" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.banner_line_style">
-<span class="sig-name descname"><span class="pre">banner_line_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#767676</span> <span class="pre">bold</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_line_style" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">banner_line_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#767676</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.log.Logger.banner_line_style" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.banner_plain_text_style">
-<span class="sig-name descname"><span class="pre">banner_plain_text_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#767676</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.banner_plain_text_style" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">banner_plain_text_style</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#767676'</span></em><a class="headerlink" href="#enb.log.Logger.banner_plain_text_style" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5577,37 +5596,37 @@ If file is None, then sys.stdout is used by default.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_core">
-<span class="sig-name descname"><span class="pre">style_core</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#28c9ff</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_core" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_core</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#28c9ff'</span></em><a class="headerlink" href="#enb.log.Logger.style_core" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_debug">
-<span class="sig-name descname"><span class="pre">style_debug</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#909090</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_debug" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_debug</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#909090'</span></em><a class="headerlink" href="#enb.log.Logger.style_debug" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_error">
-<span class="sig-name descname"><span class="pre">style_error</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bold</span> <span class="pre">#ff5255</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_error" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_error</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bold</span> <span class="pre">#ff5255'</span></em><a class="headerlink" href="#enb.log.Logger.style_error" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_info">
-<span class="sig-name descname"><span class="pre">style_info</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#995cc8</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_info" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_info</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b5ccb'</span></em><a class="headerlink" href="#enb.log.Logger.style_info" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_message">
-<span class="sig-name descname"><span class="pre">style_message</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#28c9ff</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_message" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_message</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#28c9ff'</span></em><a class="headerlink" href="#enb.log.Logger.style_message" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_verbose">
-<span class="sig-name descname"><span class="pre">style_verbose</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#8db872</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_verbose" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_verbose</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#a5d3a5'</span></em><a class="headerlink" href="#enb.log.Logger.style_verbose" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.log.Logger.style_warn">
-<span class="sig-name descname"><span class="pre">style_warn</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#ffca4f</span> <span class="pre">on</span> <span class="pre">black'</span></em><a class="headerlink" href="#enb.log.Logger.style_warn" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">style_warn</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#ffca4f'</span></em><a class="headerlink" href="#enb.log.Logger.style_warn" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5916,7 +5935,7 @@ is called.</p>
 <dt class="sig sig-object py" id="enb.misc.Singleton">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.misc.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><a class="headerlink" href="#enb.misc.Singleton" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
-<p>Classes using this as will only be instantiated once.</p>
+<p>Classes using this as metaclass will only be instantiated once.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -7372,13 +7391,116 @@ is also interpreted as a chunk size equal to row_count)</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.progress.ProgressTracker.chunk_count">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chunk_count</span></span><a class="headerlink" href="#enb.progress.ProgressTracker.chunk_count" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get the number of chunks defined for this progress tracking stage.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.progress.ProgressTracker.complete_chunk">
 <span class="sig-name descname"><span class="pre">complete_chunk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.progress.ProgressTracker.complete_chunk" title="Permalink to this definition"></a></dt>
 <dd><p>Add 1 to the number of completed chunks if a chunk task has been defined.</p>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.console">
+<em class="property"><span class="pre">class</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">console</span></span><a class="headerlink" href="#enb.progress.ProgressTracker.console" title="Permalink to this definition"></a></dt>
+<dd><p>Return the console instance for the current instance (the only live instance) of ProgressTracker,
+or None if none are available.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_bar_complete">
+<span class="sig-name descname"><span class="pre">style_bar_complete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b5ccb</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_bar_complete" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_bar_finished">
+<span class="sig-name descname"><span class="pre">style_bar_finished</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#f3ac05'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_bar_finished" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_bar_incomplete">
+<span class="sig-name descname"><span class="pre">style_bar_incomplete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#252525'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_bar_incomplete" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_border">
+<span class="sig-name descname"><span class="pre">style_border</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#adadad</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_border" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_spinner">
+<span class="sig-name descname"><span class="pre">style_spinner</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b5ccb</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_spinner" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_completed">
+<span class="sig-name descname"><span class="pre">style_text_completed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#bcbcbc</span> <span class="pre">bold'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_completed" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_label">
+<span class="sig-name descname"><span class="pre">style_text_label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#787878'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_percentage">
+<span class="sig-name descname"><span class="pre">style_text_percentage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#bcbcbc'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_percentage" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_separator">
+<span class="sig-name descname"><span class="pre">style_text_separator</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#505050'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_separator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_speed">
+<span class="sig-name descname"><span class="pre">style_text_speed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#bcbcbc'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_speed" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_time">
+<span class="sig-name descname"><span class="pre">style_text_time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#bcbcbc'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_time" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_total">
+<span class="sig-name descname"><span class="pre">style_text_total</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#bcbcbc'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_total" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_text_unit">
+<span class="sig-name descname"><span class="pre">style_text_unit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#707070'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_text_unit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_title_analyzer">
+<span class="sig-name descname"><span class="pre">style_title_analyzer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#1990ff'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_title_analyzer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_title_atable">
+<span class="sig-name descname"><span class="pre">style_title_atable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#9b59ff'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_title_atable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_title_dataset">
+<span class="sig-name descname"><span class="pre">style_title_dataset</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#45e193'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_title_dataset" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_title_experiment">
+<span class="sig-name descname"><span class="pre">style_title_experiment</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#13bf00'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_title_experiment" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_title_other">
+<span class="sig-name descname"><span class="pre">style_title_other</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#cdabff'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_title_other" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enb.progress.ProgressTracker.style_title_summary">
+<span class="sig-name descname"><span class="pre">style_title_summary</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#23cfff'</span></em><a class="headerlink" href="#enb.progress.ProgressTracker.style_title_summary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.progress.ProgressTracker.update_chunk_completed_rows">
@@ -7607,7 +7729,7 @@ If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 <dd><p>Core method for all <a class="reference internal" href="#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses to obtain the table’s content.
 The following principles guide the way <cite>get_df</cite> works:</p>
 <ul class="simple">
-<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0.dev0+29.g86ad444cff)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
+<li><p>This method returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+104.g82449b9d3c)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> containing one row per element in
 <cite>target_indices</cite>, and as many columns as there are defined in
 self.column_to_properties. If <cite>target_indices</cite> is None, all files in
 enb.config.options.base_dataset_dir are used (after filtering by
