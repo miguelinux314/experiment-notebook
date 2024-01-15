@@ -9,7 +9,7 @@ from enb import icompression
 
 
 class FSEHuffman(icompression.WrapperCodec, icompression.LosslessCodec):
-    """FSE's Huff0 codec wrapper.
+    """FSE's Huff0 codec wrapper (block adaptive)
     """
     def __init__(self, huff_binary=os.path.join(os.path.dirname(os.path.abspath(__file__)), "fse")):
         icompression.WrapperCodec.__init__(self,
