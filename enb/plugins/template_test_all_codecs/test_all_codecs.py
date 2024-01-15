@@ -21,12 +21,6 @@ import enb
 from enb.config import options
 
 
-def log_event(s):
-    if options.verbose:
-        s = f" {s}..."
-        print(f"\n{s:->100s}\n")
-
-
 class AvailabilityExperiment(enb.experiment.Experiment):
     def __init__(self, codecs):
         super().__init__(tasks=codecs, dataset_info_table=enb.isets.ImagePropertiesTable)
@@ -34,7 +28,8 @@ class AvailabilityExperiment(enb.experiment.Experiment):
     @enb.atable.column_function([
         enb.atable.ColumnProperties("is_working", label="Does the codec work for this input?"),
         enb.atable.ColumnProperties("is_lossless", label="Was compression lossless?"),
-        enb.atable.ColumnProperties("cr_dr", label="Compression ratio respect to the dynamic range."),
+        enb.atable.ColumnProperties("cr_dr",
+                                    label="Compression ratio respect to the dynamic range."),
         enb.atable.ColumnProperties("error_str", label="Error string for this execution"),
     ])
     def set_availability_columns(self, index, row):
@@ -48,7 +43,8 @@ class AvailabilityExperiment(enb.experiment.Experiment):
                     original_path=file_path,
                     compressed_path=tmp_compressed_file.name,
                     original_file_info=self.get_dataset_info_row(file_path))
-                if not os.path.isfile(tmp_compressed_file.name) or not os.path.getsize(tmp_compressed_file.name):
+                if not os.path.isfile(tmp_compressed_file.name) or not os.path.getsize(
+                        tmp_compressed_file.name):
                     raise enb.icompression.CompressionException(
                         f"[E]rror compressing {index} -- did not produce a file")
                 codec.decompress(
@@ -83,14 +79,16 @@ class CodecSummaryTable(enb.atable.SummaryTable):
         reference_df = reference_df if reference_df is not None else self.reference_df
         return reference_df.groupby("task_label")
 
-    @enb.atable.column_function("type_to_availability", label="\nCodec availability for different data types",
+    @enb.atable.column_function("type_to_availability",
+                                label="\nCodec availability for different data types",
                                 has_dict_values=True,
                                 plot_min=min(availability_modes) - 0.2,
                                 plot_max=max(availability_modes) + 0.2)
     def set_type_bands_to_availability(self, index, row):
         local_df = self.label_to_df[index]
         type_to_availability = dict()
-        for (type_name, component_count), type_df in local_df.groupby(["type_name", "component_count"]):
+        for (type_name, component_count), type_df in local_df.groupby(
+                ["type_name", "component_count"]):
             if type_name[1] == "8":
                 type_name = f"{type_name[:1]} 8{type_name[2:]}"
             type_name = f"{type_name[:3]} bit {type_name[3:]}"
@@ -116,25 +114,26 @@ class CodecSummaryTable(enb.atable.SummaryTable):
         row[_column_name] = type_to_availability
 
 
-if __name__ == '__main__':
-    if options.verbose:
-        print(f"{' [ Codec Availability Test Script ] ':=^100s}")
+def main():
+    enb.config.options.chunk_size = enb.config.options.chunk_size or 2048
+    enb.logger.message("\n[bold]Codec Availability Test[/bold]\n", markup=True)
 
     # Plugin import -- these are needed so that codecs get defined and can
     # be automatically retrieved below (ignore IDE non-usage warnings).
     # NOTE: the build script should have created the `plugins` folder with all these codecs
 
-    log_event("Importing plugin modules")
+    enb.logger.verbose("Importing plugin modules", rule=True)
     plugin_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "plugins")
     assert os.path.isdir(plugin_dir), \
         "The build script should have placed everything under plugins, " \
         "please report this if you feel it is a bug."
-    for d in [p for p in glob.glob(os.path.join(plugin_dir, "*")) if os.path.exists(os.path.join(p, "__init__.py"))]:
+    for d in [p for p in glob.glob(os.path.join(plugin_dir, "*")) if
+              os.path.exists(os.path.join(p, "__init__.py"))]:
         print(f"Importing {os.path.basename(d)}...")
         importlib.import_module(f"{os.path.basename(plugin_dir)}.{os.path.basename(d)}")
 
     # Make sure data are ready
-    log_event("Preparing test dataset")
+    enb.logger.verbose("Preparing test dataset", rule=True)
     from generate_test_images import generate_test_images
 
     generate_test_images()
@@ -143,34 +142,39 @@ if __name__ == '__main__':
     # This part searches for all defined codecs so far. Import new codecs to make them appear in the list
     # It also filters away any class with 'abstract' in the name.
     codec_classes = enb.misc.get_all_subclasses(
-        enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec, enb.icompression.LossyCodec)
+        enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,
+        enb.icompression.LossyCodec)
 
     # Remove any unwanted classes from the analysis
-    excluded_names = ("abstract", "fapec", "v2f", "zstandard", "magli", "greenbook", "mhdc", "mhdc_pot",
-                      "jpegxl")
-    
-    codec_classes = set(c for c in codec_classes if not any(n in c.__name__.lower() for n in excluded_names))
-    
+    excluded_names = (
+        "abstract", "fapec", "v2f", "zstandard", "magli", "greenbook", "mhdc", "mhdc_pot",
+        "jpegxl")
+
+    codec_classes = set(
+        c for c in codec_classes if not any(n in c.__name__.lower() for n in excluded_names))
+
     filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if filter_args:
-        log_event(f"Filtering for {', '.join(repr(s) for s in filter_args)}")
+        enb.logger.verbose(f"Filtering for {', '.join(repr(s) for s in filter_args)}", rule=True)
         codec_classes = [c for c in codec_classes
-                         if any(s.strip().lower() in c.__name__.strip().lower() for s in filter_args)]
+                         if
+                         any(s.strip().lower() in c.__name__.strip().lower() for s in filter_args)]
         if not codec_classes:
-            log_event("Error: no codec matched the filter strings "
-                      f"({', '.join(repr(v) for v in sys.argv[1:] if not v.startswith('-'))}). "
-                      f"Exiting now.")
+            enb.logger.verbose("Error: no codec matched the filter strings "
+                               f"({', '.join(repr(v) for v in sys.argv[1:] if not v.startswith('-'))}). "
+                               f"Exiting now.", rule=True)
             raise ValueError(sys.argv)
 
     if options.verbose:
-        log_event(f"The following {len(codec_classes)} codecs have been found"
-                  f"{' (after filtering)' if len(sys.argv) > 1 else ''}")
+        enb.logger.verbose(f"The following {len(codec_classes)} codecs have been found"
+                           f"{' (after filtering)' if len(sys.argv) > 1 else ''}", rule=True)
         for c in sorted(codec_classes, key=lambda cls: cls.__name__.lower()):
             print(f"\t:: {c.__name__}")
 
     # Run the experiment
-    log_event(f"Running the experiment. This might take some time...")
-    exp = AvailabilityExperiment(codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
+    enb.logger.verbose(f"Running the experiment. This might take some time...", rule=True)
+    exp = AvailabilityExperiment(
+        codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
     full_availability_df = exp.get_df()
 
     summary_df = CodecSummaryTable(
@@ -207,5 +211,9 @@ if __name__ == '__main__':
         show_grid=True,
     )
 
-    log_event("Test all codecs successfully completed")
+    enb.logger.verbose("Test all codecs successfully completed")
     print(f"You can now see the availability plots in .pdf and .png format at {options.plot_dir}")
+
+
+if __name__ == '__main__':
+    main()
