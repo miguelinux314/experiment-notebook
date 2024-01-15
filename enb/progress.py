@@ -7,6 +7,7 @@ __since__ = "2024/01/01"
 import os
 import math
 import inspect
+import collections
 import rich
 import rich.progress
 import rich.panel
@@ -73,6 +74,9 @@ class ProgressTracker(rich.live.Live):
 
     # Style for the spinner
     style_spinner = "#9b5ccb bold"
+
+    # Keep references to the current ProgressTracker instances in a LIFO
+    _current_instance_stack = collections.deque()
 
     def __init__(self, atable, row_count: int, chunk_size: int):
         """
@@ -143,6 +147,9 @@ class ProgressTracker(rich.live.Live):
             border_style=self.style_border)
         super().__init__(self.panel)
 
+        # Keep track of current instances so that the console of the most recent progress can be employed
+        ProgressTracker._current_instance_stack.append(self)
+
     def complete_chunk(self):
         """Add 1 to the number of completed chunks if a chunk task has been defined.
         """
@@ -162,7 +169,20 @@ class ProgressTracker(rich.live.Live):
 
     @property
     def chunk_count(self):
+        """Get the number of chunks defined for this progress tracking stage.
+        """
         return math.ceil(self.row_count / self.chunk_size)
+
+    @classmethod
+    @property
+    def console(cls):
+        """Return the console instance for the current instance (the only live instance) of ProgressTracker,
+        or None if none are available.
+        """
+        try:
+            return ProgressTracker._current_instance_stack[-1].console
+        except IndexError:
+            return None
 
     def _instance_to_title_style(self, instance):
         """Return the current configured title style for the
@@ -179,6 +199,12 @@ class ProgressTracker(rich.live.Live):
         if isinstance(instance, enb.atable.ATable):
             return self.style_title_atable
         return self.style_title_other
+
+    def __del__(self):
+        last = ProgressTracker._current_instance_stack.pop()
+        if last is not self:
+            enb.logger.warn(
+                "Warning! The ProgressTracker instance stack seems not not be in the right order.")
 
 
 class _ProgressColumn:
@@ -255,9 +281,9 @@ class _ProgressTextColumn(_ProgressColumn, rich.progress.TextColumn):
                    (f"{value_tag_start}{seconds}{value_tag_end}"
                     + (f"{unit_tag_start}s{unit_tag_end}" if decimals <= 0 else "")
                     + ((f"{value_tag_start}."
-                       f"{second_fraction_formatter.format(second_fraction)[2:]}"
-                       f"{value_tag_end}"
-                       f"{unit_tag_start}s{unit_tag_end}")
+                        f"{second_fraction_formatter.format(second_fraction)[2:]}"
+                        f"{value_tag_end}"
+                        f"{unit_tag_start}s{unit_tag_end}")
                        if decimals > 0 else "")
                     ))
                 )
@@ -359,9 +385,9 @@ class _ChunkProgressColumn(_ProgressTextColumn):
 
         # Add a fixed-length, right-aligned percentage meter to align with the speed
         formatter_length = (
-            6
-            + 2*len(self.progress_tracker.style_text_total) + len("[][/]")
-            + 2 * len(self.progress_tracker.style_text_unit) + len("[][/]")
+                6
+                + 2 * len(self.progress_tracker.style_text_total) + len("[][/]")
+                + 2 * len(self.progress_tracker.style_text_unit) + len("[][/]")
         )
         formatter = f"{{:>{formatter_length}s}}"
         render_str += formatter.format(

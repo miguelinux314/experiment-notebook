@@ -216,13 +216,20 @@ class Logger(metaclass=Singleton):
                                         and not forfeit_prefix else '') + \
                 f"{msg}{end}"
 
-            console = rich.console.Console(file=file, markup=markup, highlight=highlight)
+            try:
+                from .progress import ProgressTracker
+                console = ProgressTracker.console
+                console.markup = markup
+                console.highlight = highlight
+            except AttributeError:
+                console = None
+            console = console or rich.console.Console(file=file, markup=markup, highlight=highlight)
             style = style or level.style
 
             if rule:
                 console.rule(output_msg, **(rule_kwargs or dict()))
             else:
-                console.print(output_msg, end="", style=style)
+                console.print(output_msg, end="", style=style, highlight=highlight, markup=markup)
 
             self._last_end = end
             self._last_level = level
