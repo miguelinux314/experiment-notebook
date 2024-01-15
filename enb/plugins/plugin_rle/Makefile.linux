@@ -1,0 +1,5 @@
+all:
+	cd rle_src && make && cp sample ../rle
+
+clean:
+	rm -rf rle

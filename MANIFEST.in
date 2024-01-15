@@ -161,6 +161,11 @@ include enb/plugins/plugin_ndzip/ndzip_codec.py
 include enb/plugins/plugin_ndzip/__plugin__.py
 include enb/plugins/plugin_ndzip/README.txt
 include enb/plugins/plugin.py
+include enb/plugins/plugin_rle/Makefile.linux
+include enb/plugins/plugin_rle/__plugin__.py
+include enb/plugins/plugin_rle/README
+include enb/plugins/plugin_rle/rle_codec.py
+include enb/plugins/plugin_rle/rle.zip
 include enb/plugins/plugin_spdp/Makefile.linux
 include enb/plugins/plugin_spdp/__plugin__.py
 include enb/plugins/plugin_spdp/README.txt
