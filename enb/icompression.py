@@ -428,7 +428,65 @@ class WrapperCodec(AbstractCodec):
             name += "__" + "_".join(
                 f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
+    
 
+class QWrapperCodec(NearLosslessCodec):
+    """A codec that uses an external process to compress and decompress.
+    This codec is doing Uniform Scalar Quantization.
+    """
+
+    def __init__(self, codec:AbstractCodec, qstep:int=0):
+        """
+        :param codec: The codec useed to compress the image
+        :param qstep: The scalar number to make the quantization
+        """
+        
+        super().__init__()
+        self.codec = codec
+        self.qstep = qstep
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        if self.qstep < 0 or self.qstep > original_file_info['bytes_per_sample'] * 8:
+            raise ValueError("Qstep can't be negative or higher than bytes per sample of the imgaes.")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            image_array = enb.isets.load_array_bsq(original_path)
+            if not (self.qstep & (self.qstep - 1)):
+                # Efficiently way to execute image_array // self.qstep
+                # When qstep is a power of 2
+                image_array >>= self.qstep.bit_length() - 1
+            else:
+                image_array //= self.qstep
+            
+            new_im_name = os.path.basename(original_path)
+            new_im_path = os.path.join(tmp_dir, new_im_name)
+            
+            enb.isets.dump_array_bsq(image_array, new_im_path)           
+
+            self.codec.compress(new_im_path, compressed_path, original_file_info)
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        self.codec.decompress(compressed_path, reconstructed_path, original_file_info)
+        
+        image_array = enb.isets.load_array_bsq(reconstructed_path)
+        
+        if (self.qstep & (self.qstep - 1)):
+            # Efficiently way to execute image_array * self.qstep
+            # When qstep is a power of 2
+            image_array <<= self.qstep.bit_length() - 1
+        else:
+            image_array *= self.qstep
+
+        image_array += (self.qstep // 2)
+
+        enb.isets.dump_array_bsq(image_array, reconstructed_path)
+
+    @property
+    def name(self):
+        """Return the modified codec's name and parameters
+        """
+        return self.codec.name + f"_qstep={self.qstep}"
+    
 
 class JavaWrapperCodec(WrapperCodec):
     """Wrapper for `*.jar` codecs. The compression and decompression
