@@ -1420,10 +1420,10 @@ class ScalarNumericSummary(AnalyzerSummary):
         _self, group_label, row = args
         column_name = kwargs["column_selection"]
         full_series = _self.label_to_df[group_label][column_name]
-        for stat, value in _self.numeric_series_to_stat_dict(full_series).items():
+        for stat, value in _self.numeric_series_to_stat_dict(full_series, group_label=group_label).items():
             row[f"{column_name}_{stat}"] = value
 
-    def numeric_series_to_stat_dict(self, series: pd.Series):
+    def numeric_series_to_stat_dict(self, series: pd.Series, group_label: str=None):
         """Convert a series of numeric data into a dictionary of
         stats ('avg', 'min', 'max', 'std', 'count').
 
@@ -1437,13 +1437,15 @@ class ScalarNumericSummary(AnalyzerSummary):
             if len(finite_series) > 0:
                 enb.logger.warn(
                     f"{self.__class__.__name__}: "
-                    f"set_scalar_description is ignoring infinite values "
-                    f"({100 * (1 - len(finite_series) / len(full_series)):.2f}%"
-                    f" of the total).")
+                    f"set_scalar_description is ignoring infinite or NaN values "
+                    f"({100 * (1 - len(finite_series) / len(series)):.2f}%"
+                    f" of the total)"
+                    f"{' for ' + repr(group_label) if group_label else ''}.")
             else:
                 enb.logger.warn(
                     f"{self.__class__.__name__}: "
-                    f"set_scalar_description found only infinite values. "
+                    f"set_scalar_description found only infinite or NaN values"
+                    f"{' for ' + repr(group_label) if group_label else ''}. "
                     f"Several statistics will be 0 for this case.")
 
         stat_dict = dict()
@@ -1525,8 +1527,9 @@ class ScalarNumericSummary(AnalyzerSummary):
         finite_only_series = self.remove_nans(column_series)
         if len(finite_only_series) == 0:
             enb.logger.warn(
-                f"{_self.__class__.__name__}: "
-                f"No finite data found for column {repr(column_name)}. "
+                f"{_self.__class__.__name__}, {render_mode}: "
+                f"No finite data found for column {repr(column_name)}"
+                f"{' for ' + repr(group_label) if group_label else ''}. "
                 f"No plottable data is produced for this case.")
             row[_column_name] = []
             # return
@@ -1641,8 +1644,9 @@ class ScalarNumericSummary(AnalyzerSummary):
         finite_only_series = self.remove_nans(column_series)
         if len(finite_only_series) == 0:
             enb.logger.warn(
-                f"{_self.__class__.__name__}: "
-                f"No finite data found for column {repr(column_name)}. "
+                f"{_self.__class__.__name__}, {render_mode}: "
+                f"No finite data found for column {repr(column_name)}"
+                f"{' for ' + repr(group_label) if group_label else ''}. "
                 f"No plottable data is produced for this case.")
             row[_column_name] = []
             return
@@ -1676,8 +1680,9 @@ class ScalarNumericSummary(AnalyzerSummary):
         finite_only_series = self.remove_nans(column_series)
         if len(finite_only_series) == 0:
             enb.logger.warn(
-                f"{_self.__class__.__name__}: "
-                f"No finite data found for column {repr(column_name)}. "
+                f"{_self.__class__.__name__}, {render_mode}: "
+                f"No finite data found for column {repr(column_name)}"
+                f"{' for ' + repr(group_label) if group_label else ''}. "
                 "No plottable data is produced for this case.")
             row[_column_name] = []
             return
@@ -2022,9 +2027,11 @@ class TwoNumericSummary(ScalarNumericSummary):
                         full_df[column_name][0], full_df[column_name][0])
                 else:
                     try:
+                        finite_series = full_df[column_name].replace(
+                            [np.inf, -np.inf], np.nan, inplace=False).dropna()
                         self.column_to_xmin_xmax[
                             column_name] = scipy.stats.describe(
-                            full_df[column_name].values).minmax
+                            finite_series.values).minmax
                     except FloatingPointError as ex:
                         enb.logger.error(f"column_name={column_name}")
                         enb.logger.error(
