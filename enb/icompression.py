@@ -431,6 +431,70 @@ class WrapperCodec(AbstractCodec):
         return name
 
 
+class QuantizationWrapperCodec(NearLosslessCodec):
+    """Perform uniform scalar quantization before compressing and after decompressing with
+    a wrapped codec instance. Midpoint reconstruction is used in the dequantization stage.
+    """
+
+    def __init__(self, codec: AbstractCodec, qstep: int):
+        """
+        :param codec: The codec instance used to compress and decompress the quantized data.
+        :param qstep: The quantization interval length
+        """
+        if qstep < 1 or int(qstep) != qstep:
+            raise ValueError("The quantization step must be an integer no smaller than 1")
+        super().__init__(param_dict=dict(codec_name=codec.name, qstep=qstep))
+        self.codec = codec
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
+            # Read image data
+            image_array = enb.isets.load_array_bsq(original_path)
+
+            # Apply quantization
+            if not (self.param_dict["qstep"] & (self.param_dict["qstep"] - 1)):
+                # Efficiently way to execute image_array // self.param_dict["qstep"]
+                # When qstep is a power of 2
+                image_array >>= self.param_dict["qstep"].bit_length() - 1
+            else:
+                image_array //= self.param_dict["qstep"]
+
+            # Apply compression to the quantized data
+            output_quantized_path = os.path.join(tmp_dir, os.path.basename(original_path))
+            enb.isets.dump_array_bsq(image_array, output_quantized_path)
+            self.codec.compress(output_quantized_path, compressed_path, original_file_info)
+
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        with tempfile.TemporaryDirectory(dir=enb.config.options.base_tmp_dir) as tmp_dir:
+            output_quantized_path = os.path.join(tmp_dir, os.path.basename(reconstructed_path))
+            self.codec.decompress(compressed_path, output_quantized_path, original_file_info)
+            image_array = enb.isets.load_array_bsq(output_quantized_path)
+
+            if not (self.param_dict["qstep"] & (self.param_dict["qstep"] - 1)):
+                # Efficiently way to execute image_array * self.param_dict["qstep"]
+                # When qstep is a power of 2
+                image_array <<= self.param_dict["qstep"].bit_length() - 1
+            else:
+                image_array *= self.param_dict["qstep"]
+
+            min_val, max_val = np.iinfo(image_array.dtype).min, np.iinfo(image_array.dtype).max
+            image_array = np.clip((image_array.astype(np.int64) + (self.param_dict["qstep"] // 2)),
+                                  min_val, max_val).astype(image_array.dtype)
+            enb.isets.dump_array_bsq(image_array, reconstructed_path)
+
+    @property
+    def name(self):
+        """Return the original codec name and the quantization parameter
+        """
+        return f"{self.codec.name}_qstep={self.param_dict['qstep']}"
+
+    @property
+    def label(self):
+        """Return the original codec label and the quantization parameter.
+        """
+        return f"{self.codec.label}, Q$_\\mathrm{{step}}=${self.param_dict['qstep']}"
+
+
 class JavaWrapperCodec(WrapperCodec):
     """Wrapper for `*.jar` codecs. The compression and decompression
     parameters are those that need to be passed to the 'java' command.
