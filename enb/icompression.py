@@ -211,17 +211,17 @@ class AbstractCodec(enb.experiment.ExperimentTask):
             + ")>"
 
 
-class LosslessCodec(AbstractCodec): # pylint: disable=abstract-method
+class LosslessCodec(AbstractCodec):  # pylint: disable=abstract-method
     """An AbstractCodec that identifies itself as lossless.
     """
 
 
-class LossyCodec(AbstractCodec): # pylint: disable=abstract-method
+class LossyCodec(AbstractCodec):  # pylint: disable=abstract-method
     """An AbstractCodec that identifies itself as lossy.
     """
 
 
-class NearLosslessCodec(LossyCodec): # pylint: disable=abstract-method
+class NearLosslessCodec(LossyCodec):  # pylint: disable=abstract-method
     """An AbstractCodec that identifies itself as near lossless.
     """
 
@@ -349,7 +349,8 @@ class WrapperCodec(AbstractCodec):
             reconstructed_path=reconstructed_path,
             original_file_info=original_file_info)
         invocation = f"{self.decompressor_path} {decompression_params}"
-        enb.logger.debug(f"WrapperCodec({self.__class__.__name__}:decompress invocation={invocation}")
+        enb.logger.debug(
+            f"WrapperCodec({self.__class__.__name__}:decompress invocation={invocation}")
         try:
             status, output, measured_time, memory_kb \
                 = enb.tcall.get_status_output_time_memory(invocation)
@@ -560,10 +561,7 @@ class LittleEndianWrapper(WrapperCodec):
                     f"<{sign_str}{original_file_info['bytes_per_sample']}"),
                     file_or_path=reconstructed_path)
                 decompression_results.reconstructed_path = reconstructed_path
-
-                shutil.copyfile(reversed_endian_file.name, os.path.expanduser("~/tmp/rec_reversed.raw"))
-                shutil.copyfile(reconstructed_path, os.path.expanduser("~/tmp/rec_original.raw"))
-
+                
                 return decompression_results
         else:
             return super().decompress(compressed_path=compressed_path,
