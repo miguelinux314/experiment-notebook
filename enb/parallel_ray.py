@@ -320,7 +320,7 @@ class HeadNode:
         return f"The current enb/ray cluster consists of:\n" \
                f"\t- {len(self.remote_nodes) + 1} total nodes.\n" + \
             ((f"\t- {len(self.remote_nodes)} remote nodes:"
-              f"\n\t\t * {remote_node_str}") if self.remote_nodes else "") + \
+              f"\n\t\t * {remote_node_str}\n") if self.remote_nodes else "") + \
             f"\t- {cpu_str}.\n" \
             f"\t- {gpu_str}."
 
