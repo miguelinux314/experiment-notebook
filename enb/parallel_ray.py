@@ -388,6 +388,17 @@ class RemoteNode:
                     raise RuntimeError(
                         f"Error creating remote mount point on {self}.\n"
                         f"Command: {repr(invocation)}.\nOutput: {repr(output)}")
+
+            # Umount remote_node_folder_path on the remote host if previously mounted
+            with logger.info_context(
+                    f"Unmounting remote mount point on {self.address} (if it was mounted)"):
+                invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
+                             f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
+                             f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
+                             f"umount {self.remote_project_mount_path}"
+                subprocess.getstatusoutput(invocation)
+
+
             # Mount the project root on remote_node_folder_path - use a separate process
             self.mount_project_remotely()
         else:
