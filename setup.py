@@ -79,12 +79,11 @@ with open("README.md", "r") as readme_file:
         setup_requires=setup_package_list,
 
         install_requires=[
-            "pathos", "appdirs", "deprecation", "jinja2>=3.0.0", "matplotlib",
+            "pathos", "appdirs", "deprecation", "jinja2>=3.1.2", "matplotlib",
             "numpngw",
             "numpy", "pandas>=1.4.1", "imageio",
             "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
-            "astropy", "alive_progress", "natsort",
-            "rich"],
+            "astropy", "natsort", "rich"],
 
         # This part determines the contents of the installed folder in your python's
         # site-packages location.
