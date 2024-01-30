@@ -141,11 +141,14 @@ class WritableOrCreableDirAction(ExistingDirAction):
         except AssertionError:
             if os.path.exists(target_dir):
                 if not os.path.isdir(target_dir):
-                    raise ValueError(f"{target_dir} exists but is not a dir")
+                    raise ValueError(f"{target_dir} exists but is not a directory")
             else:
                 try:
-                    os.makedirs(target_dir)
-                    shutil.rmtree(target_dir)
+                    try:
+                        os.makedirs(target_dir)
+                    except FileExistsError:
+                        pass
+                    shutil.rmtree(target_dir, ignore_errors=True)
                 except PermissionError:
                     raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
@@ -164,8 +167,11 @@ class ReadableOrCreableDirAction(ExistingDirAction):
                     raise ValueError(f"{target_dir} exists but is not a directory")
             else:
                 try:
-                    os.makedirs(target_dir)
-                    shutil.rmtree(target_dir)
+                    try:
+                        os.makedirs(target_dir)
+                    except FileExistsError:
+                        pass
+                    shutil.rmtree(target_dir, ignore_errors=True)
                 except PermissionError:
                     raise ValueError(f"{target_dir} is not a directory and cannot be created")
 
