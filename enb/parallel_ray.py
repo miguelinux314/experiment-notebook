@@ -167,8 +167,7 @@ class HeadNode:
                                    f"Command: {repr(invocation)}.\n"
                                    f"Output:{repr(output)}")
 
-        with logger.info_context(
-                f"Initializing ray client on local port {self.ray_port}"):
+        with logger.info_context(f"Initializing ray client on local port {self.ray_port}"):
             # pylint: disable=protected-access
             # A list of modules imported after initializing enb is passed to the
             # remote workers so that they can replicate the imports.
@@ -195,9 +194,7 @@ class HeadNode:
                          # all imports work as expected
                          worker_process_setup_hook=lambda: os.chdir(RemoteNode.remote_project_mount_path),
                      ),
-                     logging_level=(logging.CRITICAL
-                                    if enb.logger.level_active(enb.logger.level_info.name)
-                                    else logging.INFO))
+                     logging_level=logging.CRITICAL)
 
         if options.ssh_cluster_csv_path:
             failing_tool = None
@@ -230,32 +227,28 @@ class HeadNode:
                         "https://miguelinux314.github.io/experiment-notebook/installation.html"
                         " for more details.")
 
-                self.remote_nodes = self.parse_cluster_config_csv(
-                    options.ssh_cluster_csv_path)
-                with logger.info_context(
-                        f"Connecting {len(self.remote_nodes)} remote nodes.",
-                        msg_after=f"Done connecting {len(self.remote_nodes)} remote nodes."):
-                    connected_nodes = []
-                    for rn in self.remote_nodes:
-                        with logger.info_context(f"Connecting to {rn}"):
-                            try:
-                                rn.connect()
-                                connected_nodes.append(rn)
-                            except RuntimeError as connection_ex:
-                                reason_str = textwrap.indent("\n".join(
-                                    itertools.chain(
-                                        *(textwrap.wrap(line, shutil.get_terminal_size()[0] - 6)
-                                          for line in
-                                          repr(connection_ex).replace(r"\n", "\n").splitlines()))),
-                                    " " * 4)
+                self.remote_nodes = self.parse_cluster_config_csv(options.ssh_cluster_csv_path)
+                logger.info(f"Connecting {len(self.remote_nodes)} remote nodes.")
+                connected_nodes = []
+                for rn in self.remote_nodes:
+                    logger.info(f"Connecting to {rn}")
+                    try:
+                        rn.connect()
+                        connected_nodes.append(rn)
+                    except RuntimeError as connection_ex:
+                        reason_str = textwrap.indent("\n".join(
+                            itertools.chain(
+                                *(textwrap.wrap(line, shutil.get_terminal_size()[0] - 6)
+                                  for line in
+                                  repr(connection_ex).replace(r"\n", "\n").splitlines()))),
+                            " " * 4)
 
-                                logger.warn(
-                                    f"Cannot connect to {rn.address}:{rn.ssh_port}. Reason:\n" +
-                                    reason_str +
-                                    f".\nExecution will continue without node {rn.address}:{rn.ssh_port}.")
-                    self.remote_nodes = connected_nodes
-
-                logger.info(f"All ({len(self.remote_nodes)}) nodes connected")
+                        logger.warn(
+                            f"Cannot connect to {rn.address}:{rn.ssh_port}. Reason:\n" +
+                            reason_str +
+                            f".\nExecution will continue without node {rn.address}:{rn.ssh_port}.")
+                self.remote_nodes = connected_nodes
+                logger.info(f"Done connecting {len(self.remote_nodes)} remote nodes.")
 
     def stop(self):
         """Stop the ray head node after disconnecting from all remote nodes.
