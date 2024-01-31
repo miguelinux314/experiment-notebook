@@ -452,8 +452,7 @@ class RemoteNode:
         assert not is_parallel_process()
 
         # Create remote_node_folder_path on the remote host if not existing
-        with logger.info_context(
-                f"Disconnecting {self.address} (stopping ray)"):
+        with logger.info_context(f"Disconnecting {self.address} (stopping ray)"):
             invocation = f"ssh -p {self.ssh_port if self.ssh_port else 22} " \
                          f"{'-i ' + self.local_ssh_file if self.local_ssh_file else ''} " \
                          f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
