@@ -24,6 +24,7 @@ import psutil
 import pandas as pd
 import textwrap
 import itertools
+import contextlib
 
 import enb
 from . import config
@@ -582,10 +583,13 @@ def parallel_decorator(*args, **kwargs):
             the options argument.
             """
             # apply ray.put to all arguments before passing them
-            return method_proxy.ray_remote(
-                ray.put(dict(config.options.items())),
-                *[ray.put(argument) for argument in a],
-                **{key: ray.put(value) for key, value in k.items()})
+            args = []
+            args.append(ray.put(dict(config.options.items())))
+            args.extend(ray.put(argument) for argument in a)
+            kwargs = {key: ray.put(value) for key, value in k.items()}
+            with (open(os.devnull, "w") as devnull,
+                  contextlib.redirect_stdout(devnull)):
+                return method_proxy.ray_remote(*args, **kwargs)
 
         del method_proxy.remote
         method_proxy.start = local_side_remote
