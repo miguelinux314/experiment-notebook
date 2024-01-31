@@ -44,6 +44,12 @@ Bug fixes:
 - Prevented spurious exceptions while shutting down, which could happen when an `enb.atable.ATable` instance 
   is created but its `get_df` method is not called.
 
+- Using relative imports (e.g., of plugins or other modules within the project folder) now works for remote 
+  ray clusters. A small refactoring related to identifying local and remote nodes, as well as adapting 
+  paths relative to the remote mount point when needed has been introduced, too.
+  
+- Added missing h5py dependency to `setup.py`.
+
 # Latest stable version:
 
 # 2024/01/01 v1.0.1
