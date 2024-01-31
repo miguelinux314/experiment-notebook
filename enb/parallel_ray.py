@@ -253,15 +253,15 @@ class HeadNode:
     def stop(self):
         """Stop the ray head node after disconnecting from all remote nodes.
         """
+        with logger.info_context("Disconnecting from ray"):
+            ray.shutdown()
+
         if self.remote_nodes:
             with logger.info_context("Stopping remote nodes...\n",
                                      msg_after="disconnected all remote nodes."):
                 for rn in self.remote_nodes:
                     rn.disconnect()
             self.remote_nodes = []
-
-        with logger.info_context("Disconnecting from ray"):
-            ray.shutdown()
 
         with logger.info_context("Stopping ray server."):
             # This tiny delay allows error messages from child processes to reach the
