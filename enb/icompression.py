@@ -591,10 +591,6 @@ class LittleEndianWrapper(WrapperCodec):
                 enb.isets.dump_array_bsq(array=be_img.astype(
                     f"<{sign_str}{original_file_info['bytes_per_sample']}"),
                     file_or_path=reversed_endian_file.name)
-
-                shutil.copyfile(original_path, os.path.expanduser("~/tmp/original.raw"))
-                shutil.copyfile(reversed_endian_file.name, os.path.expanduser("~/tmp/reversed.raw"))
-
                 compression_results = super().compress(
                     original_path=reversed_endian_file.name,
                     compressed_path=compressed_path,
