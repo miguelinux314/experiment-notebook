@@ -168,31 +168,32 @@ class HeadNode:
 
         with logger.info_context(
                 f"Initializing ray client on local port {self.ray_port}"):
-            # The exported environment consists of all *.py files.
-            # Furthermore, the list of current modules minus the ones found after
-            # initializing enb is passed as an environment variable to
-            # allow the needed imports before remote methods are invoked.
-            excludes = [os.path.relpath(p, options.project_root)
-                        for p in
-                        glob.glob(os.path.join(options.project_root, "**", "*"),
-                                  recursive=True)
-                        if options.ssh_cluster_csv_path or (os.path.isfile(p) and not p.endswith(".py"))]
-
             # pylint: disable=protected-access
+            # A list of modules imported after initializing enb is passed to the
+            # remote workers so that they can replicate the imports.
             modules_needed_remotely = [
                 m.__name__ for m in sys.modules.values()
                 if hasattr(m, "__name__")
                    and m.__name__ not in options._initial_module_names
                    and not m.__name__.startswith("_")]
+
             ray.init(address=f"localhost:{self.ray_port}",
                      _redis_password=self.session_password,
                      runtime_env=dict(
-                         working_dir=options.project_root
-                         if options.ssh_cluster_csv_path else None,
-                         excludes=excludes
-                         if options.ssh_cluster_csv_path else None,
                          env_vars=dict(
-                             _needed_modules=str(modules_needed_remotely))),
+                             # List of modules to import when enb is imported remotely
+                             _needed_modules=str(modules_needed_remotely),
+                             # Easy way to determine whether a worker is on a remote node or not
+                             _head_node_ip=enb.misc.get_node_ip(),
+                             # Add the remotely mounted project to sys.path so that ray
+                             # can perform adequate deserialization
+                             PYTHONPATH=str(RemoteNode.remote_project_mount_path
+                                            if options.ssh_cluster_csv_path else options.project_root),
+                         ),
+                         # Workers need to chdir to the remotely mounted dir so that
+                         # all imports work as expected
+                         worker_process_setup_hook=lambda: os.chdir(RemoteNode.remote_project_mount_path),
+                     ),
                      logging_level=(logging.CRITICAL
                                     if enb.logger.level_active(enb.logger.level_info.name)
                                     else logging.INFO))
@@ -533,16 +534,15 @@ def is_remote_node():
     """Return True if and only if the call is performed from a remote ray
     process running on a node different from the head.
     """
-    if not is_ray_enabled():
-        return False
     if not is_parallel_process():
         return False
     try:
-        # pylint: disable=protected-access
-        return options._name_to_property["head_address"] \
-            != enb.misc.get_node_ip()
+        if os.environ['_head_node_ip'] == enb.misc.get_node_ip():
+            return False
     except KeyError:
         return False
+    
+    return True
 
 
 def is_ray_initialized():
@@ -606,6 +606,15 @@ def get_completed_pending_ids(ids, timeout=0):
     """
     return ray.wait(ids, num_returns=len(ids), timeout=timeout)
 
+def chdir_project_root():
+    """When invoked, it changes the current working dir to the project's root. It will be
+    the remote mount point if the node is remote, otherwise the directory containing
+    the invoking script.
+    """
+    if is_remote_node():
+        os.chdir(os.path.expanduser(RemoteNode.remote_project_mount_path))
+    elif not enb.is_enb_cli:
+        os.chdir(options.project_root)
 
 def fix_imports():
     """An environment variable is passed to the children processes for them
@@ -613,7 +622,9 @@ def fix_imports():
     This prevents the remote functions to fail the deserialization process
     due to missing definitions.
     """
-    if is_parallel_process():
+    chdir_project_root()
+
+    if is_remote_node():
         imported_modules = set()
         for module_name in sorted(
                 ast.literal_eval(os.environ['_needed_modules'])):

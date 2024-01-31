@@ -35,18 +35,6 @@ def fallback_init():
         FallbackFuture.pathos_pool = None
 
 
-def chdir_project_root():
-    """When invoked, it changes the current working dir to the project's root.
-    """
-    if parallel_ray.is_parallel_process() \
-            and parallel_ray.is_remote_node() \
-            and not options.no_remote_mount_needed:
-        os.chdir(os.path.expanduser(
-            parallel_ray.RemoteNode.remote_project_mount_path))
-    else:
-        os.chdir(options.project_root)
-
-
 def parallel(*args, **kwargs):
     """Decorator for methods intended to run in parallel.
 

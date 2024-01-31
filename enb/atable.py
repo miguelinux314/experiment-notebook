@@ -851,7 +851,7 @@ class ATable(metaclass=MetaTable):
             # The current working dir is updated for remote processes
             # in the head or the remote nodes
             try:
-                enb.parallel.chdir_project_root()
+                enb.parallel_ray.chdir_project_root()
                 returned_value = fun(self, index, row)
                 if returned_value is not None:
                     row[column_properties.name] = returned_value
@@ -2001,4 +2001,6 @@ def get_canonical_path(file_path):
     :return: the canonical version of a path to be stored in the database, to make sure
       indexing is consistent across code using |ATable| and its subclasses.
     """
+    if enb.parallel_ray.is_remote_node():
+        return os.path.relpath(file_path, enb.parallel_ray.RemoteNode.remote_project_mount_path)
     return os.path.relpath(file_path, options.project_root)

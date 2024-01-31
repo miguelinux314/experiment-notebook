@@ -247,6 +247,12 @@ class WrapperCodec(AbstractCodec):
           part of the hexdigest of the compressor and decompressor binaries
           being used
         """
+        # Set relative paths so that local and remote workers can use the same command line
+        if os.path.abspath(compressor_path).startswith(os.path.abspath(options.project_root)):
+            compressor_path = enb.atable.get_canonical_path(compressor_path)
+        if os.path.abspath(decompressor_path).startswith(os.path.abspath(options.project_root)):
+            decompressor_path = enb.atable.get_canonical_path(decompressor_path)
+
         # pylint: disable=too-many-arguments
         super().__init__(param_dict=param_dict)
         self.signature_in_name = False
@@ -511,8 +517,8 @@ class JavaWrapperCodec(WrapperCodec):
         super().__init__(compressor_path=shutil.which("java"),
                          decompressor_path=shutil.which("java"),
                          param_dict=param_dict)
-        self.compressor_jar = compressor_jar
-        self.decompressor_jar = decompressor_jar
+        self.compressor_jar = enb.atable.get_canonical_path(compressor_jar)
+        self.decompressor_jar = enb.atable.get_canonical_path(decompressor_jar)
 
 
 class GiciLibHelper:
