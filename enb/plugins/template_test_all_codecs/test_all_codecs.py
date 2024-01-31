@@ -148,11 +148,11 @@ def main():
     # Remove any unwanted classes from the analysis
     excluded_names = (
         "abstract", "fapec", "v2f", "magli", "greenbook", "mhdc", "mhdc_pot",
-        "fpc", "spdp", "zstandard_train")
+        "fpc", "spdp", "zstandard_train", "quantizationwrappercodec")
 
+    # Instantiate the codec classes that can be initialized automatically
     codec_classes = set(
         c for c in codec_classes if not any(n in c.__name__.lower() for n in excluded_names))
-
     filter_args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if filter_args:
         enb.logger.verbose(f"Filtering for {', '.join(repr(s) for s in filter_args)}", rule=True)
@@ -164,17 +164,24 @@ def main():
                                f"({', '.join(repr(v) for v in sys.argv[1:] if not v.startswith('-'))}). "
                                f"Exiting now.", rule=True)
             raise ValueError(sys.argv)
+    codec_list = list(cls() for cls in codec_classes)
+
+    # Add manual codecs to be included in the analysis
+    codec_list.append(enb.icompression.QuantizationWrapperCodec(
+        codec=[c for c in codec_classes if c.__name__ == "LZMA"][0](),
+        qstep=1))
+
+    codec_list = sorted(codec_list, key=lambda c: c.__class__.__name__.lower())
 
     if options.verbose:
-        enb.logger.verbose(f"The following {len(codec_classes)} codecs have been found"
+        enb.logger.verbose(f"The following {len(codec_list)} codecs have been found"
                            f"{' (after filtering)' if len(sys.argv) > 1 else ''}", rule=True)
-        for c in sorted(codec_classes, key=lambda cls: cls.__name__.lower()):
-            print(f"\t:: {c.__name__}")
+        for c in codec_list:
+            print(f"\t:: {c.__class__.__name__}")
 
     # Run the experiment
     enb.logger.verbose(f"Running the experiment. This might take some time...", rule=True)
-    exp = AvailabilityExperiment(
-        codecs=sorted((cls() for cls in codec_classes), key=lambda codec: codec.label))
+    exp = AvailabilityExperiment(codecs=codec_list)
     full_availability_df = exp.get_df()
 
     summary_df = CodecSummaryTable(
