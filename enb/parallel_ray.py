@@ -244,8 +244,9 @@ class HeadNode:
                                 reason_str = textwrap.indent("\n".join(
                                     itertools.chain(
                                         *(textwrap.wrap(line, shutil.get_terminal_size()[0] - 6)
-                                        for line in repr(connection_ex).replace(r"\n", "\n").splitlines()))),
-                                    " "*4)
+                                          for line in
+                                          repr(connection_ex).replace(r"\n", "\n").splitlines()))),
+                                    " " * 4)
 
                                 logger.warn(
                                     f"Cannot connect to {rn.address}:{rn.ssh_port}. Reason:\n" +
@@ -334,8 +335,7 @@ class RemoteNode:
     """Represent a remote node of the cluster, with tools to connect via ssh.
     """
     # pylint: disable=too-many-instance-attributes
-    remote_project_mount_path = os.path.join(enb.user_config_dir,
-                                             "remote_mount")
+    remote_project_mount_path = os.path.join(enb.user_config_dir, "remote_mount")
 
     def __init__(self, address, ssh_port, head_node, ssh_user=None,
                  local_ssh_file=None, cpu_limit=None,
@@ -398,7 +398,6 @@ class RemoteNode:
                              f"{self.ssh_user + '@' if self.ssh_user else ''}{self.address} " \
                              f"umount {self.remote_project_mount_path}"
                 subprocess.getstatusoutput(invocation)
-
 
             # Mount the project root on remote_node_folder_path - use a separate process
             self.mount_project_remotely()
@@ -549,6 +548,7 @@ def is_ray_initialized():
     """Return True if and only if ray is enabled and initialized.
     """
     return is_ray_enabled() and ray.is_initialized
+
 
 def parallel_decorator(*args, **kwargs):
     """Wrapper of the @`ray.remote` decorator that automatically updates
