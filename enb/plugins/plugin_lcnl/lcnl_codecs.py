@@ -11,6 +11,7 @@ import shutil
 import sortedcontainers
 import math
 
+from enb.atable import get_canonical_path
 from enb import icompression
 from enb.config import options
 
@@ -35,6 +36,7 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
         """
         bin_dir = bin_dir if bin_dir is not None else options.external_bin_base_dir
         bin_dir = bin_dir if bin_dir is not None else os.path.dirname(__file__)
+        bin_dir = get_canonical_path(bin_dir)
         assert os.path.isdir(bin_dir), f"Invalid binary dir {bin_dir}."
         ldc_encoder_path = os.path.join(bin_dir, "ldc_encoder")
         ldc_decoder_path = os.path.join(bin_dir, "ldc_decoder")
