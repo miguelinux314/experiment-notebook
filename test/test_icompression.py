@@ -182,7 +182,7 @@ class TestSpectralAngle(unittest.TestCase):
                     assert abs_diff_average_sa < 1e-5, f"Wrong mean spectral angle (diff={abs_diff_average_sa})"
                     assert abs_diff_max_sa < 1e-5, f"Wrong maximum spectral angle (diff={abs_diff_max_sa})"
 
-class TestQuantizationWrapperCode(unittest.TestCase):
+class TestQuantizationWrapperCodec(unittest.TestCase):
     def test_pae(self):
         class DummyCodec(enb.icompression.LosslessCodec):
             """Dummy copy-based codec
