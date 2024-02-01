@@ -82,7 +82,10 @@ def get_status_output_time_memory(
 
     measured_memory_kb = None
     if memory_available:
-        m = re.fullmatch(r"u(\d+\.\d+)@s(\d+\.\d+)@m(\d+)", output_lines[-1])
+        try:
+            m = re.fullmatch(r"u(\d+\.\d+)@s(\d+\.\d+)@m(\d+)", output_lines[-1])
+        except IndexError:
+            m = None
         if m is not None:
             measured_time = float(m.group(1)) + float(m.group(2))
             measured_memory_kb = int(m.group(3))
