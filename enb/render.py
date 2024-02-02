@@ -37,6 +37,7 @@ def parallel_render_plds_by_group(
         force_monochrome_group=True,
         # Axis configuration
         show_grid=None, show_subgrid=None,
+        grid_alpha=0.6, subgrid_alpha=0.4,
         semilog_y=None, semilog_y_base=10, semilog_y_min_bound=1e-10,
         group_row_margin=None,
         # Axis limits
@@ -45,6 +46,8 @@ def parallel_render_plds_by_group(
         global_y_label_margin=None,
         # Optional axis labeling
         y_labels_by_group_name=None,
+        # Ticks
+        tick_direction="in",
         x_tick_list=None, x_tick_label_list=None, x_tick_label_angle=0,
         y_tick_list=None, y_tick_label_list=None,
         left_y_label=False,
@@ -88,6 +91,9 @@ def parallel_render_plds_by_group(
                                     legend_column_count=legend_column_count,
                                     show_grid=show_grid,
                                     show_subgrid=show_subgrid,
+                                    grid_alpha=grid_alpha,
+                                    subgrid_alpha=subgrid_alpha,
+                                    tick_direction=tick_direction,
                                     x_tick_list=x_tick_list,
                                     x_tick_label_list=x_tick_label_list,
                                     x_tick_label_angle=x_tick_label_angle,
@@ -117,6 +123,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          force_monochrome_group=True,
                          # Axis configuration
                          show_grid=None, show_subgrid=None,
+                         grid_alpha=0.6, subgrid_alpha=0.5,
                          semilog_y=None, semilog_y_base=10,
                          semilog_y_min_bound=1e-10,
                          group_row_margin=None,
@@ -127,6 +134,8 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                          global_y_label_margin=None,
                          # Optional axis labeling
                          y_labels_by_group_name=None,
+                         # Ticks
+                         tick_direction="in",
                          x_tick_list=None, x_tick_label_list=None,
                          x_tick_label_angle=0,
                          y_tick_list=None, y_tick_label_list=None,
@@ -183,8 +192,10 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     :param show_grid: if True, or if None and options.show_grid, grid is
       displayed aligned with the major axes.
-    :param show_grid: if True, or if None and options.show_subgrid, grid is
+    :param show_subgrid: if True, or if None and options.show_subgrid, grid is
       displayed aligned with the minor axes.
+    :param grid_alpha: transparency (between 0 and 1) of the main grid, if displayed.
+    :param subgrid_alpha: transparency (between 0 and 1) of the subgrid, if displayed.
     :param semilog_y: if True, a logarithmic scale is used in the Y axis.
     :param semilog_y_base: if semilog_y is True, the logarithm base employed.
     :param semilog_y_min_bound: if semilog_y is True, make y_min the maximum
@@ -209,6 +220,7 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
 
     :param y_labels_by_group_name: if not None, a dictionary of labels for
       the groups, indexed with the same keys as pds_by_group_name.
+    :param tick_direction: direction of the ticks in the plot. Can be "in", "out" or "inout".
     :param x_tick_list: if not None, these ticks will be displayed in the x
       axis.
     :param x_tick_label_list: if not None, these labels will be displayed in
@@ -307,12 +319,14 @@ def render_plds_by_group(pds_by_group_name, output_plot_path, column_properties,
                 show_subgrid=show_subgrid,
                 sorted_group_names=[t[0] for t in groupname_axis_tuples],
                 vertical_margin=vertical_margin, x_max=x_max, x_min=x_min,
+                tick_direction=tick_direction,
                 x_tick_label_angle=x_tick_label_angle,
                 x_tick_label_list=x_tick_label_list, x_tick_list=x_tick_list,
                 y_labels_by_group_name=y_labels_by_group_name, y_max=y_max, y_min=y_min,
                 y_tick_label_list=y_tick_label_list, y_tick_list=y_tick_list,
                 group_row_margin=group_row_margin, pds_by_group_name=pds_by_group_name,
-                semilog_y_min_bound=semilog_y_min_bound)
+                semilog_y_min_bound=semilog_y_min_bound,
+                grid_alpha=grid_alpha, subgrid_alpha=subgrid_alpha)
 
             # Draw title at the right height of the first axis so that tight_layout works well
             # and the legend does not (typically) overlap.
@@ -636,11 +650,12 @@ def _render_plottable_data(color_by_group_name, combine_groups, extra_plds,
 def _update_axes(column_properties, combine_groups, global_x_label,
                  global_y_label, global_y_label_margin, groupname_axis_tuples, horizontal_margin,
                  left_y_label, semilog_y, semilog_y_base, show_grid,
-                 show_subgrid, sorted_group_names, vertical_margin, x_max,
-                 x_min, x_tick_label_angle, x_tick_label_list, x_tick_list,
+                 show_subgrid, sorted_group_names, vertical_margin, x_max, x_min,
+                 tick_direction, x_tick_label_angle, x_tick_label_list, x_tick_list,
                  y_labels_by_group_name, y_max, y_min, y_tick_label_list,
                  y_tick_list, group_row_margin, pds_by_group_name,
-                 semilog_y_min_bound):
+                 semilog_y_min_bound,
+                 grid_alpha, subgrid_alpha):
     """Private to render_plds_by_group.
     Update everything about the axes after rendering all PlottableData
     instances.
@@ -676,6 +691,7 @@ def _update_axes(column_properties, combine_groups, global_x_label,
         show_grid=show_grid,
         show_subgrid=show_subgrid,
         sorted_group_names=sorted_group_names,
+        tick_direction=tick_direction,
         x_tick_label_angle=x_tick_label_angle,
         x_tick_label_list=x_tick_label_list,
         x_tick_list=x_tick_list,
@@ -683,7 +699,9 @@ def _update_axes(column_properties, combine_groups, global_x_label,
         y_max=y_max,
         y_min=y_min,
         y_tick_label_list=y_tick_label_list,
-        y_tick_list=y_tick_list)
+        y_tick_list=y_tick_list,
+        grid_alpha=grid_alpha,
+        subgrid_alpha=subgrid_alpha)
 
     _update_axis_limits(
         global_x_max=global_x_max,
@@ -713,10 +731,12 @@ def _update_axes(column_properties, combine_groups, global_x_label,
 def _update_ticks_and_grid(column_properties, combine_groups, global_x_max,
                            groupname_axis_tuples, left_y_label, semilog_y,
                            semilog_y_base, show_grid, show_subgrid,
-                           sorted_group_names, x_tick_label_angle,
-                           x_tick_label_list, x_tick_list,
+                           sorted_group_names,
+                           tick_direction,
+                           x_tick_label_angle, x_tick_label_list, x_tick_list,
                            y_labels_by_group_name, y_max, y_min,
-                           y_tick_label_list, y_tick_list):
+                           y_tick_label_list, y_tick_list,
+                           grid_alpha, subgrid_alpha):
     """Private to render_plds_by_group.
     Set the ticks, grid and subgrid of the plot.
     """
@@ -789,6 +809,8 @@ def _update_ticks_and_grid(column_properties, combine_groups, global_x_max,
             plt.tick_params(which="minor", bottom=False)
             subgrid_axis = "y"
 
+        plt.tick_params(which="both", direction=tick_direction)
+
         try:
             if global_x_max < 1e-2:
                 x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
@@ -796,9 +818,9 @@ def _update_ticks_and_grid(column_properties, combine_groups, global_x_max,
             # Likely not numerical data - skip adjustments
             pass
         if show_grid:
-            plt.grid(which="major", axis="both", alpha=0.5)
+            plt.grid(which="major", axis="both", alpha=grid_alpha)
         if show_subgrid:
-            plt.grid(which="minor", axis=subgrid_axis, alpha=0.4)
+            plt.grid(which="minor", axis=subgrid_axis, alpha=subgrid_alpha)
 
     return semilog_y
 

@@ -38,6 +38,10 @@ Improvements:
           with open(self.compression_results.compressed_path, "r") as compressed_file:
               return int(compressed_file.read(1))
   ```
+  
+- Added the `grid_alpha`, `subgrid_alpha` and `tick_direction` to the `enb.aanalysis.Analyzer` class.
+  These parameters can also be managed with `.ini` files (see the `enb.ini` plugin), or passed directly
+  to the `get_df` method of Analyzer subclasses.
 
 Bug fixes:
 
@@ -48,7 +52,7 @@ Bug fixes:
   ray clusters. A small refactoring related to identifying local and remote nodes, as well as adapting 
   paths relative to the remote mount point when needed has been introduced, too.
   
-- Added missing h5py dependency to `setup.py`.
+- Added missing `h5py` dependency to `setup.py`.
 
 # Latest stable version:
 

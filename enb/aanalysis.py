@@ -52,24 +52,54 @@ class Analyzer(enb.atable.ATable):
     class, e.g., using a "[enb.aanalysis.Analyzer]" section header in any of
     the .ini files detected by enb.
     """
-    # Default figure width
-    fig_width = 5.0
-    # Default figure height
-    fig_height = 4.0
-    # Relative horizontal margin added to plottable data in figures, e.g. 0.1
-    # for a 10% margin
-    horizontal_margin = 0
-    # Relative vertical margin added to plottable data in figures, e.g. 0.1
-    # for a 10% margin
-    vertical_margin = 0
-    # Show grid lines at the major ticks?
-    show_grid = False
-    # Show grid lines at the minor ticks?
-    show_subgrid = False
     # List of allowed rendering modes for the analyzer
     valid_render_modes = set()
     # Selected render modes (by default, all of them)
     selected_render_modes = set(valid_render_modes)
+    # If more than one group is present, they are shown in the same subplot
+    # instead of in different rows
+    combine_groups = False
+
+    # If not None, it must be a list of matplotlibrc styles (names or file paths)
+    style_list = None
+    # Default figure width
+    fig_width = 5.0
+    # Default figure height
+    fig_height = 4.0
+    # Relative horizontal margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+    horizontal_margin = 0
+    # Relative vertical margin added to plottable data in figures, e.g. 0.1 for a 10% margin
+    vertical_margin = 0
+    # Margin between group rows (None to use matplotlib's default)
+    group_row_margin = None
+    # Padding between the global y label and the y axis (when present)
+    global_y_label_margin = 15
+
+    # Show grid lines at the major ticks?
+    show_grid = False
+    # Show grid lines at the minor ticks?
+    show_subgrid = False
+    # Transparency (between 0 and 1) of the main grid, if shown
+    grid_alpha = 0.6
+    # Transparency (between 0 and 1) of the subgrid, if shown
+    subgrid_alpha = 0.4
+    # Tick mark direction ("in", "out" or "inout")
+    tick_direction = "in"
+
+    # If applicable, show a horizontal +/- 1 standard deviation bar centered on the average
+    show_x_std = False
+    # If applicable, show a vertical +/- 1 standard deviation bar centered on the average
+    show_y_std = False
+    # If True, display group legends when applicable
+    show_legend = True
+    # Default number of columns inside the legend
+    legend_column_count = 2
+    # Legend position (if configured to be shown). It can be "title" to show it above the plot,
+    # or any matplotlib-recognized argument for the loc parameter of legend()
+    legend_position = "title"
+    # If more than one group is displayed, when applicable, adjust plots to use the same scale in every subplot?
+    common_group_scale = True
+
     # Main title to be displayed
     plot_title = None
     # Y position of the main title, if not None. If None, an attempt is automatically made
@@ -81,52 +111,25 @@ class Analyzer(enb.atable.ATable):
     show_global = False
     # Name of the global group
     global_group_name = "All"
-    # If a reference group is used as baseline, should it be shown in the
-    # analysis itself?
-    show_reference_group = False
+    # If a reference group is used as baseline, should it be shown in the analysis itself?
+    show_reference_group = True
+
     # Main marker size
     main_marker_size = 4
     # Secondary (e.g., individual data) marker size
     secondary_marker_size = 2
-    # Main plot element alpha
-    main_alpha = 0.5
-    # Secondary plot element alpha (often overlaps with data using main_alpha)
-    secondary_alpha = 0.5
-    # If a semilog y axis is used, y_min will be at least this large to avoid
-    # math domain errors
-    semilog_y_min_bound = 1e-5
-    # Thickness of the main plot lines
-    main_line_width = 2
     # Thickness of secondary plot lines
     secondary_line_width = 1
-    # Margin between group rows (if there is more than one)
-    group_row_margin = None
-    # Padding between the global y label and the y axis (when present)
-    global_y_label_margin = 15
-    # If more than group is displayed, when applicable, adjust plots to use
-    # the same scale in every subplot?
-    common_group_scale = True
-    # If applicable, show a horizontal +/- 1 standard deviation bar centered
-    # on the average
-    show_x_std = False
-    # If applicable, show a vertical +/- 1 standard deviation bar centered on
-    # the average
-    show_y_std = False
-    # If more than one group is present, they are shown in the same subplot
-    # instead of in different rows
-    combine_groups = False
-    # If True, display group legends when applicable
-    show_legend = True
-    # Default number of columns inside the legend
-    legend_column_count = 2
-    # Legend position (if configured to be shown). It can be "title" to show
-    # it above the plot, or any matplotlib-recognized argument for the loc
-    # parameter of legend()
-    legend_position = "title"
-    # If not None, it must be a list of matplotlibrc styles (names or file
-    # paths)
-    style_list = []
-    # Number of decimals used when saving to latex
+    # Main plot element alpha
+    main_alpha = 0.5
+    # Thickness of the main plot lines
+    main_line_width = 2
+    # Secondary plot element alpha (often overlaps with data using main_alpha)
+    secondary_alpha = 0.3
+    # If a semilog y axis is used, y_min will be at least this large to avoid math domain errors
+    semilog_y_min_bound = 1e-5
+
+    # Number of decimals used when showing decimal values in latex
     latex_decimal_count = 3
 
     def __init__(self, csv_support_path=None, column_to_properties=None,
@@ -361,47 +364,6 @@ class Analyzer(enb.atable.ATable):
                     progress_tracker.complete_chunk() # A single chunk is employed
                     progress_tracker.update_chunk_completed_rows(0)
 
-    def update_render_kwargs_reference_group(
-            self, column_kwargs, reference_group):
-        """Update the default render kwargs dir when a reference group
-        is selected.
-        """
-        assert reference_group is not None
-        filtered_plds = column_kwargs["pds_by_group_name"]
-        if not self.show_reference_group:
-            filtered_plds = {k: v
-                             for k, v in column_kwargs[
-                                 "pds_by_group_name"].items()
-                             if k != reference_group}
-
-            if reference_group not in column_kwargs[
-                "pds_by_group_name"]:
-                enb.logger.debug(f"Requested reference_group "
-                                 f"{repr(reference_group)} not found.")
-            column_kwargs["pds_by_group_name"] = filtered_plds
-            if "group_name_order" in column_kwargs and \
-                    column_kwargs["group_name_order"]:
-                column_kwargs["group_name_order"] = \
-                    [n for n in column_kwargs["group_name_order"]
-                     if n != reference_group]
-        if "combine_groups" in column_kwargs and column_kwargs[
-            "combine_groups"] is True \
-                and "reference_group" in column_kwargs and \
-                column_kwargs["reference_group"] is not None:
-            for i, name in enumerate(filtered_plds.keys()):
-                if i > 0:
-                    column_kwargs["pds_by_group_name"][name] = [
-                        pld for pld in
-                        column_kwargs["pds_by_group_name"][name]
-                        if not isinstance(pld, plotdata.VerticalLine)
-                           or pld.x_position != 0]
-        try:
-            column_kwargs["group_name_order"] = [
-                n for n in column_kwargs["group_name_order"]
-                if n != reference_group]
-        except KeyError:
-            pass
-
     def update_render_kwargs_one_case(
             self, column_selection, reference_group, render_mode,
             # Dynamic arguments with every call
@@ -481,11 +443,59 @@ class Analyzer(enb.atable.ATable):
         if "global_y_label_margin" not in column_kwargs:
             column_kwargs["global_y_label_margin"] = self.global_y_label_margin
 
+        # Reference (baseline) group
         if "show_reference_group" in column_kwargs:
             self.show_reference_group = column_kwargs["show_reference_group"]
             del column_kwargs["show_reference_group"]
 
+        # Grids, subgrids, tick formatting
+        for attr in ("show_grid", "show_subgrid", "grid_alpha", "subgrid_alpha", "tick_direction"):
+            if attr not in column_kwargs:
+                column_kwargs[attr] = getattr(self, attr)
+
         return column_kwargs
+
+    def update_render_kwargs_reference_group(
+            self, column_kwargs, reference_group):
+        """Update the default render kwargs dir when a reference group
+        is selected.
+        """
+        assert reference_group is not None
+        filtered_plds = column_kwargs["pds_by_group_name"]
+        if not self.show_reference_group:
+            filtered_plds = {k: v
+                             for k, v in column_kwargs[
+                                 "pds_by_group_name"].items()
+                             if k != reference_group}
+
+            if reference_group not in column_kwargs[
+                "pds_by_group_name"]:
+                enb.logger.debug(f"Requested reference_group "
+                                 f"{repr(reference_group)} not found.")
+            column_kwargs["pds_by_group_name"] = filtered_plds
+            if "group_name_order" in column_kwargs and \
+                    column_kwargs["group_name_order"]:
+                column_kwargs["group_name_order"] = \
+                    [n for n in column_kwargs["group_name_order"]
+                     if n != reference_group]
+        if "combine_groups" in column_kwargs and column_kwargs[
+            "combine_groups"] is True \
+                and "reference_group" in column_kwargs and \
+                column_kwargs["reference_group"] is not None:
+            for i, name in enumerate(filtered_plds.keys()):
+                if i > 0:
+                    column_kwargs["pds_by_group_name"][name] = [
+                        pld for pld in
+                        column_kwargs["pds_by_group_name"][name]
+                        if not isinstance(pld, plotdata.VerticalLine)
+                           or pld.x_position != 0]
+        try:
+            column_kwargs["group_name_order"] = [
+                n for n in column_kwargs["group_name_order"]
+                if n != reference_group]
+        except KeyError:
+            pass
+
 
     def get_output_pdf_path(self, column_selection, group_by, reference_group,
                             output_plot_dir, render_mode):
