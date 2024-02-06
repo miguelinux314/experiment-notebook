@@ -12,12 +12,13 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version v1.0.2
+# Latest stable version: 2024/02/06 v1.0.2
 
 Improvements:
 
-- Enhanced progress reporting of parallel row computation. It requires `-v` or `-vv` 
-  (`enb.config.options.verbose in (1,2)`).
+- Enhanced progress reporting of parallel row computation. You can test it in your scripts invoking them with
+  `-v` or `-vv` or, equivalently, adding `enb.config.options.verbose = 1` or `enb.config.options.verbose = 2` 
+  to your code.
 
 - Messages displayed with `enb.logger` (and, by default also with `print`) are now colorized based on their priority.
   You can easily configure the styles by installing the `colors-default`, `colors-dark` or `enb.ini` plugins
@@ -54,7 +55,7 @@ Bug fixes:
   
 - Added missing `h5py` dependency to `setup.py`.
 
-# Latest stable version:
+# Version history
 
 # 2024/01/01 v1.0.1
 
@@ -87,9 +88,6 @@ Bug fixes:
   Also added a `title_y` parameter to their `get_df` method to allow manual title height adjustment.
 - Fixed a bug in the `enb.icompression.LittleEndianWrapper` class that prevented lossless reconstruction.
   Updated the HEVC codec to accept 16 bit samples (now that the endianness is properly handled).
-
-
-# Version history
 
 ## 2023/09/15 v0.4.5
 
