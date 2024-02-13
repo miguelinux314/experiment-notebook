@@ -1,6 +1,6 @@
 # Experiment Notebook (`enb`)
 
-The `enb` Python (>= 3.6) library is a table-based framework designed to define, run and report computer-based
+The `enb` Python (>= 3.7) library is a table-based framework designed to define, run and report computer-based
 experiments.
 
 - Your can create and run any type of (computer-based) experiment. Quickly.
