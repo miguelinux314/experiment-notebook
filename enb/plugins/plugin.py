@@ -10,6 +10,7 @@ import inspect
 import shutil
 import platform
 import subprocess
+import textwrap
 import enb
 
 from .installable import Installable
@@ -142,9 +143,9 @@ class PluginMake(Plugin):
             status, output = subprocess.getstatusoutput(invocation)
             if status != 0:
                 raise Exception(f"Error building plugin {repr(cls.name)} with "
-                                f"the Makefile at {make_path}!\n\n"
-                                f"Status = {status} != 0.\n"
-                                f"Input=[{invocation}].\nOutput=[{output}]")
+                                f"the Makefile at {make_path} ({status=})!\n"
+                                f"Failing command:\n{textwrap.indent(invocation, ' '*3)}\n"
+                                f"Output:\n{textwrap.indent(output, ' '*3)}")
         else:
             raise ValueError(f"Cannot build {repr(cls.name)}: no valid makefile "
                              f"in {installation_dir}.")

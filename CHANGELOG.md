@@ -14,7 +14,10 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Current version under development: v1.0.3
 
-No remarkable changes yet.
+Improvements:
+
+- When failing to build/install a plugin with `enb plugin install <plugin_name> <destination>`, a copy of the 
+  incomplete installation dir is copied to a temporary dir so that you can attempt a manual installation.
 
 # Latest stable version: 2024/02/06 v1.0.2
 

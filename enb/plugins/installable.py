@@ -181,10 +181,22 @@ class Installable(metaclass=InstallableMeta):
             cls.build(installation_dir=installation_dir)
             cls.report_successful_installation(installation_dir=installation_dir)
         except Exception as ex:
+            enb.logger.error(f"{ex}")
             if not installation_dir_existed:
-                enb.logger.verbose(f"Removing incomplete installation dir {repr(installation_dir)}.")
+                copy_dir = os.path.abspath(os.path.join(
+                    enb.config.options.base_tmp_dir, os.path.basename(installation_dir)))
+                shutil.rmtree(copy_dir, ignore_errors=True)
+                shutil.copytree(installation_dir, copy_dir)
+                enb.logger.warn(f"Removing incomplete installation dir {repr(installation_dir)}.\n"
+                                 f"A copy has been made into {repr(copy_dir)} in case you want "
+                                 f"to attempt manual building of the plugin.\n"
+                                 f"You would then need to copy that folder into "
+                                f"{repr(installation_dir)} to complete the installation.")
                 shutil.rmtree(installation_dir, ignore_errors=True)
-            raise ex
+            else:
+                enb.logger.warn(f"The destination dir {repr(installation_dir)} already existed, "
+                                "so the incomplete installation files have to be manually removed "
+                                "if needed.")
 
     @classmethod
     def build(cls, installation_dir):
