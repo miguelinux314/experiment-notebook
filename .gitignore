@@ -31,6 +31,7 @@ enb/plugins/test_all_codecs/analysis/
 enb/plugins/test_all_codecs/data/
 
 doc/build/
+doc/source/file_version_table.txt
 
 private
 venv

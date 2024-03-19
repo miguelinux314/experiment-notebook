@@ -1,0 +1,10 @@
+* :class:`enb.isets.BILToBSQ`: Convert raw images (no header) from band-interleaved line order (BIL)     to band-sequential order (BSQ).     
+* :class:`enb.isets.BIPToBSQ`: Convert raw images (no header) from band-interleaved pixel order (BIP)     to band-sequential order (BSQ).     
+* :class:`enb.isets.DivisibleSizeVersion`: Crop the spatial dimensions of all (raw) images in a directory so that they are     all multiple of a given number. Useful for quickly curating datasets that can be divided     into blocks of a given size.     
+* :class:`enb.fits.FITSVersionTable`: Read FITS files and convert them to raw files, sorting them by type (     integer or float) and by bits per pixel.     
+* :class:`enb.isets.ImageVersionTable`: Transform all images and save the transformed versions.     
+* :class:`enb.jpg.JPEGCurationTable`: Given a directory tree containing JPEG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by `enb.isets.load_array_bsq`.     
+* :class:`enb.png.PDFToPNG`: Take all .pdf files in input dir and save them as .png files into     output_dir, maintining the relative folder structure.     
+* :class:`enb.pgm.PGMCurationTable`: Given a directory tree containing PGM images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by `enb.isets.load_array_bsq`.     
+* :class:`enb.png.PNGCurationTable`: Given a directory tree containing PNG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by `enb.isets.load_array_bsq`.     
+* :class:`enb.isets.QuantizedImageVersion`: Apply uniform quantization and store the results.     

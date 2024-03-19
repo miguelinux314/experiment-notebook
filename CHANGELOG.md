@@ -19,6 +19,27 @@ Improvements:
 - When failing to build/install a plugin with `enb plugin install <plugin_name> <destination>`, a copy of the 
   incomplete installation dir is copied to a temporary dir so that you can attempt a manual installation.
 
+- The `corpus` column now treats symbolic links within the dataset folder as regular files. 
+  This way:
+  - One can arrange data samples from multiple sources and still have a consistent corpus name.
+  - One can change the name of a symbolic link, and that name will be employed within the experiments.
+  - One can mix symbolic links and regular files as needed.
+  For instance, the following dataset folder setup (`->` indicates a symbolic link): 
+    * Would assign corpus `"C1"` to samples `A.txt` and `B.txt`, and `"C2"` to samples `B.txt` and `C.txt`,
+    regardless of the physical folders where those samples are. 
+    * The data in `/home/shared/altsource/some_name.txt` would be known as `datasets/C1/B.txt` to the experiment.
+    * File `datasets/E.txt` is not a symbolic link and is treated normally.
+  ```
+  - datasets/
+    - C1
+      - A.txt -> /data/source1/A.txt
+      - B.txt -> /home/shared/altsource/some_name.txt
+    - C2
+      - C.txt -> /home/shared/altsource/C.txt
+      - D.txt -> /data/source2/D.txt
+      - E.txt  
+  ```
+
 # Latest stable version: 2024/02/06 v1.0.2
 
 Improvements:

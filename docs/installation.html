@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -32,7 +34,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.2
+                v1.0.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -93,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
 <p>This page provides help on how to install <cite>enb</cite> in a single computer.</p>
 <p>Instructions are provided for:</p>
 <ul class="simple">
@@ -104,9 +106,9 @@
 <p>If you want to set up a cluster of multiple computers for distributed
 execution of your experiments, see <a class="reference internal" href="cluster_setup.html"><span class="doc">Configuring enb in a cluster of computers</span></a>.</p>
 <section id="linux">
-<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline"></a></h2>
+<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this heading"></a></h2>
 <section id="basic-installation">
-<h3>Basic installation<a class="headerlink" href="#basic-installation" title="Permalink to this headline"></a></h3>
+<h3>Basic installation<a class="headerlink" href="#basic-installation" title="Permalink to this heading"></a></h3>
 <p>The <cite>enb</cite> library and all its dependencies are available by default in most Linux distributions.</p>
 <p>You may install it easily with pip,</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
@@ -122,7 +124,7 @@ and you don’t have root privileges:</p>
 </div>
 </section>
 <section id="plugin-installation">
-<h3>Plugin installation<a class="headerlink" href="#plugin-installation" title="Permalink to this headline"></a></h3>
+<h3>Plugin installation<a class="headerlink" href="#plugin-installation" title="Permalink to this heading"></a></h3>
 <p>The <cite>enb</cite> library comes with many installable plugins and project templates.
 After you complete the basic installation of <cite>enb</cite>, you can use its command line interface
 to install them (see <a class="reference internal" href="command_line_interface.html"><span class="doc">The enb command-line tools</span></a> for more details).</p>
@@ -136,7 +138,7 @@ the compilation of most plugins:</p>
 <p>Additional information on plugins specific for image compression is provided in <a class="reference internal" href="image_compression_plugins.html"><span class="doc">Using existing image compression codecs</span></a>.</p>
 </section>
 <section id="cluster-installation">
-<h3>Cluster installation<a class="headerlink" href="#cluster-installation" title="Permalink to this headline"></a></h3>
+<h3>Cluster installation<a class="headerlink" href="#cluster-installation" title="Permalink to this heading"></a></h3>
 <p>If you would like multi-computer parallelization, please install the <cite>ray</cite> python library as well
 as the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite> (for the <cite>dpipe</cite> command) packages.</p>
 <p>On Debian, Ubuntu and derivatives this can be achieved by:</p>
@@ -149,7 +151,7 @@ Please see <a class="reference internal" href="cluster_setup.html"><span class="
 </section>
 </section>
 <section id="windows-and-macos">
-<h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Permalink to this headline"></a></h2>
+<h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Permalink to this heading"></a></h2>
 <p>Installation of <cite>enb</cite> for Windows and MacOS can be performed via pip:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">enb</span>
 </pre></div>
@@ -165,7 +167,7 @@ might be of help:</p>
 In MacOS, you might want to use Homebrew (<cite>https://brew.sh/</cite>) and/or <cite>xcode-select –install</cite>.</p>
 </section>
 <section id="raspberry-pi">
-<h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Permalink to this headline"></a></h2>
+<h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Permalink to this heading"></a></h2>
 <p>Installation on RaspberryOS is identical to that of other Linux distributions, but requires manual installation
 of some packages.</p>
 <p>It is recommended to install the system versions of the following packages:</p>
@@ -189,7 +191,7 @@ of some packages.</p>
 </div>
 </section>
 <section id="sources-and-development-version">
-<h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Permalink to this headline"></a></h2>
+<h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You may safely skip this section unless you intend to study or develop <cite>enb</cite>.</p>

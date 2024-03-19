@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -29,7 +31,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.2
+                v1.0.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -170,6 +172,8 @@
         <li><a href="api/enb.html#enb.icompression.DecompressionResults.__init__">(enb.icompression.DecompressionResults method)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.JavaWrapperCodec.__init__">(enb.icompression.JavaWrapperCodec method)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.QuantizationWrapperCodec.__init__">(enb.icompression.QuantizationWrapperCodec method)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.__init__">(enb.icompression.WrapperCodec method)</a>
 </li>
@@ -468,7 +472,7 @@
 </li>
       <li><a href="api/enb.html#enb.plotdata.LineSegment.center">center (enb.plotdata.LineSegment property)</a>
 </li>
-      <li><a href="api/enb.html#enb.parallel.chdir_project_root">chdir_project_root() (in module enb.parallel)</a>
+      <li><a href="api/enb.html#enb.parallel_ray.chdir_project_root">chdir_project_root() (in module enb.parallel_ray)</a>
 </li>
       <li><a href="api/enb.html#enb.atable.check_unique_indices">check_unique_indices() (in module enb.atable)</a>
 </li>
@@ -635,6 +639,8 @@
 </li>
         <li><a href="api/enb.html#enb.icompression.LittleEndianWrapper.compress">(enb.icompression.LittleEndianWrapper method)</a>
 </li>
+        <li><a href="api/enb.html#enb.icompression.QuantizationWrapperCodec.compress">(enb.icompression.QuantizationWrapperCodec method)</a>
+</li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.compress">(enb.icompression.WrapperCodec method)</a>
 </li>
         <li><a href="api/enb.html#enb.pgm.PGMWrapperCodec.compress">(enb.pgm.PGMWrapperCodec method)</a>
@@ -782,6 +788,8 @@
         <li><a href="api/enb.html#enb.icompression.AbstractCodec.decompress">(enb.icompression.AbstractCodec method)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.LittleEndianWrapper.decompress">(enb.icompression.LittleEndianWrapper method)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.QuantizationWrapperCodec.decompress">(enb.icompression.QuantizationWrapperCodec method)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.decompress">(enb.icompression.WrapperCodec method)</a>
 </li>
@@ -999,6 +1007,8 @@
         <li><a href="api/enb.plugins.html#module-enb.plugins.plugin">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins.plugin_ccsds122
 
@@ -1006,8 +1016,6 @@
         <li><a href="api/enb.plugins.plugin_ccsds122.html#module-enb.plugins.plugin_ccsds122">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     enb.plugins.plugin_ccsds122.ccsds122_codec
 
@@ -1041,13 +1049,6 @@
 
       <ul>
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">module</a>
-</li>
-      </ul></li>
-      <li>
-    enb.plugins.plugin_iraf_photometry.iraf_photometry_slave
-
-      <ul>
-        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">module</a>
 </li>
       </ul></li>
       <li>
@@ -1176,8 +1177,6 @@
       <li><a href="api/enb.html#enb.sets.FileVersionTable">FileVersionTable (class in enb.sets)</a>
 </li>
       <li><a href="api/enb.html#enb.fits.FITSVersionTable.fits_extension">fits_extension (enb.fits.FITSVersionTable attribute)</a>
-</li>
-      <li><a href="api/enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.fits_to_csv">fits_to_csv() (in module enb.plugins.plugin_iraf_photometry.iraf_photometry_slave)</a>
 </li>
       <li><a href="api/enb.html#enb.fits.FITSVersionTable">FITSVersionTable (class in enb.fits)</a>
 </li>
@@ -1369,6 +1368,8 @@
 </li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.global_y_label_margin">global_y_label_margin (enb.aanalysis.Analyzer attribute)</a>
 </li>
+      <li><a href="api/enb.html#enb.aanalysis.Analyzer.grid_alpha">grid_alpha (enb.aanalysis.Analyzer attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.group_row_margin">group_row_margin (enb.aanalysis.Analyzer attribute)</a>
 </li>
   </ul></td>
@@ -1531,6 +1532,8 @@
 
       <ul>
         <li><a href="api/enb.html#enb.icompression.AbstractCodec.label">(enb.icompression.AbstractCodec property)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.QuantizationWrapperCodec.label">(enb.icompression.QuantizationWrapperCodec property)</a>
 </li>
         <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.label">(enb.plugins.installable.Installable attribute)</a>
 </li>
@@ -1755,8 +1758,6 @@
 </li>
         <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry</a>
 </li>
-        <li><a href="api/enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave</a>
-</li>
         <li><a href="api/enb.plugins.html#module-enb.plugins.template">enb.plugins.template</a>
 </li>
         <li><a href="api/enb.html#module-enb.png">enb.png</a>
@@ -1792,6 +1793,8 @@
         <li><a href="api/enb.html#enb.experiment.ExperimentTask.name">(enb.experiment.ExperimentTask property)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.AbstractCodec.name">(enb.icompression.AbstractCodec property)</a>
+</li>
+        <li><a href="api/enb.html#enb.icompression.QuantizationWrapperCodec.name">(enb.icompression.QuantizationWrapperCodec property)</a>
 </li>
         <li><a href="api/enb.html#enb.icompression.WrapperCodec.name">(enb.icompression.WrapperCodec property)</a>
 </li>
@@ -1972,10 +1975,12 @@
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/enb.html#enb.isets.QuantizedImageVersion">QuantizedImageVersion (class in enb.isets)</a>
+      <li><a href="api/enb.html#enb.icompression.QuantizationWrapperCodec">QuantizationWrapperCodec (class in enb.icompression)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/enb.html#enb.isets.QuantizedImageVersion">QuantizedImageVersion (class in enb.isets)</a>
+</li>
       <li><a href="api/enb.config.html#enb.config.aoptions.ExecutionOptions.quick">quick() (enb.config.aoptions.ExecutionOptions method)</a>
 </li>
   </ul></td>
@@ -2290,10 +2295,10 @@
 </li>
       <li><a href="api/enb.html#enb.isets.ImageGeometryTable.set_type_name">set_type_name() (enb.isets.ImageGeometryTable method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.fits.FITSVersionTable.set_version_repetitions">set_version_repetitions() (enb.fits.FITSVersionTable method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.sets.FileVersionTable.set_version_time">set_version_time() (enb.sets.FileVersionTable method)</a>
 </li>
       <li><a href="api/enb.html#enb.plotdata.PlottableData2D.shift_x">shift_x() (enb.plotdata.PlottableData2D method)</a>
@@ -2478,6 +2483,8 @@
 </li>
       <li><a href="api/enb.html#enb.log.Logger.style_warn">style_warn (enb.log.Logger attribute)</a>
 </li>
+      <li><a href="api/enb.html#enb.aanalysis.Analyzer.subgrid_alpha">subgrid_alpha (enb.aanalysis.Analyzer attribute)</a>
+</li>
       <li><a href="api/enb.html#enb.atable.SummaryTable">SummaryTable (class in enb.atable)</a>
 </li>
   </ul></td>
@@ -2510,10 +2517,10 @@
 </li>
       <li><a href="api/enb.html#enb.experiment.Experiment.task_apply_time_column">task_apply_time_column (enb.experiment.Experiment attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.experiment.Experiment.task_label_column">task_label_column (enb.experiment.Experiment attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/enb.html#enb.experiment.Experiment.task_name_column">task_name_column (enb.experiment.Experiment attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.experiment.TaskFamily">TaskFamily (class in enb.experiment)</a>
@@ -2523,6 +2530,8 @@
       <li><a href="api/enb.plugins.html#enb.plugins.template.Template">Template (class in enb.plugins.template)</a>
 </li>
       <li><a href="api/enb.plugins.html#enb.plugins.installable.Installable.tested_on">tested_on (enb.plugins.installable.Installable attribute)</a>
+</li>
+      <li><a href="api/enb.html#enb.aanalysis.Analyzer.tick_direction">tick_direction (enb.aanalysis.Analyzer attribute)</a>
 </li>
       <li><a href="api/enb.html#enb.aanalysis.Analyzer.title_y">title_y (enb.aanalysis.Analyzer attribute)</a>
 

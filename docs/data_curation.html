@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -32,7 +34,7 @@
             <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.2
+                v1.0.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -49,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments = data + tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing_data.html">Result analysis and plotting with <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dataset curation and modification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure-and-symbolic-links-in-the-datasets-folder">Structure and symbolic links in the <cite>./datasets</cite> folder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-fileversiontable-class">The <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code> class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#predefined-classes">Predefined classes</a></li>
 </ul>
@@ -86,7 +89,7 @@
            <div itemprop="articleBody">
              
   <section id="dataset-curation-and-modification">
-<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this headline"></a></h1>
+<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this heading"></a></h1>
 <p>Very often, datasets and test corpora need to be curated and/or modified before
 conducting experimental analysis with them. Typical tasks include:</p>
 <ul class="simple">
@@ -97,8 +100,36 @@ conducting experimental analysis with them. Typical tasks include:</p>
 <li><p>subset splitting</p></li>
 </ul>
 <p>The <cite>enb</cite> library provides several tools to help do this in the <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules.</p>
+<section id="structure-and-symbolic-links-in-the-datasets-folder">
+<h2>Structure and symbolic links in the <cite>./datasets</cite> folder<a class="headerlink" href="#structure-and-symbolic-links-in-the-datasets-folder" title="Permalink to this heading"></a></h2>
+<p>By default, the <cite>./datasets</cite> directory is considered the base path for data samples.</p>
+<p>You can copy any number of files into any (potentially multilevel) subdirectory structure.
+A “corpus” column is automatically added to each data sample with the name of the folder containing it.</p>
+<p>You can also use symbolic links, which are treated as regular files. This way:</p>
+<ul class="simple">
+<li><p>You can arrange data samples from multiple sources and still have a consistent corpus name.</p></li>
+<li><p>You can change the name of a symbolic link, and that name will be employed within the experiments.</p></li>
+<li><p>You can mix symbolic links and regular files as needed.</p></li>
+</ul>
+<p>For instance, the following dataset folder setup (<cite>-&gt;</cite> indicates a symbolic link):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- datasets/
+- C1
+  - A.txt -&gt; /data/source1/A.txt
+  - B.txt -&gt; /home/shared/altsource/some_name.txt
+- C2
+  - C.txt -&gt; /home/shared/altsource/C.txt
+  - D.txt -&gt; /data/source2/D.txt
+  - E.txt
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Would assign corpus <cite>“C1”</cite> to samples <cite>A.txt</cite> and <cite>B.txt</cite>, and <cite>“C2”</cite> to samples <cite>B.txt</cite> and <cite>C.txt</cite>, regardless of the physical folders where those samples are.</p></li>
+<li><p>The data in <cite>/home/shared/altsource/some_name.txt</cite> would be known as <cite>datasets/C1/B.txt</cite> to the experiment.</p></li>
+<li><p>File <cite>datasets/E.txt</cite> is not a symbolic link and is treated normally.</p></li>
+</ul>
+</section>
 <section id="the-fileversiontable-class">
-<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this headline"></a></h2>
+<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> base class allows to transform an input folder into an output folder
 in a simple way. You just need to:</p>
 <ol class="arabic simple">
@@ -156,15 +187,21 @@ output path passed as argument. This is particularly useful when</p>
 </div>
 </section>
 <section id="predefined-classes">
-<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this headline"></a></h2>
-<p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> includes some predefined subclasses of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a>:</p>
+<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> includes several predefined subclasses of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> (autogenerated list):</p>
 <ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.PDFToPNG</span></code>: convert PDF files into high-resolution PNG files.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.isets.QuantizedImageVersion" title="enb.isets.QuantizedImageVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.QuantizedImageVersion</span></code></a>: apply uniform quantization to raw images.</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.PNGCurationTable</span></code>: convert PNG files into raw files.</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.FitsVersionTable</span></code>: extract image data from files in FITS format and save it to raw.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.BILToBSQ" title="enb.isets.BILToBSQ"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.BILToBSQ</span></code></a>: Convert raw images (no header) from band-interleaved line order (BIL)     to band-sequential order (BSQ).</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.BIPToBSQ" title="enb.isets.BIPToBSQ"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.BIPToBSQ</span></code></a>: Convert raw images (no header) from band-interleaved pixel order (BIP)     to band-sequential order (BSQ).</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.DivisibleSizeVersion" title="enb.isets.DivisibleSizeVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.DivisibleSizeVersion</span></code></a>: Crop the spatial dimensions of all (raw) images in a directory so that they are     all multiple of a given number. Useful for quickly curating datasets that can be divided     into blocks of a given size.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.fits.FITSVersionTable" title="enb.fits.FITSVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.fits.FITSVersionTable</span></code></a>: Read FITS files and convert them to raw files, sorting them by type (     integer or float) and by bits per pixel.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.ImageVersionTable" title="enb.isets.ImageVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.ImageVersionTable</span></code></a>: Transform all images and save the transformed versions.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.jpg.JPEGCurationTable" title="enb.jpg.JPEGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.jpg.JPEGCurationTable</span></code></a>: Given a directory tree containing JPEG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.png.PDFToPNG" title="enb.png.PDFToPNG"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.png.PDFToPNG</span></code></a>: Take all .pdf files in input dir and save them as .png files into     output_dir, maintining the relative folder structure.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.pgm.PGMCurationTable" title="enb.pgm.PGMCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.pgm.PGMCurationTable</span></code></a>: Given a directory tree containing PGM images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.png.PNGCurationTable" title="enb.png.PNGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.png.PNGCurationTable</span></code></a>: Given a directory tree containing PNG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.QuantizedImageVersion" title="enb.isets.QuantizedImageVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.QuantizedImageVersion</span></code></a>: Apply uniform quantization and store the results.</p></li>
 </ul>
-<p>If you create your own subclasses, don’t hesistate to submit it to us (e.g., via a pull request in github).</p>
+<p>If you create your own subclasses, don’t hesitate to submit it to us (e.g., via a pull request in github).</p>
 </section>
 </section>
 

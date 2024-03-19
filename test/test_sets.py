@@ -23,8 +23,7 @@ class TestSets(unittest.TestCase):
     def test_file_properties(self):
         """Test that file properties are correctly obtained and retrieved.
         """
-        target_indices = [p for p in glob.glob(
-            os.path.join(enb.calling_script_dir, "*.py"))
+        target_indices = [p for p in glob.glob(os.path.join(enb.calling_script_dir, "*.py"))
                           if os.path.isfile(p)]
 
         # dataset_df = get_result_df()
@@ -57,8 +56,8 @@ class TestSets(unittest.TestCase):
                     if not (dataset_properties_df[c] == new_df[c]).all():
                         # Floating point values might be unstable
                         try:
-                            assert np.abs(dataset_properties_df[c] - new_df[
-                                c]).max() < 1e-12
+                            assert np.abs(dataset_properties_df[c] - new_df[c]).max() < 1e-12, (
+                            dataset_properties_df[c], new_df[c])
                         except TypeError:
                             # Stability within dictionaries is not verified,
                             # but only dictionaries can raise this error
@@ -99,10 +98,9 @@ class TestSets(unittest.TestCase):
             for input_path in (
                     p for p in glob.glob(
                 os.path.join(options.project_root, "**", "*.py"), recursive=True)
-                               if os.path.isfile(p)):
+                    if os.path.isfile(p)):
                 assert filecmp.cmp(input_path,
                                    tvt.original_to_versioned_path(input_path))
-
 
             lsuffix = "_original"
             rsuffix = f"_{tvt.version_name}"

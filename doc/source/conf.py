@@ -116,3 +116,13 @@ if status != 0:
                     f"Input=[{invocation}].\n"
                     f"Output=[{output}]")
 os.chdir(cwd)
+
+# Generat ethe list of FileVersionTable instances
+import enb
+with open(os.path.join(os.path.dirname(__file__), "file_version_table.txt"), "w") as output_file:
+    output_file.write("* ")
+    output_file.write("\n* ".join(
+        f":class:`{c.__module__}.{c.__name__}`: {c.__doc__.replace(chr(10), ' ')}"
+        for c in sorted(enb.misc.get_all_subclasses(enb.sets.FileVersionTable),
+                        key=lambda cls:cls.__name__.lower())))
+    output_file.write("\n")

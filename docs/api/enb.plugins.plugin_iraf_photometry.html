@@ -15,7 +15,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -32,7 +34,7 @@
             <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.2
+                v1.0.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -96,17 +98,17 @@
            <div itemprop="articleBody">
              
   <section id="enb-plugins-plugin-iraf-photometry-package">
-<h1>enb.plugins.plugin_iraf_photometry package<a class="headerlink" href="#enb-plugins-plugin-iraf-photometry-package" title="Permalink to this headline"></a></h1>
+<h1>enb.plugins.plugin_iraf_photometry package<a class="headerlink" href="#enb-plugins-plugin-iraf-photometry-package" title="Permalink to this heading"></a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-enb.plugins.plugin_iraf_photometry.iraf_photometry">
-<span id="enb-plugins-plugin-iraf-photometry-iraf-photometry-module"></span><h2>enb.plugins.plugin_iraf_photometry.iraf_photometry module<a class="headerlink" href="#module-enb.plugins.plugin_iraf_photometry.iraf_photometry" title="Permalink to this headline"></a></h2>
+<span id="enb-plugins-plugin-iraf-photometry-iraf-photometry-module"></span><h2>enb.plugins.plugin_iraf_photometry.iraf_photometry module<a class="headerlink" href="#module-enb.plugins.plugin_iraf_photometry.iraf_photometry" title="Permalink to this heading"></a></h2>
 <p>Plugin to extract photometry information from a file using IRAF.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_iraf_photometry.iraf_photometry.</span></span><span class="sig-name descname"><span class="pre">LossyPhotometryExperiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_experiment_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_dataset_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_info_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_file_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_families</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCompressionExperiment</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LossyCompressionExperiment" title="enb.icompression.LossyCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">LossyCompressionExperiment</span></code></a></p>
 <p>Lossy compression experiment that extracts photometry-based distortion metrics.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.__init__">
@@ -176,19 +178,11 @@ manually after definition and before calling <a href="#id3"><span class="problem
 <dd></dd></dl>
 
 </section>
-<section id="module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">
-<span id="enb-plugins-plugin-iraf-photometry-iraf-photometry-slave-module"></span><h2>enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module<a class="headerlink" href="#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave" title="Permalink to this headline"></a></h2>
-<p>Slave script to run iraf as a separate process, so that it is automatically cleaned up 
-and memory is not hogged.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.fits_to_csv">
-<span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.</span></span><span class="sig-name descname"><span class="pre">fits_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fits_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annulus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dannulus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aperture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_phot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.fits_to_csv" title="Permalink to this definition"></a></dt>
-<dd><p>Apply IRAF to the raw file in <cite>raw_path</cite> and store a CSV file into <cite>csv_path</cite>.</p>
-</dd></dl>
-
+<section id="enb-plugins-plugin-iraf-photometry-iraf-photometry-slave-module">
+<h2>enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module<a class="headerlink" href="#enb-plugins-plugin-iraf-photometry-iraf-photometry-slave-module" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-enb.plugins.plugin_iraf_photometry">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins.plugin_iraf_photometry" title="Permalink to this headline"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-enb.plugins.plugin_iraf_photometry" title="Permalink to this heading"></a></h2>
 </section>
 </section>
 
