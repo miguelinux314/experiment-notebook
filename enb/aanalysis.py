@@ -3363,12 +3363,10 @@ class ScalarNumericJointAnalyzer(Analyzer):
                         y_column_name = column_to_properties[y_column].label
                     except KeyError:
                         y_column_name = str(y_column)
-                    try:
-                        data_column_name = column_to_properties[data_column].label
-                    except KeyError:
-                        data_column_name = str(data_column)
 
                     column_header_count = len(summary_table.category_to_values[x_column])
+                    if summary_table.show_global_column and len(x_categories) > 1:
+                        column_header_count += 1
                     longest_row_header = max(
                         len(str(y)) for y in summary_table.category_to_values[y_column])
                     if summary_table.include_all_group and len(
