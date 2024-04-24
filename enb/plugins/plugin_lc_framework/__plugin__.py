@@ -9,6 +9,6 @@ class LCFrameworkPlugin(enb.plugins.PluginMake):
     contrib_authors = ["Martin Burtscher"]
     contrib_reference_urls = ["https://github.com/burtscher/LC-framework"]
     contrib_download_url_name = [
-        ("https://github.com/burtscher/LC-framework/archive/refs/heads/main.zip?raw=true",
+        ("https://github.com/xavifeme00/LC-framework/archive/refs/heads/main.zip?raw=true",
          "lc-framework.zip")]
     tested_on = {"linux"}

@@ -2,12 +2,10 @@ all:
 	unzip lc-framework.zip
 	cd LC-framework-main && \
 	./generate_Host_LC-Framework.py && \
-	./generate_standalone_CPU_compressor_decompressor.py "" "BIT_1 RZE_1 BIT_1 RLE_2" && \
-	g++ -O3 -march=native -mno-fma -I. -std=c++17 -o compress compressor-standalone.cpp && \
-	g++ -O3 -march=native -mno-fma -I. -std=c++17 -o decompress decompressor-standalone.cpp && \
-	cp compress ../compress && cp decompress ../decompress
-	rm -rf LC-framework-main lc-framework.zip
+	g++ -O3 -march=native -fopenmp -mno-fma -DUSE_CPU -I. -std=c++17 -o lc lc.cpp && \
+	cp lc ../lc
+	rm -rf lc-framework.zip
 
 clean:
-	rm -rf LC-framework-main lc-framework.zip
+	rm -rf lc-framework.zip
 
