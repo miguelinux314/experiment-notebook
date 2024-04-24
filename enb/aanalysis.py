@@ -264,6 +264,7 @@ class Analyzer(enb.atable.ATable):
                     summary_df=summary_df,
                     summary_table=summary_table,
                     target_columns=target_columns,
+                    column_to_properties=column_to_properties,
                     **render_kwargs)
 
                 # Return the summary result dataframe
@@ -353,15 +354,17 @@ class Analyzer(enb.atable.ATable):
                 enb.parallel.get(render_ids)
             else:
                 # Rich progress reporting
-                with enb.progress.ProgressTracker(self, len(render_ids), len(render_ids)) as progress_tracker:
+                with enb.progress.ProgressTracker(self, len(render_ids),
+                                                  len(render_ids)) as progress_tracker:
                     progressive_getter = enb.parallel.ProgressiveGetter(
                         id_list=render_ids,
                         iteration_period=self.progress_report_period,
                         alive_bar=None)
                     for _ in progressive_getter:
-                        progress_tracker.update_chunk_completed_rows(len(progressive_getter.completed_ids))
+                        progress_tracker.update_chunk_completed_rows(
+                            len(progressive_getter.completed_ids))
                     enb.parallel.get(render_ids)
-                    progress_tracker.complete_chunk() # A single chunk is employed
+                    progress_tracker.complete_chunk()  # A single chunk is employed
                     progress_tracker.update_chunk_completed_rows(0)
 
     def update_render_kwargs_one_case(
@@ -496,7 +499,6 @@ class Analyzer(enb.atable.ATable):
         except KeyError:
             pass
 
-
     def get_output_pdf_path(self, column_selection, group_by, reference_group,
                             output_plot_dir, render_mode):
         """Get the path of the PDF file to be created for a single
@@ -535,7 +537,9 @@ class Analyzer(enb.atable.ATable):
     def save_analysis_tables(
             self, group_by, reference_group,
             selected_render_modes, summary_df, summary_table,
-            target_columns, **render_kwargs):
+            target_columns,
+            column_to_properties,
+            **render_kwargs):
         """Save csv and tex files into enb.config.options.analysis_dir that
         summarize the results of one target_columns element. If
         enb.config.options.analysis_dir is None or empty, no analysis is
@@ -561,13 +565,21 @@ class Analyzer(enb.atable.ATable):
                 f"Saving analysis results to {analysis_output_path}")
             os.makedirs(os.path.dirname(analysis_output_path), exist_ok=True)
 
+            column_rename_dict = {"group_label": "Group"}
+            for c in summary_df:
+                if c.endswith("_avg"):
+                    try:
+                        column_rename_dict[c] = column_to_properties[c[:-len("_avg")]].label
+                    except KeyError:
+                        pass
+
             # Save CSV analysis
             summary_df[list(
                 c for c in summary_df.columns
                 if c not in summary_table.render_column_names
                 and c not in ["row_created", "row_updated",
-                              enb.atable.ATable.private_index_column])].to_csv(
-                analysis_output_path, index=False)
+                              enb.atable.ATable.private_index_column])].copy().rename(
+                columns=column_rename_dict).to_csv(analysis_output_path, index=False)
 
             # Generate tex summary
             show_count = "show_count" in render_kwargs and render_kwargs["show_count"] is True
@@ -577,10 +589,11 @@ class Analyzer(enb.atable.ATable):
                 and c not in ["row_created", "row_updated",
                               enb.atable.ATable.private_index_column]
                 and (c in ("group_label", "group_size" if show_count else "")
-                     or c.endswith("_avg")))].style.format(
+                     or c.endswith("_avg")))].copy().rename(
+                columns=column_rename_dict).style.format(
                 escape="latex",
                 precision=self.latex_decimal_count).format_index(
-                r"\textbf{{ {} }}", escape="latex", axis=1).hide(
+                r"\textbf{{{}}}", escape="latex", axis=1).hide(
                 axis="index").to_latex(
                 analysis_output_path[:-4] + ".tex")
 
@@ -1430,10 +1443,11 @@ class ScalarNumericSummary(AnalyzerSummary):
         _self, group_label, row = args
         column_name = kwargs["column_selection"]
         full_series = _self.label_to_df[group_label][column_name]
-        for stat, value in _self.numeric_series_to_stat_dict(full_series, group_label=group_label).items():
+        for stat, value in _self.numeric_series_to_stat_dict(full_series,
+                                                             group_label=group_label).items():
             row[f"{column_name}_{stat}"] = value
 
-    def numeric_series_to_stat_dict(self, series: pd.Series, group_label: str=None):
+    def numeric_series_to_stat_dict(self, series: pd.Series, group_label: str = None):
         """Convert a series of numeric data into a dictionary of
         stats ('avg', 'min', 'max', 'std', 'count').
 
@@ -1948,7 +1962,7 @@ class TwoNumericAnalyzer(Analyzer):
 
     def save_analysis_tables(
             self, group_by, reference_group, selected_render_modes, summary_df,
-            summary_table, target_columns, **render_kwargs):
+            summary_table, target_columns, column_to_properties, **render_kwargs):
         """Save csv and tex files into enb.config.options.analysis_dir that
         summarize the results of one target_columns element. If
         enb.config.options.analysis_dir is None or empty, no analysis is
@@ -1967,6 +1981,7 @@ class TwoNumericAnalyzer(Analyzer):
                     summary_df=summary_df,
                     summary_table=summary_table,
                     target_columns=target_columns,
+                    column_to_properties=column_to_properties,
                     **render_kwargs)
             elif options.analysis_dir:
                 for column_pair in target_columns:
@@ -2120,11 +2135,11 @@ class TwoNumericSummary(ScalarNumericSummary):
                 reference_count_by_xvalue = dict()
                 for x_value in group_df[x_column].unique():
                     reference_filtered_df = group_df.loc[group_df[x_column] == x_value]
-                    reference_filtered_df = reference_filtered_df.loc[reference_filtered_df[y_column].notna()]
+                    reference_filtered_df = reference_filtered_df.loc[
+                        reference_filtered_df[y_column].notna()]
                     reference_count_by_xvalue[x_value] = len(reference_filtered_df)
                     self.reference_df.loc[self.reference_df[x_column] == x_value, y_column] \
                         -= reference_filtered_df[y_column].mean()
-
 
                 warning_shown = False
                 for target_group_label, target_group_df in self.split_groups():
@@ -2133,7 +2148,8 @@ class TwoNumericSummary(ScalarNumericSummary):
                             target_filtered_df = target_group_df[
                                 target_group_df[x_column] == x_value].notna()
                             target_count = len(target_filtered_df)
-                            if not warning_shown and target_count != reference_count_by_xvalue[x_value]:
+                            if not warning_shown and target_count != reference_count_by_xvalue[
+                                x_value]:
                                 enb.logger.warn(
                                     "Warning: when applying group reference bias, it was found that "
                                     f"group {repr(target_group_label)} contained {target_count} elements "
@@ -3147,10 +3163,12 @@ class ScalarNumericJointAnalyzer(Analyzer):
         :param show_global_column: like show_global_row, but adds a new column corresponding to not splitting
           into x categories. Note that if x_header_list is selected, averages are considered only for those categories.
         """
-        if highlight_best_column is not None and str(highlight_best_column).lower() not in ("low", "high"):
+        if highlight_best_column is not None and str(highlight_best_column).lower() not in (
+                "low", "high"):
             raise ValueError(
                 f"Invalid {highlight_best_column=}. Must be one of {('low', 'high', None)}")
-        if highlight_best_row is not None and str(highlight_best_row).lower() not in ("low", "high"):
+        if highlight_best_row is not None and str(highlight_best_row).lower() not in (
+                "low", "high"):
             raise ValueError(
                 f"Invalid {highlight_best_row=}. Must be one of {('low', 'high', None)}")
 
@@ -3239,12 +3257,13 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                          x_header_list=render_kwargs["x_header_list"],
                                          y_header_list=render_kwargs["y_header_list"],
                                          highlight_best_row=render_kwargs["highlight_best_row"],
-                                         highlight_best_column=render_kwargs["highlight_best_column"])
+                                         highlight_best_column=render_kwargs[
+                                             "highlight_best_column"])
 
     def save_analysis_tables(
             self, group_by, reference_group,
             selected_render_modes, summary_df, summary_table,
-            target_columns, **render_kwargs):
+            target_columns, column_to_properties, **render_kwargs):
         """
         Store the joint analysis results in CSV and latex formats.
 
@@ -3274,8 +3293,23 @@ class ScalarNumericJointAnalyzer(Analyzer):
             # Generate CSV tables
             with open(analysis_output_path, "w") as csv_file:
                 for x_column, y_column, data_column in target_columns:
-                    csv_file.write(f"\n\n# Column selection: "
-                                   f"{repr(x_column)} {repr(y_column)} {repr(data_column)}\n")
+
+                    try:
+                        x_column_name = column_to_properties[x_column].label
+                    except KeyError:
+                        x_column_name = str(x_column)
+                    try:
+                        y_column_name = column_to_properties[y_column].label
+                    except KeyError:
+                        y_column_name = str(y_column)
+                    try:
+                        data_column_name = column_to_properties[data_column].label
+                    except KeyError:
+                        data_column_name = str(data_column)
+
+                    csv_file.write(
+                        f"\n\n# Column selection: "
+                        f"{repr(x_column_name)} {repr(y_column_name)} {repr(data_column_name)}\n")
 
                     for stat in ["avg", "count", "min", "max", "std", "median"]:
                         csv_file.write(f"\n## Statistic: {stat}\n")
@@ -3321,6 +3355,19 @@ class ScalarNumericJointAnalyzer(Analyzer):
             # Generate latex tables
             with (open(analysis_output_path[:-4] + ".tex", "w") as latex_file):
                 for x_column, y_column, data_column in target_columns:
+                    try:
+                        x_column_name = column_to_properties[x_column].label
+                    except KeyError:
+                        x_column_name = str(x_column)
+                    try:
+                        y_column_name = column_to_properties[y_column].label
+                    except KeyError:
+                        y_column_name = str(y_column)
+                    try:
+                        data_column_name = column_to_properties[data_column].label
+                    except KeyError:
+                        data_column_name = str(data_column)
+
                     column_header_count = len(summary_table.category_to_values[x_column])
                     longest_row_header = max(
                         len(str(y)) for y in summary_table.category_to_values[y_column])
@@ -3330,7 +3377,7 @@ class ScalarNumericJointAnalyzer(Analyzer):
                     longest_row_header += len(r"\textbf{}")
 
                     latex_file.write(f"\n\n% Column selection: "
-                                     f"{repr(x_column)} {repr(y_column)} {repr(data_column)}\n")
+                                     f"{repr(x_column_name)} {repr(y_column_name)} {repr(data_column)}\n")
                     for stat in ["avg", "count", "min", "max", "std", "median"]:
                         latex_file.write(f"\n% Statistic: {enb.misc.escape_latex(stat)}\n")
                         latex_file.write(
@@ -3346,7 +3393,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             summary_dict = group_df[f"{x_column}_{y_column}_{data_column}_{stat}"]
                             number_format = self.number_format if stat != "count" else "{:d}"
                             longest_cell_length = max(
-                                max(len(number_format.format(val)) for val in summary_dict.values()),
+                                max(len(number_format.format(val)) for val in
+                                    summary_dict.values()),
                                 max(len(str(x)) for x in x_categories)) + len(r"\textbf{}")
                             row_header_format = f"{{:{longest_row_header}s}}"
                             cell_format = f"{{:{longest_cell_length}s}}"
@@ -3369,7 +3417,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             # Write the (sub) table headers
                             latex_file.write(
                                 " " * longest_row_header + " & "
-                                + " & ".join(cell_format.format(r"\textbf{" + str(x or self.global_group_name) + r"}")
+                                + " & ".join(cell_format.format(
+                                    r"\textbf{" + str(x or self.global_group_name) + r"}")
                                              for x in x_categories)
                                 + " \\\\\n")
                             latex_file.write("\\toprule\n")
@@ -3395,7 +3444,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                                 latex_file.write(" \\\\\n")
                             if summary_table.show_global_row and len(y_categories) > 1:
                                 latex_file.write("\\midrule\n")
-                                latex_file.write(row_header_format.format(f"\\textbf{{{self.global_group_name}}}"))
+                                latex_file.write(row_header_format.format(
+                                    f"\\textbf{{{self.global_group_name}}}"))
                                 for x_category in x_categories:
                                     highlight = self.should_highlight_cell(
                                         summary_dict=summary_dict, summary_table=summary_table,
@@ -3604,7 +3654,8 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
             if _self.y_header_list and str(y_category) not in _self.y_header_list:
                 continue
             for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
-                row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), str(y_category))] = value
+                row[f"{x_column}_{y_column}_{data_column}_{stat}"][
+                    (str(x_category), str(y_category))] = value
 
         # Add the "All" row
         if _self.show_global_row:
@@ -3616,7 +3667,8 @@ class ScalarNumericJointSummary(ScalarNumericSummary):
 
             for x_category, split_df in global_df.groupby(x_column):
                 for stat, value in _self.numeric_series_to_stat_dict(split_df[data_column]).items():
-                    row[f"{x_column}_{y_column}_{data_column}_{stat}"][(str(x_category), None)] = value
+                    row[f"{x_column}_{y_column}_{data_column}_{stat}"][
+                        (str(x_category), None)] = value
 
         # Add the "All" column
         if _self.show_global_column:

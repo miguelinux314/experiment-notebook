@@ -56,7 +56,6 @@ include enb/plugins/plugin_ccsds124/.gitignore
 include enb/plugins/plugin_ccsds124/__plugin__.py
 include enb/plugins/plugin_ccsds124/README.md
 include enb/plugins/plugin_emporda/emporda_codec.py
-include enb/plugins/plugin_emporda/emporda.jar
 include enb/plugins/plugin_emporda/__plugin__.py
 include enb/plugins/plugin_fapec/fapec_codec.py
 include enb/plugins/plugin_fapec/.gitignore
