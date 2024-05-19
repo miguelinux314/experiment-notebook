@@ -12,7 +12,7 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Current version under development: v1.0.3
+# Latest stable version: v1.0.3
 
 Improvements:
 
@@ -39,8 +39,10 @@ Improvements:
       - D.txt -> /data/source2/D.txt
       - E.txt  
   ```
+  
+- Added `lc`, a lossless codec that wraps the LC Framework functionality.
 
-# Latest stable version: 2024/02/06 v1.0.2
+# 2024/02/06 v1.0.2
 
 Improvements:
 
