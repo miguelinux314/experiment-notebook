@@ -1,0 +1,12 @@
+all:
+	unzip lc-framework.zip
+	cd LC-framework-main && \
+	./generate_Host_LC-Framework.py && \
+	g++ -O3 -march=native -fopenmp -mno-fma -DUSE_CPU -I. -std=c++17 -o lc lc.cpp && \
+	cp lc ../lc
+	rm -rf lc-framework.zip
+
+
+clean:
+	rm -rf lc-framework.zip
+
