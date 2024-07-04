@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -90,7 +92,7 @@
            <div itemprop="articleBody">
              
   <section id="the-enb-command-line-tools">
-<h1>The <cite>enb</cite> command-line tools<a class="headerlink" href="#the-enb-command-line-tools" title="Permalink to this headline"></a></h1>
+<h1>The <cite>enb</cite> command-line tools<a class="headerlink" href="#the-enb-command-line-tools" title="Permalink to this heading"></a></h1>
 <p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> is friendly with the command line interface (CLI). Two main ways of using the CLI
 with enb:</p>
 <ul class="simple">
@@ -99,7 +101,7 @@ with enb:</p>
 </ul>
 <p>Each way is explored in the following sections</p>
 <section id="the-enb-program">
-<h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this headline"></a></h2>
+<h2>The <cite>enb</cite> program<a class="headerlink" href="#the-enb-program" title="Permalink to this heading"></a></h2>
 <p>If you installed <cite>enb</cite>, most likely you can run <cite>enb</cite> from your command line and access its main CLI.
 An example output of running <cite>enb help</cite> (to display usage help) is shown next:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: enb [-h] {plugin,show,help} ...
@@ -121,7 +123,7 @@ subcommands:
 </pre></div>
 </div>
 <section id="listing-available-plugins-and-templates">
-<h3>Listing available plugins and templates<a class="headerlink" href="#listing-available-plugins-and-templates" title="Permalink to this headline"></a></h3>
+<h3>Listing available plugins and templates<a class="headerlink" href="#listing-available-plugins-and-templates" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library comes packed with several plugins and templates. To access them, one can use <cite>enb pluginp</cite>.
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
@@ -196,7 +198,7 @@ Run with -v for authorship and additional information, with -h for full help.
 </div>
 </section>
 <section id="plugin-and-template-installation">
-<h3>Plugin and template installation<a class="headerlink" href="#plugin-and-template-installation" title="Permalink to this headline"></a></h3>
+<h3>Plugin and template installation<a class="headerlink" href="#plugin-and-template-installation" title="Permalink to this heading"></a></h3>
 <p>To install a plugin or template, use the following syntax</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install &lt;plugin-name&gt; &lt;destination-folder&gt;
 </pre></div>
@@ -237,7 +239,7 @@ to get a list of all available installables.</p></li>
 </section>
 </section>
 <section id="cli-with-scripts-using-enb">
-<h2>CLI with scripts using <cite>enb</cite><a class="headerlink" href="#cli-with-scripts-using-enb" title="Permalink to this headline"></a></h2>
+<h2>CLI with scripts using <cite>enb</cite><a class="headerlink" href="#cli-with-scripts-using-enb" title="Permalink to this heading"></a></h2>
 <p>If your script includes <cite>import enb</cite>, then you can pass <cite>–option=value</cite> arguments when invoking
 it to set the values of <cite>enb.config.options</cite>.</p>
 <p>In addition, to get a list of all of all available options, you can run your script with the <cite>-h</cite>
@@ -353,27 +355,31 @@ Dir Options:
 
   --project_root PROJECT_ROOT
                         Project root path. It should not normally be modified.
-                        (default: /data/Dropbox/desarrollo/experiment-notebook
-                        .git/enb/plugins/template_basic_workflow_example)
+                        (default:
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example)
   --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
                         experiments. It should be an existing, readable
                         directory. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/datasets)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/data
+                        sets)
   --persistence_dir PERSISTENCE_DIR
                         Directory where persistence files are to be stored.
-                        (default: /data/Dropbox/desarrollo/experiment-notebook
-                        .git/enb/plugins/template_basic_workflow_example/persi
-                        stence_basic_workflow.py)
+                        (default:
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/pers
+                        istence_basic_workflow.py)
   --reconstructed_dir RECONSTRUCTED_DIR
                         Base directory where reconstructed versions are to be
                         stored. (default: None)
   --base_version_dataset_dir BASE_VERSION_DATASET_DIR
                         Base dir for versioned folders. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/datasets)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/data
+                        sets)
   --base_tmp_dir BASE_TMP_DIR
                         Temporary dir used for intermediate data storage. This
                         can be useful when experiments make heavy use of tmp
@@ -386,12 +392,14 @@ Dir Options:
                         repository is defined at the project or system level.
                         (default: None)
   --plot_dir PLOT_DIR   Directory to store produced plots. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/plots)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/plot
+                        s)
   --analysis_dir ANALYSIS_DIR
                         Directory to store analysis results. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/analysis)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/anal
+                        ysis)
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed

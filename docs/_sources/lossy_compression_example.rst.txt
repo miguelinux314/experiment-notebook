@@ -167,3 +167,17 @@ An example plot produced by this experiment, e.g., the compressed data rate in b
 is shown in the next figure:
 
 .. figure:: _static/lossy_experiment/TwoNumericAnalyzer_bpppc__pae_groupby-family_label_line.png
+
+Saving the compressed and/or reconstructed files
+------------------------------------------------
+
+Just like with lossless compression experiments,
+one can easily copy all compressed and/or reconstructed files processed during the execution
+of a compression experiment. You simply need to add the `compressed_copy_dir_path` and/or the `reconstructed_dir_path`
+arguments to the constructor of your CompressionExperiment, e.g.:
+
+.. code-block:: python
+
+    exp = enb.icompression.LossyCompressionExperiment(codecs=codecs,
+                                                      compressed_copy_dir_path="compressed/",
+                                                      reconstructed_dir_path="reconstructed/")

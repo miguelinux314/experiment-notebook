@@ -175,3 +175,20 @@ An example plot produced by this experiment, e.g., the compressed data rate in b
 is shown in the next figure:
 
 .. figure:: _static/lossless_experiment/ScalarNumericAnalyzer_bpppc_groupby-task_label_histogram.png
+
+Saving the compressed and/or reconstructed files
+------------------------------------------------
+
+One can easily copy all compressed and/or reconstructed files processed during the execution
+of a compression experiment. You simply need to add the `compressed_copy_dir_path` and/or the `reconstructed_dir_path`
+arguments to the constructor of your CompressionExperiment, e.g.:
+
+.. code-block:: python
+
+    exp = enb.icompression.LosslessExperiment(codecs=codecs,
+                                              compressed_copy_dir_path="compressed/",
+                                              reconstructed_dir_path="reconstructed/")
+
+.. note::
+    Subclasses of LosslessCompressionExperiment automatically perform the lossless reconstruction verification, it is
+    **not** needed to use the `reconstructed_dir_path` parameter and compare the reconstructed files manually.
