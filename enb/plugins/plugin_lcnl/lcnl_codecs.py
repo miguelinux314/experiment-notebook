@@ -98,8 +98,8 @@ class CCSDS_LDC(icompression.LosslessCodec, icompression.WrapperCodec):
 
             # Perform actual compression
             cr = super().compress(original_path=corrected_length_file.name,
-                             compressed_path=compressed_path,
-                             original_file_info=original_file_info)
+                                  compressed_path=compressed_path,
+                                  original_file_info=original_file_info)
             cr.original_path = original_path
 
             if self.output_header_dir is not None:
@@ -231,28 +231,31 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             image_params["large_d_large_r"] = math.floor(math.log2(int(image_params["r_vector"]))) + 1 \
                 if image_params["r_vector"] > 0 else 1
 
-        if original_file_info["bytes_per_sample"] == 1:
-            large_d = min(8, max(2, original_file_info["dynamic_range_bits"]))
-        elif original_file_info["bytes_per_sample"] == 2:
-            large_d = max(9, min(16, original_file_info["dynamic_range_bits"]))
-        elif original_file_info["bytes_per_sample"] == 4:
-            large_d = max(24, min(32, original_file_info["dynamic_range_bits"]))
-        else:
-            raise ValueError(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
+        try:
+            if original_file_info["bytes_per_sample"] == 1:
+                large_d = min(8, max(2, original_file_info["dynamic_range_bits"]))
+            elif original_file_info["bytes_per_sample"] == 2:
+                large_d = max(9, min(16, original_file_info["dynamic_range_bits"]))
+            elif original_file_info["bytes_per_sample"] == 4:
+                large_d = max(24, min(32, original_file_info["dynamic_range_bits"]))
+            else:
+                raise ValueError(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
 
+            image_params.update(
+                large_n_x=original_file_info["width"],
+                large_n_y=original_file_info["height"],
+                large_n_z=original_file_info["component_count"],
+                sample_type=1 if original_file_info["signed"] else 0,
+                large_d=large_d,
+                quantizer_fidelity_control_method=quantizer_fidelity_control_method,
+                absolute_error_limit_assignment_method=0,  # band independent
+                relative_error_limit_assignment_method=0,  # band independent
+            )
 
-        image_params.update(
-            large_n_x=original_file_info["width"],
-            large_n_y=original_file_info["height"],
-            large_n_z=original_file_info["component_count"],
-            sample_type=1 if original_file_info["signed"] else 0,
-            large_d=large_d,
-            quantizer_fidelity_control_method=quantizer_fidelity_control_method,
-            absolute_error_limit_assignment_method=0,  # band independent
-            relative_error_limit_assignment_method=0,  # band independent
-        )
-
-        return image_params
+            return image_params
+        except (TypeError, KeyError) as ex:
+            raise ValueError(f"{self.__class__.__name__}: the original_file_info parameter did not contain "
+                             f"enough information about the image geometry.") from ex
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
         with tempfile.NamedTemporaryFile(
@@ -271,9 +274,8 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             original_file_info["_header_path"] = image_dependent_header_file.name
 
             cr = super().compress(original_path=original_path,
-                             compressed_path=compressed_path,
-                             original_file_info=original_file_info)
-
+                                  compressed_path=compressed_path,
+                                  original_file_info=original_file_info)
 
             if self.output_header_dir is not None:
                 header_output_name = "header_" + self.name + os.path.abspath(os.path.realpath(original_path)).replace(
@@ -286,8 +288,8 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
 
     def get_compression_params(self, original_path, compressed_path, original_file_info):
         return f"{original_file_info['_header_path']} " \
-               + f"{file_info_to_format_string(original_file_info)} " \
-               + f"{original_path} {compressed_path}"
+            + f"{file_info_to_format_string(original_file_info)} " \
+            + f"{original_path} {compressed_path}"
 
     def get_decompression_params(self, compressed_path, reconstructed_path, original_file_info):
         return f"{compressed_path} {file_info_to_format_string(original_file_info)} {reconstructed_path}"
