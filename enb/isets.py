@@ -217,8 +217,7 @@ def _file_path_to_datatype_dict(file_path, existing_dict=None):
     else:
         enb.logger.warn(f"Warning: cannot find valid data type tag in {base_name=}.")
     assert os.path.getsize(file_path) % existing_dict["bytes_per_sample"] == 0
-    existing_dict["samples"] = os.path.getsize(file_path) // existing_dict[
-        "bytes_per_sample"]
+    existing_dict["samples"] = os.path.getsize(file_path) // existing_dict["bytes_per_sample"]
     return existing_dict
 
 
@@ -248,7 +247,11 @@ class ImageGeometryTable(sets.FilePropertiesTable):
         else:
             raise Exception(
                 f"{self.__class__.__name__}: "
-                f"unknown column {repr(_column_name)} for file {repr(file_path)}")
+                f"cannot determine the value of column {repr(_column_name)} for {repr(file_path)}. "
+                f"Do your files contain information about geometry and sample format in the name? "
+                f"These are needed for raw files. Please visit "
+                f"https://miguelinux314.github.io/experiment-notebook/lossless_compression_example.html#data-curation "
+                f"for more information.")
 
     @atable.column_function("float", label="Floating point data?")
     def set_float(self, file_path, row):

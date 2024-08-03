@@ -240,6 +240,7 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
         else:
             raise ValueError(f"Bytes per sample = {original_file_info['bytes_per_sample']} not supported")
 
+
         image_params.update(
             large_n_x=original_file_info["width"],
             large_n_y=original_file_info["height"],
