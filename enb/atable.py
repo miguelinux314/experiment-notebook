@@ -1149,7 +1149,7 @@ class ATable(metaclass=MetaTable):
                 progress_tracker=progress_tracker)
 
             # Insert or update rows
-            target_df = pd.concat([target_df, computed_df])
+            target_df = pd.concat([df for df in (target_df, computed_df) if not df.empty])
             target_df = target_df[~target_df.index.duplicated(keep="last")]
             assert len(target_df) == len(target_indices), (len(target_df), len(target_indices))
 
