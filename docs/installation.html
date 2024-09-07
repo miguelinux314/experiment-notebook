@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installation &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -95,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>This page provides help on how to install <cite>enb</cite> in a single computer.</p>
 <p>Instructions are provided for:</p>
 <ul class="simple">
@@ -106,25 +111,25 @@
 <p>If you want to set up a cluster of multiple computers for distributed
 execution of your experiments, see <a class="reference internal" href="cluster_setup.html"><span class="doc">Configuring enb in a cluster of computers</span></a>.</p>
 <section id="linux">
-<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this heading"></a></h2>
+<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading"></a></h2>
 <section id="basic-installation">
-<h3>Basic installation<a class="headerlink" href="#basic-installation" title="Permalink to this heading"></a></h3>
+<h3>Basic installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h3>
 <p>The <cite>enb</cite> library and all its dependencies are available by default in most Linux distributions.</p>
 <p>You may install it easily with pip,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>enb
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You might need to call the following instead if you are not using a virtual environment or
 and you don’t have root privileges:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb --user
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>enb<span class="w"> </span>--user
 </pre></div>
 </div>
 </div>
 </section>
 <section id="plugin-installation">
-<h3>Plugin installation<a class="headerlink" href="#plugin-installation" title="Permalink to this heading"></a></h3>
+<h3>Plugin installation<a class="headerlink" href="#plugin-installation" title="Link to this heading"></a></h3>
 <p>The <cite>enb</cite> library comes with many installable plugins and project templates.
 After you complete the basic installation of <cite>enb</cite>, you can use its command line interface
 to install them (see <a class="reference internal" href="command_line_interface.html"><span class="doc">The enb command-line tools</span></a> for more details).</p>
@@ -132,18 +137,18 @@ to install them (see <a class="reference internal" href="command_line_interface.
 Therefore, you might need to install tools such as <cite>make</cite>, <cite>cmake</cite>, <cite>gcc</cite>, <cite>g++</cite>, etc.
 In Debian-based systems like Ubuntu, you might want to install <cite>build-essential</cite> and <cite>cmake</cite>, which allow
 the compilation of most plugins:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install build-essential cmake
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>cmake
 </pre></div>
 </div>
 <p>Additional information on plugins specific for image compression is provided in <a class="reference internal" href="image_compression_plugins.html"><span class="doc">Using existing image compression codecs</span></a>.</p>
 </section>
 <section id="cluster-installation">
-<h3>Cluster installation<a class="headerlink" href="#cluster-installation" title="Permalink to this heading"></a></h3>
+<h3>Cluster installation<a class="headerlink" href="#cluster-installation" title="Link to this heading"></a></h3>
 <p>If you would like multi-computer parallelization, please install the <cite>ray</cite> python library as well
 as the <cite>ssh</cite> (server and client), <cite>sshfs</cite> and <cite>vde2</cite> (for the <cite>dpipe</cite> command) packages.</p>
 <p>On Debian, Ubuntu and derivatives this can be achieved by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]</span>
-sudo apt install openssh-client openssh-server sshfs vde2
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ray<span class="o">[</span>default<span class="o">]</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>openssh-client<span class="w"> </span>openssh-server<span class="w"> </span>sshfs<span class="w"> </span>vde2
 </pre></div>
 </div>
 <p>The <cite>enb</cite> library will show a warning and proceed locally if any of these tools are not available.
@@ -151,7 +156,7 @@ Please see <a class="reference internal" href="cluster_setup.html"><span class="
 </section>
 </section>
 <section id="windows-and-macos">
-<h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Permalink to this heading"></a></h2>
+<h2>Windows and MacOS<a class="headerlink" href="#windows-and-macos" title="Link to this heading"></a></h2>
 <p>Installation of <cite>enb</cite> for Windows and MacOS can be performed via pip:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">enb</span>
 </pre></div>
@@ -167,15 +172,15 @@ might be of help:</p>
 In MacOS, you might want to use Homebrew (<cite>https://brew.sh/</cite>) and/or <cite>xcode-select –install</cite>.</p>
 </section>
 <section id="raspberry-pi">
-<h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Permalink to this heading"></a></h2>
+<h2>Raspberry Pi<a class="headerlink" href="#raspberry-pi" title="Link to this heading"></a></h2>
 <p>Installation on RaspberryOS is identical to that of other Linux distributions, but requires manual installation
 of some packages.</p>
 <p>It is recommended to install the system versions of the following packages:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install python3-<span class="o">{</span>matplotlib,scipy,numpy,pandas<span class="o">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-<span class="o">{</span>matplotlib,scipy,numpy,pandas<span class="o">}</span>
 </pre></div>
 </div>
 <p>And then configure a virtual environment with the <cite>–system-site-packages</cite> flag, e.g.,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m venv --system-site-packages ~/venv
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>--system-site-packages<span class="w"> </span>~/venv
 </pre></div>
 </div>
 <div class="admonition note">
@@ -185,26 +190,26 @@ of some packages.</p>
 </pre></div>
 </div>
 <p>Then you may need to run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --force <span class="nv">jinja2</span><span class="o">==</span><span class="m">3</span>.0.0
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--force<span class="w"> </span><span class="nv">jinja2</span><span class="o">==</span><span class="m">3</span>.0.0
 </pre></div>
 </div>
 </div>
 </section>
 <section id="sources-and-development-version">
-<h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Permalink to this heading"></a></h2>
+<h2>Sources and development version<a class="headerlink" href="#sources-and-development-version" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You may safely skip this section unless you intend to study or develop <cite>enb</cite>.</p>
 </div>
 <p>To get the latest version of enb, you can clone <cite>enb</cite> with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/miguelinux314/experiment-notebook.git
-<span class="nb">cd</span> experiment-notebook.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/miguelinux314/experiment-notebook.git
+<span class="nb">cd</span><span class="w"> </span>experiment-notebook.git
 </pre></div>
 </div>
 <p>You can access the development version with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/miguelinux314/experiment-notebook.git
-<span class="nb">cd</span> experiment-notebook.git
-git checkout dev
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/miguelinux314/experiment-notebook.git
+<span class="nb">cd</span><span class="w"> </span>experiment-notebook.git
+git<span class="w"> </span>checkout<span class="w"> </span>dev
 </pre></div>
 </div>
 <div class="admonition note">
@@ -217,13 +222,13 @@ git checkout dev
 </div>
 <p>You can install a symbolic link to your local copy of the code (for whichever
 branch is checked out) with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/miguelinux314/experiment-notebook.git
-<span class="nb">cd</span> experiment-notebook.git
-pip install -e .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/miguelinux314/experiment-notebook.git
+<span class="nb">cd</span><span class="w"> </span>experiment-notebook.git
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
 <p>To update your repository, simply go into your <cite>experiment-notebook.git</cite> folder and type</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git pull
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>pull
 </pre></div>
 </div>
 <p>Feel free to <a class="reference external" href="https://github.com/miguelinux314/experiment-notebook/pulls">submit pull_requests</a>

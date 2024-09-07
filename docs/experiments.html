@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Experiments = data + tasks &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -92,7 +97,7 @@
            <div itemprop="articleBody">
              
   <section id="experiments-data-tasks">
-<h1>Experiments = data + tasks<a class="headerlink" href="#experiments-data-tasks" title="Permalink to this heading"></a></h1>
+<h1>Experiments = data + tasks<a class="headerlink" href="#experiments-data-tasks" title="Link to this heading"></a></h1>
 <p>In the <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> page, we saw the most basic usage of <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>,
 e.g., a list of inputs, and a list of columns to obtain the results dataframe.
 Here, we discuss the basics of the <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class, which provides a more
@@ -107,11 +112,11 @@ with a single line that is an IP address in plain text. We want to check whether
 certain ports are open in any of these IP addresses.</p>
 <p>Let’s see the steps to create this experiment.
 You can look at the sources in that link, or install a self-contained version into a new <cite>ee</cite> folder with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install port-experiment-example ee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>port-experiment-example<span class="w"> </span>ee
 </pre></div>
 </div>
 <section id="the-two-atable-s-of-an-experiment">
-<h2>The two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s of an Experiment<a class="headerlink" href="#the-two-atable-s-of-an-experiment" title="Permalink to this heading"></a></h2>
+<h2>The two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s of an Experiment<a class="headerlink" href="#the-two-atable-s-of-an-experiment" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class combines two <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> s:</p>
 <blockquote>
 <div><ul class="simple">
@@ -146,7 +151,7 @@ if you need some help with the <a class="reference internal" href="api/enb.html#
 </div>
 </section>
 <section id="experiment-tasks">
-<h2>Experiment tasks<a class="headerlink" href="#experiment-tasks" title="Permalink to this heading"></a></h2>
+<h2>Experiment tasks<a class="headerlink" href="#experiment-tasks" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> class can be extended or used directly to define the tasks
 that need to be performed for each input sample.</p>
 <ul class="simple">
@@ -173,7 +178,7 @@ others created by the community.</p>
 </div>
 </section>
 <section id="what-rows-are-created-how-are-they-indexed">
-<h2>What rows are created? How are they indexed?<a class="headerlink" href="#what-rows-are-created-how-are-they-indexed" title="Permalink to this heading"></a></h2>
+<h2>What rows are created? How are they indexed?<a class="headerlink" href="#what-rows-are-created-how-are-they-indexed" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> instances defined for an experiment, along with the dataset
 files used as input determine the rows to be computed.</p>
 <p>For instance, if we have tasks with name properties <cite>CheckPort__port=80</cite> and
@@ -187,13 +192,13 @@ then enb will create 4 (2*2) rows, indexed as follows:</p>
 </div>
 </section>
 <section id="what-columns-are-created">
-<h2>What columns are created?<a class="headerlink" href="#what-columns-are-created" title="Permalink to this heading"></a></h2>
+<h2>What columns are created?<a class="headerlink" href="#what-columns-are-created" title="Link to this heading"></a></h2>
 <p>You can define as many columns in your <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> class as you need.
 To do so, we follow the same basic idea as in <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a>.</p>
 <p>In our example, we can simply define a single column (<cite>port_open</cite>), whose value is
 set to whatever is returned by our <cite>CheckPort</cite> tasks:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PortExperiment</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">Experiment</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Example experiment that checks whether certain ports are open.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Example experiment that checks whether certain ports are open.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dataset_files_extension</span> <span class="o">=</span> <span class="s2">&quot;txt&quot;</span>
 
@@ -211,7 +216,7 @@ corresponding to that row.</p>
 </div>
 </section>
 <section id="final-steps">
-<h2>Final steps<a class="headerlink" href="#final-steps" title="Permalink to this heading"></a></h2>
+<h2>Final steps<a class="headerlink" href="#final-steps" title="Link to this heading"></a></h2>
 <p>We are all set up to retrieve and analyze the results. In the following snippet,
 you can see the how to obtain the <cite>result_df</cite> dataframe and how to display
 messages for those ports found to be open:</p>
@@ -229,7 +234,7 @@ messages for those ports found to be open:</p>
     <span class="c1"># Display a list of observed open ports</span>
     <span class="n">open_port_df</span> <span class="o">=</span> <span class="n">result_df</span><span class="p">[</span><span class="n">result_df</span><span class="p">[</span><span class="s2">&quot;port_open&quot;</span><span class="p">]]</span>
     <span class="k">for</span> <span class="n">url_file_path</span><span class="p">,</span> <span class="n">url_df</span> <span class="ow">in</span> <span class="n">open_port_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;file_path&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found open ports in </span><span class="si">{</span><span class="nb">open</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2"> - &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found open ports in </span><span class="si">{</span><span class="nb">open</span><span class="p">(</span><span class="n">url_file_path</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2"> - &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">url_df</span><span class="p">[</span><span class="s2">&quot;param_dict&quot;</span><span class="p">]))</span>
 </pre></div>
 </div>
@@ -244,7 +249,7 @@ Found open ports in 192.168.1.2:
 </div>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Link to this heading"></a></h2>
 <p>In the next section, <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> tools for analyzing and plotting are discussed.</p>
 <p>In <a class="reference internal" href="image_compression.html"><span class="doc">Image compression and manipulation</span></a>, you can
 topics specifics to experiments related to lossless and lossy image compression.</p>

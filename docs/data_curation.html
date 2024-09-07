@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dataset curation and modification &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -89,7 +94,7 @@
            <div itemprop="articleBody">
              
   <section id="dataset-curation-and-modification">
-<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Permalink to this heading"></a></h1>
+<h1>Dataset curation and modification<a class="headerlink" href="#dataset-curation-and-modification" title="Link to this heading"></a></h1>
 <p>Very often, datasets and test corpora need to be curated and/or modified before
 conducting experimental analysis with them. Typical tasks include:</p>
 <ul class="simple">
@@ -101,7 +106,7 @@ conducting experimental analysis with them. Typical tasks include:</p>
 </ul>
 <p>The <cite>enb</cite> library provides several tools to help do this in the <a class="reference internal" href="api/enb.html#module-enb.sets" title="enb.sets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules.</p>
 <section id="structure-and-symbolic-links-in-the-datasets-folder">
-<h2>Structure and symbolic links in the <cite>./datasets</cite> folder<a class="headerlink" href="#structure-and-symbolic-links-in-the-datasets-folder" title="Permalink to this heading"></a></h2>
+<h2>Structure and symbolic links in the <cite>./datasets</cite> folder<a class="headerlink" href="#structure-and-symbolic-links-in-the-datasets-folder" title="Link to this heading"></a></h2>
 <p>By default, the <cite>./datasets</cite> directory is considered the base path for data samples.</p>
 <p>You can copy any number of files into any (potentially multilevel) subdirectory structure.
 A “corpus” column is automatically added to each data sample with the name of the folder containing it.</p>
@@ -129,7 +134,7 @@ A “corpus” column is automatically added to each data sample with the name o
 </ul>
 </section>
 <section id="the-fileversiontable-class">
-<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Permalink to this heading"></a></h2>
+<h2>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> class<a class="headerlink" href="#the-fileversiontable-class" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> base class allows to transform an input folder into an output folder
 in a simple way. You just need to:</p>
 <ol class="arabic simple">
@@ -168,7 +173,7 @@ converting them to lowercase and removing leading and trailing spaces from each 
 <p>This code is made available as a plugin named <cite>file_version_example</cite>
 (see <a class="reference internal" href="image_compression_plugins.html"><span class="doc">Using existing image compression codecs</span></a> for more information about installing
 and using plugins), i.e.,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install file_version_example ./fve
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>file_version_example<span class="w"> </span>./fve
 </pre></div>
 </div>
 <div class="admonition note">
@@ -187,7 +192,7 @@ output path passed as argument. This is particularly useful when</p>
 </div>
 </section>
 <section id="predefined-classes">
-<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Permalink to this heading"></a></h2>
+<h2>Predefined classes<a class="headerlink" href="#predefined-classes" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> includes several predefined subclasses of <a class="reference internal" href="api/enb.html#enb.sets.FileVersionTable" title="enb.sets.FileVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.sets.FileVersionTable</span></code></a> (autogenerated list):</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.BILToBSQ" title="enb.isets.BILToBSQ"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.BILToBSQ</span></code></a>: Convert raw images (no header) from band-interleaved line order (BIL)     to band-sequential order (BSQ).</p></li>

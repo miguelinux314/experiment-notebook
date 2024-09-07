@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lossless Compression Experiment &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -99,7 +104,7 @@
            <div itemprop="articleBody">
              
   <section id="lossless-compression-experiment">
-<h1>Lossless Compression Experiment<a class="headerlink" href="#lossless-compression-experiment" title="Permalink to this heading"></a></h1>
+<h1>Lossless Compression Experiment<a class="headerlink" href="#lossless-compression-experiment" title="Link to this heading"></a></h1>
 <p>This page explains the general dynamics of using the <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> class.
 This class is a subclass of <a class="reference internal" href="api/enb.html#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a>, which performs compression, decompression
 and verifies that lossless compression is achieved.</p>
@@ -115,7 +120,7 @@ experiments.</p></li>
 </ul>
 </div>
 <section id="lossless-compression-template-installation">
-<h2>Lossless compression template installation<a class="headerlink" href="#lossless-compression-template-installation" title="Permalink to this heading"></a></h2>
+<h2>Lossless compression template installation<a class="headerlink" href="#lossless-compression-template-installation" title="Link to this heading"></a></h2>
 <p>A template for lossless compression experiments is provided as the <cite>lossless-compression</cite> plugin in enb.
 To install this plugin under the <cite>.lc/</cite> folder, run (after following <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="n">install</span> <span class="n">lossless</span><span class="o">-</span><span class="n">compression</span> <span class="n">lc</span>
@@ -129,7 +134,7 @@ To install this plugin under the <cite>.lc/</cite> folder, run (after following 
 installation folder.</p>
 </section>
 <section id="data-curation">
-<h2>Data curation<a class="headerlink" href="#data-curation" title="Permalink to this heading"></a></h2>
+<h2>Data curation<a class="headerlink" href="#data-curation" title="Link to this heading"></a></h2>
 <p>By default, all <cite>*.raw</cite> images under the <cite>enb.config.options.base_dataset_dir</cite> folder are considered
 as the input dataset. Images can be organized in subfolders as needed. Note that:</p>
 <blockquote>
@@ -162,7 +167,7 @@ the image’s width, height and number of spectral components (bands).</p></li>
 for ease of reference, and can be removed at any point.</p>
 </section>
 <section id="codec-instantiation">
-<h2>Codec instantiation<a class="headerlink" href="#codec-instantiation" title="Permalink to this heading"></a></h2>
+<h2>Codec instantiation<a class="headerlink" href="#codec-instantiation" title="Link to this heading"></a></h2>
 <p>Compression experiments use Codecs as <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> subclasses. In particular, <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a>
 expects subclasses of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>.</p>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library provides a wide range of lossless and lossy codecs that can be installed via
@@ -194,7 +199,7 @@ custom list of codecs</p>
 </div>
 </section>
 <section id="lossless-experiment-execution">
-<h2>Lossless experiment execution<a class="headerlink" href="#lossless-experiment-execution" title="Permalink to this heading"></a></h2>
+<h2>Lossless experiment execution<a class="headerlink" href="#lossless-experiment-execution" title="Link to this heading"></a></h2>
 <p>The <cite>lossless_compression_experiment.py</cite> template is now ready to be run. To do so, simply
 invoke it with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">./</span><span class="n">lc</span><span class="o">/</span><span class="n">lossless_compression_experiment_example</span><span class="o">.</span><span class="n">py</span>
@@ -210,7 +215,7 @@ actual experiment execution</p>
 <span class="n">df</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>where <cite>codecs</cite> is the list of codecs we defined above. The returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+1173.gdcb5494e51)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> df
+<p>where <cite>codecs</cite> is the list of codecs we defined above. The returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+1451.g352289b3b6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> df
 can be used to analyze and plot the obtained results. This is automatically done in
 the template for several columns of interest with the following code. You can check
 the <a class="reference internal" href="analyzing_data.html"><span class="doc">Result analysis and plotting with enb</span></a> page for more information on how to analyze and plot
@@ -262,7 +267,7 @@ is shown in the next figure:</p>
 </figure>
 </section>
 <section id="saving-the-compressed-and-or-reconstructed-files">
-<h2>Saving the compressed and/or reconstructed files<a class="headerlink" href="#saving-the-compressed-and-or-reconstructed-files" title="Permalink to this heading"></a></h2>
+<h2>Saving the compressed and/or reconstructed files<a class="headerlink" href="#saving-the-compressed-and-or-reconstructed-files" title="Link to this heading"></a></h2>
 <p>One can easily copy all compressed and/or reconstructed files processed during the execution
 of a compression experiment. You simply need to add the <cite>compressed_copy_dir_path</cite> and/or the <cite>reconstructed_dir_path</cite>
 arguments to the constructor of your CompressionExperiment, e.g.:</p>

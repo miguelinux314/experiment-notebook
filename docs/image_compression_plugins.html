@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using existing image compression codecs &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -97,7 +102,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="image-compression-codecs"></span><section id="using-existing-image-compression-codecs">
-<h1>Using existing image compression codecs<a class="headerlink" href="#using-existing-image-compression-codecs" title="Permalink to this heading"></a></h1>
+<h1>Using existing image compression codecs<a class="headerlink" href="#using-existing-image-compression-codecs" title="Link to this heading"></a></h1>
 <dl class="simple">
 <dt>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library offers a set of codecs that can be installed</dt><dd><ul class="simple">
 <li><p>via the <cite>enb plugin install</cite> command-line interface (CLI).</p></li>
@@ -106,18 +111,18 @@
 </dd>
 </dl>
 <section id="installation-via-enb-plugin-install">
-<h2>Installation via enb plugin install<a class="headerlink" href="#installation-via-enb-plugin-install" title="Permalink to this heading"></a></h2>
+<h2>Installation via enb plugin install<a class="headerlink" href="#installation-via-enb-plugin-install" title="Link to this heading"></a></h2>
 <p>In the CLI, you can list the available codecs by performing a search among all available plugins:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin list codec
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>list<span class="w"> </span>codec
 </pre></div>
 </div>
 <p>And then, for instance to install the <cite>zip</cite> plugin one can simply run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install zip installation_folder
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>zip<span class="w"> </span>installation_folder
 </pre></div>
 </div>
 </section>
 <section id="installation-via-enb-plugins-install">
-<h2>Installation via <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code><a class="headerlink" href="#installation-via-enb-plugins-install" title="Permalink to this heading"></a></h2>
+<h2>Installation via <code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.plugins.install()</span></code><a class="headerlink" href="#installation-via-enb-plugins-install" title="Link to this heading"></a></h2>
 <p>You can add a line like the following to your script so that it automatically
 installs and imports a plugin</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">&quot;huffman&quot;</span><span class="p">)</span>
@@ -128,7 +133,7 @@ installs and imports a plugin</p>
 <span class="sig-prename descclassname"><span class="pre">enb.plugins.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">automatic_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Install an Installable by name into target_dir.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – name of the installable (e.g., plugin) to be installed. Run <cite>enb plugin list</cite> in the CLI
 to get a list of all available installables.</p></li>
@@ -142,14 +147,14 @@ to get a list of all available installables.</p></li>
 
 </section>
 <section id="codec-availabily">
-<h2>Codec availabily<a class="headerlink" href="#codec-availabily" title="Permalink to this heading"></a></h2>
+<h2>Codec availabily<a class="headerlink" href="#codec-availabily" title="Link to this heading"></a></h2>
 <p>Different codecs are available for different data types and bit depths. If you want to test
 all publicly available codecs, you can install the <cite>test-codecs</cite> plugin with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install test-codecs tc
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>test-codecs<span class="w"> </span>tc
 </pre></div>
 </div>
 <p>and then run the <cite>test_all_codecs.py</cite> script, e.g., with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python tc/test_all_codecs.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>tc/test_all_codecs.py
 </pre></div>
 </div>
 <p>It will produce a set of plots describing the codecs

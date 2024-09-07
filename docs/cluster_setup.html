@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Configuring enb in a cluster of computers &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -95,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="configuring-enb-in-a-cluster-of-computers">
-<h1>Configuring <cite>enb</cite> in a cluster of computers<a class="headerlink" href="#configuring-enb-in-a-cluster-of-computers" title="Permalink to this heading"></a></h1>
+<h1>Configuring <cite>enb</cite> in a cluster of computers<a class="headerlink" href="#configuring-enb-in-a-cluster-of-computers" title="Link to this heading"></a></h1>
 <p>Thanks to the <cite>ray</cite> library, your code using <cite>enb</cite> can easily scale from one to multiple computers.</p>
 <p>This cluster employs <cite>ray</cite>, <cite>ssh</cite> and <cite>sshfs</cite>, and does not require docker, k8s, AWS or anything similar.
 You will most easily set up all these tools on linux.</p>
@@ -108,7 +113,7 @@ disabled by default on that platform.</p>
 is recommended when you have many dataset elements and/or tasks, which involve little processing per row.</p>
 </div>
 <section id="first-installation">
-<h2>First installation<a class="headerlink" href="#first-installation" title="Permalink to this heading"></a></h2>
+<h2>First installation<a class="headerlink" href="#first-installation" title="Link to this heading"></a></h2>
 <p>In each computer of the cluster, you will need to do the following (once).</p>
 <blockquote>
 <div><ol class="arabic">
@@ -120,7 +125,7 @@ e.g., 3.9.8 should be compatible with 3.9.9.</p>
 See <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> for instructions on how to install <cite>enb</cite> in a single computer.
 In a nutshell:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install enb
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>enb
 </pre></div>
 </div>
 </div></blockquote>
@@ -138,7 +143,7 @@ these will need to be installed manually in all nodes in the cluster.</p>
 <dt><strong>Install or check ray version</strong></dt><dd><p>The <cite>ray</cite> library is needed in all nodes participating in a cluster.
 This library is not installed by default from version 0.4.5 onwards.
 You can install it with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ray<span class="o">[</span>default<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ray<span class="o">[</span>default<span class="o">]</span>
 </pre></div>
 </div>
 <p>You may need to verify that the <cite>ray</cite> command is present in your PATH after installing ray.</p>
@@ -161,7 +166,7 @@ are required.</p>
 <p>The default values for <cite>ray_port</cite> and <cite>ray_port_count</cite> are 11000 and 500, respectively.
 For these, ports 11000 to 11499 should be open.
 If you use <cite>ufw</cite> for firewalling, you can use or adapt the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo ufw allow proto tcp from any to any port <span class="m">11000</span>:11499 comment <span class="s1">&#39;enb-ray&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span>proto<span class="w"> </span>tcp<span class="w"> </span>from<span class="w"> </span>any<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">11000</span>:11499<span class="w"> </span>comment<span class="w"> </span><span class="s1">&#39;enb-ray&#39;</span>
 </pre></div>
 </div>
 <p>Please refer to your firewall documentation should you need a more restrictive rule configuration.</p>
@@ -185,7 +190,7 @@ for all information on what a ray cluster entails.</p>
 an <cite>ssh</cite> client.</p>
 <p>You can install them on debian/ubuntu derivates with:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install openssh-client openssh-server
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>openssh-client<span class="w"> </span>openssh-server
 </pre></div>
 </div>
 <div class="admonition note">
@@ -207,7 +212,7 @@ copying the contents of <cite>~/.ssh/id_rsa.pub</cite> into <cite>~/.ssh/authori
 <div><p>The <cite>sshfs</cite> tool is used to mount the project folder from the head node into all remote nodes.
 You can install it on debian/ubuntu derivates with:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install sshfs
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>sshfs
 </pre></div>
 </div>
 </div></blockquote>
@@ -220,7 +225,7 @@ You can install it on debian/ubuntu derivates with:</p>
 project folder on each remote node.
 You can install it on debian/ubuntu derivates with:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt install vde2
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>vde2
 </pre></div>
 </div>
 </div></blockquote>
@@ -228,12 +233,12 @@ You can install it on debian/ubuntu derivates with:</p>
 </div></blockquote>
 </section>
 <section id="running-distributed-experiments">
-<h2>Running distributed experiments<a class="headerlink" href="#running-distributed-experiments" title="Permalink to this heading"></a></h2>
+<h2>Running distributed experiments<a class="headerlink" href="#running-distributed-experiments" title="Link to this heading"></a></h2>
 <section id="cluster-configuration-file">
-<h3>Cluster configuration file<a class="headerlink" href="#cluster-configuration-file" title="Permalink to this heading"></a></h3>
+<h3>Cluster configuration file<a class="headerlink" href="#cluster-configuration-file" title="Link to this heading"></a></h3>
 <p>Once everything is set up in every node you want to use, you need an enb ssh cluster
 configuration file, e.g., <cite>enb_cluster.csv</cite>. You can install a template for this with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install cluster-config .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>cluster-config<span class="w"> </span>.
 </pre></div>
 </div>
 <p>The configuration file is simply a CSV with one row per remote node to be connected, with
@@ -264,7 +269,7 @@ and for which the key is on <cite>~/.ssh/id_rsa</cite>, the cluster configuratio
 </div>
 </section>
 <section id="distributed-script-execution">
-<h3>Distributed script execution<a class="headerlink" href="#distributed-script-execution" title="Permalink to this heading"></a></h3>
+<h3>Distributed script execution<a class="headerlink" href="#distributed-script-execution" title="Link to this heading"></a></h3>
 <p>Once the cluster configuration file is created, you simply need to run your script
 with <cite>–ssh_cluster_csv_path enb_cluster.csv</cite>, or set
 <cite>enb.config.options.ssh_cluster_csv_path</cite> in your code.</p>
@@ -277,16 +282,16 @@ This comment also applies when scripts are run in a single computer.</p>
 </div>
 </section>
 <section id="example-project-montecarlo-pi">
-<h3>Example project: Montecarlo pi<a class="headerlink" href="#example-project-montecarlo-pi" title="Permalink to this heading"></a></h3>
+<h3>Example project: Montecarlo pi<a class="headerlink" href="#example-project-montecarlo-pi" title="Link to this heading"></a></h3>
 <p>An installable template is provided for you to test local and distributed experiment execution.
 You can install it with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install montecarlo-pi mp
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>montecarlo-pi<span class="w"> </span>mp
 </pre></div>
 </div>
 <p>This will create an example experiment <cite>montecarlo_pi_experiment.py</cite> which approximates the value
 of pi by pseudorandom simulation.</p>
 <p>To run it locally, simply execute</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python mp/montecarlo_pi_experiment.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>mp/montecarlo_pi_experiment.py
 </pre></div>
 </div>
 <p>which should provide something similar to the following:</p>
@@ -299,7 +304,7 @@ Computed pi ~ 3.141595796875 using 1280000000 total samples on 1 nodes.
 </div>
 <p>Once you have edited <cite>enb_cluster.csv</cite> with your cluster’s configuration,
 you can run it with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python mp/montecarlo_pi_experiment.py --ssh_cluster_csv_path<span class="o">=</span>enb_cluster.csv
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>mp/montecarlo_pi_experiment.py<span class="w"> </span>--ssh_cluster_csv_path<span class="o">=</span>enb_cluster.csv
 </pre></div>
 </div>
 <p>An output similar to the following is expected:</p>
@@ -318,7 +323,7 @@ run it with <cite>-vv</cite> for full details.</p>
 </section>
 </section>
 <section id="accessing-files">
-<h2>Accessing files<a class="headerlink" href="#accessing-files" title="Permalink to this heading"></a></h2>
+<h2>Accessing files<a class="headerlink" href="#accessing-files" title="Link to this heading"></a></h2>
 <p>When a remote node is connected, the project node of the head node is automatically mounted
 on <cite>~/.enb-remote</cite> in that remote node.</p>
 <p>When a column function is executed remotely, the current working dir is set to either the
@@ -346,7 +351,7 @@ e.g., <cite>/data/corpus1</cite>.</p></li>
 <li><p>In your project root (in the head node), make a symbolic link to the external dataset,
 e.g.,</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ln -s /data/corpus1 datasets/corpus1
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-s<span class="w"> </span>/data/corpus1<span class="w"> </span>datasets/corpus1
 </pre></div>
 </div>
 </div></blockquote>
@@ -364,7 +369,7 @@ The head and remote nodes do not need to communicate to obtain these data.</p></
 </ol>
 </section>
 <section id="ray-port-testing">
-<h2>Ray port testing<a class="headerlink" href="#ray-port-testing" title="Permalink to this heading"></a></h2>
+<h2>Ray port testing<a class="headerlink" href="#ray-port-testing" title="Link to this heading"></a></h2>
 <p>If the previous example worked fine for you, you can safely skip this part.
 If you encountered any problems, you may want to test ray in an isolated
 way.</p>

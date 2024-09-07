@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Result analysis and plotting with enb &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/enb-rtd.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5d056567"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -30,15 +31,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Experiment Notebook (enb)
-            <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Experiment Notebook (enb)
+              <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                v1.0.3
+                v1.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -132,9 +137,9 @@
            <div itemprop="articleBody">
              
   <section id="result-analysis-and-plotting-with-enb">
-<h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Permalink to this heading"></a></h1>
+<h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+1173.gdcb5494e51)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+1451.g352289b3b6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -146,12 +151,12 @@ a general use case.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you have <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> already installed, you can download all the test data and example code into the <cite>ag</cite> folder as with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb install analysis-gallery ag
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>install<span class="w"> </span>analysis-gallery<span class="w"> </span>ag
 </pre></div>
 </div>
 </div>
 <section id="one-numeric-column">
-<h2>One numeric column<a class="headerlink" href="#one-numeric-column" title="Permalink to this heading"></a></h2>
+<h2>One numeric column<a class="headerlink" href="#one-numeric-column" title="Link to this heading"></a></h2>
 <p>In this scenario, we want to analyze a column of scalar values, typically integers and/or floats.
 Here we will be using the Iris dataset, which we can load with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -179,7 +184,7 @@ column names present in the dataframe being analyzed.</p>
 </pre></div>
 </div>
 <section id="plots">
-<h3>Plots<a class="headerlink" href="#plots" title="Permalink to this heading"></a></h3>
+<h3>Plots<a class="headerlink" href="#plots" title="Link to this heading"></a></h3>
 <p>The <cite>histogram</cite> mode  renders a basic plot with information about the distribution, the average, and the standard deviation of the samples,
 as shown in the next figure. The returned <cite>analysis_df</cite> dataframe contains the exact values for the mean, standard deviations,
 etc., for each target column.</p>
@@ -190,7 +195,7 @@ etc., for each target column.</p>
 grouping – examples are provided below in the first section about grouping below.</p>
 </section>
 <section id="summary-tables">
-<span id="sec-one-numeric-summary"></span><h3>Summary tables<a class="headerlink" href="#summary-tables" title="Permalink to this heading"></a></h3>
+<span id="sec-one-numeric-summary"></span><h3>Summary tables<a class="headerlink" href="#summary-tables" title="Link to this heading"></a></h3>
 <p>When the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> is invoked,
 it automatically produces summary tables at <cite>enb.config.options.analysis_dir</cite>.
 More specifically,</p>
@@ -213,7 +218,7 @@ with data statistics for each target column (and each group, if grouping is used
 </section>
 </section>
 <section id="two-numeric-columns">
-<h2>Two numeric columns<a class="headerlink" href="#two-numeric-columns" title="Permalink to this heading"></a></h2>
+<h2>Two numeric columns<a class="headerlink" href="#two-numeric-columns" title="Link to this heading"></a></h2>
 <p>In this scenario, we want to compare two numeric columns, e.g., <cite>sepal_width</cite> and <cite>petal_width</cite>.
 To do so, we need to use the <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class instead of the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>
 we employed in the previous examples.</p>
@@ -232,7 +237,7 @@ method that analyzes and plots</p>
 containing two column names, e.g.: <cite>(“columnA”, “columnB”)</cite>.</p>
 </div>
 <section id="id1">
-<h3>Plots<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3>Plots<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>In addition to the <cite>analysis_df</cite> dataframe with numeric results, this will produce a scatter plot like the following,
 which also shows +/- 1 horizontal and vertical standard deviations.</p>
 <figure class="align-default">
@@ -263,7 +268,7 @@ For instance, the following code</p>
 <p>Additional examples are provided below in <a class="reference internal" href="#sec-grouping"><span class="std std-ref">Grouping by a column’s value</span></a>, where some of these modes are most useful.</p>
 </section>
 <section id="id2">
-<h3>Summary tables<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<h3>Summary tables<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <p>When the <cite>get_df</cite> method of <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> is invoked,
 it automatically produces summary tables at <cite>enb.config.options.analysis_dir</cite>.
 More specifically,</p>
@@ -290,7 +295,7 @@ with</p>
 </section>
 </section>
 <section id="columns-with-dictionaries">
-<h2>Columns with dictionaries<a class="headerlink" href="#columns-with-dictionaries" title="Permalink to this heading"></a></h2>
+<h2>Columns with dictionaries<a class="headerlink" href="#columns-with-dictionaries" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library allows storing dictionaries with scalar entries. For columns with numeric values (integer or float),
 the <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a> class can be used.</p>
 <p>In the following example, the dataset
@@ -356,20 +361,20 @@ count per mode for each of the selected groups (given in the <cite>block_size</c
 Rendering options are discussed in a later section.</p>
 </div>
 <section id="plotting">
-<h3>Plotting<a class="headerlink" href="#plotting" title="Permalink to this heading"></a></h3>
+<h3>Plotting<a class="headerlink" href="#plotting" title="Link to this heading"></a></h3>
 <p>The resulting figure is shown below</p>
 <figure class="align-default">
 <img alt="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" src="_images/DictNumericAnalyzer_mode_count_groupby-block_size_line.png" />
 </figure>
 </section>
 <section id="grouping-by-value">
-<span id="id5"></span><h3>Summary tables<a class="headerlink" href="#grouping-by-value" title="Permalink to this heading"></a></h3>
+<span id="id5"></span><h3>Summary tables<a class="headerlink" href="#grouping-by-value" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a> class produces <a class="reference external" href="_static/analysis_gallery/DictNumericAnalyzer-columns_mode_count-line-groupby__block_size.csv">CSV files</a> with several statistics
 (mean, min, max, median, standard deviation) for each key of each target column.</p>
 </section>
 </section>
 <section id="analysis-of-numeric-data-in-an-x-y-2d-space">
-<span id="scalar-numeric-2d-analyzer"></span><h2>Analysis of numeric data in an x-y (2D) space<a class="headerlink" href="#analysis-of-numeric-data-in-an-x-y-2d-space" title="Permalink to this heading"></a></h2>
+<span id="scalar-numeric-2d-analyzer"></span><h2>Analysis of numeric data in an x-y (2D) space<a class="headerlink" href="#analysis-of-numeric-data-in-an-x-y-2d-space" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class allows to plot data arranged arbitrarily in the x-y plane.
 It is useful to create heatmap figures.</p>
 <div class="admonition note">
@@ -409,7 +414,7 @@ information.</p>
 </pre></div>
 </div>
 <section id="id6">
-<h3>Plots<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
+<h3>Plots<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
 <p>The resulting figure is shown next:</p>
 <figure class="align-default">
 <img alt="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" src="_images/ScalarNumeric2DAnalyzer-columns_x__y__fx-colormap.png" />
@@ -427,7 +432,7 @@ colormaps.</p>
 </div>
 </section>
 <section id="id7">
-<h3>Summary tables<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<h3>Summary tables<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumeric2DAnalyzer" title="enb.aanalysis.ScalarNumeric2DAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumeric2DAnalyzer</span></code></a> class produces:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="_static/analysis_gallery/ScalarNumeric2DAnalyzer-columns_x__vs__y__vs__value-colormap-groupby__class.csv">CSV files</a>
@@ -439,7 +444,7 @@ with the same statistics as those of <a class="reference internal" href="api/enb
 </section>
 </section>
 <section id="joint-numeric-analysis-double-categorical-grouping">
-<span id="sec-joint-analysis"></span><h2>Joint numeric analysis (double categorical grouping)<a class="headerlink" href="#joint-numeric-analysis-double-categorical-grouping" title="Permalink to this heading"></a></h2>
+<span id="sec-joint-analysis"></span><h2>Joint numeric analysis (double categorical grouping)<a class="headerlink" href="#joint-numeric-analysis-double-categorical-grouping" title="Link to this heading"></a></h2>
 <p>With <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a>, it is possible to analyze scalar numeric data
 jointly splitting it by two different groupings. This results in a table where the
 columns correspond to one of the categories/groupings (e.g., corpus name)
@@ -475,7 +480,7 @@ data for joint analysis.</p>
 </pre></div>
 </div>
 <section id="id9">
-<h3>Plots<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<h3>Plots<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
 <p>The resulting plot, corresponding to the average value of the data column, is shown in the following figure:</p>
 <figure class="align-default">
 <img alt="_images/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" src="_images/ScalarNumericJointAnalyzer-columns_Color__Origin__Price-table.png" />
@@ -487,7 +492,7 @@ to control the size of the displayed table.</p>
 </div>
 </section>
 <section id="id10">
-<h3>Summary tables<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<h3>Summary tables<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer" title="enb.aanalysis.ScalarNumericJointAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer</span></code></a> produces custom
 <a class="reference external" href="_static/analysis_gallery/ScalarNumericJointAnalyzer-columns_Color__vs__Origin__vs__Price-table.csv">CSV</a>
 and
@@ -528,7 +533,7 @@ All these correspond to the <em>finite</em> data found for each x-category and y
 </div>
 </section>
 <section id="output-configuration">
-<h3>Output configuration<a class="headerlink" href="#output-configuration" title="Permalink to this heading"></a></h3>
+<h3>Output configuration<a class="headerlink" href="#output-configuration" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>You can select the order of column headers and/or row headers by passing <cite>x_header_list</cite>, <cite>y_header_list</cite>, or both
 to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericJointAnalyzer.get_df" title="enb.aanalysis.ScalarNumericJointAnalyzer.get_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericJointAnalyzer.get_df()</span></code></a>. When one is present, it must be a non-empty list
@@ -591,9 +596,9 @@ shown or not by modifying the <cite>show_reference_group</cite> of your <a class
 </section>
 </section>
 <section id="grouping-by-a-column-s-value">
-<span id="sec-grouping"></span><h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Permalink to this heading"></a></h2>
+<span id="sec-grouping"></span><h2>Grouping by a column’s value<a class="headerlink" href="#grouping-by-a-column-s-value" title="Link to this heading"></a></h2>
 <section id="grouping-with-scalarnumericanalysis">
-<h3>Grouping with ScalarNumericAnalysis<a class="headerlink" href="#grouping-with-scalarnumericanalysis" title="Permalink to this heading"></a></h3>
+<h3>Grouping with ScalarNumericAnalysis<a class="headerlink" href="#grouping-with-scalarnumericanalysis" title="Link to this heading"></a></h3>
 <p>Often, we want to group the dataframe’s rows based on the value of a given column, and then analyze others.</p>
 <p>We achieve this by passing that the grouping column’s name as the <strong>group_by</strong> keyword
 when calling ScalarNumericAnalyzer’s <cite>get_df</cite> method.</p>
@@ -628,7 +633,7 @@ as shown next:</p>
 </figure>
 </section>
 <section id="grouping-with-other-analyzer-subclasses">
-<h3>Grouping with other Analyzer subclasses<a class="headerlink" href="#grouping-with-other-analyzer-subclasses" title="Permalink to this heading"></a></h3>
+<h3>Grouping with other Analyzer subclasses<a class="headerlink" href="#grouping-with-other-analyzer-subclasses" title="Link to this heading"></a></h3>
 <p>Grouping is not restricted to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>. It can be used with other <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes such as
 <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a>, as in the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
@@ -653,7 +658,7 @@ as shown next:</p>
 </section>
 </section>
 <section id="grouping-by-task-families">
-<h2>Grouping by task families<a class="headerlink" href="#grouping-by-task-families" title="Permalink to this heading"></a></h2>
+<h2>Grouping by task families<a class="headerlink" href="#grouping-by-task-families" title="Link to this heading"></a></h2>
 <p>When <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> is used to obtain dataframes of results, it is typical to have families
 of tasks that were applied separately but are related. This can be used by defining a list
 of class:<cite>enb.experiment.TaskFamily</cite> instances and passing that argument to the <cite>group_by</cite> parameter of <cite>get_df</cite>.</p>
@@ -669,7 +674,7 @@ experiment that uses task families and produces plots like the one in the figure
 </figure>
 </section>
 <section id="combining-groups">
-<h2>Combining groups<a class="headerlink" href="#combining-groups" title="Permalink to this heading"></a></h2>
+<h2>Combining groups<a class="headerlink" href="#combining-groups" title="Link to this heading"></a></h2>
 <p>The <cite>combine_groups</cite> argument can be passed to get_df or set in the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> instance.
 If selected, all groups are shown in the same subplot. In this case, the average and standard deviation
 values are automatically removed for clarity. An example of this output can be found next:</p>
@@ -698,14 +703,14 @@ An example is provided next:</p>
 </figure>
 </section>
 <section id="making-baseline-comparisons">
-<span id="id12"></span><h2>Making baseline comparisons<a class="headerlink" href="#making-baseline-comparisons" title="Permalink to this heading"></a></h2>
+<span id="id12"></span><h2>Making baseline comparisons<a class="headerlink" href="#making-baseline-comparisons" title="Link to this heading"></a></h2>
 <p>When grouping is used, it is possible to select one of the groups as baseline and then perform
 analysis and plotting on the differences against that baseline.</p>
 <p>For the <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses and render modes that support it, it suffices to pass
 <cite>reference_group=”group name”</cite> when calling <cite>get_df</cite>. Here, <cite>“group name”</cite> is one
 of the group labels derived from the <cite>group_by</cite> selection.</p>
 <section id="example-with-scalarnumericanalyzer">
-<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-scalarnumericanalyzer" title="Permalink to this heading"></a></h3>
+<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-scalarnumericanalyzer" title="Link to this heading"></a></h3>
 <p>The following snippet shows how to use the <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a> to show differences against a group.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iris_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/iris_dataset.csv&quot;</span><span class="p">)</span>
 <span class="n">scalar_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
@@ -745,7 +750,7 @@ where both options are used is shown next:</p>
 </figure>
 </section>
 <section id="example-with-twonumericanalyzer">
-<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Permalink to this heading"></a></h3>
+<h3>Example with <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a><a class="headerlink" href="#example-with-twonumericanalyzer" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.TwoNumericAnalyzer" title="enb.aanalysis.TwoNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.TwoNumericAnalyzer</span></code></a> class has a sintax similar to <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a>.
 Both the <cite>line</cite> and <cite>scatter</cite> render modes are available, but only one can be used per call to <cite>get_df</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_numeric_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">TwoNumericAnalyzer</span><span class="p">()</span>
@@ -782,11 +787,11 @@ then one can use f as the reference group, which results in plotting f(x)-f(x), 
 </section>
 </section>
 <section id="customizing-plot-appearance">
-<h2>Customizing plot appearance<a class="headerlink" href="#customizing-plot-appearance" title="Permalink to this heading"></a></h2>
+<h2>Customizing plot appearance<a class="headerlink" href="#customizing-plot-appearance" title="Link to this heading"></a></h2>
 <p>If the default plot appearance does not suit you (axis limits, font size, color scheme, logarithmic scale, etc.),
 <cite>enb</cite> offers several ways of customizing them, described in the following subsections.</p>
 <section id="choosing-a-plot-type">
-<h3>Choosing a plot type<a class="headerlink" href="#choosing-a-plot-type" title="Permalink to this heading"></a></h3>
+<h3>Choosing a plot type<a class="headerlink" href="#choosing-a-plot-type" title="Link to this heading"></a></h3>
 <p>You can change the type of plot by selecting one of the available <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes.
 See above for examples on all available classes.</p>
 <p>Some analyzers provide several render modes. You can select one or more of them by
@@ -794,7 +799,7 @@ passing the <cite>selected_render_modes</cite> argument to your <cite>get_df</ci
 By default, all render modes in an <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> are used.</p>
 </section>
 <section id="modifying-your-analyzers">
-<h3>Modifying your Analyzers<a class="headerlink" href="#modifying-your-analyzers" title="Permalink to this heading"></a></h3>
+<h3>Modifying your Analyzers<a class="headerlink" href="#modifying-your-analyzers" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> classes themselves have several attributes that affect the way they
 produce plots. Some examples common to all <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> instances are as follows.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># List of allowed rendering modes for the analyzer
@@ -875,7 +880,7 @@ of the attributes defined in the
 </div>
 <p>You can install a copy of the full configuration file and then modify it as needed with:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install enb.ini ./your_project_folder/
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>enb.ini<span class="w"> </span>./your_project_folder/
 </pre></div>
 </div>
 </div></blockquote>
@@ -883,7 +888,7 @@ of the attributes defined in the
 Attribute values are independently read for each call to <cite>get_df</cite>.</p>
 </section>
 <section id="setting-column-plotting-hints">
-<span id="column-hints"></span><h3>Setting column plotting hints<a class="headerlink" href="#setting-column-plotting-hints" title="Permalink to this heading"></a></h3>
+<span id="column-hints"></span><h3>Setting column plotting hints<a class="headerlink" href="#setting-column-plotting-hints" title="Link to this heading"></a></h3>
 <p>All columns defined in <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a> subclasses (including <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a> subclasses)
 have a corresponding <a class="reference internal" href="api/enb.html#enb.atable.ColumnProperties" title="enb.atable.ColumnProperties"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ColumnProperties</span></code></a> instance.</p>
 <p>These instances contain rendering hints when plotting that column such as:</p>
@@ -955,7 +960,7 @@ for the dataset (see <a class="reference internal" href="experiments.html"><span
 </div>
 </section>
 <section id="setting-render-kwargs-when-calling-analyzer-get-df">
-<span id="kwargs"></span><h3>Setting <cite>**render_kwargs</cite> when calling <cite>Analyzer.get_df</cite><a class="headerlink" href="#setting-render-kwargs-when-calling-analyzer-get-df" title="Permalink to this heading"></a></h3>
+<span id="kwargs"></span><h3>Setting <cite>**render_kwargs</cite> when calling <cite>Analyzer.get_df</cite><a class="headerlink" href="#setting-render-kwargs-when-calling-analyzer-get-df" title="Link to this heading"></a></h3>
 <p>The <cite>get_df</cite> method of all <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclasses accept a <cite>**render_kwargs</cite> parameter.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -985,7 +990,7 @@ axis label is moved to account for very long y-axis labels.</p>
 Note that the <cite>pds_by_group_name</cite> parameter and others are automatically set by your choice of <a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a> subclass.</p>
 </section>
 <section id="using-styles">
-<span id="styles"></span><h3>Using styles<a class="headerlink" href="#using-styles" title="Permalink to this heading"></a></h3>
+<span id="styles"></span><h3>Using styles<a class="headerlink" href="#using-styles" title="Link to this heading"></a></h3>
 <p>The <cite>enb</cite> library employs <cite>matplotlib</cite> for plotting.
 Matplotlib’s <a class="reference external" href="https://matplotlib.org/stable/tutorials/introductory/customizing.html">styling features</a>
 are available in two ways:</p>
@@ -1019,7 +1024,7 @@ You can check out the `gallery of matplotlib’s default styles</a>.</p></li>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can get a list of all available style names from the CLI with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb show styles
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>show<span class="w"> </span>styles
 </pre></div>
 </div>
 <p>or within python with</p>
@@ -1068,7 +1073,7 @@ You can check out the `gallery of matplotlib’s default styles</a>.</p></li>
 for more information on how to create and modify this type of files.</p>
 <p>You can install an editable copy of Matplotlib’s default rc file with:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb plugin install matplotlibrc .
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>matplotlibrc<span class="w"> </span>.
 </pre></div>
 </div>
 </div></blockquote>
