@@ -1160,7 +1160,7 @@ class ATable(metaclass=MetaTable):
 
             # The new df is available. Store data into persistence if one is configured
             if self.csv_support_path:
-                loaded_table = pd.concat([loaded_table, target_df])
+                loaded_table = pd.concat([df for df in (loaded_table, target_df) if not df.empty])
                 loaded_table = loaded_table[~loaded_table.index.duplicated(keep="last")]
                 os.makedirs(os.path.dirname(os.path.abspath(self.csv_support_path)), exist_ok=True)
                 self.write_persistence(df=loaded_table, output_csv=self.csv_support_path)
