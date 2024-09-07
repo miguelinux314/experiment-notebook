@@ -2049,7 +2049,7 @@ class TwoNumericSummary(ScalarNumericSummary):
 
                 if len(full_df) == 1 or len(full_df[column_name].unique()) == 1:
                     self.column_to_xmin_xmax[column_name] = (
-                        full_df[column_name][0], full_df[column_name][0])
+                        full_df[column_name].iloc[0], full_df[column_name].iloc[0])
                 else:
                     try:
                         finite_series = full_df[column_name].replace(
