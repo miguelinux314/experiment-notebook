@@ -12,7 +12,7 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Development version: v1.0.4-dev
+# Latest stable version: 2024/9/8 v1.0.4
 
 Improvements:
 
@@ -20,7 +20,6 @@ Improvements:
   (see https://miguelinux314.github.io/experiment-notebook/lossless_compression_example.html#saving-the-compressed-and-or-reconstructed-files).
 - Improved error handling of images files with non-compliant names.
 - Fixed some external library warnings due to API changes (numpy, pandas)
-
 
 # Version history
 
