@@ -108,7 +108,7 @@ class TestSets(unittest.TestCase):
                 tvt_df.set_index("original_file_path"),
                 lsuffix=lsuffix, rsuffix=rsuffix)
 
-            assert not np.any(joint_df.applymap(lambda x: x is None))
+            assert not np.any(joint_df.map(lambda x: x is None))
 
             for column in [c for c in joint_df.columns.values if lsuffix in c]:
                 if column.replace(lsuffix, "") in fpt.indices:
