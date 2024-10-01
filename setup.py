@@ -81,7 +81,7 @@ with open("README.md", "r") as readme_file:
         install_requires=[
             "pathos", "appdirs", "deprecation", "jinja2>=3.1.2", "matplotlib",
             "numpngw",
-            "numpy<2", "pandas>=1.4.1", "imageio",
+            "numpy<2", "pandas>=2.1.0", "imageio",
             "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
             "astropy", "natsort", "rich", "h5py"],
 
