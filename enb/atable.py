@@ -976,17 +976,20 @@ class ATable(metaclass=MetaTable):
             else self.get_all_input_indices(ext=self.dataset_files_extension)
 
         if not target_indices:
-            raise ValueError(
-                f"No target indices could be found at {repr(options.base_dataset_dir)}. "
-                f"Please double check that:\n"
-                f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} "
-                f"is correctly set, and it contains the expected samples;\n"
-                f"(b) you are passing the right value to the "
-                f"`target_indices` argument of get_df() if not using the default;\n"
-                f"(c) the experiment class you are using has the intended "
-                f"`dataset_files_extension` attribute set. It is currently "
-                f"{repr(self.dataset_files_extension)}. If empty, all files under "
-                f"the dataset folder should be obtained by default.")
+            enb.logger.error(f"No target indices (data samples) "
+                             f"could be found at base_dataset_dir={repr(options.base_dataset_dir)}. "
+                             f"Please double check that:\n"
+                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} variable"
+                             f"is correctly set, and it contains the expected samples;\n"
+                             f"(b) you are passing the right value to the "
+                             f"`target_indices` argument of get_df() if not using the default;\n"
+                             f"(c) the experiment class you are using has the intended "
+                             f"`dataset_files_extension` attribute set. It is currently "
+                             f"{repr(self.dataset_files_extension)}. If empty, all files under "
+                             f"the dataset folder should be obtained by default. Please visit "
+                             f"https://miguelinux314.github.io/experiment-notebook/data_curation.html for additional"
+                             f"information")
+            raise ValueError(f"No target indices could be found at base_dataset_dir={repr(options.base_dataset_dir)}. ")
 
         # Split the work into one or more chunks, which are completed before
         # moving on to the next one.
@@ -1444,8 +1447,8 @@ class ATable(metaclass=MetaTable):
                     continue
 
                 enb.logger.debug(f"Calculating {repr(column)} for "
-                                f"index={repr(index)}, fun={fun}, "
-                                f"<{self.__class__.__name__}>")
+                                 f"index={repr(index)}, fun={fun}, "
+                                 f"<{self.__class__.__name__}>")
                 try:
                     result = fun(self, index, row)
                     called_functions.add(fun)

@@ -93,8 +93,8 @@ class Ini(metaclass=_Singleton):
             self.config_parser.read(ini_path)
             self.used_config_paths.append(ini_path)
         except configparser.ParsingError as ex:
-            print(f"Found invalid ini path {ini_path} ({repr(ex).strip()}). "
-                  f"Any configuration in this file will be ignored.")
+            enb.logger.warn(f"Found invalid ini path {ini_path} ({repr(ex).strip()}). "
+                            f"Any configuration in this file will be ignored.")
 
     def get_key(self, section, name):
         """Return a read key value in the given section (if existing),
