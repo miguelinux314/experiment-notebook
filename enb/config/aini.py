@@ -90,7 +90,8 @@ class Ini(metaclass=_Singleton):
         """Update the current configuration by reading the contents of ini_path.
         """
         try:
-            self.config_parser.read(ini_path)
+            if self.config_parser.read(ini_path) != [ini_path]:
+                raise configparser.ParsingError("Error parsing file.") 
             self.used_config_paths.append(ini_path)
         except configparser.ParsingError as ex:
             enb.logger.warn(f"Found invalid ini path {ini_path} ({repr(ex).strip()}). "
