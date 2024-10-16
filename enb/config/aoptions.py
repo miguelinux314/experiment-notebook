@@ -13,7 +13,7 @@ Option configuration in enb is centralized through enb.config.options. Several k
 
     - Scripts using enb (host scripts) may alter values in enb.config.options, e.g., before calling enb methods.
       Properties are accessed and modified with `enb.config.options.property`
-      and `enb.config.property = value`, respectively. You may want to use the `from enb.config import options` line
+      and `enb.config.options.property = value`, respectively. You may want to use the `from enb.config import options` line
       in your host scripts to enable less verbosity.
 
     - The CLI can be used to set initial values of enb.config.options properties using `-*` and `--*` arguments.
