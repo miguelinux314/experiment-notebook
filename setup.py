@@ -37,9 +37,7 @@ for module_name in setup_package_list:
 
 # Read the configuration from ./enb/config/enb.ini, section "enb"
 enb_options = configparser.ConfigParser()
-enb_options.read(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "enb", "config",
-                 "enb.ini"))
+enb_options.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "enb", "config", "enb.ini"))
 enb_options = enb_options["enb"]
 
 with open("README.md", "r") as readme_file:
@@ -79,11 +77,25 @@ with open("README.md", "r") as readme_file:
         setup_requires=setup_package_list,
 
         install_requires=[
-            "pathos", "appdirs", "deprecation", "jinja2>=3.1.2", "matplotlib",
+            "appdirs",
+            "astropy",
+            "deprecation",
+            "h5py",
+            "imageio",
+            "jinja2>=3.1.2",
+            "matplotlib",
+            "natsort",
             "numpngw",
-            "numpy<2", "pandas>=2.1.0", "imageio",
-            "pdf2image", "psutil", "requests", "scipy", "sortedcontainers",
-            "astropy", "natsort", "rich", "h5py"],
+            "numpy<2",
+            "pandas>=2.1.0",
+            "pathos",
+            "pdf2image",
+            "psutil",
+            "requests",
+            "rich",
+            "scipy",
+            "sortedcontainers",
+        ],
 
         # This part determines the contents of the installed folder in your python's
         # site-packages location.
