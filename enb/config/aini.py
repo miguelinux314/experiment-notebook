@@ -33,7 +33,7 @@ import configparser
 import textwrap
 
 from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
-from .. import default_persistence_dir,default_base_dataset_dir,default_analysis_dir,default_output_plots_dir
+from .. import default_persistence_dir, default_base_dataset_dir, default_analysis_dir, default_output_plots_dir
 from ..misc import Singleton as _Singleton, class_to_fqn, BootstrapLogger
 
 
@@ -81,7 +81,7 @@ class Ini(metaclass=_Singleton):
         self.set_key("enb.config.options", "base_dataset_dir", default_base_dataset_dir)
         self.set_key("enb.config.options", "analysis_dir", default_analysis_dir)
         self.set_key("enb.config.options", "output_plots_dir", default_output_plots_dir)
-        
+
         if os.path.exists(self.user_ini_path):
             self.update_from_path(self.user_ini_path)
         for ini_path in self.all_ini_paths:
@@ -98,7 +98,7 @@ class Ini(metaclass=_Singleton):
         """
         try:
             if self.config_parser.read(ini_path) != [ini_path]:
-                raise configparser.ParsingError("Error parsing file.") 
+                raise configparser.ParsingError("Error parsing file.")
             self.used_config_paths.append(ini_path)
         except configparser.ParsingError as ex:
             enb.logger.warn(f"Found invalid ini path {ini_path} ({repr(ex).strip()}). "
@@ -116,7 +116,7 @@ class Ini(metaclass=_Singleton):
             # The key could not be parsed as a literal, it is returned as a string
             # (this is configparser's default)
             return self.config_parser[section][name]
-        
+
     def set_key(self, section, name, value):
         """Set the value of a key in a section.
         :param section: .ini section, e.g., "enb.config.options"

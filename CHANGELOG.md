@@ -14,7 +14,10 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Current development version: v1.0.5-dev
 
-(No improvements registered yet)
+Improvements:
+
+- Fixed a problem that prevented values in .ini files from being recognized 
+  (persistence_dir, base_dataset_dir, analysis_dir, output_plots_dir)
 
 # Latest stable version: 2024/9/8 v1.0.4
 
