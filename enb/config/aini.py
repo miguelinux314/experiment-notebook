@@ -33,6 +33,7 @@ import configparser
 import textwrap
 
 from .. import calling_script_dir, is_enb_cli, enb_installation_dir, user_config_dir
+from .. import default_persistence_dir,default_base_dataset_dir,default_analysis_dir,default_output_plots_dir
 from ..misc import Singleton as _Singleton, class_to_fqn, BootstrapLogger
 
 
@@ -75,6 +76,12 @@ class Ini(metaclass=_Singleton):
         # Parse configuration files with the specified prioritization
         self.config_parser = configparser.ConfigParser()
         self.update_from_path(self.global_ini_path)
+        # Set default values of non-constant default options
+        self.set_key("enb.config.options", "persistence_dir", default_persistence_dir)
+        self.set_key("enb.config.options", "base_dataset_dir", default_base_dataset_dir)
+        self.set_key("enb.config.options", "analysis_dir", default_analysis_dir)
+        self.set_key("enb.config.options", "output_plots_dir", default_output_plots_dir)
+        
         if os.path.exists(self.user_ini_path):
             self.update_from_path(self.user_ini_path)
         for ini_path in self.all_ini_paths:
@@ -109,6 +116,14 @@ class Ini(metaclass=_Singleton):
             # The key could not be parsed as a literal, it is returned as a string
             # (this is configparser's default)
             return self.config_parser[section][name]
+        
+    def set_key(self, section, name, value):
+        """Set the value of a key in a section.
+        :param section: .ini section, e.g., "enb.config.options"
+        :param name: key of the parameter to modify.
+        :param value: value to be set.
+        """
+        self.config_parser[section][name] = value
 
     @property
     def sections_by_name(self):
