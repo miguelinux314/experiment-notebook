@@ -36,7 +36,17 @@ class FilePropertiesTable(atable.ATable):
     hash_field_name = f"{HASH_ALGORITHM}"
     index_name = "file_path"
     base_dir = None
-    dataset_files_extension = "raw"
+    dataset_file_extension = "raw"
+
+    @property
+    def dataset_files_extension(self):
+        """Deprecated typo: will be removed in a future version."""
+        return self.dataset_file_extension
+
+    @dataset_files_extension.setter
+    def dataset_files_extension(self, value):
+        """Deprecated typo: will be removed in a future version."""
+        self.dataset_file_extension = value
 
     def __init__(self, csv_support_path=None, base_dir=None):
         if csv_support_path is None and options.persistence_dir is not None:
@@ -45,6 +55,7 @@ class FilePropertiesTable(atable.ATable):
                 f"persistence_{self.__class__.__name__}.csv")
         super().__init__(index=FilePropertiesTable.index_name,
                          csv_support_path=csv_support_path)
+
         self.base_dir = base_dir if base_dir is not None \
             else options.base_dataset_dir
 
@@ -139,8 +150,11 @@ class FileVersionTable(FilePropertiesTable):
           create arbitrarily named output files.
         """
         # pylint: disable=too-many-arguments
-        FilePropertiesTable.__init__(self, csv_support_path=csv_support_path,
-                                     base_dir=version_base_dir)
+        # Once all files have been versioned into version_base_dir, this class
+        # acts as a file properties table and gathers information about those 
+        # versioned files.
+        FilePropertiesTable.__init__(
+            self, csv_support_path=csv_support_path, base_dir=version_base_dir)
 
         self.original_base_dir = os.path.abspath(
             os.path.realpath(original_base_dir)) \
