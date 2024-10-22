@@ -18,6 +18,13 @@ Improvements:
 
 - Fixed a problem that prevented values in .ini files from being recognized 
   (persistence_dir, base_dataset_dir, analysis_dir, output_plots_dir)
+- Fixed regression bug that prevented some columns from being populated if they were defined after the table's 
+  persistence CSV file was created.
+- The enb.ini plugin is now installed with all options commented-out, ready for the user to modify at will
+
+Deprecations: 
+- Fixed enb.atable.ATable's typo: dataset_files_extension becomes dataset_file_extension. 
+  The old name will be kept for now as a deprecated property.
 
 # Latest stable version: 2024/9/8 v1.0.4
 
