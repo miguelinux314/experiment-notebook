@@ -1009,6 +1009,7 @@ class ATable(metaclass=MetaTable):
 
         # Split in chunks and add/update the persistent storage
         df = None
+        
         if fill or overwrite:
             if progress_tracker is None and enb.progress.is_progress_enabled():
                 with enb.progress.ProgressTracker(self, len(target_indices), chunk_size) as tracker:
@@ -1082,7 +1083,7 @@ class ATable(metaclass=MetaTable):
         :param target_columns: list of indices for this chunk
         :param target_columns: list of column names to be filled in this call
         :param fill_needed: if False, results are not computed (they default to None).
-          Instead, only data in persistent storage is used.
+          Instead, data are only extracted from persistent storage.
         :param overwrite: values selected for filling are computed even if they are present
           in permanent storage. Otherwise, existing values are skipped from the computation.
         :param run_sanity_checks: if True, sanity checks are performed on the data
@@ -1095,8 +1096,10 @@ class ATable(metaclass=MetaTable):
         """
         # pylint: disable=too-many-arguments
         # Load all data stored in persistence, or get an empty dataframe.
-        # Either way, all columns in self.indices_and_columns are defined.
-        loaded_table = self.load_saved_df(run_sanity_checks=run_sanity_checks)
+        # Either way, all columns in self.indices_and_columns are defined in loaded_table, but
+        # the columns that were missing in the persistence can be retrieved.
+        missing_column_list = []
+        loaded_table = self.load_saved_df(run_sanity_checks=run_sanity_checks, missing_column_list=missing_column_list)
 
         # Target index values are marshalled into unique strings,
         # which are the actual index used in the dataframe.
@@ -1107,8 +1110,7 @@ class ATable(metaclass=MetaTable):
         # This inner join efficiently queries the loaded table for existing target indices.
         # Its length may be smaller than the requested index length, meaning
         # that some rows are still to be computed.
-        target_df = pd.DataFrame(target_locs,
-                                 columns=[self.private_index_column])
+        target_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
         target_df.set_index(self.private_index_column, drop=True, inplace=True)
         target_df = target_df.merge(
             right=loaded_table,
@@ -1120,21 +1122,21 @@ class ATable(metaclass=MetaTable):
         assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
                                                    f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
 
-        # This is the case where input samples were previously processed,
-        # but new columns were defined/requested.
-        fill_needed = (fill_needed
-                       and (len(target_df) < len(target_indices)
-                            or target_df[target_columns].isnull().any().any()))
-
+        # The df needs filling if is missing any row or column, or overwrite is forced
+        fill_needed = fill_needed and ((len(target_df) < len(target_indices)) or len(missing_column_list) > 0)        
         if fill_needed or overwrite:
             # Needed locs are those of the rows that require an update or do not exist in the loaded df
-            if overwrite:
+            if overwrite or len(missing_column_list) > 0:
+                # All indices are computed if overwrite is forced or any column is missing
                 needed_indices = target_indices
             else:
+                # Build the list of indices that need computing
+                ## Indices that exist already, but are null
                 needed_indices = [
                     index
                     for index in target_df[target_columns].isnull().any(axis=1).index
                     if index in target_indices]
+                ## Indices that don't exist yet
                 needed_indices.extend(
                     index
                     for index in target_indices
@@ -1173,13 +1175,15 @@ class ATable(metaclass=MetaTable):
 
         return target_df
 
-    def load_saved_df(self, csv_support_path=None, run_sanity_checks=True):
+    def load_saved_df(self, csv_support_path=None, run_sanity_checks=True, missing_column_list=None):
         """Load the df stored in permanent support (if any) and return it.
         If not present, an empty dataset is returned instead.
 
         :param run_sanity_checks: if True, data are verified to detect corruption.
           This may increase computation time, but provides an extra layer
           of data reliability.
+        :param missing_column_list: if not None, it must be a list-like object that will be emptied
+          and then set of columns that are missing in the CSV file with respect to this table's column definition.
 
         :return: the loaded table_df, which may be empty
         :raise CorruptedTableError: if run_run_sanity_checks is True and
@@ -1206,9 +1210,12 @@ class ATable(metaclass=MetaTable):
             # None for all previously
             # existing data.
             # pylint: disable=no-member
-            for column in (c for c in self.indices_and_columns
-                           if c not in loaded_df.columns):
+            missing_columns = [c for c in self.indices_and_columns if c not in loaded_df.columns]
+            for column in missing_columns:
                 loaded_df[column] = None
+            if missing_column_list is not None:
+                missing_column_list.clear()
+                missing_column_list.extend(sorted(missing_columns))
 
             if run_sanity_checks:
                 with enb.logger.debug_context(
@@ -1973,12 +1980,11 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     :param base_dataset_dir: if not None, the dir where test files are searched
       for recursively. If None, options.base_dataset_dir is used instead.
     :return: the sorted list of canonical paths to the found input files.
-    """
+    """    
     # Set the input dataset dir
-    base_dataset_dir = base_dataset_dir \
-        if base_dataset_dir is not None else options.base_dataset_dir
+    base_dataset_dir = base_dataset_dir or options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
-        enb.logger.debug(
+        enb.logger.warn(
             f"Cannot get input samples from {base_dataset_dir} "
             f"(path not found or not a dir). "
             f"Using [sys.argv[0]] = [{os.path.basename(sys.argv[0])}] instead.")
@@ -1993,8 +1999,8 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
         key=lambda p: get_canonical_path(p).lower())
 
     # If quick is selected, return at most as many paths as the quick parameter count
-    all_input_files = sorted_path_list if not options.quick else sorted_path_list[
-                                                                 :options.quick]
+    all_input_files = sorted_path_list if not options.quick else sorted_path_list[:options.quick]
+    
 
     return all_input_files
 
