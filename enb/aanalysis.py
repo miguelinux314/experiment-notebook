@@ -3391,9 +3391,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             summary_dict = group_df[f"{x_column}_{y_column}_{data_column}_{stat}"]
                             number_format = self.number_format if stat != "count" else "{:d}"
                             longest_cell_length = max(
-                                max(len(number_format.format(val)) for val in
-                                    summary_dict.values()),
-                                max(len(str(x)) for x in x_categories)) + len(r"\textbf{}")
+                                max(len(number_format.format(val)) for val in summary_dict.values()) if summary_dict else 0,
+                                (max(len(str(x)) for x in x_categories)) if x_categories else 0) + len(r"\textbf{}")
                             row_header_format = f"{{:{longest_row_header}s}}"
                             cell_format = f"{{:{longest_cell_length}s}}"
 
