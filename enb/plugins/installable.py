@@ -301,9 +301,7 @@ def install(name, target_dir=None, overwrite=False, automatic_import=True):
     :param automatic_import: If True, the installable is imported as a module.
     """
     target_dir = os.path.join("plugins", name) if target_dir is None else target_dir
-    if overwrite:
-        shutil.rmtree(target_dir, ignore_errors=True)
-    if not os.path.exists(target_dir):
+    if overwrite or not os.path.exists(target_dir):
         installable = get_installable_by_name(name=name)
         installable.install(installation_dir=target_dir, overwrite_destination=False)
     if automatic_import:
