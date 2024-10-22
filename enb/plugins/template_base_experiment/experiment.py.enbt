@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generic experiment template using enb, the Electronic NoteBook library.
+"""Generic experiment template using enb, the Experiment NoteBook library.
 
 See https://github.com/miguelinux314/experiment-notebook
 and https://miguelinux314.github.io/experiment-notebook/experiments.html

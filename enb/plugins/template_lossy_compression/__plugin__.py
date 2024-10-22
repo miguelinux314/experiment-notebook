@@ -1,9 +1,8 @@
 import os
-import shutil
 import stat
 import glob
 import enb.plugins
-from enb.config import options
+
 
 class CompressionExperimentTemplate(enb.plugins.Template):
     """Template for lossy data compression experiments.
@@ -24,10 +23,4 @@ class CompressionExperimentTemplate(enb.plugins.Template):
             os.chmod(py_path, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
 
         # Copy the default enb.ini file into the project folder
-        target_enb_ini = os.path.join(installation_dir, "enb.ini")
-        if os.path.exists(target_enb_ini) and not options.force:
-            enb.logger.warn(f"File {target_enb_ini} already exists. Not overwriting.")
-        else:
-            shutil.copyfile(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                                         f"config", "enb.ini"),
-                            os.path.join(installation_dir, f"enb.ini"))
+        enb.plugins.install("enb.ini", installation_dir, overwrite=True, automatic_import=False)

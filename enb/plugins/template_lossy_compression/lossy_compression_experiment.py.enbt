@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Lossless compression experiment using enb, the Electronic NoteBook library.
+"""Lossless compression experiment using enb, the Experiment NoteBook library.
 
-See https://github.com/miguelinux314/experiment-notebook for additional documentation.
+See https://miguelinux314.github.io/experiment-notebook/lossy_compression_example.html
+for additional information.
 """
 
 import os
