@@ -210,7 +210,7 @@ import pickle
 import shutil
 import traceback
 import pandas as pd
-import rich.progress
+from typing import List
 
 import enb.config
 from enb.config import options
@@ -869,10 +869,8 @@ class ATable(metaclass=MetaTable):
 
     @property
     def indices(self):
-        """If `self.index` is a string, it returns a list with that column
-        name. If self.index is a list, it returns `self.index`. Useful to
-        iterate homogeneously regardless of whether single or multiple
-        indices are used.
+        """If `self.index` is a string, it returns a list with that string as its only element. 
+        If `self.index` is a list, it returns a copy of `self.index`.
         """
         return unpack_index_value(self.index)
 
@@ -954,6 +952,9 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is
           encountered processing the data.
         """
+        if len(target_indices) != len(set(target_indices)):
+            raise ValueError(f"{self.__class__.__name__}.get_df() invoked with duplicated parameters.")
+
         # Avoid sending a false warning of not having invoked self.get_df
         self._was_get_df_called = True
 
@@ -973,7 +974,7 @@ class ATable(metaclass=MetaTable):
 
         # Use the provided target indices or discover automatically from the dataset folder
         target_indices = list(target_indices) if target_indices is not None \
-            else self.get_all_input_indices(ext=self.dataset_files_extension)
+            else list(self.get_all_input_indices(ext=self.dataset_files_extension))
 
         if not target_indices:
             enb.logger.error(f"No target indices (data samples) "
@@ -1009,7 +1010,7 @@ class ATable(metaclass=MetaTable):
 
         # Split in chunks and add/update the persistent storage
         df = None
-        
+
         if fill or overwrite:
             if progress_tracker is None and enb.progress.is_progress_enabled():
                 with enb.progress.ProgressTracker(self, len(target_indices), chunk_size) as tracker:
@@ -1109,7 +1110,7 @@ class ATable(metaclass=MetaTable):
         # there is no need to run the computations for those rows.
         # This inner join efficiently queries the loaded table for existing target indices.
         # Its length may be smaller than the requested index length, meaning
-        # that some rows are still to be computed.
+        # that some rows would still need to be computed.
         target_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
         target_df.set_index(self.private_index_column, drop=True, inplace=True)
         target_df = target_df.merge(
@@ -1119,36 +1120,37 @@ class ATable(metaclass=MetaTable):
             right_index=True,
             copy=False)
 
-        assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
-                                                   f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
+        assert len(target_df) <= len(target_locs), \
+            (f"Error: Duplicated target indices? "
+             f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}")
+
+        # Find the positions that have a null value in any of the requested columns
+        target_locs = [indices_to_internal_loc(index) for index in target_indices]
+        null_target_indices = [
+            internal_loc_to_index(loc) 
+            for loc in target_df[target_df[target_columns].isnull().any(axis=1)].index
+            if loc in target_locs]
+
+        # Find the indices not present in the persistence
+        missing_target_indices = [
+            index for index in target_indices
+            if indices_to_internal_loc(index) not in target_df.index]
 
         # The df needs filling if is missing any row or column, or overwrite is forced
-        fill_needed = fill_needed and ((len(target_df) < len(target_indices)) or len(missing_column_list) > 0)        
-        if fill_needed or overwrite:
-            # Needed locs are those of the rows that require an update or do not exist in the loaded df
-            if overwrite or len(missing_column_list) > 0:
-                # All indices are computed if overwrite is forced or any column is missing
-                needed_indices = target_indices
-            else:
-                # Build the list of indices that need computing
-                ## Indices that exist already, but are null
-                needed_indices = [
-                    index
-                    for index in target_df[target_columns].isnull().any(axis=1).index
-                    if index in target_indices]
-                ## Indices that don't exist yet
-                needed_indices.extend(
-                    index
-                    for index in target_indices
-                    if indices_to_internal_loc(index) not in target_df.index)
+        fill_needed = fill_needed and (
+                (len(target_df) < len(target_indices))
+                or len(missing_column_list) > 0
+                or len(null_target_indices) > 0
+        )
 
-            # Process only columns that need an update and rows that did not exist.
+        if fill_needed or overwrite:
+            # Process only row with columns that need an update, and rows that did not exist.
             computed_df = self.compute_target_rows(
                 # By passing target_df instead of loaded_table,
                 # there is less memory (and possibly network traffic) footprint.
                 loaded_df=loaded_table,
                 target_df=target_df,
-                target_indices=needed_indices,
+                target_indices=null_target_indices + missing_target_indices,
                 target_columns=target_columns,
                 overwrite=overwrite,
                 progress_tracker=progress_tracker)
@@ -1156,7 +1158,8 @@ class ATable(metaclass=MetaTable):
             # Insert or update rows
             target_df = pd.concat([df for df in (target_df, computed_df) if not df.empty])
             target_df = target_df[~target_df.index.duplicated(keep="last")]
-            assert len(target_df) == len(target_indices), (len(target_df), len(target_indices))
+            assert len(target_df) == len(target_indices), (
+            len(target_df), len(target_indices), target_indices, target_df)
 
             # Not all columns might have been requested
             if self.ignored_columns:
@@ -1278,7 +1281,10 @@ class ATable(metaclass=MetaTable):
                             overwrite,
                             progress_tracker=None):
         """Generate and return a |DataFrame| with as many rows as given by
-        `target_indices`, with the columns given in `target_columns`, using this table's column-setting functions.
+        `target_indices`, with the columns given in `target_columns`, 
+        using this table's column-setting functions. 
+        
+        This method does not interact with persistence files. 
 
         This method is run when there are one or more known missing values in the
         requested df, e.g., there are:
@@ -1407,7 +1413,8 @@ class ATable(metaclass=MetaTable):
         :param column_fun_tuples: a list of (column, fun) tuples,
            where fun is to be invoked to fill column
         :param overwrite: if True, existing values are overwritten with
-          newly computed data
+          newly computed data. 
+          Otherwise, only missing or None columns are populated (and therefore only their column functions called)
 
         :return: a `pandas.Series` instance corresponding to this row,
           with a column named as given by self.private_index_column set to the
@@ -1524,6 +1531,7 @@ class ATable(metaclass=MetaTable):
 
                     return cfe
 
+            # Update the index (indices) of this row
             for index_name, index_value in zip(self.indices, unpack_index_value(index)):
                 row[index_name] = index_value
 
@@ -1818,7 +1826,7 @@ def check_unique_indices(df):
         raise CorruptedTableError(atable=None, msg=msg)
 
 
-def indices_to_internal_loc(values):
+def indices_to_internal_loc(values) -> str:
     """Given an index string or list of strings, return a single index string
     that uniquely identifies those strings and can be used as an internal index.
 
@@ -1838,13 +1846,27 @@ def indices_to_internal_loc(values):
     return str(tuple(values))
 
 
-def unpack_index_value(index):
-    """Unpack an enb-created |DataFrame| index and return its elements.
-    This can be useful to iterate homogeneously regardless of whether single
-    or multiple indices are used.
+def internal_loc_to_index(internal_loc) -> str | List[str]:
+    """Transform an enb-generated location (index VALUE) and return the corresponding index value.
+    This value can be a single string-like object, or a tuple of string-like objects."""
+    index = ast.literal_eval(internal_loc)
 
-    :return: If input is a string, it returns a list with that column name.
-      If input is a list, it returns self.index.
+    if len(index) == 1:
+        return index[0]
+
+    return index
+
+
+def unpack_index_value(index):
+    """Unpack an enb-created |DataFrame| index NAME and return its elements.
+    IMPORTANT: This method deals with index NAMEs, because enb currently supports; 
+    this is NOT the inverse of indices_to_internal_loc (see internal_loc_to_index instead)
+    
+    This can be useful to iterate homogeneously regardless of whether single-element
+    or multiple-element (tuple) indices are used.  
+
+    :return: If input is a string, it returns a list with that string as its only element.
+      If input is a list, it returns a copy of that list. 
     """
     if isinstance(index, (str, numbers.Number)):
         return [index]
@@ -1980,7 +2002,7 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     :param base_dataset_dir: if not None, the dir where test files are searched
       for recursively. If None, options.base_dataset_dir is used instead.
     :return: the sorted list of canonical paths to the found input files.
-    """    
+    """
     # Set the input dataset dir
     base_dataset_dir = base_dataset_dir or options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):
@@ -2000,7 +2022,6 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
 
     # If quick is selected, return at most as many paths as the quick parameter count
     all_input_files = sorted_path_list if not options.quick else sorted_path_list[:options.quick]
-    
 
     return all_input_files
 
