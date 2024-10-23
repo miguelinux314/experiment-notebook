@@ -954,6 +954,9 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is
           encountered processing the data.
         """
+        if len(target_indices) != len(set(target_indices)):
+            raise ValueError(f"{self.__class__.__name__}.get_df() invoked with duplicated parameters.")
+
         # Avoid sending a false warning of not having invoked self.get_df
         self._was_get_df_called = True
 
@@ -1119,36 +1122,32 @@ class ATable(metaclass=MetaTable):
             right_index=True,
             copy=False)
 
-        assert len(target_df) <= len(target_locs), f"Error: Duplicated indices? " \
-                                                   f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}"
+        assert len(target_df) <= len(target_locs), \
+            (f"Error: Duplicated indices? "
+             f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}")
+
+        # Find the positions that have a null value in any of the requested columns
+
+        target_locs = [indices_to_internal_loc(index) for index in target_indices]
+        null_target_indices = [
+            index for index in target_df[target_columns].isnull().any(axis=1).index
+            if index in target_locs]
 
         # The df needs filling if is missing any row or column, or overwrite is forced
-        fill_needed = fill_needed and ((len(target_df) < len(target_indices)) or len(missing_column_list) > 0)        
-        if fill_needed or overwrite:
-            # Needed locs are those of the rows that require an update or do not exist in the loaded df
-            if overwrite or len(missing_column_list) > 0:
-                # All indices are computed if overwrite is forced or any column is missing
-                needed_indices = target_indices
-            else:
-                # Build the list of indices that need computing
-                ## Indices that exist already, but are null
-                needed_indices = [
-                    index
-                    for index in target_df[target_columns].isnull().any(axis=1).index
-                    if index in target_indices]
-                ## Indices that don't exist yet
-                needed_indices.extend(
-                    index
-                    for index in target_indices
-                    if indices_to_internal_loc(index) not in target_df.index)
+        fill_needed = fill_needed and (
+                (len(target_df) < len(target_indices))
+                or len(missing_column_list) > 0
+                or len(null_target_indices) > 0
+        )
 
+        if fill_needed or overwrite:
             # Process only columns that need an update and rows that did not exist.
             computed_df = self.compute_target_rows(
                 # By passing target_df instead of loaded_table,
                 # there is less memory (and possibly network traffic) footprint.
                 loaded_df=loaded_table,
                 target_df=target_df,
-                target_indices=needed_indices,
+                target_indices=target_indices,
                 target_columns=target_columns,
                 overwrite=overwrite,
                 progress_tracker=progress_tracker)
@@ -1407,7 +1406,8 @@ class ATable(metaclass=MetaTable):
         :param column_fun_tuples: a list of (column, fun) tuples,
            where fun is to be invoked to fill column
         :param overwrite: if True, existing values are overwritten with
-          newly computed data
+          newly computed data. 
+          Otherwise, only missing or None columns are populated (and therefore only their column functions called)
 
         :return: a `pandas.Series` instance corresponding to this row,
           with a column named as given by self.private_index_column set to the
