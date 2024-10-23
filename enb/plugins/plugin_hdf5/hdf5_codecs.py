@@ -5,8 +5,8 @@ __author__ = "Òscar Maireles and Miguel Hernández-Cabronero"
 __since__ = "2021/08/01"
 
 import numpy as np
-import enb
 import h5py
+import enb
 
 
 class AbstractHdf5Codec(enb.icompression.LosslessCodec):
