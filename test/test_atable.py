@@ -5,6 +5,7 @@ import glob
 import pickle
 import unittest
 import string
+import tempfile
 import numpy as np
 
 import enb.atable
@@ -154,7 +155,7 @@ class TestSummaryTable(unittest.TestCase):
             p for p in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*"))
             if os.path.isfile(p)]
 
-        for chunk_size in range(1, len(target_paths)+1):
+        for chunk_size in range(1, len(target_paths) + 1):
             enb.config.options.chunk_size = chunk_size
 
             base_df = base_table.get_df(target_indices=target_paths)
@@ -203,6 +204,44 @@ class TypesTable(enb.atable.ATable):
         row["first_last_dict"] = dict(first=index[0], last=index[-1]) if index else {}
         row["custom_type_column"] = CustomType(custom_prop=len(index))
 
+
+class TestNewColumns(unittest.TestCase):
+    def test_new_column(self):
+        """Make sure that columns can be added after successfully running get_df, 
+        and have atable populate those new columns.
+        """
+        # Just some dummy data
+        with open(__file__, "r") as f:
+            lines = f.readlines()[:100]
+            
+        lines = sorted(set(lines))
+
+        # Column function to add after calling get_df 
+        def column_y(self, index, row):
+            return 2 * row["x"]
+
+        for chunk_size in (2, 17):            
+            # Redefine the class each loop
+            class T(enb.atable.ATable):
+                def column_x(self, index, row):
+                    return len(str(index))
+            
+            with tempfile.NamedTemporaryFile() as tmp_file:
+                table = T(csv_support_path=tmp_file.name)
+                
+                df = table.get_df(target_indices=lines[:5])
+                assert "x" in df.columns
+                assert "y" not in df.columns, list(df.columns)
+    
+                enb.atable.ATable.add_column_function(T, column_y, enb.atable.ColumnProperties("y"))
+                
+                for target_indices in (lines[:5], lines):
+                    df2 = table.get_df(target_indices=target_indices)
+                    assert "x" in df2.columns, list(df2.columns)
+                    assert "y" in df2.columns, list(df2.columns)
+                    assert (2 * df2["x"] == df2["y"]).all()
+                    assert not df2["y"].isnull().any()
+            
 
 if __name__ == '__main__':
     unittest.main()
