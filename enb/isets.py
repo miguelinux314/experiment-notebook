@@ -397,7 +397,7 @@ class ImagePropertiesTable(ImageGeometryTable):
         atable.ColumnProperties(f"entropy_{bytes_per_sample}B_bps",
                                 label=f"Entropy (bits, {bytes_per_sample}-byte samples)",
                                 plot_min=0, plot_max=8 * bytes_per_sample)
-        for bytes_per_sample in (1, 2)])
+        for bytes_per_sample in (1, 2, 4)])
     def set_file_entropy(self, file_path, row):
         """Set the zero-order entropy of the data in file_path for 1, 2 and 4
         bytes per sample in entropy_1B_bps, entropy_2B_bps and
