@@ -152,8 +152,8 @@ class AbstractCodec(enb.experiment.ExperimentTask):
         nor fully informative. By default, self's class name is returned.
         """
         return self.__class__.__name__
-
-    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+    
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None) -> CompressionResults:
         """Compress original_path into compress_path using param_dict as params.
         :param original_path: path to the original file to be compressed
         :param compressed_path: path to the compressed file to be created
@@ -627,7 +627,7 @@ class LittleEndianWrapper(WrapperCodec):
                     f"<{sign_str}{original_file_info['bytes_per_sample']}"),
                     file_or_path=reconstructed_path)
                 decompression_results.reconstructed_path = reconstructed_path
-                
+
                 return decompression_results
         else:
             return super().decompress(compressed_path=compressed_path,
@@ -926,12 +926,12 @@ class CompressionExperiment(enb.experiment.Experiment):
             else self.default_file_properties_table_class
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
             else os.path.join(options.persistence_dir,
-                              f"{table_class.__name__}_persistence.csv")
+                              f"persistence_{table_class.__name__}.csv")
         imageinfo_table = dataset_info_table if dataset_info_table is not None \
             else table_class(csv_support_path=csv_dataset_path)
 
         csv_dataset_path = csv_dataset_path if csv_dataset_path is not None \
-            else f"{dataset_info_table.__class__.__name__}_persistence.csv"
+            else f"persistence_{dataset_info_table.__class__.__name__}.csv"
 
         if not codecs:
             raise ValueError(
@@ -1022,7 +1022,7 @@ class CompressionExperiment(enb.experiment.Experiment):
                 file_path=file_path, codec=codec,
                 image_info_row=image_info_row,
                 compressed_copy_dir=self.compressed_copy_dir_path,
-                reconstructed_copy_dir=self.reconstructed_dir_path)
+                reconstructed_copy_dir=self.reconstructed_dir_path or enb.config.options.reconstructed_dir)
             assert self.codec_results is not None
 
             processed_row = super().compute_one_row(
@@ -1143,27 +1143,25 @@ class CompressionExperiment(enb.experiment.Experiment):
                              row.image_info_row["samples"]) \
                             / (8 * row["compressed_size_bytes"])
 
-    @enb.atable.column_function(
-        [enb.atable.ColumnProperties(
-            name="compression_efficiency_1byte_entropy",
-            label="Compression efficiency (1B entropy)",
-            plot_min=0),
-            enb.atable.ColumnProperties(
-                name="compression_efficiency_2byte_entropy",
-                label="Compression efficiency (2B entropy)",
-                plot_min=0),
-        ])
+    @enb.atable.column_function([
+        enb.atable.ColumnProperties(
+            name=f"compression_efficiency_{B}byte_entropy",
+            labytesel=f"Compression efficiency ({B}bytes entropy)",
+            plot_min=0, plot_max=B) for B in (1, 2, 4)])
     def set_efficiency(self, index, row):
         file_path, codec_name = self.index_to_path_task(index)
         row.image_info_row = self.dataset_table_df.loc[
             enb.atable.indices_to_internal_loc(file_path)]
-        for bytes in (1, 2):
-            column_name = f"compression_efficiency_{bytes}byte_entropy"
+        for B in (1, 2, 4):
+            column_name = f"compression_efficiency_{B}byte_entropy"
             try:
                 row[column_name] = \
-                    row.image_info_row[f"entropy_{bytes}B_bps"] * (
-                            row.image_info_row["size_bytes"] / bytes) \
-                    / (row["compressed_size_bytes"] * 8)
+                    (row.image_info_row[f"entropy_{B}B_bps"]
+                     * (row.image_info_row["size_bytes"] / B)
+                     / (row["compressed_size_bytes"] * 8))
+                if row[column_name] < 0: 
+                    # The entropy is not known (e.g., size not multiple of B bytes)
+                    row[column_name] = -1
             except KeyError as ex:
                 enb.logger.warn(
                     f"Could not find a column required to compute "
@@ -1264,7 +1262,7 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
 
         @enb.atable.column_function([
             enb.atable.ColumnProperties(name="unique_sample_count",
-                                    label="Number of different sample values"),
+                                        label="Number of different sample values"),
             enb.atable.ColumnProperties(name="sample_min",
                                         label="Min sample value (byte samples)"),
             enb.atable.ColumnProperties(name="sample_max",

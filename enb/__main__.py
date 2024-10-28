@@ -42,7 +42,8 @@ def _get_cli_parser():
         "destination_dir",
         help="Path to the directory that will contain the installed plugin. "
              "Defaults to the working dir.",
-        default="")
+        nargs="?",
+        default=None)
     cli_parser.plugin_parser.install_parser.add_argument(
         # Used to trigger the desired call and save the return status
         nargs=0, dest="", action=PluginInstall)
@@ -95,12 +96,10 @@ class PluginInstall(argparse.Action):
     """
 
     def __call__(self, parser, namespace, values, option_string=None):
+        # Get plugin name and instance
         plugin_name = namespace.plugin_name.strip()
         assert " " not in plugin_name, \
             f"Plugin names cannot have spaces: {repr(plugin_name)}"
-        destination_dir = namespace.destination_dir
-        destination_dir_existed = os.path.exists(destination_dir)
-
         try:
             plugin = [p for p in enb.plugins.list_all_installables() if
                       p.name == plugin_name][0]
@@ -111,11 +110,19 @@ class PluginInstall(argparse.Action):
                 "or `enb plugin list <something>` to filter that list.")
             sys.exit(1)
 
-        if destination_dir_existed and not issubclass(plugin, enb.plugins.Template):
+        # Configure output paths
+        if namespace.destination_dir is None and not os.path.exists("plugins"):
+            os.makedirs("plugins")
+            with open(os.path.join("plugins", "__init__.py"), "w"):
+                pass
+        destination_dir = namespace.destination_dir or os.path.join("plugins", plugin_name)
+        if os.path.exists(destination_dir) and not issubclass(plugin, enb.plugins.Template):
             enb.logger.error(f"Error installing {repr(plugin.name)}.\n"
                              f"The destination dir {repr(destination_dir)} "
                              "already exists. Remove and try again.")
             sys.exit(1)
+            
+        # Install
         try:
             plugin.install(installation_dir=destination_dir)
         except (SyntaxError, ValueError) as ex:
