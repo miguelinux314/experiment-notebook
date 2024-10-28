@@ -228,7 +228,9 @@ class Analyzer(enb.atable.ATable):
                 # pylint: disable=too-many-arguments
 
                 # Get the summary table with the requested data analysis
-                enb.logger.info(f"Analyzing data with {self.__class__.__name__}...")
+                enb.logger.info(
+                    f"Analyzing {len(target_columns)} target{'s' if len(target_columns) != 1 else ''} "
+                    f"with {self.__class__.__name__}...") 
                 summary_table = self.build_summary_atable(
                     full_df=full_df,
                     target_columns=target_columns,
@@ -3391,7 +3393,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             summary_dict = group_df[f"{x_column}_{y_column}_{data_column}_{stat}"]
                             number_format = self.number_format if stat != "count" else "{:d}"
                             longest_cell_length = max(
-                                max(len(number_format.format(val)) for val in summary_dict.values()) if summary_dict else 0,
+                                max(len(number_format.format(val)) for val in
+                                    summary_dict.values()) if summary_dict else 0,
                                 (max(len(str(x)) for x in x_categories)) if x_categories else 0) + len(r"\textbf{}")
                             row_header_format = f"{{:{longest_row_header}s}}"
                             cell_format = f"{{:{longest_cell_length}s}}"
