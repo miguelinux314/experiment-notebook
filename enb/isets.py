@@ -359,14 +359,19 @@ class ImagePropertiesTable(ImageGeometryTable):
     dataset_files_extension = "raw"
 
     @atable.column_function([
+        atable.ColumnProperties(name="unique_sample_count",
+                                label="Number of different sample values"),
         atable.ColumnProperties(name="sample_min", label="Min sample value"),
         atable.ColumnProperties(name="sample_max", label="Max sample value")])
-    def set_sample_extrema(self, file_path, row):
-        """Set the minimum and maximum values stored in file_path.
+    def set_sample_stats(self, file_path, row):
+        """Set the sample extrema (minimum and maximum values) as well as the number 
+        of different (unique) sample values.
         """
-        array = load_array_bsq(file_or_path=file_path,
-                               image_properties_row=row).flatten()
-        row["sample_min"], row["sample_max"] = array.min(), array.max()
+        unique_values = np.unique(load_array_bsq(
+            file_or_path=file_path, image_properties_row=row).flatten())
+
+        row["unique_sample_count"] = len(unique_values)
+        row["sample_min"], row["sample_max"] = min(unique_values), max(unique_values)
         if row["float"] == False:  # pylint: disable=singleton-comparison
             assert row["sample_min"] == int(row["sample_min"])
             assert row["sample_max"] == int(row["sample_max"])
@@ -423,7 +428,8 @@ class SampleDistributionTable(ImageGeometryTable):
                                      plot_min=0, plot_max=1,
                                      has_dict_values=True)])
     def set_sample_distribution(self, file_path, row):
-        """Compute the data probability distribution of the data in file_path.
+        """Compute the data probability distribution of the data in file_path
+        and store it as a dictionary of observed probability indexed by sample value.
         """
         image = enb.isets.load_array_bsq(file_or_path=file_path,
                                          image_properties_row=row)

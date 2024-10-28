@@ -1263,15 +1263,18 @@ class GeneralLosslessExperiment(LosslessCompressionExperiment):
         verify_file_size = False
 
         @enb.atable.column_function([
+            enb.atable.ColumnProperties(name="unique_sample_count",
+                                    label="Number of different sample values"),
             enb.atable.ColumnProperties(name="sample_min",
                                         label="Min sample value (byte samples)"),
             enb.atable.ColumnProperties(name="sample_max",
                                         label="Max sample value (byte samples)")])
-        def set_sample_extrema(self, file_path, row):
-            """Set the minimum and maximum byte value extrema.
+        def set_sample_stats(self, file_path, row):
+            """Set basic file statistics (unique count, min, max)
             """
             with open(file_path, "rb") as input_file:
-                contents = input_file.read()
+                contents = set(input_file.read())
+                row["unique_sample_count"] = len(contents)
                 row["sample_min"] = min(contents)
                 row["sample_max"] = max(contents)
 

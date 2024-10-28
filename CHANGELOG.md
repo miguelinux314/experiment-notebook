@@ -14,6 +14,15 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Current development version: v1.0.6-dev
 
+Note: although backwards-compatible, this version adds a new column to ImagePropertiesTable. 
+Therefore, the first time running previously experiments that use enb.isets and/or enb.compression
+will pass through all requested indices to compute that new column
+
+Improvements:
+
+- The number of unique sample values of an image is now stored by ImagePropertiesTable
+
+
 # Latest stable version: 2024/10/28 v1.0.5
 
 Improvements:
