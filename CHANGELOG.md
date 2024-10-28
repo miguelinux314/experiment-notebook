@@ -12,15 +12,27 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Current development version: v1.0.6-dev
+# Current development version: v1.1.0-dev
 
-Note: although backwards-compatible, this version adds a new column to ImagePropertiesTable. 
-Therefore, the first time running previously experiments that use enb.isets and/or enb.compression
-will pass through all requested indices to compute that new column
+**Important**: although backwards-compatible, this version
+
+- Adds new columns to ImagePropertiesTable.
+- Changes the default persistence, plot and analysis dirs, and 
+
+Therefore, the first time you re-run a previously existing enb experiment:
+
+- enb will need to proces again all indices of any table based on `enb.isets.ImagePropertiesTable` 
+  (including those within compression experiments). This applies one np.unique call to each
+  sample, which should be reasonably fast even for moderately large sample sizes.
+- enb will not find your CSV persistence files in the persistence dirs that were default until
+  (but not including) v1.1.0. This can be solved either by (a) moving the existing persistence to the new
+  default location, or (b) explicitly setting the persistence paths to your tables/experiments.
 
 Improvements:
 
 - The number of unique sample values of an image is now stored by ImagePropertiesTable
+- Added the `bitshuffle` plugin that applies the bitshuffle transform before compression 
+  and after decompression.  
 
 
 # Latest stable version: 2024/10/28 v1.0.5

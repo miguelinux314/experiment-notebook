@@ -28,6 +28,8 @@ include enb/plugins/installable.py
 include enb/plugins/plugin_ac/arithmetic_codec.py
 include enb/plugins/plugin_ac/Makefile.linux
 include enb/plugins/plugin_ac/__plugin__.py
+include enb/plugins/plugin_bitshuffle/bitshuffle_codec.py
+include enb/plugins/plugin_bitshuffle/__plugin__.py
 include enb/plugins/plugin_bwt/bwt_codec.py
 include enb/plugins/plugin_bwt/bwxform.c
 include enb/plugins/plugin_bwt/bwxform.h
