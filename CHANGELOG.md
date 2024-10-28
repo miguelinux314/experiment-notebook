@@ -1,4 +1,4 @@
-# CHANGELOG
+# > CHANGELOG
 
 The following updates have been highlighted for each release. Note that `enb` employs a `MAYOR`.`MINOR`.`REVISION`
 format. Given a code initially developed for one `enb` version and then executed in another (newer) version:
@@ -12,21 +12,23 @@ format. Given a code initially developed for one `enb` version and then executed
 - If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
   used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
 
-# Current development version: v1.0.5-dev
+# Latest stable version: 2024/10/28 v1.0.5
 
 Improvements:
 
-- Fixed a problem that prevented values in .ini files from being recognized 
+- Fixed a problem that prevented values in .ini files from being recognized
   (persistence_dir, base_dataset_dir, analysis_dir, output_plots_dir)
-- Fixed regression bug that prevented some columns from being populated if they were defined after the table's 
+- Fixed regression bug that prevented some columns from being populated if they were defined after the table's
   persistence CSV file was created.
 - The enb.ini plugin is now installed with all options commented-out, ready for the user to modify at will
 
-Deprecations: 
-- Fixed enb.atable.ATable's typo: dataset_files_extension becomes dataset_file_extension. 
+Deprecations:
+- Fixed enb.atable.ATable's typo: dataset_files_extension becomes dataset_file_extension.
   The old name will be kept for now as a deprecated property.
 
-# Latest stable version: 2024/9/8 v1.0.4
+# Version history
+
+## 2024/9/8 v1.0.4
 
 Improvements:
 
@@ -35,9 +37,7 @@ Improvements:
 - Improved error handling of images files with non-compliant names.
 - Fixed some external library warnings due to API changes (numpy, pandas)
 
-# Version history
-
-# 2024/5/19 v1.0.3
+## 2024/5/19 v1.0.3
 
 Improvements:
 
@@ -67,7 +67,7 @@ Improvements:
 
 - Added `lc`, a lossless codec that wraps the LC Framework functionality.
 
-# 2024/02/06 v1.0.2
+## 2024/02/06 v1.0.2
 
 Improvements:
 
@@ -110,7 +110,7 @@ Bug fixes:
 
 - Added missing `h5py` dependency to `setup.py`.
 
-# 2024/01/01 v1.0.1
+## 2024/01/01 v1.0.1
 
 After 4 years of development and a lot of user feedback, switched from beta status to stable/production!
 
