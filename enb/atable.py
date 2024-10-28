@@ -976,7 +976,7 @@ class ATable(metaclass=MetaTable):
 
         # Use the provided target indices or discover automatically from the dataset folder
         target_indices = list(target_indices) if target_indices is not None \
-            else self.get_all_input_indices(ext=self.dataset_files_extension)
+            else list(self.get_all_input_indices(ext=self.dataset_files_extension))
 
         if not target_indices:
             enb.logger.error(f"No target indices (data samples) "
@@ -1130,8 +1130,12 @@ class ATable(metaclass=MetaTable):
 
         target_locs = [indices_to_internal_loc(index) for index in target_indices]
         null_target_indices = [
-            index for index in target_df[target_columns].isnull().any(axis=1).index
-            if index in target_locs]
+            internal_loc_to_index(loc) 
+            for loc in target_df[target_df[target_columns].isnull().any(axis=1)].index
+            if loc in target_locs]
+        missing_target_indices = [
+            index for index in target_indices
+            if indices_to_internal_loc(index) not in target_df.index]
 
         # The df needs filling if is missing any row or column, or overwrite is forced
         fill_needed = fill_needed and (
@@ -1141,13 +1145,13 @@ class ATable(metaclass=MetaTable):
         )
 
         if fill_needed or overwrite:
-            # Process only columns that need an update and rows that did not exist.
+            # Process only row with columns that need an update, and rows that did not exist.
             computed_df = self.compute_target_rows(
                 # By passing target_df instead of loaded_table,
                 # there is less memory (and possibly network traffic) footprint.
                 loaded_df=loaded_table,
                 target_df=target_df,
-                target_indices=target_indices,
+                target_indices=null_target_indices + missing_target_indices,
                 target_columns=target_columns,
                 overwrite=overwrite,
                 progress_tracker=progress_tracker)
@@ -1277,7 +1281,10 @@ class ATable(metaclass=MetaTable):
                             overwrite,
                             progress_tracker=None):
         """Generate and return a |DataFrame| with as many rows as given by
-        `target_indices`, with the columns given in `target_columns`, using this table's column-setting functions.
+        `target_indices`, with the columns given in `target_columns`, 
+        using this table's column-setting functions. 
+        
+        This method does not interact with persistence files. 
 
         This method is run when there are one or more known missing values in the
         requested df, e.g., there are:
@@ -1837,11 +1844,23 @@ def indices_to_internal_loc(values):
 
     return str(tuple(values))
 
+def internal_loc_to_index(internal_loc):
+    """Transform an enb-generated internal loc into the index value that was used to create it.
+    If the index was a single element, that element is returned directly. If the index was an iterable,
+    a tuple is returned."""
+    index = ast.literal_eval(internal_loc)
+    if len(index) == 1:
+        return index[0]
+    return index
+
 
 def unpack_index_value(index):
-    """Unpack an enb-created |DataFrame| index and return its elements.
+    """Unpack an enb-created |DataFrame| index NAME and return its elements.   
     This can be useful to iterate homogeneously regardless of whether single
     or multiple indices are used.
+    
+    NOTE: This method deals with index NAMES, not values. 
+    For that, see `enb.atable.internal_loc_to_index`.
 
     :return: If input is a string, it returns a list with that column name.
       If input is a list, it returns self.index.
