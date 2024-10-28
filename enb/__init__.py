@@ -47,15 +47,18 @@ is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
 # Data dir
 default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
-# Persistence dir
-default_persistence_dir = _os.path.join(calling_script_dir,
-                                        f"persistence_{_os.path.basename(_sys.argv[0])}")
-# Plots dir
-default_output_plots_dir = _os.path.join(calling_script_dir,
-                                         "plots") if not is_enb_cli else "./plots"
-# Analysis dir
-default_analysis_dir = _os.path.join(calling_script_dir,
-                                     "analysis") if not is_enb_cli else "./analysis"
+# Persistence dir (default: persistence/)
+default_persistence_dir = _os.path.join(calling_script_dir, "persistence")
+# Plots dir (default: plots/<script_name>)
+default_output_plots_dir = _os.path.join(
+    calling_script_dir if not is_enb_cli else ".",
+    "plots",
+    _os.path.basename(_sys.argv[0])[:-len(".py") if _sys.argv[0].endswith(".py") else None])
+# Analysis dir (default: analysis/<script_name>)
+default_analysis_dir = _os.path.join(
+    calling_script_dir if not is_enb_cli else ".",
+    "analysis",
+    _os.path.basename(_sys.argv[0])[:-len(".py") if _sys.argv[0].endswith(".py") else None])
 
 # Fix getcwd for the specific case enb is imported from the sphinx documentation tool
 if _os.path.basename(_sys.argv[0]) == "sphinx-build":
