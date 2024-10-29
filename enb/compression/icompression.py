@@ -4,9 +4,10 @@
 __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/04/01"
 
+import os
+import re
 import filecmp
 import hashlib
-import os
 import tempfile
 import time
 import collections
@@ -688,12 +689,16 @@ class CompressionExperiment(enb.experiment.Experiment):
             """
             if self._compression_results is None:
                 os.makedirs(options.base_tmp_dir, exist_ok=True)
-                # Assign a unique temporary path to the compressed file
-                fd, tmp_compressed_path = tempfile.mkstemp(
-                    dir=options.base_tmp_dir,
-                    prefix=f"compressed_{os.path.basename(self.file_path)}_")
-                os.close(fd)
-                os.remove(tmp_compressed_path)
+                # Assign a unique temporary path to the compressed file and avoid introducing spurious geometry tags
+                tmp_compressed_path = None
+                while ((tmp_compressed_path is None) or 
+                       (re.search(r"\d+x\d+x\d+.*\D\d+x\d+x\d+", os.path.basename(tmp_compressed_path)) is not None)):
+                    fd, tmp_compressed_path = tempfile.mkstemp(
+                        dir=options.base_tmp_dir,
+                        prefix=f"compressed_{os.path.basename(self.file_path)}_")
+                    os.close(fd)
+                    os.remove(tmp_compressed_path)
+                    
                 try:
                     measured_times = []
                     measured_memory = []

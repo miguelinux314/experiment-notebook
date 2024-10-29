@@ -1,5 +1,11 @@
 include enb/aanalysis.py
 include enb/atable.py
+include enb/compression/fits.py
+include enb/compression/icompression.py
+include enb/compression/__init__.py
+include enb/compression/jpg.py
+include enb/compression/pgm.py
+include enb/compression/tarlite.py
 include enb/config/aini.py
 include enb/config/aoptions.py
 include enb/config/contrib_sha256.csv
@@ -11,17 +17,13 @@ include enb/config/mpl_styles/slides
 include enb/config/mpl_styles/two_columns
 include enb/config/singleton_cli.py
 include enb/experiment.py
-include enb/fits.py
-include enb/icompression.py
 include enb/__init__.py
 include enb/isets.py
-include enb/jpg.py
 include enb/log.py
 include enb/__main__.py
 include enb/misc.py
 include enb/parallel.py
 include enb/parallel_ray.py
-include enb/pgm.py
 include enb/plotdata.py
 include enb/plugins/__init__.py
 include enb/plugins/installable.py
@@ -270,5 +272,4 @@ include enb/png.py
 include enb/progress.py
 include enb/render.py
 include enb/sets.py
-include enb/tarlite.py
 include enb/tcall.py
