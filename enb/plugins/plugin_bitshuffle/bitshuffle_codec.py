@@ -53,6 +53,7 @@ class BitshuffleWrapper(_AbstractCodec):
                 compression_results = self.compression_results_from_paths(
                     original_path=shuffled_path,
                     compressed_path=compressed_path)
+            os.remove(shuffled_path)
 
             compression_results.original_path = original_path
             if compression_results.compression_time_seconds is None:
@@ -87,6 +88,7 @@ class BitshuffleWrapper(_AbstractCodec):
             time_after = time.process_time() if not enb.config.options.report_wall_time else time.time()
             shuffle_time = max(0.0, time_after - time_before)
             enb.isets.dump_array(array=unshuffled_array, file_or_path=reconstructed_path)
+            os.remove(shuffled_path)
 
             if decompression_results.decompression_time_seconds is None:
                 decompression_results.decompression_time_seconds = decompression_time
