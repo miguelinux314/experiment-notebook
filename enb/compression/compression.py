@@ -34,7 +34,7 @@ class CompressionResults:
 
     def __init__(self, codec_name=None, codec_param_dict=None,
                  original_path=None,
-                 compressed_path=None, side_info_files=None,
+                 compressed_path=None,
                  compression_time_seconds=None,
                  maximum_memory_kb=None):
         """
@@ -42,20 +42,15 @@ class CompressionResults:
         :param codec_param_dict: dictionary of parameters to the codec
         :param original_path: path to the input original file
         :param compressed_path: path to the output compressed file
-        :param side_info_files: list of file paths with side information
         :param compression_time_seconds: effective average compression time in
           seconds
         :param maximum_memory_kb: maximum resident memory in kilobytes
         """
         # pylint: disable=too-many-arguments
-        side_info_files = side_info_files \
-            if side_info_files is not None else []
-
         self.codec_name = codec_name
         self.codec_param_dict = codec_param_dict
         self.original_path = original_path
         self.compressed_path = compressed_path
-        self.side_info_files = list(side_info_files)
         self.compression_time_seconds = compression_time_seconds
         self.maximum_memory_kb = maximum_memory_kb
 
@@ -70,7 +65,7 @@ class DecompressionResults:
 
     def __init__(self, codec_name=None, codec_param_dict=None,
                  compressed_path=None,
-                 reconstructed_path=None, side_info_files=None,
+                 reconstructed_path=None,
                  decompression_time_seconds=None,
                  maximum_memory_kb=None):
         """
@@ -79,19 +74,15 @@ class DecompressionResults:
         :param compressed_path: path to the output compressed file
         :param reconstructed_path: path to the reconstructed file after
           decompression
-        :param side_info_files: list of file paths with side information
         :param decompression_time_seconds: effective decompression time in
           seconds
         :param maximum_memory_kb: maximum resident memory in kilobytes
         """
         # pylint: disable=too-many-arguments
-        side_info_files = side_info_files \
-            if side_info_files is not None else []
         self.codec_name = codec_name
         self.codec_param_dict = codec_param_dict
         self.compressed_path = compressed_path
         self.reconstructed_path = reconstructed_path
-        self.side_info_files = side_info_files
         self.decompression_time_seconds = decompression_time_seconds
         self.maximum_memory_kb = maximum_memory_kb
 

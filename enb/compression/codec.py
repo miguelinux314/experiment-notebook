@@ -63,7 +63,6 @@ class AbstractCodec(ExperimentTask):
             codec_param_dict=self.param_dict,
             original_path=original_path,
             compressed_path=compressed_path,
-            side_info_files=[],
             compression_time_seconds=None)
 
     def decompression_results_from_paths(
@@ -76,7 +75,6 @@ class AbstractCodec(ExperimentTask):
             codec_param_dict=self.param_dict,
             compressed_path=compressed_path,
             reconstructed_path=reconstructed_path,
-            side_info_files=[],
             decompression_time_seconds=None)
 
     def __repr__(self):
