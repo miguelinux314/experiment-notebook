@@ -10,9 +10,11 @@ import collections
 
 class TarliteWriter:
     """Input a series of file paths and output a single file with
-    all the inputs contents, plus some metainformation to reconstruct them.
+    all the inputs contents, plus some meta-information to reconstruct them.
     Files are stored flatly, i.e., only names are stored,
-    discarding any information about their contining dirs.
+    discarding any information about their directory structure.
+    Therefore, it is not possible to store two files with the same name even if
+    all input paths point to different files.
     """
 
     def __init__(self, initial_input_paths=None):
@@ -46,6 +48,7 @@ class TarliteWriter:
 class TarliteReader:
     """Extract files created by :class:`TarliteWriter`.
     """
+
     # pylint: disable=too-few-public-methods
 
     def __init__(self, tarlite_path):
@@ -72,6 +75,7 @@ class TarliteReader:
 
 def tarlite_files(input_paths, output_tarlite_path):
     """Take a list of input paths and combine them into a single tarlite file.
+    
     """
     writer = TarliteWriter(initial_input_paths=input_paths)
     writer.write(output_path=output_tarlite_path)
@@ -79,6 +83,7 @@ def tarlite_files(input_paths, output_tarlite_path):
 
 def untarlite_files(input_tarlite_path, output_dir_path):
     """Take a tarlite file and output the contents into the given directory.
+    The file names are preserved.
     """
     reader = TarliteReader(tarlite_path=input_tarlite_path)
     reader.extract_all(output_dir_path=output_dir_path)
