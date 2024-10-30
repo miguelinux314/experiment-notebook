@@ -13,11 +13,12 @@ import numpngw
 import numpy as np
 import pdf2image
 
-import enb
-import enb.sets
+from enb.sets import FileVersionTable
+from enb.compression.wrapper import WrapperCodec
+from enb.isets import load_array_bsq
 
 
-class PNGWrapperCodec(enb.icompression.WrapperCodec):
+class PNGWrapperCodec(WrapperCodec):
     """Raw images are coded into PNG before compression with the wrapper,
     and PNG is decoded to raw after decompression.
     """
@@ -25,7 +26,7 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
     # pylint: disable=abstract-method
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        img = enb.isets.load_array_bsq(
+        img = load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
 
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_file:
@@ -74,10 +75,10 @@ class PNGWrapperCodec(enb.icompression.WrapperCodec):
             drs.maximum_memory_kb = decompression_results.maximum_memory_kb
 
 
-class PNGCurationTable(enb.sets.FileVersionTable):
+class PNGCurationTable(FileVersionTable):
     """Given a directory tree containing PNG images, copy those images into
     a new directory tree in raw BSQ format adding geometry information tags to
-    the output names recognized by `enb.isets.load_array_bsq`.
+    the output names recognized by `load_array_bsq`.
     """
     dataset_files_extension = "png"
 
@@ -167,12 +168,12 @@ def raw_path_to_png(raw_path, png_path, image_properties_row=None):
       width, height, number of components, bytes per sample, signedness and
       endianness if applicable.
     """
-    img = enb.isets.load_array_bsq(file_or_path=raw_path,
+    img = load_array_bsq(file_or_path=raw_path,
                                    image_properties_row=image_properties_row)
     render_array_png(img=img, png_path=png_path)
 
 
-class PDFToPNG(enb.sets.FileVersionTable):
+class PDFToPNG(FileVersionTable):
     """Take all .pdf files in input dir and save them as .png files into
     output_dir, maintining the relative folder structure.
     """

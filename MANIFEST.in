@@ -1,11 +1,15 @@
 include enb/aanalysis.py
 include enb/atable.py
+include enb/compression/codec.py
+include enb/compression/compression.py
 include enb/compression/fits.py
 include enb/compression/icompression.py
 include enb/compression/__init__.py
 include enb/compression/jpg.py
 include enb/compression/pgm.py
+include enb/compression/png.py
 include enb/compression/tarlite.py
+include enb/compression/wrapper.py
 include enb/config/aini.py
 include enb/config/aoptions.py
 include enb/config/contrib_sha256.csv
@@ -268,7 +272,6 @@ include enb/plugins/template.py
 include enb/plugins/template_test_all_codecs/generate_test_images.py
 include enb/plugins/template_test_all_codecs/__plugin__.py
 include enb/plugins/template_test_all_codecs/test_all_codecs.py
-include enb/png.py
 include enb/progress.py
 include enb/render.py
 include enb/sets.py

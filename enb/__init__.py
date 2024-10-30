@@ -102,18 +102,21 @@ from . import atable
 ## Basic Experiment features
 from . import sets
 from . import experiment
+from . import isets
 ## Data analysis (e.g., plotting) modules
 from . import plotdata
 from . import render
 from . import aanalysis
-## Image compression modules
-from . import icompression
-from . import isets
-from . import fits
-from . import png
-from . import jpg
-from . import pgm
-from . import tarlite
+## Compression modules
+from . import compression
+# Imports for backwards compatibility
+from .compression import icompression
+from .compression import fits
+from .compression import png
+from .compression import jpg
+from .compression import pgm
+from .compression import tarlite
+
 # Plugin and template support
 from . import plugins
 

@@ -17,13 +17,16 @@ format. Given a code initially developed for one `enb` version and then executed
 **Important**: although backwards-compatible, this version
 
 - Adds new columns to ImagePropertiesTable.
-- Changes the default persistence, plot and analysis dirs, and 
+- Changes the default persistence, plot and analysis dirs, and
+- Makes `import enb.icompression` invalid, although enb.icompression is set to enb.compression.icompression
+  (the module's new location).
 
 Therefore, the first time you re-run a previously existing enb experiment:
 
 - enb will need to proces again all indices of any table based on `enb.isets.ImagePropertiesTable` 
   (including those within compression experiments). This applies one np.unique call to each
   sample, which should be reasonably fast even for moderately large sample sizes.
+
 - enb will not find your CSV persistence files in the persistence dirs that were default until
   (but not including) v1.1.0. This can be solved either by (a) moving the existing persistence to the new
   default location, or (b) explicitly setting the persistence paths to your tables/experiments.

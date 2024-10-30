@@ -848,7 +848,7 @@ def dump_array(array, file_or_path, mode="wb", dtype=None, order="bsq"):
 
 
 def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
-    """Dump an image array into raw format using band sequential (BSQ)
+    """Dump a 2D of 3D numpy array into a raw file format using band sequential (BSQ)
     sample ordering. See :meth:`enb.isets.dump_array` for more details.
     """
     return dump_array(array=array, file_or_path=file_or_path,
@@ -856,7 +856,7 @@ def dump_array_bsq(array, file_or_path, mode="wb", dtype=None):
 
 
 def dump_array_bil(array, file_or_path, mode="wb", dtype=None):
-    """Dump an image array into raw format using band interleaved line (BIL)
+    """Dump a 2D of 3D numpy array into a raw file format using band interleaved line (BIL)
     sample ordering. See :meth:`enb.isets.dump_array` for more details.
     """
     return dump_array(array=array, file_or_path=file_or_path,
@@ -864,7 +864,7 @@ def dump_array_bil(array, file_or_path, mode="wb", dtype=None):
 
 
 def dump_array_bip(array, file_or_path, mode="wb", dtype=None):
-    """Dump an image array into raw format using band interleaved pixel (BIP)
+    """Dump a 2D of 3D numpy array into a raw file using band interleaved pixel (BIP)
     sample ordering. See :meth:`enb.isets.dump_array` for more details.
     """
     return dump_array(array=array, file_or_path=file_or_path,

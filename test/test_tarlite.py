@@ -13,7 +13,8 @@ import unittest
 __file__ = os.path.abspath(__file__)
 import test_all
 
-import enb.tarlite as tarlite
+import enb
+from enb import tarlite
 
 
 class TestTarlite(unittest.TestCase):

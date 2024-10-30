@@ -8,16 +8,16 @@ import os
 import sys
 import re
 import tempfile
-
 import imageio
 import numpngw
 import numpy as np
 
 import enb
-import enb.isets
+from enb.compression.png import PNGCurationTable
+from enb.compression.wrapper import WrapperCodec
 
 
-class PGMWrapperCodec(enb.icompression.WrapperCodec):
+class PGMWrapperCodec(WrapperCodec):
     """Raw images are coded into PNG before compression with the wrapper,
     and PNG is decoded to raw after decompression.
     """
@@ -75,7 +75,8 @@ class PGMWrapperCodec(enb.icompression.WrapperCodec):
             drs.decompression_time_seconds = \
                 decompression_results.decompression_time_seconds
 
-class PGMCurationTable(enb.png.PNGCurationTable):
+
+class PGMCurationTable(PNGCurationTable):
     """Given a directory tree containing PGM images, copy those images into
     a new directory tree in raw BSQ format adding geometry information tags to
     the output names recognized by `enb.isets.load_array_bsq`.
@@ -187,6 +188,7 @@ def pgm_to_raw(input_path, output_path):
     """
     enb.isets.dump_array_bsq(array=read_pgm(input_path),
                              file_or_path=output_path)
+
 
 def ppm_to_raw(input_path, output_path):
     """Read a file in PPM format and write its contents in raw format,

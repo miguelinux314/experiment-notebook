@@ -13,12 +13,13 @@ import tempfile
 import numpy as np
 from astropy.io import fits
 
-import enb
-from enb import sets
-from enb.config import options
+from enb.atable import get_all_input_files, redefines_column
+from enb.sets import FileVersionTable, FilePropertiesTable
+from enb.isets import load_array_bsq, dump_array_bsq
+from enb.compression.wrapper import WrapperCodec
 
 
-class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
+class FITSVersionTable(FileVersionTable, FilePropertiesTable):
     """Read FITS files and convert them to raw files, sorting them by type (
     integer or float) and by bits per pixel.
     """
@@ -27,7 +28,7 @@ class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
     version_name = "FitsToRaw"
 
     # No need to set  dataset_files_extension here,
-    # because get_default_target_indices is overwriten.
+    # because get_default_target_indices is overwritten.
     def __init__(self, original_base_dir, version_base_dir):
         """:param version_base_dir: path to the versioned base directory
           (versioned directories preserve names and structure within
@@ -47,7 +48,7 @@ class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
     def get_default_target_indices(self):
         indices = []
         for ext in self.allowed_extensions:
-            indices.extend(enb.atable.get_all_input_files(
+            indices.extend(get_all_input_files(
                 ext=ext, base_dataset_dir=self.original_base_dir))
         return indices
 
@@ -67,7 +68,7 @@ class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
             os.path.basename(original_path).replace(
                 f".{input_ext}", ".raw"))
 
-    @enb.atable.redefines_column
+    @redefines_column
     def set_version_repetitions(self, file_path, row):
         """Set the number of times the versioning process is performed.
         """
@@ -176,9 +177,7 @@ class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
                         print(
                             f"Dumping FITS->raw ({repr(effective_output_path)})"
                             f" from hdu_index={hdu_index}")
-                    enb.isets.dump_array_bsq(array=data,
-                                             file_or_path=effective_output_path,
-                                             dtype=dtype_name)
+                    dump_array_bsq(array=data, file_or_path=effective_output_path, dtype=dtype_name)
                     fits_header_path = os.path.join(os.path.dirname(
                         os.path.abspath(effective_output_path)).replace(
                         os.path.abspath(self.version_base_dir),
@@ -197,7 +196,7 @@ class FITSVersionTable(enb.sets.FileVersionTable, enb.sets.FilePropertiesTable):
             saved_images += 1
 
 
-class FITSWrapperCodec(enb.icompression.WrapperCodec):
+class FITSWrapperCodec(WrapperCodec):
     """Raw images are coded into FITS before compression with the wrapper,
     and FITS is decoded to raw after decompression.
     """
@@ -205,7 +204,7 @@ class FITSWrapperCodec(enb.icompression.WrapperCodec):
     # pylint: disable=abstract-method
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        img = enb.isets.load_array_bsq(
+        img = load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
         with tempfile.NamedTemporaryFile(suffix=".fits") as tmp_file:
             os.remove(tmp_file.name)
@@ -221,7 +220,7 @@ class FITSWrapperCodec(enb.icompression.WrapperCodec):
             crs = self.compression_results_from_paths(
                 original_path=original_path, compressed_path=compressed_path)
             crs.compression_time_seconds = max(0,
-                                              compression_results.compression_time_seconds)
+                                               compression_results.compression_time_seconds)
             crs.maximum_memory_kb = compression_results.maximum_memory_kb
             return crs
 
@@ -256,9 +255,9 @@ class FITSWrapperCodec(enb.icompression.WrapperCodec):
             else:
                 raise Exception(f"Invalid header['NAXIS'] = {header['NAXIS']}")
 
-            enb.isets.dump_array_bsq(array=data,
-                                     file_or_path=reconstructed_path,
-                                     dtype=dtype_name)
+            dump_array_bsq(array=data,
+                           file_or_path=reconstructed_path,
+                           dtype=dtype_name)
             decompression_results.compressed_path = compressed_path
             decompression_results.reconstructed_path = reconstructed_path
             return decompression_results

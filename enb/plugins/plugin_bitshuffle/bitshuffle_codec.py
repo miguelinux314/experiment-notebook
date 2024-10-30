@@ -9,16 +9,14 @@ import bitshuffle
 import numpy as np
 
 import enb
-import enb.isets
-from enb.icompression import AbstractCodec as _AbstractCodec
 
 
-class BitshuffleWrapper(_AbstractCodec):
+class BitshuffleWrapper(enb.icompression.AbstractCodec):
     """Codec that applies bitshuffle to the data before compressing with a codec instance
     provided to the constructor.
     """
 
-    def __init__(self, codec: _AbstractCodec):
+    def __init__(self, codec: enb.icompression.AbstractCodec):
         """
         :param codec: The codec instance used to compress and decompress the transformed data.
         """
