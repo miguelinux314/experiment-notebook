@@ -9,11 +9,19 @@ import math
 import re
 import numpy as np
 import enb
+import itertools
+from typing import Iterable
 from enb import atable
 from enb import sets
 
+# Data type tags used in filename by enb. 
+# Different parts of the library may support only a subset of these types.
+dtype_integer_tags = ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be",
+                      "s16le", "u32be", "u32le", "s32be", "s32le")
+dtype_float_tags = ("f16", "f32", "f64")
+dtype_tags = dtype_integer_tags + dtype_float_tags
 
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use] 
 
 def entropy(data):
     """Compute the zero-order entropy of the provided data
@@ -919,3 +927,4 @@ def iproperties_to_name_tag(width, height, component_count, big_endian,
                signed=signed)
     return f"{iproperties_row_to_sample_type_tag(row)}" \
            f"-{iproperties_row_to_geometry_tag(row)}"
+

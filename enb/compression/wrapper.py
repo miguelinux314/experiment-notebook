@@ -3,18 +3,24 @@
 Existing codec implementations (including non-python binaries) can be easily added to enb
 via WrapperCodec (sub)classes. 
 """
-
+import ast
 import os
 import functools
 import shutil
 import tempfile
+import time
+import json
 import numpy as np
 
+import enb
 from enb import logger, tcall
 from enb import isets
 from enb.config import options
 from enb.atable import get_canonical_path
+from enb.compression import CompressionResults, DecompressionResults
 from enb.compression.codec import AbstractCodec, NearLosslessCodec
+from enb.compression import tarlite
+
 
 class WrapperCodec(AbstractCodec):
     """A codec that uses an external process to compress and decompress.
@@ -226,6 +232,7 @@ class WrapperCodec(AbstractCodec):
                 f"{k}={v}" for k, v in sorted(self.param_dict.items()))
         return name
 
+
 class QuantizationWrapperCodec(NearLosslessCodec):
     """Perform uniform scalar quantization before compressing and after decompressing with
     a wrapped codec instance. Midpoint reconstruction is used in the dequantization stage.
@@ -289,6 +296,7 @@ class QuantizationWrapperCodec(NearLosslessCodec):
         """
         return f"{self.codec.label}, Q$_\\mathrm{{step}}=${self.param_dict['qstep']}"
 
+
 class JavaWrapperCodec(WrapperCodec):
     """Wrapper for `*.jar` codecs. The compression and decompression
     parameters are those that need to be passed to the 'java' command.
@@ -307,6 +315,7 @@ class JavaWrapperCodec(WrapperCodec):
                          param_dict=param_dict)
         self.compressor_jar = get_canonical_path(compressor_jar)
         self.decompressor_jar = get_canonical_path(decompressor_jar)
+
 
 class LittleEndianWrapper(WrapperCodec):
     """Wrapper with identical semantics as WrapperCodec, but performs a big
@@ -380,3 +389,125 @@ class LittleEndianWrapper(WrapperCodec):
             return super().decompress(compressed_path=compressed_path,
                                       reconstructed_path=reconstructed_path,
                                       original_file_info=original_file_info)
+
+
+class ReindexWrapper(AbstractCodec):
+    """Input samples are first reindexed to a contiguous support preserving the ordering 
+    (If x and y are two sample values present in the input file, then
+    x < y <=> reindex(x) < reindex(y)).
+    
+    Reindexed data are stored as unsigned, big-endian samples of the width configured
+    on initialization. After reindexing, the codec passed to the initializer is used for compression.
+    
+    The user is responsible for using a codec compatible with the type of the reindexed data,
+    and a data type that can hold the number of unique samples present in the input file.
+    
+    Note that only integer input samples are currently supported.
+    """
+
+    def __init__(self, codec: AbstractCodec, width_bytes: int):
+        super().__init__(param_dict={"width_bytes": width_bytes})
+        self.codec = codec
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None) -> CompressionResults:
+        with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
+            # Find the unique values and store them as side information
+            array = enb.isets.load_array_bsq(original_path)
+            time_before = time.process_time() if not enb.config.options.report_wall_time else time.time()
+            unique_values = np.unique(array)
+            if len(unique_values) > 2 ** (8 * self.param_dict['width_bytes']):
+                raise ValueError(
+                    f"Trying to reindex into a {self.param_dict['width_bytes']}-byte file "
+                    f"but there are {len(unique_values)} (too many) unique values.")
+            side_info_path = os.path.join(tmp_dir, "side_info")
+            with open(side_info_path, "w") as side_info_file:
+                side_info_file.write(json.dumps(
+                    obj=dict(original_dtype=str(array.dtype),
+                             unique_values=str(list(unique_values)))))
+
+            # Reindex keeping the value sorting
+            reindex_array = np.zeros(shape=array.shape, dtype=f">u{self.param_dict['width_bytes']}")
+            for i, val in enumerate(unique_values):
+                reindex_array[array == val] = i
+
+            unique = np.unique(reindex_array)
+
+            time_after = time.process_time() if not enb.config.options.report_wall_time else time.time()
+            reindex_time = time_after - time_before
+
+            # Store the reindexed data
+            reindexed_path = os.path.join(tmp_dir, f"reindexed_{os.path.basename(original_path)}")
+            for tag in enb.isets.dtype_tags:
+                reindexed_path = os.path.join(
+                    os.path.dirname(reindexed_path),
+                    os.path.basename(reindexed_path).replace(tag, f"u{8 * self.param_dict['width_bytes']}be"))
+                enb.isets.dump_array_bsq(array=reindex_array, file_or_path=reindexed_path)
+
+            # Compress the reindexed data
+            reindexed_compressed_path = os.path.join(tmp_dir, f"data")
+            time_before = time.process_time() if not enb.config.options.report_wall_time else time.time()
+            compression_results = self.codec.compress(reindexed_path, reindexed_compressed_path, original_file_info)
+            time_after = time.process_time() if not enb.config.options.report_wall_time else time.time()
+            compression_time = time_after - time_before
+
+            # Update the reported compression results
+            if compression_results is None:
+                compression_results = self.codec.compression_results_from_paths(
+                    original_path=reindexed_path,
+                    compressed_path=compressed_path)
+            compression_results.original_path = original_path
+            compression_results.compressed_path = compressed_path
+            if compression_results.compression_time_seconds is None \
+                    or compression_results.compression_time_seconds < 0:
+                compression_results.compression_time_seconds = compression_time
+            compression_results.compression_time_seconds += reindex_time
+
+            # Store the side information and reindexed data into a tarlite package
+            tarlite.tarlite_files([side_info_path, reindexed_compressed_path], compressed_path)
+
+            return compression_results
+
+    def decompress(self, compressed_path: str, reconstructed_path: str,
+                   original_file_info=None) -> DecompressionResults:
+        with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
+            # Extract the tarlite package
+            tarlite.untarlite_files(input_tarlite_path=compressed_path, output_dir_path=tmp_dir)
+            reindexed_compressed_path = os.path.join(tmp_dir, "data")
+            side_info_path = os.path.join(tmp_dir, "side_info")
+
+            # Read and completethe side information
+            with open(side_info_path, "r") as side_info_file:
+                side_info = json.load(side_info_file)
+                unique_values = np.array(ast.literal_eval(side_info["unique_values"]))
+                original_width_bytes = int(side_info["original_dtype"][-1])
+
+            # Decompress the reindexed data
+            reindexed_path = os.path.join(tmp_dir, f"reindexed")
+            self.codec.decompress(reindexed_compressed_path, reindexed_path, original_file_info)
+
+            # Invert the reindexing
+            assert os.path.getsize(reindexed_path) % original_width_bytes == 0, \
+                ("Invalid output file size", os.path.getsize(reindexed_path), original_width_bytes)
+
+            reindexed_data = enb.isets.load_array(
+                file_or_path=reindexed_path,
+                width=os.path.getsize(reindexed_path) // self.param_dict['width_bytes'],
+                height=1,
+                component_count=1,
+                dtype=f">u{self.param_dict['width_bytes']}")
+
+            data = np.zeros(shape=reindexed_data.shape, dtype=np.int64)
+            np.take(unique_values, reindexed_data, out=data)
+            enb.isets.dump_array_bsq(array=data.astype(side_info["original_dtype"]), file_or_path=reconstructed_path)
+
+    @property
+    def name(self):
+        """Return the original codec name and the quantization parameter
+        """
+        return f"{self.codec.name}_reindex{self.param_dict['width_bytes']}B"
+
+    @property
+    def label(self):
+        """Return the original codec label and the quantization parameter.
+        """
+        return f"Reindex {self.param_dict['width_bytes']}B + {self.codec.label}"

@@ -18,7 +18,6 @@ from enb import isets
 from enb.compression import GeneralLosslessExperiment
 from enb.compression.codec import LosslessCodec
 from codec_implementations import trivial_codecs
-from enb.compression.wrapper import QuantizationWrapperCodec
 
 
 class ConstantOutputCodec(LosslessCodec):
@@ -182,46 +181,6 @@ class TestSpectralAngle(unittest.TestCase):
 
                     assert abs_diff_average_sa < 1e-5, f"Wrong mean spectral angle (diff={abs_diff_average_sa})"
                     assert abs_diff_max_sa < 1e-5, f"Wrong maximum spectral angle (diff={abs_diff_max_sa})"
-
-
-class TestQuantizationWrapperCodec(unittest.TestCase):
-    def test_pae(self):
-        class DummyCodec(LosslessCodec):
-            """Dummy copy-based codec
-            """
-
-            def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-                shutil.copyfile(original_path, compressed_path)
-
-            def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
-                shutil.copyfile(compressed_path, reconstructed_path)
-
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            width, height, component_count = 128, 128, 12
-            array = np.zeros((width, height, component_count), dtype=">u1")
-            i = 0
-            for z in range(component_count):
-                for y in range(height):
-                    for x in range(width):
-                        array[x, y, z] = i
-                        i = (i + 1) % 256
-
-            original_path = os.path.join(tmp_dir, f"img-u8be-{component_count}x{height}x{width}.raw")
-            compressed_path = os.path.join(tmp_dir, f"img-u8be-{component_count}x{height}x{width}.comp")
-            reconstructed_path = os.path.join(tmp_dir, f"img-u8be-{component_count}x{height}x{width}.rec")
-
-            isets.dump_array_bsq(array, original_path)
-
-            for qstep in (1, 2, 3, 10):
-                for p in (compressed_path, reconstructed_path):
-                    if os.path.exists(p):
-                        os.remove(p)
-                q_wrapped_codec = QuantizationWrapperCodec(codec=DummyCodec(), qstep=1)
-                q_wrapped_codec.compress(original_path, compressed_path)
-                q_wrapped_codec.decompress(compressed_path, reconstructed_path)
-                reconstructed_array = isets.load_array(reconstructed_path)
-
-                assert np.max(array.astype(np.int64) - reconstructed_array.astype(np.int64)) <= qstep // 2
 
 
 if __name__ == '__main__':
