@@ -96,3 +96,15 @@ class LossyCodec(AbstractCodec):  # pylint: disable=abstract-method
 class NearLosslessCodec(LossyCodec):  # pylint: disable=abstract-method
     """An AbstractCodec that identifies itself as near lossless.
     """
+    
+class PassthroughCodec(LosslessCodec):
+    """Codec that simply copies the input into the output in both compression and decompression.
+    """
+    def __init__(self):
+        super().__init__()
+    
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        shutil.copyfile(original_path, compressed_path)
+        
+    def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
+        shutil.copyfile(compressed_path, reconstructed_path)
