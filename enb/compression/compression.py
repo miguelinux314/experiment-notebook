@@ -515,7 +515,7 @@ class CompressionExperiment(enb.experiment.Experiment):
             self.codec_results = self.CompressionDecompressionWrapper(
                 file_path=file_path, codec=codec,
                 image_info_row=image_info_row,
-                compressed_copy_dir=self.compressed_copy_dir_path,
+                compressed_copy_dir=self.compressed_copy_dir_path or enb.config.options.compressed_copy_dir,
                 reconstructed_copy_dir=self.reconstructed_dir_path or enb.config.options.reconstructed_dir)
             assert self.codec_results is not None
 

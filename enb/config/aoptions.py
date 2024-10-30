@@ -251,6 +251,15 @@ class DirOptions:
         value = self.normalize_dir_value(value=value)
         _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
         return value
+    
+    @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction)
+    def compressed_copy_dir(self, value):
+        """Base directory where a copy of the compressed versions of data are to be stored.
+        """
+        value = value or ini.get_key("enb.config.options", "compressed_copy_dir")
+        value = self.normalize_dir_value(value=value)
+        _singleton_cli.WritableOrCreableDirAction.assert_valid_value(value)
+        return value
 
     # Versioned data dir
     @OptionsBase.property(action=_singleton_cli.WritableOrCreableDirAction,
