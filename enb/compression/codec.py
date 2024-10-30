@@ -1,11 +1,21 @@
+"""Codecs implement the `compress` and `decompress` methods
+as well as a `name` and `label` to identify and represent them.
+
+A `param_dict` is passed on initialization that describes the configuration of each codec instance.
+Codecs may choose the number of parameters and their names.  
+"""
+import shutil
 from enb.experiment import ExperimentTask
 from enb.compression import CompressionResults, DecompressionResults
 
 class AbstractCodec(ExperimentTask):
-    """Base class for all codecs
+    """Base class for all codecs.
     """
 
     def __init__(self, param_dict=None):
+        """
+        :param param_dict: dictionary of parameters for this codec instance.
+        """
         super().__init__(param_dict=param_dict)
 
     @property
