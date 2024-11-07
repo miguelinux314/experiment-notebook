@@ -17,7 +17,7 @@ from enb import logger, tcall
 from enb import isets
 from enb.config import options
 from enb.atable import get_canonical_path
-from enb.compression import CompressionResults, DecompressionResults
+from enb.compression import CompressionResults, DecompressionResults, CompressionException
 from enb.compression.codec import AbstractCodec, NearLosslessCodec
 from enb.compression import tarlite
 
@@ -446,7 +446,12 @@ class ReindexWrapper(AbstractCodec):
             # Compress the reindexed data
             reindexed_compressed_path = os.path.join(tmp_dir, f"data")
             time_before = time.process_time() if not enb.config.options.report_wall_time else time.time()
-            compression_results = self.codec.compress(reindexed_path, reindexed_compressed_path, original_file_info)
+            reindex_file_info = dict(original_file_info) if original_file_info is not None else None
+            if reindex_file_info is not None:
+                reindex_file_info["signed"] = False
+                reindex_file_info["big_endian"] = True
+                reindex_file_info["bytes_per_sample"] = 2
+            compression_results = self.codec.compress(reindexed_path, reindexed_compressed_path, reindex_file_info)
             time_after = time.process_time() if not enb.config.options.report_wall_time else time.time()
             compression_time = time_after - time_before
 
