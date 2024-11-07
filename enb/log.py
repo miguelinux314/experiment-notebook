@@ -223,7 +223,9 @@ class Logger(metaclass=Singleton):
                 console.highlight = highlight
             except AttributeError:
                 console = None
-            console = console or rich.console.Console(file=file, markup=markup, highlight=highlight)
+            console = console or rich.console.Console(
+                file=file, markup=markup, highlight=highlight,
+                force_terminal=True, force_interactive=True, force_jupyter=False)
             style = style or level.style
 
             if rule:
@@ -249,7 +251,7 @@ class Logger(metaclass=Singleton):
             f"[/{self.banner_enb_version_style}]"
             f"[/{self.banner_plain_text_style}]"
             f" [{self.banner_line_style}][bold]([/bold][/{self.banner_line_style}]"
-            )
+        )
 
         level = level or self.level_verbose
         self.log("", level=level)

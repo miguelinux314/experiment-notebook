@@ -139,13 +139,21 @@ class ProgressTracker(rich.live.Live):
                           f"[/{enb.logger.style_info}][/not bold]")
                 break
 
+        # Combine all widgets into a single renderable for this progress tracker
         self.panel = rich.panel.Panel(
             self.group,
             title=title,
             title_align="left",
             expand=True,
             border_style=self.style_border)
-        super().__init__(self.panel)
+
+        # Force live progress report if requested via CLI or .ini files
+        super().__init__(
+            self.panel,
+            console=rich.console.Console(
+                force_terminal=True,
+                force_interactive=True)
+            if enb.config.options.force_live_progress else None)
 
         # Keep track of current instances so that the console of the most recent progress can be employed
         ProgressTracker._current_instance_stack.append(self)

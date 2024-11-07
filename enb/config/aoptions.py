@@ -425,9 +425,23 @@ class LoggingOptions(OptionsBase):
 
     @OptionsBase.property(type=str, choices=_logging_level_names)
     def show_prefix_level(self, value):
+        """If True, a prefix indicating the priority level of each message is shown 
+        preceding those messages.
+        """
         from .. import log
 
         log.logger.show_prefix_level = log.logger.get_level(value)
+        
+    @OptionsBase.property(type=bool, choices=[True, False])
+    def force_live_progress(self, value):
+        """If True, the progress panels shown by ATable are forced to be updated live
+        even if the output is not an interactive terminal.
+         
+        Enabling this option will significantly increase the size of any log file
+        to which the output is redirected, because the output will include the periodic
+        screen writes and deletions produced, e.g., every second.
+        """
+        return bool(value)
 
 
 class Options(GeneralOptions, ExecutionOptions, DirOptions, RayOptions, LoggingOptions):
