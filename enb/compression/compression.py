@@ -261,13 +261,17 @@ class CompressionExperiment(enb.experiment.Experiment):
             """Perform the actual decompression experiment for the selected row.
             """
             if self._decompression_results is None:
-                # Assign a unique temporary name to the reconstructed file
-                fd, tmp_reconstructed_path = tempfile.mkstemp(
-                    prefix=f"reconstructed_{os.path.basename(self.file_path)}",
-                    dir=options.base_tmp_dir,
-                    suffix=".raw")
-                os.close(fd)
-                os.remove(tmp_reconstructed_path)
+                # Assign a unique temporary path to the reconstructed file and avoid introducing spurious geometry tags
+                tmp_reconstructed_path = None
+                while ((tmp_reconstructed_path is None) or
+                       (re.search(r"\d+x\d+x\d+.*\D\d+x\d+x\d+",
+                                  os.path.basename(tmp_reconstructed_path)) is not None)):
+                    fd, tmp_reconstructed_path = tempfile.mkstemp(
+                        dir=options.base_tmp_dir,
+                        prefix=f"compressed_{os.path.basename(self.file_path)}_")
+                    os.close(fd)
+                    os.remove(tmp_reconstructed_path)
+                    
                 try:
                     measured_times = []
                     measured_memory = []
