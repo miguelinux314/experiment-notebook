@@ -8,9 +8,8 @@ import os
 import math
 import re
 import numpy as np
+import json
 import enb
-import itertools
-from typing import Iterable
 from enb import atable
 from enb import sets
 
@@ -20,6 +19,7 @@ dtype_integer_tags = ("u8be", "u8le", "s8be", "s8le", "u16be", "u16le", "s16be",
                       "s16le", "u32be", "u32le", "s32be", "s32le")
 dtype_float_tags = ("f16", "f32", "f64")
 dtype_tags = dtype_integer_tags + dtype_float_tags
+
 
 # pylint: disable=no-self-use] 
 
@@ -680,6 +680,70 @@ class DivisibleSizeVersion(ImageVersionTable):
                                  file_or_path=output_path)
 
 
+class ReindexedVersion(ImageVersionTable):
+    """Read the N unique (signed or unsigned) sample values in a file, 
+    apply a bijective mapping between the original sample values and 
+    the index values in [0, 1, ..., N-1]. The resulting indices are stored
+    as unsigned integers using `width_bytes` bytes in the same order as the original samples.
+    
+    The output files share the name of the originals, except for enb data type name tags
+    (e.g., u16be, s16le, etc.), which are transformed to u8be, u16be or u32be depending
+    on the value of `width_bytes`.
+    
+    In addition to the index data, a second file is created that contains a list of the 
+    unique original sample values as well as the original data type. 
+    This file is needed to reconstruct the original data from the indices, 
+    although no attempt is made at compressing this data. 
+    This second file has the same name as the output index file, with the addition of ".meta"
+    at the end of it.     
+    """
+
+    def __init__(self,
+                 version_base_dir,
+                 width_bytes,
+                 version_name="reindex",
+                 original_base_dir=None, csv_support_path=None,
+                 original_properties_table=None):
+        """       
+        :param version_base_dir: path to the output dir where the versioned data is to be stored
+        :param width_bytes: number of bytes per output index
+        """
+        super().__init__(
+            version_base_dir=version_base_dir,
+            version_name=version_name,
+            original_base_dir=original_base_dir,
+            csv_support_path=csv_support_path,
+            check_generated_files=False,
+            original_properties_table=original_properties_table)
+        assert width_bytes in [1, 2, 4], f"Invalid output index word width in bytes"
+        self.width_bytes = width_bytes
+
+    def version(self, input_path, output_path, row):
+        # Load data and reindex it
+        array = load_array_bsq(file_or_path=input_path, image_properties_row=row)
+        reindex_array = np.zeros(shape=array.shape, dtype=f">u{self.width_bytes}")
+        unique_values = np.unique(array)
+        if len(unique_values) > 2 ** (8 * self.width_bytes):
+            raise ValueError(
+                f"Trying to reindex into a {self.width_bytes}-byte file "
+                f"but there are {len(unique_values)} (too many) unique values.")
+        for i, val in enumerate(unique_values):
+            reindex_array[array == val] = i
+
+        # Get output paths and save the output
+        reindex_path = input_path.replace(self.original_base_dir, self.version_base_dir)
+        for tag in enb.isets.dtype_tags:
+            reindex_path = os.path.join(
+                os.path.dirname(reindex_path),
+                os.path.basename(reindex_path).replace(tag, f"u{8 * self.width_bytes}be"))
+        side_info_path = f"{reindex_path}.meta"
+        dump_array_bsq(array=reindex_array, file_or_path=reindex_path)
+        with open(side_info_path, "w") as side_info_file:
+            side_info_file.write(json.dumps(
+                obj=dict(original_dtype=str(array.dtype),
+                         unique_values=str(list(unique_values)))))
+
+
 def load_array(file_or_path, image_properties_row=None,
                width=None, height=None, component_count=None, dtype=None,
                order="bsq"):
@@ -928,4 +992,3 @@ def iproperties_to_name_tag(width, height, component_count, big_endian,
                signed=signed)
     return f"{iproperties_row_to_sample_type_tag(row)}" \
            f"-{iproperties_row_to_geometry_tag(row)}"
-
