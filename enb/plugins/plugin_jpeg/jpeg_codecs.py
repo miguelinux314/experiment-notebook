@@ -9,7 +9,7 @@ import tempfile
 import numpy as np
 import sortedcontainers
 
-import enb.pgm
+import enb
 from enb import icompression
 from enb import isets
 from enb import pgm
