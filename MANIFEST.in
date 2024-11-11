@@ -185,6 +185,8 @@ include enb/plugins/plugin_speck/__plugin__.py
 include enb/plugins/plugin_speck/speck_codec.py
 include enb/plugins/plugin_speck/SpeckCode.jar
 include enb/plugins/plugin_speck/SpeckDecode.jar
+include enb/plugins/plugin_trpx/__plugin__.py
+include enb/plugins/plugin_trpx/trpx_codec.py
 include enb/plugins/plugin_v2f/__plugin__.py
 include enb/plugins/plugin_v2f/v2f_codecs.py
 include enb/plugins/plugin_vvc/Makefile.darwin

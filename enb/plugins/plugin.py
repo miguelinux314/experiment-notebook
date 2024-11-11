@@ -144,8 +144,8 @@ class PluginMake(Plugin):
             if status != 0:
                 raise Exception(f"Error building plugin {repr(cls.name)} with "
                                 f"the Makefile at {make_path} ({status=})!\n"
-                                f"Failing command:\n{textwrap.indent(invocation, ' '*3)}\n"
-                                f"Output:\n{textwrap.indent(output, ' '*3)}")
+                                f"Failing command:\n{textwrap.indent(invocation, ' ' * 3)}\n"
+                                f"Output:\n{textwrap.indent(output, ' ' * 3)}")
         else:
             raise ValueError(f"Cannot build {repr(cls.name)}: no valid makefile "
                              f"in {installation_dir}.")
