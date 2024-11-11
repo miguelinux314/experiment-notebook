@@ -31,11 +31,19 @@ Therefore, the first time you re-run a previously existing enb experiment:
   (but not including) v1.1.0. This can be solved either by (a) moving the existing persistence to the new
   default location, or (b) explicitly setting the persistence paths to your tables/experiments.
 
+Additions:
+
+- Added the `bitshuffle` plugin that applies the bitshuffle transform before compression
+  and after decompression.
+- Added `enb.isets.ReindexVersionTable`, an ImageVersionTable subclass that compacts histrograms 
+  and produces versioned datasets. Also added as a codec wrapper in `enb.compression.wrapper.ReindexWrapper`. 
+
 Improvements:
 
 - The number of unique sample values of an image is now stored by ImagePropertiesTable
-- Added the `bitshuffle` plugin that applies the bitshuffle transform before compression 
-  and after decompression.  
+- Fixed random file name generation that had a chance of crashing compression experiments 
+  for every codec/sample combination.
+- Enhanced robustness of *.ini configuration files and the `enb.ini` plugin. 
 
 
 # Latest stable version: 2024/10/28 v1.0.5
