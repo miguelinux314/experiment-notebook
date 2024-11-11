@@ -525,9 +525,10 @@ class ImageVersionTable(sets.FileVersionTable, ImageGeometryTable):
                  check_generated_files=True,
                  original_properties_table=None):
         # pylint: disable=too-many-arguments
-        original_properties_table = ImageGeometryTable(
-            base_dir=original_base_dir) if original_properties_table is None \
-            else original_properties_table
+        if original_properties_table is None:
+            original_properties_table = ImageGeometryTable(base_dir=original_base_dir)
+        elif isinstance(original_properties_table, type):
+            original_properties_table = original_properties_table(base_dir=original_base_dir)
 
         super().__init__(version_base_dir=version_base_dir,
                          version_name=version_name,
