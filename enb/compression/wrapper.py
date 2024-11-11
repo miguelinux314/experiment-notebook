@@ -430,8 +430,6 @@ class ReindexWrapper(AbstractCodec):
             for i, val in enumerate(unique_values):
                 reindex_array[array == val] = i
 
-            unique = np.unique(reindex_array)
-
             time_after = time.process_time() if not enb.config.options.report_wall_time else time.time()
             reindex_time = time_after - time_before
 
@@ -441,7 +439,7 @@ class ReindexWrapper(AbstractCodec):
                 reindexed_path = os.path.join(
                     os.path.dirname(reindexed_path),
                     os.path.basename(reindexed_path).replace(tag, f"u{8 * self.param_dict['width_bytes']}be"))
-                enb.isets.dump_array_bsq(array=reindex_array, file_or_path=reindexed_path)
+            enb.isets.dump_array_bsq(array=reindex_array, file_or_path=reindexed_path)
 
             # Compress the reindexed data
             reindexed_compressed_path = os.path.join(tmp_dir, f"data")
