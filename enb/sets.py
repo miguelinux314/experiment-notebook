@@ -229,10 +229,6 @@ class FileVersionTable(FilePropertiesTable):
                     f"Original path {original_path} not found "
                     f"in {self.original_base_dir}")
 
-        enb.logger.info(
-            f"Transformed original path {original_path} "
-            f"into versioned path {versioned_path}")
-
         return versioned_path
 
     def get_df(self, target_indices=None, fill=True, overwrite=None,
