@@ -46,7 +46,7 @@ dir:
 	cp $(PROGDIR)/CMakeLists.txt $(PROGDIR)/build
 
 dependences:
-	sh $(PROGDIR)/deps.sh
+	cd $(PROGDIR) && bash ./deps.sh
 	# brew install jpeg-xl
 	# brew install llvm
 	# brew install coreutils cmake giflib jpeg-turbo libpng ninja zlib
