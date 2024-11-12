@@ -883,8 +883,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         """Remove the infinite and NaN values from a pd.Series instance.
         """
         # pylint: disable=no-self-use
-        return column_series.replace([np.inf, -np.inf], np.nan,
-                                     inplace=False).dropna()
+        return column_series.replace([np.inf, -np.inf], np.nan, inplace=False).infer_objects(copy=False).dropna()
 
 
 def is_family_grouping(group_by):
