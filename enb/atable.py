@@ -1205,7 +1205,7 @@ class ATable(metaclass=MetaTable):
             with enb.logger.debug_context(
                     f"Loading dataframe from persistence at {csv_support_path}",
                     sep="... "):
-                loaded_df = pd.read_csv(csv_support_path)
+                loaded_df = pd.read_csv(csv_support_path, low_memory=False)
                 enb.logger.debug(f"Loaded df with {len(loaded_df)} rows")
             loaded_columns = list(loaded_df.columns)
 
