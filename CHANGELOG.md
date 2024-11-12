@@ -14,6 +14,7 @@ format. Given a code initially developed for one `enb` version and then executed
 
 # Current development version: v1.1.0-dev
 
+## Backward compatibility notice
 **Important**: although backwards-compatible, this version
 
 - Adds new columns to ImagePropertiesTable.
@@ -23,7 +24,7 @@ format. Given a code initially developed for one `enb` version and then executed
 
 Therefore, the first time you re-run a previously existing enb experiment:
 
-- enb will need to proces again all indices of any table based on `enb.isets.ImagePropertiesTable` 
+- enb will need to partially process all indices of any table based on `enb.isets.ImagePropertiesTable` 
   (including those within compression experiments). This applies one np.unique call to each
   sample, which should be reasonably fast even for moderately large sample sizes.
 
@@ -31,14 +32,29 @@ Therefore, the first time you re-run a previously existing enb experiment:
   (but not including) v1.1.0. This can be solved either by (a) moving the existing persistence to the new
   default location, or (b) explicitly setting the persistence paths to your tables/experiments.
 
-Additions:
+- some enb plugins (typically tagged as 'codec' by `enb plugin list`) that imported `enb.icompression` 
+  directly need to be reinstalled. Otherwise, they might crash showing the following trace:
+  ```bash
+    [...]
+    import enb.icompression
+    ModuleNotFoundError: No module named 'enb.icompression'
+  ```
+  plugins that require reinstallation include:
+  - ccsds122x1
+  - emporda
+  - jpeg
+  - lz4
+  - montsec
+  - speck
+
+## Additions
 
 - Added the `bitshuffle` plugin that applies the bitshuffle transform before compression
   and after decompression.
 - Added `enb.isets.ReindexVersionTable`, an ImageVersionTable subclass that compacts histrograms 
   and produces versioned datasets. Also added as a codec wrapper in `enb.compression.wrapper.ReindexWrapper`. 
 
-Improvements:
+## Improvements
 
 - The number of unique sample values of an image is now stored by ImagePropertiesTable
 - Fixed random file name generation that had a chance of crashing compression experiments 
@@ -57,6 +73,7 @@ Improvements:
 - The enb.ini plugin is now installed with all options commented-out, ready for the user to modify at will
 
 Deprecations:
+
 - Fixed enb.atable.ATable's typo: dataset_files_extension becomes dataset_file_extension.
   The old name will be kept for now as a deprecated property.
 

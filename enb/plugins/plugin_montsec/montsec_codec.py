@@ -5,8 +5,8 @@ __author__ = "Xavier Fernandez Mellado and Pau Quintas Torra"
 __since__ = "2023/12/14"
 
 import os
-import enb.icompression
-import shutil
+
+import enb
 
 
 class Montsec(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,

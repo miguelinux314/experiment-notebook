@@ -6,7 +6,8 @@ __since__ = "2020/05/29"
 
 import os
 import math
-import enb.icompression
+
+import enb
 
 
 class MHDC_Abstract(enb.icompression.LosslessCodec, enb.icompression.WrapperCodec):

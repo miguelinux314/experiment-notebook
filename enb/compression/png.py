@@ -13,6 +13,7 @@ import numpngw
 import numpy as np
 import pdf2image
 
+import enb
 from enb.sets import FileVersionTable
 from enb.compression.wrapper import WrapperCodec
 from enb.isets import load_array_bsq
