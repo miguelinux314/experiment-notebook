@@ -1127,7 +1127,7 @@ class ATable(metaclass=MetaTable):
         # Find the positions that have a null value in any of the requested columns
         target_locs = [indices_to_internal_loc(index) for index in target_indices]
         null_target_indices = [
-            internal_loc_to_index(loc) 
+            internal_loc_to_index(loc)
             for loc in target_df[target_df[target_columns].isnull().any(axis=1)].index
             if loc in target_locs]
 
@@ -1159,7 +1159,7 @@ class ATable(metaclass=MetaTable):
             target_df = pd.concat([df for df in (target_df, computed_df) if not df.empty])
             target_df = target_df[~target_df.index.duplicated(keep="last")]
             assert len(target_df) == len(target_indices), (
-            len(target_df), len(target_indices), target_indices, target_df)
+                len(target_df), len(target_indices), target_indices, target_df)
 
             # Not all columns might have been requested
             if self.ignored_columns:
@@ -1250,16 +1250,18 @@ class ATable(metaclass=MetaTable):
                     else:
                         # Column did not exist: create with None values
                         loaded_df[column] = None
+                        
+            enb.logger.info(f"{self.__class__.__name__} loaded df from {csv_support_path!r}")
 
         except (FileNotFoundError, pd.errors.EmptyDataError):
-            with enb.logger.debug_context(
-                    f"No CSV persistence found for {self.__class__.__name__} "
-                    f"at {csv_support_path}. Creating an empty one"):
-                loaded_df = pd.DataFrame(
-                    columns=self.indices_and_columns + [
-                        self.private_index_column])
-                for column in self.indices_and_columns:
-                    loaded_df[column] = None
+            loaded_df = pd.DataFrame(
+                columns=self.indices_and_columns + [
+                    self.private_index_column])
+            for column in self.indices_and_columns:
+                loaded_df[column] = None
+                
+            enb.logger.info(f"{self.__class__.__name__} could not find df at {csv_support_path!r}: "
+                            "creating empty.")
 
         loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
 
