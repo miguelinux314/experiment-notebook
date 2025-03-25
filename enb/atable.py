@@ -952,8 +952,9 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is
           encountered processing the data.
         """
-        if len(target_indices) != len(set(target_indices)):
-            raise ValueError(f"{self.__class__.__name__}.get_df() invoked with duplicated parameters.")
+        if target_indices is not None and len(target_indices) != len(set(target_indices)):
+            raise ValueError(f"{self.__class__.__name__}.get_df() "
+                             f"invoked with duplicated parameters.")
 
         # Avoid sending a false warning of not having invoked self.get_df
         self._was_get_df_called = True
@@ -1250,7 +1251,7 @@ class ATable(metaclass=MetaTable):
                     else:
                         # Column did not exist: create with None values
                         loaded_df[column] = None
-                        
+
             enb.logger.info(f"{self.__class__.__name__} loaded df from {csv_support_path!r}")
 
         except (FileNotFoundError, pd.errors.EmptyDataError):
@@ -1259,7 +1260,7 @@ class ATable(metaclass=MetaTable):
                     self.private_index_column])
             for column in self.indices_and_columns:
                 loaded_df[column] = None
-                
+
             enb.logger.info(f"{self.__class__.__name__} could not find df at {csv_support_path!r}: "
                             "creating empty.")
 
