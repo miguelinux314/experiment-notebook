@@ -1477,7 +1477,7 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         stat_dict["count"] = len(finite_series)
 
-        if len(np.unique(finite_series.values)) > 1:
+        if len(np.unique(finite_series.values)) > 2:
             description_df = finite_series.describe()
             stat_dict["min"] = description_df["min"]
             stat_dict["max"] = description_df["max"]
@@ -1753,30 +1753,31 @@ class ScalarNumericSummary(AnalyzerSummary):
             q1_q3_box_width = 0
 
         row[_column_name] = [
-            # Min-max span lines (centered around mean)
-            plotdata.ErrorLines(
-                x_values=(description.mean,),
-                y_values=(0,),
-                err_neg_values=(description.mean - description.minmax[0],),
-                err_pos_values=(description.minmax[1] - description.mean,),
-                vertical=False,
-                line_width=_self.analyzer.main_line_width,
-                marker_size=_self.analyzer.main_marker_size,
-                alpha=_self.analyzer.main_alpha),
-            # Box for 1st and 3rd quartiles
+            # Box for 1st and 3rd quartiles, main
             plotdata.Rectangle(
                 x_values=(0.5 * (quartiles[0] + quartiles[2]),), y_values=(0,),
                 width=q1_q3_box_width,
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
                 height=0.8),
-            # Line for 2nd quartile (median)
+            # Line for 2nd quartile (median), main
             plotdata.LineSegment(
                 x_values=(quartiles[1],), y_values=(0,),
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
                 length=0.8,
                 vertical=True),
+            # Min-max span lines (centered around mean), secondary
+            plotdata.ErrorLines(
+                x_values=(description.mean,),
+                y_values=(0,),
+                err_neg_values=(description.mean - description.minmax[0],),
+                err_pos_values=(description.minmax[1] - description.mean,),
+                vertical=False,
+                line_width=_self.analyzer.secondary_line_width,
+                marker_size=_self.analyzer.secondary_marker_size,
+                cap_size=2*_self.analyzer.secondary_line_width,
+                alpha=_self.analyzer.secondary_alpha),
         ]
 
         if _self.analyzer.show_individual_samples:
