@@ -260,6 +260,8 @@ include enb/plugins/template_lossy_compression/README.md
 include enb/plugins/template_matplotlibrc/__plugin__.py
 include enb/plugins/template_montecarlo_pi/montecarlo_pi_experiment.py
 include enb/plugins/template_montecarlo_pi/__plugin__.py
+include enb/plugins/template_png_to_raw/__plugin__.py
+include enb/plugins/template_png_to_raw/png_to_raw.py
 include enb/plugins/template_port_experiment_example/data/ips/ip1.txt
 include enb/plugins/template_port_experiment_example/data/ips/ip2.txt
 include enb/plugins/template_port_experiment_example/data/ips/ip3.txt
