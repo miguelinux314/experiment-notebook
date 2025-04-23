@@ -83,6 +83,13 @@ class PGMCurationTable(PNGCurationTable):
     """
     dataset_files_extension = "pgm"
 
+class PPMCurationTable(PNGCurationTable):
+    """Given a directory tree containing PPM images, copy those images into
+    a new directory tree in raw BSQ format adding geometry information tags to
+    the output names recognized by `enb.isets.load_array_bsq`.
+    """
+    dataset_files_extension = "ppm"
+
 
 def read_pgm(input_path, byteorder='>'):
     """Return image data from a raw PGM file as numpy array.

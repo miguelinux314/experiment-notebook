@@ -272,6 +272,8 @@ include enb/plugins/template_port_experiment_example/data/ips/ip7.txt
 include enb/plugins/template_port_experiment_example/data/ips/ip8.txt
 include enb/plugins/template_port_experiment_example/experiment_example.py
 include enb/plugins/template_port_experiment_example/__plugin__.py
+include enb/plugins/template_ppm_to_raw/__plugin__.py
+include enb/plugins/template_ppm_to_raw/ppm_to_raw.py
 include enb/plugins/template.py
 include enb/plugins/template_test_all_codecs/generate_test_images.py
 include enb/plugins/template_test_all_codecs/__plugin__.py

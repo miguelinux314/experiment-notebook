@@ -52,7 +52,8 @@ Therefore, the first time you re-run a previously existing enb experiment:
 - Added the `bitshuffle` plugin that applies the bitshuffle transform before compression
   and after decompression.
 - Added `enb.isets.ReindexVersionTable`, an ImageVersionTable subclass that compacts histrograms 
-  and produces versioned datasets. Also added as a codec wrapper in `enb.compression.wrapper.ReindexWrapper`. 
+  and produces versioned datasets. Also added as a codec wrapper in `enb.compression.wrapper.ReindexWrapper`.
+- Added a plugin to easily convert PNG files into raw files with curated names. 
 
 ## Improvements
 
@@ -60,7 +61,10 @@ Therefore, the first time you re-run a previously existing enb experiment:
 - Fixed random file name generation that had a chance of crashing compression experiments 
   for every codec/sample combination.
 - Enhanced robustness of *.ini configuration files and the `enb.ini` plugin. 
-
+- Improved logging for a core part of ATable (CSV table loading).
+- Added the option to hide the min-max line when plotting boxplots with the ScalarNumericAnalyzer.
+- Added template plugins for quick conversion from PNG, PPM and PGM to raw files with 
+  curated names that allow automatic loading with `enb.isets.load_array_bsq`.
 
 # Latest stable version: 2024/10/28 v1.0.5
 
