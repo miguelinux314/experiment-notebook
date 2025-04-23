@@ -541,7 +541,7 @@ class Logger(metaclass=Singleton):
         # Shift priority if requested - always return something in the list
         # of available levels
         if lower_priority != 0:
-            new_priority = base_level.priority + lower_priority
+            new_priority = base_level.priority + int(lower_priority)
             levels_by_priority = logger.levels_by_priority()
             base_level = levels_by_priority[0]
             for level in levels_by_priority[1:]:
