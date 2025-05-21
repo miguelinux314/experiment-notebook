@@ -17,7 +17,7 @@ from enb import logger, tcall
 from enb import isets
 from enb.config import options
 from enb.atable import get_canonical_path
-from enb.compression import CompressionResults, DecompressionResults, CompressionException
+from enb.compression import CompressionResults, DecompressionResults, CompressionException, DecompressionException
 from enb.compression.codec import AbstractCodec, NearLosslessCodec
 from enb.compression import tarlite
 
