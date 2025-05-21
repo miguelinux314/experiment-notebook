@@ -981,8 +981,8 @@ class ATable(metaclass=MetaTable):
             enb.logger.error(f"No target indices (data samples) "
                              f"could be found at base_dataset_dir={repr(options.base_dataset_dir)}. "
                              f"Please double check that:\n"
-                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} variable"
-                             f"is correctly set, and it contains the expected samples;\n"
+                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} variable "
+                             f"is correctly set, and contains the expected samples;\n"
                              f"(b) you are passing the right value to the "
                              f"`target_indices` argument of get_df() if not using the default;\n"
                              f"(c) the experiment class you are using has the intended "
@@ -2025,6 +2025,7 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
 
     # If quick is selected, return at most as many paths as the quick parameter count
     all_input_files = sorted_path_list if not options.quick else sorted_path_list[:options.quick]
+    
 
     return all_input_files
 
