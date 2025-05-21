@@ -13,6 +13,8 @@ import time
 import collections
 import shutil
 import math
+from typing import Optional
+
 import numpy as np
 
 from scipy import signal
@@ -165,7 +167,7 @@ class CompressionExperiment(enb.experiment.Experiment):
             self.reconstructed_copy_dir = reconstructed_copy_dir
 
         @property
-        def compression_results(self):
+        def compression_results(self) -> CompressionResults:
             """Perform the actual compression experiment for the selected row.
             """
             if self._compression_results is None:
@@ -257,7 +259,7 @@ class CompressionExperiment(enb.experiment.Experiment):
             return self._compression_results
 
         @property
-        def decompression_results(self):
+        def decompression_results(self) -> DecompressionResults:
             """Perform the actual decompression experiment for the selected row.
             """
             if self._decompression_results is None:
@@ -450,7 +452,7 @@ class CompressionExperiment(enb.experiment.Experiment):
         # This attribute is automatically set before running the defined
         # column-setting functions, then set back to None after that. It
         # enables lazy and at-most-once compression/decompression.
-        self.codec_results = None
+        self.codec_results: Optional[CompressionExperiment.CompressionDecompressionWrapper] = None
 
     @property
     def codecs(self):
