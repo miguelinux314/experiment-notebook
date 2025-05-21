@@ -112,7 +112,7 @@ class ProgressTracker(rich.live.Live):
         self.row_task_id = self.upper_progress.add_task("Rows", total=self.row_count, pulse=False)
         self.row_task = [t for t in self.upper_progress.tasks if t.id == self.row_task_id][0]
         self.chunk_task_id = self.lower_progress.add_task(f"Chunk", total=math.ceil(
-            self.row_count / self.chunk_size))
+            self.row_count / self.chunk_size) if self.chunk_size else 0)
         self.chunk_task = [t for t in self.lower_progress.tasks if t.id == self.chunk_task_id][0]
 
         # Fix some column widths for a visually pleasant distribution
@@ -179,7 +179,7 @@ class ProgressTracker(rich.live.Live):
     def chunk_count(self):
         """Get the number of chunks defined for this progress tracking stage.
         """
-        return math.ceil(self.row_count / self.chunk_size)
+        return math.ceil(self.row_count / self.chunk_size) if self.chunk_size else 0
 
     @classmethod
     @property
@@ -400,7 +400,7 @@ class _ChunkProgressColumn(_ProgressTextColumn):
         formatter = f"{{:>{formatter_length}s}}"
         render_str += formatter.format(
             f"[{self.progress_tracker.style_text_total}]"
-            f"{100 * self.row_task.completed / self.row_task.total:.1f}"
+            f"{100 * self.row_task.completed / self.row_task.total if self.row_task.total else 0:.1f}"
             f"[/{self.progress_tracker.style_text_total}]"
             f"[{self.progress_tracker.style_text_unit}]"
             f"%[/{self.progress_tracker.style_text_unit}]")
