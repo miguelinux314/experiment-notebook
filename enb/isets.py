@@ -21,7 +21,7 @@ dtype_float_tags = ("f16", "f32", "f64")
 dtype_tags = dtype_integer_tags + dtype_float_tags
 
 
-# pylint: disable=no-self-use] 
+# pylint: disable=no-self-use
 
 def entropy(data):
     """Compute the zero-order entropy of the provided data
