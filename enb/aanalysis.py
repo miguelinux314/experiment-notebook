@@ -2576,11 +2576,19 @@ class DictNumericAnalyzer(Analyzer):
 
         # Set the x ticks and labels
         if "x_tick_list" not in column_kwargs:
-            column_kwargs["x_tick_list"] = list(
-                range(len(self.column_name_to_keys[column_name])))
+            column_kwargs["x_tick_list"] = list(range(len(self.column_name_to_keys[column_name])))
+            column_kwargs["x_tick_list"] = [
+                column_kwargs["x_tick_list"][0],
+                column_kwargs["x_tick_list"][len(column_kwargs["x_tick_list"])//2],
+                column_kwargs["x_tick_list"][-1]
+            ]
         if "x_tick_label_list" not in column_kwargs:
-            column_kwargs["x_tick_label_list"] = [str(x) for x in
-                                                  column_kwargs["x_tick_list"]]
+            column_kwargs["x_tick_label_list"] = [str(x) for x in column_kwargs["x_tick_list"]]
+            column_kwargs["x_tick_label_list"] = [
+                column_kwargs["x_tick_label_list"][0],
+                column_kwargs["x_tick_label_list"][len(column_kwargs["x_tick_label_list"])//2],
+                column_kwargs["x_tick_label_list"][-1]
+            ]
 
         return column_kwargs
 
