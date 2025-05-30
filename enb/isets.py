@@ -445,6 +445,10 @@ class SampleDistributionTable(ImageGeometryTable):
         row[_column_name] = dict(zip(unique, counts / image.size))
 
 
+class ImageDistributionTable(ImagePropertiesTable, SampleDistributionTable):
+    """Compute the sample distribution of image samples."""
+
+
 class HistogramFullnessTable1Byte(atable.ATable):
     """Compute an histogram of usage assuming 1-byte samples.
     """
