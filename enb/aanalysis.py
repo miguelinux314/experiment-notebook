@@ -625,7 +625,7 @@ class Analyzer(enb.atable.ATable):
                     # manageable through .ini configuration files via the
                     # @enb.config.aini.managed_attributes decorator.
                     selected_render_modes=selected_render_modes,
-                    show_global=None, show_count=True, plot_title=None,
+                    show_global=None, show_count=None, plot_title=None,
                     # Rendering options, directly passed to
                     # render_plds_by_group
                     **render_kwargs):
@@ -2460,7 +2460,8 @@ class DictNumericAnalyzer(Analyzer):
                selected_render_modes=None,
                output_plot_dir=None, group_by=None, reference_group=None,
                column_to_properties=None,
-               show_global=None, show_count=True,
+               show_global=None,
+               show_count=None,
                key_to_x=None,
                **render_kwargs):
         """Analyze and plot columns containing dictionaries with numeric data.
