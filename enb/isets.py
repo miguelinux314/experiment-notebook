@@ -26,7 +26,10 @@ dtype_tags = dtype_integer_tags + dtype_float_tags
 def entropy(data):
     """Compute the zero-order entropy of the provided data
     """
-    values, count = np.unique(data.flatten(), return_counts=True)
+    try:
+        values, count = np.unique(data.flatten(), return_counts=True)
+    except AttributeError:
+        values, count = np.unique(data, return_counts=True)
     total_sum = sum(count)
     probabilities = (count / total_sum for value, count in zip(values, count))
     return -sum(p * math.log2(p) for p in probabilities)
