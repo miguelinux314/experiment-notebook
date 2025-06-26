@@ -228,7 +228,9 @@ class Analyzer(enb.atable.ATable):
                 # pylint: disable=too-many-arguments
 
                 # Get the summary table with the requested data analysis
-                enb.logger.info(f"Analyzing data with {self.__class__.__name__}...")
+                enb.logger.info(
+                    f"Analyzing {len(target_columns)} target{'s' if len(target_columns) != 1 else ''} "
+                    f"with {self.__class__.__name__}...") 
                 summary_table = self.build_summary_atable(
                     full_df=full_df,
                     target_columns=target_columns,
@@ -623,7 +625,7 @@ class Analyzer(enb.atable.ATable):
                     # manageable through .ini configuration files via the
                     # @enb.config.aini.managed_attributes decorator.
                     selected_render_modes=selected_render_modes,
-                    show_global=None, show_count=True, plot_title=None,
+                    show_global=None, show_count=None, plot_title=None,
                     # Rendering options, directly passed to
                     # render_plds_by_group
                     **render_kwargs):
@@ -881,8 +883,7 @@ class AnalyzerSummary(enb.atable.SummaryTable):
         """Remove the infinite and NaN values from a pd.Series instance.
         """
         # pylint: disable=no-self-use
-        return column_series.replace([np.inf, -np.inf], np.nan,
-                                     inplace=False).dropna()
+        return column_series.replace([np.inf, -np.inf], np.nan, inplace=False).infer_objects(copy=False).dropna()
 
 
 def is_family_grouping(group_by):
@@ -1476,7 +1477,7 @@ class ScalarNumericSummary(AnalyzerSummary):
 
         stat_dict["count"] = len(finite_series)
 
-        if len(np.unique(finite_series.values)) > 1:
+        if len(np.unique(finite_series.values)) > 2:
             description_df = finite_series.describe()
             stat_dict["min"] = description_df["min"]
             stat_dict["max"] = description_df["max"]
@@ -1752,30 +1753,31 @@ class ScalarNumericSummary(AnalyzerSummary):
             q1_q3_box_width = 0
 
         row[_column_name] = [
-            # Min-max span lines (centered around mean)
-            plotdata.ErrorLines(
-                x_values=(description.mean,),
-                y_values=(0,),
-                err_neg_values=(description.mean - description.minmax[0],),
-                err_pos_values=(description.minmax[1] - description.mean,),
-                vertical=False,
-                line_width=_self.analyzer.main_line_width,
-                marker_size=_self.analyzer.main_marker_size,
-                alpha=_self.analyzer.main_alpha),
-            # Box for 1st and 3rd quartiles
+            # Box for 1st and 3rd quartiles, main
             plotdata.Rectangle(
                 x_values=(0.5 * (quartiles[0] + quartiles[2]),), y_values=(0,),
                 width=q1_q3_box_width,
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
                 height=0.8),
-            # Line for 2nd quartile (median)
+            # Line for 2nd quartile (median), main
             plotdata.LineSegment(
                 x_values=(quartiles[1],), y_values=(0,),
                 line_width=_self.analyzer.main_line_width,
                 alpha=_self.analyzer.main_alpha,
                 length=0.8,
                 vertical=True),
+            # Min-max span lines (centered around mean), secondary
+            plotdata.ErrorLines(
+                x_values=(description.mean,),
+                y_values=(0,),
+                err_neg_values=(description.mean - description.minmax[0],),
+                err_pos_values=(description.minmax[1] - description.mean,),
+                vertical=False,
+                line_width=_self.analyzer.secondary_line_width,
+                marker_size=_self.analyzer.secondary_marker_size,
+                cap_size=2*_self.analyzer.secondary_line_width,
+                alpha=_self.analyzer.secondary_alpha),
         ]
 
         if _self.analyzer.show_individual_samples:
@@ -2458,7 +2460,8 @@ class DictNumericAnalyzer(Analyzer):
                selected_render_modes=None,
                output_plot_dir=None, group_by=None, reference_group=None,
                column_to_properties=None,
-               show_global=None, show_count=True,
+               show_global=None,
+               show_count=None,
                key_to_x=None,
                **render_kwargs):
         """Analyze and plot columns containing dictionaries with numeric data.
@@ -2573,11 +2576,19 @@ class DictNumericAnalyzer(Analyzer):
 
         # Set the x ticks and labels
         if "x_tick_list" not in column_kwargs:
-            column_kwargs["x_tick_list"] = list(
-                range(len(self.column_name_to_keys[column_name])))
+            column_kwargs["x_tick_list"] = list(range(len(self.column_name_to_keys[column_name])))
+            column_kwargs["x_tick_list"] = [
+                column_kwargs["x_tick_list"][0],
+                column_kwargs["x_tick_list"][len(column_kwargs["x_tick_list"])//2],
+                column_kwargs["x_tick_list"][-1]
+            ]
         if "x_tick_label_list" not in column_kwargs:
-            column_kwargs["x_tick_label_list"] = [str(x) for x in
-                                                  column_kwargs["x_tick_list"]]
+            column_kwargs["x_tick_label_list"] = [str(x) for x in column_kwargs["x_tick_list"]]
+            column_kwargs["x_tick_label_list"] = [
+                column_kwargs["x_tick_label_list"][0],
+                column_kwargs["x_tick_label_list"][len(column_kwargs["x_tick_label_list"])//2],
+                column_kwargs["x_tick_label_list"][-1]
+            ]
 
         return column_kwargs
 
@@ -3391,7 +3402,8 @@ class ScalarNumericJointAnalyzer(Analyzer):
                             summary_dict = group_df[f"{x_column}_{y_column}_{data_column}_{stat}"]
                             number_format = self.number_format if stat != "count" else "{:d}"
                             longest_cell_length = max(
-                                max(len(number_format.format(val)) for val in summary_dict.values()) if summary_dict else 0,
+                                max(len(number_format.format(val)) for val in
+                                    summary_dict.values()) if summary_dict else 0,
                                 (max(len(str(x)) for x in x_categories)) if x_categories else 0) + len(r"\textbf{}")
                             row_header_format = f"{{:{longest_row_header}s}}"
                             cell_format = f"{{:{longest_cell_length}s}}"

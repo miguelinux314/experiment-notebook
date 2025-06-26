@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lossless Compression Experiment &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5d056567"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d056567"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -105,8 +100,8 @@
              
   <section id="lossless-compression-experiment">
 <h1>Lossless Compression Experiment<a class="headerlink" href="#lossless-compression-experiment" title="Link to this heading"></a></h1>
-<p>This page explains the general dynamics of using the <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> class.
-This class is a subclass of <a class="reference internal" href="api/enb.html#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a>, which performs compression, decompression
+<p>This page explains the general dynamics of using the <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code> class.
+This class is a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code>, which performs compression, decompression
 and verifies that lossless compression is achieved.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -115,7 +110,7 @@ and verifies that lossless compression is achieved.</p>
 followed the installation instructions in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p></li>
 <li><p>Most ideas applicable to lossless compresesion experiments are also valid for lossy compression,
 described in the next page.</p></li>
-<li><p>The <a class="reference internal" href="api/enb.html#module-enb.icompression" title="enb.icompression"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression</span></code></a> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules implement most of the functionality specific to image compression
+<li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression</span></code> and <a class="reference internal" href="api/enb.html#module-enb.isets" title="enb.isets"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets</span></code></a> modules implement most of the functionality specific to image compression
 experiments.</p></li>
 </ul>
 </div>
@@ -142,7 +137,7 @@ as the input dataset. Images can be organized in subfolders as needed. Note that
 <li><p>The <cite>dataset_files_extension</cite> can be changed from <cite>‘raw’</cite> to any other extension, or an empty string
 to recursively search for all files under the <cite>enb.config.options.base_dataset_dir</cite> folder.</p></li>
 <li><p>The <cite>dataset_paths</cite> can be passed to the initializer of
-<a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a> and other subclasses of <a class="reference internal" href="api/enb.html#enb.icompression.CompressionExperiment" title="enb.icompression.CompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code></a>.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code> and other subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.CompressionExperiment</span></code>.
 This overwrites the search under <cite>enb.config.options.base_dataset_dir</cite>.</p></li>
 </ul>
 </div></blockquote>
@@ -168,8 +163,8 @@ for ease of reference, and can be removed at any point.</p>
 </section>
 <section id="codec-instantiation">
 <h2>Codec instantiation<a class="headerlink" href="#codec-instantiation" title="Link to this heading"></a></h2>
-<p>Compression experiments use Codecs as <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> subclasses. In particular, <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCompressionExperiment" title="enb.icompression.LosslessCompressionExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code></a>
-expects subclasses of <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a>.</p>
+<p>Compression experiments use Codecs as <a class="reference internal" href="api/enb.html#enb.experiment.ExperimentTask" title="enb.experiment.ExperimentTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.ExperimentTask</span></code></a> subclasses. In particular, <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCompressionExperiment</span></code>
+expects subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code>.</p>
 <p>The <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a> library provides a wide range of lossless and lossy codecs that can be installed via
 the command line interface. A list of available codecs can be shown with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enb</span> <span class="n">plugin</span> <span class="nb">list</span> <span class="n">codec</span>
@@ -215,7 +210,7 @@ actual experiment execution</p>
 <span class="n">df</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>where <cite>codecs</cite> is the list of codecs we defined above. The returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+1451.g352289b3b6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> df
+<p>where <cite>codecs</cite> is the list of codecs we defined above. The returned <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+2182.g35b0d1dcad)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> df
 can be used to analyze and plot the obtained results. This is automatically done in
 the template for several columns of interest with the following code. You can check
 the <a class="reference internal" href="analyzing_data.html"><span class="doc">Result analysis and plotting with enb</span></a> page for more information on how to analyze and plot

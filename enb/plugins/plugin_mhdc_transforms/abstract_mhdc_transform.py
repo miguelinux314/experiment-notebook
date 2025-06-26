@@ -14,9 +14,9 @@ from enb.config import get_options
 
 options = get_options(from_main=False)
 
+import enb
 import enb.sets
 import enb.isets
-import enb.icompression
 import enb.parallel_ray
 import enb.tcall
 import enb.atable as atable

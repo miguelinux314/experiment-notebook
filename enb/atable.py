@@ -210,7 +210,7 @@ import pickle
 import shutil
 import traceback
 import pandas as pd
-import rich.progress
+from typing import List
 
 import enb.config
 from enb.config import options
@@ -869,10 +869,8 @@ class ATable(metaclass=MetaTable):
 
     @property
     def indices(self):
-        """If `self.index` is a string, it returns a list with that column
-        name. If self.index is a list, it returns `self.index`. Useful to
-        iterate homogeneously regardless of whether single or multiple
-        indices are used.
+        """If `self.index` is a string, it returns a list with that string as its only element. 
+        If `self.index` is a list, it returns a copy of `self.index`.
         """
         return unpack_index_value(self.index)
 
@@ -954,8 +952,9 @@ class ATable(metaclass=MetaTable):
         :raises: CorruptedTableError, ColumnFailedError, when an error is
           encountered processing the data.
         """
-        if len(target_indices) != len(set(target_indices)):
-            raise ValueError(f"{self.__class__.__name__}.get_df() invoked with duplicated parameters.")
+        if target_indices is not None and len(target_indices) != len(set(target_indices)):
+            raise ValueError(f"{self.__class__.__name__}.get_df() "
+                             f"invoked with duplicated parameters.")
 
         # Avoid sending a false warning of not having invoked self.get_df
         self._was_get_df_called = True
@@ -982,8 +981,8 @@ class ATable(metaclass=MetaTable):
             enb.logger.error(f"No target indices (data samples) "
                              f"could be found at base_dataset_dir={repr(options.base_dataset_dir)}. "
                              f"Please double check that:\n"
-                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} variable"
-                             f"is correctly set, and it contains the expected samples;\n"
+                             f"(a) the base_dataset_dir={repr(options.base_dataset_dir)} variable "
+                             f"is correctly set, and contains the expected samples;\n"
                              f"(b) you are passing the right value to the "
                              f"`target_indices` argument of get_df() if not using the default;\n"
                              f"(c) the experiment class you are using has the intended "
@@ -1012,7 +1011,7 @@ class ATable(metaclass=MetaTable):
 
         # Split in chunks and add/update the persistent storage
         df = None
-        
+
         if fill or overwrite:
             if progress_tracker is None and enb.progress.is_progress_enabled():
                 with enb.progress.ProgressTracker(self, len(target_indices), chunk_size) as tracker:
@@ -1112,7 +1111,7 @@ class ATable(metaclass=MetaTable):
         # there is no need to run the computations for those rows.
         # This inner join efficiently queries the loaded table for existing target indices.
         # Its length may be smaller than the requested index length, meaning
-        # that some rows are still to be computed.
+        # that some rows would still need to be computed.
         target_df = pd.DataFrame(target_locs, columns=[self.private_index_column])
         target_df.set_index(self.private_index_column, drop=True, inplace=True)
         target_df = target_df.merge(
@@ -1123,16 +1122,17 @@ class ATable(metaclass=MetaTable):
             copy=False)
 
         assert len(target_df) <= len(target_locs), \
-            (f"Error: Duplicated indices? "
+            (f"Error: Duplicated target indices? "
              f"|target_df| = {len(target_df)}, |target_locs| = {len(target_locs)}")
 
         # Find the positions that have a null value in any of the requested columns
-
         target_locs = [indices_to_internal_loc(index) for index in target_indices]
         null_target_indices = [
-            internal_loc_to_index(loc) 
+            internal_loc_to_index(loc)
             for loc in target_df[target_df[target_columns].isnull().any(axis=1)].index
             if loc in target_locs]
+
+        # Find the indices not present in the persistence
         missing_target_indices = [
             index for index in target_indices
             if indices_to_internal_loc(index) not in target_df.index]
@@ -1159,7 +1159,8 @@ class ATable(metaclass=MetaTable):
             # Insert or update rows
             target_df = pd.concat([df for df in (target_df, computed_df) if not df.empty])
             target_df = target_df[~target_df.index.duplicated(keep="last")]
-            assert len(target_df) == len(target_indices), (len(target_df), len(target_indices))
+            assert len(target_df) == len(target_indices), (
+                len(target_df), len(target_indices), target_indices, target_df)
 
             # Not all columns might have been requested
             if self.ignored_columns:
@@ -1205,7 +1206,7 @@ class ATable(metaclass=MetaTable):
             with enb.logger.debug_context(
                     f"Loading dataframe from persistence at {csv_support_path}",
                     sep="... "):
-                loaded_df = pd.read_csv(csv_support_path)
+                loaded_df = pd.read_csv(csv_support_path, low_memory=False)
                 enb.logger.debug(f"Loaded df with {len(loaded_df)} rows")
             loaded_columns = list(loaded_df.columns)
 
@@ -1251,15 +1252,17 @@ class ATable(metaclass=MetaTable):
                         # Column did not exist: create with None values
                         loaded_df[column] = None
 
+            enb.logger.info(f"{self.__class__.__name__} loaded df from {csv_support_path!r}")
+
         except (FileNotFoundError, pd.errors.EmptyDataError):
-            with enb.logger.debug_context(
-                    f"No CSV persistence found for {self.__class__.__name__} "
-                    f"at {csv_support_path}. Creating an empty one"):
-                loaded_df = pd.DataFrame(
-                    columns=self.indices_and_columns + [
-                        self.private_index_column])
-                for column in self.indices_and_columns:
-                    loaded_df[column] = None
+            loaded_df = pd.DataFrame(
+                columns=self.indices_and_columns + [
+                    self.private_index_column])
+            for column in self.indices_and_columns:
+                loaded_df[column] = None
+
+            enb.logger.info(f"{self.__class__.__name__} could not find df at {csv_support_path!r}: "
+                            "creating empty.")
 
         loaded_df.set_index(self.private_index_column, drop=True, inplace=True)
 
@@ -1531,6 +1534,7 @@ class ATable(metaclass=MetaTable):
 
                     return cfe
 
+            # Update the index (indices) of this row
             for index_name, index_value in zip(self.indices, unpack_index_value(index)):
                 row[index_name] = index_value
 
@@ -1825,7 +1829,7 @@ def check_unique_indices(df):
         raise CorruptedTableError(atable=None, msg=msg)
 
 
-def indices_to_internal_loc(values):
+def indices_to_internal_loc(values) -> str:
     """Given an index string or list of strings, return a single index string
     that uniquely identifies those strings and can be used as an internal index.
 
@@ -1844,26 +1848,28 @@ def indices_to_internal_loc(values):
 
     return str(tuple(values))
 
-def internal_loc_to_index(internal_loc):
-    """Transform an enb-generated internal loc into the index value that was used to create it.
-    If the index was a single element, that element is returned directly. If the index was an iterable,
-    a tuple is returned."""
+
+def internal_loc_to_index(internal_loc) -> str | List[str]:
+    """Transform an enb-generated location (index VALUE) and return the corresponding index value.
+    This value can be a single string-like object, or a tuple of string-like objects."""
     index = ast.literal_eval(internal_loc)
+
     if len(index) == 1:
         return index[0]
+
     return index
 
 
 def unpack_index_value(index):
-    """Unpack an enb-created |DataFrame| index NAME and return its elements.   
-    This can be useful to iterate homogeneously regardless of whether single
-    or multiple indices are used.
+    """Unpack an enb-created |DataFrame| index NAME and return its elements.
+    IMPORTANT: This method deals with index NAMEs, because enb currently supports; 
+    this is NOT the inverse of indices_to_internal_loc (see internal_loc_to_index instead)
     
-    NOTE: This method deals with index NAMES, not values. 
-    For that, see `enb.atable.internal_loc_to_index`.
+    This can be useful to iterate homogeneously regardless of whether single-element
+    or multiple-element (tuple) indices are used.  
 
-    :return: If input is a string, it returns a list with that column name.
-      If input is a list, it returns self.index.
+    :return: If input is a string, it returns a list with that string as its only element.
+      If input is a list, it returns a copy of that list. 
     """
     if isinstance(index, (str, numbers.Number)):
         return [index]
@@ -1999,7 +2005,7 @@ def get_all_input_files(ext=None, base_dataset_dir=None):
     :param base_dataset_dir: if not None, the dir where test files are searched
       for recursively. If None, options.base_dataset_dir is used instead.
     :return: the sorted list of canonical paths to the found input files.
-    """    
+    """
     # Set the input dataset dir
     base_dataset_dir = base_dataset_dir or options.base_dataset_dir
     if base_dataset_dir is None or not os.path.isdir(base_dataset_dir):

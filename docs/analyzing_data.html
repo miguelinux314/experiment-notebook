@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Result analysis and plotting with enb &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5d056567"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d056567"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -139,7 +134,7 @@
   <section id="result-analysis-and-plotting-with-enb">
 <h1>Result analysis and plotting with <a class="reference internal" href="api/enb.html#module-enb" title="enb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb</span></code></a><a class="headerlink" href="#result-analysis-and-plotting-with-enb" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a> module provides several classes to help you analyze and
-visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+1451.g352289b3b6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
+visualize your results. These classes accept <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+2182.g35b0d1dcad)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances, which can
 be produced by your <cite>enb</cite>-based scripts or imported via <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>.</p>
 <p>These classes produce:</p>
 <ul class="simple">
@@ -159,14 +154,14 @@ a general use case.</p>
 <h2>One numeric column<a class="headerlink" href="#one-numeric-column" title="Link to this heading"></a></h2>
 <p>In this scenario, we want to analyze a column of scalar values, typically integers and/or floats.
 Here we will be using the Iris dataset, which we can load with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">iris_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/iris_dataset.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This particular dataframe has the <cite>sepal_length</cite>, <cite>sepal_width</cite>, <cite>petal_length</cite>, <cite>petal_width</cite> and <cite>class</cite> columns defined.
 We can analyze the general petal and sepal dimensions using the <strong>`get_df`</strong> method of <a class="reference internal" href="api/enb.html#enb.aanalysis.ScalarNumericAnalyzer" title="enb.aanalysis.ScalarNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.ScalarNumericAnalyzer</span></code></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">enb</span>
 
 <span class="n">analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">ScalarNumericAnalyzer</span><span class="p">()</span>
 <span class="n">analysis_df</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span>
@@ -301,7 +296,7 @@ the <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAn
 <p>In the following example, the dataset
 contains a column <cite>mode_count</cite> where keys are the set of possible modes and the values are the number of times
 each mode has been employed. We can import the dataset with the following lines</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">hevc_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./input_csv/hevc_frame_prediction.csv&quot;</span><span class="p">)</span>
 <span class="c1">## These two lines are automatically applied</span>
@@ -336,7 +331,7 @@ the corresponding column definition.</p>
 </div>
 <p>Now, we instantiate <a class="reference internal" href="api/enb.html#enb.aanalysis.DictNumericAnalyzer" title="enb.aanalysis.DictNumericAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.DictNumericAnalyzer</span></code></a> and run its <cite>get_df</cite> method. The following code computes the average
 count per mode for each of the selected groups (given in the <cite>block_size</cite> column)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">enb</span>
 
 <span class="c1"># Create the analyzer and plot results</span>
 <span class="n">numeric_dict_analyzer</span> <span class="o">=</span> <span class="n">enb</span><span class="o">.</span><span class="n">aanalysis</span><span class="o">.</span><span class="n">DictNumericAnalyzer</span><span class="p">()</span>
@@ -395,9 +390,9 @@ being a list of 3-element tuples.</p>
 <p>In the following example of the ‘colormap’ render mode,
 the <cite>value</cite> column contains the data of interest, while <cite>x</cite> and <cite>y</cite> contain the spatial
 information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">enb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">enb</span>
 
 <span class="c1"># Read data from CSV - could be obtained from an ATable instance</span>
 <span class="n">df_2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;2d_data_example.csv&quot;</span><span class="p">))</span>
@@ -468,9 +463,9 @@ in <a class="reference internal" href="#scalar-numeric-2d-analyzer"><span class=
 <p>In the following example of the ‘table’ render mode,
 the <cite>Price</cite> column contains the data of interest, while <cite>Color</cite> and <cite>Origin</cite> contain the categorical
 data for joint analysis.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">enb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">enb</span>
 
 <span class="n">df_joint</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;continent_data_example.csv&quot;</span><span class="p">))</span>
 
@@ -555,9 +550,9 @@ shown or not by modifying the <cite>show_reference_group</cite> of your <a class
 </ul>
 <p>The following example uses all these features (except for <cite>reference_group</cite>), which can be independently selected:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">enb</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">enb</span>
 
 <span class="n">df_joint</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;input_csv&quot;</span><span class="p">,</span> <span class="s2">&quot;continent_data_example.csv&quot;</span><span class="p">))</span>
 
@@ -898,13 +893,13 @@ have a corresponding <a class="reference internal" href="api/enb.html#enb.atable
 <li><p>axis type (e.g., <cite>semilog_x=True</cite>)</p></li>
 </ul>
 <p>As detailed in <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a>, these hints can be set when defining custom columns, e.g.,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ATable</span><span class="p">):</span>
     <span class="nd">@enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">column_function</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">atable</span><span class="o">.</span><span class="n">ColumnProperties</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;average_duration_seconds&quot;</span><span class="p">,</span>
         <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Average duration (s)&quot;</span><span class="p">,</span>
         <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">plot_max</span><span class="o">=</span><span class="mi">60</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">set_average_duration_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_average_duration_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
         <span class="n">row</span><span class="p">[</span><span class="n">_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="c1"># ... your code here</span>
 </pre></div>
 </div>
@@ -1033,36 +1028,37 @@ You can check out the `gallery of matplotlib’s default styles</a>.</p></li>
 </div>
 <p>An example output is as follows:</p>
 <blockquote>
-<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>        - &#39;Solarize_Light2&#39;
-        - &#39;bmh&#39;
-        - &#39;classic&#39;
-        - &#39;dark_background&#39;
-        - &#39;default&#39;
-        - &#39;fast&#39;
-        - &#39;fivethirtyeight&#39;
-        - &#39;ggplot&#39;
-        - &#39;grayscale&#39;
-        - &#39;seaborn-v0_8&#39;
-        - &#39;seaborn-v0_8-bright&#39;
-        - &#39;seaborn-v0_8-colorblind&#39;
-        - &#39;seaborn-v0_8-dark&#39;
-        - &#39;seaborn-v0_8-dark-palette&#39;
-        - &#39;seaborn-v0_8-darkgrid&#39;
-        - &#39;seaborn-v0_8-deep&#39;
-        - &#39;seaborn-v0_8-muted&#39;
-        - &#39;seaborn-v0_8-notebook&#39;
-        - &#39;seaborn-v0_8-paper&#39;
-        - &#39;seaborn-v0_8-pastel&#39;
-        - &#39;seaborn-v0_8-poster&#39;
-        - &#39;seaborn-v0_8-talk&#39;
-        - &#39;seaborn-v0_8-ticks&#39;
-        - &#39;seaborn-v0_8-white&#39;
-        - &#39;seaborn-v0_8-whitegrid&#39;
-        - &#39;single_column&#39;
-        - &#39;slides&#39;
-        - &#39;tableau-colorblind10&#39;
-        - &#39;two_columns&#39;
-        - &#39;xkcd&#39;
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[38;2;40;201;255m        - [0m[38;2;40;201;255m&#39;Solarize_Light2&#39;[0m
+[38;2;40;201;255m        - &#39;bmh&#39;[0m
+[38;2;40;201;255m        - &#39;classic&#39;[0m
+[38;2;40;201;255m        - &#39;dark_background&#39;[0m
+[38;2;40;201;255m        - &#39;default&#39;[0m
+[38;2;40;201;255m        - &#39;fast&#39;[0m
+[38;2;40;201;255m        - &#39;fivethirtyeight&#39;[0m
+[38;2;40;201;255m        - &#39;ggplot&#39;[0m
+[38;2;40;201;255m        - &#39;grayscale&#39;[0m
+[38;2;40;201;255m        - &#39;petroff10&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-bright&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-colorblind&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-dark&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-dark-palette&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-darkgrid&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-deep&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-muted&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-notebook&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-paper&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-pastel&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-poster&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-talk&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-ticks&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-white&#39;[0m
+[38;2;40;201;255m        - &#39;seaborn-v0_8-whitegrid&#39;[0m
+[38;2;40;201;255m        - &#39;single_column&#39;[0m
+[38;2;40;201;255m        - &#39;slides&#39;[0m
+[38;2;40;201;255m        - &#39;tableau-colorblind10&#39;[0m
+[38;2;40;201;255m        - &#39;two_columns&#39;[0m
+[38;2;40;201;255m        - &#39;xkcd&#39;[0m
 </pre></div>
 </div>
 </div></blockquote>

@@ -209,7 +209,7 @@ class Experiment(enb.atable.ATable):
         if csv_experiment_path is None:
             csv_experiment_path = os.path.join(
                 options.persistence_dir,
-                f"{self.__class__.__name__}_persistence.csv")
+                f"persistence_{self.__class__.__name__}.csv")
 
         os.makedirs(os.path.dirname(csv_experiment_path), exist_ok=True)
 

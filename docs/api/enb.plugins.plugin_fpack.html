@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>enb.plugins.plugin_fpack package &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5d056567"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5d056567"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -112,8 +107,8 @@
 <p>Codec wrapper for the Fpack lossless and lossy image coder</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_Abstract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decompressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_invocation_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature_in_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">LosslessCodec</span></code></a>, <a class="reference internal" href="enb.html#enb.fits.FITSWrapperCodec" title="enb.fits.FITSWrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">FITSWrapperCodec</span></code></a></p>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_Abstract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decompressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_invocation_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature_in_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="enb.compression.html#enb.compression.codec.LosslessCodec" title="enb.compression.codec.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">LosslessCodec</span></code></a>, <a class="reference internal" href="enb.compression.html#enb.compression.fits.FITSWrapperCodec" title="enb.compression.fits.FITSWrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">FITSWrapperCodec</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract.assert_valid_data_type">
 <span class="sig-name descname"><span class="pre">assert_valid_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract.assert_valid_data_type" title="Link to this definition"></a></dt>
@@ -123,7 +118,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_GZIP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_GZIP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a></p>
 <p>fpack wrapper with gzip compression.</p>
 <dl class="py method">
@@ -139,7 +134,7 @@ decompression</p></li>
 <li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used
 for compression</p></li>
 <li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are
-stored in this directory with name based on the codec and the image’s
+stored in this directory with name based on the codec and the sample’s
 full path.</p></li>
 </ul>
 </dd>
@@ -181,14 +176,14 @@ original_path’s properties (e.g., geometry), or None</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.label">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.label" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.label" title="Link to this definition"></a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique
 nor fully informative. By default, self’s class name is returned.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.name" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_GZIP.name" title="Link to this definition"></a></dt>
 <dd><p>Don’t include the binary signature</p>
 </dd></dl>
 
@@ -196,7 +191,7 @@ nor fully informative. By default, self’s class name is returned.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_HCOMPRESS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_HCOMPRESS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a></p>
 <p>fpack wrapper with hcompress compression.</p>
 <dl class="py method">
@@ -212,7 +207,7 @@ decompression</p></li>
 <li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used
 for compression</p></li>
 <li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are
-stored in this directory with name based on the codec and the image’s
+stored in this directory with name based on the codec and the sample’s
 full path.</p></li>
 </ul>
 </dd>
@@ -254,14 +249,14 @@ original_path’s properties (e.g., geometry), or None</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.label">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.label" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.label" title="Link to this definition"></a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique
 nor fully informative. By default, self’s class name is returned.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.name" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_HCOMPRESS.name" title="Link to this definition"></a></dt>
 <dd><p>Don’t include the binary signature</p>
 </dd></dl>
 
@@ -269,7 +264,7 @@ nor fully informative. By default, self’s class name is returned.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_RICE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin_fpack.fpack_codec.</span></span><span class="sig-name descname"><span class="pre">FPACK_RICE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract" title="enb.plugins.plugin_fpack.fpack_codec.FPACK_Abstract"><code class="xref py py-class docutils literal notranslate"><span class="pre">FPACK_Abstract</span></code></a></p>
 <p>fpack wrapper with Rice compression.</p>
 <dl class="py method">
@@ -285,7 +280,7 @@ decompression</p></li>
 <li><p><strong>param_dict</strong> – name-value mapping of the parameters to be used
 for compression</p></li>
 <li><p><strong>output_invocation_dir</strong> – if not None, invocation strings are
-stored in this directory with name based on the codec and the image’s
+stored in this directory with name based on the codec and the sample’s
 full path.</p></li>
 </ul>
 </dd>
@@ -327,14 +322,14 @@ original_path’s properties (e.g., geometry), or None</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.label">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.label" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.label" title="Link to this definition"></a></dt>
 <dd><p>Label to be displayed for the codec. May not be strictly unique
 nor fully informative. By default, self’s class name is returned.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.name" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#enb.plugins.plugin_fpack.fpack_codec.FPACK_RICE.name" title="Link to this definition"></a></dt>
 <dd><p>Don’t include the binary signature</p>
 </dd></dl>
 

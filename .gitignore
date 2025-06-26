@@ -1,5 +1,5 @@
 .idea/
-
+__pycache__/
 # Ignore compiled binaries for the plugins
 enb/plugins/plugin_flif/flif
 enb/plugins/plugin_fpack/cfitsio-3.49/

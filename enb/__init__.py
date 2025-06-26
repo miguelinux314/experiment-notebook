@@ -47,15 +47,18 @@ is_enb_cli = _os.path.basename(_sys.argv[0]) in ["__main__.py", "enb"]
 
 # Data dir
 default_base_dataset_dir = _os.path.join(calling_script_dir, "datasets")
-# Persistence dir
-default_persistence_dir = _os.path.join(calling_script_dir,
-                                        f"persistence_{_os.path.basename(_sys.argv[0])}")
-# Plots dir
-default_output_plots_dir = _os.path.join(calling_script_dir,
-                                         "plots") if not is_enb_cli else "./plots"
-# Analysis dir
-default_analysis_dir = _os.path.join(calling_script_dir,
-                                     "analysis") if not is_enb_cli else "./analysis"
+# Persistence dir (default: persistence/)
+default_persistence_dir = _os.path.join(calling_script_dir, "persistence")
+# Plots dir (default: plots/<script_name>)
+default_output_plots_dir = _os.path.join(
+    calling_script_dir if not is_enb_cli else ".",
+    "plots",
+    _os.path.basename(_sys.argv[0])[:-len(".py") if _sys.argv[0].endswith(".py") else None])
+# Analysis dir (default: analysis/<script_name>)
+default_analysis_dir = _os.path.join(
+    calling_script_dir if not is_enb_cli else ".",
+    "analysis",
+    _os.path.basename(_sys.argv[0])[:-len(".py") if _sys.argv[0].endswith(".py") else None])
 
 # Fix getcwd for the specific case enb is imported from the sphinx documentation tool
 if _os.path.basename(_sys.argv[0]) == "sphinx-build":
@@ -99,18 +102,21 @@ from . import atable
 ## Basic Experiment features
 from . import sets
 from . import experiment
+from . import isets
 ## Data analysis (e.g., plotting) modules
 from . import plotdata
 from . import render
 from . import aanalysis
-## Image compression modules
-from . import icompression
-from . import isets
-from . import fits
-from . import png
-from . import jpg
-from . import pgm
-from . import tarlite
+## Compression modules
+from . import compression
+# Imports for backwards compatibility
+from .compression import icompression
+from .compression import fits
+from .compression import png
+from .compression import jpg
+from .compression import pgm
+from .compression import tarlite
+
 # Plugin and template support
 from . import plugins
 

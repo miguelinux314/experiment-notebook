@@ -5,11 +5,12 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2020/03/31"
 
 import shutil
-import enb.icompression as icompression
-import enb.isets as isets
 
+from enb.compression.codec import LosslessCodec, LossyCodec
+from enb.compression.wrapper import WrapperCodec
+from enb.isets import load_array_bsq, dump_array_bsq
 
-class TrivialLosslessCodec(icompression.LosslessCodec):
+class TrivialLosslessCodec(LosslessCodec):
     """Trivial is_lossless codec (files are copied without any further processing)
     """
 
@@ -27,7 +28,7 @@ class TrivialLosslessCodec(icompression.LosslessCodec):
         shutil.copyfile(compressed_path, reconstructed_path)
 
 
-class TrivialCpWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
+class TrivialCpWrapper(WrapperCodec, LosslessCodec):
     """Trivial codec wrapper for /bin/cp.
     """
 
@@ -41,7 +42,7 @@ class TrivialCpWrapper(icompression.WrapperCodec, icompression.LosslessCodec):
         return f"'{compressed_path}' '{reconstructed_path}'"
 
 
-class OffsetLossyCodec(icompression.LossyCodec):
+class OffsetLossyCodec(LossyCodec):
     """Trivial lossy codec that adds a constant to every pixel of the image,
     and stores the result with the same data format as the original.
     Note that overflows result in wrap around values (max+1 results in 0)
@@ -51,10 +52,10 @@ class OffsetLossyCodec(icompression.LossyCodec):
         super().__init__(param_dict=dict(constant=constant))
 
     def compress(self, original_path: str, compressed_path: str, original_file_info=None):
-        array = isets.load_array_bsq(
+        array = load_array_bsq(
             file_or_path=original_path, image_properties_row=original_file_info)
         array += self.param_dict["constant"]
-        isets.dump_array_bsq(array=array, file_or_path=compressed_path)
+        dump_array_bsq(array=array, file_or_path=compressed_path)
 
     def decompress(self, compressed_path, reconstructed_path, original_file_info=None):
         shutil.copyfile(compressed_path, reconstructed_path)

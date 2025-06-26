@@ -5,9 +5,9 @@ __author__ = "Miguel Hernández-Cabronero"
 __since__ = "2022/04/08"
 
 import os
-import enb.icompression
 import shutil
-import tempfile
+
+import enb
 
 
 class EmpordaAC(enb.icompression.LosslessCodec, enb.icompression.NearLosslessCodec,
