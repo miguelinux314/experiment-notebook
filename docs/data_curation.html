@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dataset curation and modification &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5d056567"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d056567"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -147,15 +142,15 @@ input into and output, and</p></li>
 </ol>
 <p>The following toy example shows how to normalize all text files in an input directory
 converting them to lowercase and removing leading and trailing spaces from each line:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">enb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">enb</span>
 
 <span class="c1"># 1 - Definition of the FileVersionTable subclass</span>
-<span class="k">class</span> <span class="nc">TextNormalizationTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">FileVersionTable</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextNormalizationTable</span><span class="p">(</span><span class="n">enb</span><span class="o">.</span><span class="n">sets</span><span class="o">.</span><span class="n">FileVersionTable</span><span class="p">):</span>
     <span class="c1"># 2 - Input file extension definition</span>
     <span class="n">dataset_files_extension</span> <span class="o">=</span> <span class="s2">&quot;txt&quot;</span>
 
     <span class="c1"># 3 - Redefinition of the version method</span>
-    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
             <span class="n">contents</span> <span class="o">=</span> <span class="n">input_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">contents</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()))</span>
@@ -198,13 +193,15 @@ output path passed as argument. This is particularly useful when</p>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.BILToBSQ" title="enb.isets.BILToBSQ"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.BILToBSQ</span></code></a>: Convert raw images (no header) from band-interleaved line order (BIL)     to band-sequential order (BSQ).</p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.BIPToBSQ" title="enb.isets.BIPToBSQ"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.BIPToBSQ</span></code></a>: Convert raw images (no header) from band-interleaved pixel order (BIP)     to band-sequential order (BSQ).</p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.DivisibleSizeVersion" title="enb.isets.DivisibleSizeVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.DivisibleSizeVersion</span></code></a>: Crop the spatial dimensions of all (raw) images in a directory so that they are     all multiple of a given number. Useful for quickly curating datasets that can be divided     into blocks of a given size.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.fits.FITSVersionTable" title="enb.fits.FITSVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.fits.FITSVersionTable</span></code></a>: Read FITS files and convert them to raw files, sorting them by type (     integer or float) and by bits per pixel.</p></li>
+<li><p><a class="reference internal" href="api/enb.compression.html#enb.compression.fits.FITSVersionTable" title="enb.compression.fits.FITSVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.compression.fits.FITSVersionTable</span></code></a>: Read FITS files and convert them to raw files, sorting them by type (     integer or float) and by bits per pixel.</p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.ImageVersionTable" title="enb.isets.ImageVersionTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.ImageVersionTable</span></code></a>: Transform all images and save the transformed versions.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.jpg.JPEGCurationTable" title="enb.jpg.JPEGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.jpg.JPEGCurationTable</span></code></a>: Given a directory tree containing JPEG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.png.PDFToPNG" title="enb.png.PDFToPNG"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.png.PDFToPNG</span></code></a>: Take all .pdf files in input dir and save them as .png files into     output_dir, maintining the relative folder structure.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.pgm.PGMCurationTable" title="enb.pgm.PGMCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.pgm.PGMCurationTable</span></code></a>: Given a directory tree containing PGM images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.png.PNGCurationTable" title="enb.png.PNGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.png.PNGCurationTable</span></code></a>: Given a directory tree containing PNG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.compression.html#enb.compression.jpg.JPEGCurationTable" title="enb.compression.jpg.JPEGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.compression.jpg.JPEGCurationTable</span></code></a>: Given a directory tree containing JPEG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.compression.html#enb.compression.png.PDFToPNG" title="enb.compression.png.PDFToPNG"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.compression.png.PDFToPNG</span></code></a>: Take all .pdf files in input dir and save them as .png files into     output_dir, maintining the relative folder structure.</p></li>
+<li><p><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PGMCurationTable" title="enb.compression.pgm.PGMCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.compression.pgm.PGMCurationTable</span></code></a>: Given a directory tree containing PGM images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.compression.html#enb.compression.png.PNGCurationTable" title="enb.compression.png.PNGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.compression.png.PNGCurationTable</span></code></a>: Given a directory tree containing PNG images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>load_array_bsq</cite>.</p></li>
+<li><p><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PPMCurationTable" title="enb.compression.pgm.PPMCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.compression.pgm.PPMCurationTable</span></code></a>: Given a directory tree containing PPM images, copy those images into     a new directory tree in raw BSQ format adding geometry information tags to     the output names recognized by <cite>enb.isets.load_array_bsq</cite>.</p></li>
 <li><p><a class="reference internal" href="api/enb.html#enb.isets.QuantizedImageVersion" title="enb.isets.QuantizedImageVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.QuantizedImageVersion</span></code></a>: Apply uniform quantization and store the results.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.isets.ReindexedVersion" title="enb.isets.ReindexedVersion"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.isets.ReindexedVersion</span></code></a>: Read the N unique (signed or unsigned) sample values in a file,      apply a bijective mapping between the original sample values and      the index values in [0, 1, …, N-1]. The resulting indices are stored     as unsigned integers using <cite>width_bytes</cite> bytes in the same order as the original samples.          The output files share the name of the originals, except for enb data type name tags     (e.g., u16be, s16le, etc.), which are transformed to u8be, u16be or u32be depending     on the value of <cite>width_bytes</cite>.          In addition to the index data, a second file is created that contains a list of the      unique original sample values as well as the original data type.      This file is needed to reconstruct the original data from the indices,      although no attempt is made at compressing this data.      This second file has the same name as the output index file, with the addition of “.meta”     at the end of it.</p></li>
 </ul>
 <p>If you create your own subclasses, don’t hesitate to submit it to us (e.g., via a pull request in github).</p>
 </section>

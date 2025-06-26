@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The enb command-line tools &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5d056567"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d056567"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -133,72 +128,76 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Showing 49 plugins.
-You can add arguments to filter this list, and/or use the --exclude argument.
-Add -v for extra information on the listed plugins.
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[38;2;40;201;255mShowing 53 plugins[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255mYou can add arguments to filter this list, and/or use the --exclude argument.[0m
+[38;2;40;201;255mAdd -v for extra information on the listed plugins[0m[38;2;40;201;255m.[0m
 
-         analysis-gallery :: Self-contained gallery of data analysis and plotting examples.
-         arithmetic_codec :: Arithmetic codec (8 bit).
-           basic-workflow :: Basic, self-contained example of enb&#39;s workflow.
-                      bwt :: Application of the Burrows-Wheeler Transform (BWT).
-               ccsds122x1 :: Wrappers for CCSDS 122.1 (privative).
-               ccsds124x0 :: Wrappers for CCSDS 124.0-B-1 (privative).
-           cluster-config :: Template of a CSV configuration file for enb clusters.
-              colors-dark :: Color template for dark background terminals.
-           colors-default :: Default color template for light or dark background terminals.
-                  emporda :: Wrapper for the emporda codec (AC and CCSDS versions).
-                  enb.ini :: Copy a full enb.ini configuration in the destination project folder.
- entropy-codec-comparison :: Template for the comparison of entropy codecs.
-               experiment :: Generic experiment template. Run `enb plugin list experiment` for specific experiment templates.
-                    fapec :: Wrappers for FAPEC (privative).
-     file_version_example :: Template and usage example for the FileVersionTable class for dataset curation.
-                     flif :: Wrapper for the FLIF compressor.
-                    fpack :: Wrapper for the FPACK compressor.
-                      fpc :: FPC codec wrappers.
-                    fpzip :: Wrappers for FPZIP codecs.
-                      fse :: Wrappers for FSE codecs. Includes a Huffman-only entropy codec.
-                     hdf5 :: Codec wrappers for the h5py library.
-                     hevc :: Wrapper for the HEVC / H.265 codec.
-                  huffman :: Huffman codec (8 bit).
-          iraf_photometry :: Extra photometry information from image files.
-                     jpeg :: Reference JPEG and JPEG-LS implementation.
-                   jpegxl :: Wrapper for a reference JPEG-XL implementation.
-                   kakadu :: Wrappers for Kakadu JPEG 2000 (privative).
-                       lc :: LC Framework codec generation and application tools.
-                     lcnl :: Wrappers for LCNL CCSDS 123.0-B-2 (privative).
-     lossless-compression :: Template for lossless compression experiments.
-        lossy-compression :: Template for lossy compression experiments.
-                    lpaq8 :: Implementation of the LPAQ8 algorithm.
-                      lz4 :: Wrapper for a LZ4 codec.
-                   marlin :: Marlin-based image compressor.
-             matplotlibrc :: Copy matplotlib&#39;s default rc file into the destination directory.
-                   mcalic :: Wrapper for E. Magli et al.&#39;s M-CALIC codec.
-            montecarlo-pi :: Demo project that approximates pi in a distributed way.
-                  montsec :: Wrapper for the montsec codec.
-                    ndzip :: Wrapper for ndzip.
-  port-experiment-example :: Self-contained port scanning experiment example.
-                      rle :: Run-Length Encoding codec.
-                     spdp :: Wrapper for the spdp codec.
-                    speck :: Wrapper for the SPECK codec.
-              test-codecs :: Install all codec plugins verify their availability.
-                      v2f :: Wrapper of a codec based on V2F forests (privative).
-                      vvc :: Wrapper for the VVC / H.266 codec.
-                      zfp :: Wrapper for the zfp library.
-                      zip :: Assortment of lz-based and bzip-based codecs.
-                     zstd :: Zstandard library wrapper.
+[38;2;40;201;255m         analysis-gallery :: [0m[38;2;40;201;255mSelf-contained gallery of data analysis and plotting examples[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m         arithmetic_codec :: [0m[38;2;40;201;255mArithmetic codec (8 bit)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m           basic-workflow :: [0m[38;2;40;201;255mBasic, self-contained example of enb&#39;s workflow[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m               bitshuffle :: [0m[38;2;40;201;255mCodec wrapper that applies bitshuffle before another codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      bwt :: [0m[38;2;40;201;255mApplication of the Burrows-Wheeler Transform (BWT)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m               ccsds122x1 :: [0m[38;2;40;201;255mWrappers for CCSDS 122.1 (privative)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m               ccsds124x0 :: [0m[38;2;40;201;255mWrappers for CCSDS 124.0-B-1 (privative)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m           cluster-config :: [0m[38;2;40;201;255mTemplate of a CSV configuration file for enb clusters[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m              colors-dark :: [0m[38;2;40;201;255mColor template for dark background terminals[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m           colors-default :: [0m[38;2;40;201;255mDefault color template for light or dark background terminals[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                  emporda :: [0m[38;2;40;201;255mWrapper for the emporda codec (AC and CCSDS versions)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                  enb.ini :: [0m[38;2;40;201;255mCopy a full enb.ini configuration in the destination project folder[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m entropy-codec-comparison :: [0m[38;2;40;201;255mTemplate for the comparison of entropy codecs[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m               experiment :: [0m[38;2;40;201;255mGeneric experiment template. Run `enb plugin list experiment` for specific experiment templates[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                    fapec :: [0m[38;2;40;201;255mWrappers for FAPEC (privative)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m     file_version_example :: [0m[38;2;40;201;255mTemplate and usage example for the FileVersionTable class for dataset curation[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     flif :: [0m[38;2;40;201;255mWrapper for the FLIF compressor[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                    fpack :: [0m[38;2;40;201;255mWrapper for the FPACK compressor[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      fpc :: [0m[38;2;40;201;255mFPC codec wrappers[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                    fpzip :: [0m[38;2;40;201;255mWrappers for FPZIP codecs[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      fse :: [0m[38;2;40;201;255mWrappers for FSE codecs. Includes a Huffman-only entropy codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     hdf5 :: [0m[38;2;40;201;255mCodec wrappers for the h5py library[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     hevc :: [0m[38;2;40;201;255mWrapper for the HEVC / H.265 codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                  huffman :: [0m[38;2;40;201;255mHuffman codec (8 bit)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m          iraf_photometry :: [0m[38;2;40;201;255mExtra photometry information from image files[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     jpeg :: [0m[38;2;40;201;255mReference JPEG and JPEG-LS implementation[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                   jpegxl :: [0m[38;2;40;201;255mWrapper for a reference JPEG-XL implementation[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                   kakadu :: [0m[38;2;40;201;255mWrappers for Kakadu JPEG 2000 (privative)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                       lc :: [0m[38;2;40;201;255mLC Framework codec generation and application tools[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     lcnl :: [0m[38;2;40;201;255mWrappers for LCNL CCSDS 123.0-B-2 (privative)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m     lossless-compression :: [0m[38;2;40;201;255mTemplate for lossless compression experiments[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m        lossy-compression :: [0m[38;2;40;201;255mTemplate for lossy compression experiments[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                    lpaq8 :: [0m[38;2;40;201;255mImplementation of the LPAQ8 algorithm[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      lz4 :: [0m[38;2;40;201;255mWrapper for a LZ4 codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                   marlin :: [0m[38;2;40;201;255mMarlin-based image compressor[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m             matplotlibrc :: [0m[38;2;40;201;255mCopy matplotlib&#39;s default rc file into the destination directory[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                   mcalic :: [0m[38;2;40;201;255mWrapper for E. Magli et al.&#39;s M-CALIC codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m            montecarlo-pi :: [0m[38;2;40;201;255mDemo project that approximates pi in a distributed way[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                  montsec :: [0m[38;2;40;201;255mWrapper for the montsec codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                    ndzip :: [0m[38;2;40;201;255mWrapper for ndzip[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m               png-to-raw :: [0m[38;2;40;201;255mCurate a directory of PNG files into raw (fixed-length) format[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  port-experiment-example :: [0m[38;2;40;201;255mSelf-contained port scanning experiment example[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m               ppm-to-raw :: [0m[38;2;40;201;255mCurate a directory of PPM files into raw (fixed-length) format[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      rle :: [0m[38;2;40;201;255mRun-Length Encoding codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     spdp :: [0m[38;2;40;201;255mWrapper for the spdp codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                    speck :: [0m[38;2;40;201;255mWrapper for the SPECK codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m              test-codecs :: [0m[38;2;40;201;255mInstall all codec plugins verify their availability[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     trpx :: [0m[38;2;40;201;255mTrpx (Terse/Prolix) codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      v2f :: [0m[38;2;40;201;255mWrapper of a codec based on V2F forests (privative)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      vvc :: [0m[38;2;40;201;255mWrapper for the VVC / H.266 codec[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      zfp :: [0m[38;2;40;201;255mWrapper for the zfp library[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                      zip :: [0m[38;2;40;201;255mAssortment of lz-based and bzip-based codecs[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m                     zstd :: [0m[38;2;40;201;255mZstandard library wrapper[0m[38;2;40;201;255m.[0m
 
-The following plugin tags have been defined and can be used for filtering:
+[38;2;40;201;255mThe following plugin tags have been defined and can be used for filtering:[0m
 
-  - documentation    (  8 plugins) Documentation examples referenced in the user manual.
-  - codec            ( 33 plugins) Data compression/decompression class definitions.
-  - data compression ( 38 plugins) Data compression tools.
-  - template         ( 14 plugins) Templates formatteable into the installation dir.
-  - project          ( 11 plugins) Project templates, including configuration files.
-  - test             (  1  plugin) Plugins for testing purposes.
-  - image            ( 19 plugins) Tools for image processing (including compression and analysis).
-  - privative        (  6 plugins) Plugins requiring additional privative software.
+[38;2;40;201;255m  - documentation    (  8 plugins)[0m[38;2;40;201;255m Documentation examples referenced in the user manual[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - codec            ( 35 plugins)[0m[38;2;40;201;255m Data compression/decompression class definitions[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - data compression ( 42 plugins)[0m[38;2;40;201;255m Data compression tools[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - template         ( 16 plugins)[0m[38;2;40;201;255m Templates formatteable into the installation dir[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - project          ( 11 plugins)[0m[38;2;40;201;255m Project templates, including configuration files[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - test             (  1  plugin)[0m[38;2;40;201;255m Plugins for testing purposes[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - image            ( 21 plugins)[0m[38;2;40;201;255m Tools for image processing (including compression and analysis)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - privative        (  6 plugins)[0m[38;2;40;201;255m Plugins requiring additional privative software[0m[38;2;40;201;255m.[0m
 
-Run with -v for authorship and additional information, with -h for full help.
+[38;2;40;201;255mRun with -v for authorship and additional information, with -h for full help.[0m
 </pre></div>
 </div>
 </section>
@@ -260,6 +259,7 @@ options. An example option of this is shown next:</p>
                          [--base_dataset_dir BASE_DATASET_DIR]
                          [--persistence_dir PERSISTENCE_DIR]
                          [--reconstructed_dir RECONSTRUCTED_DIR]
+                         [--compressed_copy_dir COMPRESSED_COPY_DIR]
                          [--base_version_dataset_dir BASE_VERSION_DATASET_DIR]
                          [--base_tmp_dir BASE_TMP_DIR]
                          [--external_bin_base_dir EXTERNAL_BIN_BASE_DIR]
@@ -274,6 +274,7 @@ options. An example option of this is shown next:</p>
                          [--default_print_level {core,error,warning,message,verbose,informative,debug}]
                          [--log_level_prefix {True,False}]
                          [--show_prefix_level {core,error,warning,message,verbose,informative,debug}]
+                         [--force_live_progress {True,False}]
 
 A number of options can be set via the command line interface, then accessed
 via enb.config.options.property_name. All of them are optional, and may be
@@ -360,27 +361,31 @@ Dir Options:
 
   --project_root PROJECT_ROOT
                         Project root path. It should not normally be modified.
-                        (default: /data/Dropbox/desarrollo/experiment-notebook
-                        .git/enb/plugins/template_basic_workflow_example)
+                        (default:
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example)
   --base_dataset_dir BASE_DATASET_DIR
                         Directory to be used as source of input files for
                         indices in the get_df method of tables and
                         experiments. It should be an existing, readable
                         directory. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/datasets)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/data
+                        sets)
   --persistence_dir PERSISTENCE_DIR
                         Directory where persistence files are to be stored.
-                        (default: /data/Dropbox/desarrollo/experiment-notebook
-                        .git/enb/plugins/template_basic_workflow_example/persi
-                        stence_basic_workflow.py)
+                        (default:
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/pers
+                        istence)
   --reconstructed_dir RECONSTRUCTED_DIR
-                        Base directory where reconstructed versions are to be
-                        stored. (default: None)
+                        Base directory where a copy of the reconstructed
+                        versions of data are to be stored. (default: None)
+  --compressed_copy_dir COMPRESSED_COPY_DIR
+                        Base directory where a copy of the compressed versions
+                        of data are to be stored. (default: None)
   --base_version_dataset_dir BASE_VERSION_DATASET_DIR
-                        Base dir for versioned folders. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/datasets)
+                        Base dir for versioned folders. (default: None)
   --base_tmp_dir BASE_TMP_DIR
                         Temporary dir used for intermediate data storage. This
                         can be useful when experiments make heavy use of tmp
@@ -393,12 +398,14 @@ Dir Options:
                         repository is defined at the project or system level.
                         (default: None)
   --plot_dir PLOT_DIR   Directory to store produced plots. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/plots)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/plot
+                        s/basic_workflow)
   --analysis_dir ANALYSIS_DIR
                         Directory to store analysis results. (default:
-                        /data/Dropbox/desarrollo/experiment-notebook.git/enb/p
-                        lugins/template_basic_workflow_example/analysis)
+                        /home/miguelinux/Dropbox/desarrollo/experiment-noteboo
+                        k.git/enb/plugins/template_basic_workflow_example/anal
+                        ysis/basic_workflow)
 
 Ray Options:
   Options related to the ray library, used for parallel/distributed
@@ -456,6 +463,17 @@ Logging Options:
                         If True, logged messages include a prefix, e.g., based
                         on their priority. (default: True)
   --show_prefix_level {core,error,warning,message,verbose,informative,debug}
+                        If True, a prefix indicating the priority level of
+                        each message is shown preceding those messages.
+                        (default: info)
+  --force_live_progress {True,False}
+                        If True, the progress panels shown by ATable are
+                        forced to be updated live even if the output is not an
+                        interactive terminal. Enabling this option will
+                        significantly increase the size of any log file to
+                        which the output is redirected, because the output
+                        will include the periodic screen writes and deletions
+                        produced, e.g., every second. (default: False)
 </pre></div>
 </div>
 <div class="admonition note">
@@ -475,7 +493,7 @@ of the <code class="xref py py-class docutils literal notranslate"><span class="
 When running a script that import enb.config, “-h” can be passed as argument to show
 a help message with all available options.</p>
 <p>All these options (whether provided via the CLI or not) can be read and/or changed with code like the following:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">enb.config</span> <span class="kn">import</span> <span class="n">options</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enb.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">options</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verbose level: </span><span class="si">{</span><span class="n">options</span><span class="o">.</span><span class="n">verbose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>

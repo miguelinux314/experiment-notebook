@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   enb.compression
    enb.config
    enb.plugins
 
@@ -18,157 +19,109 @@ enb.aanalysis module
 
 .. automodule:: enb.aanalysis
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.atable module
 -----------------
 
 .. automodule:: enb.atable
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.experiment module
 ---------------------
 
 .. automodule:: enb.experiment
    :members:
-   :undoc-members:
    :show-inheritance:
-
-enb.fits module
----------------
-
-.. automodule:: enb.fits
-   :members:
    :undoc-members:
-   :show-inheritance:
-
-enb.icompression module
------------------------
-
-.. automodule:: enb.icompression
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 enb.isets module
 ----------------
 
 .. automodule:: enb.isets
    :members:
-   :undoc-members:
    :show-inheritance:
-
-enb.jpg module
---------------
-
-.. automodule:: enb.jpg
-   :members:
    :undoc-members:
-   :show-inheritance:
 
 enb.log module
 --------------
 
 .. automodule:: enb.log
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.misc module
 ---------------
 
 .. automodule:: enb.misc
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.parallel module
 -------------------
 
 .. automodule:: enb.parallel
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.parallel\_ray module
 ------------------------
 
 .. automodule:: enb.parallel_ray
    :members:
-   :undoc-members:
    :show-inheritance:
-
-enb.pgm module
---------------
-
-.. automodule:: enb.pgm
-   :members:
    :undoc-members:
-   :show-inheritance:
 
 enb.plotdata module
 -------------------
 
 .. automodule:: enb.plotdata
    :members:
-   :undoc-members:
    :show-inheritance:
-
-enb.png module
---------------
-
-.. automodule:: enb.png
-   :members:
    :undoc-members:
-   :show-inheritance:
 
 enb.progress module
 -------------------
 
 .. automodule:: enb.progress
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.render module
 -----------------
 
 .. automodule:: enb.render
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.sets module
 ---------------
 
 .. automodule:: enb.sets
    :members:
-   :undoc-members:
    :show-inheritance:
-
-enb.tarlite module
-------------------
-
-.. automodule:: enb.tarlite
-   :members:
    :undoc-members:
-   :show-inheritance:
 
 enb.tcall module
 ----------------
 
 .. automodule:: enb.tcall
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: enb
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

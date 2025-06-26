@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Defining new codecs &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5d056567"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5d056567"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -106,38 +101,38 @@
 <h1>Defining new codecs<a class="headerlink" href="#defining-new-codecs" title="Link to this heading"></a></h1>
 <p>This page provides some detail on how to add new image compressors (codecs) to your experiments.</p>
 <p>In general, to add new custom codecs to your lossless (or lossy) compression experiments,
-you just need to add new instances of <a class="reference internal" href="api/enb.html#enb.icompression.AbstractCodec" title="enb.icompression.AbstractCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec</span></code></a> subclasses.
-Notwithstanding, several helper classes have been added to <a class="reference internal" href="api/enb.html#module-enb.icompression" title="enb.icompression"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.icompression</span></code></a> to speed up
+you just need to add new instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.AbstractCodec</span></code> subclasses.
+Notwithstanding, several helper classes have been added to <code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.icompression</span></code> to speed up
 the creation of new codecs</p>
 <section id="lossless-codecs">
 <h2>Lossless codecs<a class="headerlink" href="#lossless-codecs" title="Link to this heading"></a></h2>
 <p>Lossless codecs are expected to be able to reconstruct a mathematically identical representation the original data.</p>
-<p>You can define new Lossless codecs by subclassing the <a class="reference internal" href="api/enb.html#enb.icompression.LosslessCodec" title="enb.icompression.LosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code></a> class, like in the
+<p>You can define new Lossless codecs by subclassing the <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LosslessCodec</span></code> class, like in the
 following example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LZ77Huffman</span><span class="p">(</span><span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCodec</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LZ77Huffman</span><span class="p">(</span><span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCodec</span><span class="p">):</span>
   <span class="n">MIN_COMPRESSION_LEVEL</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="n">MAX_COMPRESSION_LEVEL</span> <span class="o">=</span> <span class="mi">9</span>
   <span class="n">DEFAULT_COMPRESSION_LEVEL</span> <span class="o">=</span> <span class="mi">5</span>
 
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compression_level</span><span class="o">=</span><span class="n">DEFAULT_COMPRESSION_LEVEL</span><span class="p">,</span> <span class="n">param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compression_level</span><span class="o">=</span><span class="n">DEFAULT_COMPRESSION_LEVEL</span><span class="p">,</span> <span class="n">param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
       <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">MIN_COMPRESSION_LEVEL</span> <span class="o">&lt;=</span> <span class="n">compression_level</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_COMPRESSION_LEVEL</span>
       <span class="n">param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">param_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">param_dict</span>
       <span class="n">param_dict</span><span class="p">[</span><span class="s2">&quot;compression_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compression_level</span>
       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">param_dict</span><span class="o">=</span><span class="n">param_dict</span><span class="p">)</span>
 
-  <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_path</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_path</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">original_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">original_file</span><span class="p">,</span> \
               <span class="nb">open</span><span class="p">(</span><span class="n">compressed_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">:</span>
           <span class="n">compressed_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">original_file</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
                                 <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">[</span><span class="s2">&quot;compression_level&quot;</span><span class="p">]))</span>
 
-  <span class="k">def</span> <span class="nf">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">compressed_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">,</span> \
               <span class="nb">open</span><span class="p">(</span><span class="n">reconstructed_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">reconstructed_file</span><span class="p">:</span>
           <span class="n">reconstructed_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">compressed_file</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
 
   <span class="nd">@property</span>
-  <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
       <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;lz77huffman_lvl</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;compression_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
@@ -147,8 +142,8 @@ plugin.</p>
 </section>
 <section id="lossy-and-near-lossless-codecs">
 <h2>Lossy and near lossless codecs<a class="headerlink" href="#lossy-and-near-lossless-codecs" title="Link to this heading"></a></h2>
-<p>Lossy and near-lossless codecs can be defined by subclassing <a class="reference internal" href="api/enb.html#enb.icompression.LossyCodec" title="enb.icompression.LossyCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code></a> and
-<a class="reference internal" href="api/enb.html#enb.icompression.NearLosslessCodec" title="enb.icompression.NearLosslessCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code></a>, respectively.</p>
+<p>Lossy and near-lossless codecs can be defined by subclassing <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.LossyCodec</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.NearLosslessCodec</span></code>, respectively.</p>
 <p>As in the previous example, the <cite>compress(self, original_path, compressed_path, original_file_info)</cite>
 and <cite>decompress(self, compressed_path, reconstructed_path, original_file_info=None)</cite> functions
 need to be specified.</p>
@@ -157,19 +152,19 @@ need to be specified.</p>
 <h2>Executable wrapper codecs<a class="headerlink" href="#executable-wrapper-codecs" title="Link to this heading"></a></h2>
 <p>Very often, compressors are implemented as an external tools, and compression and decompression
 consists in running those executables. To minimize the amount of lines of code (and bugs) that
-you need to type, the <a class="reference internal" href="api/enb.html#enb.icompression.WrapperCodec" title="enb.icompression.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code></a> is provided.</p>
+you need to type, the <code class="xref py py-class docutils literal notranslate"><span class="pre">enb.icompression.WrapperCodec</span></code> is provided.</p>
 <p>This class is better explained with an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TrivialCpWrapper</span><span class="p">(</span><span class="n">icompression</span><span class="o">.</span><span class="n">WrapperCodec</span><span class="p">,</span> <span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCodec</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TrivialCpWrapper</span><span class="p">(</span><span class="n">icompression</span><span class="o">.</span><span class="n">WrapperCodec</span><span class="p">,</span> <span class="n">icompression</span><span class="o">.</span><span class="n">LosslessCodec</span><span class="p">):</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;Trivial codec wrapper for /bin/cp.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">compressor_path</span><span class="o">=</span><span class="s2">&quot;cp&quot;</span><span class="p">,</span> <span class="n">decompressor_path</span><span class="o">=</span><span class="s2">&quot;cp&quot;</span><span class="p">)</span>
 
-  <span class="k">def</span> <span class="nf">get_compression_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_path</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">get_compression_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_path</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
       <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">original_path</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">compressed_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
 
-  <span class="k">def</span> <span class="nf">get_decompression_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">get_decompression_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_path</span><span class="p">,</span> <span class="n">reconstructed_path</span><span class="p">,</span> <span class="n">original_file_info</span><span class="p">):</span>
       <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">compressed_path</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">reconstructed_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
 </pre></div>
 </div>
@@ -190,7 +185,7 @@ your development.</p>
 <div><ul>
 <li><p>Create a folder with your code</p></li>
 <li><p>Add a <cite>__init__.py</cite> file to that folder, with imports such as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">my_module</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">my_module</span>
 </pre></div>
 </div>
 <p>if <cite>my_module.py</cite> is one of the modules you want to make available .</p>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,20 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>enb.plugins package &mdash; Experiment Notebook (enb) MIT License documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=c824535d" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=2847780d" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/enb-rtd.css?v=4047c182" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5d056567"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5d056567"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -38,9 +36,6 @@
             Experiment Notebook (enb)
               <img src="../_static/enb_logo_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                v1.0.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -180,6 +175,7 @@
 <li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry">enb.plugins.plugin_iraf_photometry.iraf_photometry module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment"><code class="docutils literal notranslate"><span class="pre">LossyPhotometryExperiment</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.__init__"><code class="docutils literal notranslate"><span class="pre">LossyPhotometryExperiment.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.codec_results"><code class="docutils literal notranslate"><span class="pre">LossyPhotometryExperiment.codec_results</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.column_to_properties"><code class="docutils literal notranslate"><span class="pre">LossyPhotometryExperiment.column_to_properties</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.LossyPhotometryExperiment.set_photometry_columns"><code class="docutils literal notranslate"><span class="pre">LossyPhotometryExperiment.set_photometry_columns()</span></code></a></li>
 </ul>
@@ -188,10 +184,7 @@
 <li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry.raw_to_photometry_df"><code class="docutils literal notranslate"><span class="pre">raw_to_photometry_df()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry.iraf_photometry_slave">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb.plugins.plugin_iraf_photometry.iraf_photometry_slave.fits_to_csv"><code class="docutils literal notranslate"><span class="pre">fits_to_csv()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#enb-plugins-plugin-iraf-photometry-iraf-photometry-slave-module">enb.plugins.plugin_iraf_photometry.iraf_photometry_slave module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enb.plugins.plugin_iraf_photometry.html#module-enb.plugins.plugin_iraf_photometry">Module contents</a></li>
 </ul>
 </li>
@@ -206,7 +199,7 @@
 <p>Installable interface used for plugins and templates.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">Installable</span></span><a class="headerlink" href="#enb.plugins.installable.Installable" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">Installable</span></span><a class="headerlink" href="#enb.plugins.installable.Installable" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Common interface to all Installable types, e.g., Plugins and Templates.</p>
 <dl class="py attribute">
@@ -216,7 +209,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.build">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.build" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.build" title="Link to this definition"></a></dt>
 <dd><p>Method called after the main installation body, that allows further building customization
 by Installable subclasses. By default, nothing is done.</p>
 <p>Note that the installation dir is created before calling build.</p>
@@ -244,14 +237,14 @@ by Installable subclasses. By default, nothing is done.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.get_help">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.get_help" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.get_help" title="Link to this definition"></a></dt>
 <dd><p>Return help about this Installable.
 By default, the docstring of the selected class is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.install">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.install" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.install" title="Link to this definition"></a></dt>
 <dd><p>Install this Installable into <cite>installation_dir</cite>. By default, copy all contents
 of the Installable source dir and install the declared pip requirements.</p>
 <dl class="field-list simple">
@@ -277,18 +270,18 @@ it is removed before installation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.print_info">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.print_info" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.print_info" title="Link to this definition"></a></dt>
 <dd><p>Print information about this installable.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.report_successful_installation">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">report_successful_installation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.report_successful_installation" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">report_successful_installation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.report_successful_installation" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.repr">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">repr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.repr" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">repr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.repr" title="Link to this definition"></a></dt>
 <dd><p>Get a terse representation of this Installable.</p>
 </dd></dl>
 
@@ -309,14 +302,14 @@ it is removed before installation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.installable.Installable.warn_extra_requirements">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">warn_extra_requirements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.warn_extra_requirements" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">warn_extra_requirements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.Installable.warn_extra_requirements" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.installable.InstallableMeta">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">InstallableMeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.InstallableMeta" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.installable.</span></span><span class="sig-name descname"><span class="pre">InstallableMeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.installable.InstallableMeta" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
 <p>Installable classes are not meant to be instantiated, just to be defined to declare
 the presence of Installables. This metaclass is used to perform basic checks on the
@@ -402,7 +395,7 @@ installable with name set to None is also excluded</p></li>
 <p>Tools define plugin installables.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><a class="headerlink" href="#enb.plugins.plugin.Plugin" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">Plugin</span></span><a class="headerlink" href="#enb.plugins.plugin.Plugin" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Installable</span></code></a></p>
 <p>Plugins are self-contained, python modules that may assume enb is installed.</p>
 <ul class="simple">
@@ -424,7 +417,7 @@ which imports all symbols from all .py modules in the plugin.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.build">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.build" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.build" title="Link to this definition"></a></dt>
 <dd><p>Perform any additional retrieval, compilation and setup necessary for this plugin
 to be importable and usable. By default:</p>
 <ul class="simple">
@@ -438,7 +431,7 @@ to be importable and usable. By default:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin.Plugin.install">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.install" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.Plugin.install" title="Link to this definition"></a></dt>
 <dd><p>Make a copy of this plugin into <cite>installation_dir</cite>, ready to be imported.
 By default, a verbatim copy of the source plugin’s dir is made.
 Any previous contents in installation_dir are overwritten.
@@ -475,7 +468,7 @@ is raised (plugins are intended to be self-contained, isolated python modules).<
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginJava</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginJava" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginJava</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginJava" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.authors">
@@ -484,7 +477,7 @@ is raised (plugins are intended to be self-contained, isolated python modules).<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginJava.build">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginJava.build" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginJava.build" title="Link to this definition"></a></dt>
 <dd><p>Perform any additional retrieval, compilation and setup necessary for this plugin
 to be importable and usable. By default:</p>
 <ul class="simple">
@@ -515,7 +508,7 @@ to be importable and usable. By default:</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginMake</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginMake" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.plugin.</span></span><span class="sig-name descname"><span class="pre">PluginMake</span></span><a class="headerlink" href="#enb.plugins.plugin.PluginMake" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.plugin.Plugin" title="enb.plugins.plugin.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plugin</span></code></a></p>
 <p>Plugin that assumes the existence of a valid Makefile in the installation folder,
 and uses it for building the plugin.</p>
@@ -526,7 +519,7 @@ and uses it for building the plugin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.plugin.PluginMake.build">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginMake.build" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.plugin.PluginMake.build" title="Link to this definition"></a></dt>
 <dd><p>Perform any additional retrieval, compilation and setup necessary for this plugin
 to be importable and usable. By default:</p>
 <ul class="simple">
@@ -562,7 +555,7 @@ to be importable and usable. By default:</p>
 <p>Templates are very similar to plugins, but use jinja to transform <cite>.enbt</cite> template files upon installation.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.template.MetaTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">MetaTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.MetaTemplate" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">MetaTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.MetaTemplate" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.InstallableMeta" title="enb.plugins.installable.InstallableMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstallableMeta</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.template.MetaTemplate.__init__">
@@ -573,7 +566,7 @@ to be importable and usable. By default:</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="enb.plugins.template.Template">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">Template</span></span><a class="headerlink" href="#enb.plugins.template.Template" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.plugins.template.</span></span><span class="sig-name descname"><span class="pre">Template</span></span><a class="headerlink" href="#enb.plugins.template.Template" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.plugins.installable.Installable" title="enb.plugins.installable.Installable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Installable</span></code></a></p>
 <p>Base class to define templates. Subclasses must be defined in the __plugin__.py file of the template’s
 source dir.</p>
@@ -593,17 +586,17 @@ by default to the installation dir.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.template.Template.get_field_parser">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_field_parser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_field_parser" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_field_parser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_field_parser" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.template.Template.get_fields">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_fields" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.get_fields" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="enb.plugins.template.Template.install">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.install" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">installation_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.plugins.template.Template.install" title="Link to this definition"></a></dt>
 <dd><p>Install a template into the given dir. See super().install for more information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

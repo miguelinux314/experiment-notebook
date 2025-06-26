@@ -9,29 +9,29 @@ enb.config.aini module
 
 .. automodule:: enb.config.aini
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.config.aoptions module
 --------------------------
 
 .. automodule:: enb.config.aoptions
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 enb.config.singleton\_cli module
 --------------------------------
 
 .. automodule:: enb.config.singleton_cli
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: enb.config
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
