@@ -1,21 +1,10 @@
-# > CHANGELOG
+> # enb CHANGELOG
+(An explanation of the version numbering system is provided at the bottom of this document).
 
-The following updates have been highlighted for each release. Note that `enb` employs a `MAYOR`.`MINOR`.`REVISION`
-format. Given a code initially developed for one `enb` version and then executed in another (newer) version:
-
-- If `MAYOR` and `MINOR` are identical, backwards compatibility is provided. Some deprecation warnings might appear,
-  which typically require small changes in your scripts.
-
-- If `MAYOR` is identical by `MINOR` differs, minor code changes might be required if any deprecated parts are still
-  used. Otherwise, deprecation warnings are turned into full errors.
-
-- If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
-  used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
-
-# Current development version: v1.1.0-dev
+# Latest stable version: v1.1.0
 
 ## Backward compatibility notice
-**Important**: although backwards-compatible, this version
+**Important**: although backwards-compatible, this (v1.1.0) version
 
 - Adds new columns to ImagePropertiesTable.
 - Changes the default persistence, plot and analysis dirs, and
@@ -24,7 +13,7 @@ format. Given a code initially developed for one `enb` version and then executed
 
 Therefore, the first time you re-run a previously existing enb experiment:
 
-- enb will need to partially process all indices of any table based on `enb.isets.ImagePropertiesTable` 
+- enb will need to partially process all indices of any table based on `enb.isets.ImagePropertiesTable`
   (including those within compression experiments). This applies one np.unique call to each
   sample, which should be reasonably fast even for moderately large sample sizes.
 
@@ -32,7 +21,7 @@ Therefore, the first time you re-run a previously existing enb experiment:
   (but not including) v1.1.0. This can be solved either by (a) moving the existing persistence to the new
   default location, or (b) explicitly setting the persistence paths to your tables/experiments.
 
-- some enb plugins (typically tagged as 'codec' by `enb plugin list`) that imported `enb.icompression` 
+- some enb plugins (typically tagged as 'codec' by `enb plugin list`) that imported `enb.icompression`
   directly need to be reinstalled. Otherwise, they might crash showing the following trace:
   ```bash
     [...]
@@ -40,33 +29,36 @@ Therefore, the first time you re-run a previously existing enb experiment:
     ModuleNotFoundError: No module named 'enb.icompression'
   ```
   plugins that require reinstallation include:
-  - ccsds122x1
-  - emporda
-  - jpeg
-  - lz4
-  - montsec
-  - speck
+    - ccsds122x1
+    - emporda
+    - jpeg
+    - lz4
+    - montsec
+    - speck
 
 ## Additions
 
 - Added the `bitshuffle` plugin that applies the bitshuffle transform before compression
   and after decompression.
-- Added `enb.isets.ReindexVersionTable`, an ImageVersionTable subclass that compacts histrograms 
+- Added `enb.isets.ReindexVersionTable`, an ImageVersionTable subclass that compacts histrograms
   and produces versioned datasets. Also added as a codec wrapper in `enb.compression.wrapper.ReindexWrapper`.
-- Added a plugin to easily convert PNG files into raw files with curated names. 
+- Added a plugin to easily convert PNG files into raw files with curated names.
 
 ## Improvements
 
 - The number of unique sample values of an image is now stored by ImagePropertiesTable
-- Fixed random file name generation that had a chance of crashing compression experiments 
+- Fixed random file name generation that had a chance of crashing compression experiments
   for every codec/sample combination.
-- Enhanced robustness of *.ini configuration files and the `enb.ini` plugin. 
+- Enhanced robustness of `*.ini` configuration files and the `enb.ini` plugin.
 - Improved logging for a core part of ATable (CSV table loading).
 - Added the option to hide the min-max line when plotting boxplots with the ScalarNumericAnalyzer.
-- Added template plugins for quick conversion from PNG and PPM to raw files with 
+- Added template plugins for quick conversion from PNG and PPM to raw files with
   curated names that allow automatic loading with `enb.isets.load_array_bsq`.
+- The enb.isets.entropy function now accepts sequences without the flatten attribute
 
-# Latest stable version: 2024/10/28 v1.0.5
+# Version history
+
+## 2024/10/28 v1.0.5
 
 Improvements:
 
@@ -80,8 +72,6 @@ Deprecations:
 
 - Fixed enb.atable.ATable's typo: dataset_files_extension becomes dataset_file_extension.
   The old name will be kept for now as a deprecated property.
-
-# Version history
 
 ## 2024/9/8 v1.0.4
 
@@ -622,3 +612,16 @@ Improvements and other changes
     * FSE
     * Huffman
     * JPEG-XL
+
+# Version numbering rationale
+The following updates have been highlighted for each release. Note that `enb` employs a `MAYOR`.`MINOR`.`REVISION`
+format. Given a code initially developed for one `enb` version and then executed in another (newer) version:
+
+- If `MAYOR` and `MINOR` are identical, backwards compatibility is provided. Some deprecation warnings might appear,
+  which typically require small changes in your scripts.
+
+- If `MAYOR` is identical by `MINOR` differs, minor code changes might be required if any deprecated parts are still
+  used. Otherwise, deprecation warnings are turned into full errors.
+
+- If `MAYOR` is larger, specific code changes might be needed for your code. So far, a single `MAYOR` version (0) is
+  used. The next mayor version (1) is expected to be backwards compatible with the latest release of the 0 mayor branch.
