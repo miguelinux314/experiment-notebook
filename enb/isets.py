@@ -801,7 +801,7 @@ def load_array(file_or_path, image_properties_row=None,
     if image_properties_row is None:
         try:
             image_properties_row = file_path_to_geometry_dict(file_or_path)
-        except ValueError:
+        except (ValueError, TypeError):
             assert not any(
                 v is None for v in (width, height, component_count, dtype)), \
                 f"image_properties_row={image_properties_row} but some None in " \
