@@ -584,7 +584,7 @@ two parameter configurations: A1 and A2, while algorithm B is to be run with con
 In this case, two families would be created, e.g., with labels "Algorithm A" and "Algorithm B",
 with 2 and 4 tasks in them.
 
-In the following figure, an example with 6 algorithms, each with different configurations
+In the following figure, several algorithms are compared varying the configurations
 that affect their "Compressed data rate". Please see the :doc:`image_compression` page for a full
 experiment that uses task families and produces plots like the one in the figure.
 
