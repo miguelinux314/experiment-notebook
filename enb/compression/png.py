@@ -109,23 +109,7 @@ class PNGCurationTable(FileVersionTable):
         """Transform PNG files into raw images with name tags
         recognized by isets.
         """
-        with enb.logger.info_context(f"Versioning {input_path}"):
-            img = imageio.v2.imread(input_path)
-            if len(img.shape) == 2:
-                img = img[:, :, np.newaxis]
-            assert len(img.shape) == 3, \
-                f"Invalid shape in read image {input_path}: {img.shape}"
-            img = img.swapaxes(0, 1)
-            if img.dtype == np.uint8:
-                type_str = "u8be"
-            elif img.dtype == np.uint16:
-                type_str = "u16be"
-            else:
-                raise f"Invalid data type found in read image " \
-                      f"{input_path}: {img.dtype}"
-            output_path = f"{output_path[:-4]}-{type_str}" \
-                          f"-{img.shape[2]}x{img.shape[1]}x{img.shape[0]}.raw"
-            enb.isets.dump_array_bsq(array=img, file_or_path=output_path)
+        png_to_raw(input_path, output_path)
 
 
 def render_array_png(img, png_path):
@@ -172,6 +156,33 @@ def raw_path_to_png(raw_path, png_path, image_properties_row=None):
     img = load_array_bsq(file_or_path=raw_path,
                                    image_properties_row=image_properties_row)
     render_array_png(img=img, png_path=png_path)
+
+def png_to_raw(input_path, output_path) -> [str | os.PathLike]:
+    """Read a png image from `input_path` 
+    and write it to `<output_path without '.raw'>-<data_type>-ZxYxX.raw`,
+    where `data_type` can be u8be or u16be, depending on the image contents.
+    
+    :return: the modified version of `output_path` actually used for the output.
+    """
+    with enb.logger.info_context(f"Versioning {input_path}"):
+        img = imageio.v2.imread(input_path)
+        if len(img.shape) == 2:
+            img = img[:, :, np.newaxis]
+        assert len(img.shape) == 3, \
+            f"Invalid shape in read image {input_path}: {img.shape}"
+        img = img.swapaxes(0, 1)
+        if img.dtype == np.uint8:
+            type_str = "u8be"
+        elif img.dtype == np.uint16:
+            type_str = "u16be"
+        else:
+            raise f"Invalid data type found in read image " \
+                  f"{input_path}: {img.dtype}"
+        output_path = f"{output_path[:-len(".raw")]}-{type_str}" \
+                      f"-{img.shape[2]}x{img.shape[1]}x{img.shape[0]}.raw"
+        enb.isets.dump_array_bsq(array=img, file_or_path=output_path)
+        
+        return output_path
 
 
 class PDFToPNG(FileVersionTable):
