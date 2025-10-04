@@ -218,7 +218,7 @@ def csv_to_latex_tabular(input_csv_path, output_tex_path, contains_header=True,
 def escape_latex(s):
     """Return a latex-scaped version of string s.
     """
-    return s.replace("\\", "\\\\").replace("_", r"\_").replace(r"%", r"\%").replace("&", "\&")
+    return s.replace("\\", "\\\\").replace("_", r"\_").replace(r"%", r"\%").replace(r"&", r"\&")
 
 
 def get_node_ip():
@@ -250,7 +250,11 @@ def capture_usr1():
         print("\n" * 2)
         pdb.Pdb().set_trace(frame)
 
-    signal.signal(signal.SIGUSR1, handle_pdb)
+    try:
+        signal.signal(signal.SIGUSR1, handle_pdb)
+    except AttributeError:
+        # Only available in unix platforms 
+        pass
 
 class BootstrapLogger:
     """Imitate enb.log.Logger's interface before it is loaded. This is needed to solve circular imports,

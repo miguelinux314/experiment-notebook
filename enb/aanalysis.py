@@ -202,8 +202,7 @@ class Analyzer(enb.atable.ATable):
         show_count = show_count if show_count is not None else self.show_count
         show_global = show_global if show_global is not None else self.show_global
 
-        if self.csv_support_path is not None and os.path.exists(
-                self.csv_support_path):
+        if self.csv_support_path is not None and os.path.exists(self.csv_support_path):
             # Analyzer classes store their persistence, but they erase when
             # get_df is called, so that analysis is always performed (which
             # is as expected, since the experiment results being analyzed
@@ -230,7 +229,7 @@ class Analyzer(enb.atable.ATable):
                 # Get the summary table with the requested data analysis
                 enb.logger.info(
                     f"Analyzing {len(target_columns)} target{'s' if len(target_columns) != 1 else ''} "
-                    f"with {self.__class__.__name__}...") 
+                    f"with {self.__class__.__name__}...")
                 summary_table = self.build_summary_atable(
                     full_df=full_df,
                     target_columns=target_columns,
@@ -1776,7 +1775,7 @@ class ScalarNumericSummary(AnalyzerSummary):
                 vertical=False,
                 line_width=_self.analyzer.secondary_line_width,
                 marker_size=_self.analyzer.secondary_marker_size,
-                cap_size=2*_self.analyzer.secondary_line_width,
+                cap_size=2 * _self.analyzer.secondary_line_width,
                 alpha=_self.analyzer.secondary_alpha),
         ]
 
@@ -2579,14 +2578,14 @@ class DictNumericAnalyzer(Analyzer):
             column_kwargs["x_tick_list"] = list(range(len(self.column_name_to_keys[column_name])))
             column_kwargs["x_tick_list"] = [
                 column_kwargs["x_tick_list"][0],
-                column_kwargs["x_tick_list"][len(column_kwargs["x_tick_list"])//2],
+                column_kwargs["x_tick_list"][len(column_kwargs["x_tick_list"]) // 2],
                 column_kwargs["x_tick_list"][-1]
             ]
         if "x_tick_label_list" not in column_kwargs:
             column_kwargs["x_tick_label_list"] = [str(x) for x in column_kwargs["x_tick_list"]]
             column_kwargs["x_tick_label_list"] = [
                 column_kwargs["x_tick_label_list"][0],
-                column_kwargs["x_tick_label_list"][len(column_kwargs["x_tick_label_list"])//2],
+                column_kwargs["x_tick_label_list"][len(column_kwargs["x_tick_label_list"]) // 2],
                 column_kwargs["x_tick_label_list"][-1]
             ]
 

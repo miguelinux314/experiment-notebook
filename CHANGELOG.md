@@ -1,7 +1,17 @@
 > # enb CHANGELOG
 (An explanation of the version numbering system is provided at the bottom of this document).
 
-# Latest stable version: v1.1.0
+# Latest stable version: 2025/10/04 v1.1.1
+
+Improvements:
+
+- Enhanced usability of the png-to-raw features.
+- Fixed crash in non-unix platforms due to missing symbols in the signal module.
+- Small documentation and code cleanup.
+
+# Version history
+
+## 2025/06/26 v1.1.0
 
 ## Backward compatibility notice
 **Important**: although backwards-compatible, this (v1.1.0) version
@@ -36,7 +46,7 @@ Therefore, the first time you re-run a previously existing enb experiment:
     - montsec
     - speck
 
-## Additions
+Additions:
 
 - Added the `bitshuffle` plugin that applies the bitshuffle transform before compression
   and after decompression.
@@ -44,7 +54,7 @@ Therefore, the first time you re-run a previously existing enb experiment:
   and produces versioned datasets. Also added as a codec wrapper in `enb.compression.wrapper.ReindexWrapper`.
 - Added a plugin to easily convert PNG files into raw files with curated names.
 
-## Improvements
+Improvements:
 
 - The number of unique sample values of an image is now stored by ImagePropertiesTable
 - Fixed random file name generation that had a chance of crashing compression experiments
@@ -55,8 +65,6 @@ Therefore, the first time you re-run a previously existing enb experiment:
 - Added template plugins for quick conversion from PNG and PPM to raw files with
   curated names that allow automatic loading with `enb.isets.load_array_bsq`.
 - The enb.isets.entropy function now accepts sequences without the flatten attribute
-
-# Version history
 
 ## 2024/10/28 v1.0.5
 
