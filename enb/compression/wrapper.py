@@ -423,7 +423,7 @@ class ReindexWrapper(AbstractCodec):
             with open(side_info_path, "w") as side_info_file:
                 side_info_file.write(json.dumps(
                     obj=dict(original_dtype=str(array.dtype),
-                             unique_values=str(list(unique_values)))))
+                             unique_values=str([int(x) for x in unique_values]))))
 
             # Reindex keeping the value sorting
             reindex_array = np.zeros(shape=array.shape, dtype=f">u{self.param_dict['width_bytes']}")
@@ -478,7 +478,7 @@ class ReindexWrapper(AbstractCodec):
             reindexed_compressed_path = os.path.join(tmp_dir, "data")
             side_info_path = os.path.join(tmp_dir, "side_info")
 
-            # Read and completethe side information
+            # Read and complete the side information
             with open(side_info_path, "r") as side_info_file:
                 side_info = json.load(side_info_file)
                 unique_values = np.array(ast.literal_eval(side_info["unique_values"]))
