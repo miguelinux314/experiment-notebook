@@ -86,7 +86,7 @@ with open("README.md", "r") as readme_file:
             "matplotlib",
             "natsort",
             "numpngw",
-            "numpy<2",
+            "numpy",
             "pandas>=2.1.0",
             "pathos",
             "pdf2image",

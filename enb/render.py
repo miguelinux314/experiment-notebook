@@ -569,14 +569,14 @@ def _get_global_extrema(column_properties, pds_by_group_name):
                     plottable in pds):
             if not isinstance(pld, enb.plotdata.PlottableData2D):
                 continue
-            x_values = np.array(pld.x_values, copy=False)
+            x_values = np.array(pld.x_values)
             if len(x_values) > 0:
                 x_values = x_values[~np.isnan(x_values)]
             global_x_min = min(global_x_min, x_values.min() if len(
                 x_values) > 0 else global_x_min)
             global_x_max = max(global_x_min, x_values.max() if len(
                 x_values) > 0 else global_x_min)
-            y_values = np.array(pld.y_values, copy=False)
+            y_values = np.array(pld.y_values)
             if len(y_values) > 0:
                 y_values = y_values[~np.isnan(y_values)]
             global_y_min = min(global_y_min, y_values.min() if len(
