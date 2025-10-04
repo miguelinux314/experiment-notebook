@@ -1,21 +1,26 @@
 > # enb CHANGELOG
 (An explanation of the version numbering system is provided at the bottom of this document).
 
-# Latest stable version: 2025/10/04 v1.1.1
+# Latest stable version: 2025/10/04 v1.1.2
+
+Small hotfix version bump.
+
+# Version history
+
+## 2025/10/04 v1.1.1
 
 Improvements:
 
 - Enhanced usability of the png-to-raw features.
 - Fixed crash in non-unix platforms due to missing symbols in the signal module.
 - Small documentation and code cleanup.
-- Removed the <2 restriction on numpy, hopefully improving the installation process.  
+- Removed the <2 restriction on numpy, hopefully improving the installation process.
 - Improved test stability when the optional ray lib is not installed.
-
-# Version history
 
 ## 2025/06/26 v1.1.0
 
-## Backward compatibility notice
+>Backward compatibility notice
+
 **Important**: although backwards-compatible, this (v1.1.0) version
 
 - Adds new columns to ImagePropertiesTable.
