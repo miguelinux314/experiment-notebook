@@ -6,16 +6,25 @@ __since__ = "2021/08/18"
 
 import unittest
 import enb
-import ray
 import time
 
 class TestRay(unittest.TestCase):
     if enb.parallel_ray.is_ray_enabled():
         def test_ray_is_automatically_started(self):
+            try:
+                import ray
+            except ImportError:
+                print("ray not installed: skipping")
+                
             enb.parallel_ray.init_ray()
             assert ray.is_initialized()
 
         def test_progress_run(self):
+            try:
+                import ray
+            except ImportError:
+                print("ray not installed: skipping")
+                
             self.test_ray_is_automatically_started()
 
             sleep_time = 0.5
