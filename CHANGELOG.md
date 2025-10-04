@@ -8,6 +8,7 @@ Improvements:
 - Enhanced usability of the png-to-raw features.
 - Fixed crash in non-unix platforms due to missing symbols in the signal module.
 - Small documentation and code cleanup.
+- Removed the <2 restriction on numpy, hopefully improving the installation process.  
 
 # Version history
 
