@@ -813,7 +813,9 @@ def load_array(file_or_path, image_properties_row=None,
         height = height if height is not None else image_properties_row["height"]
         component_count = component_count if component_count is not None else \
             image_properties_row["component_count"]
-        dtype = dtype if dtype is not None else image_properties_row["dtype"]
+        dtype = dtype if dtype is not None \
+            else image_properties_row["dtype"] if "dtype" in image_properties_row \
+            else None
         dtype = dtype if dtype is not None else iproperties_row_to_numpy_dtype(image_properties_row)
     except KeyError as ex:
         raise Exception(f"Cannot infer some necessary parameter ({ex}). "
