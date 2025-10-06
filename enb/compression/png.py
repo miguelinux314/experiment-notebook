@@ -178,7 +178,7 @@ def png_to_raw(input_path, output_path) -> [str | os.PathLike]:
         else:
             raise f"Invalid data type found in read image " \
                   f"{input_path}: {img.dtype}"
-        output_path = f"{output_path[:-len(".raw")]}-{type_str}" \
+        output_path = f"{output_path[:-len('.raw')]}-{type_str}" \
                       f"-{img.shape[2]}x{img.shape[1]}x{img.shape[0]}.raw"
         enb.isets.dump_array_bsq(array=img, file_or_path=output_path)
         

@@ -1,11 +1,15 @@
 > # enb CHANGELOG
 (An explanation of the version numbering system is provided at the bottom of this document).
 
-# Latest stable version: 2025/10/04 v1.1.2
+# Current development version: v1.1.3-dev
 
-Small hotfix version bump.
+- Fixed python 3.12 syntax in the `enb.png` module.
 
 # Version history
+
+## 2025/10/04 v1.1.2
+
+Small hotfix version bump.
 
 ## 2025/10/04 v1.1.1
 
