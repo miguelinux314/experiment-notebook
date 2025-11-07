@@ -229,7 +229,8 @@ class WrapperCodec(AbstractCodec):
             if signature is not None else self.__class__.__name__
         if self.param_dict:
             name += "__" + "_".join(
-                f"{k}={v}" for k, v in sorted(self.param_dict.items()))
+                f"{k}={v}" for k, v in sorted(self.param_dict.items())
+                if not k.startswith("_"))
         return name
 
 
