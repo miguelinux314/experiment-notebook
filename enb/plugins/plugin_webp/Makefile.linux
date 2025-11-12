@@ -1,0 +1,7 @@
+all: 
+	unzip libwebp_1.6.0.zip
+	cd libwebp && make -f makefile.unix && cp examples/cwebp examples/dwebp ../
+	rm -rf libwebp libwebp_1.6.0.zip
+	
+clean:
+	rm -rf libwebp libwebp_1.6.0.zip

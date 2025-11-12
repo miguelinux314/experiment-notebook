@@ -1,11 +1,19 @@
 > # enb CHANGELOG
 (An explanation of the version numbering system is provided at the bottom of this document).
 
-# Latest stable version: 2025/10/04 v1.1.2
+# 2025/11/12 v1.1.3
 
-Small hotfix version bump.
+- Fixed python 3.12 syntax in the `enb.png` module.
+- Added a plugin wrapping the reference WebP codec. Available, e.g., with `enb plugin install webp webp`.
+- Updated the VVC codec to the latest version.
+- Fixed the spurious creation of the plots/ and analysis/ dirs when installing plugins.
+
 
 # Version history
+
+## 2025/10/04 v1.1.2
+
+Small hotfix version bump.
 
 ## 2025/10/04 v1.1.1
 
