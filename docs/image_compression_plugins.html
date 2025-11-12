@@ -145,7 +145,7 @@ to get a list of all available installables.</p></li>
 <h2>Codec availabily<a class="headerlink" href="#codec-availabily" title="Link to this heading"></a></h2>
 <p>Different codecs are available for different data types and bit depths. If you want to test
 all publicly available codecs, you can install the <cite>test-codecs</cite> plugin with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>test-codecs<span class="w"> </span>tc
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enb<span class="w"> </span>plugin<span class="w"> </span>install<span class="w"> </span>test-codecs<span class="w"> </span>tc<span class="w"> </span>--include_privative_codecs<span class="o">=</span>False
 </pre></div>
 </div>
 <p>and then run the <cite>test_all_codecs.py</cite> script, e.g., with:</p>

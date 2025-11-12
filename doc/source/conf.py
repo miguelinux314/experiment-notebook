@@ -92,10 +92,6 @@ html_context = {
     'display_github': True,
 }
 
-html_theme_options = {
-    'display_version': True,
-}
-
 rst_prolog = """
 :github_url: https://github.com/miguelinux314/experiment-notebook
 """

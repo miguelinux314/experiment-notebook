@@ -1,7 +1,12 @@
 > # enb CHANGELOG
 (An explanation of the version numbering system is provided at the bottom of this document).
 
-# Current development version v1.1.4-dev 
+# Current development version v1.1.4-dev
+
+- User manual cleanup
+- Added default arguments to the CCSDS Emporda codec so that it can be instantiated without arguments.
+
+
 
 # Version history
 

@@ -30,7 +30,7 @@ In particular, `enb plugin -h` shows all available options.
 Use `enb plugin list` to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or `-v` for extra details.
 
-.. program-output:: enb plugin list
+.. program-output:: bash ../decolorize_plugin_list.sh
 
 Plugin and template installation
 +++++++++++++++++++++++++++++++++++++++

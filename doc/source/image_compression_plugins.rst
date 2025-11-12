@@ -46,7 +46,7 @@ all publicly available codecs, you can install the `test-codecs` plugin with:
 
 .. code-block:: bash
 
-    enb plugin install test-codecs tc
+    enb plugin install test-codecs tc --include_privative_codecs=False
 
 and then run the `test_all_codecs.py` script, e.g., with:
 

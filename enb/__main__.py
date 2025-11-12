@@ -70,11 +70,17 @@ def _get_cli_parser():
         # Used to trigger the desired call and save the return status
         nargs=0, dest="", action=PluginList)
 
-    # # show subcommand
+    ## show subcommand
     cli_parser.show_parser = cli_parser.subparsers.add_parser(
         "show", help="Show useful information about enb and enb projects.")
     cli_parser.show_parser.subparsers = cli_parser.show_parser.add_subparsers(
         description="Show subcommands", dest="subcommand", required=True)
+    ## show version
+    cli_parser.show_parser.version_parser = \
+        cli_parser.show_parser.subparsers.add_parser(
+            "version", help="Show the current enb version.")
+    cli_parser.show_parser.version_parser.add_argument(
+        nargs=0, dest="", action=ShowVersion)
     ## show styles
     cli_parser.show_parser.styles_parser = \
         cli_parser.show_parser.subparsers.add_parser(
@@ -267,6 +273,10 @@ class ShowStyles(argparse.Action):
               end="")
         print("\n\t- ".join(
             repr(s) for s in enb.plotdata.get_available_styles()))
+        
+class ShowVersion(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        print(f"{enb.config.ini.get_key('enb', 'version')}")
 
 
 def main():

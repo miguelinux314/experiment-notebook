@@ -128,73 +128,21 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[38;2;40;201;255mShowing 53 plugins[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255mYou can add arguments to filter this list, and/or use the --exclude argument.[0m
-[38;2;40;201;255mAdd -v for extra information on the listed plugins[0m[38;2;40;201;255m.[0m
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[38;2;40;201;255mShowing 3 plugins[0m[38;2;40;201;255m matching any of &#39;|&#39;, &#39;sed&#39;, out of 54 available)[0m[38;2;40;201;255m.[0m
 
-[38;2;40;201;255m         analysis-gallery :: [0m[38;2;40;201;255mSelf-contained gallery of data analysis and plotting examples[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m         arithmetic_codec :: [0m[38;2;40;201;255mArithmetic codec (8 bit)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m           basic-workflow :: [0m[38;2;40;201;255mBasic, self-contained example of enb&#39;s workflow[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m               bitshuffle :: [0m[38;2;40;201;255mCodec wrapper that applies bitshuffle before another codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      bwt :: [0m[38;2;40;201;255mApplication of the Burrows-Wheeler Transform (BWT)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m               ccsds122x1 :: [0m[38;2;40;201;255mWrappers for CCSDS 122.1 (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m               ccsds124x0 :: [0m[38;2;40;201;255mWrappers for CCSDS 124.0-B-1 (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m           cluster-config :: [0m[38;2;40;201;255mTemplate of a CSV configuration file for enb clusters[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m              colors-dark :: [0m[38;2;40;201;255mColor template for dark background terminals[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m           colors-default :: [0m[38;2;40;201;255mDefault color template for light or dark background terminals[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                  emporda :: [0m[38;2;40;201;255mWrapper for the emporda codec (AC and CCSDS versions)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                  enb.ini :: [0m[38;2;40;201;255mCopy a full enb.ini configuration in the destination project folder[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m entropy-codec-comparison :: [0m[38;2;40;201;255mTemplate for the comparison of entropy codecs[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m               experiment :: [0m[38;2;40;201;255mGeneric experiment template. Run `enb plugin list experiment` for specific experiment templates[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                    fapec :: [0m[38;2;40;201;255mWrappers for FAPEC (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m     file_version_example :: [0m[38;2;40;201;255mTemplate and usage example for the FileVersionTable class for dataset curation[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     flif :: [0m[38;2;40;201;255mWrapper for the FLIF compressor[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                    fpack :: [0m[38;2;40;201;255mWrapper for the FPACK compressor[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      fpc :: [0m[38;2;40;201;255mFPC codec wrappers[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                    fpzip :: [0m[38;2;40;201;255mWrappers for FPZIP codecs[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      fse :: [0m[38;2;40;201;255mWrappers for FSE codecs. Includes a Huffman-only entropy codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     hdf5 :: [0m[38;2;40;201;255mCodec wrappers for the h5py library[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     hevc :: [0m[38;2;40;201;255mWrapper for the HEVC / H.265 codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                  huffman :: [0m[38;2;40;201;255mHuffman codec (8 bit)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m          iraf_photometry :: [0m[38;2;40;201;255mExtra photometry information from image files[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     jpeg :: [0m[38;2;40;201;255mReference JPEG and JPEG-LS implementation[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                   jpegxl :: [0m[38;2;40;201;255mWrapper for a reference JPEG-XL implementation[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                   kakadu :: [0m[38;2;40;201;255mWrappers for Kakadu JPEG 2000 (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                       lc :: [0m[38;2;40;201;255mLC Framework codec generation and application tools[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     lcnl :: [0m[38;2;40;201;255mWrappers for LCNL CCSDS 123.0-B-2 (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m     lossless-compression :: [0m[38;2;40;201;255mTemplate for lossless compression experiments[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m        lossy-compression :: [0m[38;2;40;201;255mTemplate for lossy compression experiments[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                    lpaq8 :: [0m[38;2;40;201;255mImplementation of the LPAQ8 algorithm[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      lz4 :: [0m[38;2;40;201;255mWrapper for a LZ4 codec[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m                   marlin :: [0m[38;2;40;201;255mMarlin-based image compressor[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m             matplotlibrc :: [0m[38;2;40;201;255mCopy matplotlib&#39;s default rc file into the destination directory[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                   mcalic :: [0m[38;2;40;201;255mWrapper for E. Magli et al.&#39;s M-CALIC codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m            montecarlo-pi :: [0m[38;2;40;201;255mDemo project that approximates pi in a distributed way[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                  montsec :: [0m[38;2;40;201;255mWrapper for the montsec codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                    ndzip :: [0m[38;2;40;201;255mWrapper for ndzip[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m               png-to-raw :: [0m[38;2;40;201;255mCurate a directory of PNG files into raw (fixed-length) format[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  port-experiment-example :: [0m[38;2;40;201;255mSelf-contained port scanning experiment example[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m               ppm-to-raw :: [0m[38;2;40;201;255mCurate a directory of PPM files into raw (fixed-length) format[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      rle :: [0m[38;2;40;201;255mRun-Length Encoding codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     spdp :: [0m[38;2;40;201;255mWrapper for the spdp codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                    speck :: [0m[38;2;40;201;255mWrapper for the SPECK codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m              test-codecs :: [0m[38;2;40;201;255mInstall all codec plugins verify their availability[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     trpx :: [0m[38;2;40;201;255mTrpx (Terse/Prolix) codec[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m                      v2f :: [0m[38;2;40;201;255mWrapper of a codec based on V2F forests (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      vvc :: [0m[38;2;40;201;255mWrapper for the VVC / H.266 codec[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      zfp :: [0m[38;2;40;201;255mWrapper for the zfp library[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m                      zip :: [0m[38;2;40;201;255mAssortment of lz-based and bzip-based codecs[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                     zstd :: [0m[38;2;40;201;255mZstandard library wrapper[0m[38;2;40;201;255m.[0m
 
 [38;2;40;201;255mThe following plugin tags have been defined and can be used for filtering:[0m
 
 [38;2;40;201;255m  - documentation    (  8 plugins)[0m[38;2;40;201;255m Documentation examples referenced in the user manual[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - codec            ( 35 plugins)[0m[38;2;40;201;255m Data compression/decompression class definitions[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - data compression ( 42 plugins)[0m[38;2;40;201;255m Data compression tools[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - codec            ( 36 plugins)[0m[38;2;40;201;255m Data compression/decompression class definitions[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - data compression ( 43 plugins)[0m[38;2;40;201;255m Data compression tools[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m  - template         ( 16 plugins)[0m[38;2;40;201;255m Templates formatteable into the installation dir[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m  - project          ( 11 plugins)[0m[38;2;40;201;255m Project templates, including configuration files[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m  - test             (  1  plugin)[0m[38;2;40;201;255m Plugins for testing purposes[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - image            ( 21 plugins)[0m[38;2;40;201;255m Tools for image processing (including compression and analysis)[0m[38;2;40;201;255m.[0m
+[38;2;40;201;255m  - image            ( 22 plugins)[0m[38;2;40;201;255m Tools for image processing (including compression and analysis)[0m[38;2;40;201;255m.[0m
 [38;2;40;201;255m  - privative        (  6 plugins)[0m[38;2;40;201;255m Plugins requiring additional privative software[0m[38;2;40;201;255m.[0m
 
 [38;2;40;201;255mRun with -v for authorship and additional information, with -h for full help.[0m

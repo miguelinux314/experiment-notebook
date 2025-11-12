@@ -8,7 +8,11 @@ a {
 
 a:hover {
     color: #f3ac05 !important;
-    background: #4e4a4a !important;
+    background: #4e4a4a;
+}
+
+figure a:hover, a.icon, a.fa-github {
+    background: none;
 }
 
 .btn-neutral, .btn-neutral:visited {
