@@ -271,7 +271,7 @@ class QuantizationWrapperCodec(NearLosslessCodec):
         with tempfile.TemporaryDirectory(dir=options.base_tmp_dir) as tmp_dir:
             output_quantized_path = os.path.join(tmp_dir, os.path.basename(reconstructed_path))
             self.codec.decompress(compressed_path, output_quantized_path, original_file_info)
-            array = isets.load_array_bsq(output_quantized_path)
+            array = isets.load_array_bsq(output_quantized_path, image_properties_row=original_file_info)
 
             if not (self.param_dict["qstep"] & (self.param_dict["qstep"] - 1)):
                 # Efficiently way to execute image_array * self.param_dict["qstep"]

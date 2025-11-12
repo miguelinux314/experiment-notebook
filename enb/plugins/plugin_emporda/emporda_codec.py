@@ -106,8 +106,8 @@ class EmpordaCCSDS(enb.icompression.LosslessCodec,
 
     def __init__(
             self,
-            entropy_coder: int,
-            skip_prediction: bool,
+            entropy_coder: int = SAMPLE_ADAPTIVE_ENCODER,
+            skip_prediction: bool = False,
             compressor_jar: str = os.path.join(os.path.dirname(__file__), "emporda_ccsds.jar"),
             decompressor_jar: str = os.path.join(os.path.dirname(__file__), "emporda_ccsds.jar")):
         """
