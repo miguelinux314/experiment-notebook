@@ -79,6 +79,7 @@ with open("README.md", "r") as readme_file:
         install_requires=[
             "appdirs",
             "astropy",
+            "bitio",
             "deprecation",
             "h5py",
             "imageio",

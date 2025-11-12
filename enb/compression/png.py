@@ -157,11 +157,13 @@ def raw_path_to_png(raw_path, png_path, image_properties_row=None):
                                    image_properties_row=image_properties_row)
     render_array_png(img=img, png_path=png_path)
 
-def png_to_raw(input_path, output_path) -> [str | os.PathLike]:
+def png_to_raw(input_path, output_path, adjust_output_path=True) -> [str | os.PathLike]:
     """Read a png image from `input_path` 
     and write it to `<output_path without '.raw'>-<data_type>-ZxYxX.raw`,
     where `data_type` can be u8be or u16be, depending on the image contents.
     
+    :param adjust_output_path: if True, the output path is modified to include
+      a name tag with the data type and image geometry.
     :return: the modified version of `output_path` actually used for the output.
     """
     with enb.logger.info_context(f"Versioning {input_path}"):
@@ -178,8 +180,9 @@ def png_to_raw(input_path, output_path) -> [str | os.PathLike]:
         else:
             raise f"Invalid data type found in read image " \
                   f"{input_path}: {img.dtype}"
-        output_path = f"{output_path[:-len('.raw')]}-{type_str}" \
-                      f"-{img.shape[2]}x{img.shape[1]}x{img.shape[0]}.raw"
+        if adjust_output_path:
+            output_path = f"{output_path[:-len('.raw')]}-{type_str}" \
+                          f"-{img.shape[2]}x{img.shape[1]}x{img.shape[0]}.raw"
         enb.isets.dump_array_bsq(array=img, file_or_path=output_path)
         
         return output_path
