@@ -148,7 +148,7 @@ You can access the development version with
 
     .. code-block:: bash
 
-    git clone --depth=1 -b dev https://github.com/miguelinux314/experiment-notebook.git
+    	git clone --depth=1 -b dev https://github.com/miguelinux314/experiment-notebook.git
 
 You can install a symbolic link to your local copy of the code (for whichever
 branch is checked out) with

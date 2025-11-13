@@ -9,7 +9,7 @@
   <title>The enb command-line tools &mdash; Experiment Notebook (enb) MIT License documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=2847780d" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=4047c182" />
+      <link rel="stylesheet" type="text/css" href="_static/css/enb-rtd.css?v=577dd5e9" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -128,24 +128,77 @@ subcommands:
 In particular, <cite>enb plugin -h</cite> shows all available options.</p>
 <p>Use <cite>enb plugin list</cite> to get a list of all available plugins and templates. You can add extra parameters for filtering
 and/or <cite>-v</cite> for extra details.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[38;2;40;201;255mShowing 3 plugins[0m[38;2;40;201;255m matching any of &#39;|&#39;, &#39;sed&#39;, out of 54 available)[0m[38;2;40;201;255m.[0m
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Showing 54 plugins.
+You can add arguments to filter this list, and/or use the --exclude argument.
+Add -v for extra information on the listed plugins.
 
-[38;2;40;201;255m                   marlin :: [0m[38;2;40;201;255mMarlin-based image compressor[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      v2f :: [0m[38;2;40;201;255mWrapper of a codec based on V2F forests (privative)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m                      zip :: [0m[38;2;40;201;255mAssortment of lz-based and bzip-based codecs[0m[38;2;40;201;255m.[0m
+         analysis-gallery :: Self-contained gallery of data analysis and plotting examples.
+         arithmetic_codec :: Arithmetic codec (8 bit).
+           basic-workflow :: Basic, self-contained example of enb&#39;s workflow.
+               bitshuffle :: Codec wrapper that applies bitshuffle before another codec.
+                      bwt :: Application of the Burrows-Wheeler Transform (BWT).
+               ccsds122x1 :: Wrappers for CCSDS 122.1 (privative).
+               ccsds124x0 :: Wrappers for CCSDS 124.0-B-1 (privative).
+           cluster-config :: Template of a CSV configuration file for enb clusters.
+              colors-dark :: Color template for dark background terminals.
+           colors-default :: Default color template for light or dark background terminals.
+                  emporda :: Wrapper for the emporda codec (AC and CCSDS versions).
+                  enb.ini :: Copy a full enb.ini configuration in the destination project folder.
+ entropy-codec-comparison :: Template for the comparison of entropy codecs.
+               experiment :: Generic experiment template. Run `enb plugin list experiment` for specific experiment templates.
+                    fapec :: Wrappers for FAPEC (privative).
+     file_version_example :: Template and usage example for the FileVersionTable class for dataset curation.
+                     flif :: Wrapper for the FLIF compressor.
+                    fpack :: Wrapper for the FPACK compressor.
+                      fpc :: FPC codec wrappers.
+                    fpzip :: Wrappers for FPZIP codecs.
+                      fse :: Wrappers for FSE codecs. Includes a Huffman-only entropy codec.
+                     hdf5 :: Codec wrappers for the h5py library.
+                     hevc :: Wrapper for the HEVC / H.265 codec.
+                  huffman :: Huffman codec (8 bit).
+          iraf_photometry :: Extra photometry information from image files.
+                     jpeg :: Reference JPEG and JPEG-LS implementation.
+                   jpegxl :: Wrapper for a reference JPEG-XL implementation.
+                   kakadu :: Wrappers for Kakadu JPEG 2000 (privative).
+                       lc :: LC Framework codec generation and application tools.
+                     lcnl :: Wrappers for LCNL CCSDS 123.0-B-2 (privative).
+     lossless-compression :: Template for lossless compression experiments.
+        lossy-compression :: Template for lossy compression experiments.
+                    lpaq8 :: Implementation of the LPAQ8 algorithm.
+                      lz4 :: Wrapper for a LZ4 codec.
+                   marlin :: Marlin-based image compressor.
+             matplotlibrc :: Copy matplotlib&#39;s default rc file into the destination directory.
+                   mcalic :: Wrapper for E. Magli et al.&#39;s M-CALIC codec.
+            montecarlo-pi :: Demo project that approximates pi in a distributed way.
+                  montsec :: Wrapper for the montsec codec.
+                    ndzip :: Wrapper for ndzip.
+               png-to-raw :: Curate a directory of PNG files into raw (fixed-length) format.
+  port-experiment-example :: Self-contained port scanning experiment example.
+               ppm-to-raw :: Curate a directory of PPM files into raw (fixed-length) format.
+                      rle :: Run-Length Encoding codec.
+                     spdp :: Wrapper for the spdp codec.
+                    speck :: Wrapper for the SPECK codec.
+              test-codecs :: Install all codec plugins verify their availability.
+                     trpx :: Trpx (Terse/Prolix) codec.
+                      v2f :: Wrapper of a codec based on V2F forests (privative).
+                      vvc :: Wrapper for the VVC / H.266 codec.
+                     webp :: Reference implementation of the WebP codec.
+                      zfp :: Wrapper for the zfp library.
+                      zip :: Assortment of lz-based and bzip-based codecs.
+                     zstd :: Zstandard library wrapper.
 
-[38;2;40;201;255mThe following plugin tags have been defined and can be used for filtering:[0m
+The following plugin tags have been defined and can be used for filtering:
 
-[38;2;40;201;255m  - documentation    (  8 plugins)[0m[38;2;40;201;255m Documentation examples referenced in the user manual[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - codec            ( 36 plugins)[0m[38;2;40;201;255m Data compression/decompression class definitions[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - data compression ( 43 plugins)[0m[38;2;40;201;255m Data compression tools[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - template         ( 16 plugins)[0m[38;2;40;201;255m Templates formatteable into the installation dir[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - project          ( 11 plugins)[0m[38;2;40;201;255m Project templates, including configuration files[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - test             (  1  plugin)[0m[38;2;40;201;255m Plugins for testing purposes[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - image            ( 22 plugins)[0m[38;2;40;201;255m Tools for image processing (including compression and analysis)[0m[38;2;40;201;255m.[0m
-[38;2;40;201;255m  - privative        (  6 plugins)[0m[38;2;40;201;255m Plugins requiring additional privative software[0m[38;2;40;201;255m.[0m
+  - documentation    (  8 plugins) Documentation examples referenced in the user manual.
+  - codec            ( 36 plugins) Data compression/decompression class definitions.
+  - data compression ( 43 plugins) Data compression tools.
+  - template         ( 16 plugins) Templates formatteable into the installation dir.
+  - project          ( 11 plugins) Project templates, including configuration files.
+  - test             (  1  plugin) Plugins for testing purposes.
+  - image            ( 22 plugins) Tools for image processing (including compression and analysis).
+  - privative        (  6 plugins) Plugins requiring additional privative software.
 
-[38;2;40;201;255mRun with -v for authorship and additional information, with -h for full help.[0m
+Run with -v for authorship and additional information, with -h for full help.
 </pre></div>
 </div>
 </section>

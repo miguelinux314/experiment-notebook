@@ -999,8 +999,7 @@ Each element in `style_list` must be one of the following:
 
       An example output is as follows:
 
-        .. program-output:: enb show styles | tail -n+3
-            :shell:
+        .. program-output:: bash ../decolorize_style_list.sh
 
 * The path of a matplotlib rc style.
 

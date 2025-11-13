@@ -55,6 +55,11 @@ and then run the `test_all_codecs.py` script, e.g., with:
     python tc/test_all_codecs.py
 
 It will produce a set of plots describing the codecs
-and the data types for which they are available. A snapshot of this output is shown next
+and the data types for which they are available. 
+
+.. note:: This command will take a relatively long time to complete, as it will test
+	all codecs on all data types.
+
+A snapshot of this output is shown next
 
 .. figure:: _static/test_codecs/DictNumericAnalyzer_type_to_availability_groupby-group_label_line.png

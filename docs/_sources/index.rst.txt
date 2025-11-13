@@ -6,13 +6,13 @@
 Experiment Notebook (enb) user manual
 =====================================
 
+.. program-output:: bash ../decolorize_enb_version.sh
+
 .. figure:: img/enb_logo.png
     :target: #
     :width: 25%
     :alt: |enb| logo
     :align: center
-
-|
 
 The Experiment Notebook (from now on, ``enb``) library is designed to help you obtain
 and report computer-based experimental data. Focus on what is new in your
