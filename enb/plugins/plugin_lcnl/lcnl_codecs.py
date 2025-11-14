@@ -173,22 +173,21 @@ class CCSDS_LCNL(icompression.NearLosslessCodec, icompression.WrapperCodec):
             else self.default_sample_encoding_order
         assert sample_encoding_order in (self.SAMPLE_ORDER_BIQ, self.SAMPLE_ORDER_BSQ)
         param_dict["sample_encoding_order"] = sample_encoding_order
-        #
+        
         large_p = large_p if large_p is not None else self.default_large_P
         assert 0 <= large_p <= 15
         param_dict["large_p"] = large_p
-        #
+        
         local_sum_type = local_sum_type if local_sum_type is not None \
             else self.default_local_sum_type
         assert local_sum_type in (self.LOCAL_SUM_WIDE_NEI, self.LOCAL_SUM_NARROW_NEI,
                                   self.LOCAL_SUM_WIDE_COL, self.LOCAL_SUM_NARROW_COL), local_sum_type
-        if local_sum_type != self.default_local_sum_type:
-            param_dict["local_sum_type"] = local_sum_type
-        #
-        prediction_mode = prediction_mode if prediction_mode is not None else self.default_prediction_mode
-        if prediction_mode is not None and prediction_mode != self.default_prediction_mode:
-            assert prediction_mode in (self.PREDICTION_FULL, self.PREDICTION_REDUCED)
-            param_dict["prediction_mode"] = prediction_mode
+        param_dict["local_sum_type"] = local_sum_type
+        
+        prediction_mode = prediction_mode if prediction_mode is not None \
+            else self.default_prediction_mode
+        assert prediction_mode in (self.PREDICTION_FULL, self.PREDICTION_REDUCED), prediction_mode
+        param_dict["prediction_mode"] = prediction_mode
 
         # Set binary paths
         bin_dir = bin_dir if bin_dir is not None else options.external_bin_base_dir

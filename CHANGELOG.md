@@ -5,7 +5,7 @@
 
 - User manual cleanup
 - Added default arguments to the CCSDS Emporda codec so that it can be instantiated without arguments.
-
+- Fixed default parameter setup in the LCNL codec (thanks Xavi/Pau)
 
 
 # Version history
