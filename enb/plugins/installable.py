@@ -169,10 +169,10 @@ class Installable(metaclass=InstallableMeta):
                     outdated_contrib = False
 
                 if not os.path.isfile(cached_path) or enb.config.options.force or outdated_contrib:
-                    with enb.logger.verbose_context(f"Downloading {url} into cache"):
-                        with open(cached_path, "wb") as output_file:
-                            output_file.write(requests.get(url, allow_redirects=True).content)
-                enb.logger.verbose(f"Copying {cached_path} into {output_path}"
+                    enb.logger.message(f"Downloading {url} into cache...")
+                    with open(cached_path, "wb") as output_file:
+                        output_file.write(requests.get(url, allow_redirects=True).content)
+                enb.logger.message(f"Copying {cached_path} into {output_path}"
                                    f"{' (run with -f to force download)' if enb.config.options.force else ''}")
                 shutil.copyfile(cached_path, output_path)
 
