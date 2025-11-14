@@ -26,7 +26,7 @@ class LossyExperiment(enb.icompression.LossyCompressionExperiment):
 if __name__ == '__main__':
     # Many flags are defined in enb.config.options based on the CLI arguments
     # with which this script is invoked. Run with -h for a full description.
-    options.verbose = 1
+    options.verbose = max(1, options.verbose)
 
     # Temporary compressed and reconstructed files are saved under options.base_tmp_dir.
     # By default, a memory disk is used if possible. This can be set to a physical partition if
