@@ -5,8 +5,9 @@
 
 - User manual cleanup
 - Added default arguments to the CCSDS Emporda codec so that it can be instantiated without arguments.
-- Fixed default parameter setup in the LCNL codec (thanks Xavi/Pau)
-
+- Fixed default parameter setup in the LCNL codec (thanks Xavi/Pau).
+- Updated the JPEG-XL codec to the last contrib sources, and fixed some stability problems (thanks Xavi/Pau).
+- 
 
 # Version history
 

@@ -129,7 +129,6 @@ include enb/plugins/plugin_jpeg/Makefile.linux
 include enb/plugins/plugin_jpeg/__plugin__.py
 include enb/plugins/plugin_jpeg/README.md
 include enb/plugins/plugin_jpeg_xl/jpegxl_codec.py
-include enb/plugins/plugin_jpeg_xl/Makefile.darwin
 include enb/plugins/plugin_jpeg_xl/Makefile.linux
 include enb/plugins/plugin_jpeg_xl/__plugin__.py
 include enb/plugins/plugin_jpeg_xl/README.md

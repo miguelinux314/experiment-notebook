@@ -76,12 +76,57 @@ class PGMWrapperCodec(WrapperCodec):
                 decompression_results.decompression_time_seconds
 
 
+class PAMWrapperCodec(WrapperCodec):
+    """During compression, raw images are stored in PAM before compression with the wrapped codec.
+    During decompression, the decompressed PAM file is read and stored back in raw format.
+    """
+
+    def compress(self, original_path: str, compressed_path: str, original_file_info=None):
+        assert original_file_info["bytes_per_sample"] in [1, 2], \
+            "PAM only supported for 8 or 16 bit images"
+        assert original_file_info["big_endian"], \
+            f"Only big-endian samples are supported by {self.__class__.__name__}"
+        img = enb.isets.load_array_bsq(
+            file_or_path=original_path, image_properties_row=original_file_info)
+
+        with tempfile.NamedTemporaryFile(suffix=".pam", mode="wb+", dir=enb.config.options.base_tmp_dir) as tmp_file:
+            write_pam(img, original_file_info["bytes_per_sample"], tmp_file.name)
+
+            compression_results = super().compress(
+                original_path=tmp_file.name,
+                compressed_path=compressed_path,
+                original_file_info=original_file_info)
+            crs = self.compression_results_from_paths(
+                original_path=original_path, compressed_path=compressed_path)
+            crs.compression_time_seconds = max(
+                0, compression_results.compression_time_seconds)
+            crs.maximum_memory_kb = compression_results.maximum_memory_kb
+            return crs
+
+    def decompress(self, compressed_path, reconstructed_path,
+                   original_file_info=None):
+        with tempfile.NamedTemporaryFile(suffix=".pam", mode="wb+", dir=enb.config.options.base_tmp_dir) as tmp_file:
+            decompression_results = super().decompress(
+                compressed_path=compressed_path,
+                reconstructed_path=tmp_file.name)
+
+            img = read_pam(tmp_file.name)
+            enb.isets.dump_array_bsq(img, file_or_path=reconstructed_path)
+
+            drs = self.decompression_results_from_paths(
+                compressed_path=compressed_path,
+                reconstructed_path=reconstructed_path)
+            drs.decompression_time_seconds = \
+                decompression_results.decompression_time_seconds
+
+
 class PGMCurationTable(PNGCurationTable):
     """Given a directory tree containing PGM images, copy those images into
     a new directory tree in raw BSQ format adding geometry information tags to
     the output names recognized by `enb.isets.load_array_bsq`.
     """
     dataset_files_extension = "pgm"
+
 
 class PPMCurationTable(PNGCurationTable):
     """Given a directory tree containing PPM images, copy those images into
@@ -203,3 +248,83 @@ def ppm_to_raw(input_path, output_path):
     """
     enb.isets.dump_array_bsq(array=read_ppm(input_path),
                              file_or_path=output_path)
+
+
+def read_pam(input_path, byteorder='>'):
+    """Return image data from a raw PAM file as a numpy array."""
+    with open(input_path, 'rb') as input_file:
+        buffer = input_file.read()
+
+    try:
+        match = re.search(
+            rb"^P7\s+"
+            rb"(WIDTH\s+(\d+)\s*)"
+            rb"(HEIGHT\s+(\d+)\s*)"
+            rb"(DEPTH\s+(\d+)\s*)"
+            rb"(MAXVAL\s+(\d+)\s*)"
+            rb"(TUPLTYPE\s+\w+\s*)"
+            rb"ENDHDR\s",
+            buffer
+        )
+
+        if not match:
+            raise ValueError(f"Not a valid PAM file: '{input_path}'")
+
+        width = int(match.group(2))
+        height = int(match.group(4))
+        depth = int(match.group(6))
+        maxval = int(match.group(8))
+
+    except AttributeError as ex:
+        raise ValueError(f"Invalid PAM header in '{input_path}'") from ex
+
+    dtype = 'u1' if maxval < 256 else byteorder + 'u2'
+
+    offset = match.end()
+
+    img = np.frombuffer(
+        buffer,
+        dtype=dtype,
+        count=width * height * depth,
+        offset=offset
+    )
+
+    if depth == 1:
+        return img.reshape((int(height), int(width)), order="C")
+
+    return img.reshape((int(depth), int(height), int(width)), order="F").swapaxes(0, 2).swapaxes(0, 1)
+
+
+def write_pam(array, bytes_per_sample, output_path, byteorder=">"):
+    """
+    Write a 3D array indexed with [height, width, channels] into output_path with PAM format.
+    Supports up to 4 channels (Grayscale, RGB, RGBA).
+    """
+    array = np.squeeze(array)
+    assert bytes_per_sample in [1, 2], f"bytes_per_sample={bytes_per_sample} not supported"
+    assert len(array.shape) <= 4, "Only 3D arrays can be output as PAM (grayscale, alpha, RGB or RBGA)"
+    assert (array.astype(int) - array < 2 * sys.float_info.epsilon).all(), "Only integer values can be stored in PAM"
+    assert array.min() >= 0, "Only positive values can be stored in PAM"
+    assert array.max() <= 2 ** (8 * bytes_per_sample) - 1, (
+        f"All values should be representable in {bytes_per_sample} bytes "
+        f"(max is {array.max()}, bytes_per_sample={bytes_per_sample})"
+    )
+
+    height, width = array.shape[:2]
+    depth = 1 if len(array.shape) == 2 else array.shape[2]
+    maxval = (2 ** (8 * bytes_per_sample)) - 1
+
+    tupltype = {1: "GRAYSCALE", 2: "GRAYSCALE_ALPHA", 3: "RGB", 4: "RGB_ALPHA"}.get(depth, "UNKNOWN")
+
+    with open(output_path, "wb") as output_file:
+        output_file.write(
+            f"P7\nWIDTH {width}\nHEIGHT {height}\nDEPTH {depth}\nMAXVAL {maxval}\nTUPLTYPE {tupltype}\nENDHDR\n".encode(
+                "utf-8")
+        )
+        if depth == 1:
+            array.astype(f"{byteorder}u{bytes_per_sample}").tofile(
+                output_file)
+        else:
+            enb.isets.dump_array_bip(
+                array=array, file_or_path=output_file,
+                dtype=np.uint8 if bytes_per_sample == 1 else np.uint16)
