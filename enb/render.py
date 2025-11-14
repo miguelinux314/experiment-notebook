@@ -813,7 +813,7 @@ def _update_ticks_and_grid(column_properties, combine_groups, global_x_max,
 
         try:
             if global_x_max < 1e-2:
-                x_tick_label_angle = 90 if x_tick_label_angle is not None else x_tick_label_angle
+                x_tick_label_angle = 90 if x_tick_label_angle is None else x_tick_label_angle
         except TypeError:
             # Likely not numerical data - skip adjustments
             pass
