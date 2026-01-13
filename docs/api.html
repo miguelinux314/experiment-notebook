@@ -101,7 +101,7 @@
 <li><dl class="simple">
 <dt><a class="reference internal" href="api/enb.html#module-enb.atable" title="enb.atable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.atable</span></code></a>: definition of the core ATable functionality</dt><dd><ul>
 <li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a>: core class with automatic parallelization and persistence management.</p></li>
-<li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a>: method to produce a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+2709.g415830fc8f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with the table contents.</p></li>
+<li><p><a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a>: method to produce a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0rc1+110.g14dbf0575f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with the table contents.</p></li>
 <li><p>See <a class="reference internal" href="basic_workflow.html"><span class="doc">Basic workflow: enb.atable.ATable</span></a> for extra information on <a class="reference internal" href="api/enb.html#enb.atable.ATable" title="enb.atable.ATable"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.atable.ATable</span></code></a></p></li>
 </ul>
 </dd>
@@ -144,7 +144,7 @@ Run with <a class="reference internal" href="api/enb.html#enb.experiment.Experim
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>: Tools for automatic analysis and plotting of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0.dev0+2709.g415830fc8f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained</dt><dd><dl class="simple">
+<dt><a class="reference internal" href="api/enb.html#module-enb.aanalysis" title="enb.aanalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enb.aanalysis</span></code></a>: Tools for automatic analysis and plotting of the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/dev/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.0rc1+110.g14dbf0575f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> instances obtained</dt><dd><dl class="simple">
 <dt>with <a class="reference internal" href="api/enb.html#enb.atable.ATable.get_df" title="enb.atable.ATable.get_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">enb.atable.ATable.get_df()</span></code></a> or its subclass implementations, e.g., in <a class="reference internal" href="api/enb.html#enb.experiment.Experiment" title="enb.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.experiment.Experiment</span></code></a>.</dt><dd><ul>
 <li><dl class="simple">
 <dt><a class="reference internal" href="api/enb.html#enb.aanalysis.Analyzer" title="enb.aanalysis.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enb.aanalysis.Analyzer</span></code></a>: subclasses implement different types of automatic analysis</dt><dd><ul>
@@ -367,6 +367,11 @@ columns, the other givin multiple rows.</p></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="api/enb.compression.html#module-enb.compression.pgm">enb.compression.pgm module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PAMWrapperCodec"><code class="docutils literal notranslate"><span class="pre">PAMWrapperCodec</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PAMWrapperCodec.compress"><code class="docutils literal notranslate"><span class="pre">PAMWrapperCodec.compress()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PAMWrapperCodec.decompress"><code class="docutils literal notranslate"><span class="pre">PAMWrapperCodec.decompress()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PGMCurationTable"><code class="docutils literal notranslate"><span class="pre">PGMCurationTable</span></code></a><ul>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PGMCurationTable.column_to_properties"><code class="docutils literal notranslate"><span class="pre">PGMCurationTable.column_to_properties</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.PGMCurationTable.dataset_files_extension"><code class="docutils literal notranslate"><span class="pre">PGMCurationTable.dataset_files_extension</span></code></a></li>
@@ -384,8 +389,10 @@ columns, the other givin multiple rows.</p></li>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.pgm_to_raw"><code class="docutils literal notranslate"><span class="pre">pgm_to_raw()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.ppm_to_raw"><code class="docutils literal notranslate"><span class="pre">ppm_to_raw()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.read_pam"><code class="docutils literal notranslate"><span class="pre">read_pam()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.read_pgm"><code class="docutils literal notranslate"><span class="pre">read_pgm()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.read_ppm"><code class="docutils literal notranslate"><span class="pre">read_ppm()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.write_pam"><code class="docutils literal notranslate"><span class="pre">write_pam()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.write_pgm"><code class="docutils literal notranslate"><span class="pre">write_pgm()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="api/enb.compression.html#enb.compression.pgm.write_ppm"><code class="docutils literal notranslate"><span class="pre">write_ppm()</span></code></a></li>
 </ul>

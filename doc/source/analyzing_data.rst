@@ -22,7 +22,7 @@ a general use case.
 
     .. code-block:: bash
 
-        enb install analysis-gallery ag
+        enb plugin install analysis-gallery ag
 
 
 One numeric column
@@ -55,7 +55,7 @@ We can analyze the general petal and sepal dimensions using the **`get_df`** met
 
 The following render modes are available for the ScalarNumericAnalyzer (they are all rendered by default):
 
-.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | tail -n+4
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | sed 's/\x1b\[[0-9;]*m//g'
     :shell:
 
 Plots
@@ -127,7 +127,7 @@ which also shows +/- 1 horizontal and vertical standard deviations.
 The previous figure shows an example of the `scatter` plot mode.
 The following render modes are available for the TwoNumericAnalyzer (they are all rendered by default):
 
-.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | sed 's/\x1b\[[0-9;]*m//g'
     :shell:
 
 Note that, for the `scatter` plot mode, it is possible to display linear regression of the data.
@@ -525,7 +525,7 @@ as follows:
 
 By default, all of the following render modes are used with |ScalarNumericAnalyzer|:
 
-.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | tail -n+4
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.ScalarNumericAnalyzer.valid_render_modes))' | sed 's/\x1b\[[0-9;]*m//g'
     :shell:
 
 The `histogram` render mode produces plots like the following:
@@ -560,7 +560,7 @@ Grouping is not restricted to |ScalarNumericAnalyzer|. It can be used with other
 
 By default, all of the following render modes are used with |TwoNumericAnalyzer|:
 
-.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | tail -n+4
+.. program-output:: python -c 'import enb; print("- " + "\n- ".join(enb.aanalysis.TwoNumericAnalyzer.valid_render_modes))' | sed 's/\x1b\[[0-9;]*m//g'
     :shell:
 
 The resulting plot for the `scatter` mode is shown next:

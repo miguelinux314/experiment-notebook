@@ -1083,6 +1083,55 @@ If affects the result of <cite>enb.atable.get_all_test_files</cite>,</p>
 <span id="enb-compression-pgm-module"></span><h2>enb.compression.pgm module<a class="headerlink" href="#module-enb.compression.pgm" title="Link to this heading"></a></h2>
 <p>Module to handle PGM (P5) and PPM (P6) images</p>
 <dl class="py class">
+<dt class="sig sig-object py" id="enb.compression.pgm.PAMWrapperCodec">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.compression.pgm.</span></span><span class="sig-name descname"><span class="pre">PAMWrapperCodec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decompressor_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_invocation_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature_in_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.PAMWrapperCodec" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enb.compression.wrapper.WrapperCodec" title="enb.compression.wrapper.WrapperCodec"><code class="xref py py-class docutils literal notranslate"><span class="pre">WrapperCodec</span></code></a></p>
+<p>During compression, raw images are stored in PAM before compression with the wrapped codec.
+During decompression, the decompressed PAM file is read and stored back in raw format.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.compression.pgm.PAMWrapperCodec.compress">
+<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.PAMWrapperCodec.compress" title="Link to this definition"></a></dt>
+<dd><p>Compress original_path into compress_path using param_dict as params.
+:param original_path: path to the original file to be compressed
+:param compressed_path: path to the compressed file to be created
+:param original_file_info: a dict-like object describing</p>
+<blockquote>
+<div><p>original_path’s properties (e.g., geometry), or None.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(optional) a CompressionResults instance, or None
+(see self.compression_results_from_paths)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enb.compression.pgm.PAMWrapperCodec.decompress">
+<span class="sig-name descname"><span class="pre">decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compressed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconstructed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_file_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.PAMWrapperCodec.decompress" title="Link to this definition"></a></dt>
+<dd><p>Decompress compressed_path into reconstructed_path using param_dict
+as params (if needed).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compressed_path</strong> – path to the input compressed file</p></li>
+<li><p><strong>reconstructed_path</strong> – path to the output reconstructed file</p></li>
+<li><p><strong>original_file_info</strong> – a dict-like object describing
+original_path’s properties (e.g., geometry), or None. Should only be
+actually used in special cases, since codecs are expected to store
+all needed metainformation in the compressed file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(optional) a DecompressionResults instance, or None (see</p>
+</dd>
+</dl>
+<p>self.decompression_results_from_paths)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="enb.compression.pgm.PGMCurationTable">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enb.compression.pgm.</span></span><span class="sig-name descname"><span class="pre">PGMCurationTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_support_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.PGMCurationTable" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#enb.compression.png.PNGCurationTable" title="enb.compression.png.PNGCurationTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">PNGCurationTable</span></code></a></p>
@@ -1198,6 +1247,12 @@ which does not include any geometry or data type information.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="enb.compression.pgm.read_pam">
+<span class="sig-prename descclassname"><span class="pre">enb.compression.pgm.</span></span><span class="sig-name descname"><span class="pre">read_pam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byteorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.read_pam" title="Link to this definition"></a></dt>
+<dd><p>Return image data from a raw PAM file as a numpy array.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="enb.compression.pgm.read_pgm">
 <span class="sig-prename descclassname"><span class="pre">enb.compression.pgm.</span></span><span class="sig-name descname"><span class="pre">read_pgm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byteorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.read_pgm" title="Link to this definition"></a></dt>
 <dd><p>Return image data from a raw PGM file as numpy array.
@@ -1213,6 +1268,13 @@ Format specification: <a class="reference external" href="http://netpbm.sourcefo
 Format specification: <a class="reference external" href="http://netpbm.sourceforge.net/doc/pgm.html">http://netpbm.sourceforge.net/doc/pgm.html</a></p>
 <p>(From answer:
 <a class="reference external" href="https://stackoverflow.com/questions/7368739/numpy-and-16-bit-pgm">https://stackoverflow.com/questions/7368739/numpy-and-16-bit-pgm</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enb.compression.pgm.write_pam">
+<span class="sig-prename descclassname"><span class="pre">enb.compression.pgm.</span></span><span class="sig-name descname"><span class="pre">write_pam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bytes_per_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byteorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&gt;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#enb.compression.pgm.write_pam" title="Link to this definition"></a></dt>
+<dd><p>Write a 3D array indexed with [height, width, channels] into output_path with PAM format.
+Supports up to 4 channels (Grayscale, RGB, RGBA).</p>
 </dd></dl>
 
 <dl class="py function">
