@@ -196,6 +196,8 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
                         compressed_path=stack_compressed_path,
                         original_file_info=original_file_info)
                     total_compression_time += compression_results.compression_time_seconds
+                    if compression_results.maximum_memory_kb is None:
+                        compression_results.maximum_memory_kb = maximum_memory_kb
                     maximum_memory_kb = max(maximum_memory_kb, compression_results.maximum_memory_kb)
 
                     tw.add_file(input_path=stack_compressed_path)
@@ -232,6 +234,8 @@ class JPEG_LS(Abstract_JPEG, icompression.LosslessCodec, icompression.NearLossle
                     decompression_results = super().decompress(
                         compressed_path=compressed_stack_path, reconstructed_path=stack_path.name)
                     total_decompression_time += decompression_results.decompression_time_seconds
+                    if decompression_results.maximum_memory_kb is None:
+                        decompression_results.maximum_memory_kb = maximum_memory_kb
                     maximum_memory_kb = max(maximum_memory_kb, decompression_results.maximum_memory_kb)
 
                     assert os.path.isfile(stack_path.name)
